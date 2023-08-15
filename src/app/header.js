@@ -1,12 +1,15 @@
 import React from 'react';
 import Image from "next/image";
+
 import styles from "./components/header.module.css";
 
 function LogoHVU() {
     return (
-        <img src="/home/rafaela/Documentos/projeto-hvu-front/public/layouts/hvulogo.jpg" alt="Logo do HVU">
-            
-        </img>
+        <>
+        <img src='./layouts/hvulogo.jpg' alt='teste'/>
+        
+        </>
+
     );
 }
 
@@ -30,12 +33,17 @@ function BotaoLogin() {
 
 export default function Header() {
     return (
-        <div className={styles.header}>
-            <p>
+        <header className={styles.header}>
+            
+            <div className={styles.boxlogo}>
                 <LogoHVU />
+            </div>
+
+            <div className={styles.box_buttons} >
                 <BotaoCadastro />
                 <BotaoLogin />
-            </p>
-        </div>
+            </div>
+                
+        </header>
     );    
   }
