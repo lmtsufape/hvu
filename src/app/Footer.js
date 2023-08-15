@@ -1,13 +1,28 @@
+import React from 'react'
 import styles from './components/footer.module.css'
 import Image from 'next/image'
-import LMTSlogo from '../../public/layouts/LMTSlogo.png'
 
 function Footer(){
     return(
-        <div>
-        <h1 className={styles.backgroundfooter}>Rodapé pra testar</h1>
-        
-        </div>
+        <footer className={styles.backgroundfooter}>
+            <div>
+                <h1>
+                    Rodapé pra testar
+                    </h1>
+                <p>
+                    Só pra testar
+                    <ul>
+                    <Image src="/layouts/LMTSlogo.png" alt="Logo" width={182} height={57}/>
+                    <Image src="/layouts/UFAPElogo.png" alt="Logo" width={100} height={50}/>
+                    <Image src="/layouts/email.svg" alt="Logo" width={100} height={50}/>
+                    <Image src="/layouts/facebook.svg" alt="Logo" width={100} height={50}/>
+                    <Image src="/layouts/instagram.svg" alt="Logo" width={100} height={50}/>
+                    </ul>
+                </p>
+                
+            </div>
+        </footer>
     )
 }
-export default Footer
+
+export default Footer;
