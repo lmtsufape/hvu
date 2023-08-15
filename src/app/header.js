@@ -2,7 +2,7 @@
 
 function LogoHVU() {
     return (
-        <img src="./public/layouts/hvulogo.png">
+        <img src="/home/rafaela/Documentos/projeto-hvu-front/public/layouts/hvulogo.jpg" alt="Logo do HVU">
             
         </img>
     );
