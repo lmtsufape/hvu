@@ -1,4 +1,6 @@
-
+import React from 'react';
+import Image from "next/image";
+import styles from "./components/header.module.css";
 
 function LogoHVU() {
     return (
@@ -10,7 +12,7 @@ function LogoHVU() {
 
 function BotaoCadastro() {
     return (
-        <button>
+        <button className={styles.botaocadastro}>
             Cadastre-se
         </button>
     );
@@ -18,15 +20,17 @@ function BotaoCadastro() {
 
 function BotaoLogin() {
     return (
-        <button>
+        <button className={styles.botaologin}>
+            <div>
             Login
+            </div>
         </button>
     );
 }
 
 export default function Header() {
     return (
-        <div>
+        <div className={styles.header}>
             <p>
                 <LogoHVU />
                 <BotaoCadastro />
