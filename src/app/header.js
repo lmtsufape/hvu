@@ -1,35 +1,9 @@
 import React from 'react';
 import Image from "next/image";
-
 import styles from "./components/header.module.css";
-
-function LogoHVU() {
-    return (
-        <>
-        <img src='./layouts/hvulogo.jpg' alt='teste'/>
-        
-        </>
-
-    );
-}
-
-function BotaoCadastro() {
-    return (
-        <button className={styles.botaocadastro}>
-            Cadastre-se
-        </button>
-    );
-}
-
-function BotaoLogin() {
-    return (
-        <button className={styles.botaologin}>
-            <div>
-            Login
-            </div>
-        </button>
-    );
-}
+import {CadastroButton} from './cadastro_button';
+import {LoginButton} from './login_button';
+import {LogoHVU} from './logo_hvu';
 
 export default function Header() {
     return (
@@ -40,8 +14,8 @@ export default function Header() {
             </div>
 
             <div className={styles.box_buttons} >
-                <BotaoCadastro />
-                <BotaoLogin />
+                <CadastroButton />
+                <LoginButton />
             </div>
                 
         </header>
