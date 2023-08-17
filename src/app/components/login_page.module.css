@@ -1,0 +1,30 @@
+.login_page {
+    border: 1px solid black;
+    width: 1200px;
+    height: 494px;
+    top: 265px;
+    left: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.texto {
+    border: 1px solid black;
+    width: 519px;
+    height: 200px;
+    /*gap: 32px;
+    display: flex;*/
+    
+
+}
+
+.login_page {
+    border: 1px solid black;
+    width: 566px;
+    height: 494px;
+    /*padding: 40px 24px 40px 24px;
+    border-radius: 25px;
+    gap: 32px;
+    display: flex;*/
+}
