@@ -6,6 +6,8 @@ import Header from './header'
 import LoginPage from './login_page';
 import {Text} from './texto_login_page';
 import {LoginFormulario} from './login_forms';
+import Link from 'next/link';
+import Pagecadastrotutor from "./cadastrotutor";
 
 export default function Home() {
   return (
