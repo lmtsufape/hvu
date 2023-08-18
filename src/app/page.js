@@ -4,12 +4,13 @@ import './Footer'
 import Footer from './Footer'
 import Header from './header'
 import {LoginFormulario} from './login_forms';
+import { CampoPesquisa } from "./campo_pesquisa";
 
 export default function Home() {
   return (
     <div>
       <Header />
-      <LoginFormulario />
+      <CampoPesquisa />
       <Footer/>
     </div>
   )
