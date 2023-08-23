@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
 import styles from "../src/app/components/cadastrotutor.module.css"
 import Header from "../src/app/header";
-import Footer from "../src/app/Footer";
+import Footer from "../src/app/components/Footer";
 
 
 function pagecadastrotutor(){

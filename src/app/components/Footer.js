@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './components/footer.module.css'
+import styles from '../components/footer.module.css'
 import Image from 'next/image'
 
 function Footer() {

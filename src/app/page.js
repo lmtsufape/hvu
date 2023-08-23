@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
-import './Footer'
-import Footer from './Footer'
+import './components/Footer'
+import Footer from './components/Footer'
 import Header from './header'
 import {LoginFormulario} from './login_forms';
 import { CampoPesquisa } from "./campo_pesquisa";
