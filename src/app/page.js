@@ -3,17 +3,17 @@ import Image from 'next/image'
 import './Footer'
 import Footer from './Footer'
 import Header from './header'
-import LoginPage from './login_page';
-import {Text} from './texto_login_page';
 import {LoginFormulario} from './login_forms';
+import { CampoPesquisa } from "./campo_pesquisa";
 import Link from 'next/link';
 import Pagecadastrotutor from "./cadastrotutor";
+
 
 export default function Home() {
   return (
     <div>
       <Header />
-      <LoginFormulario />
+      <CampoPesquisa />
       <Footer/>
     </div>
   )

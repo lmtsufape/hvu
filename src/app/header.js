@@ -1,8 +1,8 @@
 import React from 'react';
 import Image from "next/image";
 import styles from "./components/header.module.css";
-import {CadastroGreenButton} from './green_button';
-import {LoginButton} from './login_button';
+import {LoginGreenButton} from './green_button';
+import {CadastrolWhiteButton} from './white_button';
 import {LogoHVU} from './logo_hvu';
 
 export default function Header() {
@@ -14,8 +14,8 @@ export default function Header() {
             </div>
 
             <div className={styles.box_buttons} >
-                <CadastroGreenButton />
-                <LoginButton />
+                <CadastrolWhiteButton />
+                <LoginGreenButton />
             </div>
                 
         </header>
