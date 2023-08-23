@@ -1,28 +1,35 @@
 .backgroundfooter{
     background-color: #327053;
-    Height: 150.78px;
+    Height: 100.78px;
+    margin-top: 15px;
     /*Top: 926.22px*/
 }
 .footercontainer{
     display: flex;
     justify-content: space-around;
     align-items: center;
+    min-height: 10%;
+    min-width: 10%;
 }
 .logohvu{
     flex: 0;
     margin-left: 120px;
-    margin-top: 30.89px;
+    margin-top: 1px;
+    min-height: 10%;
+    min-width: 10%;
 }
 .logosufapelmts{
     flex: 1;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 1px;
     gap: 0;
     justify-content: center;
 }
 .redessociais{
     display: flex;
     gap: 3px;
-    margin-top: 25px;
+    margin-top: 1px;
     margin-right: 120px;
+    min-height: 10%;
+    min-width: 10%;
 }

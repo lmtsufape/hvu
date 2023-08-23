@@ -13,10 +13,10 @@ function Footer() {
             </div>
                 <div  className={styles.logosufapelmts}>
                     <a href="http://ufape.edu.br/" target="blank" rel="noopener">
-                        <Image src="/layouts/UFAPElogo.svg" alt="Logo" width={182.31} height={80} />
+                        <Image src="/layouts/UFAPElogo.svg" alt="Logo" width={122.31} height={80} />
                     </a>
                     <a href="http://lmts.ufape.edu.br" target="blank" rel="noopener">
-                        <Image src="/layouts/LMTSlogo.svg" alt="Logo" width={182.31} height={65} />
+                        <Image src="/layouts/LMTSlogo.svg" alt="Logo" width={122.31} height={65} />
                     </a>
                 </div>
                 <div className={styles.redessociais}>

@@ -1,10 +1,19 @@
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
+import styles from "../src/app/components/cadastrotutor.module.css"
+import Header from "../src/app/header";
+import Footer from "../src/app/Footer";
 
 
 function pagecadastrotutor(){
     return(
         <div>
+            <Header/>
+        <div>
+            <h1 className={styles.titulocadastro}>Cadastro</h1>
+        </div>
+        <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
             <div class="mb-3">
                  <label for="name" class="form-label">Nome Completo</label>
                     <input type="name" class="form-control" id="nameRegister" placeholder="Insira o nome completo"></input>
@@ -30,10 +39,12 @@ function pagecadastrotutor(){
                     <input type="phone" class="form-control" id="phoneRegister" placeholder="(xx) xxxxx-xxxx"></input>
             </div>
             <div>
-            <button type="button" class="btn btn-success">Continuar</button>
+            <button type="submit" class="btn btn-success">Continuar</button>
             </div>
-</div>
+                </div>
             </div>
+        </div>
+        <Footer/>
         </div>
     )
 }
