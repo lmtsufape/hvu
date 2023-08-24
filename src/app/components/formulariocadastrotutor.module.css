@@ -8,10 +8,10 @@
   
   .boxcadastrotutor {
     display: block;
-    width: 80%; /* Em vez de 100vh, use 80% para ocupar 80% da largura da janela */
+    width: 80%;
     max-width: 1500px;
-    min-width: 300px; /* Defina um valor máximo para evitar que a caixa fique muito larga */
-    height: auto; /* A altura se ajustará automaticamente ao conteúdo */
+    min-width: 300px;
+    height: auto; 
     border: 1px;
     background-color: white;
     padding: 30px;
@@ -25,5 +25,13 @@
     text-align: center;
     font-size: 24px;
     font-weight: bold;
+    color: black ;
 }
+.continuarbotao{
+  margin-top: 20px;
+  margin-bottom: -10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
   
