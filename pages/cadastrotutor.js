@@ -14,6 +14,13 @@ function pagecadastrotutor(){
         <div>
             <h1 className={styles.titulocadastro}>Cadastro</h1>
         </div>
+        <div>
+            <ul className={styles.barradeprogresso}>
+                <h1 className={`${styles.textobarradeprogresso} ${styles.corverdedabarra}`}>1.Dados do tutor</h1>
+                <h1 className={`${styles.textobarradeprogresso} ${styles.textodocentro}`}>2.Endereço</h1>
+                <h1 className={styles.textobarradeprogresso}>3.Dados do animal</h1>
+            </ul>
+        </div>
         <FormularioCadastroTutor/>
         <Footer/>
         </div>
