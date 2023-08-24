@@ -5,7 +5,7 @@ import Image from "next/image";
 export function CampoPesquisa() {
     return (
         <form class={styles.busca}>
-            <input class={styles.texto_busca} placeholder="Buscar animal"/>
+            <input type="search" class={styles.texto_busca} placeholder="Buscar animal"/>
             <button class={styles.button_busca}>
                 <img src='./layouts/icone_busca.svg' alt="Lupa de busca"/> 
             </button>
