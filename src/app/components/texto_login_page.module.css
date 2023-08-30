@@ -1,14 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
 .texto {
-    border: 1px solid black;
     width: 519px;
     height: 200px;
     gap: 32px;
 }
 
 .titulo {
-    border: 1px solid black;
     width: 519px;
     height: 96px;
     color: #327053;
@@ -22,7 +20,6 @@
 }
 
 .paragrafo {
-    border: 1px solid black;
     width: 519px;
     height: 72px;
     font-family: 'Poppins', sans-serif;

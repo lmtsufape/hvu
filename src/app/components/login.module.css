@@ -1,0 +1,50 @@
+.text_box {
+
+}
+
+.form_box {
+    width: 566px;
+    height: 494px;
+    padding: 40px 24px 40px 24px;
+    border-radius: 25px;
+    gap: 32px;
+    box-shadow: 0px 0px 7px 0px #00000026;
+    align-items: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.form_box h1 {
+    font-family: Poppins;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.form {
+    width: 200px;
+    height: 200px;
+    border: 1px solid red;
+}
+
+.button_box {
+
+}
+
+.button_esqueceu {
+    border: none;
+    outline: none;
+}
+
+.button_entrar {
+    width: 518px;
+    height: 48px;
+}
+
+.button_criar {
+    border: none;
+    outline: none;
+}

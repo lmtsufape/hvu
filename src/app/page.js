@@ -7,6 +7,7 @@ import {LoginFormulario} from './login_forms';
 import { CampoPesquisa } from "./campo_pesquisa";
 import Link from 'next/link';
 import Pagecadastrotutor from "../../pages/cadastrotutor";
+import Pagelogin from "../../pages/login"
 
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
       <CampoPesquisa />
       <Footer/>
       <Pagecadastrotutor/>
+      <Pagelogin />
     </div>
   )
 }

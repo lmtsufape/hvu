@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './components/texto_login_page.module.css'
 
-export function Text() {
+export default function Text() {
     return (
         <div className={styles.texto}>
             <h1 className={styles.titulo}>Hospital Veterinário Universitário</h1>
