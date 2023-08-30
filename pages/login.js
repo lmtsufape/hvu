@@ -23,24 +23,27 @@ function pageLogin() {
             <div class={styles.form_box}>
                 <h1>Entrar</h1>
 
-                <form>
+                <form class={styles.form}>
                     <div class="form-group">
                         <label for="exampleInputEmail1">E-mail</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Seu email"/>
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Seu email" required/>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Senha</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Senha"/>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Senha" required/>
                     </div>
                     <button type="button" class="btn btn-link">Esqueceu a senha?</button>
-                    <button type="button" class="btn btn-primary">Entrar</button>
-                    <h6>Não possui conta? <button type="button" class="btn btn-link">Crie agora</button> </h6>
                 </form>
 
-                
+                <div class={styles.button_box}>
+                    <button type="button" class="btn btn-primary" id={styles.entrar_button}>Entrar</button>
+                    <div class={styles.criar_button_box}>
+                        <h6>Não possui conta? </h6>
+                        <button type="button" class="btn btn-link">Crie agora</button>
+                    </div>
+                </div>
 
             </div>
-
         </div>
 
         <div>
