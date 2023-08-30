@@ -5,7 +5,8 @@ import {LoginGreenButton} from './green_button';
 import {CadastrolWhiteButton} from './white_button';
 import {LogoHVU} from './logo_hvu';
 
-export default function Header() {
+//Header com botão de login e cadastro
+export function Header01() {
     return (
         <header className={styles.header}>
             
@@ -16,6 +17,60 @@ export default function Header() {
             <div className={styles.box_buttons} >
                 <CadastrolWhiteButton />
                 <LoginGreenButton />
+            </div>
+                
+        </header>
+    );    
+  }
+
+  //Header com botão de Home e Sistema
+  export function Header02() {
+    return (
+        <header className={styles.header}>
+            
+            <div className={styles.boxlogo}>
+                <LogoHVU />
+            </div>
+
+            <div className={styles.box_buttons} >
+                <button type="button" class="btn btn-link" id={styles.black_button_decoration}>Home</button>
+                <button type="button" class="btn btn-link" id={styles.black_button_decoration}>Sistema</button>
+            </div>
+                
+        </header>
+    );    
+  }
+
+  //Header com botão de login
+  export function Header03() {
+    return (
+        <header className={styles.header}>
+            
+            <div className={styles.boxlogo}>
+                <LogoHVU />
+            </div>
+
+            <div className={styles.box_buttons} >
+                <button type="button" class="btn btn-link">
+                    <img src='./layouts/icone_perfil.svg'/>
+                </button>
+            </div>
+                
+        </header>
+    );    
+  }
+
+  //Header com ícone de perfil
+  export function Header04() {
+    return (
+        <header className={styles.header}>
+            
+            <div className={styles.boxlogo}>
+                <LogoHVU />
+            </div>
+
+            <div className={styles.box_buttons} >
+                <button type="button" class="btn btn-outline-success" id={styles.login_white_button}>Login</button>
             </div>
                 
         </header>

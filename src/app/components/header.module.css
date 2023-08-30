@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
 .header {
     width: 1,440px;
@@ -8,15 +8,50 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 2px solid#ECECEC;
 }
 
-.box_buttons{
-    width: 400px;
-    height: 50px;
+.box_buttons {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
 }
 
+#black_button_decoration {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    text-decoration: none;
+    color: black;
+}
+
+#black_button_decoration:hover {
+    color: black;
+    text-decoration: underline;
+}
+
+#login_white_button {
+    width: 180px;
+    height: 48px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #327053;
+    gap: 1px;
+    color: #327053;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-decoration: none;
+}
+
+#login_white_button:hover {
+    background-color: #327053;
+    color: white;
+}
 
 
