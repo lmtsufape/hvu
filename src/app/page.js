@@ -10,11 +10,12 @@ import { Header01 } from "./header";
 import { Header02 } from "./header";
 import { Header03 } from "./header";
 import { Header04 } from "./header";
+import Text from "./texto_login_page";
 
 export default function Home() {
   return (
     <div>
-      < Pagelogin />
+      <Pagelogin />
     </div>
   )
 }
