@@ -14,7 +14,8 @@
 .box_buttons {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-items: space-evenly;
+    gap: 32px;
 }
 
 #black_button_decoration {
@@ -33,7 +34,7 @@
     text-decoration: underline;
 }
 
-#login_white_button {
+#white_button {
     width: 180px;
     height: 48px;
     padding: 10px;
@@ -49,9 +50,26 @@
     text-decoration: none;
 }
 
-#login_white_button:hover {
-    background-color: #327053;
-    color: white;
+#white_button:hover {
+    background-color: #e5faf0;
 }
 
+#green_button {
+    width: 180px;
+    height: 48px;
+    padding: 10px;
+    border-radius: 10px;
+    gap: 1px;
+    color: white;
+    background-color: #327053;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-decoration: none;
+}
 
+#green_button:hover {
+    background-color: #5b977b;
+}

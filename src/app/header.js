@@ -15,8 +15,8 @@ export function Header01() {
             </div>
 
             <div className={styles.box_buttons} >
-                <CadastrolWhiteButton />
-                <LoginGreenButton />
+            <button type="button" class="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
+            <button type="button" class="btn btn-outline-success" id={styles.green_button}>Login</button>
             </div>
                 
         </header>
@@ -70,7 +70,7 @@ export function Header01() {
             </div>
 
             <div className={styles.box_buttons} >
-                <button type="button" class="btn btn-outline-success" id={styles.login_white_button}>Login</button>
+                <button type="button" class="btn btn-outline-success" id={styles.white_button}>Login</button>
             </div>
                 
         </header>
