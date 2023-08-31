@@ -2,7 +2,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
 import './components/Footer'
 import Footer from './components/Footer'
-import {LoginFormulario} from './login_forms';
 import { CampoPesquisa } from "./campo_pesquisa";
 import Link from 'next/link';
 import Pagecadastrotutor from "../../pages/cadastrotutor";
@@ -15,7 +14,7 @@ import { Header04 } from "./header";
 export default function Home() {
   return (
     <div>
-      < Header01 />
+      < Pagelogin />
     </div>
   )
 }
