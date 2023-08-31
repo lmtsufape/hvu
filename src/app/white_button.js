@@ -5,6 +5,7 @@ const text_white_button = {
     login: 'Login',
     adicionar_animal: 'Adicionar animal',
     cadastro: "Cadastre-se",
+    voltar: "Voltar",
 };
 
 export function LoginWhiteButton() {
@@ -27,6 +28,14 @@ export function CadastrolWhiteButton() {
     return (
         <button className={styles.white_button}>
             {text_white_button.cadastro}
+        </button>
+    );
+}
+
+export function VoltarWhiteButton() {
+    return (
+        <button className={styles.white_button}>
+            {text_white_button.voltar}
         </button>
     );
 }

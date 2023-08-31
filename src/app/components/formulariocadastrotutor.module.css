@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+.container {
+    justify-content: center;
+    align-items: center;
+
+  }
+  
+  .boxcadastrotutor {
+    display: block;
+    width: 80%;
+    max-width: 1500px;
+    min-width: 300px;
+    height: auto; 
+    border: 1px;
+    background-color: white;
+    padding: 30px;
+    box-sizing: border-box;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    margin: auto;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    
+  }
+.titulocadastro{
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: black ;
+    font-family: 'Poppins', sans-serif;
+}
+.continuarbotao{
+  margin-top: 20px;
+  margin-bottom: -10px;
+  display: flex;
+  justify-content: flex-end;
+}
+.barradeprogresso{
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  vertical-align: middle;
+  color: #d3d3d3;
+ 
+}
+.textobarradeprogresso{
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  width: 40vb;
+  height: 5vh;
+  border-bottom: 0.5vh solid;
+  font-size: 15px;
+  border-radius: 2px;
+  margin-left: -23px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+.textodocentro{
+  margin-left: 10vh;
+  margin-right: 10vh;
+}
+.corverdedabarra{
+  color: #327053;
+}
+
+  
