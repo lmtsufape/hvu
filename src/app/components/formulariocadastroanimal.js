@@ -2,15 +2,15 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
 import styles from "../components/formulariocadastrotutor.module.css";
-import { ContinuarGreenButton } from "../green_button";
+import { FinalizarGreenButton } from "../green_button";
 import { VoltarWhiteButton } from "../white_button";
 
 function FormularioCadastroAnimal(){
     return (
         <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
             <div class="mb-3">
-                 <label for="rua" class="form-label">Nome Animal</label>
-                    <input type="text" class="form-control" id="streetRegister" placeholder="Ex: Avenida Bom Pastor"></input>
+                 <label for="rua" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="streetRegister" placeholder="Insira o nome do animal"></input>
             </div>
             <div class="mb-3">
                 <label for="bairro" class="form-label">Bairro</label>
@@ -30,7 +30,7 @@ function FormularioCadastroAnimal(){
             </div>
             <div className={styles.continuarbotao}>
                 <VoltarWhiteButton/>
-                <ContinuarGreenButton/>
+                <FinalizarGreenButton/>
             </div>
                 </div>
             </div>

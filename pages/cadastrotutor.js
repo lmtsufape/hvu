@@ -1,7 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
-import styles from "../src/app/components/cadastrotutor.module.css"
 import {Header04} from "../src/app/header";
 import styles from "../src/app/components/formulariocadastrotutor.module.css"
 import Footer from "../src/app/components/Footer";
