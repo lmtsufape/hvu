@@ -19,14 +19,16 @@ function FormularioCadastroEndereco(){
             <div class="mb-3">
                 <label for="numero" class="form-label">Número</label>
                     <input type="text" class="form-control" id="numberRegister" placeholder="Ex: 123"></input>
+            <div className={styles.espacodosforms}>
             <div class="row">
-            <div class="col">
+            <div class="col ">
                 <label for="estado" class="form-label">Estado</label>
                     <input type="text" class="form-control" id="stateRegister" placeholder="Ex: Pernambuco" aria-label=""></input>
             </div>
             <div class="col">
                 <label for="cidade" class="form-label">Cidade</label>
                     <input type="text" class="form-control" id="cityRegister" placeholder="Ex: Garanhuns" aria-label=""></input>
+            </div>
             </div>
             <div className={styles.continuarbotao}>
                 <VoltarWhiteButton/>

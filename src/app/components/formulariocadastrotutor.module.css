@@ -31,10 +31,11 @@
     font-family: 'Poppins', sans-serif;
 }
 .continuarbotao{
-  margin-top: 20px;
-  margin-bottom: -10px;
+  margin-top: 50px;
+  margin-bottom: 0px;
   display: flex;
   justify-content: flex-end;
+  gap: 3%;
 }
 .barradeprogresso{
   display: flex;
@@ -66,6 +67,9 @@
 }
 .corverdedabarra{
   color: #327053;
+}
+.espacodosforms{
+  margin-top: 10px;
 }
 
   
