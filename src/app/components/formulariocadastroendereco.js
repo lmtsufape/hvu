@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
 import styles from "../components/formulariocadastrotutor.module.css";
@@ -6,28 +6,82 @@ import { ContinuarGreenButton } from "../green_button";
 import { VoltarWhiteButton } from "../white_button";
 
 function FormularioCadastroEndereco(){
+    const [formularioEndereco, setFormularioEndereco] = useState({
+        rua: "",
+        bairro: "",
+        numero: "",
+        estado: "",
+        cidade: "",
+    });
+
+    function handleInputChange(event) {
+        const { name, value } = event.target;
+        setFormularioEndereco({...formularioEndereco, [name]: value });
+    };
+
+    function handleSubmit(event){
+        event.preventDefault();
+        console.log(formularioEndereco)
+    }
+
     return (
         <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
+            <form onSubmit={handleSubmit}>
             <div class="mb-3">
                  <label for="rua" class="form-label">Rua</label>
-                    <input type="text" class="form-control" id="streetRegister" placeholder="Ex: Avenida Bom Pastor"></input>
+                    <input type="text" 
+                    class="form-control" 
+                    name="rua"
+                    placeholder="Ex: Avenida Bom Pastor"
+                    value={formularioEndereco.rua}
+                   onChange={handleInputChange}>
+                   </input>
+
             </div>
             <div class="mb-3">
                 <label for="bairro" class="form-label">Bairro</label>
-                    <input type="text" class="form-control" id="neighborhoodRegister" placeholder="Ex: Centro"></input>
+                    <input type="text" 
+                    class="form-control" 
+                    name="bairro" 
+                    placeholder="Ex: Centro"
+                    value={formularioEndereco.bairro}
+                   onChange={handleInputChange}>
+
+                    </input>
             </div>
             <div class="mb-3">
                 <label for="numero" class="form-label">Número</label>
-                    <input type="text" class="form-control" id="numberRegister" placeholder="Ex: 123"></input>
+                    <input type="text" 
+                    class="form-control" 
+                    name="numero"
+                    placeholder="Ex: 123"
+                    value={formularioEndereco.numero}
+                   onChange={handleInputChange}>
+
+                   </input>
+            
             <div className={styles.espacodosforms}>
             <div class="row">
             <div class="col ">
                 <label for="estado" class="form-label">Estado</label>
-                    <input type="text" class="form-control" id="stateRegister" placeholder="Ex: Pernambuco" aria-label=""></input>
+                    <input type="text" 
+                    class="form-control" 
+                    name="estado"
+                    placeholder="Ex: Pernambuco" 
+                    value={formularioEndereco.estado}
+                   onChange={handleInputChange}>
+
+                    </input>
             </div>
             <div class="col">
                 <label for="cidade" class="form-label">Cidade</label>
-                    <input type="text" class="form-control" id="cityRegister" placeholder="Ex: Garanhuns" aria-label=""></input>
+                    <input type="text" 
+                    class="form-control" 
+                    name="cidade"
+                    placeholder="Ex: Garanhuns" 
+                    value={formularioEndereco.cidade}
+                   onChange={handleInputChange}>
+                    </input>
             </div>
             </div>
             <div className={styles.continuarbotao}>
@@ -36,6 +90,7 @@ function FormularioCadastroEndereco(){
             </div>
                 </div>
             </div>
+            </form>
         </div>
     )
 }

@@ -6,80 +6,129 @@ import { FinalizarGreenButton } from "../green_button";
 import { VoltarWhiteButton } from "../white_button";
 
 function FormularioCadastroAnimal(){
-    const [nome, setNome] = useState('');
-    const [nascimento, setNascimento] = useState('');
-    const [especie, setEspecie] = useState('');
-    const [raca, setRaca] = useState('');
-    const [peso, setPeso] = useState('');
-    const [porte, setPorte] = useState('');
-    const [sexo, setSexo] = useState('');
+    const [formularioAnimal, setFormularioAnimal] = useState({
+      nome: "",
+      nascimento: "",
+      especie: "",
+      raca: "",
+      peso: "",
+      sexo: "",
+      porte: "",
+    });
 
-    return (
-        <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
-            <div class="row">
+    function handleInputChange(event) {
+      const { name, value } = event.target;
+      setFormularioAnimal({...formularioAnimal, [name]: value });
+    };
 
-  <div class="col">
-  <label for="nome" class="form-label">Nome</label>
-    <input 
-    type="text" 
-    class="form-control" 
-    placeholder="Insira o nome do animal" 
-    aria-label="First name">
-      </input>
-  </div>
-  <div class="col">
-  <label for="nascimento" class="form-label">Data de Nascimento</label>
-    <input type="text" class="form-control" placeholder="Ex: 12/12/2012" aria-label=""></input>
-  </div>
-</div>
+    function handleSubmit(event) {
+      event.preventDefault();
+      console.log(formularioAnimal);
+    };
 
-<div className={styles.espacodosforms}>
-<div class="row">
-  <div class="col">
-  <label for="especie" class="form-label">Espécie</label>
-    <input type="text" class="form-control" placeholder="Insira a espécie do animal" aria-label=""></input>
-  </div>
-  <div class="col">
-  <label for="raca" class="form-label">Raça</label>
-    <input type="text" class="form-control" placeholder="Insira a raça do animal" aria-label=""></input>
-  </div>
-</div>
-</div>
+ return (
+    <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
+      <form onSubmit={handleSubmit}>
+        <div className="row">
+          <div className="col">
+            <label htmlFor="nome" className="form-label">Nome</label>
+                <input 
+                   type="text" 
+                   className="form-control" 
+                   name="nome"
+                   placeholder="Insira o nome do animal" 
+                   value={formularioAnimal.nome}
+                   onChange={handleInputChange}>
+                </input>
+          </div>
+          <div className="col">
+            <label htmlFor="nascimento" className="form-label">Data de Nascimento</label>
+                <input type="text" 
+                  className="form-control" 
+                  name="nascimento"
+                  placeholder="Ex: 12/12/2012"
+                  value={formularioAnimal.nascimento}
+                  onChange={handleInputChange}>
+                </input>
+            </div>
+          </div>
 
-<div className={styles.espacodosforms}></div>
-<div class="row">
-  <div class="col">
-  <label for="peso" class="form-label">Peso</label>
-    <input type="text" class="form-control" placeholder="Digite o peso" aria-label="Digite o peso"></input>
-  </div>
-  <div class="col">
-  <label for="porte" class="form-label">Porte</label>
-  <select class="form-select" aria-label="Selecione o porte do animal" placeholder="Selecione o porte do animal">
-  <option selected>Selecione o porte do animal</option>
-  <option value="1">Pequeno</option>
-  <option value="2">Médio</option>
-  <option value="3">Grande</option>
-  <option value="4">Gigante</option>
-</select>
-  </div>
-  <div class="col">
-  <label for="sexo" class="form-label">Sexo</label>
-  <select class="form-select" aria-label="Selecione o sexo do animal">
-  <option selected>Selecione o sexo do animal</option>
-  <option value="1">Macho</option>
-  <option value="2">Fêmea</option>
-</select>
-  </div>
-</div>
+    <div className={styles.espacodosforms}>
+      <div className="row">
+        <div className="col">
+          <label htmlFor="especie" className="form-label">Espécie</label>
+            <input type="text" 
+              className="form-control" 
+              name="especie"
+              placeholder="Insira a espécie do animal" 
+              value={formularioAnimal.especie}
+              onChange={handleInputChange}>
+
+            </input>
+          </div>
+        <div className="col">
+          <label htmlFor="raca" className="form-label">Raça</label>
+            <input type="text" 
+              className="form-control" 
+              name="raca"
+              placeholder="Insira a raça do animal" 
+              value={formularioAnimal.raca}
+              onChange={handleInputChange}>
+            </input>
+        </div>
+      </div>
+    </div>
+
+    <div className={styles.espacodosforms}></div>
+      <div className="row">
+        <div className="col">
+          <label htmlFor="peso" className="form-label">Peso</label>
+            <input type="text" 
+              className="form-control" 
+              name="peso"
+              placeholder="Digite o peso" 
+              value={formularioAnimal.peso}
+              onChange={handleInputChange}>
+            </input>
+          </div>
+
+        <div className="col">
+          <label htmlFor="porte" className="form-label">Porte</label>
+            <select className="form-select" 
+              name="porte"
+              aria-label="Selecione o porte do animal" 
+              value={formularioAnimal.porte}
+              onChange={handleInputChange}>
+                <option value="">Selecione o porte do animal</option>
+                <option value="pequeno">Pequeno</option>
+                <option value="medio">Médio</option>
+                <option value="grande">Grande</option>
+                <option value="gigante">Gigante</option>
+            </select>
+        </div>
+        <div className="col">
+          <label htmlFor="sexo" className="form-label">Sexo</label>
+            <select className="form-select" 
+              name="sexo"
+              aria-label="Selecione o sexo do animal"
+              value={formularioAnimal.sexo}
+              onChange={handleInputChange}>
+                <option value="">Selecione o sexo do animal</option>
+                <option value="macho">Macho</option>
+                <option value="femea">Fêmea</option>
+            </select>
+        </div>
+      </div>
 
             
 
-            <div className={styles.continuarbotao}>
-                <VoltarWhiteButton/>
-                <FinalizarGreenButton/>
-            </div>
-        </div>
+      <div className={styles.continuarbotao}>
+        <VoltarWhiteButton/>
+          <FinalizarGreenButton/>
+      </div>
+    </form>
+  </div>
             
     )
 }
-export default FormularioCadastroAnimal
+export default FormularioCadastroAnimal;
