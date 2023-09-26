@@ -4,6 +4,8 @@ import Image from 'next/image'
 import styles from "../components/formulariocadastrotutor.module.css";
 import { ContinuarGreenButton } from "../green_button";
 import { VoltarWhiteButton } from "../white_button";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 function FormularioCadastroEndereco(){
     const [formularioEndereco, setFormularioEndereco] = useState({
@@ -14,6 +16,8 @@ function FormularioCadastroEndereco(){
         cidade: "",
     });
 
+    const router = useRouter();
+
     function handleInputChange(event) {
         const { name, value } = event.target;
         setFormularioEndereco({...formularioEndereco, [name]: value });
@@ -21,8 +25,18 @@ function FormularioCadastroEndereco(){
 
     function handleSubmit(event){
         event.preventDefault();
-        console.log(formularioEndereco)
-    }
+        
+        axios.post("http://localhost:3000/tutor", formularioEndereco) //link para o back
+        .then(response =>{
+            console.log(response.data);
+
+            router.push('../pages/cadastroanimal');
+        })
+
+        .catch(error => {
+            console.log('Erro ao enviar os dados para o servidor:', error);
+        });
+    };
 
     return (
         <div className={`${styles.boxcadastrotutor} ${styles.container}`}>

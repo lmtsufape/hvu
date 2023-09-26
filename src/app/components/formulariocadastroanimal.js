@@ -4,6 +4,9 @@ import Image from 'next/image'
 import styles from "../components/formulariocadastrotutor.module.css";
 import { FinalizarGreenButton } from "../green_button";
 import { VoltarWhiteButton } from "../white_button";
+import axios from "axios";
+import { useRouter } from "next/router";
+
 
 function FormularioCadastroAnimal(){
     const [formularioAnimal, setFormularioAnimal] = useState({
@@ -16,6 +19,8 @@ function FormularioCadastroAnimal(){
       porte: "",
     });
 
+    const router = useRouter();
+
     function handleInputChange(event) {
       const { name, value } = event.target;
       setFormularioAnimal({...formularioAnimal, [name]: value });
@@ -23,7 +28,17 @@ function FormularioCadastroAnimal(){
 
     function handleSubmit(event) {
       event.preventDefault();
-      console.log(formularioAnimal);
+      
+      axios.post("http://localhost:3000/tutor", formularioAnimal) //substituir o localhost pelo caminho corerto do back
+        .then(response => {
+            console.log(response.data);
+
+            router.push('../pages/login');
+        })
+
+        .catch(error => {
+            console.error('Erro ao enviar os dados para o servidor:', error);
+        });
     };
 
  return (

@@ -3,6 +3,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
 import styles from "../components/formulariocadastrotutor.module.css";
 import { ContinuarGreenButton } from "../green_button";
+import axios from "axios";
+import { useRouter } from "next/router";
+
 
 function FormularioCadastroTutor(){
     const [formularioTutor, setFormularioTutor] = useState({
@@ -14,6 +17,8 @@ function FormularioCadastroTutor(){
         telefone: "",
     });
 
+    const router = useRouter();
+
     function handleInputChange(event){
         const { name, value } = event.target;
         setFormularioTutor({...formularioTutor, [name]: value});
@@ -21,7 +26,17 @@ function FormularioCadastroTutor(){
 
     function handleSubmit(event){
         event.preventDefault();
-        console.log(formularioTutor);
+        
+        axios.post("http://localhost:3000/tutor", formularioTutor) //substituir o localhost pelo caminho corerto do back
+        .then(response => {
+            console.log(response.data);
+
+            router.push('../pages/cadastroendereco');
+        })
+
+        .catch(error => {
+            console.error('Erro ao enviar os dados para o servidor:', error);
+        });
     };
 
     return (
