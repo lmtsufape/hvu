@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Image from 'next/image'
 import styles from "../components/formulariocadastrotutor.module.css";
 import { ContinuarGreenButton } from "../green_button";
 import axios from "axios";
