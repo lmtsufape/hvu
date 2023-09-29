@@ -1,7 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image';
-import Header from '../src/app/header';
+import {Header02} from '../src/app/header';
 import Text from '../src/app/texto_login_page';
 import Footer from "../src/app/components/Footer";
 import styles from "../src/app/components/login.module.css"
@@ -12,7 +12,7 @@ function pageLogin() {
         <>
 
         <div>
-            <Header />
+            <Header02 />
         </div>
         <div class={styles.container}>
 

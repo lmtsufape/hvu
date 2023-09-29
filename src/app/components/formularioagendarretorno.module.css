@@ -6,7 +6,7 @@
 
   }
   
-  .boxcadastrotutor {
+  .boxagendarconsulta {
     display: block;
     width: 80%;
     max-width: 1500px;
@@ -31,10 +31,10 @@
     font-family: 'Poppins', sans-serif;
 }
 .continuarbotao{
-  display: flex;
-  justify-content: flex-end;
   margin-top: 50px;
   margin-bottom: 0px;
+  display: flex;
+  justify-content: flex-end;
   gap: 3%;
 }
 .barradeprogresso{
@@ -64,9 +64,6 @@
 .textodocentro{
   margin-left: 10vh;
   margin-right: 10vh;
-}
-.corverdedabarra{
-  color: #327053;
 }
 
 .espacodosforms{

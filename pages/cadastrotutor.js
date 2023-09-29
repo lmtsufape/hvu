@@ -2,7 +2,7 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
 import styles from "../src/app/components/formulariocadastrotutor.module.css"
-import Header from "../src/app/header";
+import {Header04} from "../src/app/header";
 import Footer from "../src/app/components/Footer";
 import FormularioCadastroTutor from "@/app/components/formulariocadastrotutor";
 
@@ -10,7 +10,7 @@ import FormularioCadastroTutor from "@/app/components/formulariocadastrotutor";
 function PageCadastroTutor(){
     return(
         <div>
-            <Header/>
+            <Header04/>
         <div>
             <h1 className={styles.titulocadastro}>Cadastro</h1>
         </div>
