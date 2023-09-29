@@ -12,7 +12,7 @@ import {SegundaHeader02} from "./another_header";
 export default function Home() {
   return (
     <div>
-      <SegundaHeader02 />
+      <Pagelogin />
     </div>
   )
 }
