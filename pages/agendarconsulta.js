@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "../src/app/components/formulariocadastrotutor.module.css"
+import styles from "../src/app/components/formularioagendarretorno.module.css"
 import {Header04} from "../src/app/header";
 import Footer from "../src/app/components/Footer";
 import FormularioAgendarRetorno from "../src/app/components/formularioagendarretorno"

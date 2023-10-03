@@ -1,5 +1,13 @@
+"use client";
+
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import styles from "../components/formulariocadastrotutor.module.css";
+import { ContinuarGreenButton } from "../green_button";
+import { VoltarWhiteButton } from "../white_button";
 import axios from "axios";
 import { useRouter } from "next/router";
+
 
 function FormularioCadastroEndereco(){
     const [formularioEndereco, setFormularioEndereco] = useState({

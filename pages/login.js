@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image';
@@ -9,7 +11,7 @@ import {EntrarGreenButton} from '../src/app/green_button'
 
 function pageLogin() {
 
-    useClient();
+    
 
     const [login, setLogin] = useState('');
     const [senha, setSenha] = useState('');
