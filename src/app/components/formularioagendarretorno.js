@@ -3,21 +3,55 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../components/formularioagendarretorno.module.css"
 import { FinalizarGreenButton } from "../green_button";
 import { VoltarWhiteButton } from "../white_button";
-import Calendario from "./calendario";
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import ptBR from 'date-fns/locale/pt-BR';
 
 function AgendarConsulta(){
     const [agendarConsulta, setAgendarConsulta] = useState({
+      data: "",
+      horario: "",
+      especialidade: "",
+      paciente:"",
         
-    })
+    });
+
+    const [escolherData, setEscolherData] = useState(null);
+
+  function handleInputChange(event){
+    const { name, value } = event.target;
+    setAgendarConsulta({...agendarConsulta, [name]: value})
+  };
+  function handleDateChange(date){
+    setEscolherData(date);
+  }
+
+  function handleSubmit(event) {
+  event.preventDefault();
+  if (escolherData) {
+    const dataSemHorario = escolherData.toLocaleDateString("pt-BR");
+    setAgendarConsulta({ ...agendarConsulta, data: dataSemHorario });
+    console.log({ ...agendarConsulta, data: dataSemHorario });
+  }
+}
+
+ 
 
     return (
         <div className={`${styles.boxagendarconsulta} ${styles.container}`}>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="row">
             <div className="col">
               <label htmlFor="data" className="form-label">Data</label>
-                  <Calendario/>
+              <DatePicker
+        
+        dateFormat="dd/MM/yyyy"
+        className="form-control"
+        placeholderText="Ex: 13/07/2023"
+        locale={ptBR}
+        selected={escolherData}
+        onChange={handleDateChange}
+      />
                   
             </div>
             <div className="col">
@@ -25,7 +59,8 @@ function AgendarConsulta(){
               <select className="form-select" 
                 name="horario"
                 aria-label="Selecione o horário" 
-                
+                value={agendarConsulta.horario}
+                onChange={handleInputChange}
                 >
                   <option value="">Selecione o horário</option>
                   <option value="08h00">08h00min</option>
@@ -47,7 +82,8 @@ function AgendarConsulta(){
               <select className="form-select" 
                 name="especialidade"
                 aria-label="Selecione a especialidade" 
-                
+                value={agendarConsulta.especialidade}
+                onChange={handleInputChange}
                 >
                   <option value="">Selecione a especialidade</option>
                   <option value="acupuntura">Acupuntura</option>
