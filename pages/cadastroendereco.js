@@ -2,8 +2,8 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
 import styles from "../src/app/components/formulariocadastrotutor.module.css"
-import {Header04} from "../src/app/header";
-import Footer from "../src/app/components/Footer";
+import {Header04} from "../src/app/components/header/header";
+import Footer from "../src/app/components/footer/Footer";
 import FormularioCadastroEndereco from "@/app/components/formulariocadastroendereco";
 
 
