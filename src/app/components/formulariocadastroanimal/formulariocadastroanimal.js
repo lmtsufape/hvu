@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
-import styles from "../components/formulariocadastrotutor.module.css";
+import styles from "./formulariocadastrotutor.module.css";
 import { FinalizarGreenButton } from "../greenbutton/green_button";
 import { VoltarWhiteButton } from "../whitebutton/white_button";
 import axios from "axios";

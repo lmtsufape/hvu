@@ -1,13 +1,13 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./components/another_header.css"
+import styles from "./another_header.module.css"
 
 //Sem botão de relatório
 export function SegundaHeader01 () {
     return (
-        <div class="button_box">
-            <button type="button" class="btn btn-link" id="button_decoration">Agendamentos</button>
-            <button type="button" class="btn btn-link" id="button_decoration">Animais</button>
+        <div className={styles.button_box}>
+            <button type="button" className="btn btn-link" id={styles.button_decoration}>Agendamentos</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration}>Animais</button>
         </div>
     );
 }
@@ -15,10 +15,10 @@ export function SegundaHeader01 () {
 //Com botão de relatório
 export function SegundaHeader02 () {
     return (
-        <div class="button_box">
-            <button type="button" class="btn btn-link" id="button_decoration">Agendamentos</button>
-            <button type="button" class="btn btn-link" id="button_decoration">Animais</button>
-            <button type="button" class="btn btn-link" id="button_decoration">Relatórios</button>
+        <div className={styles.button_box}>
+            <button type="button" className="btn btn-link" id={styles.button_decoration}>Agendamentos</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration}>Animais</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration}>Relatórios</button>
         </div>
     );
 }

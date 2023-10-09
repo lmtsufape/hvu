@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './components/texto_login_page.module.css'
+import styles from './texto_login_page.module.css'
 
 export default function Text() {
     return (

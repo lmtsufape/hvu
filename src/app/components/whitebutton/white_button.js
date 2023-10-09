@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './components/white_button.module.css'
+import styles from './white_button.module.css'
 
 const text_white_button = {
     login: 'Login',

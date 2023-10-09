@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from "next/image";
-import styles from "./components/header.module.css";
+import styles from "./header.module.css";
 import {LoginGreenButton} from '../greenbutton/green_button';
 import {CadastrolWhiteButton} from '../whitebutton/white_button';
 import {LogoHVU} from '../logohvu/logo_hvu';
@@ -15,8 +15,8 @@ export function Header01() {
             </div>
 
             <div className={styles.box_buttons} >
-            <button type="button" class="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
-            <button type="button" class="btn btn-outline-success" id={styles.green_button}>Login</button>
+            <button type="button" className="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
+            <button type="button" className="btn btn-outline-success" id={styles.green_button}>Login</button>
             </div>
                 
         </header>
@@ -33,8 +33,8 @@ export function Header01() {
             </div>
 
             <div className={styles.box_buttons} >
-                <button type="button" class="btn btn-link" id={styles.black_button_decoration}>Home</button>
-                <button type="button" class="btn btn-link" id={styles.black_button_decoration}>Sistema</button>
+                <button type="button" className="btn btn-link" id={styles.black_button_decoration}>Home</button>
+                <button type="button" className="btn btn-link" id={styles.black_button_decoration}>Sistema</button>
             </div>
                 
         </header>

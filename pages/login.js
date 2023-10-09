@@ -1,6 +1,8 @@
-const { default: FormularioLogin } = require("../components/formulariologin");
-const { Header02 } = require("../components/header");
-const { default: Text } = require("@/app/texto_login_page");
+import {FormularioLogin} from "../src/app/components/formulariologin/formulariologin";
+import { Header02 } from "../src/app/components/header/header";
+import { Text } from "../src/app/components/textologinpage/texto_login_page";
+import styles from "../src/app/components/formulariologin/login.module.css";
+import Footer from "@/app/components/footer/Footer";
 
 function PageLogin() {
     return (

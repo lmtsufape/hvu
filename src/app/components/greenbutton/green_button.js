@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './components/green_button.module.css'
+import styles from './green_button.module.css'
 
 const text_green_button = {
     login: 'Login',

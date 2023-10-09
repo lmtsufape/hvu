@@ -8,7 +8,6 @@ import PageConsultarAnimalTutor from "../../pages/consultar_animal_tutor";
 import {SegundaHeader02} from "./components/anotherheader/another_header";
 
 export default function Home() {
-
   
   return (
     <div>

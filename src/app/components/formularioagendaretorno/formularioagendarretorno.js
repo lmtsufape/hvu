@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "../components/formularioagendarretorno.module.css"
+import styles from "./formularioagendarretorno.module.css"
 import { FinalizarGreenButton } from "../greenbutton/green_button";
 import { VoltarWhiteButton } from "../whitebutton/white_button";
 import DatePicker from 'react-datepicker';
@@ -34,8 +34,6 @@ function AgendarConsulta(){
     console.log({ ...agendarConsulta, data: dataSemHorario });
   }
 }
-
- 
 
     return (
         <div className={`${styles.boxagendarconsulta} ${styles.container}`}>
