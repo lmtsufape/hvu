@@ -1,11 +1,10 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "../src/app/components/formularioagendarretorno.module.css"
-import {Header04} from "../src/app/components/header/header";
-import Footer from "../src/app/components/footer/Footer";
-import FormularioAgendarRetorno from "../src/app/components/formularioagendaretorno/formularioagendarretorno"
-import AgendarRetorno from "../src/app/components/formularioagendaretorno/formularioagendarretorno"
-import Calendario from "../src/app/components/calendario/calendario"
+import styles from "../src/components/FormularioAgendarRetorno/formularioagendarretorno.module.css"
+import {Header04} from "../src/components/Header/header";
+import Footer from "../src/components/Footer/Footer";
+import AgendarConsulta from "../src/components/FormularioAgendarRetorno/formularioagendarretorno"
+import Calendario from "../src/components/Calendario/calendario"
 
 function PageAgendarConsulta(){
     return(
@@ -14,7 +13,7 @@ function PageAgendarConsulta(){
             <div>
                 <h1 className={styles.titulocadastro}>Agendar Retorno</h1>
             </div>
-        <AgendarRetorno/>
+        <AgendarConsulta/>
         <Footer/>
         </div>
     )

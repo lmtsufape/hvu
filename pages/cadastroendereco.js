@@ -1,10 +1,10 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
-import styles from "../src/app/components/formulariocadastrotutor.module.css"
-import {Header04} from "../src/app/components/header/header";
-import Footer from "../src/app/components/footer/Footer";
-import FormularioCadastroEndereco from "@/app/components/formulariocadastroendereco";
+import styles from "../src/components/FormularioCadastroTutor/formulariocadastrotutor.module.css"
+import {Header04} from "../src/components/Header/header";
+import Footer from "../src/components/Footer/Footer";
+import FormularioCadastroEndereco from "../src/components/FormularioCadastroEndereco/formulariocadastroendereco";
 
 
 function PageCadastroEndereco(){
@@ -27,4 +27,4 @@ function PageCadastroEndereco(){
     )
 }
 
-export default PageCadastroEndereco
+export default PageCadastroEndereco;

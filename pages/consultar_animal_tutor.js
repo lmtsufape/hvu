@@ -1,9 +1,9 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../src/app/components/consultaranimaltutor/consultar_animal_tutor.module.css"
+import styles from "../src/components/ConsultarAnimalTutor/consultar_animal_tutor.module.css"
 import Image from 'next/image';
-import {Header03} from "../src/app/components/header/header"
-import Footer from "../src/app/components/footer/Footer"
+import {Header03} from "../src/components/Header/header"
+import Footer from "../src/components/Footer/Footer"
 
 function PageConsultarAnimalTutor() {
     return (

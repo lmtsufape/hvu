@@ -1,10 +1,10 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from 'next/image'
-import styles from "../src/app/components/formulariocadastrotutor.module.css"
-import {Header04} from "../src/app/components/header/header";
-import Footer from "../src/app/components/footer/Footer";
-import FormularioCadastroTutor from "@/app/components/formulariocadastrotutor";
+import styles from "../src/components/FormularioCadastroTutor/formulariocadastrotutor.module.css";
+import {Header04} from "../src/components/Header/header";
+import Footer from "../src/components/Footer/Footer";
+import FormularioCadastroTutor from "../src/components/FormularioCadastroTutor/formulariocadastrotutor";
 
 
 function PageCadastroTutor(){
@@ -27,4 +27,4 @@ function PageCadastroTutor(){
     )
 }
 
-export default PageCadastroTutor
+export default PageCadastroTutor;

@@ -1,8 +1,8 @@
-import {FormularioLogin} from "../src/app/components/formulariologin/formulariologin";
-import { Header02 } from "../src/app/components/header/header";
-import { Text } from "../src/app/components/textologinpage/texto_login_page";
-import styles from "../src/app/components/formulariologin/login.module.css";
-import Footer from "@/app/components/footer/Footer";
+import FormularioLogin from "../src/components/FormularioLogin/formulariologin";
+import { Header02 } from "../src/components/Header/header";
+import Text from "../src/components/TextoLogin/texto_login_page";
+import styles from "../src/components/FormularioLogin/login.module.css";
+import Footer from "@/components/Footer/Footer";
 
 function PageLogin() {
     return (

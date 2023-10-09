@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./formulariocadastrotutor.module.css";
-import { ContinuarGreenButton } from "../greenbutton/green_button";
+import { ContinuarGreenButton } from "../GreenButton/green_button";
 import axios from "axios";
 import { useRouter } from "next/router";
 

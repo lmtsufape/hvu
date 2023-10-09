@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "../components/formulariocadastrotutor.module.css";
-import { ContinuarGreenButton } from "../greenbutton/green_button";
-import { VoltarWhiteButton } from "../whitebutton/white_button";
+import styles from "../FormularioCadastroTutor/formulariocadastrotutor.module.css";
+import { ContinuarGreenButton } from "../GreenButton/green_button";
+import { VoltarWhiteButton } from "../WhiteButton/white_button";
 import axios from "axios";
 import { useRouter } from "next/router";
 
