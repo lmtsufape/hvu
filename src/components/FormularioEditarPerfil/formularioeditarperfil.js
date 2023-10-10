@@ -1,51 +1,12 @@
-"use client";
-
-import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Image from 'next/image'
-import styles from "../FormularioCadastroAnimal/formulariocadastroanimal.module.css";
+import React from "react";
+import styles from "../FormularioEditarPerfil/formularioeditarperfil.module.css"
 import { FinalizarGreenButton } from "../GreenButton/green_button";
 import { VoltarWhiteButton } from "../WhiteButton/white_button";
-import axios from "axios";
-import { useRouter } from "next/router";
 
-
-function FormularioCadastroAnimal(){
-    const [formularioAnimal, setFormularioAnimal] = useState({
-      nome: "",
-      nascimento: "",
-      especie: "",
-      raca: "",
-      peso: "",
-      sexo: "",
-      porte: "",
-    });
-
-    const router = useRouter();
-
-    function handleInputChange(event) {
-      const { name, value } = event.target;
-      setFormularioAnimal({...formularioAnimal, [name]: value });
-    };
-
-    function handleSubmit(event) {
-      event.preventDefault();
-      
-      axios.post("http://localhost:3000/tutor", formularioAnimal) //substituir o localhost pelo caminho corerto do back
-        .then(response => {
-            console.log(response.data);
-
-            router.push('../pages/login');
-        })
-
-        .catch(error => {
-            console.error('Erro ao enviar os dados para o servidor:', error);
-        });
-    };
-
- return (
-    <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
-      <form onSubmit={handleSubmit}>
+function FormularioEditarPerfil (){
+    return (
+        <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
+      <form >
         <div className="row">
           <div className="col">
             <label htmlFor="nome" className="form-label">Nome</label>
@@ -54,8 +15,8 @@ function FormularioCadastroAnimal(){
                    className="form-control" 
                    name="nome"
                    placeholder="Insira o nome do animal" 
-                   value={formularioAnimal.nome}
-                   onChange={handleInputChange}>
+                   
+                   >
                 </input>
           </div>
           <div className="col">
@@ -64,8 +25,8 @@ function FormularioCadastroAnimal(){
                   className="form-control" 
                   name="nascimento"
                   placeholder="Ex: 12/12/2012"
-                  value={formularioAnimal.nascimento}
-                  onChange={handleInputChange}>
+                  
+                  >
                 </input>
             </div>
           </div>
@@ -78,8 +39,8 @@ function FormularioCadastroAnimal(){
               className="form-control" 
               name="especie"
               placeholder="Insira a espécie do animal" 
-              value={formularioAnimal.especie}
-              onChange={handleInputChange}>
+              
+              >
 
             </input>
           </div>
@@ -89,8 +50,8 @@ function FormularioCadastroAnimal(){
               className="form-control" 
               name="raca"
               placeholder="Insira a raça do animal" 
-              value={formularioAnimal.raca}
-              onChange={handleInputChange}>
+              
+              >
             </input>
         </div>
       </div>
@@ -104,8 +65,8 @@ function FormularioCadastroAnimal(){
               className="form-control" 
               name="peso"
               placeholder="Digite o peso" 
-              value={formularioAnimal.peso}
-              onChange={handleInputChange}>
+              
+              >
             </input>
           </div>
 
@@ -114,8 +75,8 @@ function FormularioCadastroAnimal(){
             <select className="form-select" 
               name="porte"
               aria-label="Selecione o porte do animal" 
-              value={formularioAnimal.porte}
-              onChange={handleInputChange}>
+              
+              >
                 <option value="">Selecione o porte do animal</option>
                 <option value="pequeno">Pequeno</option>
                 <option value="medio">Médio</option>
@@ -128,8 +89,8 @@ function FormularioCadastroAnimal(){
             <select className="form-select" 
               name="sexo"
               aria-label="Selecione o sexo do animal"
-              value={formularioAnimal.sexo}
-              onChange={handleInputChange}>
+              
+              >
                 <option value="">Selecione o sexo do animal</option>
                 <option value="macho">Macho</option>
                 <option value="femea">Fêmea</option>
@@ -148,4 +109,5 @@ function FormularioCadastroAnimal(){
             
     )
 }
-export default FormularioCadastroAnimal;
+
+export default FormularioEditarPerfil;

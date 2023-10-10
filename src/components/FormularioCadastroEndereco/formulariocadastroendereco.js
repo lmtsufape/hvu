@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "../FormularioCadastroTutor/formulariocadastrotutor.module.css";
+import styles from "../FormularioCadastroEndereco/formulariocadastroendereco.module.css";
 import { ContinuarGreenButton } from "../GreenButton/green_button";
 import { VoltarWhiteButton } from "../WhiteButton/white_button";
 import axios from "axios";
