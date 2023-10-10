@@ -41,7 +41,7 @@ export function Header01() {
     );    
   }
 
-  //Header com botão de login
+  //Header com ícone de perfil
   export function Header03() {
     return (
         <header className={styles.header}>
@@ -60,7 +60,7 @@ export function Header01() {
     );    
   }
 
-  //Header com ícone de perfil
+  //Header botão de login
   export function Header04() {
     return (
         <header className={styles.header}>
