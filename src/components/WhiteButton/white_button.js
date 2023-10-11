@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import styles from './white_button.module.css'
 
 const text_white_button = {
@@ -18,9 +19,12 @@ export function LoginWhiteButton() {
 
 export function AdicionarAnimalWhiteButton() {
     return (
-        <button className={styles.white_button}>
-            {text_white_button.adicionar_animal}
-        </button>
+        <Link href="/cadastroanimal">
+            <button className={styles.white_button}>
+                {text_white_button.adicionar_animal}
+            </button>
+        </Link>
+
     );
 }
 

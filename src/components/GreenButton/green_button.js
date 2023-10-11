@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 import styles from './green_button.module.css'
 
@@ -52,8 +53,10 @@ export function AgendarGreenButton() {
 
 export function AcessarGreenButton() {
     return (
-        <button className={styles.green_button}>
-            {text_green_button.acessar}
-        </button>
+        <Link href='/editarperfil'>
+            <button className={styles.green_button}>
+                {text_green_button.acessar}
+            </button>
+        </Link>
     );
 }
