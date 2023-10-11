@@ -41,16 +41,19 @@ function AgendarConsulta(){
           <div className="row">
             <div className="col">
               <label htmlFor="data" className="form-label">Data</label>
+              <div className="form-control">
+              
               <DatePicker
         
-        dateFormat="dd/MM/yyyy"
-        className="form-control"
-        placeholderText="Ex: 13/07/2023"
-        locale={ptBR}
-        selected={escolherData}
-        onChange={handleDateChange}
+                dateFormat="dd/MM/yyyy"
+                className={styles.datepicker}
+                placeholderText="Ex: 13/07/2023"
+                locale={ptBR}
+                selected={escolherData}
+                onChange={handleDateChange}
       />
                   
+                  </div>
             </div>
             <div className="col">
             <label htmlFor="horario" className="form-label">Horário</label>

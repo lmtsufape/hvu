@@ -20,7 +20,7 @@ function Footer() {
                     </a>
                 </div>
                 <div className={styles.redessociais}>
-                    <a href="lmts@ufape.edu.br" target="blank" rel="noopener">
+                    <a href="mailto:lmts@ufape.edu.br" target="blank" rel="noopener">
                         <Image src="/layouts/email.svg" alt="Logo" width={50} height={25} />
                     </a>
                     <a href="https://www.instagram.com/lmts_ufape/" target="blank" rel="noopener">

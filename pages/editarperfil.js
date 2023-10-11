@@ -1,22 +1,22 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../src/components/FormularioAgendarRetorno/formularioagendarretorno.module.css"
-import {Header04} from "../src/components/Header/header";
+import {Header03} from "../src/components/Header/header";
 import Footer from "../src/components/Footer/Footer";
-import AgendarConsulta from "../src/components/FormularioAgendarRetorno/formularioagendarretorno"
+import EditarPerfil from "../src/components/FormularioEditarPerfil/formularioeditarperfil"
 import Calendario from "../src/components/Calendario/calendario"
 
-function PageAgendarConsulta(){
+function PageEditarPerfil(){
     return(
         <div>
-            <Header04/>
+            <Header03/>
             <div>
-                <h1 className={styles.titulocadastro}>Agendar Retorno</h1>
+                <h1 className={styles.titulocadastro}>Editar Perfil</h1>
             </div>
-        <AgendarConsulta/>
+        <EditarPerfil/>
         <Footer/>
         </div>
     )
 }
 
-export default PageAgendarConsulta;
+export default PageEditarPerfil;
