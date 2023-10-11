@@ -48,5 +48,4 @@ function CampoPesquisa() {
     );
 }
 
-
-export default CampoPesquisa;
+export default CampoPesquisa

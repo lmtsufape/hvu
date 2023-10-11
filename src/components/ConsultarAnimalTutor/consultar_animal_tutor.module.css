@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+.container {
+    height: 493px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+}
+
+.container h1 {
+    font-family: Poppins;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+}
+
+.navbar {
+    display: flex;
+    gap: 32px;
+    text-align: center;
+
+}
+
+.pesquisa {
+    width: 1200px;
+}
+
+.lista {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.info_box {
+    width: 1200px;
+    height: 139px;
+    border-radius: 10px;
+    border: 0.5px solid #B1B1B1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.info {
+    width: 384px;
+    height: 59px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info h6 {
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #606060;
+}
+
+.info p {
+    font-family: Poppins;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #39805F;
+}
+
+.botao_box {
+    width: 384px;
+    display: flex;
+    justify-content: right;
+}
+

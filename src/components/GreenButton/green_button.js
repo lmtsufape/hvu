@@ -7,6 +7,7 @@ const text_green_button = {
     finalizar: 'Finalizar',
     entrar: 'Entrar',
     agendar: 'Agendar',
+    acessar: 'Acessar',
 };
 
 export function LoginGreenButton() {
@@ -45,6 +46,14 @@ export function AgendarGreenButton() {
     return (
         <button className={styles.green_button}>
             {text_green_button.agendar}
+        </button>
+    );
+}
+
+export function AcessarGreenButton() {
+    return (
+        <button className={styles.green_button}>
+            {text_green_button.acessar}
         </button>
     );
 }

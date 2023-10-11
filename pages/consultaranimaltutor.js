@@ -4,6 +4,8 @@ import styles from "../src/components/ConsultarAnimalTutor/consultar_animal_tuto
 import Image from 'next/image';
 import {Header03} from "../src/components/Header/header"
 import Footer from "../src/components/Footer/Footer"
+import {SegundaHeader01} from "../src/components/AnotherHeader/anotherHeader"
+import ListarAnimais from "../src/components/ConsultarAnimalTutor/listaranimais"
 
 function PageConsultarAnimalTutor() {
     return (
@@ -12,12 +14,12 @@ function PageConsultarAnimalTutor() {
             <Header03 />
         </div>
 
-        <div className="header">
-
+        <div>
+            < SegundaHeader01 />
         </div>
 
         <div>
-
+            < ListarAnimais />
         </div>
 
         <div>
