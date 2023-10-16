@@ -12,3 +12,6 @@
     background-color: #327053;
     font-family: 'Poppins', sans-serif;
 }
+.green_button:hover {
+    background-color: #5b977b;
+}

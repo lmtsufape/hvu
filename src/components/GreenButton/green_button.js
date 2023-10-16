@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import React from 'react';
+import { useRouter } from 'next/router';
 import styles from './green_button.module.css'
 
 const text_green_button = {
@@ -12,12 +12,16 @@ const text_green_button = {
 };
 
 export function LoginGreenButton() {
+    const router = useRouter();
+
+    const handleLoginClick = () => {
+        router.push('/login');
+    };
+
     return (
-        <Link href="/login">
-            <button className={styles.green_button}>
-                {text_green_button.login}
-            </button>
-        </Link>
+        <button className={styles.green_button} onClick={handleLoginClick}>
+            {text_green_button.login}
+        </button>
     );
 }
 
@@ -54,11 +58,15 @@ export function AgendarGreenButton() {
 }
 
 export function AcessarGreenButton() {
+    const router = useRouter();
+
+    const handleAcessarClick = () => {
+        router.push('/perfildoanimal');
+    };
+
     return (
-        <Link href="/perfildoanimal">
-            <button className={styles.green_button}>
-                {text_green_button.acessar}
-            </button>
-        </Link>
+        <button className={styles.green_button} onClick={handleAcessarClick}>
+            {text_green_button.acessar}
+        </button>
     );
 }

@@ -12,3 +12,8 @@
     font-size: 16px;
     font-family: 'Poppins', sans-serif;
 }
+
+.white_button:hover {
+    background-color: #f7f7f7;
+
+}
