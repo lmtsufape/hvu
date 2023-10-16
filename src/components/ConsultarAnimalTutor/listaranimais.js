@@ -7,33 +7,33 @@ import { AcessarGreenButton } from "../GreenButton/green_button";
 function ListarAnimais() {
     const [animal, setAnimal] = useState([]);
 
-    useEffect(() => {
-        // Substitua 'sua_api_url' pela URL da sua API que lista os animais do tutor.
-        fetch('http://localhost:3000/animal')
-          .then(response => response.json())
-          .then(data => {
-            setAnimal(data);
-          })
-          .catch(error => {
-            console.error('Erro ao listar os animais:', error);
-          });
-      }, []);
-
     // useEffect(() => {
-    //     const dataDeTeste = [
-    //         {
-    //             id: 1,
-    //             nome: 'Animal de Teste 1',
-    //             especie: 'Cachorro',
-    //         },
-    //         {
-    //             id: 2,
-    //             nome: 'Animal de Teste 2',
-    //             especie: 'Gato',
-    //         },
-    //     ];
-    //     setAnimal(dataDeTeste);
-    // }, []);
+    //     // Substitua 'sua_api_url' pela URL da sua API que lista os animais do tutor.
+    //     fetch('http://localhost:3000/animal')
+    //       .then(response => response.json())
+    //       .then(data => {
+    //         setAnimal(data);
+    //       })
+    //       .catch(error => {
+    //         console.error('Erro ao listar os animais:', error);
+    //       });
+    //   }, []);
+
+    useEffect(() => {
+        const dataDeTeste = [
+            {
+                id: 1,
+                nome: 'Animal de Teste 1',
+                especie: 'Cachorro',
+            },
+            {
+                id: 2,
+                nome: 'Animal de Teste 2',
+                especie: 'Gato',
+            },
+        ];
+        setAnimal(dataDeTeste);
+    }, []);
     
     return (
         <container className={styles.container}>

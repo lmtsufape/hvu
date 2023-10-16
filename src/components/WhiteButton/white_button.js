@@ -11,9 +11,12 @@ const text_white_button = {
 
 export function LoginWhiteButton() {
     return (
-        <button className={styles.white_button}>
-            {text_white_button.login}
-        </button>
+        <Link href="/login">
+            <button className={styles.white_button}>
+                {text_white_button.login}
+            </button>
+        </Link>
+
     );
 }
 

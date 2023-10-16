@@ -13,9 +13,11 @@ const text_green_button = {
 
 export function LoginGreenButton() {
     return (
-        <button className={styles.green_button}>
-            {text_green_button.login}
-        </button>
+        <Link href="/login">
+            <button className={styles.green_button}>
+                {text_green_button.login}
+            </button>
+        </Link>
     );
 }
 
@@ -53,7 +55,7 @@ export function AgendarGreenButton() {
 
 export function AcessarGreenButton() {
     return (
-        <Link href='/editarperfil'>
+        <Link href="/perfildoanimal">
             <button className={styles.green_button}>
                 {text_green_button.acessar}
             </button>
