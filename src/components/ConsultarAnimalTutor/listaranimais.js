@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import styles from "./consultar_animal_tutor.module.css";
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton/white_button";
