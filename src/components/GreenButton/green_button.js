@@ -61,7 +61,7 @@ export function AcessarGreenButton() {
     const router = useRouter();
 
     const handleAcessarClick = () => {
-        router.push('/perfildoanimal');
+        router.push(`/perfildoanimal/${animal.id}`);
     };
 
     return (

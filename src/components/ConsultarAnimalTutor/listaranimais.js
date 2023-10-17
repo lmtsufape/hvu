@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import styles from "./consultar_animal_tutor.module.css";
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton/white_button";
@@ -35,14 +36,20 @@ function ListarAnimais() {
         ];
         setAnimal(dataDeTeste);
     }, []);
+
+    const router = useRouter();
+
+    const handleAcessarClick = (animalId) => {
+        router.push(`/perfildoanimal/${animalId}`);
+    };
     
     return (
         <container className={styles.container}>
-            <h1> Animais </h1>
+            <h1>Animais</h1>
 
             <div className={styles.navbar}>
-                < CampoPesquisa className={styles.pesquisa}/>
-                < AdicionarAnimalWhiteButton />
+                <CampoPesquisa className={styles.pesquisa} />
+                <AdicionarAnimalWhiteButton />
             </div>
 
             <ul className={styles.lista}>
@@ -51,18 +58,19 @@ function ListarAnimais() {
                         <div className={styles.info}>
                             <h6>Paciente</h6>
                             <p>{animal.nome}</p>
-                        </div >
+                        </div>
                         <div className={styles.info}>
                             <h6>Espécie</h6>
                             <p>{animal.especie}</p>
                         </div>
                         <div className={styles.botao}>
-                            <AcessarGreenButton/>
+                            <button onClick={() => handleAcessarClick(animal.id)}>
+                                Acessar
+                            </button>
                         </div>
                     </li>
                 ))}
             </ul>
-
         </container>
     );
 }
