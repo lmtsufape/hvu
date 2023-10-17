@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./perfilAnimal.module.css";
 import { EditarWhiteButton } from "../WhiteButton/white_button";
+import axios from 'axios';
 
-// Suponha que você tenha uma lista de animais chamada 'listaAnimais'
+
+//json para teste
 const listaAnimais = [
     {
         id: 1,
@@ -88,3 +91,41 @@ function InfosDoAnimal() {
 }
 
 export default InfosDoAnimal;
+
+
+// Para quando for fazer a chamada da api
+// function InfosDoAnimal() {
+//     const router = useRouter();
+//     const { id } = router.query; // Obtém o ID do animal da URL
+//     const [animal, setAnimal] = useState(null);
+
+//     useEffect(() => {
+//         // Verifica se o ID é válido
+//         if (id) {
+//             // Faça uma chamada à sua API para buscar os dados do animal com base no ID
+//             axios.get(`/sua-api/animais/${id}`)
+//                 .then((response) => {
+//                     setAnimal(response.data); // Atualiza o estado com os dados do animal
+//                 })
+//                 .catch((error) => {
+//                     console.error('Erro ao buscar os dados do animal:', error);
+//                 });
+//         }
+//     }, [id]);
+
+//     return (
+//         <div className={styles.container}>
+//             <h1>Perfil do Animal</h1>
+//             <ul>
+//                 {animal && ( // Certifique-se de que o animal existe antes de renderizar
+//                     <li key={animal.id} className={styles.infos_box}>
+//                         {/* Resto do seu componente permanece inalterado */}
+//                     </li>
+//                 )}
+//             </ul>
+//         </div>
+//     );
+// }
+
+// export default InfosDoAnimal;
+

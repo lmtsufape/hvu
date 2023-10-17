@@ -1,8 +1,8 @@
 import React from 'react';
-import {Header03} from "../src/components/Header/header";
-import {SegundaHeader01} from "../src/components/AnotherHeader/anotherHeader";
-import InfosDoAnimal from "../src/components/PerfilDoAnimal/infosAnimal";
-import Footer from "../src/components/Footer/Footer";
+import {Header03} from "../../src/components/Header/header";
+import {SegundaHeader01} from "../../src/components/AnotherHeader/anotherHeader";
+import InfosDoAnimal from "../../src/components/PerfilDoAnimal/infosAnimal";
+import Footer from "../../src/components/Footer/Footer";
 
 function PerfilDoAnimalPage() {
     return (
