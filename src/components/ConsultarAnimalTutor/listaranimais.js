@@ -66,7 +66,7 @@ function ListarAnimais() {
                             <p>{animal.especie}</p>
                         </div>
                         <div className={styles.botao}>
-                            <button onClick={() => handleAcessarClick(animal.id)}>
+                            <button className={styles.acessar_button} onClick={() => handleAcessarClick(animal.id)}>
                                 Acessar
                             </button>
                         </div>

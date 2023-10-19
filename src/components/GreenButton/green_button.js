@@ -34,8 +34,12 @@ export function ContinuarGreenButton() {
 }
 
 export function FinalizarGreenButton() {
+    const handleAcessarClick = (animalId) => {
+        router.push(`/perfildoanimal/${animalId}`);
+    };
+
     return (
-        <button className={styles.green_button}>
+        <button className={styles.green_button} onClick={() => handleAcessarClick(animal.id)}>
             {text_green_button.finalizar}
         </button>
     );

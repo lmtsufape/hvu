@@ -1,9 +1,57 @@
-import React from "react";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import styles from "../FormularioEditarPerfil/formularioeditarperfil.module.css"
 import { FinalizarGreenButton } from "../GreenButton/green_button";
 import { VoltarWhiteButton } from "../WhiteButton/white_button";
 
+//json para teste
+const listaAnimais = [
+  {
+      id: 1,
+      nome: 'Animal 1',
+      especie: 'Cachorro',
+      sexo: 'Macho',
+      peso: '10 kg',
+      raca: 'Vira-lata',
+      porte: 'Médio',
+      datanasc: '01/01/2018',
+  },
+  {
+      id: 2,
+      nome: 'Animal 2',
+      especie: 'Gato',
+      sexo: 'Fêmea',
+      peso: '5 kg',
+      raca: 'Siamês',
+      porte: 'Pequeno',
+      datanasc: '15/03/2019',
+  },
+];
+
 function FormularioEditarPerfil (){
+  const router = useRouter();
+
+  //Para pegar o id da url
+  const { id } = router.query;
+  const animal = listaAnimais.find(animal => animal.id === parseInt(id));
+
+  const [editarAnimal, setEditarAnimal] = useState({
+    nome: animal ? animal.nome : "",
+    nascimento: animal ? animal.datanasc : "",
+    especie: animal ? animal.especie : "",
+    raca: animal ? animal.raca : "",
+    peso: animal ? animal.peso : "",
+    sexo: animal ? animal.sexo : "",
+    porte: animal ? animal.porte : "",
+  });
+
+  function handleInputChange(event) {
+    const { name, value } = event.target;
+    setEditarAnimal({ ...editarAnimal, [name]: value });
+  }  
+
+  console.log(editarAnimal);
+
     return (
         <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
       <form >
@@ -15,7 +63,8 @@ function FormularioEditarPerfil (){
                    className="form-control" 
                    name="nome"
                    placeholder="Insira o nome do animal" 
-                   
+                   value={editarAnimal.nome}
+                   onChange={handleInputChange}
                    >
                 </input>
           </div>
@@ -25,7 +74,8 @@ function FormularioEditarPerfil (){
                   className="form-control" 
                   name="nascimento"
                   placeholder="Ex: 12/12/2012"
-                  
+                  value={editarAnimal.datanasc}
+                  onChange={handleInputChange}
                   >
                 </input>
             </div>
@@ -39,7 +89,8 @@ function FormularioEditarPerfil (){
               className="form-control" 
               name="especie"
               placeholder="Insira a espécie do animal" 
-              
+              value={editarAnimal.especie}
+              onChange={handleInputChange}
               >
 
             </input>
@@ -50,13 +101,14 @@ function FormularioEditarPerfil (){
               className="form-control" 
               name="raca"
               placeholder="Insira a raça do animal" 
-              
+              value={editarAnimal.raca}
+              onChange={handleInputChange}
               >
             </input>
         </div>
       </div>
     </div>
-
+      
     <div className={styles.espacodosforms}></div>
       <div className="row">
         <div className="col">
@@ -65,7 +117,8 @@ function FormularioEditarPerfil (){
               className="form-control" 
               name="peso"
               placeholder="Digite o peso" 
-              
+              value={editarAnimal.peso}
+              onChange={handleInputChange}
               >
             </input>
           </div>
@@ -75,7 +128,8 @@ function FormularioEditarPerfil (){
             <select className="form-select" 
               name="porte"
               aria-label="Selecione o porte do animal" 
-              
+              value={editarAnimal.porte}
+              onChange={handleInputChange}
               >
                 <option value="">Selecione o porte do animal</option>
                 <option value="pequeno">Pequeno</option>
@@ -89,24 +143,23 @@ function FormularioEditarPerfil (){
             <select className="form-select" 
               name="sexo"
               aria-label="Selecione o sexo do animal"
-              
+              value={editarAnimal.sexo}
+              onChange={handleInputChange}
               >
                 <option value="">Selecione o sexo do animal</option>
                 <option value="macho">Macho</option>
                 <option value="femea">Fêmea</option>
             </select>
         </div>
-      </div>
-
-            
+      </div>     
 
       <div className={styles.continuarbotao}>
         <VoltarWhiteButton/>
-          <FinalizarGreenButton/>
+        <FinalizarGreenButton />
       </div>
     </form>
   </div>
-            
+   
     )
 }
 

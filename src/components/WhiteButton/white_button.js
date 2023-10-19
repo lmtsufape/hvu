@@ -47,8 +47,14 @@ export function CadastrolWhiteButton() {
 }
 
 export function VoltarWhiteButton() {
+    const router = useRouter();
+
+    const handlVoltarClick = () => {
+        router.back();
+    };
+
     return (
-        <button className={styles.white_button}>
+        <button className={styles.white_button} onClick={handlVoltarClick}>
             {text_white_button.voltar}
         </button>
     );

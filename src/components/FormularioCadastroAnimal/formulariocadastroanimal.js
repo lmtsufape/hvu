@@ -35,7 +35,7 @@ function FormularioCadastroAnimal(){
         .then(response => {
             console.log(response.data);
 
-            router.push('../pages/login');
+            router.push(`/perfildoanimal/${animalId}`);
         })
 
         .catch(error => {

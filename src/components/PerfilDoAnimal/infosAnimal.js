@@ -4,7 +4,6 @@ import styles from "./perfilAnimal.module.css";
 import { EditarWhiteButton } from "../WhiteButton/white_button";
 import axios from 'axios';
 
-
 //json para teste
 const listaAnimais = [
     {
@@ -35,6 +34,10 @@ function InfosDoAnimal() {
 
     // Aqui você deve buscar as informações do animal com base no ID
     const animal = listaAnimais.find(animal => animal.id === parseInt(id));
+
+    const handleEditarClick = (animalId) => {
+        router.push(`/editarperfilanimal/${animalId}`);
+    };
 
     // Renderize as informações do animal com base no ID
     return (
@@ -80,7 +83,7 @@ function InfosDoAnimal() {
                                 </div>
                             </div>
                             <div className={styles.botao}>
-                                <EditarWhiteButton />
+                                <button className={styles.editar_button} onClick={() => handleEditarClick(animal.id)}>Editar</button>
                             </div>
                         </div>
                     </li>
