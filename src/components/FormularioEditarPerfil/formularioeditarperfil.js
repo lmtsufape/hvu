@@ -4,51 +4,47 @@ import styles from "../FormularioEditarPerfil/formularioeditarperfil.module.css"
 import { FinalizarGreenButton } from "../GreenButton/green_button";
 import { VoltarWhiteButton } from "../WhiteButton/white_button";
 
-//json para teste
-const listaAnimais = [
-  {
-      id: 1,
-      nome: 'Animal 1',
-      especie: 'Cachorro',
-      sexo: 'Macho',
-      peso: '10 kg',
-      raca: 'Vira-lata',
-      porte: 'Médio',
-      datanasc: '01/01/2018',
-  },
-  {
-      id: 2,
-      nome: 'Animal 2',
-      especie: 'Gato',
-      sexo: 'Fêmea',
-      peso: '5 kg',
-      raca: 'Siamês',
-      porte: 'Pequeno',
-      datanasc: '15/03/2019',
-  },
-];
-
-function FormularioEditarPerfil (){
+const FormularioEditarPerfil = () => {
   const router = useRouter();
-
-  //Para pegar o id da url
   const { id } = router.query;
-  const animal = listaAnimais.find(animal => animal.id === parseInt(id));
 
+  // Simulando um animal a ser editado (usado apenas para exibição inicial)
   const [editarAnimal, setEditarAnimal] = useState({
-    nome: animal ? animal.nome : "",
-    nascimento: animal ? animal.datanasc : "",
-    especie: animal ? animal.especie : "",
-    raca: animal ? animal.raca : "",
-    peso: animal ? animal.peso : "",
-    sexo: animal ? animal.sexo : "",
-    porte: animal ? animal.porte : "",
+    nome: "Animal de Teste",
+    nascimento: "01/01/2022",
+    especie: "Cachorro",
+    raca: "Vira-lata",
+    peso: "15 kg",
+    sexo: "Macho",
+    porte: "Médio",
   });
 
-  function handleInputChange(event) {
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
     setEditarAnimal({ ...editarAnimal, [name]: value });
-  }  
+  }
+
+  const handleUpdateAnimal = async () => {
+    try {
+      // Simule uma chamada à API para atualizar os dados do animal
+      const response = await fetch(`/api/atualizarAnimal/${id}`, {
+        method: 'PATCH', // ou 'PATCH' dependendo da sua API
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editarAnimal),
+      });
+
+      if (response.ok) {
+        // Redirecione o usuário para a página de detalhes do animal ou outra página adequada
+        router.push(`/perfildoanimal/${id}`);
+      } else {
+        console.error('Erro ao atualizar o animal.');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar o animal:', error);
+    }
+  };
 
   console.log(editarAnimal);
 
@@ -154,9 +150,11 @@ function FormularioEditarPerfil (){
       </div>     
 
       <div className={styles.continuarbotao}>
-        <VoltarWhiteButton/>
-        <FinalizarGreenButton />
-      </div>
+          <VoltarWhiteButton />
+          <button type="button" className={styles.atualizar_button} onClick={handleUpdateAnimal}>
+            Atualizar Animal
+          </button>
+        </div>
     </form>
   </div>
    
