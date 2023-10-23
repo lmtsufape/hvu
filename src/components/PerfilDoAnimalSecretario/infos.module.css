@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 42px;
+}
+
+.container h1 {
+    font-family: Poppins;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+.infos_box {
+    display: flex;
+    flex-direction: column;
+    width: 1200px;
+    border-radius: 20px;
+    border: 0.5px solid #B1B1B1;
+    gap: 56px;
+}
+
+.identificacao {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: 28px;
+    margin-top: 32px;
+}
+
+.nome_animal {
+    font-family: Poppins;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: 0em;
+    
+}
+
+.especie_animal {
+    color: #39805F;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    
+}
+
+.box {
+    display: flex;
+    gap: 188px;
+    margin-left: 28px;
+    margin-bottom: 32px;
+
+}
+
+.lista {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.infos {
+    display: flex;
+    flex-direction: column;
+}
+
+.infos p {
+    margin-top: -6px;
+    font-family: Poppins;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: 0em;
+}
+
+.infos h6 {
+    color: #39805F;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    
+}
+
+.botao {
+    width: 60px;
+    display: flex;
+    float: right;
+    margin-top: -78px;
+    margin-right: 28px;
+}
+
+.editar_button {
+    width: 180px;
+    height: 48px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #327053;
+    gap: 1px;
+    color: #327053;
+    background-color: white;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.editar_button:hover {
+    background-color: #d8cece;
+}

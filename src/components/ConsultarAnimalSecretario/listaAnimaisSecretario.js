@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import styles from "./consultar_animal_tutor.module.css";
+import styles from "./listaAnimaisSecretario.module.css";
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
-import { AdicionarAnimalWhiteButton } from "../WhiteButton/white_button";
-import { AcessarGreenButton } from "../GreenButton/green_button";
+import FiltrarWhiteButton from "../WhiteButton/filtrar_button";
 
 function ListarAnimais() {
     const [animal, setAnimal] = useState([]);
@@ -29,11 +28,15 @@ function ListarAnimais() {
                 id: 1,
                 nome: 'Animal de Teste 1',
                 especie: 'Cachorro',
+                tutor: 'Maria',
+                raca: 'canino',
             },
             {
                 id: 2,
                 nome: 'Animal de Teste 2',
                 especie: 'Gato',
+                tutor: 'João',
+                raca: 'felino',
             },
         ];
         setAnimal(dataDeTeste);
@@ -42,33 +45,39 @@ function ListarAnimais() {
     const router = useRouter();
 
     const handleAcessarClick = (animalId) => {
-        router.push(`/perfildoanimal/${animalId}`);
+        router.push(`/perfildoanimaletutor/${animalId}`);
     };
     
     return (
         <div className={styles.container}>
-            <h1>Animais</h1>
+            <h1>Pacientes</h1>
 
             <div className={styles.navbar}>
                 <CampoPesquisa className={styles.pesquisa} />
-                <AdicionarAnimalWhiteButton />
+                < FiltrarWhiteButton items={animal}/>
             </div>
 
             <ul className={styles.lista}>
+                <div className={styles.line}>
+                    <div>Tutor</div>
+                    <div>Animal</div>
+                    <div>Espécie</div>
+                    <div>Raça</div>
+                    <div>Ação</div>
+                </div>
                 {animal.map(animal => (
                     <li key={animal.id} className={styles.info_box}>
                         <div className={styles.info}>
-                            <h6>Paciente</h6>
-                            <p>{animal.nome}</p>
-                        </div>
-                        <div className={styles.info}>
-                            <h6>Espécie</h6>
-                            <p>{animal.especie}</p>
-                        </div>
-                        <div className={styles.botao}>
+                            <div>{animal.tutor}</div>
+                            <div>{animal.nome}</div>
+                            <div>{animal.especie}</div>
+                            <div>{animal.raca}</div>
+                            <div>
                             <button className={styles.acessar_button} onClick={() => handleAcessarClick(animal.id)}>
                                 Acessar
                             </button>
+                            </div>
+
                         </div>
                     </li>
                 ))}
