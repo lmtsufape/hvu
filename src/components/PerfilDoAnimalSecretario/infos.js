@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import styles from "./perfilAnimal.module.css";
+import styles from "./infos.module.css";
 import { EditarWhiteButton } from "../WhiteButton/white_button";
 import axios from 'axios';
 
@@ -28,54 +28,83 @@ const listaAnimais = [
     },
 ];
 
+const listaTutores = [
+    {
+        id: 1,
+        nome: 'Tutor 1',
+        telefone: '1',
+        cpf: '1',
+        email: '1@.com',
+        rg: '1',
+        endereço: 'centro',
+    },
+    {
+        id: 2,
+        nome: 'Tutor 2',
+        telefone: '2',
+        cpf: '2',
+        email: '2@.com',
+        rg: '2',
+        endereço: 'boa vista',
+    },
+];
+
 function InfosDoAnimalETutor() {
     const router = useRouter();
     const { id } = router.query; // Obtém o ID do animal da URL
 
     // Aqui você deve buscar as informações do animal com base no ID
     const animal = listaAnimais.find(animal => animal.id === parseInt(id));
-    const tutor = listaTutor.find(tutor => tutor.id === parseInt(id));
+    const tutor = listaTutores.find(tutor => tutor.id === parseInt(id));
 
     // Renderize as informações do animal com base no ID
     return (
         <container className={styles.container}>
             <h1>Perfil do Animal</h1>
+            <div className={styles.infos_box}> 
             <ul>
                 {animal && ( // Certifique-se de que o animal existe antes de renderizar
-                    <li key={animal.id} className={styles.infos_box}>
-                        <div className={styles.identificacao}>
-                            <div className={styles.nome_animal}>{animal.nome}</div>
-                            <div className={styles.especie_animal}>{animal.especie}</div>
-                        </div>
-                        <div className={styles.form}>
-                            <div className={styles.box}>
-                                <div className={styles.lista}>
-                                    <div className={styles.infos}>
-                                        <h6>Nome</h6>
-                                        <p>{animal.nome}</p>
-                                    </div>
-                                    <div className={styles.infos}>
-                                        <h6>Sexo</h6>
-                                        <p>{animal.sexo}</p>
-                                    </div>
-                                    <div className={styles.infos}>
-                                        <h6>Peso</h6>
-                                        <p>{animal.peso}</p>
-                                    </div>
-                                </div>
+                    <li key={animal.id} className={styles.item}>
 
-                                <div className={styles.lista}>
-                                    <div className={styles.infos}>
-                                        <h6>Raça</h6>
-                                        <p>{animal.raca}</p>
+                        <div className={styles.animal_dados}>
+                            <div className={styles.identificacao}>
+                                <div className={styles.nome_animal}>{animal.nome}</div>
+                                <div className={styles.especie_animal}>{animal.especie}</div>
+                            </div>
+                            <div className={styles.form}>
+                                <div className={styles.box}>
+                                    <div className={styles.lista}>
+                                        <div className={styles.infos}>
+                                            <h6>Nome do animal</h6>
+                                            <p>{animal.nome}</p>
+                                        </div>
+                                        <div className={styles.infos}>
+                                            <h6>Sexo</h6>
+                                            <p>{animal.sexo}</p>
+                                        </div>
                                     </div>
-                                    <div className={styles.infos}>
-                                        <h6>Porte</h6>
-                                        <p>{animal.porte}</p>
+
+                                    <div className={styles.lista}>
+                                        <div className={styles.infos}>
+                                            <h6>Raça</h6>
+                                            <p>{animal.raca}</p>
+                                        </div>
+                                        <div className={styles.infos}>
+                                            <h6>Porte</h6>
+                                            <p>{animal.porte}</p>
+                                        </div>
                                     </div>
-                                    <div className={styles.infos}>
-                                        <h6>Data de nascimento</h6>
-                                        <p>{animal.datanasc}</p>
+
+
+                                    <div className={styles.lista}>
+                                        <div className={styles.infos}>
+                                            <h6>Data de nascimento</h6>
+                                            <p>{animal.datanasc}</p>
+                                        </div>
+                                        <div className={styles.infos}>
+                                            <h6>Peso</h6>
+                                            <p>{animal.peso}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -83,6 +112,53 @@ function InfosDoAnimalETutor() {
                     </li>
                 )}
             </ul>
+
+            <ul>
+                {tutor && ( // Certifique-se de que o animal existe antes de renderizar
+                    <li key={tutor.id} className={styles.item}>
+                        <div className={styles.tutor_dados}>
+                        <div className={styles.nome_animal}>Informações do tutor</div>
+                        <div className={styles.form}>
+                                <div className={styles.box}>
+                                    <div className={styles.lista}>
+                                        <div className={styles.infos}>
+                                            <h6>Nome do tutor</h6>
+                                            <p>{tutor.nome}</p>
+                                        </div>
+                                        <div className={styles.infos}>
+                                            <h6>Telefone</h6>
+                                            <p>{tutor.telefone}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.lista}>
+                                        <div className={styles.infos}>
+                                            <h6>RG</h6>
+                                            <p>{tutor.rg}</p>
+                                        </div>
+                                        <div className={styles.infos}>
+                                            <h6>Endereço</h6>
+                                            <p>{tutor.endereço}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.lista}>
+                                        <div className={styles.infos}>
+                                            <h6>CPF</h6>
+                                            <p>{tutor.cpf}</p>
+                                        </div>
+                                        <div className={styles.infos}>
+                                            <h6>E-mail</h6>
+                                            <p>{tutor.email}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                )}
+            </ul>
+            </div>
         </container>
     );
 }
@@ -91,36 +167,48 @@ export default InfosDoAnimalETutor;
 
 
 // Para quando for fazer a chamada da api
+
 // function InfosDoAnimalETutor() {
 //     const router = useRouter();
 //     const { id } = router.query; // Obtém o ID do animal da URL
 //     const [animal, setAnimal] = useState(null);
+//     const [tutor, setTutor] = useState(null);
 
 //     useEffect(() => {
-//         // Verifica se o ID é válido
 //         if (id) {
-//             // Faça uma chamada à sua API para buscar os dados do animal com base no ID
-//             axios.get(`/sua-api/animais/${id}`)
-//                 .then((response) => {
-//                     setAnimal(response.data); // Atualiza o estado com os dados do animal
+//             // Fazer uma solicitação à sua API para buscar os dados do animal e do tutor
+//             axios.get(`/sua_api/animais/${id}`)
+//                 .then(response => {
+//                     setAnimal(response.data); // Define os dados do animal no estado
 //                 })
-//                 .catch((error) => {
-//                     console.error('Erro ao buscar os dados do animal:', error);
+//                 .catch(error => {
+//                     console.error('Erro ao buscar informações do animal', error);
+//                 });
+
+//             axios.get(`/sua_api/tutores/${id}`)
+//                 .then(response => {
+//                     setTutor(response.data); // Define os dados do tutor no estado
+//                 })
+//                 .catch(error => {
+//                     console.error('Erro ao buscar informações do tutor', error);
 //                 });
 //         }
 //     }, [id]);
 
 //     return (
-//         <div className={styles.container}>
+//         <container className={styles.container}>
 //             <h1>Perfil do Animal</h1>
-//             <ul>
-//                 {animal && ( // Certifique-se de que o animal existe antes de renderizar
-//                     <li key={animal.id} className={styles.infos_box}>
-//                         {/* Resto do seu componente permanece inalterado */}
-//                     </li>
+//             <div className={styles.infos_box}>
+//                 {animal && (
+//                     // Renderize as informações do animal
+//                     // ...
 //                 )}
-//             </ul>
-//         </div>
+//                 {tutor && (
+//                     // Renderize as informações do tutor
+//                     // ...
+//                 )}
+//             </div>
+//         </container>
 //     );
 // }
 
