@@ -45,7 +45,7 @@ function ListarAnimais() {
     const router = useRouter();
 
     const handleAcessarClick = (animalId) => {
-        router.push(`/perfildoanimaletutor/${animalId}`);
+        router.push(`/perfilanimaletutor/${animalId}`);
     };
     
     return (
