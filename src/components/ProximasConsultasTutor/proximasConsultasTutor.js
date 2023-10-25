@@ -5,13 +5,29 @@ import axios from 'axios';
 import CancelarButton from "./cancelarButton";
 
 function ProximasConsultasTutor () {
+    const router = useRouter();
+    const {id} = router.query;
+    const[consulta, setConsulta] = useState(null);
+
+    useEffect(() => {
+        if(id) {
+            axios.get(`chamar_api/${id}`)
+                .then(response => {
+                    setConsulta(response.data);
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar a consulta:', error);
+                });
+        }
+    }, [id]);
+
     return (
         <container className={styles.container}>
             <form className={styles.box}>
                 <div className={styles.titulo}>Próximas consultas</div>
 
-                <ul>
-                    <li className={styles.lista}>
+                {consulta ? ( 
+                    <li key={index} className={styles.lista}>
                         <div className={styles.box_dados}>
                             <div className={styles.info_box}>
                                 <h5>tipo_de_consulta</h5>
@@ -26,10 +42,10 @@ function ProximasConsultasTutor () {
                             < CancelarButton />
                         </div>
                     </li>
-                </ul>
+                ) : ( 
+                    <div className={styles.erro}>Você não possui consultas agendadas.</div>
+                )}
             </form>
-
-        
         </container>
     );
 }
