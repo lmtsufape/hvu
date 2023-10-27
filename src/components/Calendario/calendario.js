@@ -19,7 +19,6 @@ function Calendario() {
         onChange={handleDataSelecionada}
         dateFormat="dd/MM/yyyy"
         className="form-control"
-        placeholderText="Ex: 13/07/2023"
         locale={ptBR}
       />
       </div>
