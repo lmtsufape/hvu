@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
+import Image from "next/image";
 import 'react-datepicker/dist/react-datepicker.css';
 import ptBR from 'date-fns/locale/pt-BR';
 
@@ -19,7 +20,7 @@ function IconeCalendario() {
     <div className="mb-3">
       <div className="form-label">
         <img
-          src="calendario-icon.png"
+          src="../../../public/layouts/calendario.svg"
           alt="Calendário"
           onMouseEnter={mostrarOcultarCalendario}
           onMouseLeave={mostrarOcultarCalendario}
@@ -30,7 +31,6 @@ function IconeCalendario() {
             onChange={handleDataSelecionada}
             dateFormat="dd/MM/yyyy"
             className="form-control"
-            placeholderText="Ex: 13/07/2023"
             locale={ptBR}
           />
         )}

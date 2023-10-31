@@ -4,12 +4,14 @@ import styles from "./semana.module.css";
 import axios from 'axios';
 import NovoAgendamentoButton from "./novoAgendamentoButton";
 import Filtro from "./filtro";
-import Calendario from '../Calendario/calendario';
+import IconeCalendario from './iconeCalendario';
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
+import Data from "./data";
 
 function AgendamentosDaSemana () {
+    
     return (
-        <container className={styles.pagina}>
+        <div className={styles.pagina}>
             <div className={styles.container}>
 
                 <div className={styles.header}>
@@ -19,8 +21,8 @@ function AgendamentosDaSemana () {
 
                 <div className={styles.box}>
                     <div className={styles.itens_box_1}>
-                        <div>Data</div>
-                        < Calendario />
+                        < Data />
+                        < IconeCalendario />
                     </div>
                     <div className={styles.itens_box_2}>
                         < CampoPesquisa />
@@ -122,7 +124,7 @@ function AgendamentosDaSemana () {
                 </table>
                 
             </div>
-        </container>
+        </div>
     );
 }
 

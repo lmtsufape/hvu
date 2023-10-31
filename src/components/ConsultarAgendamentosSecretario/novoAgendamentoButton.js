@@ -6,12 +6,12 @@ function NovoAgendamentoButton () {
     const router = useRouter();
 
     const handlClick = () => {
-        router.push('');
+        router.push('agendarconsulta');
     };
 
     return (
             <button className={styles.button} onClick={handlClick}>
-                Novo Agendamento +
+                Novo Agendamento  +
             </button>
     );
 }

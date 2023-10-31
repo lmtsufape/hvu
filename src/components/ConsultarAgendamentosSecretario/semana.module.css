@@ -45,7 +45,7 @@
     align-items: center;
 }
 
-.itens_box_1 div, .itens_box_2 div {
+.data {
     font-family: Poppins;
     font-size: 21px;
     font-weight: 600;
@@ -125,6 +125,3 @@
     border-left: 2px solid #ECECEC;
     border-bottom: 1px solid #ECECEC;
 }
-
-
-

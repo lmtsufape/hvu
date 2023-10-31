@@ -14,13 +14,14 @@ function Calendario() {
   return (
     <div className="mb-3">
         <div className="form-label">
-      <DatePicker
-        selected={dataSelecionada}
-        onChange={handleDataSelecionada}
-        dateFormat="dd/MM/yyyy"
-        className="form-control"
-        locale={ptBR}
-      />
+        <DatePicker
+            selected={dataSelecionada}
+            onChange={handleDataSelecionada}
+            dateFormat="dd/MM/yyyy"
+            className="form-control"
+            placeholderText="Ex: 13/07/2023"
+            locale={ptBR}
+          />
       </div>
     </div>
   );
