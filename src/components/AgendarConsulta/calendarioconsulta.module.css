@@ -37,7 +37,8 @@
   
 .botaohora {
     display: block;
-    margin: 5px;
+    margin-bottom: 5px;
+    margin-left: 8%;
     padding: 5px;
     background-color: #EEF8F3;
     border: none;
@@ -60,6 +61,7 @@
     text-transform: capitalize;
     text-align: center;
     color: #000000;
+    
   }
 .data{
     text-align: center;
