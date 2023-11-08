@@ -1,0 +1,96 @@
+version: '3.9'
+services:
+  backend:
+    image: hvu-backend
+    build: hvu/.
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+    command: mvn spring-boot:run
+    networks:
+      - hvu-networks
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://backend-db:5432/hvu
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      - backend-db
+      - keycloak
+
+  backend-db:
+    image: postgres:16.0
+    restart: always
+    environment:
+      POSTGRES_DB: hvu
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      TZ: America/Sao_Paulo
+    ports:
+      - "5433:5432"
+    expose:
+      - "5432"
+    networks:
+      - hvu-networks
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    ports:
+      - "8080:8080"
+    networks:
+      - hvu-networks
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak-db
+      DB_PORT: 5432
+      DB_DATABASE: keycloak
+      DB_USER: postgres
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+    command: start-dev
+    depends_on:
+      - keycloak-db
+
+  keycloak-db:
+    image: postgres:16.0
+    restart: always
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      TZ: America/Sao_Paulo
+    ports:
+      - "5434:5432"
+    expose:
+      - "5432"
+    networks:
+      - hvu-networks
+    volumes:
+      - keycloak-pg-data:/var/lib/postgresql/data
+
+  frontend:
+    image: react-image
+    build: front-hvu/.
+    volumes:
+      - ./front-hvu/src:/app/src
+    ports:
+      - 3000:3000
+    networks:
+      - hvu-networks
+    depends_on:
+      - backend
+
+      
+volumes:
+  pg-data:
+    driver: local
+  keycloak-pg-data:
+    driver: local
+
+networks:
+  hvu-networks:
+    driver: bridge
