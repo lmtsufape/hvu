@@ -18,4 +18,3 @@ export function DiaDaSemana(data) {
   const options = { weekday: 'long' };
   return new Date(data).toLocaleDateString('pt-BR', options).toLowerCase();
 }
-
