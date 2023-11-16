@@ -3,6 +3,7 @@ import { Header02 } from "../src/components/Header/header";
 import Text from "../src/components/TextoLogin/texto_login_page";
 import styles from "../src/components/FormularioLogin/login.module.css";
 import Footer from "@/components/Footer/Footer";
+import qs from 'qs';
 
 function PageLogin() {
     return (

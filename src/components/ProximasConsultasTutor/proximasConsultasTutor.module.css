@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+.container {
+    width: 1200px;
+    height: 408px;
+}
+
+.box {
+    height: 408px;
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    align-items: center;
+}
+
+.titulo {
+    font-family: Poppins;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+.lista {
+    width: 1200px;
+    height: 142px;
+    border: 0.5px solid #B1B1B1;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.box_dados {
+    display: flex;
+    align-items: center;
+    margin-left: 24px;
+}
+
+.info_box {
+    width: 384px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}
+
+.info_box h5 {
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    color: #606060;
+}
+
+.info_box h6 {
+    font-family: Poppins;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: 0em;
+    color: #39805F;
+}
+
+.botao {
+    margin-right: 24px;
+}
+
+.cancelar {
+    width: 117px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #C7122F;
+    color: #C7122F;
+    background-color: white;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+}
+
+.cancelar:hover {
+        background-color: #d8cece;
+}
+
+.erro {
+    font-family: Poppins;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: center;    
+}

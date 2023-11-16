@@ -11,7 +11,7 @@ function CampoPesquisa() {
   useEffect(() => {
     if (busca.trim() !== '') {
       setLoading(true);
-      axios.get(`URL_DA_SUA_API/?q=${busca}`)
+      axios.get(`http://localhost:8081/api/v1/animal`)
         .then((response) => {
           setResultados(response.data);
           setLoading(false);
@@ -41,7 +41,7 @@ function CampoPesquisa() {
         onChange={handleInputChange}
       />
       <button className={styles.button_busca}>
-        <img src='./layouts/icone_busca.svg' alt="Lupa de busca" />
+        <img src='./images/icone_busca.svg' alt="Lupa de busca" />
       </button>
 
       {loading && <p>Carregando...</p>}

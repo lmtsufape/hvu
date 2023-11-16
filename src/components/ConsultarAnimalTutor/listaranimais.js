@@ -1,52 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+import axios from 'axios';
 import styles from "./consultar_animal_tutor.module.css";
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton/white_button";
-import { AcessarGreenButton } from "../GreenButton/green_button";
 
 function ListarAnimais() {
     const [animal, setAnimal] = useState([]);
+    const [especie, setEspecie] = useState([]);
 
-//Para quando for fazer a chamada da api
-    // useEffect(() => {
-    //     // Substitua 'sua_api_url' pela URL da sua API que lista os animais do tutor.
-    //     fetch('http://localhost:3000/animal')
-    //       .then(response => response.json())
-    //       .then(data => {
-    //         setAnimal(data);
-    //       })
-    //       .catch(error => {
-    //         console.error('Erro ao listar os animais:', error);
-    //       });
-    //   }, []);
-
-    //json de teste
     useEffect(() => {
-        const dataDeTeste = [
-            {
-                id: 1,
-                nome: 'Animal de Teste 1',
-                especie: 'Cachorro',
-            },
-            {
-                id: 2,
-                nome: 'Animal de Teste 2',
-                especie: 'Gato',
-            },
-        ];
-        setAnimal(dataDeTeste);
+        Promise.all([
+            axios.get('http://localhost:8081/api/v1/especie'),
+            axios.get('http://localhost:8081/api/v1/animal'),
+        ])
+        .then(([especieResponse, animalResponse]) => {
+            setEspecie(especieResponse.data);
+            setAnimal(animalResponse.data);
+        })
+        .catch(error => {
+            console.error('Erro ao puxar dados da API:', error);
+        });
     }, []);
 
-    const router = useRouter();
-
-    const handleAcessarClick = (animalId) => {
-        router.push(`/perfildoanimal/${animalId}`);
-    };
+    function getEspecieName(especieId) {
+        const especieEncontrada = especie.find(especie => especie.id === especieId);
+        return especieEncontrada ? especieEncontrada.nome : '';
+    }
     
     return (
-        <container className={styles.container}>
+        <div className={styles.container}>
             <h1>Animais</h1>
 
             <div className={styles.navbar}>
@@ -55,15 +37,15 @@ function ListarAnimais() {
             </div>
 
             <ul className={styles.lista}>
-                {animal.map(animal => (
-                    <li key={animal.id} className={styles.info_box}>
+                {animal.map(animalItem => (
+                    <li key={animalItem.id} className={styles.info_box}>
                         <div className={styles.info}>
                             <h6>Paciente</h6>
-                            <p>{animal.nome}</p>
+                            <p>{animalItem.nome}</p>
                         </div>
                         <div className={styles.info}>
                             <h6>Espécie</h6>
-                            <p>{animal.especie}</p>
+                            <p>{getEspecieName(animalItem.especieId)}</p>
                         </div>
                         <div className={styles.botao}>
                             <button className={styles.acessar_button} onClick={() => handleAcessarClick(animal.id)}>
@@ -73,7 +55,7 @@ function ListarAnimais() {
                     </li>
                 ))}
             </ul>
-        </container>
+        </div>
     );
 }
 

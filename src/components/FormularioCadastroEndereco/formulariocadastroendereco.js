@@ -11,12 +11,48 @@ import { useRouter } from "next/router";
 
 function FormularioCadastroEndereco(){
     const [formularioEndereco, setFormularioEndereco] = useState({
-        rua: "",
-        bairro: "",
-        numero: "",
-        estado: "",
-        cidade: "",
-    });
+        email: "",
+        cpf: "",
+        senha: "",
+        telefone: "",
+        nome: "",
+        endereco: {
+          cep: "",
+          rua: "",
+          municipio: "",
+          cidade: "",
+          numero: 0,
+          bairro: ""
+        },
+        rg: "",
+        animal: {
+          nome: "",
+          sexo: "",
+          alergias: "",
+          dataNascimento: "",
+          imagem: "", // Pode ser alterado para peso, conforme sua necessidade
+          raca: {
+            nome: "",
+            porte: "",
+            descricao: "",
+            especie: {
+              nome: "",
+              descricao: ""
+            }
+          },
+          historicoMedicoPregresso: {
+            produto: "",
+            observacoes: "",
+            data: "",
+            medicacaoPeriodica: [
+              {
+                nome: "",
+                tipo: ""
+              }
+            ]
+          }
+        }
+      });
 
     const router = useRouter();
 
@@ -25,20 +61,22 @@ function FormularioCadastroEndereco(){
         setFormularioEndereco({...formularioEndereco, [name]: value });
     };
 
-    function handleSubmit(event){
+    const instance = axios.create({
+        baseURL: 'http://localhost:8081/api/v1',
+    });
+
+    async function handleSubmit(event) {
         event.preventDefault();
-        
-        axios.post("http://localhost:3000/tutor", formularioEndereco) //link para o back
-        .then(response =>{
-            console.log(response.data);
 
-            router.push('../pages/cadastroanimal');
-        })
-
-        .catch(error => {
-            console.log('Erro ao enviar os dados para o servidor:', error);
-        });
-    };
+        try {
+            const response = await instance.post("/tutor", formularioEndereco);
+            console.log("Endereço cadastrado com sucesso!", response.data);
+            
+            router.push("/cadastroanimal");
+        } catch (error) {
+            console.error("Erro ao cadastrar o endereço", error);
+        }
+    }
 
     return (
         <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
@@ -49,7 +87,7 @@ function FormularioCadastroEndereco(){
                     class="form-control" 
                     name="rua"
                     placeholder="Ex: Avenida Bom Pastor"
-                    value={formularioEndereco.rua}
+                    value={formularioEndereco.endereco.rua}
                    onChange={handleInputChange}>
                    </input>
 
@@ -60,7 +98,7 @@ function FormularioCadastroEndereco(){
                     class="form-control" 
                     name="bairro" 
                     placeholder="Ex: Centro"
-                    value={formularioEndereco.bairro}
+                    value={formularioEndereco.endereco.bairro}
                    onChange={handleInputChange}>
 
                     </input>
@@ -71,7 +109,7 @@ function FormularioCadastroEndereco(){
                     class="form-control" 
                     name="numero"
                     placeholder="Ex: 123"
-                    value={formularioEndereco.numero}
+                    value={formularioEndereco.endereco.numero}
                    onChange={handleInputChange}>
 
                    </input>
@@ -84,7 +122,7 @@ function FormularioCadastroEndereco(){
                     class="form-control" 
                     name="estado"
                     placeholder="Ex: Pernambuco" 
-                    value={formularioEndereco.estado}
+                    value={formularioEndereco.endereco.estado}
                    onChange={handleInputChange}>
 
                     </input>
@@ -95,14 +133,16 @@ function FormularioCadastroEndereco(){
                     class="form-control" 
                     name="cidade"
                     placeholder="Ex: Garanhuns" 
-                    value={formularioEndereco.cidade}
+                    value={formularioEndereco.endereco.cidade}
                    onChange={handleInputChange}>
                     </input>
             </div>
             </div>
             <div className={styles.continuarbotao}>
                 <VoltarWhiteButton/>
-                <ContinuarGreenButton/>
+                <button type="submit" className={styles.green_button}>
+                    Continuar
+                </button>
             </div>
                 </div>
             </div>
