@@ -14,7 +14,7 @@ function AgendamentosDoDiaPage() {
             < SegundaHeader02 />
         </div>
         <div>
-            < AgendamentosDoDia />
+            {/* < AgendamentosDoDia /> */}
         </div>
         <div>
             < Footer />

@@ -3,14 +3,14 @@ import styles from "./login.module.css"
 import qs from 'qs';
 import axios from "axios";
 import { headers } from "../../../next.config";
-import {getUsuarios} from "../../../services/userService";
+import {getAllUsuarios} from "../../../services/userService";
 
 function FormularioLogin() {
 
     const login = async (e) => {
         e.preventDefault();
         try{
-        const response = getUsuarios();
+        const response = getAllUsuarios();
         console.log(response);
       }catch(error){
         console.log(error);

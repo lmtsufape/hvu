@@ -10,7 +10,7 @@ import {DataCurta} from './data';
 import {DiaDaSemana} from './data';
 import IconeCalendario from './iconeCalendario';
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
-import {ExibirInformacoes} from './alert';
+// import {ExibirInformacoes} from './alert';
 
 function AgendamentosDoDia () {
 
@@ -59,7 +59,7 @@ function AgendamentosDoDia () {
                                     <div className={styles.outra}>Cardiologia</div>
                                     <div className={styles.outra}>08:00 - 09:00</div>
                                 </div>
-                                <button className={styles.botao} onClick={ExibirInformacoes(id)}></button>
+                                {/* <button className={styles.botao} onClick={ExibirInformacoes(id)}></button> */}
                             </div>
                         </th>
                     </tr>
