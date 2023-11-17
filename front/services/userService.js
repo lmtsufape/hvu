@@ -12,7 +12,7 @@ export async function createUsuario(usuarioData) {
   }
   
   // Função para buscar todos os usuarios
-  export async function getAllUsuario() {
+  export async function getAllUsuarios() {
     try {
       const response = await api.get('/usuario');
       return response.data;
