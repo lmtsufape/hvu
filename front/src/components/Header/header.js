@@ -2,6 +2,7 @@ import React from 'react';
 import Image from "next/image";
 import styles from "./header.module.css";
 import {LoginGreenButton} from '../GreenButton/green_button';
+import { LoginWhiteButton } from '../WhiteButton/white_button';
 import {CadastrolWhiteButton} from '../WhiteButton/white_button';
 import LogoHVU from '../LogoHVU/logo_hvu';
 
@@ -16,7 +17,7 @@ export function Header01() {
 
             <div className={styles.box_buttons} >
             <button type="button" className="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
-            <button type="button" className="btn btn-outline-success" id={styles.green_button}>Login</button>
+            < LoginGreenButton />
             </div>
                 
         </header>
@@ -70,7 +71,7 @@ export function Header01() {
             </div>
 
             <div className={styles.box_buttons} >
-                <button type="button" class="btn btn-outline-success" id={styles.white_button}>Login</button>
+                < LoginWhiteButton />
             </div>
                 
         </header>

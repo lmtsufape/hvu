@@ -15,7 +15,7 @@ export function LoginGreenButton() {
     const router = useRouter();
 
     const handleLoginClick = () => {
-        router.push('/login');
+        router.push('/');
     };
 
     return (

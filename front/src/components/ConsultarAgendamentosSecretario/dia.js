@@ -10,7 +10,6 @@ import {DataCurta} from './data';
 import {DiaDaSemana} from './data';
 import IconeCalendario from './iconeCalendario';
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
-// import {ExibirInformacoes} from './alert';
 
 function AgendamentosDoDia () {
 
@@ -35,7 +34,7 @@ function AgendamentosDoDia () {
                     </div>
                 </div>
 
-                                <table className={styles.tabela}>
+                <table className={styles.tabela}>
                     <tr className={styles.linha1}>
                         <th className={styles.coluna1_l1}></th>
                         <th>
@@ -49,18 +48,15 @@ function AgendamentosDoDia () {
                     <tr className={styles.linha}>
                         <th className={styles.coluna1}>08:00</th>
                         <th className={styles.th}>
-                            <div className={styles.externa}>
+                            <button className={styles.botao}>
                                 <div className={styles.interna}>
-                                    <div className={styles.nome}> 
-                                        <div>Theodore</div>
-                                        <div>|</div>
-                                        <div>Canino</div>
-                                    </div>
-                                    <div className={styles.outra}>Cardiologia</div>
-                                    <div className={styles.outra}>08:00 - 09:00</div>
+                                    <div>Theodore</div>
+                                    <div>|</div>
+                                    <div>Canino</div>
                                 </div>
-                                {/* <button className={styles.botao} onClick={ExibirInformacoes(id)}></button> */}
-                            </div>
+                                <div className={styles.outra}>Cardiologia</div>
+                                <div className={styles.outra}>08:00 - 09:00</div>
+                            </button>
                         </th>
                     </tr>
                         

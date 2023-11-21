@@ -95,11 +95,10 @@
     border-bottom: 1px solid #ECECEC;
 }
 
-.externa {
+.botao {
     background-color: #39805F;
-    width: 1,100px;
+    width: 1100px;
     height: 88px;
-    padding: 0px, 20px, 0px, 20px;
     border-radius: 12px;
     display: flex;
     align-items: center;

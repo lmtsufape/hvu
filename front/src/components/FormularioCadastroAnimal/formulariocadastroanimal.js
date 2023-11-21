@@ -1,84 +1,68 @@
-import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState } from "react";import { useRouter } from "next/router";
 import styles from "../FormularioCadastroAnimal/formulariocadastroanimal.module.css";
 import { VoltarWhiteButton } from "../WhiteButton/white_button";
-import axios from "axios";
-import { useRouter } from "next/router";
+import { createAnimal } from "../../../services/animalService";
+import { createEspecie } from "../../../services/especieService";
+import { createRaca } from "../../../services/racaService";
 
 function FormularioCadastroAnimal() {
-  const [formularioAnimal, setFormularioAnimal] = useState({
-    email: "",
-    cpf: "",
-    senha: "",
-    telefone: "",
-    nome: "",
-    endereco: {
-      cep: "",
-      rua: "",
-      municipio: "",
-      cidade: "",
-      numero: 0,
-      bairro: ""
-    },
-    rg: "",
-    animal: {
-      nome: "",
-      sexo: "",
-      alergias: "",
-      dataNascimento: "",
-      imagem: "", // Pode ser alterado para peso, conforme sua necessidade
-      raca: {
-        nome: "",
-        porte: "",
-        descricao: "",
-        especie: {
-          nome: "",
-          descricao: ""
-        }
-      },
-      historicoMedicoPregresso: {
-        produto: "",
-        observacoes: "",
-        data: "",
-        medicacaoPeriodica: [
-          {
-            nome: "",
-            tipo: ""
-          }
-        ]
-      }
-    }
-  });
-
   const router = useRouter();
 
-  function handleAnimalChange(event) {
-    const { name, value } = event.target;
-    setFormularioAnimal({
-      ...formularioAnimal,
-      animal: {
-        ...formularioAnimal.animal,
-        [name]: value
-      }
-    });
-  }
+  const [formularioAnimal, setFormularioAnimal] = useState({
+    nome: "",
+    sexo: "",
+    alergias: "",
+    dataNascimento: "",
+    imagem: "NULL"
+  });
 
-  function handleSubmit(event) {
+  const [formularioEspecie, setFormularioEspecie] = useState({
+    nome: "",
+    descricao: "NULL"
+  });
+
+  const [formularioRaca, setFormularioRaca] = useState({
+    nome: "",
+    porte: "",
+    descricao: "NULL"
+  });
+
+  async function handleSubmit(event) {
     event.preventDefault();
-
-    const instance = axios.create({
-      baseURL: 'http://localhost:8081/api/v1',
-    });
-
-    axios
-      .post("/tutor", formularioAnimal)
-      .then((response) => {
-        console.log("Animal cadastrado com sucesso:", response.data);
-      })
-      .catch((error) => {
-        console.error("Erro ao enviar os dados para o servidor:", error);
-      });
+  
+      const animalPromise = await createAnimal(formularioAnimal);
+      const especiePromise = await createEspecie(formularioEspecie);
+      const racaPromise = await createRaca(formularioRaca);
+  
+      const [animalResponse, especieResponse, racaResponse] = await Promise.all([
+        animalPromise,
+        especiePromise,
+        racaPromise
+      ]);
+  
+      console.log(animalResponse);
+      console.log(especieResponse);
+      console.log(racaResponse);
+  
+      router.push("/consultaranimaltutor");
   }
+  
+
+function handleAnimalChange(event) {
+    const { name, value } = event.target;
+    setFormularioAnimal({ ...formularioAnimal, [name]: value });
+}
+
+function handleEspecieChange(event) {
+  const { name, value } = event.target;
+  setFormularioEspecie({ ...formularioEspecie, [name]: value });
+}
+
+function handleRacaChange(event) {
+  const { name, value } = event.target;
+  setFormularioRaca({ ...formularioRaca, [name]: value });
+}
 
   return (
     <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
@@ -91,7 +75,7 @@ function FormularioCadastroAnimal() {
               className="form-control"
               name="nome"
               placeholder="Insira o nome do animal"
-              value={formularioAnimal.animal.nome}
+              value={formularioAnimal.nome}
               onChange={handleAnimalChange}
             />
           </div>
@@ -101,7 +85,7 @@ function FormularioCadastroAnimal() {
               className="form-control"
               name="dataNascimento"
               placeholder="Ex: 12/12/2012"
-              value={formularioAnimal.animal.dataNascimento}
+              value={formularioAnimal.dataNascimento}
               onChange={handleAnimalChange}
             />
           </div>
@@ -115,8 +99,8 @@ function FormularioCadastroAnimal() {
                 className="form-control"
                 name="especie"
                 placeholder="Insira a espécie do animal"
-                value={formularioAnimal.animal.raca.especie.nome}
-                onChange={handleAnimalChange}
+                value={formularioEspecie.nome}
+                onChange={handleEspecieChange}
               />
             </div>
             <div className="col">
@@ -125,8 +109,8 @@ function FormularioCadastroAnimal() {
                 className="form-control"
                 name="raca"
                 placeholder="Insira a raça do animal"
-                value={formularioAnimal.animal.raca.nome}
-                onChange={handleAnimalChange}
+                value={formularioRaca.nome}
+                onChange={handleRacaChange}
               />
             </div>
           </div>
@@ -135,12 +119,12 @@ function FormularioCadastroAnimal() {
         <div className={styles.espacodosforms}></div>
         <div className="row">
           <div className="col">
-            <label htmlFor="peso" className="form-label">Peso</label>
+            <label htmlFor="peso" className="form-label">Alergias</label>
             <input type="text"
               className="form-control"
-              name="imagem" // Trocar imagem pelo peso, conforme sua necessidade
-              placeholder="Digite o peso"
-              value={formularioAnimal.animal.imagem}
+              name="alergia"
+              placeholder="Alergias"
+              value={formularioAnimal.alergias}
               onChange={handleAnimalChange}
             />
           </div>
@@ -150,8 +134,8 @@ function FormularioCadastroAnimal() {
             <select className="form-select"
               name="porte"
               aria-label="Selecione o porte do animal"
-              value={formularioAnimal.animal.raca.porte}
-              onChange={handleAnimalChange}
+              value={formularioRaca.porte}
+              onChange={handleRacaChange}
             >
               <option value="">Selecione o porte do animal</option>
               <option value="pequeno">Pequeno</option>
@@ -165,7 +149,7 @@ function FormularioCadastroAnimal() {
             <select className="form-select"
               name="sexo"
               aria-label="Selecione o sexo do animal"
-              value={formularioAnimal.animal.sexo}
+              value={formularioAnimal.sexo}
               onChange={handleAnimalChange}
             >
               <option value="">Selecione o sexo do animal</option>
