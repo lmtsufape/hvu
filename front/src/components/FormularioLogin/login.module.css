@@ -1,17 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
 .container {
-
-    width: 1,200px;
-    height: 494px;
     margin-top: 100px;
     margin-bottom: 100px;
-    left: 120px;
     display: flex;
-    justify-items: space-between;
     align-items: center;
-    padding: 100px 120px 100px 120px;
-    gap: 100px;
+    justify-content: center;
+}
+
+.container_box {
+    width: 1400px;
+    height: 494px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .form_box {

@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+  
+  /* Estilo para o contêiner do calendário */
+  .calendar_container {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 1;
+  }
+  
+  /* Estilo para o calendário */
+  .react_calendar {
+    max-width: 300px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Estilo para os dias no calendário */
+  .react_calendar__tile {
+    font-size: 14px;
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  /* Estilo para o dia selecionado no calendário */
+  .react_calendar__tile--active {
+    background-color: #007bff;
+    color: white;
+  }
+  

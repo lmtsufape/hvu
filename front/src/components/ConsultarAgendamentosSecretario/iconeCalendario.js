@@ -1,40 +1,33 @@
 import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import Image from "next/image";
-import 'react-datepicker/dist/react-datepicker.css';
-import ptBR from 'date-fns/locale/pt-BR';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 function IconeCalendario() {
-  const [dataSelecionada, setDataSelecionada] = useState(null);
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
+  const [dataSelecionada, setDataSelecionada] = useState(new Date());
 
-  const handleDataSelecionada = (date) => {
-    setDataSelecionada(date);
-  };
-
-  const mostrarOcultarCalendario = () => {
+  const handleClickImagem = () => {
     setMostrarCalendario(!mostrarCalendario);
   };
 
+  const onChangeData = (novaData) => {
+    setDataSelecionada(novaData);
+  };
+
   return (
-    <div className="mb-3">
-      <div className="form-label">
-        <img
-          src="./images/calendario.svg"
-          alt="Calendário"
-          onMouseEnter={mostrarOcultarCalendario}
-          onMouseLeave={mostrarOcultarCalendario}
-        />
-        {mostrarCalendario && (
-          <DatePicker
-            selected={dataSelecionada}
-            onChange={handleDataSelecionada}
-            dateFormat="dd/MM/yyyy"
-            className="form-control"
-            locale={ptBR}
-          />
-        )}
-      </div>
+    <div>
+      <img
+        src='./images/calendario.svg'
+        alt="Imagem"
+        onClick={handleClickImagem}
+        style={{ cursor: 'pointer' }}
+      />
+
+      {mostrarCalendario && (
+        <div style={{ position: 'absolute', zIndex: 1 }}>
+          <Calendar onChange={onChangeData} value={dataSelecionada} />
+        </div>
+      )}
     </div>
   );
 }

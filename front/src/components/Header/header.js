@@ -11,7 +11,7 @@ export function Header01() {
         <header className={styles.header}>
             
             <div className={styles.boxlogo}>
-                <LogoHVU />
+                < LogoHVU />
             </div>
 
             <div className={styles.box_buttons} >
@@ -29,7 +29,7 @@ export function Header01() {
         <header className={styles.header}>
             
             <div className={styles.boxlogo}>
-                <LogoHVU />
+                < LogoHVU />
             </div>
 
             <div className={styles.box_buttons} >
@@ -47,7 +47,7 @@ export function Header01() {
         <header className={styles.header}>
             
             <div className={styles.boxlogo}>
-                <LogoHVU />
+                < LogoHVU />
             </div>
 
             <div className={styles.box_buttons} >
@@ -66,7 +66,7 @@ export function Header01() {
         <header className={styles.header}>
             
             <div className={styles.boxlogo}>
-                <LogoHVU />
+                < LogoHVU />
             </div>
 
             <div className={styles.box_buttons} >
