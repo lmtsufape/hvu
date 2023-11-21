@@ -10,7 +10,7 @@ function FormularioLogin() {
     const login = async (e) => {
         e.preventDefault();
         try{
-        const response = getAllUsuarios();
+        const response = await getAllUsuarios();
         console.log(response);
       }catch(error){
         console.log(error);

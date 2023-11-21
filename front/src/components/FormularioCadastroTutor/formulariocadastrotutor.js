@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./formulariocadastrotutor.module.css";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { createTutor } from "../../../services/tutorService"
 
 function FormularioCadastroTutor() {
     const router = useRouter();
@@ -16,22 +17,18 @@ function FormularioCadastroTutor() {
         telefone: ""
     });
 
-    const instance = axios.create({
-        baseURL: 'http://localhost:8081/api/v1',
-    });
-
     async function handleSubmit(event) {
         event.preventDefault();
-
+    
         try {
-            const response = await instance.post("/tutor", formularioTutor);
-            console.log("Tutor cadastrado com sucesso!", response.data);
-            
+            const response = await createTutor(formularioTutor);
+            console.log(response);
             router.push("/cadastroendereco");
         } catch (error) {
-            console.error("Erro ao cadastrar o tutor", error);
+            console.error("Erro ao cadastrar tutor:", error);
         }
     }
+    
 
     function handleInputChange(event) {
         const { name, value } = event.target;
