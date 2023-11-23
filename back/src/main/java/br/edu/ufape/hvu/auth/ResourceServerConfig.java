@@ -3,10 +3,13 @@ package br.edu.ufape.hvu.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
 public class ResourceServerConfig  {
 
 	@Autowired
@@ -20,7 +23,7 @@ public class ResourceServerConfig  {
 								authz
 										.requestMatchers("/security/**").permitAll()
 										.requestMatchers("/api-doc/**").permitAll()
-                                   		.requestMatchers("/**").permitAll()
+
 										.anyRequest().authenticated()
 				)
 				.oauth2ResourceServer(oauth2ResourceServer ->
@@ -28,6 +31,7 @@ public class ResourceServerConfig  {
 								.jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
 						)
 				)
+				.cors(Customizer.withDefaults())
 		;
 		return http.build();
 	}
