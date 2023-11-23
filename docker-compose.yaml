@@ -11,6 +11,7 @@ services:
     networks:
       - hvu-networks
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://backend-db:5432/hvu
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password

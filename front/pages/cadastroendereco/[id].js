@@ -1,10 +1,9 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Image from 'next/image'
-import styles from "../src/components/FormularioCadastroTutor/formulariocadastrotutor.module.css"
-import {Header04} from "../src/components/Header/header";
-import Footer from "../src/components/Footer/Footer";
-import FormularioCadastroEndereco from "../src/components/FormularioCadastroEndereco/formulariocadastroendereco";
+import styles from "../../src/components/FormularioCadastroTutor/formulariocadastrotutor.module.css"
+import {Header04} from "../../src/components/Header/header";
+import Footer from "../../src/components/Footer/Footer";
+import FormularioCadastroEndereco from "../../src/components/FormularioCadastroEndereco/formulariocadastroendereco";
 
 
 function PageCadastroEndereco(){

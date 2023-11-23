@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
 import styles from './listaAnimaisSecretario.module.css';
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
 import FiltrarWhiteButton from '../WhiteButton/filtrar_button';
+import { getAllAnimal } from '../../../services/animalService';
+import { getAllEspecie } from '../../../services/especieService';
+import { getAllRaca } from '../../../services/racaService';
+import { getAllTutor } from '../../../services/tutorService';
 
 function ListarAnimais() {
     const [animal, setAnimal] = useState([]);
@@ -11,29 +14,68 @@ function ListarAnimais() {
     const [tutor, setTutor] = useState([]);
     const [raca, setRaca] = useState([]);
 
+    async function fetchAllAnimal() {
+        try {
+            const response = await getAllAnimal();
+        } catch (error) {
+            console.error('Erro ao buscar todos os animais:', error);
+            throw error;
+        }
+    }
+    
+    async function fetchAllEspecie() {
+        try {
+            const response = await getAllEspecie();
+        } catch (error) {
+            console.error('Erro ao buscar todas as espécies:', error);
+            throw error;
+        }
+    }
+
+    async function fetchAllRaca() {
+        try {
+            const response = await getAllRaca();
+        } catch (error) {
+            console.error('Erro ao buscar todas as espécies:', error);
+            throw error;
+        }
+    }
+
+    async function fetchAllTutor() {
+        try {
+            const response = await getAllTutor();
+        } catch (error) {
+            console.error('Erro ao buscar todas as espécies:', error);
+            throw error;
+        }
+    }
+    
     useEffect(() => {
-        Promise.all([
-            axios.get('http://localhost:8081/api/v1/especie'),
-            axios.get('http://localhost:8081/api/v1/tutor'),
-            axios.get('http://localhost:8081/api/v1/animal'),
-            axios.get('http://localhost:8081/api/v1/raca')
-        ])
-        .then(([especieResponse, tutorResponse, animalResponse, racaResponse]) => {
-            setEspecie(especieResponse.data);
-            setTutor(tutorResponse.data);
-            setAnimal(animalResponse.data);
-            setRaca(racaResponse.data);
-        })
-        .catch(error => {
-            console.error('Erro ao puxar dados da API:', error);
-        });
+        async function fetchData() {
+            try {
+                const [especie, animal, raca, tutor] = await Promise.all([
+                    fetchAllEspecie(),
+                    fetchAllAnimal(),
+                    fetchAllRaca(),
+                    fetchAllTutor()
+                ]);
+
+                setEspecie(especie);
+                setAnimal(animal);
+                setRaca(raca);
+                setTutor(tutor);
+            } catch (error) {
+                console.error('Erro ao puxar dados da API:', error);
+            }
+        }
+        fetchData();
     }, []);
 
     const router = useRouter();
 
-    const handleAcessarClick = (animalId) => {
-        router.push(`/perfilanimaletutor/${animalId}`);
-    };
+    // const handleAcessarClick = (animalId) => {
+    //     router.push(`/perfilanimaletutor/${animalId}`);
+    // };
 
     return (
         <div className={styles.container}>
@@ -52,11 +94,14 @@ function ListarAnimais() {
                     <div>Raça</div>
                     <div>Ação</div>
                 </div>
-                    <div className={styles.info}>
-                        <div>{tutor.nome}</div>
-                        <div>{animal.nome}</div>
-                        <div>{especie.nome}</div>
-                        <div>{raca.nome}</div>
+                
+                {animal.map((animalItem, index) => (
+                    <div key={index} className={styles.info}>
+                        <div>{tutor[index].nome}</div>
+                        <div>{animalItem.nome}</div>
+                        <div>{especie[index].nome}</div>
+                        <div>{raca[index].nome}</div>
+
                         <div>
                             <button
                                 className={styles.acessar_button}
@@ -66,6 +111,7 @@ function ListarAnimais() {
                             </button>
                         </div>
                     </div>
+                ))}
             </ul>
         </div>
     );
