@@ -4,34 +4,50 @@ import styles from "../FormularioCadastroEndereco/formulariocadastroendereco.mod
 import { ContinuarGreenButton } from "../GreenButton/green_button";
 import { VoltarWhiteButton } from "../WhiteButton/white_button";
 import { useRouter } from "next/router";
-import { createEndereco } from "../../../services/enderecoService";
+import { createTutor } from "../../../services/enderecoService";
 
-
-function FormularioCadastroEndereco(){
+function FormularioCadastroEndereco() {
   const router = useRouter();
+  const { id } = router.query;
 
   const [formularioEndereco, setFormularioEndereco] = useState({
-    cep: "",
-    rua: "",
-    municipio: "",
-    cidade: "",
-    numero: "",
-    bairro: ""
-});
+    endereco: {
+      cep: "",
+      rua: "",
+      municipio: "",
+      cidade: "",
+      numero: "",
+      bairro: ""
+    }
+  });
 
-async function handleSubmit(event) {
-    event.preventDefault();
-
-    const response = await createEndereco(formularioEndereco);
-    console.log(response);
-    
-    router.push("/cadastroanimal");
-}
-
-function handleInputChange(event) {
+  function handleInputChange(event) {
     const { name, value } = event.target;
-    setFormularioEndereco({ ...formularioEndereco, [name]: value });
-}
+    setFormularioEndereco({
+      endereco: {
+        ...formularioEndereco.endereco,
+        [name]: value
+      }
+    });
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+  
+    // Verifica se o ID não é nulo
+    if (id) {
+      // Aqui você pode utilizar o ID da URL (id) para alguma lógica
+      console.log("ID da URL:", id);
+  
+      const response = await createTutor(formularioEndereco);
+      console.log(response);
+  
+      // Aqui você pode redirecionar para a URL com o ID, se necessário
+      router.push(`/cadastroanimal/${id}`);
+    } else {
+      console.error("ID da URL não encontrado");
+    }
+  }
 
   return (
     <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
@@ -42,7 +58,7 @@ function handleInputChange(event) {
               class="form-control" 
               name="rua"
               placeholder="Ex: Avenida Bom Pastor"
-              value={formularioEndereco.rua}
+              value={formularioEndereco.endereco.rua}
               onChange={handleInputChange}>
             </input>
         </div>
@@ -53,7 +69,7 @@ function handleInputChange(event) {
             class="form-control" 
             name="bairro" 
             placeholder="Ex: Centro"
-            value={formularioEndereco.bairro}
+            value={formularioEndereco.endereco.bairro}
             onChange={handleInputChange}>
           </input>
         </div>
@@ -66,7 +82,7 @@ function handleInputChange(event) {
                   class="form-control" 
                   name="numero"
                   placeholder="Ex: 140" 
-                  value={formularioEndereco.numero}
+                  value={formularioEndereco.endereco.numero}
                   onChange={handleInputChange}>
                 </input>
               </div>
@@ -76,7 +92,7 @@ function handleInputChange(event) {
                   class="form-control" 
                   name="cep"
                   placeholder="Ex: 55250-000" 
-                  value={formularioEndereco.cep}
+                  value={formularioEndereco.endereco.cep}
                   onChange={handleInputChange}>
                 </input>
               </div>
@@ -90,7 +106,7 @@ function handleInputChange(event) {
                   class="form-control" 
                   name="municipio"
                   placeholder="Ex: Pernambuco" 
-                  value={formularioEndereco.municipio}
+                  value={formularioEndereco.endereco.municipio}
                   onChange={handleInputChange}>
                 </input>
               </div>
@@ -100,7 +116,7 @@ function handleInputChange(event) {
                   class="form-control" 
                   name="cidade"
                   placeholder="Ex: Garanhuns" 
-                  value={formularioEndereco.cidade}
+                  value={formularioEndereco.endereco.cidade}
                   onChange={handleInputChange}>
                 </input>
               </div>

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./formulariocadastrotutor.module.css";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { createTutor } from "../../../services/tutorService"
 
@@ -17,22 +16,25 @@ function FormularioCadastroTutor() {
         telefone: ""
     });
 
-    async function handleSubmit(event) {
-        event.preventDefault();
-    
-        try {
-            const response = await createTutor(formularioTutor);
-            console.log(response);
-            router.push("/cadastroendereco");
-        } catch (error) {
-            console.error("Erro ao cadastrar tutor:", error);
-        }
-    }
-    
-
     function handleInputChange(event) {
         const { name, value } = event.target;
         setFormularioTutor({ ...formularioTutor, [name]: value });
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        try {
+            const response = await createTutor(formularioTutor);
+
+            // Extrair o ID do tutor da resposta
+            const tutorId = response.id;
+
+            // Redirecionar para a próxima página incluindo o ID do tutor na URL
+            router.push(`/cadastroendereco/${tutorId}`);
+        } catch (error) {
+            console.error("Erro ao cadastrar tutor:", error);
+        }
     }
 
     return (

@@ -1,13 +1,15 @@
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState } from "react";import { useRouter } from "next/router";
 import styles from "../FormularioCadastroAnimal/formulariocadastroanimal.module.css";
 import { VoltarWhiteButton } from "../WhiteButton/white_button";
 import { createAnimal } from "../../../services/animalService";
 import { createEspecie } from "../../../services/especieService";
 import { createRaca } from "../../../services/racaService";
+import { useRouter } from "next/router";
 
 function FormularioCadastroAnimal() {
   const router = useRouter();
+  const { id } = router.query;
 
   const [formularioAnimal, setFormularioAnimal] = useState({
     nome: "",
@@ -30,39 +32,39 @@ function FormularioCadastroAnimal() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-  
-      const animalPromise = await createAnimal(formularioAnimal);
-      const especiePromise = await createEspecie(formularioEspecie);
-      const racaPromise = await createRaca(formularioRaca);
-  
-      const [animalResponse, especieResponse, racaResponse] = await Promise.all([
-        animalPromise,
-        especiePromise,
-        racaPromise
-      ]);
-  
-      console.log(animalResponse);
-      console.log(especieResponse);
-      console.log(racaResponse);
-  
-      router.push("/consultaranimaltutor");
-  }
-  
 
-function handleAnimalChange(event) {
+    const animalPromise = await createAnimal(formularioAnimal);
+    const especiePromise = await createEspecie(formularioEspecie);
+    const racaPromise = await createRaca(formularioRaca);
+
+    const [animalResponse, especieResponse, racaResponse] = await Promise.all([
+      animalPromise,
+      especiePromise,
+      racaPromise
+    ]);
+
+    console.log(animalResponse);
+    console.log(especieResponse);
+    console.log(racaResponse);
+
+    // Aqui você pode redirecionar para a URL com o ID, se necessário
+    router.push(`/consultaranimaltutor/${id}`);
+  }
+
+  function handleAnimalChange(event) {
     const { name, value } = event.target;
     setFormularioAnimal({ ...formularioAnimal, [name]: value });
-}
+  }
 
-function handleEspecieChange(event) {
-  const { name, value } = event.target;
-  setFormularioEspecie({ ...formularioEspecie, [name]: value });
-}
+  function handleEspecieChange(event) {
+    const { name, value } = event.target;
+    setFormularioEspecie({ ...formularioEspecie, [name]: value });
+  }
 
-function handleRacaChange(event) {
-  const { name, value } = event.target;
-  setFormularioRaca({ ...formularioRaca, [name]: value });
-}
+  function handleRacaChange(event) {
+    const { name, value } = event.target;
+    setFormularioRaca({ ...formularioRaca, [name]: value });
+  }
 
   return (
     <div className={`${styles.boxcadastrotutor} ${styles.container}`}>
