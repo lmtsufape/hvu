@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../FormularioCadastroAnimal/formulariocadastroanimal.module.css";
 import { VoltarWhiteButton } from "../WhiteButton/white_button";
-import { createAnimal } from "../../../services/animalService";
-import { createEspecie } from "../../../services/especieService";
-import { createRaca } from "../../../services/racaService";
+import { updateTutor } from "../../../services/tutorService";
 import { useRouter } from "next/router";
 
 function FormularioCadastroAnimal() {
@@ -12,58 +10,43 @@ function FormularioCadastroAnimal() {
   const { id } = router.query;
 
   const [formularioAnimal, setFormularioAnimal] = useState({
-    nome: "",
-    sexo: "",
-    alergias: "",
-    dataNascimento: "",
-    imagem: "NULL"
-  });
-
-  const [formularioEspecie, setFormularioEspecie] = useState({
-    nome: "",
-    descricao: "NULL"
-  });
-
-  const [formularioRaca, setFormularioRaca] = useState({
-    nome: "",
-    porte: "",
-    descricao: "NULL"
+    animal: {
+      nome: "",
+      sexo: "",
+      alergias: "",
+      dataNascimento: "",
+      especie: {
+        nome: ""
+      },
+      raca: {
+        nome: "",
+        porte:""
+      }
+    }
   });
 
   async function handleSubmit(event) {
     event.preventDefault();
-
-    const animalPromise = await createAnimal(formularioAnimal);
-    const especiePromise = await createEspecie(formularioEspecie);
-    const racaPromise = await createRaca(formularioRaca);
-
-    const [animalResponse, especieResponse, racaResponse] = await Promise.all([
-      animalPromise,
-      especiePromise,
-      racaPromise
-    ]);
-
-    console.log(animalResponse);
-    console.log(especieResponse);
-    console.log(racaResponse);
-
-    // Aqui você pode redirecionar para a URL com o ID, se necessário
-    router.push(`/consultaranimaltutor/${id}`);
+  
+    if (id) {
+      console.log("ID da URL:", id);
+  
+      try {
+        const response = await updateTutor(id, { animal: formularioAnimal.animal });
+        console.log(response);
+  
+       // router.push(`/cadastroanimal/${id}`);
+      } catch (error) {
+        console.error("Erro ao atualizar tutor:", error);
+      }
+    } else {
+      console.error("ID da URL não encontrado");
+    }
   }
 
   function handleAnimalChange(event) {
     const { name, value } = event.target;
     setFormularioAnimal({ ...formularioAnimal, [name]: value });
-  }
-
-  function handleEspecieChange(event) {
-    const { name, value } = event.target;
-    setFormularioEspecie({ ...formularioEspecie, [name]: value });
-  }
-
-  function handleRacaChange(event) {
-    const { name, value } = event.target;
-    setFormularioRaca({ ...formularioRaca, [name]: value });
   }
 
   return (
@@ -77,7 +60,7 @@ function FormularioCadastroAnimal() {
               className="form-control"
               name="nome"
               placeholder="Insira o nome do animal"
-              value={formularioAnimal.nome}
+              value={formularioAnimal.animal.nome}
               onChange={handleAnimalChange}
             />
           </div>
@@ -87,7 +70,7 @@ function FormularioCadastroAnimal() {
               className="form-control"
               name="dataNascimento"
               placeholder="Ex: 12/12/2012"
-              value={formularioAnimal.dataNascimento}
+              value={formularioAnimal.animal.dataNascimento}
               onChange={handleAnimalChange}
             />
           </div>
@@ -101,8 +84,8 @@ function FormularioCadastroAnimal() {
                 className="form-control"
                 name="especie"
                 placeholder="Insira a espécie do animal"
-                value={formularioEspecie.nome}
-                onChange={handleEspecieChange}
+                value={formularioAnimal.animal.especie.nome}
+                onChange={handleAnimalChange}
               />
             </div>
             <div className="col">
@@ -111,8 +94,8 @@ function FormularioCadastroAnimal() {
                 className="form-control"
                 name="raca"
                 placeholder="Insira a raça do animal"
-                value={formularioRaca.nome}
-                onChange={handleRacaChange}
+                value={formularioAnimal.animal.raca.nome}
+                onChange={handleAnimalChange}
               />
             </div>
           </div>
@@ -126,7 +109,7 @@ function FormularioCadastroAnimal() {
               className="form-control"
               name="alergia"
               placeholder="Alergias"
-              value={formularioAnimal.alergias}
+              value={formularioAnimal.animal.alergias}
               onChange={handleAnimalChange}
             />
           </div>
@@ -136,8 +119,8 @@ function FormularioCadastroAnimal() {
             <select className="form-select"
               name="porte"
               aria-label="Selecione o porte do animal"
-              value={formularioRaca.porte}
-              onChange={handleRacaChange}
+              value={formularioAnimal.animal.raca.porte}
+              onChange={handleAnimalChange}
             >
               <option value="">Selecione o porte do animal</option>
               <option value="pequeno">Pequeno</option>
@@ -151,7 +134,7 @@ function FormularioCadastroAnimal() {
             <select className="form-select"
               name="sexo"
               aria-label="Selecione o sexo do animal"
-              value={formularioAnimal.sexo}
+              value={formularioAnimal.animal.sexo}
               onChange={handleAnimalChange}
             >
               <option value="">Selecione o sexo do animal</option>
@@ -163,7 +146,7 @@ function FormularioCadastroAnimal() {
 
         <div className={styles.continuarbotao}>
           <VoltarWhiteButton />
-          <button className={styles.green_button}>
+          <button type="submit" className={styles.green_button}>
             Finalizar
           </button>
         </div>

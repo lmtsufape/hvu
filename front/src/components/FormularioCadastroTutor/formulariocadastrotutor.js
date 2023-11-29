@@ -26,11 +26,7 @@ function FormularioCadastroTutor() {
 
         try {
             const response = await createTutor(formularioTutor);
-
-            // Extrair o ID do tutor da resposta
             const tutorId = response.id;
-
-            // Redirecionar para a próxima página incluindo o ID do tutor na URL
             router.push(`/cadastroendereco/${tutorId}`);
         } catch (error) {
             console.error("Erro ao cadastrar tutor:", error);

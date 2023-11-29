@@ -4,7 +4,7 @@ import styles from "../FormularioCadastroEndereco/formulariocadastroendereco.mod
 import { ContinuarGreenButton } from "../GreenButton/green_button";
 import { VoltarWhiteButton } from "../WhiteButton/white_button";
 import { useRouter } from "next/router";
-import { createTutor } from "../../../services/enderecoService";
+import { updateTutor } from "../../../services/tutorService";
 
 function FormularioCadastroEndereco() {
   const router = useRouter();
@@ -39,11 +39,16 @@ function FormularioCadastroEndereco() {
       // Aqui você pode utilizar o ID da URL (id) para alguma lógica
       console.log("ID da URL:", id);
   
-      const response = await createTutor(formularioEndereco);
-      console.log(response);
+      try {
+        // Use o ID da URL para chamar a função de atualização com o endereço
+        const response = await updateTutor(id, { endereco: formularioEndereco.endereco });
+        console.log(response);
   
-      // Aqui você pode redirecionar para a URL com o ID, se necessário
-      router.push(`/cadastroanimal/${id}`);
+        // Aqui você pode redirecionar para a URL com o ID, se necessário
+        router.push(`/cadastroanimal/${id}`);
+      } catch (error) {
+        console.error("Erro ao atualizar tutor:", error);
+      }
     } else {
       console.error("ID da URL não encontrado");
     }
@@ -131,7 +136,7 @@ function FormularioCadastroEndereco() {
         </div>
       </form>
     </div>
-  )
+  );
 }
 
 export default FormularioCadastroEndereco
