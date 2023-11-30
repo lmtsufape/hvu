@@ -19,6 +19,7 @@ public  class UsuarioResponse  {
 	private String senha;
 	private String telefone;
 	private String nome;
+	private String userId;
 	private EnderecoResponse endereco; 
 
 

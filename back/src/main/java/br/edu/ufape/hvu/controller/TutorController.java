@@ -5,6 +5,10 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -35,7 +39,11 @@ public class TutorController {
 	
 	@PostMapping("tutor")
 	public TutorResponse createTutor(@Valid @RequestBody TutorRequest newObj) {
-		return new TutorResponse(facade.saveTutor(newObj.convertToEntity()));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		Tutor o = newObj.convertToEntity();
+		o.setUserId(principal.getSubject());
+		return new TutorResponse(facade.saveTutor(o));
 	}
 	
 	@GetMapping("tutor/{id}")
@@ -50,15 +58,22 @@ public class TutorController {
 	@PatchMapping("tutor/{id}")
 	public TutorResponse updateTutor(@PathVariable Long id, @Valid @RequestBody TutorRequest obj) {
 		try {
-			//Tutor o = obj.convertToEntity();
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			
+			Tutor o = obj.convertToEntity();
 			Tutor oldObject = facade.findTutorById(id);
-
-			TypeMap<TutorRequest, Tutor> typeMapper = modelMapper
-													.typeMap(TutorRequest.class, Tutor.class)
+			
+			if(!principal.getSubject().equals(oldObject.getUserId())) {
+				throw new AccessDeniedException("This is not your account");
+			}
+		
+			TypeMap<Tutor, Tutor> typeMapper = modelMapper
+													.typeMap(Tutor.class, Tutor.class)
 													.addMappings(mapper -> mapper.skip(Tutor::setId));			
 			
 			
-			typeMapper.map(obj, oldObject);	
+			typeMapper.map(o, oldObject);	
 			return new TutorResponse(facade.updateTutor(oldObject));
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
@@ -69,6 +84,14 @@ public class TutorController {
 	@DeleteMapping("tutor/{id}")
 	public String deleteTutor(@PathVariable Long id) {
 		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			
+			Tutor oldObject = facade.findTutorById(id);
+			
+			if(!principal.getSubject().equals(oldObject.getUserId())) {
+				throw new AccessDeniedException("This is not your account");
+			}
 			facade.deleteTutor(id);
 			return "";
 		} catch (RuntimeException ex) {

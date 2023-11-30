@@ -28,6 +28,7 @@ public  class Usuario implements Serializable {
 	private String senha;
 	private String telefone;
 	private String nome;
+	private String userId;
 	@OneToOne(cascade = CascadeType.ALL,
 		orphanRemoval = true		
 	)
