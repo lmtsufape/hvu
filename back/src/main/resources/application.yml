@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/hvu
-    username: hvu
-    password: hvu
+    url: jdbc:postgresql://localhost:5432/banco
+    username: ines
+    password: 0609
 
   jpa:
     show-sql: true
