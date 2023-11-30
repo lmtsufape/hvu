@@ -1,48 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';  // Don't forget to import useRouter
 import styles from "./consultar_animal_tutor.module.css";
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton/white_button";
-import { getAllAnimal } from '../../../services/animalService';
-import { getAllEspecie } from '../../../services/especieService';
+import { getTutorById } from '../../../services/tutorService';
 
 function ListarAnimais() {
     const [animal, setAnimal] = useState([]);
-    const [especie, setEspecie] = useState([]);
+    const router = useRouter();
 
-    async function fetchAllAnimais() {
-        try {
-            const response = await getAllAnimal();
-        } catch (error) {
-            console.error('Erro ao buscar todos os animais:', error);
-            throw error;
-        }
-    }
-    
-    async function fetchAllEspecies() {
-        try {
-            const response = await getAllEspecie();
-        } catch (error) {
-            console.error('Erro ao buscar todas as espécies:', error);
-            throw error;
-        }
-    }
-    
     useEffect(() => {
-        async function fetchData() {
+        const { tutorId } = router.query;
+      
+        const fetchTutorById = async () => {
             try {
-                const [especie, animal] = await Promise.all([
-                    fetchAllEspecies(),
-                    fetchAllAnimais()
-                ]);
-    
-                setEspecie(especie);
-                setAnimal(animal);
+                const response = await getTutorById(tutorId);
+                setAnimal(response); 
             } catch (error) {
-                console.error('Erro ao puxar dados da API:', error);
+                console.error('Erro ao buscar o tutor pelo ID:', error);
+                // Handle error as needed
             }
+        };
+
+        if (tutorId) {
+            fetchTutorById();
         }
-        fetchData();
-    }, []);
+    }, [router.query]);
+      
 
     const handleAcessarClick = (animalId) => {
         router.push(`/perfildoanimal/${animalId}`);
@@ -58,18 +42,21 @@ function ListarAnimais() {
             </div>
 
             <ul className={styles.lista}>
-                {animal.map((animalItem, index) => (
-                    <li key={animalItem.id} className={styles.info_box}>
+                {animal.map((tutor) => (
+                    <li key={tutor.id} className={styles.info_box}>
                         <div className={styles.info}>
                             <h6>Paciente</h6>
-                            <p>{animalItem.nome}</p>
+                            <p>{tutor.animal.nome}</p>
                         </div>
                         <div className={styles.info}>
                             <h6>Espécie</h6>
-                            <p>{especie[index].nome}</p>
+                            <p>{tutor.animal.especie.nome}</p>
                         </div>
                         <div className={styles.botao}>
-                            <button className={styles.acessar_button} onClick={() => handleAcessarClick(animalItem.id)}>
+                            <button
+                                className={styles.acessar_button}
+                                onClick={() => handleAcessarClick(tutor.animal.id)}
+                            >
                                 Acessar
                             </button>
                         </div>
