@@ -20,7 +20,7 @@
     border-radius: 10px;
     font-family: 'Poppins', sans-serif;
     font-style: normal;
-    
+    margin-top: 60px;
   }
 .titulocadastro{
     text-align: center;
@@ -74,8 +74,6 @@
   margin-top: 10px;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
-
 .green_button {
     width: 180px;
     height: 48px;
@@ -92,5 +90,13 @@
     background-color: #5b977b;
 }
 
+.titulo {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+  text-align: left;
 
+}
   
