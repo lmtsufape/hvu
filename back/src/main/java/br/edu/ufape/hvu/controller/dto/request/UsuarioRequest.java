@@ -20,6 +20,7 @@ public  class UsuarioRequest  {
 	private String senha;
 	private String telefone;
 	private String nome;
+	private String userId;
 	private EnderecoRequest endereco; 
 
 
