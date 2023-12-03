@@ -29,6 +29,10 @@ public class Facade {
 	public Tutor findTutorByuserId(String userId) {
 		return tutorService.findTutorByuserId(userId);
 	}
+	
+	public Tutor findTutorByanimalId(long animalId) {
+		return tutorService.findTutorByanimalId(animalId);
+	}
 
 	public List<Tutor> getAllTutor() {
 		return tutorService.getAllTutor();
