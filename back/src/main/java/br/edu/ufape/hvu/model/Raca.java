@@ -25,7 +25,7 @@ public  class Raca  {
 	private String nome;
 	private String porte;
 	private String descricao;
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private Especie especie; 
 
