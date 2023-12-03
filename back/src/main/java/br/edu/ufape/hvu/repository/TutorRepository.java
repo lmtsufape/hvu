@@ -9,7 +9,5 @@ import br.edu.ufape.hvu.model.Tutor;
 
 @Repository
 public interface TutorRepository extends JpaRepository<Tutor, Long> {
-
-	
-
+	Tutor findByuserId (String userId);
 }

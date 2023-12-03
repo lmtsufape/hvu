@@ -17,6 +17,7 @@ import lombok.Setter;
 public  class EspecieRequest  {
 	private String nome;
 	private String descricao;
+	private long id;
 
 
 	public Especie convertToEntity() {
