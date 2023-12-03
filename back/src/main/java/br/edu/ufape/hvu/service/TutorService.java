@@ -24,6 +24,14 @@ public class TutorService implements TutorServiceInterface {
 		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Tutor with id = " + id));
 	}
 	
+	public Tutor findTutorByanimalId(long animalId) {
+		try {
+			return repository.findByanimalId(animalId);
+		} catch (RuntimeException ex){
+			throw new RuntimeException ("It doesn't exist Tutor with id = " + animalId);
+		}
+	}
+	
 	public Tutor findTutorByuserId(String userId) {
 		try {
 			return repository.findByuserId(userId);
