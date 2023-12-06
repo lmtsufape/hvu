@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import styles from "./white_button.module.css"; // Importe o módulo CSS
+import styles from "./index.module.css";
 
 function FiltrarWhiteButton() {
   return (

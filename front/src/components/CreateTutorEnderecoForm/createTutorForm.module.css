@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+.container {
+  justify-content: center;
+  align-items: center;
+}
+  
+.boxcadastrotutor {
+  display: block;
+  width: 80%;
+  max-width: 1500px;
+  min-width: 300px;
+  height: auto; 
+  background-color: white;
+  padding: 30px;
+  margin: auto;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+}
+
+.continuarbotao{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 50px;
+  margin-bottom: 0px;
+  gap: 3%;
+}
+
+.espacodosforms{
+  margin-top: 10px;
+}
+
+.titulo {
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+  text-align: left;
+  margin-bottom: 10px;
+}
+  

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import styles from './white_button.module.css'
+import styles from './index.module.css'
 
 const text_white_button = {
     login: 'Login',

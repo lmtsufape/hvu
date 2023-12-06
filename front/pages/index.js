@@ -1,6 +1,6 @@
 import FormularioLogin from "../src/components/FormularioLogin/formulariologin";
 import { Header02 } from "../src/components/Header/header";
-import Text from "../src/components/TextoLogin/texto_login_page";
+import Text from "../src/components/TextLogin";
 import styles from "../src/components/FormularioLogin/login.module.css";
 import Footer from "@/components/Footer/Footer";
 

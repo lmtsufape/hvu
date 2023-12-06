@@ -2,8 +2,8 @@ import React from 'react';
 import Image from "next/image";
 import styles from "./header.module.css";
 import {LoginGreenButton} from '../GreenButton/green_button';
-import { LoginWhiteButton } from '../WhiteButton/white_button';
-import {CadastrolWhiteButton} from '../WhiteButton/white_button';
+import { LoginWhiteButton } from '../WhiteButton';
+import {CadastrolWhiteButton} from '../WhiteButton';
 import LogoHVU from '../LogoHVU/logo_hvu';
 
 //Header com botão de login e cadastro

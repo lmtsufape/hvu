@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+/* Estilos de createtutor(page) */
+.barradeprogresso{
+    display: flex;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    vertical-align: middle;
+    color: #d3d3d3;
+  }
+  
+  .textobarradeprogresso{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    width: 40vb;
+    height: 5vh;
+    border-bottom: 0.5vh solid;
+    font-size: 15px;
+    border-radius: 2px;
+    margin-left: -23px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .textodocentro{
+    margin-left: 10vh;
+    margin-right: 10vh;
+  }
+
+  .corverdedabarra{
+    color: #327053;
+  }
+
+/* Estilos do componente index.js */
+.container {
+    display: block;
+    width: 60%;
+    max-width: 1500px;
+    min-width: 300px;
+    height: auto; 
+    margin: auto;
+}
+
+.box {
+    border-radius: 16px;
+    box-shadow: 0px 0px 14px 0px #00000026;
+    border: 0.5px solid #B1B1B1;
+
+}
+
+.box_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  margin-top: -20px;
+}
+
+.button {
+    width: 180px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px;
+    font-size: 16px;
+    color: white;
+    background-color: #327053;
+    font-family: 'Poppins', sans-serif;
+}
+
+.button:hover {
+    background-color: #5b977b;
+}
