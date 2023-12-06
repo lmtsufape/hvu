@@ -5,12 +5,17 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 
 import br.edu.ufape.hvu.model.Animal;
+import br.edu.ufape.hvu.model.Tutor;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.AnimalRequest;
 import br.edu.ufape.hvu.controller.dto.response.AnimalResponse;
@@ -35,7 +40,14 @@ public class AnimalController {
 	
 	@PostMapping("animal")
 	public AnimalResponse createAnimal(@Valid @RequestBody AnimalRequest newObj) {
-		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity()));
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
+		} catch(RuntimeException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutor " + " not found.");
+		}
+		
 	}
 	
 	@GetMapping("animal/{id}")
@@ -50,9 +62,14 @@ public class AnimalController {
 	@PatchMapping("animal/{id}")
 	public AnimalResponse updateAnimal(@PathVariable Long id, @Valid @RequestBody AnimalRequest obj) {
 		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
 			//Animal o = obj.convertToEntity();
 			Animal oldObject = facade.findAnimalById(id);
-
+			Tutor tutor = facade.findTutorByanimalId(oldObject.getId());
+			if(!principal.getSubject().equals(tutor.getUserId())) {
+				throw new AccessDeniedException("This is not your animal");
+			}
 			TypeMap<AnimalRequest, Animal> typeMapper = modelMapper
 													.typeMap(AnimalRequest.class, Animal.class)
 													.addMappings(mapper -> mapper.skip(Animal::setId));			
@@ -69,6 +86,13 @@ public class AnimalController {
 	@DeleteMapping("animal/{id}")
 	public String deleteAnimal(@PathVariable Long id) {
 		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			Animal oldObject = facade.findAnimalById(id);
+			Tutor tutor = facade.findTutorByanimalId(oldObject.getId());
+			if(!principal.getSubject().equals(tutor.getUserId())) {
+				throw new AccessDeniedException("This is not your animal");
+			}
 			facade.deleteAnimal(id);
 			return "";
 		} catch (RuntimeException ex) {

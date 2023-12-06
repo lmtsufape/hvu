@@ -28,7 +28,7 @@ public  class Animal  {
 	private String alergias;
 	private LocalDate dataNascimento;
 	private String imagem;
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private Raca raca; 
 	@OneToOne

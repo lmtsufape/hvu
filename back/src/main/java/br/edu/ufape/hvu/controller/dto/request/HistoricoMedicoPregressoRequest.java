@@ -19,7 +19,8 @@ public  class HistoricoMedicoPregressoRequest  {
 	private String produto;
 	private String observacoes;
 	private LocalDate data;
-	private List<MedicacaoPeriodicaRequest> medicacaoPeriodica; 
+	private List<MedicacaoPeriodicaRequest> medicacaoPeriodica;
+	private long id;
 
 
 	public HistoricoMedicoPregresso convertToEntity() {

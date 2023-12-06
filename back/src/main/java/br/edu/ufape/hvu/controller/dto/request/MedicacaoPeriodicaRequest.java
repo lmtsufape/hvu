@@ -17,6 +17,7 @@ import lombok.Setter;
 public  class MedicacaoPeriodicaRequest  {
 	private String nome;
 	private String tipo;
+	private long id;
 
 
 	public MedicacaoPeriodica convertToEntity() {

@@ -18,7 +18,8 @@ public  class RacaRequest  {
 	private String nome;
 	private String porte;
 	private String descricao;
-	private EspecieRequest especie; 
+	private EspecieRequest especie;
+	private long id;
 
 
 	public Raca convertToEntity() {

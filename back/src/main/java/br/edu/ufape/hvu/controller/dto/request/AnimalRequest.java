@@ -22,7 +22,8 @@ public  class AnimalRequest  {
 	private LocalDate dataNascimento;
 	private String imagem;
 	private RacaRequest raca; 
-	private HistoricoMedicoPregressoRequest historicoMedicoPregresso; 
+	private HistoricoMedicoPregressoRequest historicoMedicoPregresso;
+	private long id;
 
 
 	public Animal convertToEntity() {

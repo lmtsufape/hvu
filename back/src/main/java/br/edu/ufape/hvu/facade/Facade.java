@@ -25,6 +25,14 @@ public class Facade {
 	public Tutor findTutorById(long id) {
 		return tutorService.findTutorById(id);
 	}
+	
+	public Tutor findTutorByuserId(String userId) {
+		return tutorService.findTutorByuserId(userId);
+	}
+	
+	public Tutor findTutorByanimalId(long animalId) {
+		return tutorService.findTutorByanimalId(animalId);
+	}
 
 	public List<Tutor> getAllTutor() {
 		return tutorService.getAllTutor();
@@ -826,8 +834,12 @@ public class Facade {
 	@Autowired
 	private AnimalService  animalService;
 		
-	public Animal saveAnimal(Animal newInstance) {
-		return animalService.saveAnimal(newInstance);
+	public Animal saveAnimal(Animal newInstance, String tutor_id) {
+		Tutor tutor = findTutorByuserId(tutor_id);
+		Animal animal = animalService.saveAnimal(newInstance);
+		tutor.getAnimal().add(animal);
+		updateTutor(tutor);
+		return animal;
 	}
 
 	public Animal updateAnimal(Animal transientObject) {
