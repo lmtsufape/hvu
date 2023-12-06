@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./infos.module.css";
-import { EditarWhiteButton } from "../WhiteButton/white_button";
+import { EditarWhiteButton } from "../WhiteButton";
 import axios from 'axios';
 
 //json para teste

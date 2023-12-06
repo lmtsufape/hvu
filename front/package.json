@@ -12,6 +12,7 @@
     "autoprefixer": "^10.4.16",
     "axios": "^1.5.1",
     "bootstrap": "^5.3.2",
+    "caniuse-lite": "^1.0.30001566",
     "date-fns": "^2.30.0",
     "font-awesome": "^4.7.0",
     "moment": "^2.29.4",
@@ -28,7 +29,8 @@
     "react-router-dom": "^6.16.0",
     "react-select": "^5.7.7",
     "reactstrap": "^9.2.0",
-    "styled-components": "^6.0.8"
+    "styled-components": "^6.0.8",
+    "webpack": "^5.89.0"
   },
   "description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
   "main": "next.config.js",

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./formularioagendarretorno.module.css"
 import { FinalizarGreenButton } from "../GreenButton/green_button";
-import { VoltarWhiteButton } from "../WhiteButton/white_button";
+import { VoltarWhiteButton } from "../WhiteButton";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ptBR from 'date-fns/locale/pt-BR';
