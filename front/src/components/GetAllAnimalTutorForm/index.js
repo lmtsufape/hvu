@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';  // Don't forget to import useRouter
-import styles from "./consultar_animal_tutor.module.css";
+import { useRouter } from 'next/router';  
+import styles from "./index.module.css";
 import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton";
-import { getTutorById } from '../../../services/tutorService';
+import { getAllAnimal } from '../../../services/animalService';
 
-function ListarAnimais() {
+function GetAllAnimalTutorForm() {
     const [animal, setAnimal] = useState([]);
     const router = useRouter();
 
@@ -14,11 +14,10 @@ function ListarAnimais() {
       
         const fetchTutorById = async () => {
             try {
-                const response = await getTutorById(tutorId);
+                const response = await getAllAnimal();
                 setAnimal(response); 
             } catch (error) {
                 console.error('Erro ao buscar o tutor pelo ID:', error);
-                // Handle error as needed
             }
         };
 
@@ -43,7 +42,7 @@ function ListarAnimais() {
 
             <ul className={styles.lista}>
                 {animal.map((tutor) => (
-                    <li key={tutor.id} className={styles.info_box}>
+                    <li key={animal.id} className={styles.info_box}>
                         <div className={styles.info}>
                             <h6>Paciente</h6>
                             <p>{tutor.animal.nome}</p>
@@ -55,7 +54,7 @@ function ListarAnimais() {
                         <div className={styles.botao}>
                             <button
                                 className={styles.acessar_button}
-                                onClick={() => handleAcessarClick(tutor.animal.id)}
+                                onClick={() => handleAcessarClick(animal.id)}
                             >
                                 Acessar
                             </button>
@@ -67,4 +66,4 @@ function ListarAnimais() {
     );
 }
 
-export default ListarAnimais;
+export default GetAllAnimalTutorForm;

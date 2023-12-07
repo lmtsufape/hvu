@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {Header03} from "../src/components/Header/header"
 import Footer from "../src/components/Footer/Footer"
 import {SegundaHeader01} from "../src/components/AnotherHeader/anotherHeader"
-import ListarAnimais from "../src/components/ConsultarAnimalTutor/listaranimais"
+import GetAllAnimalTutorForm from "../src/components/GetAllAnimalTutorForm"
 
 function PageConsultarAnimalTutor() {
     return (
@@ -17,7 +17,7 @@ function PageConsultarAnimalTutor() {
         </div>
 
         <div>
-            < ListarAnimais />
+            < GetAllAnimalTutorForm />
         </div>
 
         <div>
