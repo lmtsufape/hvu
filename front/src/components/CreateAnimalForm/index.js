@@ -1,69 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "../FormularioCadastroAnimal/formulariocadastroanimal.module.css";
-import { VoltarWhiteButton } from "../WhiteButton/white_button";
+import styles from "../CreateTutorEnderecoForm/index.module.css";
+import { VoltarWhiteButton } from "../WhiteButton/index";
 import { createAnimal } from "../../../services/animalService";
-import { createEspecie } from "../../../services/especieService";
-import { createRaca } from "../../../services/racaService";
 import { useRouter } from "next/router";
+import EspeciesList from "@/hooks/EspecieList";
+import RacasList from "@/hooks/RacaList";
 
-function FormularioCadastroAnimal() {
+function CreateAnimalForm() {
   const router = useRouter();
-  const { id } = router.query;
 
-  const [formularioAnimal, setFormularioAnimal] = useState({
+  const { especies, isLoading: isEspeciesLoading, error: especiesError } = EspeciesList();
+  const { racas, isLoading: isRacasLoading, error: racasError } = RacasList();
+
+  const [selectedEspecie, setSelectedEspecie] = useState("");
+  const [selectedRaca, setSelectedRaca] = useState("");
+  const [animalData, setAnimalData] = useState({
     nome: "",
     sexo: "",
     alergias: "",
     dataNascimento: "",
-    imagem: "NULL"
+    imagem: "NULL",
+    especie: "",
+    raca: "",
   });
 
-  const [formularioEspecie, setFormularioEspecie] = useState({
-    nome: "",
-    descricao: "NULL"
-  });
+  useEffect(() => {
+    if (especies.length > 0) {
+      setSelectedEspecie(especies[0]?.id);
+    }
+    if (racas.length > 0) {
+      setSelectedRaca(racas[0]?.id);
+    }
+  }, [especies, racas]);
 
-  const [formularioRaca, setFormularioRaca] = useState({
-    nome: "",
-    porte: "",
-    descricao: "NULL"
-  });
+  function handleAnimalChange(event) {
+    const { name, value } = event.target;
+    setAnimalData({ ...animalData, [name]: value });
+  }
+
+  function handleEspecieSelection(event) {
+    const selectedEspecieId = event.target.value;
+    setSelectedEspecie(selectedEspecieId);
+  }
+
+  function handleRacaSelection(event) {
+    const selectedRacaId = event.target.value;
+    setSelectedRaca(selectedRacaId);
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
 
-    const animalPromise = await createAnimal(formularioAnimal);
-    const especiePromise = await createEspecie(formularioEspecie);
-    const racaPromise = await createRaca(formularioRaca);
+    const animalToCreate = {
+      ...animalData,
+      especie: especies.find((e) => e.id === selectedEspecie),
+      raca: racas.find((r) => r.id === selectedRaca),
+    };
 
-    const [animalResponse, especieResponse, racaResponse] = await Promise.all([
-      animalPromise,
-      especiePromise,
-      racaPromise
-    ]);
-
-    console.log(animalResponse);
-    console.log(especieResponse);
-    console.log(racaResponse);
-
-    // Aqui você pode redirecionar para a URL com o ID, se necessário
-    router.push(`/consultaranimaltutor/${id}`);
-  }
-
-  function handleAnimalChange(event) {
-    const { name, value } = event.target;
-    setFormularioAnimal({ ...formularioAnimal, [name]: value });
-  }
-
-  function handleEspecieChange(event) {
-    const { name, value } = event.target;
-    setFormularioEspecie({ ...formularioEspecie, [name]: value });
-  }
-
-  function handleRacaChange(event) {
-    const { name, value } = event.target;
-    setFormularioRaca({ ...formularioRaca, [name]: value });
+    try {
+      const response = await createAnimal(animalToCreate);
+      console.log(response);
+      //router.push("/pagina-de-sucesso");
+    } catch (error) {
+      console.error("Erro ao criar animal:", error);
+    }
   }
 
   return (
@@ -77,7 +78,7 @@ function FormularioCadastroAnimal() {
               className="form-control"
               name="nome"
               placeholder="Insira o nome do animal"
-              value={formularioAnimal.nome}
+              value={animalData.nome}
               onChange={handleAnimalChange}
             />
           </div>
@@ -87,34 +88,47 @@ function FormularioCadastroAnimal() {
               className="form-control"
               name="dataNascimento"
               placeholder="Ex: 12/12/2012"
-              value={formularioAnimal.dataNascimento}
+              value={animalData.dataNascimento}
               onChange={handleAnimalChange}
             />
           </div>
         </div>
 
-        <div className={styles.espacodosforms}>
-          <div className="row">
-            <div className="col">
-              <label htmlFor="especie" className="form-label">Espécie</label>
-              <input type="text"
-                className="form-control"
-                name="especie"
-                placeholder="Insira a espécie do animal"
-                value={formularioEspecie.nome}
-                onChange={handleEspecieChange}
-              />
-            </div>
-            <div className="col">
-              <label htmlFor="raca" className="form-label">Raça</label>
-              <input type="text"
-                className="form-control"
-                name="raca"
-                placeholder="Insira a raça do animal"
-                value={formularioRaca.nome}
-                onChange={handleRacaChange}
-              />
-            </div>
+        <div className="row">
+        <div className="col">
+            <label htmlFor="especie" className="form-label">Espécie</label>
+            <select 
+              className="form-select"
+              name="especie"
+              aria-label="Selecione a espécie do animal"
+              value={selectedEspecie}
+              onChange={handleEspecieSelection}
+            >
+            <option value="">Selecione a espécie do animal</option>
+              {especies.map((especie) => (
+                <option key={especie.id} value={especie.id}>
+                  {especie.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="col">
+            <label htmlFor="raca" className="form-label">Raça</label>
+            <select 
+              className="form-select"
+              name="raca"
+              aria-label="Selecione a espécie do animal"
+              value={selectedRaca}
+              onChange={handleRacaSelection}
+            >
+            <option value="">Selecione a raça do animal</option>
+              {racas.map((raca) => (
+                <option key={raca.id} value={raca.id}>
+                  {raca.nome}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -122,22 +136,24 @@ function FormularioCadastroAnimal() {
         <div className="row">
           <div className="col">
             <label htmlFor="peso" className="form-label">Alergias</label>
-            <input type="text"
+            <input 
+              type="text"
               className="form-control"
               name="alergia"
               placeholder="Alergias"
-              value={formularioAnimal.alergias}
+              value={animalData.alergias}
               onChange={handleAnimalChange}
             />
           </div>
 
           <div className="col">
             <label htmlFor="porte" className="form-label">Porte</label>
-            <select className="form-select"
+            <select 
+              className="form-select"
               name="porte"
               aria-label="Selecione o porte do animal"
-              value={formularioRaca.porte}
-              onChange={handleRacaChange}
+              value={animalData.porte}
+              onChange={handleRacaSelection}
             >
               <option value="">Selecione o porte do animal</option>
               <option value="pequeno">Pequeno</option>
@@ -151,7 +167,7 @@ function FormularioCadastroAnimal() {
             <select className="form-select"
               name="sexo"
               aria-label="Selecione o sexo do animal"
-              value={formularioAnimal.sexo}
+              value={animalData.sexo}
               onChange={handleAnimalChange}
             >
               <option value="">Selecione o sexo do animal</option>
@@ -172,4 +188,4 @@ function FormularioCadastroAnimal() {
   );
 }
 
-export default FormularioCadastroAnimal;
+export default CreateAnimalForm;
