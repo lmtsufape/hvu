@@ -39,22 +39,14 @@ function CreateTutorEnderecoForm() {
         const { name, value } = event.target;
         setTutorFormData({ ...tutorFormData, [name]: value });
     }
-    
+
     function handleEnderecoChange(event) {
-        console.log("handleEnderecoChange chamado");
+        //console.log(event);
         const { name, value } = event.target;
-    
-        // Verifica se o campo name existe e começa com "endereco"
-        if (name && name.startsWith("endereco")) {
-            // Extrai o nome do campo real removendo "endereco" do início
-            const enderecoField = name.substring("endereco".length);
-    
-            // Garante que enderecoFormData não seja nulo ou indefinido
-            if (enderecoFormData) {
-                setEnderecoFormData({ ...enderecoFormData, [enderecoField]: value });
-            }
-        }
-    }    
+
+        setEnderecoFormData({...enderecoFormData, [name]: value})
+
+    }
 
     const validateForm = () => {
         const newErrors = {};
@@ -135,10 +127,10 @@ function CreateTutorEnderecoForm() {
         // Retorna verdadeiro se não houver erros
         return Object.keys(newErrors).length === 0;
     };
-    
+
     const handleSubmit = async (event) => {
         event.preventDefault(); // Adicione esta linha
-    
+
         // Verifica se o formulário é válido antes de prosseguir
         if (validateForm()) {
             try {
@@ -152,7 +144,7 @@ function CreateTutorEnderecoForm() {
             console.log("Formulário inválido. Corrija os erros.");
         }
     };
-    
+
     return (
         <div className={styles.container}>
             <form>
