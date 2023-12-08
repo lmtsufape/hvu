@@ -42,7 +42,6 @@ function CreateTutorEnderecoForm() {
     function handleEnderecoChange(event) {
         const { name, value } = event.target;
         setEnderecoFormData({...enderecoFormData, [name]: value})
-
     }
     const validateForm = () => {
 
@@ -68,11 +67,14 @@ function CreateTutorEnderecoForm() {
         } else if (!/^\d{7}$/.test(tutorFormData.rg)) {
             newErrors.rg = "RG inválido";
         }
+        
         if (!tutorFormData.telefone) {
             newErrors.telefone = "Telefone é obrigatório";
         } else if (!/^\(\d{2}\) \d{5}-\d{4}$/.test(tutorFormData.telefone)) {
             newErrors.telefone = "Telefone inválido";
         }
+
+        // Validação para o campo "rua"
         if (!enderecoFormData.rua) {
             newErrors.rua = "Rua é obrigatório";
         }
@@ -104,6 +106,7 @@ function CreateTutorEnderecoForm() {
         if (validateForm()) {
             try {
                 const response = await createTutor(formData);
+                console.log(response);
                 //router.push(/cadastroendereco/${tutorId});
             } catch (error) {
                 console.error("Erro ao cadastrar tutor:", error);
