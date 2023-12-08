@@ -3,8 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./createEnderecoForm.module.css";
 
 function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors }) {
-
-  console.log(enderecoFormData)
   return (
     <>
       <div className={`${styles.boxcadastrotutor}`}>
