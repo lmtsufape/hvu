@@ -29,10 +29,12 @@ function CreateTutorEnderecoForm() {
         bairro: ""
         }
     )
+
     const formData = {
         ...tutorFormData,
         endereco: {...enderecoFormData}
     }
+
     function handleTutorChange(event) {
 
         const { name, value } = event.target;
@@ -43,8 +45,8 @@ function CreateTutorEnderecoForm() {
         const { name, value } = event.target;
         setEnderecoFormData({...enderecoFormData, [name]: value})
     }
-    const validateForm = () => {
 
+    const validateForm = () => {
         const newErrors = {};
         if (!tutorFormData.nome) {
             newErrors.nome = "Nome é obrigatório";
@@ -67,14 +69,11 @@ function CreateTutorEnderecoForm() {
         } else if (!/^\d{7}$/.test(tutorFormData.rg)) {
             newErrors.rg = "RG inválido";
         }
-        
-        if (!tutorFormData.telefone) {
+        /*if (!tutorFormData.telefone) {
             newErrors.telefone = "Telefone é obrigatório";
         } else if (!/^\(\d{2}\) \d{5}-\d{4}$/.test(tutorFormData.telefone)) {
             newErrors.telefone = "Telefone inválido";
-        }
-
-        // Validação para o campo "rua"
+        }*/
         if (!enderecoFormData.rua) {
             newErrors.rua = "Rua é obrigatório";
         }
@@ -101,13 +100,12 @@ function CreateTutorEnderecoForm() {
     };
 
     const handleSubmit = async (event) => {
-
         event.preventDefault();
         if (validateForm()) {
             try {
                 const response = await createTutor(formData);
                 console.log(response);
-                //router.push(/cadastroendereco/${tutorId});
+                router.push('/getAllAnimalTutor');
             } catch (error) {
                 console.error("Erro ao cadastrar tutor:", error);
             }
@@ -118,8 +116,9 @@ function CreateTutorEnderecoForm() {
 
     return (
         <div className={styles.container}>
+            <h1>Cadastro</h1>
             <form>
-                <div className={styles.box}>
+                <div className={styles.form_box}>
                     <div>
                         <CreateTutorForm
                             tutorFormData={tutorFormData}
