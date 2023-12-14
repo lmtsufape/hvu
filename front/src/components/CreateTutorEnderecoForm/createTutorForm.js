@@ -21,7 +21,7 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
                             {renderInput("RG", "rg", tutorFormData.rg, handleTutorChange, errors.rg, "text", 7)}
                         </div>
                     </div>
-                    {renderInput("Telefone para contato", "telefone", tutorFormData.telefone, handleTutorChange, errors.telefone, "tel", 13)}
+                    {renderInput("Telefone para contato", "telefone", tutorFormData.telefone, handleTutorChange, errors.telefone, "tel", 11)}
                 </div>
             </div>
         </>

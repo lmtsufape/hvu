@@ -28,7 +28,7 @@ export function AdicionarAnimalWhiteButton() {
     const router = useRouter();
 
     const handlAdicionarClick = () => {
-        router.push('/cadastroanimal');
+        router.push('/createAnimal');
     };
 
     return (

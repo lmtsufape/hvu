@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
 .container {
+    width: 1200;
+    height: 500px;
+    margin: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
