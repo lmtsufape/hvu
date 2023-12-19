@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "./login.module.css"
+import styles from "./index.module.css"
 import qs from 'qs';
 import axios from "axios";
 import { headers } from "../../../next.config";

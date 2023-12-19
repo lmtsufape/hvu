@@ -26,14 +26,10 @@
   gap: 3%;
 }
 
-.espacodosforms{
-  margin-top: 10px;
-}
-
 .titulo {
-  font-family: Poppins;
-  font-size: 24px;
-  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
   line-height: 36px;
   letter-spacing: 0em;
   text-align: left;
