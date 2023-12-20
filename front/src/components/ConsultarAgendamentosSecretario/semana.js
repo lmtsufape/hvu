@@ -5,7 +5,7 @@ import axios from 'axios';
 import NovoAgendamentoButton from "./novoAgendamentoButton";
 import Filtro from "./filtro";
 import IconeCalendario from './iconeCalendario';
-import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
+import CampoPesquisa from '../SearchBar';
 import {DataCompleta} from "./data";
 import dataStyles from "./data.module.css";
 

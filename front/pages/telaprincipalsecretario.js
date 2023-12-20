@@ -1,5 +1,5 @@
-import { Header03 } from "../src/components/Header/header";
-import Footer from "../src/components/Footer/Footer";
+import { Header03 } from "../src/components/Header";
+import Footer from "../src/components/Footer";
 import TelaSecretario from "../src/components/TelaPrincipalSecretario/telasecretario";
 import { SegundaHeader02 } from "../src/components/AnotherHeader/anotherHeader";
 

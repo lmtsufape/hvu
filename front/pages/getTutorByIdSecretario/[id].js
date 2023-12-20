@@ -1,10 +1,10 @@
 import React from 'react';
-import {Header03} from "../../src/components/Header/header";
+import {Header03} from "../../src/components/Header";
 import {SegundaHeader02} from "../../src/components/AnotherHeader/anotherHeader";
-import InfosDoAnimalETutor from "../../src/components/PerfilDoAnimalSecretario/infos";
-import Footer from "../../src/components/Footer/Footer";
+import GetTutorByIdForm from "../../src/components/GetTutorByIdSecretarioForm";
+import Footer from "../../src/components/Footer";
 
-function PerfilDoAnimalPage() {
+function getAnimalTutorPage() {
     return (
         <>
         <div>
@@ -14,7 +14,7 @@ function PerfilDoAnimalPage() {
             < SegundaHeader02 />
         </div>
         <div>
-            < InfosDoAnimalETutor />
+            < GetTutorByIdForm />
         </div>
         <div>
             < Footer />
@@ -23,4 +23,4 @@ function PerfilDoAnimalPage() {
     );
 }
 
-export default PerfilDoAnimalPage
+export default getAnimalTutorPage

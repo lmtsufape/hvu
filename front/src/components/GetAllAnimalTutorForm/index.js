@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';  
 import styles from "./index.module.css";
-import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
+import CampoPesquisa from '../SearchBar';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton";
 import { getAllAnimal } from '../../../services/animalService';
 
 function GetAllAnimalTutorForm() {
     const [animais, setAnimais] = useState([]);
+    
     const router = useRouter();
 
     useEffect(() => {
