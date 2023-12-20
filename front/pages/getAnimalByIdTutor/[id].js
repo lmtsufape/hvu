@@ -1,26 +1,18 @@
 import React from 'react';
 import {Header03} from "../../src/components/Header";
 import {SegundaHeader01} from "../../src/components/AnotherHeader/anotherHeader";
-import ProximasConsultasTutor from "../../src/components/ProximasConsultasTutor/proximasConsultasTutor";
+import GetAnimalByIdTutorForm from "../../src/components/GetAnimalByIdTutorForm";
 import Footer from "../../src/components/Footer";
 
-function ProximasConsultasTutorPage() {
+function PerfilDoAnimalPage() {
     return (
-        <>
         <div>
             < Header03 />
-        </div>
-        <div>
             < SegundaHeader01 />
-        </div>
-        <div>
-            < ProximasConsultasTutor />
-        </div>
-        <div>
+            < GetAnimalByIdTutorForm />
             < Footer />
         </div>
-        </>
     );
 }
 
-export default ProximasConsultasTutorPage
+export default PerfilDoAnimalPage

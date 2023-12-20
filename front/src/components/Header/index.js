@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from "next/image";
-import styles from "./header.module.css";
+import styles from "./index.module.css";
 import {LoginGreenButton} from '../GreenButton/green_button';
 import { LoginWhiteButton } from '../WhiteButton';
 import {CadastrolWhiteButton} from '../WhiteButton';

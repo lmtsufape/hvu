@@ -9,7 +9,6 @@ function GetAnimalByIdTutorForm() {
     const [animal, setAnimal] = useState({});
 
     useEffect(() => {
-        // Verifica se o ID é válido
         if (id) {
             const fetchData = async () => {
                 try {
@@ -23,19 +22,19 @@ function GetAnimalByIdTutorForm() {
         }
     }, [id]);
 
-    //const handleEditarClick = (animalId) => {
-   //     router.push(`/editarperfilanimal/${animalId}`);
-    //};
+    const handleEditarClick = (animalId) => {
+        router.push(`/updateAnimalTutor/${animalId}`);
+    };
 
     return (
         <div className={styles.container}>
             <h1>Perfil do Animal</h1>
             <ul>
-                {animal && ( // Certifique-se de que o animal existe antes de renderizar
+                {animal && ( 
                     <li key={animal.id} className={styles.infos_box}>
                         <div className={styles.identificacao}>
                             <div className={styles.nome_animal}>{animal.nome}</div>
-                            <div className={styles.especie_animal}>{animal.especie.nome}</div>
+                            <div className={styles.especie_animal}>{animal.especie}</div>
                         </div>
                         <div className={styles.form}>
                             <div className={styles.box}>
@@ -49,19 +48,19 @@ function GetAnimalByIdTutorForm() {
                                         <p>{animal.sexo}</p>
                                     </div>
                                     <div className={styles.infos}>
-                                        <h6>Peso</h6>
-                                        <p>{animal.peso}</p>
+                                        <h6>Espécie</h6>
+                                        <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
                                     </div>
                                 </div>
 
                                 <div className={styles.lista}>
                                     <div className={styles.infos}>
                                         <h6>Raça</h6>
-                                        <p>{animal.raca.nome}</p>
+                                        <p>{animal.raca && animal.raca.nome}</p>
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Porte</h6>
-                                        <p>{animal.raca.porte}</p>
+                                        <p>{animal.raca && animal.raca.porte}</p>
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Data de nascimento</h6>
@@ -70,7 +69,7 @@ function GetAnimalByIdTutorForm() {
                                 </div>
                             </div>
                             <div className={styles.botao}>
-                                <button className={styles.editar_button} /*onClick={() => handleEditarClick(animal.id)}*/>
+                                <button className={styles.editar_button} onClick={() => handleEditarClick(animal.id)}>
                                     Editar
                                 </button>
                             </div>

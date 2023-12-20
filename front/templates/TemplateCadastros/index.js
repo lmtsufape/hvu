@@ -1,6 +1,6 @@
 import React from 'react';
-import { Header04 } from "../../src/components/Header/header";
-import Footer from "../../src/components/Footer/Footer";
+import { Header04 } from "../../src/components/Header";
+import Footer from "../../src/components/Footer";
 
 function TemplateCadastros({ children }) {
   return (

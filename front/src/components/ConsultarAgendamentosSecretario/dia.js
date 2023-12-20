@@ -9,7 +9,7 @@ import {DataCompleta} from './data';
 import {DataCurta} from './data';
 import {DiaDaSemana} from './data';
 import IconeCalendario from './iconeCalendario';
-import CampoPesquisa from '../CampoPesquisa/campo_pesquisa';
+import CampoPesquisa from '../SearchBar';
 
 function AgendamentosDoDia () {
 
