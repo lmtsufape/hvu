@@ -17,7 +17,7 @@ import lombok.Setter;
 public  class EnderecoRequest  {
 	private String cep;
 	private String rua;
-	private String municipio;
+	private String estado;
 	private String cidade;
 	private int numero;
 	private String bairro;
