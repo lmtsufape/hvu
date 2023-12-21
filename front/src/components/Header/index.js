@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from "next/image";
 import styles from "./index.module.css";
-import {LoginGreenButton} from '../GreenButton/green_button';
+import {LoginGreenButton} from '../GreenButton';
 import { LoginWhiteButton } from '../WhiteButton';
 import {CadastrolWhiteButton} from '../WhiteButton';
 import LogoHVU from '../LogoHVU/logo_hvu';

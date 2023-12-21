@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';  
 import styles from "./index.module.css";
-import CampoPesquisa from '../SearchBar';
+import SearchBar from '../SearchBar';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton";
 import { getAllAnimal } from '../../../services/animalService';
 
@@ -27,7 +27,7 @@ function GetAllAnimalTutorForm() {
             <h1>Animais</h1>
 
             <div className={styles.navbar}>
-                <CampoPesquisa className={styles.pesquisa} />
+                <SearchBar className={styles.pesquisa} />
                 <AdicionarAnimalWhiteButton />
             </div>
 
@@ -43,7 +43,7 @@ function GetAllAnimalTutorForm() {
                             </div>
                             <div className={styles.info}>
                                 <h6>Espécie</h6>
-                                <p>{animal.especie.nome}</p>
+                                <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
                             </div>
                             <div className={styles.botao}>
                                 <button

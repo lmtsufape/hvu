@@ -14,7 +14,6 @@
 }
 
 .header {
-    border: 1px solid black;
     width: 1200px;
     height: 42.58px;
     display: flex;
@@ -22,8 +21,8 @@
     align-items: center;
 }
 
-.header h1 {
-    font-family: Poppins;
+.header_item1 {
+    font-family: 'Poppins', sans-serif;
     font-size: 24px;
     font-weight: 700;
     line-height: 36px;
@@ -31,7 +30,6 @@
 }
 
 .box {
-    border: 1px solid black;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -39,14 +37,12 @@
 }
 
 .itens_box_1 {
-    border: 1px solid red;
     display: flex;
     gap: 21.1px;
     align-items: center;
 }
 
 .itens_box_2 {
-    border: 1px solid red;
     display: flex;
     gap: 24px;
     align-items: center;
@@ -71,7 +67,7 @@
 .coluna1 {
     width: 80px;
     height: 123px;
-    font-family: Poppins;
+    font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 600;
     line-height: 30px;
@@ -102,23 +98,33 @@
     border-radius: 12px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: left;
     margin-left: 15px;
-    margin-right: 15px;
+    border: none;
 }
 
-.interna {
-    border: 1px solid red;
+.button_container {
     width: 131px;
     height: 65px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    margin-left: 15px;
+    align-items: center;
+    justify-content: center;
 }
 
-.outra {
-    font-family: Poppins;
+.sub1 {
+    display: flex;
+    gap: 3px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 17px;
+    letter-spacing: 0.03em;
+    color: white;
+}
+
+.sub2 {
+    font-family: 'Poppins', sans-serif;
     font-size: 12px;
     font-weight: 500;
     line-height: 18px;
@@ -126,10 +132,19 @@
     color: white;
 }
 
+.sub3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 15px;
+    letter-spacing: 0em;
+    color: white;
+}
+
 .nome {
     display: flex;
     gap: 10px;
-    font-family: Poppins;
+    font-family: 'Poppins', sans-serif;
     font-size: 12px;
     font-weight: 700;
     line-height: 17px;

@@ -10,7 +10,7 @@
 }
 
 .container h1 {
-    font-family: Poppins;
+    font-family: 'Poppins', sans-serif;
     font-size: 24px;
     font-weight: 700;
     line-height: 36px;
@@ -50,7 +50,7 @@
 
 .info div {
     width: 240px;
-    font-family: Poppins;
+    font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
@@ -90,7 +90,7 @@
     align-items: center;
     width: 240px;
     color: white;
-    font-family: Poppins;
+    font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 600;
     line-height: 24px;

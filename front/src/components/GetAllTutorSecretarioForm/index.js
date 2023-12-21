@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from './index.module.css';
-import CampoPesquisa from '../SearchBar';
+import SearchBar from '../SearchBar';
 import FiltrarWhiteButton from '../WhiteButton/filtrar_button';
 import { getAllTutor } from '../../../services/tutorService';
 
@@ -27,7 +27,7 @@ function GetAllTutorSecretarioForm() {
             <h1>Pacientes</h1>
 
             <div className={styles.navbar}>
-                <CampoPesquisa className={styles.pesquisa} />
+                <SearchBar className={styles.pesquisa} />
                 <FiltrarWhiteButton items={tutores} />
             </div>
 
@@ -46,9 +46,9 @@ function GetAllTutorSecretarioForm() {
                     {tutores.map(tutor => (
                         <li key={tutor.id} className={styles.info}>
                             <div>{tutor.nome}</div>
-                            <div>{tutor.animal.nome}</div>
-                            <div>{tutor.animal.raca.especie.nome}</div>
-                            <div>{tutor.animal.raca.nome}</div>
+                            <div>{tutor.animal} && {tutor.animal.nome}</div>
+                            <div>{tutor.animal} && {tutor.animal.raca} && {tutor.animal.raca.especie} && {tutor.animal.raca.especie.nome}</div>
+                            <div>{tutor.animal} && {tutor.animal.raca} && {tutor.animal.raca.nome}</div>
 
                             <div>
                                 <button

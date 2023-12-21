@@ -34,7 +34,7 @@ function GetAnimalByIdTutorForm() {
                     <li key={animal.id} className={styles.infos_box}>
                         <div className={styles.identificacao}>
                             <div className={styles.nome_animal}>{animal.nome}</div>
-                            <div className={styles.especie_animal}>{animal.especie}</div>
+                            <div className={styles.especie_animal}>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</div>
                         </div>
                         <div className={styles.form}>
                             <div className={styles.box}>
@@ -64,7 +64,7 @@ function GetAnimalByIdTutorForm() {
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Data de nascimento</h6>
-                                        <p>{animal.datanasc}</p>
+                                        <p>{animal.dataNascimento}</p>
                                     </div>
                                 </div>
                             </div>

@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from './index.module.css';
 import { getAllAnimal } from '../../../services/animalService';
 
-function CampoPesquisa() {
+function SearchBar() {
   const [busca, setBusca] = useState('');
   const [loading, setLoading] = useState(false);
   const [resultados, setResultados] = useState([]);
@@ -62,4 +62,4 @@ function CampoPesquisa() {
   );
 }
 
-export default CampoPesquisa;
+export default SearchBar;

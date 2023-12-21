@@ -24,7 +24,7 @@ function GetTutorByIdForm() {
     }, [id]);
 
     return (
-        <container className={styles.container}>
+        <div className={styles.container}>
             <h1>Perfil do Animal</h1>
             <div className={styles.infos_box}> 
             <ul>
@@ -34,7 +34,7 @@ function GetTutorByIdForm() {
                         <div className={styles.animal_dados}>
                             <div className={styles.identificacao}>
                                 <div className={styles.nome_animal}>{tutor.animal.nome}</div>
-                                <div className={styles.especie_animal}>{tutor.animal.raca.especie.nome}</div>
+                                <div className={styles.especie_animal}>{tutor.animal.raca} && {tutor.animal.raca.especie} && {tutor.animal.raca.especie.nome}</div>
                             </div>
                             <div className={styles.form}>
                                 <div className={styles.box}>
@@ -52,11 +52,11 @@ function GetTutorByIdForm() {
                                     <div className={styles.lista}>
                                         <div className={styles.infos}>
                                             <h6>Raça</h6>
-                                            <p>{tutor.animal.raca.nome}</p>
+                                            <p>{tutor.animal} && {tutor.animal.raca} && {tutor.animal.raca.nome}</p>
                                         </div>
                                         <div className={styles.infos}>
                                             <h6>Porte</h6>
-                                            <p>{tutor.animal.raca.porte}</p>
+                                            <p>{tutor.animal} && {tutor.animal.raca} && {tutor.animal.raca.porte}</p>
                                         </div>
                                     </div>
 
@@ -64,7 +64,7 @@ function GetTutorByIdForm() {
                                     <div className={styles.lista}>
                                         <div className={styles.infos}>
                                             <h6>Data de nascimento</h6>
-                                            <p>{tutor.animal.datanasc}</p>
+                                            <p>{tutor.animal} && {tutor.animal.dataNascimento}</p>
                                         </div>
                                         <div className={styles.infos}>
                                             <h6>Peso</h6>
@@ -124,7 +124,7 @@ function GetTutorByIdForm() {
                 )}
             </ul>
             </div>
-        </container>
+        </div>
     );
 }
 

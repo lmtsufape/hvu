@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from "./data.module.css";
+import styles from "./date.module.css";
 
 // Função que retorna a data no formato: 28 Julho, 2023
 export function DataCompleta(data) {

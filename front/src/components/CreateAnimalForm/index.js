@@ -23,8 +23,10 @@ function CreateAnimalForm() {
   const { especies, error: especiesError } = EspeciesList();
   const { racas, error: racasError } = RacasList();
 
-  const [selectedEspecie, setSelectedEspecie] = useState("");
-  const [selectedRaca, setSelectedRaca] = useState("");
+  const [selectedEspecie, setSelectedEspecie] = useState({});
+  const [selectedRaca, setSelectedRaca] = useState({});
+  const [selectedPorte, setSelectedPorte] = useState("");
+
   const [animalData, setAnimalData] = useState({
     nome: "",
     sexo: "",
@@ -43,49 +45,46 @@ function CreateAnimalForm() {
   }, [especies, racas]);
 
   const handleAnimalChange = (event) => {
-    const { name, value } = event.target;
-    setAnimalData({ ...animalData, [name]: value });
+    try {
+      const { name, value } = event.target;
+      setAnimalData({ ...animalData, [name]: value });
+    } catch (error) {
+      console.error('Erro ao puxar dados do animal:', error);
+    }
   };
   
   const handleEspecieSelection = (event) => {
-    const selectedEspecieId = event.target.value;
-    setSelectedEspecie(selectedEspecieId);
+    try {
+      const selectedEspecieId = event.target.value;
+      setSelectedEspecie(selectedEspecieId);
+    } catch (error) {
+      console.error('Erro ao selecionar espécie:', error);
+    }
+  };
+
+  const getSelectedEspecie = () => {
+    return especies.find((e) => e.id === selectedEspecie);
   };
   
   const handleRacaSelection = (event) => {
-    const selectedRacaId = event.target.value;
-    setSelectedRaca(selectedRacaId);
+    try {
+      const selectedRacaId = event.target.value;
+      setSelectedRaca(selectedRacaId);
+    } catch (error) {
+      console.error('Erro ao selecionar raça:', error);
+    }
   };
-  
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (validateForm()) {
-      if (especies.length > 0 && racas.length > 0) {
-        const racaToCreate = {
-          ...racas.find((r) => r.id === selectedRaca),
-          especie: especies.find((e) => e.id === selectedEspecie),
-        };
 
-        const animalToCreate = {
-          ...animalData,
-          raca: racaToCreate,
-        };
-    
-        console.log("Dados do animal a ser criado:", animalToCreate);
-    
-        try {
-          const response = await createAnimal(animalToCreate);
-          console.log(response);
-          router.push("/getAllAnimalTutor");
-        } catch (error) {
-          console.error("Erro ao criar animal:", error);
-          console.log("Detalhes do erro:", error.response);
-        }
-      } else {
-        console.log("Aguardando dados de espécies e raças carregarem...");
-      }
-    } else {
-      console.log("Formulário inválido. Corrija os erros.");
+  const getSelectedRaca = () => {
+    return racas.find((r) => r.id === selectedRaca);
+  };
+
+  const handlePorteSelection = (event) => {
+    try {
+      const selectedPorteId = event.target.value;
+      setSelectedPorte(selectedPorteId);
+    } catch (error) {
+      console.error('Erro ao selecionar porte:', error);
     }
   };
 
@@ -121,6 +120,39 @@ function CreateAnimalForm() {
     setErrors(newErrors);
   
     return Object.values(newErrors).every((error) => error === "");
+  };
+  
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+  //  if (validateForm()) {
+      if (especies.length > 0 && racas.length > 0) {
+        const racaToCreate = {
+          ...getSelectedRaca(),
+          porte: selectedPorte,
+          especie: getSelectedEspecie(),
+        };
+  
+        const animalToCreate = {
+          ...animalData,
+          raca: racaToCreate,
+        };
+  
+        console.log("Dados do animal a ser criado:", animalToCreate);
+  
+        try {
+          const newAnimal = await createAnimal(animalToCreate);
+          console.log(newAnimal);
+          router.push("/getAllAnimalTutor");
+        } catch (error) {
+          console.error("Erro ao criar animal:", error);
+          console.log("Detalhes do erro:", error.response);
+        }
+      } else {
+        console.log("Aguardando dados de espécies e raças carregarem...");
+      }
+   // } else {
+   //   console.log("Formulário inválido, corrija os erros.");
+  //   }
   };
 
   return (
@@ -210,15 +242,14 @@ function CreateAnimalForm() {
               className='form-select'
               name="porte"
               aria-label="Selecione o porte do animal"
-              value={selectedRaca}
-              onChange={handleRacaSelection}
+              value={selectedPorte}
+              onChange={handlePorteSelection}
             >
               <option value="">Selecione a raça do animal</option>
-              {racas.map((raca) => (
-                <option key={raca.id} value={raca.id}>
-                  {raca.porte}
-                </option>
-              ))}
+              <option value="pequeno">Pequeno</option>
+              <option value="medio">Médio</option>
+              <option value="grande">Grande</option>
+              <option value="gigante">Gigante</option>
             </select>
           </div>
   

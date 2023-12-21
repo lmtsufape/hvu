@@ -2,17 +2,17 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import styles from './filtro.module.css';
+import styles from './filter.module.css';
 
-function Filtro() {
+function Filter() {
   const router = useRouter();
 
   const handlDiaClick = () => {
-      router.push('agendamentosdodiasecretario');
+      router.push('getAllAgendamentoDiaSecretario');
   };
 
   const handlSemanaClick = () => {
-    router.push('agendamentosdasemanasecretario');
+    router.push('getAllAgendamentoSemanaSecretario');
   };
 
   return ( 
@@ -25,4 +25,4 @@ function Filtro() {
   );
 }
 
-export default Filtro
+export default Filter;

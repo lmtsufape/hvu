@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import styles from './green_button.module.css'
+import styles from './index.module.css'
 
 const text_green_button = {
     login: 'Login',

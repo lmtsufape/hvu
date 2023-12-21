@@ -1,6 +1,6 @@
 import React from 'react';
 import {Header03} from "../../src/components/Header";
-import {SegundaHeader02} from "../../src/components/AnotherHeader/anotherHeader";
+import {SubHeader02} from "../../src/components/SubHeader";
 import GetTutorByIdForm from "../../src/components/GetTutorByIdSecretarioForm";
 import Footer from "../../src/components/Footer";
 
@@ -11,7 +11,7 @@ function getAnimalTutorPage() {
             < Header03 />
         </div>
         <div>
-            < SegundaHeader02 />
+            < SubHeader02 />
         </div>
         <div>
             < GetTutorByIdForm />
@@ -23,4 +23,4 @@ function getAnimalTutorPage() {
     );
 }
 
-export default getAnimalTutorPage
+export default getAnimalTutorPage;
