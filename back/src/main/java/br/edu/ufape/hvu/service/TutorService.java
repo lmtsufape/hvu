@@ -1,8 +1,13 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import br.edu.ufape.hvu.repository.TutorRepository;
 import br.edu.ufape.hvu.model.Tutor;
 
@@ -12,8 +17,13 @@ public class TutorService implements TutorServiceInterface {
 	private TutorRepository repository;
 
 
-	public Tutor saveTutor(Tutor newInstance) {
-		return repository.save(newInstance);
+	public Tutor saveTutor(Tutor newInstance) throws ResponseStatusException {
+		Tutor tutorSalvo = repository.findByuserId(newInstance.getUserId());
+		if (tutorSalvo != null) {
+		    throw new ResponseStatusException(HttpStatus.CONFLICT, "This Tutor account is already in use.");
+		} else {
+			return repository.save(newInstance);
+		}
 	}
 
 	public Tutor updateTutor(Tutor transientObject) {
