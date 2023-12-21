@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
@@ -14,7 +15,7 @@ public class Facade {
 	@Autowired
 	private TutorService  tutorService;
 		
-	public Tutor saveTutor(Tutor newInstance) {
+	public Tutor saveTutor(Tutor newInstance) throws ResponseStatusException {
 		return tutorService.saveTutor(newInstance);
 	}
 
