@@ -5,11 +5,16 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 
+import br.edu.ufape.hvu.model.Diretor;
 import br.edu.ufape.hvu.model.Medico;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.MedicoRequest;
@@ -35,7 +40,11 @@ public class MedicoController {
 	
 	@PostMapping("medico")
 	public MedicoResponse createMedico(@Valid @RequestBody MedicoRequest newObj) {
-		return new MedicoResponse(facade.saveMedico(newObj.convertToEntity()));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		Medico o = newObj.convertToEntity();
+		o.setUserId(principal.getSubject());
+		return new MedicoResponse(facade.saveMedico(o));
 	}
 	
 	@GetMapping("medico/{id}")
@@ -51,14 +60,22 @@ public class MedicoController {
 	public MedicoResponse updateMedico(@PathVariable Long id, @Valid @RequestBody MedicoRequest obj) {
 		try {
 			//Medico o = obj.convertToEntity();
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			
+			Medico o = obj.convertToEntity();
 			Medico oldObject = facade.findMedicoById(id);
-
-			TypeMap<MedicoRequest, Medico> typeMapper = modelMapper
-													.typeMap(MedicoRequest.class, Medico.class)
+			
+			if(!principal.getSubject().equals(oldObject.getUserId())) {
+				throw new AccessDeniedException("This is not your account");
+			}
+		
+			TypeMap<Medico, Medico> typeMapper = modelMapper
+													.typeMap(Medico.class, Medico.class)
 													.addMappings(mapper -> mapper.skip(Medico::setId));			
 			
 			
-			typeMapper.map(obj, oldObject);	
+			typeMapper.map(o, oldObject);	
 			return new MedicoResponse(facade.updateMedico(oldObject));
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
@@ -69,6 +86,14 @@ public class MedicoController {
 	@DeleteMapping("medico/{id}")
 	public String deleteMedico(@PathVariable Long id) {
 		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			
+			Medico oldObject = facade.findMedicoById(id);
+			
+			if(!principal.getSubject().equals(oldObject.getUserId())) {
+				throw new AccessDeniedException("This is not your account");
+			}
 			facade.deleteMedico(id);
 			return "";
 		} catch (RuntimeException ex) {
