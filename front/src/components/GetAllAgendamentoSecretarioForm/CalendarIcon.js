@@ -1,17 +1,23 @@
+// IconeCalendario.js
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
-function IconeCalendario() {
+function CalendarIcon({ onDataSelecionada }) {
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
 
-  const handleClickImagem = () => {
-    setMostrarCalendario(!mostrarCalendario);
+  const handleMouseEnter = () => {
+    setMostrarCalendario(true);
+  };
+
+  const handleMouseLeave = () => {
+    setMostrarCalendario(false);
   };
 
   const onChangeData = (novaData) => {
     setDataSelecionada(novaData);
+    onDataSelecionada && onDataSelecionada(novaData); // Certifique-se de que onDataSelecionada exista antes de chamar
   };
 
   return (
@@ -19,12 +25,16 @@ function IconeCalendario() {
       <img
         src='./images/calendario.svg'
         alt="Imagem"
-        onClick={handleClickImagem}
+        onMouseEnter={handleMouseEnter}
         style={{ cursor: 'pointer' }}
       />
 
       {mostrarCalendario && (
-        <div style={{ position: 'absolute', zIndex: 1 }}>
+        <div
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          style={{ position: 'absolute', zIndex: 1 }}
+        >
           <Calendar onChange={onChangeData} value={dataSelecionada} />
         </div>
       )}
@@ -32,4 +42,4 @@ function IconeCalendario() {
   );
 }
 
-export default IconeCalendario;
+export default CalendarIcon;

@@ -1,11 +1,11 @@
 import React from "react";
 import Link from 'next/link';
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "./another_header.module.css"
+import styles from "./index.module.css"
 import { useRouter } from "next/router";
 
 //Sem botão de relatório
-export function SegundaHeader01 () {
+export function SubHeader01 () {
     const router = useRouter();
 
     const handleAgendamentosClick = () => {
@@ -13,7 +13,7 @@ export function SegundaHeader01 () {
     };
 
     const handleAnimaisClick = () => {
-        router.push('/consultaranimaltutor');
+        router.push('/getAllAnimalTutor');
     };
 
     return (
@@ -25,7 +25,7 @@ export function SegundaHeader01 () {
 }
 
 //Com botão de relatório
-export function SegundaHeader02 () {
+export function SubHeader02 () {
     const router = useRouter();
 
     const handleAgendamentosClick = () => {
@@ -33,7 +33,7 @@ export function SegundaHeader02 () {
     };
 
     const handleAnimaisClick = () => {
-        router.push('/consultaranimaltutor');
+        router.push('/getAllTutorSecretario');
     };
 
     return (

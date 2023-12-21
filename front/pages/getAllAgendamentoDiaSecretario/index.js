@@ -1,8 +1,8 @@
 import React from 'react';
-import {Header03} from "../src/components/Header";
-import {SegundaHeader02} from "../src/components/AnotherHeader/anotherHeader";
-import AgendamentosDoDia from "../src/components/ConsultarAgendamentosSecretario/dia";
-import Footer from "../src/components/Footer";
+import {Header03} from "../../src/components/Header";
+import {SubHeader02} from "../../src/components/SubHeader";
+import AgendamentosDoDia from "../../src/components/GetAllAgendamentoSecretarioForm/dia";
+import Footer from "../../src/components/Footer";
 
 function AgendamentosDoDiaPage() {
     return (
@@ -11,7 +11,7 @@ function AgendamentosDoDiaPage() {
             < Header03 />
         </div>
         <div>
-            < SegundaHeader02 />
+            < SubHeader02 />
         </div>
         <div>
             < AgendamentosDoDia />

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Header03} from "../../src/components/Header";
-import {SegundaHeader01} from "../../src/components/AnotherHeader/anotherHeader";
+import {SubHeader01} from "../../src/components/SubHeader";
 import ProximasConsultasTutor from "../../src/components/ProximasConsultasTutor/proximasConsultasTutor";
 import Footer from "../../src/components/Footer";
 
@@ -11,7 +11,7 @@ function ProximasConsultasTutorPage() {
             < Header03 />
         </div>
         <div>
-            < SegundaHeader01 />
+            < SubHeader01 />
         </div>
         <div>
             < ProximasConsultasTutor />

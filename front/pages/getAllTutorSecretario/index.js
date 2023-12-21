@@ -2,8 +2,8 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Header03} from "../../src/components/Header";
 import Footer from "../../src/components/Footer";
-import {SegundaHeader02} from "../../src/components/AnotherHeader/anotherHeader";
-import GetAllTutorSecretarioForm from "@/components/GetAllTutorSecretarioForm";
+import {SubHeader02} from "../../src/components/SubHeader";
+import GetAllTutorSecretarioForm from "../../src/components/GetAllTutorSecretarioForm";
 
 function GetAllTutorSecretarioPage() {
     return (
@@ -13,7 +13,7 @@ function GetAllTutorSecretarioPage() {
         </div>
 
         <div>
-            < SegundaHeader02 />
+            < SubHeader02 />
         </div>
 
         <div>
