@@ -52,11 +52,7 @@ public class TutorController {
 	
 	@GetMapping("tutor/{id}")
 	public TutorResponse getTutorById(@PathVariable Long id) {
-		try {
-			return new TutorResponse(facade.findTutorById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutor " + id + " not found.");
-		}
+		return new TutorResponse(facade.findTutorById(id));
 	}
 	
 	@PatchMapping("tutor/{id}")

@@ -40,11 +40,7 @@ public class MedicacaoPeriodicaController {
 	
 	@GetMapping("medicacaoPeriodica/{id}")
 	public MedicacaoPeriodicaResponse getMedicacaoPeriodicaById(@PathVariable Long id) {
-		try {
-			return new MedicacaoPeriodicaResponse(facade.findMedicacaoPeriodicaById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "MedicacaoPeriodica " + id + " not found.");
-		}
+		return new MedicacaoPeriodicaResponse(facade.findMedicacaoPeriodicaById(id));
 	}
 	
 	@PatchMapping("medicacaoPeriodica/{id}")

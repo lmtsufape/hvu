@@ -40,11 +40,8 @@ public class EspecieController {
 	
 	@GetMapping("especie/{id}")
 	public EspecieResponse getEspecieById(@PathVariable Long id) {
-		try {
-			return new EspecieResponse(facade.findEspecieById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Especie " + id + " not found.");
-		}
+		return new EspecieResponse(facade.findEspecieById(id));
+		
 	}
 	
 	@PatchMapping("especie/{id}")

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.edu.ufape.hvu.repository.TutorRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Tutor;
 
 @Service
@@ -31,14 +32,14 @@ public class TutorService implements TutorServiceInterface {
 	}
 
 	public Tutor findTutorById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Tutor with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Tutor"));
 	}
 	
 	public Tutor findTutorByanimalId(long animalId) {
 		try {
 			return repository.findByanimalId(animalId);
 		} catch (RuntimeException ex){
-			throw new RuntimeException ("It doesn't exist Tutor with id = " + animalId);
+			throw new RuntimeException ("It doesn't exist Tutor with userId = " + animalId);
 		}
 	}
 	

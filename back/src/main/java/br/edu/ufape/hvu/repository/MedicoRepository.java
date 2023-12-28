@@ -9,7 +9,7 @@ import br.edu.ufape.hvu.model.Medico;
 
 @Repository
 public interface MedicoRepository extends JpaRepository<Medico, Long> {
-
 	
+	Medico findByuserId (String userId);
 
 }
