@@ -19,6 +19,7 @@ import br.edu.ufape.hvu.model.Tutor;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.AnimalRequest;
 import br.edu.ufape.hvu.controller.dto.response.AnimalResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -52,11 +53,7 @@ public class AnimalController {
 	
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
-		try {
-			return new AnimalResponse(facade.findAnimalById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Animal " + id + " not found.");
-		}
+		return new AnimalResponse(facade.findAnimalById(id));
 	}
 	
 	@PatchMapping("animal/{id}")

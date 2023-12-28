@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.RacaRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Raca;
 
 @Service
@@ -21,7 +22,7 @@ public class RacaService implements RacaServiceInterface {
 	}
 
 	public Raca findRacaById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Raca with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Raca"));
 	}
 
 	public List<Raca> getAllRaca(){

@@ -40,11 +40,7 @@ public class HistoricoMedicoPregressoController {
 	
 	@GetMapping("historicoMedicoPregresso/{id}")
 	public HistoricoMedicoPregressoResponse getHistoricoMedicoPregressoById(@PathVariable Long id) {
-		try {
-			return new HistoricoMedicoPregressoResponse(facade.findHistoricoMedicoPregressoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "HistoricoMedicoPregresso " + id + " not found.");
-		}
+		return new HistoricoMedicoPregressoResponse(facade.findHistoricoMedicoPregressoById(id));
 	}
 	
 	@PatchMapping("historicoMedicoPregresso/{id}")

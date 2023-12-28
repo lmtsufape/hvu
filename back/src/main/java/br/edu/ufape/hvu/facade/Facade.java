@@ -266,6 +266,10 @@ public class Facade {
 	public Medico findMedicoById(long id) {
 		return medicoService.findMedicoById(id);
 	}
+	
+	public Medico findMedicoByuserId(String userId) {
+		return medicoService.findMedicoByuserId(userId);
+	}
 
 	public List<Medico> getAllMedico() {
 		return medicoService.getAllMedico();
@@ -816,6 +820,10 @@ public class Facade {
 
 	public Diretor findDiretorById(long id) {
 		return diretorService.findDiretorById(id);
+	}
+	
+	public Diretor findDiretorByuserId(String userId) {
+		return diretorService.findDiretorByuserId(userId);
 	}
 
 	public List<Diretor> getAllDiretor() {

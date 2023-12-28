@@ -23,6 +23,14 @@ public class MedicoService implements MedicoServiceInterface {
 	public Medico findMedicoById(long id) {
 		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Medico with id = " + id));
 	}
+	
+	public Medico findMedicoByuserId(String userId) {
+		try {
+			return repository.findByuserId(userId);
+		} catch (RuntimeException ex){
+			throw new RuntimeException ("It doesn't exist Medico with userId = " + userId);
+		}
+	}
 
 	public List<Medico> getAllMedico(){
 		return repository.findAll();
