@@ -357,6 +357,11 @@ public class Facade {
 	public List<Raca> getAllRaca() {
 		return racaService.getAllRaca();
 	}
+	
+	public List<Raca> findByEspecie(long EspecieId) {
+		Especie especie = findEspecieById(EspecieId);
+		return racaService.findByEspecie(especie);
+	}
 
 	public void deleteRaca(Raca persistentObject) {
 		racaService.deleteRaca(persistentObject);

@@ -43,6 +43,14 @@ public class RacaController {
 		return new RacaResponse(facade.findRacaById(id));
 	}
 	
+	@GetMapping("raca/especie/{EspecieId}")
+	public List<RacaResponse> findByEspecie(@PathVariable Long EspecieId) {
+		return facade.findByEspecie(EspecieId)
+			.stream()
+			.map(RacaResponse::new)
+			.toList();
+	}
+	
 	@PatchMapping("raca/{id}")
 	public RacaResponse updateRaca(@PathVariable Long id, @Valid @RequestBody RacaRequest obj) {
 		try {
