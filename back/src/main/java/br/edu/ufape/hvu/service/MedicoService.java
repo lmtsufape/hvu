@@ -1,9 +1,12 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.MedicoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Medico;
 
 @Service
@@ -24,12 +27,12 @@ public class MedicoService implements MedicoServiceInterface {
 		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Medico with id = " + id));
 	}
 	
-	public Medico findMedicoByuserId(String userId) {
-		try {
-			return repository.findByuserId(userId);
-		} catch (RuntimeException ex){
-			throw new RuntimeException ("It doesn't exist Medico with userId = " + userId);
+	public Medico findMedicoByuserId(String userId) throws IdNotFoundException {
+		Optional<Medico> medico = repository.findByuserId(userId);
+		if(medico.isEmpty()) {
+			throw new IdNotFoundException(userId, "Medico");
 		}
+		return medico.get();
 	}
 
 	public List<Medico> getAllMedico(){

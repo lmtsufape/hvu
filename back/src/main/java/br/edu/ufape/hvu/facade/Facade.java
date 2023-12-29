@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.edu.ufape.hvu.exception.DuplicateAccountException;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 
@@ -120,6 +122,29 @@ public class Facade {
 
 	public Usuario findUsuarioById(long id) {
 		return usuarioService.findUsuarioById(id);
+	}
+	
+	public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
+		return usuarioService.findUsuarioByuserId(userId);
+	}
+	
+	public void findDuplicateAccountByuserId(String userId) throws DuplicateAccountException {
+		try {
+			Usuario usuario = findUsuarioByuserId(userId);
+			if(usuario instanceof Tutor) {
+				throw new DuplicateAccountException("tutor");
+			}
+			if(usuario instanceof Diretor) {
+				throw new DuplicateAccountException("diretor");
+			}
+			if(usuario instanceof Medico) {
+				throw new DuplicateAccountException("medico");
+			}
+			
+		} catch(IdNotFoundException ex){
+
+		}
+		
 	}
 
 	public List<Usuario> getAllUsuario() {
@@ -267,7 +292,7 @@ public class Facade {
 		return medicoService.findMedicoById(id);
 	}
 	
-	public Medico findMedicoByuserId(String userId) {
+	public Medico findMedicoByuserId(String userId) throws IdNotFoundException {
 		return medicoService.findMedicoByuserId(userId);
 	}
 
