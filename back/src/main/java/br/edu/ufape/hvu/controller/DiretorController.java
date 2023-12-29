@@ -15,10 +15,10 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 
 import br.edu.ufape.hvu.model.Diretor;
-import br.edu.ufape.hvu.model.Tutor;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.DiretorRequest;
 import br.edu.ufape.hvu.controller.dto.response.DiretorResponse;
+import br.edu.ufape.hvu.exception.DuplicateAccountException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -40,11 +40,17 @@ public class DiretorController {
 	
 	@PostMapping("diretor")
 	public DiretorResponse createDiretor(@Valid @RequestBody DiretorRequest newObj) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Jwt principal = (Jwt) authentication.getPrincipal();
-		Diretor o = newObj.convertToEntity();
-		o.setUserId(principal.getSubject());
-		return new DiretorResponse(facade.saveDiretor(o));
+		try{
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			facade.findDuplicateAccountByuserId(principal.getSubject());
+			Diretor o = newObj.convertToEntity();
+			o.setUserId(principal.getSubject());
+			return new DiretorResponse(facade.saveDiretor(o));
+		} catch(DuplicateAccountException ex){
+			throw ex;
+		}
+		
 	}
 	
 	@GetMapping("diretor/{id}")
