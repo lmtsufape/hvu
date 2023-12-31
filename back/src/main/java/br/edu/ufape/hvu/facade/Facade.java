@@ -4,17 +4,20 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import br.edu.ufape.hvu.exception.DuplicateAccountException;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 
 @Service
 public class Facade {
-	// Tutor--------------------------------------------------------------
+	//Tutor--------------------------------------------------------------
 	@Autowired
-	private TutorService tutorService;
-
-	public Tutor saveTutor(Tutor newInstance) {
+	private TutorService  tutorService;
+		
+	public Tutor saveTutor(Tutor newInstance) throws ResponseStatusException {
 		return tutorService.saveTutor(newInstance);
 	}
 
@@ -25,11 +28,11 @@ public class Facade {
 	public Tutor findTutorById(long id) {
 		return tutorService.findTutorById(id);
 	}
-
+	
 	public Tutor findTutorByuserId(String userId) {
 		return tutorService.findTutorByuserId(userId);
 	}
-
+	
 	public Tutor findTutorByanimalId(long animalId) {
 		return tutorService.findTutorByanimalId(animalId);
 	}
@@ -45,11 +48,12 @@ public class Facade {
 	public void deleteTutor(long id) {
 		tutorService.deleteTutor(id);
 	}
+	
 
-	// NivelHidratacao--------------------------------------------------------------
+	//NivelHidratacao--------------------------------------------------------------
 	@Autowired
-	private NivelHidratacaoService nivelHidratacaoService;
-
+	private NivelHidratacaoService  nivelHidratacaoService;
+		
 	public NivelHidratacao saveNivelHidratacao(NivelHidratacao newInstance) {
 		return nivelHidratacaoService.saveNivelHidratacao(newInstance);
 	}
@@ -73,11 +77,12 @@ public class Facade {
 	public void deleteNivelHidratacao(long id) {
 		nivelHidratacaoService.deleteNivelHidratacao(id);
 	}
+	
 
-	// TipoConsulta--------------------------------------------------------------
+	//TipoConsulta--------------------------------------------------------------
 	@Autowired
-	private TipoConsultaService tipoConsultaService;
-
+	private TipoConsultaService  tipoConsultaService;
+		
 	public TipoConsulta saveTipoConsulta(TipoConsulta newInstance) {
 		return tipoConsultaService.saveTipoConsulta(newInstance);
 	}
@@ -101,11 +106,12 @@ public class Facade {
 	public void deleteTipoConsulta(long id) {
 		tipoConsultaService.deleteTipoConsulta(id);
 	}
+	
 
-	// Usuario--------------------------------------------------------------
+	//Usuario--------------------------------------------------------------
 	@Autowired
-	private UsuarioService usuarioService;
-
+	private UsuarioService  usuarioService;
+		
 	public Usuario saveUsuario(Usuario newInstance) {
 		return usuarioService.saveUsuario(newInstance);
 	}
@@ -116,6 +122,29 @@ public class Facade {
 
 	public Usuario findUsuarioById(long id) {
 		return usuarioService.findUsuarioById(id);
+	}
+	
+	public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
+		return usuarioService.findUsuarioByuserId(userId);
+	}
+	
+	public void findDuplicateAccountByuserId(String userId) throws DuplicateAccountException {
+		try {
+			Usuario usuario = findUsuarioByuserId(userId);
+			if(usuario instanceof Tutor) {
+				throw new DuplicateAccountException("tutor");
+			}
+			if(usuario instanceof Diretor) {
+				throw new DuplicateAccountException("diretor");
+			}
+			if(usuario instanceof Medico) {
+				throw new DuplicateAccountException("medico");
+			}
+			
+		} catch(IdNotFoundException ex){
+
+		}
+		
 	}
 
 	public List<Usuario> getAllUsuario() {
@@ -129,11 +158,12 @@ public class Facade {
 	public void deleteUsuario(long id) {
 		usuarioService.deleteUsuario(id);
 	}
+	
 
-	// MedicacaoPeriodica--------------------------------------------------------------
+	//MedicacaoPeriodica--------------------------------------------------------------
 	@Autowired
-	private MedicacaoPeriodicaService medicacaoPeriodicaService;
-
+	private MedicacaoPeriodicaService  medicacaoPeriodicaService;
+		
 	public MedicacaoPeriodica saveMedicacaoPeriodica(MedicacaoPeriodica newInstance) {
 		return medicacaoPeriodicaService.saveMedicacaoPeriodica(newInstance);
 	}
@@ -157,11 +187,12 @@ public class Facade {
 	public void deleteMedicacaoPeriodica(long id) {
 		medicacaoPeriodicaService.deleteMedicacaoPeriodica(id);
 	}
+	
 
-	// AvaliacaoFisicoGeral--------------------------------------------------------------
+	//AvaliacaoFisicoGeral--------------------------------------------------------------
 	@Autowired
-	private AvaliacaoFisicoGeralService avaliacaoFisicoGeralService;
-
+	private AvaliacaoFisicoGeralService  avaliacaoFisicoGeralService;
+		
 	public AvaliacaoFisicoGeral saveAvaliacaoFisicoGeral(AvaliacaoFisicoGeral newInstance) {
 		return avaliacaoFisicoGeralService.saveAvaliacaoFisicoGeral(newInstance);
 	}
@@ -185,11 +216,12 @@ public class Facade {
 	public void deleteAvaliacaoFisicoGeral(long id) {
 		avaliacaoFisicoGeralService.deleteAvaliacaoFisicoGeral(id);
 	}
+	
 
-	// Cronograma--------------------------------------------------------------
+	//Cronograma--------------------------------------------------------------
 	@Autowired
-	private CronogramaService cronogramaService;
-
+	private CronogramaService  cronogramaService;
+		
 	public Cronograma saveCronograma(Cronograma newInstance) {
 		return cronogramaService.saveCronograma(newInstance);
 	}
@@ -213,11 +245,12 @@ public class Facade {
 	public void deleteCronograma(long id) {
 		cronogramaService.deleteCronograma(id);
 	}
+	
 
-	// TipoPrognostico--------------------------------------------------------------
+	//TipoPrognostico--------------------------------------------------------------
 	@Autowired
-	private TipoPrognosticoService tipoPrognosticoService;
-
+	private TipoPrognosticoService  tipoPrognosticoService;
+		
 	public TipoPrognostico saveTipoPrognostico(TipoPrognostico newInstance) {
 		return tipoPrognosticoService.saveTipoPrognostico(newInstance);
 	}
@@ -241,11 +274,12 @@ public class Facade {
 	public void deleteTipoPrognostico(long id) {
 		tipoPrognosticoService.deleteTipoPrognostico(id);
 	}
+	
 
-	// Medico--------------------------------------------------------------
+	//Medico--------------------------------------------------------------
 	@Autowired
-	private MedicoService medicoService;
-
+	private MedicoService  medicoService;
+		
 	public Medico saveMedico(Medico newInstance) {
 		return medicoService.saveMedico(newInstance);
 	}
@@ -256,6 +290,10 @@ public class Facade {
 
 	public Medico findMedicoById(long id) {
 		return medicoService.findMedicoById(id);
+	}
+	
+	public Medico findMedicoByuserId(String userId) throws IdNotFoundException {
+		return medicoService.findMedicoByuserId(userId);
 	}
 
 	public List<Medico> getAllMedico() {
@@ -269,11 +307,12 @@ public class Facade {
 	public void deleteMedico(long id) {
 		medicoService.deleteMedico(id);
 	}
+	
 
-	// TipoExame--------------------------------------------------------------
+	//TipoExame--------------------------------------------------------------
 	@Autowired
-	private TipoExameService tipoExameService;
-
+	private TipoExameService  tipoExameService;
+		
 	public TipoExame saveTipoExame(TipoExame newInstance) {
 		return tipoExameService.saveTipoExame(newInstance);
 	}
@@ -297,11 +336,12 @@ public class Facade {
 	public void deleteTipoExame(long id) {
 		tipoExameService.deleteTipoExame(id);
 	}
+	
 
-	// Raca--------------------------------------------------------------
+	//Raca--------------------------------------------------------------
 	@Autowired
-	private RacaService racaService;
-
+	private RacaService  racaService;
+		
 	public Raca saveRaca(Raca newInstance) {
 		return racaService.saveRaca(newInstance);
 	}
@@ -317,6 +357,11 @@ public class Facade {
 	public List<Raca> getAllRaca() {
 		return racaService.getAllRaca();
 	}
+	
+	public List<Raca> findByEspecie(long EspecieId) {
+		Especie especie = findEspecieById(EspecieId);
+		return racaService.findByEspecie(especie);
+	}
 
 	public void deleteRaca(Raca persistentObject) {
 		racaService.deleteRaca(persistentObject);
@@ -325,11 +370,12 @@ public class Facade {
 	public void deleteRaca(long id) {
 		racaService.deleteRaca(id);
 	}
+	
 
-	// Vaga--------------------------------------------------------------
+	//Vaga--------------------------------------------------------------
 	@Autowired
-	private VagaService vagaService;
-
+	private VagaService  vagaService;
+		
 	public Vaga saveVaga(Vaga newInstance) {
 		return vagaService.saveVaga(newInstance);
 	}
@@ -353,11 +399,12 @@ public class Facade {
 	public void deleteVaga(long id) {
 		vagaService.deleteVaga(id);
 	}
+	
 
-	// Medicamento--------------------------------------------------------------
+	//Medicamento--------------------------------------------------------------
 	@Autowired
-	private MedicamentoService medicamentoService;
-
+	private MedicamentoService  medicamentoService;
+		
 	public Medicamento saveMedicamento(Medicamento newInstance) {
 		return medicamentoService.saveMedicamento(newInstance);
 	}
@@ -381,11 +428,12 @@ public class Facade {
 	public void deleteMedicamento(long id) {
 		medicamentoService.deleteMedicamento(id);
 	}
+	
 
-	// Prescricao--------------------------------------------------------------
+	//Prescricao--------------------------------------------------------------
 	@Autowired
-	private PrescricaoService prescricaoService;
-
+	private PrescricaoService  prescricaoService;
+		
 	public Prescricao savePrescricao(Prescricao newInstance) {
 		return prescricaoService.savePrescricao(newInstance);
 	}
@@ -409,11 +457,12 @@ public class Facade {
 	public void deletePrescricao(long id) {
 		prescricaoService.deletePrescricao(id);
 	}
+	
 
-	// TipoMucosa--------------------------------------------------------------
+	//TipoMucosa--------------------------------------------------------------
 	@Autowired
-	private TipoMucosaService tipoMucosaService;
-
+	private TipoMucosaService  tipoMucosaService;
+		
 	public TipoMucosa saveTipoMucosa(TipoMucosa newInstance) {
 		return tipoMucosaService.saveTipoMucosa(newInstance);
 	}
@@ -437,11 +486,12 @@ public class Facade {
 	public void deleteTipoMucosa(long id) {
 		tipoMucosaService.deleteTipoMucosa(id);
 	}
+	
 
-	// Consulta--------------------------------------------------------------
+	//Consulta--------------------------------------------------------------
 	@Autowired
-	private ConsultaService consultaService;
-
+	private ConsultaService  consultaService;
+		
 	public Consulta saveConsulta(Consulta newInstance) {
 		return consultaService.saveConsulta(newInstance);
 	}
@@ -465,11 +515,12 @@ public class Facade {
 	public void deleteConsulta(long id) {
 		consultaService.deleteConsulta(id);
 	}
+	
 
-	// HistoricoMedicoPregresso--------------------------------------------------------------
+	//HistoricoMedicoPregresso--------------------------------------------------------------
 	@Autowired
-	private HistoricoMedicoPregressoService historicoMedicoPregressoService;
-
+	private HistoricoMedicoPregressoService  historicoMedicoPregressoService;
+		
 	public HistoricoMedicoPregresso saveHistoricoMedicoPregresso(HistoricoMedicoPregresso newInstance) {
 		return historicoMedicoPregressoService.saveHistoricoMedicoPregresso(newInstance);
 	}
@@ -493,11 +544,12 @@ public class Facade {
 	public void deleteHistoricoMedicoPregresso(long id) {
 		historicoMedicoPregressoService.deleteHistoricoMedicoPregresso(id);
 	}
+	
 
-	// ExameComplementar--------------------------------------------------------------
+	//ExameComplementar--------------------------------------------------------------
 	@Autowired
-	private ExameComplementarService exameComplementarService;
-
+	private ExameComplementarService  exameComplementarService;
+		
 	public ExameComplementar saveExameComplementar(ExameComplementar newInstance) {
 		return exameComplementarService.saveExameComplementar(newInstance);
 	}
@@ -521,11 +573,12 @@ public class Facade {
 	public void deleteExameComplementar(long id) {
 		exameComplementarService.deleteExameComplementar(id);
 	}
+	
 
-	// Parecer--------------------------------------------------------------
+	//Parecer--------------------------------------------------------------
 	@Autowired
-	private ParecerService parecerService;
-
+	private ParecerService  parecerService;
+		
 	public Parecer saveParecer(Parecer newInstance) {
 		return parecerService.saveParecer(newInstance);
 	}
@@ -549,11 +602,12 @@ public class Facade {
 	public void deleteParecer(long id) {
 		parecerService.deleteParecer(id);
 	}
+	
 
-	// Especialidade--------------------------------------------------------------
+	//Especialidade--------------------------------------------------------------
 	@Autowired
-	private EspecialidadeService especialidadeService;
-
+	private EspecialidadeService  especialidadeService;
+		
 	public Especialidade saveEspecialidade(Especialidade newInstance) {
 		return especialidadeService.saveEspecialidade(newInstance);
 	}
@@ -577,11 +631,12 @@ public class Facade {
 	public void deleteEspecialidade(long id) {
 		especialidadeService.deleteEspecialidade(id);
 	}
+	
 
-	// Agendamento--------------------------------------------------------------
+	//Agendamento--------------------------------------------------------------
 	@Autowired
-	private AgendamentoService agendamentoService;
-
+	private AgendamentoService  agendamentoService;
+		
 	public Agendamento saveAgendamento(Agendamento newInstance) {
 		return agendamentoService.saveAgendamento(newInstance);
 	}
@@ -605,11 +660,12 @@ public class Facade {
 	public void deleteAgendamento(long id) {
 		agendamentoService.deleteAgendamento(id);
 	}
+	
 
-	// TipoLinfonodos--------------------------------------------------------------
+	//TipoLinfonodos--------------------------------------------------------------
 	@Autowired
-	private TipoLinfonodosService tipoLinfonodosService;
-
+	private TipoLinfonodosService  tipoLinfonodosService;
+		
 	public TipoLinfonodos saveTipoLinfonodos(TipoLinfonodos newInstance) {
 		return tipoLinfonodosService.saveTipoLinfonodos(newInstance);
 	}
@@ -633,11 +689,12 @@ public class Facade {
 	public void deleteTipoLinfonodos(long id) {
 		tipoLinfonodosService.deleteTipoLinfonodos(id);
 	}
+	
 
-	// Endereco--------------------------------------------------------------
+	//Endereco--------------------------------------------------------------
 	@Autowired
-	private EnderecoService enderecoService;
-
+	private EnderecoService  enderecoService;
+		
 	public Endereco saveEndereco(Endereco newInstance) {
 		return enderecoService.saveEndereco(newInstance);
 	}
@@ -661,11 +718,12 @@ public class Facade {
 	public void deleteEndereco(long id) {
 		enderecoService.deleteEndereco(id);
 	}
+	
 
-	// AvaliacaoFisicoEspecial--------------------------------------------------------------
+	//AvaliacaoFisicoEspecial--------------------------------------------------------------
 	@Autowired
-	private AvaliacaoFisicoEspecialService avaliacaoFisicoEspecialService;
-
+	private AvaliacaoFisicoEspecialService  avaliacaoFisicoEspecialService;
+		
 	public AvaliacaoFisicoEspecial saveAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial newInstance) {
 		return avaliacaoFisicoEspecialService.saveAvaliacaoFisicoEspecial(newInstance);
 	}
@@ -689,11 +747,12 @@ public class Facade {
 	public void deleteAvaliacaoFisicoEspecial(long id) {
 		avaliacaoFisicoEspecialService.deleteAvaliacaoFisicoEspecial(id);
 	}
+	
 
-	// NivelConsciencia--------------------------------------------------------------
+	//NivelConsciencia--------------------------------------------------------------
 	@Autowired
-	private NivelConscienciaService nivelConscienciaService;
-
+	private NivelConscienciaService  nivelConscienciaService;
+		
 	public NivelConsciencia saveNivelConsciencia(NivelConsciencia newInstance) {
 		return nivelConscienciaService.saveNivelConsciencia(newInstance);
 	}
@@ -717,11 +776,12 @@ public class Facade {
 	public void deleteNivelConsciencia(long id) {
 		nivelConscienciaService.deleteNivelConsciencia(id);
 	}
+	
 
-	// Estagiario--------------------------------------------------------------
+	//Estagiario--------------------------------------------------------------
 	@Autowired
-	private EstagiarioService estagiarioService;
-
+	private EstagiarioService  estagiarioService;
+		
 	public Estagiario saveEstagiario(Estagiario newInstance) {
 		return estagiarioService.saveEstagiario(newInstance);
 	}
@@ -745,11 +805,12 @@ public class Facade {
 	public void deleteEstagiario(long id) {
 		estagiarioService.deleteEstagiario(id);
 	}
+	
 
-	// TipoPostura--------------------------------------------------------------
+	//TipoPostura--------------------------------------------------------------
 	@Autowired
-	private TipoPosturaService tipoPosturaService;
-
+	private TipoPosturaService  tipoPosturaService;
+		
 	public TipoPostura saveTipoPostura(TipoPostura newInstance) {
 		return tipoPosturaService.saveTipoPostura(newInstance);
 	}
@@ -773,11 +834,12 @@ public class Facade {
 	public void deleteTipoPostura(long id) {
 		tipoPosturaService.deleteTipoPostura(id);
 	}
+	
 
-	// Diretor--------------------------------------------------------------
+	//Diretor--------------------------------------------------------------
 	@Autowired
-	private DiretorService diretorService;
-
+	private DiretorService  diretorService;
+		
 	public Diretor saveDiretor(Diretor newInstance) {
 		return diretorService.saveDiretor(newInstance);
 	}
@@ -788,6 +850,10 @@ public class Facade {
 
 	public Diretor findDiretorById(long id) {
 		return diretorService.findDiretorById(id);
+	}
+	
+	public Diretor findDiretorByuserId(String userId) {
+		return diretorService.findDiretorByuserId(userId);
 	}
 
 	public List<Diretor> getAllDiretor() {
@@ -801,11 +867,12 @@ public class Facade {
 	public void deleteDiretor(long id) {
 		diretorService.deleteDiretor(id);
 	}
+	
 
-	// Animal--------------------------------------------------------------
+	//Animal--------------------------------------------------------------
 	@Autowired
-	private AnimalService animalService;
-
+	private AnimalService  animalService;
+		
 	public Animal saveAnimal(Animal newInstance, String tutor_id) {
 		Tutor tutor = findTutorByuserId(tutor_id);
 		Animal animal = animalService.saveAnimal(newInstance);
@@ -833,11 +900,12 @@ public class Facade {
 	public void deleteAnimal(long id) {
 		animalService.deleteAnimal(id);
 	}
+	
 
-	// Especie--------------------------------------------------------------
+	//Especie--------------------------------------------------------------
 	@Autowired
-	private EspecieService especieService;
-
+	private EspecieService  especieService;
+		
 	public Especie saveEspecie(Especie newInstance) {
 		return especieService.saveEspecie(newInstance);
 	}
@@ -861,11 +929,12 @@ public class Facade {
 	public void deleteEspecie(long id) {
 		especieService.deleteEspecie(id);
 	}
+	
 
-	// TipoTurgorCutaneo--------------------------------------------------------------
+	//TipoTurgorCutaneo--------------------------------------------------------------
 	@Autowired
-	private TipoTurgorCutaneoService tipoTurgorCutaneoService;
-
+	private TipoTurgorCutaneoService  tipoTurgorCutaneoService;
+		
 	public TipoTurgorCutaneo saveTipoTurgorCutaneo(TipoTurgorCutaneo newInstance) {
 		return tipoTurgorCutaneoService.saveTipoTurgorCutaneo(newInstance);
 	}
@@ -889,11 +958,12 @@ public class Facade {
 	public void deleteTipoTurgorCutaneo(long id) {
 		tipoTurgorCutaneoService.deleteTipoTurgorCutaneo(id);
 	}
+	
 
-	// ScoreCorporal--------------------------------------------------------------
+	//ScoreCorporal--------------------------------------------------------------
 	@Autowired
-	private ScoreCorporalService scoreCorporalService;
-
+	private ScoreCorporalService  scoreCorporalService;
+		
 	public ScoreCorporal saveScoreCorporal(ScoreCorporal newInstance) {
 		return scoreCorporalService.saveScoreCorporal(newInstance);
 	}
@@ -917,6 +987,7 @@ public class Facade {
 	public void deleteScoreCorporal(long id) {
 		scoreCorporalService.deleteScoreCorporal(id);
 	}
+
 
 	// Area--------------------------------------------------------------
 	@Autowired
@@ -1289,5 +1360,10 @@ public class Facade {
 	public void deleteRotina(long id) {
 		RotinaService.deleteRotina(id);
 	}
+
+}
+
+	
+	
 
 }
