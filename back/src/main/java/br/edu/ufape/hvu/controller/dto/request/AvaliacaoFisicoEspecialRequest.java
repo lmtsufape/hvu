@@ -25,6 +25,7 @@ public  class AvaliacaoFisicoEspecialRequest  {
 	private String sistemaLocomotor;
 	private String sistemaReprodutor;
 	private String olhos;
+	private long id;
 
 
 	public AvaliacaoFisicoEspecial convertToEntity() {

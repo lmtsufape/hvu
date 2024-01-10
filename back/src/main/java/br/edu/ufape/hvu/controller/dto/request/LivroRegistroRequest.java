@@ -21,7 +21,8 @@ public  class LivroRegistroRequest  {
 	private Ficha ficha;
 	private String fichaInterna;
 	private Date date;
-	private MedicoRequest medico; 
+	private MedicoRequest medico;
+	private long id;
 
 
 	public LivroRegistro convertToEntity() {

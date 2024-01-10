@@ -25,7 +25,8 @@ public  class FichaSolicitacaoServicoRequest  {
 	private String historico;
 	private String caracteristicasAdicionais;
 	private AnimalRequest animal; 
-	private MedicoRequest medico; 
+	private MedicoRequest medico;
+	private long id;
 
 
 	public FichaSolicitacaoServico convertToEntity() {

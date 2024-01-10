@@ -24,7 +24,8 @@ public  class LaudoNecropsiaRequest  {
 	private CampoLaudoRequest campoLaudo; 
 	private LaudoMicroscopiaRequest laudoMicroscopia; 
 	private FotoRequest foto; 
-	private List<EstagiarioRequest> estagiario; 
+	private List<EstagiarioRequest> estagiario;
+	private long id;
 
 
 	public LaudoNecropsia convertToEntity() {

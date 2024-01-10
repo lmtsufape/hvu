@@ -16,7 +16,8 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public  class InstituicaoRequest  {
 	private String nome;
-	private EnderecoRequest endereco; 
+	private EnderecoRequest endereco;
+	private long id;
 
 
 	public Instituicao convertToEntity() {

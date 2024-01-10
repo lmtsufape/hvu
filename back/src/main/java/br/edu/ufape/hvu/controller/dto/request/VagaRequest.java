@@ -18,7 +18,8 @@ import lombok.Setter;
 public  class VagaRequest  {
 	private LocalDateTime dataHora;
 	private EspecialidadeRequest especialidade; 
-	private ConsultaRequest consulta; 
+	private ConsultaRequest consulta;
+	private long id;
 
 
 	public Vaga convertToEntity() {

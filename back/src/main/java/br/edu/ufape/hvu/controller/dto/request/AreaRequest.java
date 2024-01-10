@@ -15,6 +15,7 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class AreaRequest  {
+	private long id;
 	private String tituloArea;
 	private List<EspecieRequest> especie; 
 

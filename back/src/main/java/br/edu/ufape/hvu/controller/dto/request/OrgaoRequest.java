@@ -20,7 +20,8 @@ public  class OrgaoRequest  {
 	private Boolean sexoMacho;
 	private Boolean sexoFemea;
 	private FotoRequest foto; 
-	private List<AreaRequest> area; 
+	private List<AreaRequest> area;
+	private long id;
 
 
 	public Orgao convertToEntity() {

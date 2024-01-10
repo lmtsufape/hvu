@@ -19,6 +19,7 @@ public  class MaterialColetadoRequest  {
 	private String nome;
 	private ExameMicroscopicoRequest exameMicroscopico; 
 	private OrgaoRequest orgao; 
+	private long id;
 
 
 	public MaterialColetado convertToEntity() {

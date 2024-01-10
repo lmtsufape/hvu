@@ -29,7 +29,7 @@ public  class Consulta  {
 	private String alteracoesClinicasDiversas;
 	private String suspeitasClinicas;
 	private String alimentacao;
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private Medico medico; 
 	@OneToOne
@@ -45,7 +45,7 @@ public  class Consulta  {
 	@JoinColumn(name = "consulta_id")
 	@ToString.Exclude
 	private List<Prescricao> prescricao; 
-	@OneToMany
+	@ManyToMany
 	@JoinColumn(name = "consulta_id")
 	@ToString.Exclude
 	private List<Estagiario> estagiario; 
