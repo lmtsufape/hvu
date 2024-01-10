@@ -16,7 +16,8 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public  class CampoLaudoRequest  {
 	private String descricao;
-	private OrgaoRequest orgao; 
+	private OrgaoRequest orgao;
+	private long id;
 
 
 	public CampoLaudo convertToEntity() {

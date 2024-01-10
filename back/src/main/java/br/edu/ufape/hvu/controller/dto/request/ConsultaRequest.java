@@ -28,7 +28,8 @@ public  class ConsultaRequest  {
 	private AvaliacaoFisicoGeralRequest avaliacaoFisicoGeral; 
 	private List<PrescricaoRequest> prescricao; 
 	private List<EstagiarioRequest> estagiario; 
-	private List<ExameComplementarRequest> exameComplementar; 
+	private List<ExameComplementarRequest> exameComplementar;
+	private long id;
 
 
 	public Consulta convertToEntity() {

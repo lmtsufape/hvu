@@ -19,7 +19,8 @@ public  class LaudoMicroscopiaRequest  {
 	private FichaSolicitacaoServicoRequest fichaSolicitacaoServico; 
 	private CampoLaudoRequest campoLaudo; 
 	private EtapaRequest etapa; 
-	private List<EstagiarioRequest> estagiario; 
+	private List<EstagiarioRequest> estagiario;
+	private long id;
 
 
 	public LaudoMicroscopia convertToEntity() {

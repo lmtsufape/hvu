@@ -19,6 +19,7 @@ public  class EtapaRequest  {
 	private String observacoes;
 	private Date dataHora;
 	private Boolean concluido;
+	private long id;
 
 
 	public Etapa convertToEntity() {

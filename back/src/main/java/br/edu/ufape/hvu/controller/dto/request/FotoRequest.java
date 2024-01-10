@@ -17,6 +17,7 @@ import lombok.Setter;
 public  class FotoRequest  {
 	private String titulo;
 	private String foto_path;
+	private long id;
 
 
 	public Foto convertToEntity() {

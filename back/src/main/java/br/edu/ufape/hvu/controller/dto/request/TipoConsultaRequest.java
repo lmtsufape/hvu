@@ -17,7 +17,8 @@ import lombok.Setter;
 public  class TipoConsultaRequest  {
 	private String tipo;
 	private List<AgendamentoRequest> agendamento; 
-	private List<VagaRequest> vaga; 
+	private List<VagaRequest> vaga;
+	private long id;
 
 
 	public TipoConsulta convertToEntity() {

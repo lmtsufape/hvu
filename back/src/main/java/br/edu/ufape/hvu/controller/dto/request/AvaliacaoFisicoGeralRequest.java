@@ -25,7 +25,8 @@ public  class AvaliacaoFisicoGeralRequest  {
 	private NivelHidratacaoRequest nivelHidratacao; 
 	private TipoLinfonodosRequest tipoLinfonodos; 
 	private ScoreCorporalRequest scoreCorporal; 
-	private TipoPosturaRequest tipoPostura; 
+	private TipoPosturaRequest tipoPostura;
+	private long id;
 
 
 	public AvaliacaoFisicoGeral convertToEntity() {

@@ -16,6 +16,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public  class DiretorRequest extends UsuarioRequest {
 	private String matricula;
+	private long id;
 
 
 	public Diretor convertToEntity() {

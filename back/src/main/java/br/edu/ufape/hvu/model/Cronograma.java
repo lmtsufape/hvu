@@ -24,7 +24,7 @@ public  class Cronograma  {
 	private long id;
 	private String nome;
 	private String rotina;
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private Medico medico; 
 	@OneToMany

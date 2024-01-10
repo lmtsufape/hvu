@@ -21,6 +21,7 @@ public  class EnderecoRequest  {
 	private String cidade;
 	private int numero;
 	private String bairro;
+	private long id;
 
 
 	public Endereco convertToEntity() {

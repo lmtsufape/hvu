@@ -16,7 +16,8 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public  class TutorRequest extends UsuarioRequest {
 	private String rg;
-	private List<AnimalRequest> animal; 
+	private List<AnimalRequest> animal;
+	private long id;
 
 
 	public Tutor convertToEntity() {
