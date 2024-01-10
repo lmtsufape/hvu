@@ -15,6 +15,7 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class EspecialidadeRequest  {
+	private long id;
 	private String nome;
 	private String descricao;
 
