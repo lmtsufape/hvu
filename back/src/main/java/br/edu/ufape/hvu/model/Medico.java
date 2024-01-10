@@ -18,7 +18,7 @@ import lombok.ToString;
 @ToString
 public  class Medico extends Usuario {
 	private String crmv;
-	@OneToMany
+	@ManyToMany
 	@JoinColumn(name = "medico_id")
 	@ToString.Exclude
 	private List<Especialidade> especialidade; 

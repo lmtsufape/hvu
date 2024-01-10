@@ -15,6 +15,7 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class MedicoRequest extends UsuarioRequest {
+	private long id;
 	private String crmv;
 	private List<EspecialidadeRequest> especialidade; 
 
