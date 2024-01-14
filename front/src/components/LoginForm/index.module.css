@@ -57,7 +57,6 @@
     font-weight: 300;
     line-height: 24px;
     letter-spacing: 0em;
-
 }
 
 .form button {
@@ -68,8 +67,7 @@
     line-height: 21px;
     letter-spacing: 0em;
     float: right;
-    display: flex;
-    flex-direction: column;
+    display: block;
     align-items: center;
     gap: 16px;
     margin-top: -20px;
@@ -138,4 +136,20 @@
 
 .criar_button_box button:hover {
     color: #5b977b;
+}
+
+@media (max-width: 1366px) {
+
+}
+
+@media (max-width: 1024px) {
+
+}
+
+@media (max-width: 768px) {
+
+}
+
+@media (max-width: 400px) {
+
 }

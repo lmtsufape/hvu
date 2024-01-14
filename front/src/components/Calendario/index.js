@@ -4,7 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ptBR from 'date-fns/locale/pt-BR';
 /*import "bootstrap/dist/css/bootstrap.min.css";*/
 
-function Calendario() {
+function Calendar() {
   const [dataSelecionada, setDataSelecionada] = useState(null);
 
   const handleDataSelecionada = (date) => {
@@ -27,4 +27,4 @@ function Calendario() {
   );
 }
 
-export default Calendario;
+export default Calendar;

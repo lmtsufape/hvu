@@ -14,18 +14,22 @@ function UpdateAnimalForm() {
   const { especies, error: especiesError } = EspeciesList();
   const { racas, error: racasError } = RacasList();
 
-  const [selectedEspecie, setSelectedEspecie] = useState('');
-  const [selectedRaca, setSelectedRaca] = useState('');
-  const [animalData, setAnimalData] = useState({
-    nome: '',
-    nascimento: '',
-    especie: '',
-    raca: '',
-    alergias: '',
-    porte: '',
-    sexo: '',
-  });
+  const [selectedEspecie, setSelectedEspecie] = useState(null);
+  const [selectedRaca, setSelectedRaca] = useState({
+    nome: "",
+    sexo: "",
+    alergias: "",
+    dataNascimento: "",
+    imagem: "null"
+});
+
   const [animal, setAnimal] = useState({});
+
+  const formatDate = (data) => {
+    if (!data) return null; // Evita chamar split em uma string vazia
+    const [dia, mes, ano] = data.split("/");
+    return `${ano}-${mes}-${dia}`;
+  };
 
   useEffect(() => {
     if (id) {
@@ -42,9 +46,15 @@ function UpdateAnimalForm() {
     }
   }, [id]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setAnimalData({ ...animalData, [name]: value });
+  const handleAnimalChange = (event) => {
+    try {
+      const { name, value } = event.target;
+      const newValue = name === "dataNascimento" ? formatDate(value) : value;
+  
+      setAnimal((prevAnimal) => ({ ...prevAnimal, [name]: newValue }));
+    } catch (error) {
+      console.error('Erro ao puxar dados do animal:', error);
+    }
   };
 
   const handleEspecieSelection = (event) => {
@@ -56,6 +66,10 @@ function UpdateAnimalForm() {
     }
   };
 
+  const getSelectedEspecie = () => {
+    return especies.find((e) => e.id === selectedEspecie);
+  };
+
   const handleRacaSelection = (event) => {
     try {
       const selectedRacaId = event.target.value;
@@ -65,34 +79,39 @@ function UpdateAnimalForm() {
     }
   };
 
+  const getSelectedRaca = () => {
+    return racas.find((r) => r.id === selectedRaca);
+  };
+
+  console.log("raça", selectedRaca);
+
+  console.log("Dados de raça", getSelectedRaca());
+
   const handleUpdateAnimal = async (event) => {
     event.preventDefault();
 
-    const racaToUpdate = {
-      ...racas.find((r) => r.id === selectedRaca),
-      especie: especies.find((e) => e.id === selectedEspecie),
+    const animalToUpdate = {
+      ...animal,
+      raca: getSelectedRaca(),
     };
 
-    const animalToUpdate = {
-      ...animalData,
-      raca: racaToUpdate,
-    };
+    console.log("Dados do animal a ser atualizado:", animalToUpdate);
 
     if (id) {
       try {
-        const response = await updateAnimal(id, animalToUpdate);
-        setAnimalData(response);
+        const updatedAnimal = await updateAnimal(id, animalToUpdate);
+        setAnimal(updatedAnimal);
 
-        if (response.ok) {
+        if (updatedAnimal.ok) { // Correção aqui
           router.push(`/getAnimalByIdTutor/${id}`);
         } else {
           console.error('Erro ao atualizar o animal.');
         }
       } catch (error) {
-        console.error('Erro ao buscar animal:', error);
+        console.error('Erro ao atualizar o animal:', error); // Correção aqui
       }
     }
-  };
+  }
 
   return (
     <form className={`${styles.boxcadastrotutor} ${styles.container}`}>
@@ -107,8 +126,8 @@ function UpdateAnimalForm() {
                 className="form-control" 
                 name="nome"
                 placeholder={animal.nome}
-                value={animalData.nome}
-                onChange={handleInputChange}
+                value={animal.nome}
+                onChange={handleAnimalChange}
               >
               </input>
           </div>
@@ -118,8 +137,8 @@ function UpdateAnimalForm() {
                 className="form-control" 
                 name="nascimento"
                 placeholder={animal.dataNascimento}
-                value={animalData.datanasc}
-                onChange={handleInputChange}
+                value={animal.dataNascimento}
+                onChange={handleAnimalChange}
               >
               </input>
           </div>
@@ -135,7 +154,7 @@ function UpdateAnimalForm() {
               value={selectedEspecie}
               onChange={handleEspecieSelection}
             >
-              <option value="">Selecione a espécie do animal</option>
+              <option value="">{animal.raca && animal.raca.especie && animal.raca.especie.nome}</option>
               {especies.map((especie) => (
                 <option key={especie.id} value={especie.id}>
                   {especie.nome}
@@ -148,11 +167,11 @@ function UpdateAnimalForm() {
             <select 
               className='form-select'
               name="raca"
-              aria-label={animal.raca && animal.raca.especie && animal.raca.especie.nome}
-              value={selectedRaca}
+              aria-label={getSelectedRaca()?.nome || 'Selecione a raça do animal'}
+              value={selectedRaca || ''}
               onChange={handleRacaSelection}
             >
-              <option value="">{animal.raca && animal.raca.especie && animal.raca.especie.nome}</option>
+              <option value="">{animal.raca && animal.raca.nome}</option>
               {racas.map((raca) => (
                 <option key={raca.id} value={raca.id}>
                   {raca.nome}
@@ -169,28 +188,10 @@ function UpdateAnimalForm() {
                 className="form-control" 
                 name="alergias"
                 placeholder={animal.alergias}
-                value={animalData.alergias}
-                onChange={handleInputChange}
+                value={animal.alergias}
+                onChange={handleAnimalChange}
               >
             </input>
-          </div>
-
-          <div className="col">
-            <label htmlFor="porte" className="form-label">Porte</label>
-            <select 
-              className='form-select'
-              name="porte"
-              aria-label={animal.raca && animal.raca.porte}
-              value={selectedRaca}
-              onChange={handleRacaSelection}
-            >
-              <option value="">{animal.raca && animal.raca.porte}</option>
-              {racas.map((raca) => (
-                <option key={raca.id} value={raca.id}>
-                  {raca.porte}
-                </option>
-              ))}
-            </select>
           </div>
 
           <div className="col">
@@ -198,8 +199,8 @@ function UpdateAnimalForm() {
             <select className="form-select" 
                 name="sexo"
                 aria-label={animal.sexo}
-                value={animalData.sexo}
-                onChange={handleInputChange}
+                value={animal.sexo}
+                onChange={handleAnimalChange}
               >
                 <option value="">{animal.sexo}</option>
                 <option value="macho">Macho</option>
@@ -220,5 +221,6 @@ function UpdateAnimalForm() {
     </form>
   );
 }
+
 
 export default UpdateAnimalForm;

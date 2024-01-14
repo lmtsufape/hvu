@@ -16,8 +16,7 @@ function CreateAnimalForm() {
     sexo: "",
     alergias: "",
     especie: "",
-    raca: "",
-    porte: "",
+    raca: ""
   });
 
   const { especies, error: especiesError } = EspeciesList();
@@ -25,7 +24,7 @@ function CreateAnimalForm() {
 
   const [selectedEspecie, setSelectedEspecie] = useState({});
   const [selectedRaca, setSelectedRaca] = useState({});
-  const [selectedPorte, setSelectedPorte] = useState("");
+  const [racasByEspecie, setRacasByEspecie] = useState([]);
 
   const [animalData, setAnimalData] = useState({
     nome: "",
@@ -43,11 +42,20 @@ function CreateAnimalForm() {
       setSelectedRaca(racas[0]?.id);
     }
   }, [especies, racas]);
+  
+  const formatDate = (data) => {
+    const [dia, mes, ano] = data.split("/");
+    return `${ano}-${mes}-${dia}`;
+  };
 
   const handleAnimalChange = (event) => {
     try {
       const { name, value } = event.target;
-      setAnimalData({ ...animalData, [name]: value });
+      
+      // Se o campo for "dataNascimento", formate a data
+      const newValue = name === "dataNascimento" ? formatDate(value) : value;
+  
+      setAnimalData({ ...animalData, [name]: newValue });
     } catch (error) {
       console.error('Erro ao puxar dados do animal:', error);
     }
@@ -77,15 +85,6 @@ function CreateAnimalForm() {
 
   const getSelectedRaca = () => {
     return racas.find((r) => r.id === selectedRaca);
-  };
-
-  const handlePorteSelection = (event) => {
-    try {
-      const selectedPorteId = event.target.value;
-      setSelectedPorte(selectedPorteId);
-    } catch (error) {
-      console.error('Erro ao selecionar porte:', error);
-    }
   };
 
   const validateForm = () => {
@@ -124,21 +123,17 @@ function CreateAnimalForm() {
   
   const handleSubmit = async (event) => {
     event.preventDefault();
+
   //  if (validateForm()) {
-      if (especies.length > 0 && racas.length > 0) {
-        const racaToCreate = {
-          ...getSelectedRaca(),
-          porte: selectedPorte,
-          especie: getSelectedEspecie(),
-        };
-  
+      if (especies.length > 0 && racas.length > 0) {  
         const animalToCreate = {
           ...animalData,
-          raca: racaToCreate,
+          raca: getSelectedRaca(),
         };
-  
+    
+        console.log(getSelectedRaca());
         console.log("Dados do animal a ser criado:", animalToCreate);
-  
+    
         try {
           const newAnimal = await createAnimal(animalToCreate);
           console.log(newAnimal);
@@ -185,42 +180,42 @@ function CreateAnimalForm() {
         </div>
   
         <div className="row">
-          <div className="col">
-            <label htmlFor="especie" className="form-label">Espécie</label>
-            <select 
-              className='form-select'
-              name="especie"
-              aria-label="Selecione a espécie do animal"
-              value={selectedEspecie}
-              onChange={handleEspecieSelection}
-            >
-              <option value="">Selecione a espécie do animal</option>
-              {especies.map((especie) => (
-                <option key={especie.id} value={especie.id}>
-                  {especie.nome}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="col">
-            <label htmlFor="raca" className="form-label">Raça</label>
-            <select 
-              className='form-select'
-              name="raca"
-              aria-label="Selecione a raça do animal"
-              value={selectedRaca}
-              onChange={handleRacaSelection}
-            >
-              <option value="">Selecione a raça do animal</option>
-              {racas.map((raca) => (
-                <option key={raca.id} value={raca.id}>
-                  {raca.nome}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="col">
+          <label htmlFor="especie" className="form-label">Espécie</label>
+          <select 
+            className='form-select'
+            name="especie"
+            aria-label="Selecione a espécie do animal"
+            value={selectedEspecie}
+            onChange={handleEspecieSelection}
+          >
+            <option value="">Selecione a espécie</option>
+            {especies.map((especie) => (
+              <option key={especie.id} value={especie.id}>
+                {especie.nome}
+              </option>
+            ))}
+          </select>
         </div>
+
+        <div className="col">
+          <label htmlFor="raca" className="form-label">Raça</label>
+          <select 
+            className='form-select'
+            name="raca"
+            aria-label="Selecione a raça do animal"
+            value={selectedRaca}
+            onChange={handleRacaSelection}
+          >
+            <option value="">Selecione</option>
+            {racasByEspecie.map((raca) => (
+              <option key={raca.id} value={raca.id}>
+                {raca.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
   
         <div className="row">
           <div className="col">
@@ -234,23 +229,6 @@ function CreateAnimalForm() {
               onChange={handleAnimalChange}
             />
             {errors.alergias && <div className="invalid-feedback">{errors.alergias}</div>}
-          </div>
-  
-          <div className="col">
-            <label htmlFor="porte" className="form-label">Porte</label>
-            <select 
-              className='form-select'
-              name="porte"
-              aria-label="Selecione o porte do animal"
-              value={selectedPorte}
-              onChange={handlePorteSelection}
-            >
-              <option value="">Selecione a raça do animal</option>
-              <option value="pequeno">Pequeno</option>
-              <option value="medio">Médio</option>
-              <option value="grande">Grande</option>
-              <option value="gigante">Gigante</option>
-            </select>
           </div>
   
           <div className="col">

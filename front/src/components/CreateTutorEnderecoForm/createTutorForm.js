@@ -4,7 +4,7 @@ import styles from "./createTutorForm.module.css";
 
 function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
     return (
-        <form className={styles.boxcadastrotutor}>
+        <div className={styles.boxcadastrotutor}>
             <div className={styles.cadastrotutor}>
                 <div className={styles.titulo}>Tutor</div>
                 {renderInput("Nome Completo", "nome", tutorFormData.nome, handleTutorChange, errors.nome, "text")}
@@ -20,7 +20,7 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     );
 }
 

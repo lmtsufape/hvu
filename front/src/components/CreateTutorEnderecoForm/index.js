@@ -69,11 +69,9 @@ function CreateTutorEnderecoForm() {
         } else if (!/^\d{7}$/.test(tutorFormData.rg)) {
             newErrors.rg = "RG inválido";
         }
-        /*if (!tutorFormData.telefone) {
+        if (!tutorFormData.telefone) {
             newErrors.telefone = "Telefone é obrigatório";
-        } else if (!/^\(\d{2}\) \d{5}-\d{4}$/.test(tutorFormData.telefone)) {
-            newErrors.telefone = "Telefone inválido";
-        }*/
+        }
         if (!enderecoFormData.rua) {
             newErrors.rua = "Rua é obrigatório";
         }

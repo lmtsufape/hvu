@@ -5,8 +5,7 @@
   width: 80%;
   max-width: 1500px;
   min-width: 300px;
-  height: auto; 
-  height: auto; 
+  min-height: 700px; 
   margin: auto;
   margin-top: 30px;
   margin-bottom: 30px;
@@ -91,4 +90,10 @@
 
 .cadastrar_button:hover {
   background-color: #5b977b;
+}
+
+.form-select-disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
 }

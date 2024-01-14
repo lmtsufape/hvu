@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import styles from './novoAgendamentoButton.module.css';
+import styles from './index.module.css';
 
 function NovoAgendamentoButton () {
     const router = useRouter();
