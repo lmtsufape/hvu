@@ -21,7 +21,8 @@ public  class ExameComplementarRequest  {
 	private Medico responsavel;
 	private String arquivo;
 	private String requisicao;
-	private TipoExameRequest tipoExame; 
+	private TipoExameRequest tipoExame;
+	private long id;
 
 
 	public ExameComplementar convertToEntity() {

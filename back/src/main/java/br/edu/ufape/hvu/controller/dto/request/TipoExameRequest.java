@@ -17,6 +17,7 @@ import lombok.Setter;
 public  class TipoExameRequest  {
 	private String nome;
 	private String observacoes;
+	private long id;
 
 
 	public TipoExame convertToEntity() {

@@ -9,7 +9,7 @@ import br.edu.ufape.hvu.model.Diretor;
 
 @Repository
 public interface DiretorRepository extends JpaRepository<Diretor, Long> {
-
+	Diretor findByuserId (String userId);
 	
 
 }

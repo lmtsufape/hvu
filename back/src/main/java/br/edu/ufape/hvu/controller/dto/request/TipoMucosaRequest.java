@@ -16,6 +16,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public  class TipoMucosaRequest  {
 	private String nome;
+	private long id;
 
 
 	public TipoMucosa convertToEntity() {

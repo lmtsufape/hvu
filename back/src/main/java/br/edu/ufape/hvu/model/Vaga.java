@@ -25,7 +25,7 @@ public  class Vaga  {
 	@EqualsAndHashCode.Include
 	private long id;
 	private LocalDateTime dataHora;
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private Especialidade especialidade; 
 	@OneToOne

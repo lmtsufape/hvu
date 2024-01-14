@@ -20,6 +20,7 @@ public  class CronogramaRequest  {
 	private MedicoRequest medico; 
 	private List<EspecialidadeRequest> especialidade; 
 	private List<VagaRequest> vaga; 
+	private long id;
 
 
 	public Cronograma convertToEntity() {

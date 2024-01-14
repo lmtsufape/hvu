@@ -16,6 +16,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public  class ScoreCorporalRequest  {
 	private String nivel;
+	private long id;
 
 
 	public ScoreCorporal convertToEntity() {

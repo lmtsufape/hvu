@@ -23,6 +23,14 @@ public class DiretorService implements DiretorServiceInterface {
 	public Diretor findDiretorById(long id) {
 		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Diretor with id = " + id));
 	}
+	
+	public Diretor findDiretorByuserId(String userId) {
+		try {
+			return repository.findByuserId(userId);
+		} catch (RuntimeException ex){
+			throw new RuntimeException ("It doesn't exist Diretor with userId = " + userId);
+		}
+	}
 
 	public List<Diretor> getAllDiretor(){
 		return repository.findAll();

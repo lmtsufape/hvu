@@ -16,6 +16,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public  class NivelHidratacaoRequest  {
 	private String nivel;
+	private long id;
 
 
 	public NivelHidratacao convertToEntity() {

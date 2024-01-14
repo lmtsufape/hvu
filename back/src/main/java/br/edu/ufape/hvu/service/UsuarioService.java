@@ -1,9 +1,12 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.UsuarioRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Usuario;
 
 @Service
@@ -22,6 +25,14 @@ public class UsuarioService implements UsuarioServiceInterface {
 
 	public Usuario findUsuarioById(long id) {
 		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Usuario with id = " + id));
+	}
+	
+	public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
+		Optional<Usuario> usuario = repository.findByuserId(userId);
+		if(usuario.isEmpty()) {
+			throw new IdNotFoundException(userId, "Usuario");
+		}
+		return usuario.get();
 	}
 
 	public List<Usuario> getAllUsuario(){

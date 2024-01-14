@@ -14,11 +14,11 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 
-import br.edu.ufape.hvu.model.Diretor;
 import br.edu.ufape.hvu.model.Medico;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.MedicoRequest;
 import br.edu.ufape.hvu.controller.dto.response.MedicoResponse;
+import br.edu.ufape.hvu.exception.DuplicateAccountException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -40,11 +40,17 @@ public class MedicoController {
 	
 	@PostMapping("medico")
 	public MedicoResponse createMedico(@Valid @RequestBody MedicoRequest newObj) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Jwt principal = (Jwt) authentication.getPrincipal();
-		Medico o = newObj.convertToEntity();
-		o.setUserId(principal.getSubject());
-		return new MedicoResponse(facade.saveMedico(o));
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			facade.findDuplicateAccountByuserId(principal.getSubject());			
+			Medico o = newObj.convertToEntity();
+			o.setUserId(principal.getSubject());
+			return new MedicoResponse(facade.saveMedico(o));
+		} catch(DuplicateAccountException ex){
+			throw ex;
+		}
+		
 	}
 	
 	@GetMapping("medico/{id}")

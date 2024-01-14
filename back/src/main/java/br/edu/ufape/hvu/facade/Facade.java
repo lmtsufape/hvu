@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.edu.ufape.hvu.exception.DuplicateAccountException;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 
@@ -120,6 +122,29 @@ public class Facade {
 
 	public Usuario findUsuarioById(long id) {
 		return usuarioService.findUsuarioById(id);
+	}
+	
+	public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
+		return usuarioService.findUsuarioByuserId(userId);
+	}
+	
+	public void findDuplicateAccountByuserId(String userId) throws DuplicateAccountException {
+		try {
+			Usuario usuario = findUsuarioByuserId(userId);
+			if(usuario instanceof Tutor) {
+				throw new DuplicateAccountException("tutor");
+			}
+			if(usuario instanceof Diretor) {
+				throw new DuplicateAccountException("diretor");
+			}
+			if(usuario instanceof Medico) {
+				throw new DuplicateAccountException("medico");
+			}
+			
+		} catch(IdNotFoundException ex){
+
+		}
+		
 	}
 
 	public List<Usuario> getAllUsuario() {
@@ -266,6 +291,10 @@ public class Facade {
 	public Medico findMedicoById(long id) {
 		return medicoService.findMedicoById(id);
 	}
+	
+	public Medico findMedicoByuserId(String userId) throws IdNotFoundException {
+		return medicoService.findMedicoByuserId(userId);
+	}
 
 	public List<Medico> getAllMedico() {
 		return medicoService.getAllMedico();
@@ -327,6 +356,11 @@ public class Facade {
 
 	public List<Raca> getAllRaca() {
 		return racaService.getAllRaca();
+	}
+	
+	public List<Raca> findByEspecie(long EspecieId) {
+		Especie especie = findEspecieById(EspecieId);
+		return racaService.findByEspecie(especie);
 	}
 
 	public void deleteRaca(Raca persistentObject) {
@@ -817,6 +851,10 @@ public class Facade {
 	public Diretor findDiretorById(long id) {
 		return diretorService.findDiretorById(id);
 	}
+	
+	public Diretor findDiretorByuserId(String userId) {
+		return diretorService.findDiretorByuserId(userId);
+	}
 
 	public List<Diretor> getAllDiretor() {
 		return diretorService.getAllDiretor();
@@ -949,6 +987,380 @@ public class Facade {
 	public void deleteScoreCorporal(long id) {
 		scoreCorporalService.deleteScoreCorporal(id);
 	}
-	
+
+
+	// Area--------------------------------------------------------------
+	@Autowired
+	private AreaService AreaService;
+
+	public Area saveArea(Area newInstance) {
+		return AreaService.saveArea(newInstance);
+	}
+
+	public Area updateArea(Area transientObject) {
+		return AreaService.updateArea(transientObject);
+	}
+
+	public Area findAreaById(Long id) {
+		return AreaService.findAreaById(id);
+	}
+
+	public List<Area> getAllArea() {
+		return AreaService.getAllArea();
+	}
+
+	public void deleteArea(Area persistentObject) {
+		AreaService.deleteArea(persistentObject);
+	}
+
+	public void deleteArea(long id) {
+		AreaService.deleteArea(id);
+	}
+
+	// CampoLaudo--------------------------------------------------------------
+	@Autowired
+	CampoLaudoService CampoLaudoService;
+
+	public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
+		return CampoLaudoService.saveCampoLaudo(newInstance);
+	}
+
+	public CampoLaudo updateCampoLaudo(CampoLaudo transientObject) {
+		return CampoLaudoService.updateCampoLaudo(transientObject);
+	}
+
+	public CampoLaudo findCampoLaudoById(Long id) {
+		return CampoLaudoService.findCampoLaudoById(id);
+	}
+
+	public List<CampoLaudo> getAllCampoLaudo() {
+		return CampoLaudoService.getAllCampoLaudo();
+	}
+
+	public void deleteCampoLaudo(CampoLaudo persistentObject) {
+		CampoLaudoService.deleteCampoLaudo(persistentObject);
+	}
+
+	public void deleteCampoLaudo(long id) {
+		CampoLaudoService.deleteCampoLaudo(id);
+	}
+
+	// Etapa--------------------------------------------------------------
+	@Autowired
+	EtapaService EtapaService;
+
+	public Etapa saveEtapa(Etapa newInstance) {
+		return EtapaService.saveEtapa(newInstance);
+	}
+
+	public Etapa updateEtapa(Etapa transientObject) {
+		return EtapaService.updateEtapa(transientObject);
+	}
+
+	public Etapa findEtapaById(Long id) {
+		return EtapaService.findEtapaById(id);
+	}
+
+	public List<Etapa> getAllEtapa() {
+		return EtapaService.getAllEtapa();
+	}
+
+	public void deleteEtapa(Etapa persistentObject) {
+		EtapaService.deleteEtapa(persistentObject);
+	}
+
+	public void deleteEtapa(long id) {
+		EtapaService.deleteEtapa(id);
+	}
+
+	// ExameMicroscopia--------------------------------------------------------------
+	@Autowired
+	ExameMicroscopicoService ExameMicroscopicoService;
+
+	public ExameMicroscopico saveExameMicroscopico(ExameMicroscopico newInstance) {
+		return ExameMicroscopicoService.saveExameMicroscopico(newInstance);
+	}
+
+	public List<ExameMicroscopico> getAllExameMicroscopico() {
+		return ExameMicroscopicoService.getAllExameMicroscopico();
+	}
+
+	public ExameMicroscopico updateExameMicroscopico(ExameMicroscopico transientObject) {
+		return ExameMicroscopicoService.updateExameMicroscopico(transientObject);
+	}
+
+	public ExameMicroscopico findExameMicroscopicoById(long id) {
+		return ExameMicroscopicoService.findExameMicroscopicoById(id);
+	}
+
+	public void deleteExameMicroscopico(long id) {
+		ExameMicroscopicoService.deleteExameMicroscopico(id);
+	}
+
+	public void deleteExameMicroscopico(ExameMicroscopico persistentObject) {
+		ExameMicroscopicoService.deleteExameMicroscopico(persistentObject);
+	}
+
+	// FichaSolicitacaoServico--------------------------------------------------------------
+
+	@Autowired
+	FichaSolicitacaoServicoService FichaSolicitacaoServicoService;
+
+	public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
+		return FichaSolicitacaoServicoService.saveFichaSolicitacaoServico(newInstance);
+	}
+
+	public FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServico transientObject) {
+		return FichaSolicitacaoServicoService.updateFichaSolicitacaoServico(transientObject);
+	}
+
+	public FichaSolicitacaoServico findFichaSolicitacaoServicoById(Long id) {
+		return FichaSolicitacaoServicoService.findFichaSolicitacaoServicoById(id);
+	}
+
+	public List<FichaSolicitacaoServico> getAllFichaSolicitacaoServico() {
+		return FichaSolicitacaoServicoService.getAllFichaSolicitacaoServico();
+	}
+
+	public void deleteFichaSolicitacaoServico(FichaSolicitacaoServico persistentObject) {
+		FichaSolicitacaoServicoService.deleteFichaSolicitacaoServico(persistentObject);
+	}
+
+	public void deleteFichaSolicitacaoServico(long id) {
+		FichaSolicitacaoServicoService.deleteFichaSolicitacaoServico(id);
+	}
+
+	// Foto--------------------------------------------------------------
+
+	@Autowired
+
+	FotoService FotoService;
+
+	public Foto saveFoto(Foto newInstance) {
+		return FotoService.saveFoto(newInstance);
+	}
+
+	public Foto updateFoto(Foto transientObject) {
+		return FotoService.updateFoto(transientObject);
+	}
+
+	public Foto findFotoById(Long id) {
+		return FotoService.findFotoById(id);
+	}
+
+	public List<Foto> getAllFoto() {
+		return FotoService.getAllFoto();
+	}
+
+	public void deleteFoto(Foto persistentObject) {
+		FotoService.deleteFoto(persistentObject);
+	}
+
+	public void deleteFoto(long id) {
+		FotoService.deleteFoto(id);
+	}
+
+	// Instituicao--------------------------------------------------------------
+
+	@Autowired
+	InstituicaoService InstituicaoService;
+
+	public Instituicao saveInstituicao(Instituicao newInstance) {
+		return InstituicaoService.saveInstituicao(newInstance);
+	}
+
+	public Instituicao updateInstituicao(Instituicao transientObject) {
+		return InstituicaoService.updateInstituicao(transientObject);
+	}
+
+	public Instituicao findInstituicaoById(long id) {
+		return InstituicaoService.findInstituicaoById(id);
+	}
+
+	public List<Instituicao> getAllInstituicao() {
+		return InstituicaoService.getAllInstituicao();
+	}
+
+	public void deleteInstituicao(Instituicao persistentObject) {
+		InstituicaoService.deleteInstituicao(persistentObject);
+	}
+
+	public void deleteInstituicao(long id) {
+		InstituicaoService.deleteInstituicao(id);
+	}
+
+	// LaudoMicroscopia--------------------------------------------------------------
+
+	@Autowired
+	LaudoMicroscopiaService LaudoMicroscopiaService;
+
+	public LaudoMicroscopia saveLaudoMicroscopia(LaudoMicroscopia newInstance) {
+		return LaudoMicroscopiaService.saveLaudoMicroscopia(newInstance);
+	}
+
+	public LaudoMicroscopia updateLaudoMicroscopia(LaudoMicroscopia transientObject) {
+		return LaudoMicroscopiaService.updateLaudoMicroscopia(transientObject);
+	}
+
+	public LaudoMicroscopia findLaudoMicroscopiaById(long id) {
+		return LaudoMicroscopiaService.findLaudoMicroscopiaById(id);
+	}
+
+	public List<LaudoMicroscopia> getAllLaudoMicroscopia() {
+		return LaudoMicroscopiaService.getAllLaudoMicroscopia();
+	}
+
+	public void deleteLaudoMicroscopia(LaudoMicroscopia persistentObject) {
+		LaudoMicroscopiaService.deleteLaudoMicroscopia(persistentObject);
+	}
+
+	public void deleteLaudoMicroscopia(long id) {
+		LaudoMicroscopiaService.deleteLaudoMicroscopia(id);
+	}
+
+	// LaudoNecropsia--------------------------------------------------------------
+	@Autowired
+	LaudoNecropsiaService LaudoNecropsiaService;
+
+	public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
+		return LaudoNecropsiaService.saveLaudoNecropsia(newInstance);
+	}
+
+	public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsia transientObject) {
+		return LaudoNecropsiaService.updateLaudoNecropsia(transientObject);
+	}
+
+	public LaudoNecropsia findLaudoNecropsiaById(long id) {
+		return LaudoNecropsiaService.findLaudoNecropsiaById(id);
+	}
+
+	public List<LaudoNecropsia> getAllLaudoNecropsia() {
+		return LaudoNecropsiaService.getAllLaudoNecropsia();
+	}
+
+	public void deleteLaudoNecropsia(LaudoNecropsia persistentObject) {
+		LaudoNecropsiaService.deleteLaudoNecropsia(persistentObject);
+	}
+
+	public void deleteLaudoNecropsia(long id) {
+		LaudoNecropsiaService.deleteLaudoNecropsia(id);
+	}
+
+	// LivroRegistro--------------------------------------------------------------
+	@Autowired
+	LivroRegistroService LivroRegistroService;
+
+	public LivroRegistro saveLivroRegistro(LivroRegistro newInstance) {
+		return LivroRegistroService.saveLivroRegistro(newInstance);
+	}
+
+	public LivroRegistro updateLivroRegistro(LivroRegistro transientObject) {
+		return LivroRegistroService.updateLivroRegistro(transientObject);
+	}
+
+	public LivroRegistro findLivroRegistroById(long id) {
+		return LivroRegistroService.findLivroRegistroById(id);
+	}
+
+	public List<LivroRegistro> getAllLivroRegistro() {
+		return LivroRegistroService.getAllLivroRegistro();
+	}
+
+	public void deleteLivroRegistro(LivroRegistro persistentObject) {
+		LivroRegistroService.deleteLivroRegistro(persistentObject);
+	}
+
+	public void deleteLivroRegistro(long id) {
+		LivroRegistroService.deleteLivroRegistro(id);
+	}
+
+	// MaterialColetado--------------------------------------------------------------
+	@Autowired
+
+	MaterialColetadoService MaterialColetadoService;
+
+	public MaterialColetado saveMaterialColetado(MaterialColetado newInstance) {
+		return MaterialColetadoService.saveMaterialColetado(newInstance);
+	}
+
+	public MaterialColetado updateMaterialColetado(MaterialColetado transientObject) {
+		return MaterialColetadoService.updateMaterialColetado(transientObject);
+	}
+
+	public MaterialColetado findMaterialColetadoById(long id) {
+		return MaterialColetadoService.findMaterialColetadoById(id);
+	}
+
+	public List<MaterialColetado> getAllMaterialColetado() {
+		return MaterialColetadoService.getAllMaterialColetado();
+	}
+
+	public void deleteMaterialColetado(MaterialColetado persistentObject) {
+		MaterialColetadoService.deleteMaterialColetado(persistentObject);
+	}
+
+	public void deleteMaterialColetado(long id) {
+		MaterialColetadoService.deleteMaterialColetado(id);
+	}
+
+	// Orgao--------------------------------------------------------------
+	@Autowired
+
+	OrgaoService OrgaoService;
+
+	public Orgao saveOrgao(Orgao newInstance) {
+		return OrgaoService.saveOrgao(newInstance);
+	}
+
+	public Orgao updateOrgao(Orgao transientObject) {
+		return OrgaoService.updateOrgao(transientObject);
+	}
+
+	public Orgao findOrgaoById(long id) {
+		return OrgaoService.findOrgaoById(id);
+	}
+
+	public List<Orgao> getAllOrgao() {
+		return OrgaoService.getAllOrgao();
+	}
+
+	public void deleteOrgao(Orgao persistentObject) {
+		OrgaoService.deleteOrgao(persistentObject);
+	}
+
+	public void deleteOrgao(long id) {
+		OrgaoService.deleteOrgao(id);
+	}
+
+	// Rotina--------------------------------------------------------------
+	@Autowired
+
+	RotinaService  RotinaService;
+
+	public Rotina saveRotina(Rotina newInstance) {
+		return RotinaService.saveRotina(newInstance);
+	}
+
+	public Rotina updateRotina(Rotina transientObject) {
+		return RotinaService.updateRotina(transientObject);
+	}
+
+	public Rotina findRotinaById(long id) {
+		return RotinaService.findRotinaById(id);
+	}
+
+	public List<Rotina> getAllRotina() {
+		return RotinaService.getAllRotina();
+	}
+
+	public void deleteRotina(Rotina persistentObject) {
+		RotinaService.deleteRotina(persistentObject);
+	}
+
+	public void deleteRotina(long id) {
+		RotinaService.deleteRotina(id);
+	}
 
 }
+
+	

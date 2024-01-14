@@ -20,6 +20,7 @@ public  class EstagiarioRequest  {
 	private String periodo;
 	private boolean obrigatorio;
 	private boolean ativo;
+	private long id;
 
 
 	public Estagiario convertToEntity() {

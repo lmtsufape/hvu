@@ -18,6 +18,7 @@ import br.edu.ufape.hvu.model.Tutor;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TutorRequest;
 import br.edu.ufape.hvu.controller.dto.response.TutorResponse;
+import br.edu.ufape.hvu.exception.DuplicateAccountException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,21 +43,18 @@ public class TutorController {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			Jwt principal = (Jwt) authentication.getPrincipal();
+			facade.findDuplicateAccountByuserId(principal.getSubject());
 			Tutor o = newObj.convertToEntity();
 			o.setUserId(principal.getSubject());
 			return new TutorResponse(facade.saveTutor(o));
-		} catch(ResponseStatusException ex) {
+		} catch(DuplicateAccountException ex){
 			throw ex;
 		}
 	}
 	
 	@GetMapping("tutor/{id}")
 	public TutorResponse getTutorById(@PathVariable Long id) {
-		try {
-			return new TutorResponse(facade.findTutorById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutor " + id + " not found.");
-		}
+		return new TutorResponse(facade.findTutorById(id));
 	}
 	
 	@PatchMapping("tutor/{id}")

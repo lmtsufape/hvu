@@ -40,11 +40,15 @@ public class RacaController {
 	
 	@GetMapping("raca/{id}")
 	public RacaResponse getRacaById(@PathVariable Long id) {
-		try {
-			return new RacaResponse(facade.findRacaById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Raca " + id + " not found.");
-		}
+		return new RacaResponse(facade.findRacaById(id));
+	}
+	
+	@GetMapping("raca/especie/{EspecieId}")
+	public List<RacaResponse> findByEspecie(@PathVariable Long EspecieId) {
+		return facade.findByEspecie(EspecieId)
+			.stream()
+			.map(RacaResponse::new)
+			.toList();
 	}
 	
 	@PatchMapping("raca/{id}")

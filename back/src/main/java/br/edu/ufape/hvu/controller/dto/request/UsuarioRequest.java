@@ -22,6 +22,7 @@ public  class UsuarioRequest  {
 	private String nome;
 	private String userId;
 	private EnderecoRequest endereco; 
+	private long id;
 
 
 	public Usuario convertToEntity() {
