@@ -39,11 +39,15 @@ public class TutorController {
 	
 	@PostMapping("tutor")
 	public TutorResponse createTutor(@Valid @RequestBody TutorRequest newObj) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Jwt principal = (Jwt) authentication.getPrincipal();
-		Tutor o = newObj.convertToEntity();
-		o.setUserId(principal.getSubject());
-		return new TutorResponse(facade.saveTutor(o));
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			Tutor o = newObj.convertToEntity();
+			o.setUserId(principal.getSubject());
+			return new TutorResponse(facade.saveTutor(o));
+		} catch(ResponseStatusException ex) {
+			throw ex;
+		}
 	}
 	
 	@GetMapping("tutor/{id}")
