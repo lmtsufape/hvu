@@ -4,7 +4,7 @@ import styles from "./createEnderecoForm.module.css";
 
 function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors }) {
   return (
-    <form className={styles.boxcadastrotutor}>
+    <div className={styles.boxcadastrotutor}>
       <div className={styles.titulo}>Endereço</div>
       {renderInput("Rua", "rua", enderecoFormData.rua, handleEnderecoChange, "Ex: Avenida Bom Pastor", errors.rua)}
       {renderInput("Bairro", "bairro", enderecoFormData.bairro, handleEnderecoChange, "Ex: Centro", errors.bairro)}
@@ -20,7 +20,7 @@ function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors }) 
           </div>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
 

@@ -33,7 +33,7 @@ import api from '../common/http';
   // Função para atualizar 
   export async function updateAnimal(animalId, animalData) {
     try {
-      const response = await api.put(`/animal/${animalId}`, animalData);
+      const response = await api.patch(`/animal/${animalId}`, animalData);
       return response.data;
     } catch (error) {
       throw error;

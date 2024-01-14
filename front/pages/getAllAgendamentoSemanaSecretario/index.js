@@ -1,10 +1,10 @@
 import React from 'react';
 import {Header03} from "../../src/components/Header";
 import {SubHeader02} from "../../src/components/SubHeader";
-import AgendamentosDaSemana from "../../src/components/GetAllAgendamentoSecretarioForm/semana";
+import GetAllAgendamentosSemanaForm from "../../src/components/GetAllAgendamentoSemanaForm";
 import Footer from "../../src/components/Footer";
 
-function AgendamentosDaSemanaPage() {
+function GetAllAgendamentosSemanaPage() {
     return (
         <>
         <div>
@@ -14,7 +14,7 @@ function AgendamentosDaSemanaPage() {
             < SubHeader02 />
         </div>
         <div>
-            < AgendamentosDaSemana />
+            < GetAllAgendamentosSemanaForm />
         </div>
         <div>
             < Footer />
@@ -23,4 +23,4 @@ function AgendamentosDaSemanaPage() {
     );
 }
 
-export default AgendamentosDaSemanaPage
+export default GetAllAgendamentosSemanaPage;

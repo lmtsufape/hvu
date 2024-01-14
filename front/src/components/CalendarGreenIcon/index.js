@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
-function CalendarIcon({ onDataSelecionada }) {
+function CalendarGrennIcon({ onDataSelecionada }) {
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
 
@@ -42,4 +42,4 @@ function CalendarIcon({ onDataSelecionada }) {
   );
 }
 
-export default CalendarIcon;
+export default CalendarGrennIcon;

@@ -4,7 +4,6 @@ import styles from "../src/components/FormularioAgendarRetorno/formularioagendar
 import {Header03} from "../src/components/Header";
 import Footer from "../src/components/Footer";
 import AgendarConsulta from "../src/components/AgendarConsulta/calendarioconsulta"
-import Calendario from "../src/components/Calendario/calendario"
 
 function PageAgendarRetorno(){
     return(

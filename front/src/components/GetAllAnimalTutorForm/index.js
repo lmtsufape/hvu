@@ -45,14 +45,12 @@ function GetAllAnimalTutorForm() {
                                 <h6>Espécie</h6>
                                 <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
                             </div>
-                            <div className={styles.botao}>
-                                <button
-                                    className={styles.acessar_button}
-                                    onClick={() => router.push(`/getAnimalByIdTutor/${animal.id}`)}
-                                >
-                                    Acessar
-                                </button>
-                            </div>
+                            <button
+                                className={styles.acessar_button}
+                                onClick={() => router.push(`/getAnimalByIdTutor/${animal.id}`)}
+                            >
+                                Acessar
+                            </button>
                         </li>
                     ))}
                 </ul>
