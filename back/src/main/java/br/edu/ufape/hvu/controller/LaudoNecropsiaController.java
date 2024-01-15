@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.LaudoNecropsia;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.LaudoNecropsiaRequest;
 import br.edu.ufape.hvu.controller.dto.response.LaudoNecropsiaResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class LaudoNecropsiaController {
 	public LaudoNecropsiaResponse getLaudoNecropsiaById(@PathVariable Long id) {
 		try {
 			return new LaudoNecropsiaResponse(facade.findLaudoNecropsiaById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "LaudoNecropsia " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class LaudoNecropsiaController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new LaudoNecropsiaResponse(facade.updateLaudoNecropsia(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class LaudoNecropsiaController {
 		try {
 			facade.deleteLaudoNecropsia(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		

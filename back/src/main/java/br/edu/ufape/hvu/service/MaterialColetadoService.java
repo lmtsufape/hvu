@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.MaterialColetadoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.MaterialColetado;
 
 @Service
@@ -21,7 +22,7 @@ public class MaterialColetadoService implements MaterialColetadoServiceInterface
 	}
 
 	public MaterialColetado findMaterialColetadoById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist MaterialColetado with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "MaterialColetado"));
 	}
 
 	public List<MaterialColetado> getAllMaterialColetado(){
@@ -34,7 +35,7 @@ public class MaterialColetadoService implements MaterialColetadoServiceInterface
 	}
 	
 	public void deleteMaterialColetado(long id){
-		MaterialColetado obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist MaterialColetado with id = " + id));
+		MaterialColetado obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "MaterialColetado"));
 		repository.delete(obj);
 	}	
 	

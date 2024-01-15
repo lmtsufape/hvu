@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.InstituicaoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Instituicao;
 
 @Service
@@ -21,7 +22,7 @@ public class InstituicaoService implements InstituicaoServiceInterface {
 	}
 
 	public Instituicao findInstituicaoById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Instituicao with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Instituição"));
 	}
 
 	public List<Instituicao> getAllInstituicao(){
@@ -34,7 +35,7 @@ public class InstituicaoService implements InstituicaoServiceInterface {
 	}
 	
 	public void deleteInstituicao(long id){
-		Instituicao obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Instituicao with id = " + id));
+		Instituicao obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Instituição"));
 		repository.delete(obj);
 	}	
 	

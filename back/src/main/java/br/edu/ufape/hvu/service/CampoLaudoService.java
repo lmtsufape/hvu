@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.CampoLaudoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.CampoLaudo;
 
 @Service
@@ -21,7 +22,7 @@ public class CampoLaudoService implements CampoLaudoServiceInterface {
 	}
 
 	public CampoLaudo findCampoLaudoById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist CampoLaudo with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "CampoLaudo"));
 	}
 
 	public List<CampoLaudo> getAllCampoLaudo(){
@@ -34,7 +35,7 @@ public class CampoLaudoService implements CampoLaudoServiceInterface {
 	}
 	
 	public void deleteCampoLaudo(long id){
-		CampoLaudo obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist CampoLaudo with id = " + id));
+		CampoLaudo obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "CampoLaudo"));
 		repository.delete(obj);
 	}	
 	

@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Instituicao;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.InstituicaoRequest;
 import br.edu.ufape.hvu.controller.dto.response.InstituicaoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class InstituicaoController {
 	public InstituicaoResponse getInstituicaoById(@PathVariable Long id) {
 		try {
 			return new InstituicaoResponse(facade.findInstituicaoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Instituicao " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class InstituicaoController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new InstituicaoResponse(facade.updateInstituicao(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class InstituicaoController {
 		try {
 			facade.deleteInstituicao(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		

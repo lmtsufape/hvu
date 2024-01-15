@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.LivroRegistroRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.LivroRegistro;
 
 @Service
@@ -21,7 +22,7 @@ public class LivroRegistroService implements LivroRegistroServiceInterface {
 	}
 
 	public LivroRegistro findLivroRegistroById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist LivroRegistro with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id,"LivroRegistro"));
 	}
 
 	public List<LivroRegistro> getAllLivroRegistro(){
@@ -34,7 +35,7 @@ public class LivroRegistroService implements LivroRegistroServiceInterface {
 	}
 	
 	public void deleteLivroRegistro(long id){
-		LivroRegistro obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist LivroRegistro with id = " + id));
+		LivroRegistro obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id,"LivroRegistro"));
 		repository.delete(obj);
 	}	
 	

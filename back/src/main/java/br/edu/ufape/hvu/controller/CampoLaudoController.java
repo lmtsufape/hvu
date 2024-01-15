@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.CampoLaudo;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.CampoLaudoRequest;
 import br.edu.ufape.hvu.controller.dto.response.CampoLaudoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class CampoLaudoController {
 	public CampoLaudoResponse getCampoLaudoById(@PathVariable Long id) {
 		try {
 			return new CampoLaudoResponse(facade.findCampoLaudoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CampoLaudo " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class CampoLaudoController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new CampoLaudoResponse(facade.updateCampoLaudo(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class CampoLaudoController {
 		try {
 			facade.deleteCampoLaudo(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		

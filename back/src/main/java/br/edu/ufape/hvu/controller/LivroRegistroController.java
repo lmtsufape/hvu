@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.LivroRegistro;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.LivroRegistroRequest;
 import br.edu.ufape.hvu.controller.dto.response.LivroRegistroResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class LivroRegistroController {
 	public LivroRegistroResponse getLivroRegistroById(@PathVariable Long id) {
 		try {
 			return new LivroRegistroResponse(facade.findLivroRegistroById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "LivroRegistro " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class LivroRegistroController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new LivroRegistroResponse(facade.updateLivroRegistro(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class LivroRegistroController {
 		try {
 			facade.deleteLivroRegistro(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		

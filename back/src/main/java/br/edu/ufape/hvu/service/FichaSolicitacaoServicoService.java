@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.FichaSolicitacaoServicoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.FichaSolicitacaoServico;
 
 @Service
@@ -21,7 +22,7 @@ public class FichaSolicitacaoServicoService implements FichaSolicitacaoServicoSe
 	}
 
 	public FichaSolicitacaoServico findFichaSolicitacaoServicoById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist FichaSolicitacaoServico with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id,"FichaSolicitacaoServico"));
 	}
 
 	public List<FichaSolicitacaoServico> getAllFichaSolicitacaoServico(){
@@ -34,7 +35,7 @@ public class FichaSolicitacaoServicoService implements FichaSolicitacaoServicoSe
 	}
 	
 	public void deleteFichaSolicitacaoServico(long id){
-		FichaSolicitacaoServico obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist FichaSolicitacaoServico with id = " + id));
+		FichaSolicitacaoServico obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id,"FichaSolicitacaoServico"));
 		repository.delete(obj);
 	}	
 	

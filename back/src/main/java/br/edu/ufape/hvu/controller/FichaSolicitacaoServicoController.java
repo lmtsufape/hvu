@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.FichaSolicitacaoServico;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.FichaSolicitacaoServicoRequest;
 import br.edu.ufape.hvu.controller.dto.response.FichaSolicitacaoServicoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class FichaSolicitacaoServicoController {
 	public FichaSolicitacaoServicoResponse getFichaSolicitacaoServicoById(@PathVariable Long id) {
 		try {
 			return new FichaSolicitacaoServicoResponse(facade.findFichaSolicitacaoServicoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "FichaSolicitacaoServico " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class FichaSolicitacaoServicoController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new FichaSolicitacaoServicoResponse(facade.updateFichaSolicitacaoServico(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class FichaSolicitacaoServicoController {
 		try {
 			facade.deleteFichaSolicitacaoServico(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
