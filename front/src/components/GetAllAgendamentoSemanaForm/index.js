@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import styles from "./semana.module.css";
-import dateStyles from "./date.module.css";
-import NovoAgendamentoButton from "./novoAgendamentoButton";
-import Filter from "./filter";
-import CalendarIcon from './CalendarIcon';
+import styles from "./index.module.css";
+import dateStyles from "../Date/index.module.css";
+import NovoAgendamentoButton from "../NovoAgendamentoButton";
+import Filter from "../GetAgendamentosFilter";
+import CalendarGrennIcon from '../CalendarGreenIcon';
 import SearchBar from '../SearchBar';
-import { DataCompleta } from "./date";
+import { DataCompleta } from "../Date";
 
-function AgendamentosDaSemana() {
+function GetAllAgendamentosSemanaForm() {
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
 
   const handleDataSelecionada = (novaData) => {
@@ -35,7 +35,7 @@ function AgendamentosDaSemana() {
         <div className={styles.box}>
           <div className={styles.itens_box_1}>
             <div className={dateStyles.data_completa}>{DataCompleta(dataSelecionada)}</div>
-            <CalendarIcon onDataSelecionada={handleDataSelecionada} />
+            <CalendarGrennIcon onDataSelecionada={handleDataSelecionada} />
           </div>
           <div className={styles.itens_box_2}>
             <SearchBar data={dataSelecionada} />
@@ -111,4 +111,4 @@ function AgendamentosDaSemana() {
   );
 }
 
-export default AgendamentosDaSemana;
+export default GetAllAgendamentosSemanaForm;
