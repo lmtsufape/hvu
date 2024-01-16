@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AreaRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Area;
 
 @Service
@@ -21,7 +22,7 @@ public class AreaService implements AreaServiceInterface {
 	}
 
 	public Area findAreaById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Area with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Area"));
 	}
 
 	public List<Area> getAllArea(){
@@ -34,7 +35,7 @@ public class AreaService implements AreaServiceInterface {
 	}
 	
 	public void deleteArea(long id){
-		Area obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Area with id = " + id));
+		Area obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Area"));
 		repository.delete(obj);
 	}	
 	

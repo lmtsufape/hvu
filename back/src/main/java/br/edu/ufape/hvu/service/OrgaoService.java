@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.OrgaoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Orgao;
 
 @Service
@@ -21,7 +22,7 @@ public class OrgaoService implements OrgaoServiceInterface {
 	}
 
 	public Orgao findOrgaoById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Orgao with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Orgao"));
 	}
 
 	public List<Orgao> getAllOrgao(){
@@ -34,7 +35,7 @@ public class OrgaoService implements OrgaoServiceInterface {
 	}
 	
 	public void deleteOrgao(long id){
-		Orgao obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Orgao with id = " + id));
+		Orgao obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Orgao"));
 		repository.delete(obj);
 	}	
 	

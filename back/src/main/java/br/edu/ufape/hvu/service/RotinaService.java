@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.RotinaRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Rotina;
 
 @Service
@@ -21,7 +22,7 @@ public class RotinaService implements RotinaServiceInterface {
 	}
 
 	public Rotina findRotinaById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Rotina with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Rotina"));
 	}
 
 	public List<Rotina> getAllRotina(){
@@ -34,7 +35,7 @@ public class RotinaService implements RotinaServiceInterface {
 	}
 	
 	public void deleteRotina(long id){
-		Rotina obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Rotina with id = " + id));
+		Rotina obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Rotina"));
 		repository.delete(obj);
 	}	
 	

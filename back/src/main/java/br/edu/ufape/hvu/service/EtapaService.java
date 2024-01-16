@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.EtapaRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Etapa;
 
 @Service
@@ -21,7 +22,7 @@ public class EtapaService implements EtapaServiceInterface {
 	}
 
 	public Etapa findEtapaById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Etapa with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Etapa"));
 	}
 
 	public List<Etapa> getAllEtapa(){
@@ -34,7 +35,7 @@ public class EtapaService implements EtapaServiceInterface {
 	}
 	
 	public void deleteEtapa(long id){
-		Etapa obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Etapa with id = " + id));
+		Etapa obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Etapa"));
 		repository.delete(obj);
 	}	
 	

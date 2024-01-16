@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Foto;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.FotoRequest;
 import br.edu.ufape.hvu.controller.dto.response.FotoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class FotoController {
 	public FotoResponse getFotoById(@PathVariable Long id) {
 		try {
 			return new FotoResponse(facade.findFotoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Foto " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class FotoController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new FotoResponse(facade.updateFoto(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class FotoController {
 		try {
 			facade.deleteFoto(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		

@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.MaterialColetado;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.MaterialColetadoRequest;
 import br.edu.ufape.hvu.controller.dto.response.MaterialColetadoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class MaterialColetadoController {
 	public MaterialColetadoResponse getMaterialColetadoById(@PathVariable Long id) {
 		try {
 			return new MaterialColetadoResponse(facade.findMaterialColetadoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "MaterialColetado " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class MaterialColetadoController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new MaterialColetadoResponse(facade.updateMaterialColetado(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class MaterialColetadoController {
 		try {
 			facade.deleteMaterialColetado(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		

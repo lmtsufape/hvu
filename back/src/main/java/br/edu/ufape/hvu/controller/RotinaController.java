@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Rotina;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.RotinaRequest;
 import br.edu.ufape.hvu.controller.dto.response.RotinaResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class RotinaController {
 	public RotinaResponse getRotinaById(@PathVariable Long id) {
 		try {
 			return new RotinaResponse(facade.findRotinaById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rotina " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class RotinaController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new RotinaResponse(facade.updateRotina(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class RotinaController {
 		try {
 			facade.deleteRotina(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		

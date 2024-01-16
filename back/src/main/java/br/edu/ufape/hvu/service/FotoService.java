@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.FotoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Foto;
 
 @Service
@@ -21,7 +22,7 @@ public class FotoService implements FotoServiceInterface {
 	}
 
 	public Foto findFotoById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Foto with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Foto"));
 	}
 
 	public List<Foto> getAllFoto(){
@@ -34,7 +35,7 @@ public class FotoService implements FotoServiceInterface {
 	}
 	
 	public void deleteFoto(long id){
-		Foto obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Foto with id = " + id));
+		Foto obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Foto"));
 		repository.delete(obj);
 	}	
 	

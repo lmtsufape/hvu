@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Orgao;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.OrgaoRequest;
 import br.edu.ufape.hvu.controller.dto.response.OrgaoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class OrgaoController {
 	public OrgaoResponse getOrgaoById(@PathVariable Long id) {
 		try {
 			return new OrgaoResponse(facade.findOrgaoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Orgao " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class OrgaoController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new OrgaoResponse(facade.updateOrgao(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class OrgaoController {
 		try {
 			facade.deleteOrgao(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		

@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.LaudoMicroscopiaRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.LaudoMicroscopia;
 
 @Service
@@ -21,7 +22,7 @@ public class LaudoMicroscopiaService implements LaudoMicroscopiaServiceInterface
 	}
 
 	public LaudoMicroscopia findLaudoMicroscopiaById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist LaudoMicroscopia with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "LaudoMicroscopia"));
 	}
 
 	public List<LaudoMicroscopia> getAllLaudoMicroscopia(){
@@ -34,7 +35,7 @@ public class LaudoMicroscopiaService implements LaudoMicroscopiaServiceInterface
 	}
 	
 	public void deleteLaudoMicroscopia(long id){
-		LaudoMicroscopia obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist LaudoMicroscopia with id = " + id));
+		LaudoMicroscopia obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "LaudoMicroscopia"));
 		repository.delete(obj);
 	}	
 	

@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.ExameMicroscopico;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ExameMicroscopicoRequest;
 import br.edu.ufape.hvu.controller.dto.response.ExameMicroscopicoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:8081/" )
@@ -42,8 +43,8 @@ public class ExameMicroscopicoController {
 	public ExameMicroscopicoResponse getExameMicroscopicoById(@PathVariable Long id) {
 		try {
 			return new ExameMicroscopicoResponse(facade.findExameMicroscopicoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ExameMicroscopico " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	
@@ -60,7 +61,7 @@ public class ExameMicroscopicoController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new ExameMicroscopicoResponse(facade.updateExameMicroscopico(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -71,7 +72,7 @@ public class ExameMicroscopicoController {
 		try {
 			facade.deleteExameMicroscopico(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
