@@ -78,7 +78,7 @@ public class AnimalController {
 			
 			typeMapper.map(obj, oldObject);	
 			return new AnimalResponse(facade.updateAnimal(oldObject));
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
@@ -96,7 +96,7 @@ public class AnimalController {
 			}
 			facade.deleteAnimal(id);
 			return "";
-		} catch (RuntimeException ex) {
+		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
