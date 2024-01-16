@@ -19,6 +19,7 @@ import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TutorRequest;
 import br.edu.ufape.hvu.controller.dto.response.TutorResponse;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -54,7 +55,12 @@ public class TutorController {
 	
 	@GetMapping("tutor/{id}")
 	public TutorResponse getTutorById(@PathVariable Long id) {
-		return new TutorResponse(facade.findTutorById(id));
+		try {
+			return new TutorResponse(facade.findTutorById(id));
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+		
 	}
 	
 	@PatchMapping("tutor/{id}")

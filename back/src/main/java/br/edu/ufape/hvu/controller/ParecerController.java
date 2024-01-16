@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Parecer;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ParecerRequest;
 import br.edu.ufape.hvu.controller.dto.response.ParecerResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class ParecerController {
 	public ParecerResponse getParecerById(@PathVariable Long id) {
 		try {
 			return new ParecerResponse(facade.findParecerById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Parecer " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

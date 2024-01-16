@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Estagiario;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EstagiarioRequest;
 import br.edu.ufape.hvu.controller.dto.response.EstagiarioResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class EstagiarioController {
 	public EstagiarioResponse getEstagiarioById(@PathVariable Long id) {
 		try {
 			return new EstagiarioResponse(facade.findEstagiarioById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Estagiario " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

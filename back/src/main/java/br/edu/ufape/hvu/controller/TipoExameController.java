@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.TipoExame;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TipoExameRequest;
 import br.edu.ufape.hvu.controller.dto.response.TipoExameResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class TipoExameController {
 	public TipoExameResponse getTipoExameById(@PathVariable Long id) {
 		try {
 			return new TipoExameResponse(facade.findTipoExameById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TipoExame " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

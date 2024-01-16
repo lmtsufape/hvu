@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.TipoMucosa;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TipoMucosaRequest;
 import br.edu.ufape.hvu.controller.dto.response.TipoMucosaResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class TipoMucosaController {
 	public TipoMucosaResponse getTipoMucosaById(@PathVariable Long id) {
 		try {
 			return new TipoMucosaResponse(facade.findTipoMucosaById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TipoMucosa " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

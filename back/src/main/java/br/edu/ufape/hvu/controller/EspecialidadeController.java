@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Especialidade;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EspecialidadeRequest;
 import br.edu.ufape.hvu.controller.dto.response.EspecialidadeResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class EspecialidadeController {
 	public EspecialidadeResponse getEspecialidadeById(@PathVariable Long id) {
 		try {
 			return new EspecialidadeResponse(facade.findEspecialidadeById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Especialidade " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

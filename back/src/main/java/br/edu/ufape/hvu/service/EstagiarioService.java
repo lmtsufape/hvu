@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.EstagiarioRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Estagiario;
 
 @Service
@@ -21,7 +22,7 @@ public class EstagiarioService implements EstagiarioServiceInterface {
 	}
 
 	public Estagiario findEstagiarioById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Estagiario with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Estagiario"));
 	}
 
 	public List<Estagiario> getAllEstagiario(){

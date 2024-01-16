@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.MedicacaoPeriodica;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.MedicacaoPeriodicaRequest;
 import br.edu.ufape.hvu.controller.dto.response.MedicacaoPeriodicaResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -40,7 +41,12 @@ public class MedicacaoPeriodicaController {
 	
 	@GetMapping("medicacaoPeriodica/{id}")
 	public MedicacaoPeriodicaResponse getMedicacaoPeriodicaById(@PathVariable Long id) {
-		return new MedicacaoPeriodicaResponse(facade.findMedicacaoPeriodicaById(id));
+		try {
+			return new MedicacaoPeriodicaResponse(facade.findMedicacaoPeriodicaById(id));
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+		
 	}
 	
 	@PatchMapping("medicacaoPeriodica/{id}")

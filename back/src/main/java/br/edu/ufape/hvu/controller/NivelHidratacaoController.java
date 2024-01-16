@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.NivelHidratacao;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.NivelHidratacaoRequest;
 import br.edu.ufape.hvu.controller.dto.response.NivelHidratacaoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class NivelHidratacaoController {
 	public NivelHidratacaoResponse getNivelHidratacaoById(@PathVariable Long id) {
 		try {
 			return new NivelHidratacaoResponse(facade.findNivelHidratacaoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "NivelHidratacao " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

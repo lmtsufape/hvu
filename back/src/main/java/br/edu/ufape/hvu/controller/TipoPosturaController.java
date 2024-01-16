@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.TipoPostura;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TipoPosturaRequest;
 import br.edu.ufape.hvu.controller.dto.response.TipoPosturaResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class TipoPosturaController {
 	public TipoPosturaResponse getTipoPosturaById(@PathVariable Long id) {
 		try {
 			return new TipoPosturaResponse(facade.findTipoPosturaById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TipoPostura " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

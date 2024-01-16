@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.ScoreCorporal;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ScoreCorporalRequest;
 import br.edu.ufape.hvu.controller.dto.response.ScoreCorporalResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class ScoreCorporalController {
 	public ScoreCorporalResponse getScoreCorporalById(@PathVariable Long id) {
 		try {
 			return new ScoreCorporalResponse(facade.findScoreCorporalById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ScoreCorporal " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

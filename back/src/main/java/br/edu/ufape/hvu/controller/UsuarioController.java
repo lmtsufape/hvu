@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Usuario;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.UsuarioRequest;
 import br.edu.ufape.hvu.controller.dto.response.UsuarioResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class UsuarioController {
 	public UsuarioResponse getUsuarioById(@PathVariable Long id) {
 		try {
 			return new UsuarioResponse(facade.findUsuarioById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

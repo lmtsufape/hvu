@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Agendamento;
 
 @Service
@@ -21,7 +22,7 @@ public class AgendamentoService implements AgendamentoServiceInterface {
 	}
 
 	public Agendamento findAgendamentoById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Agendamento with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Agendamento"));
 	}
 
 	public List<Agendamento> getAllAgendamento(){

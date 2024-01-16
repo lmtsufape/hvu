@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Raca;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.RacaRequest;
 import br.edu.ufape.hvu.controller.dto.response.RacaResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -40,7 +41,12 @@ public class RacaController {
 	
 	@GetMapping("raca/{id}")
 	public RacaResponse getRacaById(@PathVariable Long id) {
-		return new RacaResponse(facade.findRacaById(id));
+		try {
+			return new RacaResponse(facade.findRacaById(id));
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+		
 	}
 	
 	@GetMapping("raca/especie/{EspecieId}")

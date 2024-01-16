@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.ParecerRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Parecer;
 
 @Service
@@ -21,7 +22,7 @@ public class ParecerService implements ParecerServiceInterface {
 	}
 
 	public Parecer findParecerById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Parecer with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Parecer"));
 	}
 
 	public List<Parecer> getAllParecer(){

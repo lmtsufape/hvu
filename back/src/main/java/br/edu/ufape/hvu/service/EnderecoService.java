@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.EnderecoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Endereco;
 
 @Service
@@ -21,7 +22,7 @@ public class EnderecoService implements EnderecoServiceInterface {
 	}
 
 	public Endereco findEnderecoById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Endereco with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Endereco"));
 	}
 
 	public List<Endereco> getAllEndereco(){

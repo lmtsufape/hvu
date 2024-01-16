@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Cronograma;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.CronogramaRequest;
 import br.edu.ufape.hvu.controller.dto.response.CronogramaResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class CronogramaController {
 	public CronogramaResponse getCronogramaById(@PathVariable Long id) {
 		try {
 			return new CronogramaResponse(facade.findCronogramaById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cronograma " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

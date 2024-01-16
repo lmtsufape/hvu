@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.AvaliacaoFisicoGeral;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.AvaliacaoFisicoGeralRequest;
 import br.edu.ufape.hvu.controller.dto.response.AvaliacaoFisicoGeralResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class AvaliacaoFisicoGeralController {
 	public AvaliacaoFisicoGeralResponse getAvaliacaoFisicoGeralById(@PathVariable Long id) {
 		try {
 			return new AvaliacaoFisicoGeralResponse(facade.findAvaliacaoFisicoGeralById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "AvaliacaoFisicoGeral " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

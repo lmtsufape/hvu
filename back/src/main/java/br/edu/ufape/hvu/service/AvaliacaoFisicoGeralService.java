@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AvaliacaoFisicoGeralRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.AvaliacaoFisicoGeral;
 
 @Service
@@ -21,7 +22,7 @@ public class AvaliacaoFisicoGeralService implements AvaliacaoFisicoGeralServiceI
 	}
 
 	public AvaliacaoFisicoGeral findAvaliacaoFisicoGeralById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist AvaliacaoFisicoGeral with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "AvaliacaoFisicoGeral"));
 	}
 
 	public List<AvaliacaoFisicoGeral> getAllAvaliacaoFisicoGeral(){
