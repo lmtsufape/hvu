@@ -21,6 +21,5 @@ public  class Medico extends Usuario {
 	@ManyToMany
 	@JoinColumn(name = "medico_id")
 	@ToString.Exclude
-	private List<Especialidade> especialidade; 
-
+	private List<Especialidade> especialidade;
 }

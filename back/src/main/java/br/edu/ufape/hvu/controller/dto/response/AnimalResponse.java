@@ -20,6 +20,7 @@ public  class AnimalResponse  {
 	private String alergias;
 	private LocalDate dataNascimento;
 	private String imagem;
+	private boolean castrado;
 	private RacaResponse raca; 
 	private HistoricoMedicoPregressoResponse historicoMedicoPregresso; 
 
