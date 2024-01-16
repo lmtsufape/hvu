@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Consulta;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ConsultaRequest;
 import br.edu.ufape.hvu.controller.dto.response.ConsultaResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class ConsultaController {
 	public ConsultaResponse getConsultaById(@PathVariable Long id) {
 		try {
 			return new ConsultaResponse(facade.findConsultaById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Consulta " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

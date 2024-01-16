@@ -19,6 +19,7 @@ import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.DiretorRequest;
 import br.edu.ufape.hvu.controller.dto.response.DiretorResponse;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -57,8 +58,8 @@ public class DiretorController {
 	public DiretorResponse getDiretorById(@PathVariable Long id) {
 		try {
 			return new DiretorResponse(facade.findDiretorById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Diretor " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

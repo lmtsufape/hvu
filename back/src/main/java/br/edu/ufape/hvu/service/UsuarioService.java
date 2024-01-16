@@ -24,7 +24,7 @@ public class UsuarioService implements UsuarioServiceInterface {
 	}
 
 	public Usuario findUsuarioById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Usuario with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Usuario"));
 	}
 	
 	public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {

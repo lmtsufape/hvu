@@ -53,7 +53,11 @@ public class AnimalController {
 	
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
-		return new AnimalResponse(facade.findAnimalById(id));
+		try {
+			return new AnimalResponse(facade.findAnimalById(id));
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
 	}
 	
 	@PatchMapping("animal/{id}")

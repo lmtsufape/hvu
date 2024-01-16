@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.AvaliacaoFisicoEspecial;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.AvaliacaoFisicoEspecialRequest;
 import br.edu.ufape.hvu.controller.dto.response.AvaliacaoFisicoEspecialResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class AvaliacaoFisicoEspecialController {
 	public AvaliacaoFisicoEspecialResponse getAvaliacaoFisicoEspecialById(@PathVariable Long id) {
 		try {
 			return new AvaliacaoFisicoEspecialResponse(facade.findAvaliacaoFisicoEspecialById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "AvaliacaoFisicoEspecial " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

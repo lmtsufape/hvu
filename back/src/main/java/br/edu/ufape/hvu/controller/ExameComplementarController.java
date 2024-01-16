@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.ExameComplementar;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ExameComplementarRequest;
 import br.edu.ufape.hvu.controller.dto.response.ExameComplementarResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class ExameComplementarController {
 	public ExameComplementarResponse getExameComplementarById(@PathVariable Long id) {
 		try {
 			return new ExameComplementarResponse(facade.findExameComplementarById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ExameComplementar " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

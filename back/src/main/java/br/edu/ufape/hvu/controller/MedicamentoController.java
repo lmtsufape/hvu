@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Medicamento;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.MedicamentoRequest;
 import br.edu.ufape.hvu.controller.dto.response.MedicamentoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class MedicamentoController {
 	public MedicamentoResponse getMedicamentoById(@PathVariable Long id) {
 		try {
 			return new MedicamentoResponse(facade.findMedicamentoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medicamento " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

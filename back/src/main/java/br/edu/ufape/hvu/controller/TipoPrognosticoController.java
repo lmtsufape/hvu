@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.TipoPrognostico;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TipoPrognosticoRequest;
 import br.edu.ufape.hvu.controller.dto.response.TipoPrognosticoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class TipoPrognosticoController {
 	public TipoPrognosticoResponse getTipoPrognosticoById(@PathVariable Long id) {
 		try {
 			return new TipoPrognosticoResponse(facade.findTipoPrognosticoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TipoPrognostico " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

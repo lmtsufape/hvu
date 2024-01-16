@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Endereco;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EnderecoRequest;
 import br.edu.ufape.hvu.controller.dto.response.EnderecoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class EnderecoController {
 	public EnderecoResponse getEnderecoById(@PathVariable Long id) {
 		try {
 			return new EnderecoResponse(facade.findEnderecoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Endereco " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

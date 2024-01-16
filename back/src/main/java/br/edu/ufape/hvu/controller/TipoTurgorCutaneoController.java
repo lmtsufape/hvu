@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.TipoTurgorCutaneo;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TipoTurgorCutaneoRequest;
 import br.edu.ufape.hvu.controller.dto.response.TipoTurgorCutaneoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class TipoTurgorCutaneoController {
 	public TipoTurgorCutaneoResponse getTipoTurgorCutaneoById(@PathVariable Long id) {
 		try {
 			return new TipoTurgorCutaneoResponse(facade.findTipoTurgorCutaneoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TipoTurgorCutaneo " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

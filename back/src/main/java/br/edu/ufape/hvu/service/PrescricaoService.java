@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.PrescricaoRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Prescricao;
 
 @Service
@@ -21,7 +22,7 @@ public class PrescricaoService implements PrescricaoServiceInterface {
 	}
 
 	public Prescricao findPrescricaoById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Prescricao with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Prescricao"));
 	}
 
 	public List<Prescricao> getAllPrescricao(){

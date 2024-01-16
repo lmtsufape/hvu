@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.ConsultaRepository;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Consulta;
 
 @Service
@@ -21,7 +22,7 @@ public class ConsultaService implements ConsultaServiceInterface {
 	}
 
 	public Consulta findConsultaById(long id) {
-		return repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Consulta with id = " + id));
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Consulta"));
 	}
 
 	public List<Consulta> getAllConsulta(){

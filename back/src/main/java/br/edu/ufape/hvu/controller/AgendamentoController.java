@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.Agendamento;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.AgendamentoRequest;
 import br.edu.ufape.hvu.controller.dto.response.AgendamentoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class AgendamentoController {
 	public AgendamentoResponse getAgendamentoById(@PathVariable Long id) {
 		try {
 			return new AgendamentoResponse(facade.findAgendamentoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.NivelConsciencia;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.NivelConscienciaRequest;
 import br.edu.ufape.hvu.controller.dto.response.NivelConscienciaResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class NivelConscienciaController {
 	public NivelConscienciaResponse getNivelConscienciaById(@PathVariable Long id) {
 		try {
 			return new NivelConscienciaResponse(facade.findNivelConscienciaById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "NivelConsciencia " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

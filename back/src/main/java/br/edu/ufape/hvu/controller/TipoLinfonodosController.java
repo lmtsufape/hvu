@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.TipoLinfonodos;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TipoLinfonodosRequest;
 import br.edu.ufape.hvu.controller.dto.response.TipoLinfonodosResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -42,8 +43,8 @@ public class TipoLinfonodosController {
 	public TipoLinfonodosResponse getTipoLinfonodosById(@PathVariable Long id) {
 		try {
 			return new TipoLinfonodosResponse(facade.findTipoLinfonodosById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TipoLinfonodos " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

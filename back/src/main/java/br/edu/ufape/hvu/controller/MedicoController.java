@@ -19,6 +19,7 @@ import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.MedicoRequest;
 import br.edu.ufape.hvu.controller.dto.response.MedicoResponse;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -57,8 +58,8 @@ public class MedicoController {
 	public MedicoResponse getMedicoById(@PathVariable Long id) {
 		try {
 			return new MedicoResponse(facade.findMedicoById(id));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medico " + id + " not found.");
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
 	

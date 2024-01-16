@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.model.HistoricoMedicoPregresso;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.HistoricoMedicoPregressoRequest;
 import br.edu.ufape.hvu.controller.dto.response.HistoricoMedicoPregressoResponse;
+import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @CrossOrigin (origins = "http://localhost:3000/" )
@@ -40,7 +41,12 @@ public class HistoricoMedicoPregressoController {
 	
 	@GetMapping("historicoMedicoPregresso/{id}")
 	public HistoricoMedicoPregressoResponse getHistoricoMedicoPregressoById(@PathVariable Long id) {
-		return new HistoricoMedicoPregressoResponse(facade.findHistoricoMedicoPregressoById(id));
+		try {
+			return new HistoricoMedicoPregressoResponse(facade.findHistoricoMedicoPregressoById(id));
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+		
 	}
 	
 	@PatchMapping("historicoMedicoPregresso/{id}")
