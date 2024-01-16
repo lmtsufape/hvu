@@ -26,13 +26,14 @@ public  class Orgao  {
 	private String nome;
 	private Boolean sexoMacho;
 	private Boolean sexoFemea;
+
     	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "foto_id")
 	@ToString.Exclude
-	private Foto foto; 
+	private Foto foto;
+
 	@OneToMany
 	@JoinColumn(name = "orgao_id")
 	@ToString.Exclude
-	private List<Area> area; 
-
+	private List<Area> area;
 }

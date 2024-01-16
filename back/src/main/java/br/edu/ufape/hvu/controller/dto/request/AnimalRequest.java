@@ -21,6 +21,7 @@ public  class AnimalRequest  {
 	private String alergias;
 	private LocalDate dataNascimento;
 	private String imagem;
+	private boolean castrado;
 	private RacaRequest raca; 
 	private HistoricoMedicoPregressoRequest historicoMedicoPregresso;
 	private long id;

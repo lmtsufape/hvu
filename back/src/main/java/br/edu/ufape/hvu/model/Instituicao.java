@@ -23,8 +23,12 @@ public  class Instituicao  {
 	@EqualsAndHashCode.Include
 	private long id;
 	private String nome;
-	@OneToOne
+
+	@OneToOne(cascade = CascadeType.ALL,
+			orphanRemoval = true
+	)
 	@ToString.Exclude
-	private Endereco endereco; 
+	private Endereco endereco;
+
 
 }
