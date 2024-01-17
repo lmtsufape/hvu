@@ -45,9 +45,11 @@ public class AnimalController {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			Jwt principal = (Jwt) authentication.getPrincipal();
 			return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
-		} catch(RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutor " + " not found.");
-		}
+		} catch (IdNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        } catch (RuntimeException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }
 		
 	}
 	
@@ -79,8 +81,10 @@ public class AnimalController {
 			typeMapper.map(obj, oldObject);	
 			return new AnimalResponse(facade.updateAnimal(oldObject));
 		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        } catch (RuntimeException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }
 		
 	}
 	
@@ -97,8 +101,10 @@ public class AnimalController {
 			facade.deleteAnimal(id);
 			return "";
 		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        } catch (RuntimeException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }
 		
 	}
 	
