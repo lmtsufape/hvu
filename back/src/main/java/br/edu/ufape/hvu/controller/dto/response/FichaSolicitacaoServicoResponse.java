@@ -1,13 +1,14 @@
 package br.edu.ufape.hvu.controller.dto.response;
 
-import java.util.*;
-import java.math.*;
-import br.edu.ufape.hvu.model.*;
+import java.util.Date;
+
+import org.modelmapper.ModelMapper;
+
+import br.edu.ufape.hvu.config.SpringApplicationContext;
+import br.edu.ufape.hvu.model.FichaSolicitacaoServico;
 import br.edu.ufape.hvu.model.enums.EstadoConservacao;
 import br.edu.ufape.hvu.model.enums.TipoMaterial;
 import br.edu.ufape.hvu.model.enums.TipoServico;
-import br.edu.ufape.hvu.config.SpringApplicationContext;
-import org.modelmapper.ModelMapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
