@@ -22,4 +22,10 @@ public  class Medico extends Usuario {
 	@JoinColumn(name = "medico_id")
 	@ToString.Exclude
 	private List<Especialidade> especialidade;
+
+	@ManyToOne
+	@JoinColumn(name = "instituicao_id")
+	@ToString.Exclude
+	private Instituicao instituicao;
+
 }

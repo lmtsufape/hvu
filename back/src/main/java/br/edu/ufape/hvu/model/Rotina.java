@@ -26,6 +26,7 @@ public  class Rotina  {
 	@EqualsAndHashCode.Include
 	private long id;
 	private Processamento processamento;
+	private String observacao;
     	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "exameMicroscopico_id")
 	@ToString.Exclude

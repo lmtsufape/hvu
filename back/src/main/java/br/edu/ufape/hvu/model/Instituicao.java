@@ -30,5 +30,8 @@ public  class Instituicao  {
 	@ToString.Exclude
 	private Endereco endereco;
 
+	@OneToMany(mappedBy = "instituicao")
+	private List<Medico> medicos;
+
 
 }

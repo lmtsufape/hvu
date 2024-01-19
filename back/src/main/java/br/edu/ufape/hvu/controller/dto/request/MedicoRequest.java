@@ -17,7 +17,8 @@ import lombok.Setter;
 public  class MedicoRequest extends UsuarioRequest {
 	private long id;
 	private String crmv;
-	private List<EspecialidadeRequest> especialidade; 
+	private List<EspecialidadeRequest> especialidade;
+	private Instituicao instituicao;
 
 
 	public Medico convertToEntity() {
