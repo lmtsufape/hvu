@@ -1,8 +1,10 @@
 package br.edu.ufape.hvu.model;
 
-import java.util.*;
-import java.math.*;
-import jakarta.persistence.*;
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

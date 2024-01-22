@@ -1,14 +1,12 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
-import br.edu.ufape.hvu.config.SpringApplicationContext;
-import br.edu.ufape.hvu.model.*;
-import br.edu.ufape.hvu.model.enums.Microscopia;
-
-import java.util.*;
-import java.math.*;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import jakarta.validation.constraints.*;
+
+import br.edu.ufape.hvu.config.SpringApplicationContext;
+import br.edu.ufape.hvu.model.LaudoNecropsia;
+import br.edu.ufape.hvu.model.enums.Microscopia;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,11 +1,12 @@
 package br.edu.ufape.hvu.controller.dto.response;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.math.*;
-import br.edu.ufape.hvu.model.*;
-import br.edu.ufape.hvu.config.SpringApplicationContext;
+
 import org.modelmapper.ModelMapper;
+
+import br.edu.ufape.hvu.config.SpringApplicationContext;
+import br.edu.ufape.hvu.model.ExameComplementar;
+import br.edu.ufape.hvu.model.Medico;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
