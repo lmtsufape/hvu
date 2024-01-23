@@ -1,11 +1,12 @@
 package br.edu.ufape.hvu.controller.dto.response;
 
-import java.util.*;
-import java.math.*;
-import br.edu.ufape.hvu.model.*;
-import br.edu.ufape.hvu.model.enums.Opcoes;
-import br.edu.ufape.hvu.config.SpringApplicationContext;
+import java.util.Date;
+
 import org.modelmapper.ModelMapper;
+
+import br.edu.ufape.hvu.config.SpringApplicationContext;
+import br.edu.ufape.hvu.model.ExameMicroscopico;
+import br.edu.ufape.hvu.model.enums.Opcoes;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
