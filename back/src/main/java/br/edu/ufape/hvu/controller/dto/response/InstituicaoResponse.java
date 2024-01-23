@@ -15,7 +15,6 @@ public  class InstituicaoResponse  {
 	private Long id;
 	private String nome;
 	private EnderecoResponse endereco;
-	private List<Medico> medicos;
 
 
 

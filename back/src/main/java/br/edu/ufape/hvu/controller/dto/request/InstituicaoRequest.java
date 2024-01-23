@@ -14,7 +14,6 @@ public  class InstituicaoRequest  {
 	private String nome;
 	private EnderecoRequest endereco;
 	private long id;
-	private List<Medico> medicos;
 
 
 	public Instituicao convertToEntity() {

@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 
 import java.util.Date;
 
+import br.edu.ufape.hvu.model.Foto;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -22,7 +23,8 @@ public  class ExameMicroscopicoResponse  {
 	private String foto_path;
 	private OrgaoResponse orgao; 
 	private EtapaResponse etapa; 
-	private LaudoMicroscopiaResponse laudoMicroscopia; 
+	private LaudoMicroscopiaResponse laudoMicroscopia;
+	private Foto foto;
 
 
 

@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Instituicao;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
