@@ -2,7 +2,6 @@ package br.edu.ufape.hvu.controller.dto.request;
 
 import java.util.Date;
 
-import br.edu.ufape.hvu.model.Foto;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -23,7 +22,7 @@ public  class ExameMicroscopicoRequest  {
 	private EtapaRequest etapa; 
 	private LaudoMicroscopiaRequest laudoMicroscopia; 
 	private long id;
-	private Foto foto;
+	private FotoRequest foto;
 
 
 	public ExameMicroscopico convertToEntity() {

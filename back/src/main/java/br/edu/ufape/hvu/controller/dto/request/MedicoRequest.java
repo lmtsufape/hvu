@@ -2,7 +2,6 @@ package br.edu.ufape.hvu.controller.dto.request;
 
 import java.util.List;
 
-import br.edu.ufape.hvu.model.Instituicao;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -17,7 +16,7 @@ public  class MedicoRequest extends UsuarioRequest {
 	private long id;
 	private String crmv;
 	private List<EspecialidadeRequest> especialidade;
-	private Instituicao instituicao;
+	private InstituicaoRequest instituicao;
 
 
 	public Medico convertToEntity() {

@@ -17,7 +17,7 @@ import lombok.Setter;
 public  class MedicoResponse extends UsuarioResponse {
 	private String crmv;
 	private List<EspecialidadeResponse> especialidade;
-	private Instituicao instituicao;
+	private InstituicaoResponse instituicao;
 
 
 
