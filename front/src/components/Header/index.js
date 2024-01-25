@@ -52,7 +52,7 @@ export function Header01() {
             </div>
 
             <div className={styles.box_buttons} >
-                <button type="button" class="btn btn-link">
+                <button type="button" className="btn btn-link">
                     <img src='./images/icone_perfil.svg'/>
                 </button>
             </div>

@@ -103,7 +103,7 @@ function CreateTutorEnderecoForm() {
             try {
                 const response = await createTutor(formData);
                 console.log(response);
-                router.push('/getAllAnimalTutor');
+                router.push('');
             } catch (error) {
                 console.error("Erro ao cadastrar tutor:", error);
             }
