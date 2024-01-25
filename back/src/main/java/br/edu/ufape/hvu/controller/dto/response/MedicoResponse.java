@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Instituicao;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -15,7 +16,8 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public  class MedicoResponse extends UsuarioResponse {
 	private String crmv;
-	private List<EspecialidadeResponse> especialidade; 
+	private List<EspecialidadeResponse> especialidade;
+	private InstituicaoResponse instituicao;
 
 
 

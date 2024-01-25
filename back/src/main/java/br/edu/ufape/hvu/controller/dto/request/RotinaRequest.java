@@ -16,6 +16,7 @@ public  class RotinaRequest  {
 	private ExameMicroscopicoRequest exameMicroscopico; 
 	private EtapaRequest etapa; 
 	private long id;
+	private String observacao;
 
 
 	public Rotina convertToEntity() {
