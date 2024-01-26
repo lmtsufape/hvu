@@ -1,4 +1,4 @@
-import api from '../common/http';
+import api from '../common/http-common-back';
 
   // Função para criar um novo endereco
   export async function createEndereco(enderecoData) {

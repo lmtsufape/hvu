@@ -1,4 +1,4 @@
-import api from '../common/http'; // Importe a instância do Axios com o token de autorização
+import api from '../common/http-common-back'; // Importe a instância do Axios com o token de autorização
 
   // Função para criar um novo usuário
 export async function createUsuario(usuarioData) {
