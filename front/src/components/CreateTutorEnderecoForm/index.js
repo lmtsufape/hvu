@@ -25,7 +25,7 @@ function CreateTutorEnderecoForm() {
     const [ enderecoFormData, setEnderecoFormData ] = useState({
         cep: "",
         rua: "",
-        municipio: "",
+        estado: "",
         cidade: "",
         numero: "",
         bairro: ""
@@ -90,8 +90,8 @@ function CreateTutorEnderecoForm() {
         } else if (!/^\d{8}$/.test(enderecoFormData.cep)) {
             newErrors.cep = "CEP inválido";
         }
-        if (!enderecoFormData.municipio) {
-            newErrors.municipio = "Estado é obrigatório";
+        if (!enderecoFormData.estado) {
+            newErrors.estado = "Estado é obrigatório";
         }
         if (!enderecoFormData.cidade) {
             newErrors.cidade = "Cidade é obrigatório";
