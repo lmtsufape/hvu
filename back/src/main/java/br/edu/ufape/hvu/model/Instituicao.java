@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
 
 
 @Entity
@@ -34,6 +35,5 @@ public  class Instituicao  {
 	)
 	@ToString.Exclude
 	private Endereco endereco;
-
 
 }

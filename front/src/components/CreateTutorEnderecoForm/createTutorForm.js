@@ -1,4 +1,5 @@
 import React from "react";
+import InputMask from "react-input-mask";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./createTutorForm.module.css";
 
@@ -11,12 +12,12 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
                 <div className="row">
                     <div className="col">
                         {renderInput("E-mail", "email", tutorFormData.email, handleTutorChange, errors.email, "email")}
-                        {renderInput("CPF", "cpf", tutorFormData.cpf, handleTutorChange, errors.cpf, "text", 11)}
-                        {renderInput("Telefone", "telefone", tutorFormData.telefone, handleTutorChange, errors.telefone, "tel", 11)}
+                        {renderInput("CPF", "cpf", tutorFormData.cpf, handleTutorChange, errors.cpf, "text", "999.999.999-99")}
+                        {renderInput("Telefone", "telefone", tutorFormData.telefone, handleTutorChange, errors.telefone, "tel", "(99) 99999-9999")}
                     </div>
                     <div className="col">
                         {renderInput("Senha", "senha", tutorFormData.senha, handleTutorChange, errors.senha, "password")}
-                        {renderInput("RG", "rg", tutorFormData.rg, handleTutorChange, errors.rg, "text", 7)}
+                        {renderInput("RG", "rg", tutorFormData.rg, handleTutorChange, errors.rg, "text", "99.999.999-9")}
                     </div>
                 </div>
             </div>
@@ -24,16 +25,18 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
     );
 }
 
-function renderInput(label, name, value, onChange, error, type = "text", maxLength) {
+function renderInput(label, name, value, onChange, error, type = "text", mask = null) {
+    const InputComponent = mask ? InputMask : 'input';
+
     return (
         <div className="mb-3">
             <label htmlFor={name} className="form-label">{label}</label>
-            <input
+            <InputComponent
+                mask={mask}
                 type={type}
                 className={`form-control ${error ? 'is-invalid' : ''}`}
                 name={name}
                 placeholder={`Insira o ${label.toLowerCase()}`}
-                maxLength={maxLength}
                 value={value}
                 onChange={onChange}
             />

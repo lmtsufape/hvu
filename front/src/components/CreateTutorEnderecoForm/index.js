@@ -5,6 +5,8 @@ import { createTutor } from "../../../services/tutorService";
 import CreateEnderecoForm from "./createEnderecoForm";
 import CreateTutorForm from "./createTutorForm";
 import styles from "./index.module.css";
+import { postRegister } from "../../../common/postRegister";
+import { postLogin } from "../../../common/postLogin";
 
 function CreateTutorEnderecoForm() {
     const router = useRouter();
@@ -23,12 +25,14 @@ function CreateTutorEnderecoForm() {
     const [ enderecoFormData, setEnderecoFormData ] = useState({
         cep: "",
         rua: "",
-        municipio: "",
+        estado: "",
         cidade: "",
         numero: "",
         bairro: ""
         }
-    )
+    );
+
+    
 
     const formData = {
         ...tutorFormData,
@@ -86,8 +90,8 @@ function CreateTutorEnderecoForm() {
         } else if (!/^\d{8}$/.test(enderecoFormData.cep)) {
             newErrors.cep = "CEP inválido";
         }
-        if (!enderecoFormData.municipio) {
-            newErrors.municipio = "Estado é obrigatório";
+        if (!enderecoFormData.estado) {
+            newErrors.estado = "Estado é obrigatório";
         }
         if (!enderecoFormData.cidade) {
             newErrors.cidade = "Cidade é obrigatório";
@@ -101,6 +105,9 @@ function CreateTutorEnderecoForm() {
         event.preventDefault();
         if (validateForm()) {
             try {
+                const responseRegister = await postRegister( tutorFormData.email,tutorFormData.nome,tutorFormData.senha, "tutor");
+                console.log(responseRegister);
+                await postLogin(tutorFormData.email,tutorFormData.senha);
                 const response = await createTutor(formData);
                 console.log(response);
                 router.push('/getAllAnimalTutor');

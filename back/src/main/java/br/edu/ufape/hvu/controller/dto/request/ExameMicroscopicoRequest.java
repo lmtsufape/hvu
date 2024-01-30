@@ -22,6 +22,7 @@ public  class ExameMicroscopicoRequest  {
 	private EtapaRequest etapa; 
 	private LaudoMicroscopiaRequest laudoMicroscopia; 
 	private long id;
+	private FotoRequest foto;
 
 
 	public ExameMicroscopico convertToEntity() {

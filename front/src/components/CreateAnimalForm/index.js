@@ -22,9 +22,12 @@ function CreateAnimalForm() {
   const { especies, error: especiesError } = EspeciesList();
   const { racas, error: racasError } = RacasList();
 
-  const [selectedEspecie, setSelectedEspecie] = useState({});
-  const [selectedRaca, setSelectedRaca] = useState({});
+  const [selectedEspecie, setSelectedEspecie] = useState(null);
+  const [selectedRaca, setSelectedRaca] = useState(null);
+
   const [racasByEspecie, setRacasByEspecie] = useState([]);
+
+  const [isRacaSelectDisabled, setIsRacaSelectDisabled] = useState(true);
 
   const [animalData, setAnimalData] = useState({
     nome: "",
@@ -34,17 +37,24 @@ function CreateAnimalForm() {
     imagem: "NULL"
   });
 
-  useEffect(() => {
-    if (especies.length > 0) {
-      setSelectedEspecie(especies[0]?.id);
-    }
-    if (racas.length > 0) {
-      setSelectedRaca(racas[0]?.id);
-    }
-  }, [especies, racas]);
+  const [racaData, setRacaData] = useState({
+    id: null
+  });
+
+useEffect(() => {
+  if (especies.length > 0 && selectedEspecie === null) {
+    setSelectedEspecie(especies[0]?.id);
+  }
+  if (racas.length > 0 && selectedRaca === null) {
+    setSelectedRaca(racas[0]?.id);
+  }
+}, [especies, racas, selectedEspecie, selectedRaca]);
   
   const formatDate = (data) => {
-    const [dia, mes, ano] = data.split("/");
+    const dataObj = new Date(data);
+    const dia = String(dataObj.getDate()).padStart(2, '0');
+    const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+    const ano = dataObj.getFullYear();
     return `${ano}-${mes}-${dia}`;
   };
 
@@ -63,29 +73,34 @@ function CreateAnimalForm() {
   
   const handleEspecieSelection = (event) => {
     try {
-      const selectedEspecieId = event.target.value;
+      const selectedEspecieId = parseInt(event.target.value);
       setSelectedEspecie(selectedEspecieId);
+
+      setSelectedRaca(null);
+  
+      // Filtrar as raças correspondentes à espécie selecionada
+      const racasFiltradas = racas.filter((r) => r.especie.id === selectedEspecieId);
+      setRacasByEspecie(racasFiltradas);
+  
+      setIsRacaSelectDisabled(false);
     } catch (error) {
       console.error('Erro ao selecionar espécie:', error);
     }
   };
-
-  const getSelectedEspecie = () => {
-    return especies.find((e) => e.id === selectedEspecie);
-  };
   
   const handleRacaSelection = (event) => {
     try {
-      const selectedRacaId = event.target.value;
-      setSelectedRaca(selectedRacaId);
+      const selectedRacaId = parseInt(event.target.value);
+      const selectedRacaObj = racas.find((r) => r.id === selectedRacaId);
+      console.log(selectedRacaObj)
+  console.log(selectedRacaObj)
+      setRacaData(selectedRacaObj);
+      console.log(racaData)
     } catch (error) {
       console.error('Erro ao selecionar raça:', error);
     }
   };
-
-  const getSelectedRaca = () => {
-    return racas.find((r) => r.id === selectedRaca);
-  };
+  
 
   const validateForm = () => {
     const newErrors = {};
@@ -127,20 +142,27 @@ function CreateAnimalForm() {
   //  if (validateForm()) {
       if (especies.length > 0 && racas.length > 0) {  
         const animalToCreate = {
-          ...animalData,
-          raca: getSelectedRaca(),
+          nome: animalData.nome,
+          sexo: animalData.sexo,
+          alergias: animalData.alergias,
+          dataNascimento: animalData.dataNascimento,
+          imagem: animalData.imagem,
+          raca: {
+            id: racaData.id
+          }
         };
-    
-        console.log(getSelectedRaca());
+
         console.log("Dados do animal a ser criado:", animalToCreate);
     
         try {
           const newAnimal = await createAnimal(animalToCreate);
           console.log(newAnimal);
           router.push("/getAllAnimalTutor");
+          resetForm();
         } catch (error) {
           console.error("Erro ao criar animal:", error);
           console.log("Detalhes do erro:", error.response);
+          resetForm();
         }
       } else {
         console.log("Aguardando dados de espécies e raças carregarem...");
@@ -148,6 +170,28 @@ function CreateAnimalForm() {
    // } else {
    //   console.log("Formulário inválido, corrija os erros.");
   //   }
+  };
+
+  const resetForm = () => {
+    setAnimalData({
+        nome: "",
+        sexo: "",
+        alergias: "",
+        dataNascimento: "",
+        imagem: "NULL"
+    });
+    setSelectedEspecie(especies.length > 0 ? especies[0]?.id : null);
+    setSelectedRaca(racas.length > 0 ? racas[0]?.id : null);
+    setRacasByEspecie([]);
+    setIsRacaSelectDisabled(true);
+    setErrors({
+        nome: "",
+        dataNascimento: "",
+        sexo: "",
+        alergias: "",
+        especie: "",
+        raca: ""
+    });
   };
 
   return (
@@ -168,10 +212,10 @@ function CreateAnimalForm() {
           </div>
           <div className="col">
             <label htmlFor="nascimento" className="form-label">Data de Nascimento</label>
-            <input type="text"
+            <input
+              type="date"
               className={`form-control ${errors.dataNascimento ? "is-invalid" : ""}`}
               name="dataNascimento"
-              placeholder="Ex: 12/12/2012"
               value={animalData.dataNascimento}
               onChange={handleAnimalChange}
             />
@@ -186,7 +230,7 @@ function CreateAnimalForm() {
             className='form-select'
             name="especie"
             aria-label="Selecione a espécie do animal"
-            value={selectedEspecie}
+            value={selectedEspecie || ""}
             onChange={handleEspecieSelection}
           >
             <option value="">Selecione a espécie</option>
@@ -204,10 +248,11 @@ function CreateAnimalForm() {
             className='form-select'
             name="raca"
             aria-label="Selecione a raça do animal"
-            value={selectedRaca}
+            value={selectedRaca || ""}
             onChange={handleRacaSelection}
+            disabled={isRacaSelectDisabled} 
           >
-            <option value="">Selecione</option>
+            <option value="">Selecione a raça</option>
             {racasByEspecie.map((raca) => (
               <option key={raca.id} value={raca.id}>
                 {raca.nome}

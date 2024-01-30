@@ -45,6 +45,11 @@ public  class ExameMicroscopico  {
     	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "laudoMicroscopia_id")
 	@ToString.Exclude
-	private LaudoMicroscopia laudoMicroscopia; 
+	private LaudoMicroscopia laudoMicroscopia;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "foto_id")
+	@ToString.Exclude
+	private Foto foto;
 
 }

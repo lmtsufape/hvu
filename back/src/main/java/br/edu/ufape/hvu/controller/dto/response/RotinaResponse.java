@@ -16,7 +16,8 @@ public  class RotinaResponse  {
 	private Long id;
 	private Processamento processamento;
 	private ExameMicroscopicoResponse exameMicroscopico; 
-	private EtapaResponse etapa; 
+	private EtapaResponse etapa;
+	private String observacao;
 
 
 
