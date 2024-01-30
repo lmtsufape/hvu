@@ -35,7 +35,7 @@ public class AnimalService implements AnimalServiceInterface {
 	}
 	
 	public void deleteAnimal(long id){
-		Animal obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Animal with id = " + id));
+		Animal obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Animal"));
 		repository.delete(obj);
 	}	
 	

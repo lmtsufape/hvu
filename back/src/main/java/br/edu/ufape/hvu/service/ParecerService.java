@@ -35,7 +35,7 @@ public class ParecerService implements ParecerServiceInterface {
 	}
 	
 	public void deleteParecer(long id){
-		Parecer obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Parecer with id = " + id));
+		Parecer obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Parecer"));
 		repository.delete(obj);
 	}	
 	

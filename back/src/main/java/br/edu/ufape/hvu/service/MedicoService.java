@@ -45,7 +45,7 @@ public class MedicoService implements MedicoServiceInterface {
 	}
 	
 	public void deleteMedico(long id){
-		Medico obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Medico with id = " + id));
+		Medico obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Medico"));
 		repository.delete(obj);
 	}	
 	

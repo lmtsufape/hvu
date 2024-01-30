@@ -15,38 +15,38 @@ import br.edu.ufape.hvu.service.*;
 public class Facade {
 	//Tutor--------------------------------------------------------------
 	@Autowired
-	private TutorService  tutorService;
+	private TutorServiceInterface  tutorServiceInterface;
 		
 	public Tutor saveTutor(Tutor newInstance) throws ResponseStatusException {
-		return tutorService.saveTutor(newInstance);
+		return tutorServiceInterface.saveTutor(newInstance);
 	}
 
 	public Tutor updateTutor(Tutor transientObject) {
-		return tutorService.updateTutor(transientObject);
+		return tutorServiceInterface.updateTutor(transientObject);
 	}
 
 	public Tutor findTutorById(long id) {
-		return tutorService.findTutorById(id);
+		return tutorServiceInterface.findTutorById(id);
 	}
 	
 	public Tutor findTutorByuserId(String userId) {
-		return tutorService.findTutorByuserId(userId);
+		return tutorServiceInterface.findTutorByuserId(userId);
 	}
 	
 	public Tutor findTutorByanimalId(long animalId) {
-		return tutorService.findTutorByanimalId(animalId);
+		return tutorServiceInterface.findTutorByanimalId(animalId);
 	}
 
 	public List<Tutor> getAllTutor() {
-		return tutorService.getAllTutor();
+		return tutorServiceInterface.getAllTutor();
 	}
 
 	public void deleteTutor(Tutor persistentObject) {
-		tutorService.deleteTutor(persistentObject);
+		tutorServiceInterface.deleteTutor(persistentObject);
 	}
 
 	public void deleteTutor(long id) {
-		tutorService.deleteTutor(id);
+		tutorServiceInterface.deleteTutor(id);
 	}
 	
 

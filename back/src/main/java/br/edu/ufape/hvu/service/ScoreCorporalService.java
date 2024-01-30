@@ -35,7 +35,7 @@ public class ScoreCorporalService implements ScoreCorporalServiceInterface {
 	}
 	
 	public void deleteScoreCorporal(long id){
-		ScoreCorporal obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist ScoreCorporal with id = " + id));
+		ScoreCorporal obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "ScoreCorporal"));
 		repository.delete(obj);
 	}	
 	

@@ -35,7 +35,7 @@ public class TipoExameService implements TipoExameServiceInterface {
 	}
 	
 	public void deleteTipoExame(long id){
-		TipoExame obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist TipoExame with id = " + id));
+		TipoExame obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "TipoExame"));
 		repository.delete(obj);
 	}	
 	

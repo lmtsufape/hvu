@@ -35,7 +35,7 @@ public class AgendamentoService implements AgendamentoServiceInterface {
 	}
 	
 	public void deleteAgendamento(long id){
-		Agendamento obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Agendamento with id = " + id));
+		Agendamento obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Agendamento"));
 		repository.delete(obj);
 	}	
 	

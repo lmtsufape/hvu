@@ -35,7 +35,7 @@ public class NivelConscienciaService implements NivelConscienciaServiceInterface
 	}
 	
 	public void deleteNivelConsciencia(long id){
-		NivelConsciencia obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist NivelConsciencia with id = " + id));
+		NivelConsciencia obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "NivelConsciencia"));
 		repository.delete(obj);
 	}	
 	
