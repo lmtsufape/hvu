@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.service;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Especie;
 import br.edu.ufape.hvu.model.Raca;
 
 public interface RacaServiceInterface {
@@ -11,6 +12,7 @@ public interface RacaServiceInterface {
 	void deleteRaca(Raca u);
 	void deleteRaca(long id);
 	List<Raca> getAllRaca();
+	List<Raca> findByEspecie(Especie especie);
     
     
 

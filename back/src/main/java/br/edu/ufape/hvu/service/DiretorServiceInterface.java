@@ -11,6 +11,7 @@ public interface DiretorServiceInterface {
 	void deleteDiretor(Diretor u);
 	void deleteDiretor(long id);
 	List<Diretor> getAllDiretor();
+	Diretor findDiretorByuserId(String userId);
     
     
 
