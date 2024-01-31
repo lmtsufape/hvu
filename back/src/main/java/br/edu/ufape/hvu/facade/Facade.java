@@ -307,7 +307,11 @@ public class Facade {
 	public void deleteMedico(long id) {
 		medicoService.deleteMedico(id);
 	}
-	
+
+	public List<Medico> findByInstituicao(long InstituicaoId){
+		Instituicao instituicao = findInstituicaoById(InstituicaoId);
+		return medicoService.findByInstituicao(instituicao);
+	}
 
 	//TipoExame--------------------------------------------------------------
 	@Autowired
