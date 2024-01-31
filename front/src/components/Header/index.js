@@ -4,7 +4,7 @@ import styles from "./index.module.css";
 import {LoginGreenButton} from '../GreenButton';
 import { LoginWhiteButton } from '../WhiteButton';
 import {CadastrolWhiteButton} from '../WhiteButton';
-import LogoHVU from '../LogoHVU/logo_hvu';
+import LogoHVU from '../LogoHVU';
 
 //Header com botão de login e cadastro
 export function Header01() {

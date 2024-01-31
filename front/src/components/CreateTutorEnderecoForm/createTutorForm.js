@@ -8,16 +8,17 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
         <div className={styles.boxcadastrotutor}>
             <div className={styles.cadastrotutor}>
                 <div className={styles.titulo}>Tutor</div>
-                {renderInput("Nome Completo", "nome", tutorFormData.nome, handleTutorChange, errors.nome, "text")}
+                {renderInput("Nome Completo", "Insira seu nome completo", "nome", tutorFormData.nome, handleTutorChange, errors.nome, "text")}
                 <div className="row">
                     <div className="col">
-                        {renderInput("E-mail", "email", tutorFormData.email, handleTutorChange, errors.email, "email")}
-                        {renderInput("CPF", "cpf", tutorFormData.cpf, handleTutorChange, errors.cpf, "text", "999.999.999-99")}
-                        {renderInput("Telefone", "telefone", tutorFormData.telefone, handleTutorChange, errors.telefone, "tel", "(99) 99999-9999")}
+                        {renderInput("E-mail", "Insira seu email", "email", tutorFormData.email, handleTutorChange, errors.email, "email")}
+                        {renderInput("CPF", "Insira seu CPF", "cpf", tutorFormData.cpf, handleTutorChange, errors.cpf, "text", "999.999.999-99")}
+                        {renderInput("Crie uma senha", "Crie uma senha", "senha", tutorFormData.senha, handleTutorChange, errors.senha, "password")}
                     </div>
                     <div className="col">
-                        {renderInput("Senha", "senha", tutorFormData.senha, handleTutorChange, errors.senha, "password")}
-                        {renderInput("RG", "rg", tutorFormData.rg, handleTutorChange, errors.rg, "text", "99.999.999-9")}
+                        {renderInput("Telefone", "Insira seu telefone", "telefone", tutorFormData.telefone, handleTutorChange, errors.telefone, "tel", "(99) 99999-9999")}
+                        {renderInput("RG", "Insira seu RG", "rg", tutorFormData.rg, handleTutorChange, errors.rg, "text", "99.999.999-9")}
+                        {renderInput("Confirmar senha", "Confirme sua senha ", "confirmarSenha", tutorFormData.confirmarSenha, handleTutorChange, errors.confirmarSenha, "password")}
                     </div>
                 </div>
             </div>
@@ -25,7 +26,7 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
     );
 }
 
-function renderInput(label, name, value, onChange, error, type = "text", mask = null) {
+function renderInput(label, placeholder, name, value, onChange, error, type = "text", mask = null) {
     const InputComponent = mask ? InputMask : 'input';
 
     return (
@@ -36,7 +37,7 @@ function renderInput(label, name, value, onChange, error, type = "text", mask = 
                 type={type}
                 className={`form-control ${error ? 'is-invalid' : ''}`}
                 name={name}
-                placeholder={`Insira o ${label.toLowerCase()}`}
+                placeholder={placeholder}
                 value={value}
                 onChange={onChange}
             />
