@@ -10,6 +10,15 @@ import RacasList from "@/hooks/useRacaList";
 function CreateAnimalForm() {
   const router = useRouter();
 
+  const [errors, setErrors] = useState({
+    nome: "",
+    dataNascimento: "",
+    sexo: "",
+    alergias: "",
+    especie: "",
+    raca: ""
+  });
+
   const { especies, error: especiesError } = EspeciesList();
   const { racas, error: racasError } = RacasList();
 
@@ -17,6 +26,7 @@ function CreateAnimalForm() {
   const [selectedRaca, setSelectedRaca] = useState(null);
 
   const [racasByEspecie, setRacasByEspecie] = useState([]);
+
   const [isRacaSelectDisabled, setIsRacaSelectDisabled] = useState(true);
 
   const [animalData, setAnimalData] = useState({
@@ -27,26 +37,19 @@ function CreateAnimalForm() {
     imagem: "NULL"
   });
 
-  const [errors, setErrors] = useState({
-    nome: "",
-    dataNascimento: "",
-    sexo: "",
-    alergias: "",
-    especie: "",
-    raca: ""
+  const [racaData, setRacaData] = useState({
+    id: null
   });
 
-  useEffect(() => {
-    if (especies.length > 0 && selectedEspecie === null) {
-      setSelectedEspecie("");
-      setSelectedEspecie(especies[0]?.id.toString());
-      setSelectedRaca(""); // Adicionando essa linha para garantir que a raça não seja automaticamente selecionada
-    }
-    if (racas.length > 0 && selectedRaca === null) {
-      setSelectedRaca("");
-    }
-  }, [especies, racas, selectedEspecie, selectedRaca]);
-
+useEffect(() => {
+  if (especies.length > 0 && selectedEspecie === null) {
+    setSelectedEspecie(especies[0]?.id);
+  }
+  if (racas.length > 0 && selectedRaca === null) {
+    setSelectedRaca(racas[0]?.id);
+  }
+}, [especies, racas, selectedEspecie, selectedRaca]);
+  
   const formatDate = (data) => {
     const dataObj = new Date(data);
     const dia = String(dataObj.getDate()).padStart(2, '0');
@@ -56,34 +59,52 @@ function CreateAnimalForm() {
   };
 
   const handleAnimalChange = (event) => {
-    const { name, value } = event.target;
-    const newValue = name === "dataNascimento" ? formatDate(value) : value;
-    setAnimalData({ ...animalData, [name]: newValue });
+    try {
+      const { name, value } = event.target;
+      
+      // Se o campo for "dataNascimento", formate a data
+      const newValue = name === "dataNascimento" ? formatDate(value) : value;
+  
+      setAnimalData({ ...animalData, [name]: newValue });
+    } catch (error) {
+      console.error('Erro ao puxar dados do animal:', error);
+    }
   };
-
+  
   const handleEspecieSelection = (event) => {
-    const selectedEspecieId = event.target.value;
-    setSelectedEspecie(selectedEspecieId);
-    setSelectedRaca("");
+    try {
+      const selectedEspecieId = parseInt(event.target.value);
+      setSelectedEspecie(selectedEspecieId);
 
-    const racasFiltradas = racas.filter((r) => r.especie.id === parseInt(selectedEspecieId));
-    setRacasByEspecie(racasFiltradas);
-    setIsRacaSelectDisabled(false);
+      setSelectedRaca(null);
+  
+      // Filtrar as raças correspondentes à espécie selecionada
+      const racasFiltradas = racas.filter((r) => r.especie.id === selectedEspecieId);
+      setRacasByEspecie(racasFiltradas);
+  
+      setIsRacaSelectDisabled(false);
+    } catch (error) {
+      console.error('Erro ao selecionar espécie:', error);
+    }
   };
-
-  console.log("Selected especie:", selectedEspecie)
-
+  
   const handleRacaSelection = (event) => {
-    const selectedRacaId = event.target.value;
-    const selectedRacaObj = racas.find((r) => r.id === parseInt(selectedRacaId));
-    setSelectedRaca(selectedRacaObj.id);
-    console.log("Selected raça obj:", selectedRacaObj)
+    try {
+      const selectedRacaId = parseInt(event.target.value);
+      const selectedRacaObj = racas.find((r) => r.id === selectedRacaId);
+      console.log(selectedRacaObj)
+  console.log(selectedRacaObj)
+      setRacaData(selectedRacaObj);
+      console.log(racaData)
+    } catch (error) {
+      console.error('Erro ao selecionar raça:', error);
+    }
   };
-  console.log("Selected raça:", selectedRaca)
+  
 
   const validateForm = () => {
     const newErrors = {};
-
+  
     if (!animalData.nome) {
       newErrors.nome = "Campo obrigatório";
     }
@@ -101,18 +122,25 @@ function CreateAnimalForm() {
     }
     if (!selectedRaca) {
       newErrors.raca = "Campo obrigatório";
+    } else {
+      if (!selectedRaca.nome) {
+        newErrors.raca = "Campo obrigatório";
+      }
+      if (!selectedRaca.porte) {
+        newErrors.porte = "Campo obrigatório";
+      }
     }
-
+  
     setErrors(newErrors);
-
+  
     return Object.values(newErrors).every((error) => error === "");
   };
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (validateForm()) {
-      if (especies.length > 0 && racas.length > 0) {
+  //  if (validateForm()) {
+      if (especies.length > 0 && racas.length > 0) {  
         const animalToCreate = {
           nome: animalData.nome,
           sexo: animalData.sexo,
@@ -120,12 +148,12 @@ function CreateAnimalForm() {
           dataNascimento: animalData.dataNascimento,
           imagem: animalData.imagem,
           raca: {
-            id: parseInt(selectedRaca)
+            id: racaData.id
           }
         };
 
-        console.log("objeto do animal:", animalToCreate)
-
+        console.log("Dados do animal a ser criado:", animalToCreate);
+    
         try {
           const newAnimal = await createAnimal(animalToCreate);
           console.log(newAnimal);
@@ -139,33 +167,32 @@ function CreateAnimalForm() {
       } else {
         console.log("Aguardando dados de espécies e raças carregarem...");
       }
-    } else {
-      console.log("Formulário inválido, corrija os erros.");
-    }
+   // } else {
+   //   console.log("Formulário inválido, corrija os erros.");
+  //   }
   };
 
   const resetForm = () => {
     setAnimalData({
-      nome: "",
-      sexo: "",
-      alergias: "",
-      dataNascimento: "",
-      imagem: "NULL",
+        nome: "",
+        sexo: "",
+        alergias: "",
+        dataNascimento: "",
+        imagem: "NULL"
     });
-    setSelectedEspecie(especies.length > 0 ? especies[0]?.id.toString() : "");
-    setSelectedRaca(racas.length > 0 ? racas[0]?.id.toString() : "");
+    setSelectedEspecie(especies.length > 0 ? especies[0]?.id : null);
+    setSelectedRaca(racas.length > 0 ? racas[0]?.id : null);
     setRacasByEspecie([]);
     setIsRacaSelectDisabled(true);
     setErrors({
-      nome: "",
-      dataNascimento: "",
-      sexo: "",
-      alergias: "",
-      especie: "",
-      raca: "",
+        nome: "",
+        dataNascimento: "",
+        sexo: "",
+        alergias: "",
+        especie: "",
+        raca: ""
     });
   };
-
 
   return (
     <div className={styles.container}>
