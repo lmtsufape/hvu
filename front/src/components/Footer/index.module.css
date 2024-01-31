@@ -1,6 +1,6 @@
 .backgroundfooter{
     background-color: #327053;
-    Height: 100.78px;
+    height: 100.78px;
     margin-top: 15px;
     /*Top: 926.22px*/
 }
@@ -32,4 +32,19 @@
     margin-right: 50px;
     min-height: 10%;
     min-width: 10%;
+}
+
+.hvu_logo {
+    width: auto;
+    height: auto;
+}
+
+.lmts_logo {
+    width: auto;
+    height: auto;
+}
+
+.ufape_logo {
+    width: auto;
+    height: auto;
 }
