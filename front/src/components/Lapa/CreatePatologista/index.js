@@ -1,48 +1,46 @@
-import React, { useState } from "react";
+/* import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRouter } from "next/router";
-import { createTutor } from "../../../services/tutorService";
-import CreateEnderecoForm from "./createEnderecoForm";
-import CreateTutorForm from "./createTutorForm";
+import { createMedico } from "../../../../services/lapa/patologistaService";
+import CreateEnderecoForm  from "./CreateEnderecoForm";
+import CreatePatologistaForm from "./CreatePatologistaForm";
 import styles from "./index.module.css";
-import { postRegister } from "../../../common/postRegister";
-import { postLogin } from "../../../common/postLogin";
 
-function CreateTutorEnderecoForm() {
+
+function CreatePatologistaCadastroForm() {
+
     const router = useRouter();
 
     const [errors, setErrors] = useState({});
 
-    const [tutorFormData, setTutorFormData] = useState({
+    const [patologistaFormData, setPatologistaFormData] = useState({
         nome: "",
         email: "",
         senha: "",
         cpf: "",
-        rg: "",
+        crmv: "",
         telefone: ""
     });
 
     const [ enderecoFormData, setEnderecoFormData ] = useState({
         cep: "",
         rua: "",
-        estado: "",
+        municipio: "",
         cidade: "",
         numero: "",
         bairro: ""
         }
-    );
-
-    
+    )
 
     const formData = {
-        ...tutorFormData,
+        ...patologistaFormData,
         endereco: {...enderecoFormData}
     }
 
-    function handleTutorChange(event) {
+    function handlePatologistaChange(event) {
 
         const { name, value } = event.target;
-        setTutorFormData({ ...tutorFormData, [name]: value });
+        setPatologistaFormData({ ...patologistaFormData, [name]: value });
     }
 
     function handleEnderecoChange(event) {
@@ -52,28 +50,28 @@ function CreateTutorEnderecoForm() {
 
     const validateForm = () => {
         const newErrors = {};
-        if (!tutorFormData.nome) {
+        if (!patologistaFormData.nome) {
             newErrors.nome = "Nome é obrigatório";
         }
-        if (!tutorFormData.email) {
+        if (!patologistaFormData.email) {
             newErrors.email = "E-mail é obrigatório";
-        } else if (!/\S+@\S+\.\S+/.test(tutorFormData.email)) {
+        } else if (!/\S+@\S+\.\S+/.test(patologistaFormData.email)) {
             newErrors.email = "E-mail inválido";
         }
-        if (!tutorFormData.senha) {
+        if (!patologistaFormData.senha) {
             newErrors.senha = "Senha é obrigatória";
         }
-        if (!tutorFormData.cpf) {
+        if (!patologistaFormData.cpf) {
             newErrors.cpf = "CPF é obrigatório";
-        } else if (!/^\d{11}$/.test(tutorFormData.cpf)) {
+        } else if (!/^\d{11}$/.test(patologistaFormData.cpf)) {
             newErrors.cpf = "CPF inválido";
         }
-        if (!tutorFormData.rg) {
-            newErrors.rg = "RG é obrigatório";
-        } else if (!/^\d{7}$/.test(tutorFormData.rg)) {
-            newErrors.rg = "RG inválido";
+        if (!patologistaFormData.crmv) {
+            newErrors.crmv = "CRMV é obrigatório";
+        } else if (!/^\d{7}$/.test(patologistaFormData.crmv)) {
+            newErrors.crmv = "CRMV inválido";
         }
-        if (!tutorFormData.telefone) {
+        if (!patologistaFormData.telefone) {
             newErrors.telefone = "Telefone é obrigatório";
         }
         if (!enderecoFormData.rua) {
@@ -90,8 +88,8 @@ function CreateTutorEnderecoForm() {
         } else if (!/^\d{8}$/.test(enderecoFormData.cep)) {
             newErrors.cep = "CEP inválido";
         }
-        if (!enderecoFormData.estado) {
-            newErrors.estado = "Estado é obrigatório";
+        if (!enderecoFormData.municipio) {
+            newErrors.municipio = "Estado é obrigatório";
         }
         if (!enderecoFormData.cidade) {
             newErrors.cidade = "Cidade é obrigatório";
@@ -105,14 +103,11 @@ function CreateTutorEnderecoForm() {
         event.preventDefault();
         if (validateForm()) {
             try {
-                const responseRegister = await postRegister( tutorFormData.email,tutorFormData.nome,tutorFormData.senha, "tutor");
-                console.log(responseRegister);
-                await postLogin(tutorFormData.email,tutorFormData.senha);
-                const response = await createTutor(formData);
+                const response = await createMedico(formData);
                 console.log(response);
                 router.push('/getAllAnimalTutor');
             } catch (error) {
-                console.error("Erro ao cadastrar tutor:", error);
+                console.error("Erro ao cadastrar Patologista:", error);
             }
         } else {
             console.log("Formulário inválido. Corrija os erros.");
@@ -121,13 +116,13 @@ function CreateTutorEnderecoForm() {
 
     return (
         <div className={styles.container}>
-            <h1>Cadastro</h1>
+            <h1>Cadastro do Patologista</h1>
             <form>
                 <div className={styles.form_box}>
                     <div>
-                        <CreateTutorForm
-                            tutorFormData={tutorFormData}
-                            handleTutorChange={handleTutorChange}
+                        <CreatePatologistaForm
+                            patologistaFormData={patologistaFormData}
+                            handlePatologistaChange={handlePatologistaChange}
                             errors={errors}
                         />
                     </div>
@@ -147,6 +142,11 @@ function CreateTutorEnderecoForm() {
             </form>
         </div>
     );
-}
 
-export default CreateTutorEnderecoForm;
+
+
+
+}
+export default CreatePatologistaCadastroForm;
+
+*/

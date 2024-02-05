@@ -1,10 +1,10 @@
 import React from 'react';
 import Image from "next/image";
 import styles from "./index.module.css";
-import {LoginGreenButton} from '../GreenButton';
-import { LoginWhiteButton } from '../WhiteButton';
-import {CadastrolWhiteButton} from '../WhiteButton';
-import LogoHVU from '../LogoHVU/logo_hvu';
+import {LoginGreenButton} from '../../GreenButton';
+import { LoginWhiteButton } from '../../WhiteButton';
+import {CadastrolWhiteButton} from '../../WhiteButton';
+import LogoLAPA from '../LogoLAPA/logo_lapa';
 
 //Header com botão de login e cadastro
 export function Header01() {
@@ -12,7 +12,7 @@ export function Header01() {
         <header className={styles.header}>
             
             <div className={styles.boxlogo}>
-                < LogoHVU />
+                < LogoLAPA />
             </div>
 
             <div className={styles.box_buttons} >
@@ -30,7 +30,7 @@ export function Header01() {
         <header className={styles.header}>
             
             <div className={styles.boxlogo}>
-                < LogoHVU />
+                < LogoLAPA />
             </div>
 
             <div className={styles.box_buttons} >
@@ -48,12 +48,12 @@ export function Header01() {
         <header className={styles.header}>
             
             <div className={styles.boxlogo}>
-                < LogoHVU />
+                < LogoLAPA />
             </div>
 
             <div className={styles.box_buttons} >
-                <button type="button" className="btn btn-link">
-                    <img src='./images/icone_perfil.svg'/>
+                <button type="button" class="btn btn-link">
+                    <img src='/images/icone_perfil.svg'/>
                 </button>
             </div>
                 
@@ -67,7 +67,7 @@ export function Header01() {
         <header className={styles.header}>
             
             <div className={styles.boxlogo}>
-                < LogoHVU />
+                < LogoLAPA />
             </div>
 
             <div className={styles.box_buttons} >
