@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.controller.dto.response.InstituicaoResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -107,6 +108,14 @@ public class MedicoController {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
 		
+	}
+
+	@GetMapping("medico/instituicao/{InstituicaoId}")
+	public List<MedicoResponse> findByInstituicao(@PathVariable Long InstituicaoId){
+		return facade.findByInstituicao(InstituicaoId)
+				.stream()
+				.map(MedicoResponse::new)
+				.toList();
 	}
 	
 
