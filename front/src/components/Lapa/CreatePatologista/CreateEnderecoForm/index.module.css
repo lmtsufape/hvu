@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+  
+.boxcadastrotutor {
+  display: block;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  max-width: 1500px;
+  min-width: 300px;
+  height: auto; 
+  background-color: white;
+  padding: 30px;
+  margin: auto;
+  margin-top: -40px;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+}
+
+.titulo {
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: 0em;
+  text-align: left;
+  margin-bottom: 10px;
+}
+  

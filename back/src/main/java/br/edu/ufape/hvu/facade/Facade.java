@@ -300,6 +300,11 @@ public class Facade {
 		medicoService.deleteMedico(id);
 	}
 
+  public List<Medico> findByInstituicao(long InstituicaoId){
+		Instituicao instituicao = findInstituicaoById(InstituicaoId);
+		return medicoService.findByInstituicao(instituicao);
+	}
+
 	// TipoExame--------------------------------------------------------------
 	@Autowired
 	private TipoExameServiceInterface tipoExameServiceInterface;
