@@ -45,7 +45,7 @@ public class UsuarioService implements UsuarioServiceInterface {
 	}
 	
 	public void deleteUsuario(long id){
-		Usuario obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Usuario with id = " + id));
+		Usuario obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Usuario"));
 		repository.delete(obj);
 	}	
 	

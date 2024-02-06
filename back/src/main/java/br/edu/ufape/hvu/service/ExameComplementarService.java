@@ -35,7 +35,7 @@ public class ExameComplementarService implements ExameComplementarServiceInterfa
 	}
 	
 	public void deleteExameComplementar(long id){
-		ExameComplementar obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist ExameComplementar with id = " + id));
+		ExameComplementar obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "ExameComplementar"));
 		repository.delete(obj);
 	}	
 	

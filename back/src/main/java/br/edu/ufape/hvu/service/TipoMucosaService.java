@@ -35,7 +35,7 @@ public class TipoMucosaService implements TipoMucosaServiceInterface {
 	}
 	
 	public void deleteTipoMucosa(long id){
-		TipoMucosa obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist TipoMucosa with id = " + id));
+		TipoMucosa obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "TipoMucosa"));
 		repository.delete(obj);
 	}	
 	

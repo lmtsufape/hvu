@@ -11,6 +11,7 @@ public interface UsuarioServiceInterface {
 	void deleteUsuario(Usuario u);
 	void deleteUsuario(long id);
 	List<Usuario> getAllUsuario();
+	Usuario findUsuarioByuserId(String userId);
     
     
 

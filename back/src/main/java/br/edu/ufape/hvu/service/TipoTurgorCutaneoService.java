@@ -35,7 +35,7 @@ public class TipoTurgorCutaneoService implements TipoTurgorCutaneoServiceInterfa
 	}
 	
 	public void deleteTipoTurgorCutaneo(long id){
-		TipoTurgorCutaneo obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist TipoTurgorCutaneo with id = " + id));
+		TipoTurgorCutaneo obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "TipoTurgorCutaneo"));
 		repository.delete(obj);
 	}	
 	

@@ -35,7 +35,7 @@ public class CronogramaService implements CronogramaServiceInterface {
 	}
 	
 	public void deleteCronograma(long id){
-		Cronograma obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Cronograma with id = " + id));
+		Cronograma obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Cronograma"));
 		repository.delete(obj);
 	}	
 	

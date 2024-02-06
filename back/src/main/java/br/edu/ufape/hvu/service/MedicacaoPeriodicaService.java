@@ -35,7 +35,7 @@ public class MedicacaoPeriodicaService implements MedicacaoPeriodicaServiceInter
 	}
 	
 	public void deleteMedicacaoPeriodica(long id){
-		MedicacaoPeriodica obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist MedicacaoPeriodica with id = " + id));
+		MedicacaoPeriodica obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "MedicacaoPeriodica"));
 		repository.delete(obj);
 	}	
 	

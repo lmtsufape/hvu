@@ -35,7 +35,7 @@ public class VagaService implements VagaServiceInterface {
 	}
 	
 	public void deleteVaga(long id){
-		Vaga obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Vaga with id = " + id));
+		Vaga obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Vaga"));
 		repository.delete(obj);
 	}	
 	

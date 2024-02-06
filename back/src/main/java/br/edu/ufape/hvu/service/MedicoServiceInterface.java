@@ -11,6 +11,7 @@ public interface MedicoServiceInterface {
 	void deleteMedico(Medico u);
 	void deleteMedico(long id);
 	List<Medico> getAllMedico();
+	Medico findMedicoByuserId(String userId);
     
     
 

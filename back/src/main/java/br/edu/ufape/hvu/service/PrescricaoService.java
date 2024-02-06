@@ -35,7 +35,7 @@ public class PrescricaoService implements PrescricaoServiceInterface {
 	}
 	
 	public void deletePrescricao(long id){
-		Prescricao obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Prescricao with id = " + id));
+		Prescricao obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Prescricao"));
 		repository.delete(obj);
 	}	
 	

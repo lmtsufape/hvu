@@ -35,7 +35,7 @@ public class TipoConsultaService implements TipoConsultaServiceInterface {
 	}
 	
 	public void deleteTipoConsulta(long id){
-		TipoConsulta obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist TipoConsulta with id = " + id));
+		TipoConsulta obj = repository.findById(id).orElseThrow( () -> new  IdNotFoundException(id, "TipoConsulta"));
 		repository.delete(obj);
 	}	
 	

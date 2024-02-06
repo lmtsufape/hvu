@@ -35,7 +35,7 @@ public class NivelHidratacaoService implements NivelHidratacaoServiceInterface {
 	}
 	
 	public void deleteNivelHidratacao(long id){
-		NivelHidratacao obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist NivelHidratacao with id = " + id));
+		NivelHidratacao obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "NivelHidratacao"));
 		repository.delete(obj);
 	}	
 	

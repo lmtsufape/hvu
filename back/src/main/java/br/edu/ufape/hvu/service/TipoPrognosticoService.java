@@ -35,7 +35,7 @@ public class TipoPrognosticoService implements TipoPrognosticoServiceInterface {
 	}
 	
 	public void deleteTipoPrognostico(long id){
-		TipoPrognostico obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist TipoPrognostico with id = " + id));
+		TipoPrognostico obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "TipoPrognostico"));
 		repository.delete(obj);
 	}	
 	

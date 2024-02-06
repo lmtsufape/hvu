@@ -35,7 +35,7 @@ public class HistoricoMedicoPregressoService implements HistoricoMedicoPregresso
 	}
 	
 	public void deleteHistoricoMedicoPregresso(long id){
-		HistoricoMedicoPregresso obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist HistoricoMedicoPregresso with id = " + id));
+		HistoricoMedicoPregresso obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "HistoricoMedicoPregresso"));
 		repository.delete(obj);
 	}	
 	
