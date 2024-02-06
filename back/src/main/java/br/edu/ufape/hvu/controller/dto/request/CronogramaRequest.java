@@ -15,7 +15,6 @@ import lombok.Setter;
 public  class CronogramaRequest  {
 	private String nome;
 	private String rotina;
-	private MedicoRequest medico; 
 	private List<EspecialidadeRequest> especialidade; 
 	private List<VagaRequest> vaga; 
 	private long id;

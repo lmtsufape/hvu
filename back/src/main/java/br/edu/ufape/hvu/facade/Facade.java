@@ -216,8 +216,11 @@ public class Facade {
 	@Autowired
 	private CronogramaServiceInterface cronogramaServiceInterface;
 
-	public Cronograma saveCronograma(Cronograma newInstance) {
-		return cronogramaServiceInterface.saveCronograma(newInstance);
+	public Cronograma saveCronograma(Cronograma newInstance, String medico_id) {
+		Medico medico = findMedicoByuserId(medico_id);
+		newInstance.setMedico(medico);
+		Cronograma cronograma = cronogramaServiceInterface.saveCronograma(newInstance);
+		return cronograma;
 	}
 
 	public Cronograma updateCronograma(Cronograma transientObject) {
