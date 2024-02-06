@@ -11,8 +11,9 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class AgendamentoRequest  {
-	private TutorRequest tutor;
 	private long id;
+	private String status;
+	private AnimalRequest animal; 
 
 
 	public Agendamento convertToEntity() {

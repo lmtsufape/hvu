@@ -13,10 +13,9 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class TipoConsultaRequest  {
-	private String tipo;
-	private List<AgendamentoRequest> agendamento; 
-	private List<VagaRequest> vaga;
 	private long id;
+	private String tipo;
+	private List<CronogramaRequest> cronograma; 
 
 
 	public TipoConsulta convertToEntity() {

@@ -14,9 +14,10 @@ import lombok.ToString;
 
 
 
+@SuppressWarnings("serial")
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper=false)
 @ToString
 public  class Tutor extends Usuario {
 	private String rg;

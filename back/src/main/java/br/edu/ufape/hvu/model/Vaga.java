@@ -30,11 +30,15 @@ public  class Vaga  {
 	@EqualsAndHashCode.Include
 	private long id;
 	private LocalDateTime dataHora;
+	private String status;
 	@ManyToOne
 	@ToString.Exclude
 	private Especialidade especialidade; 
 	@OneToOne
 	@ToString.Exclude
 	private Consulta consulta; 
+	@ManyToOne
+	@ToString.Exclude
+	private TipoConsulta tipoConsulta; 
 
 }

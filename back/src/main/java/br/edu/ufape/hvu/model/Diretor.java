@@ -10,9 +10,10 @@ import lombok.ToString;
 
 
 
+@SuppressWarnings("serial")
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper=false)
 @ToString
 public  class Diretor extends Usuario {
 	private String matricula;

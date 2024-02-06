@@ -19,10 +19,11 @@ import lombok.ToString;
 
 
 
+@SuppressWarnings("serial")
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper=false)
 @ToString
 public  class Usuario implements Serializable {
 	@Id

@@ -2,7 +2,6 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
-import br.edu.ufape.hvu.controller.dto.response.InstituicaoResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;

@@ -15,9 +15,10 @@ import lombok.ToString;
 
 
 
+@SuppressWarnings("serial")
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper=false)
 @ToString
 public  class Medico extends Usuario {
 	private String crmv;
@@ -25,7 +26,6 @@ public  class Medico extends Usuario {
 	@JoinColumn(name = "medico_id")
 	@ToString.Exclude
 	private List<Especialidade> especialidade;
-
 	@ManyToOne
 	@JoinColumn(name = "instituicao_id")
 	@ToString.Exclude
