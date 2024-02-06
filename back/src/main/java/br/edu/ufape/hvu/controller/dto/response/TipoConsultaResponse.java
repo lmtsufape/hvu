@@ -14,10 +14,9 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
 public  class TipoConsultaResponse  {
-	private Long id;
+	private long id;
 	private String tipo;
-	private List<AgendamentoResponse> agendamento; 
-	private List<VagaResponse> vaga; 
+	private List<CronogramaResponse> cronograma; 
 
 
 

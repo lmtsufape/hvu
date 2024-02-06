@@ -14,9 +14,10 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
 public  class CronogramaResponse  {
-	private Long id;
+	private long id;
 	private String nome;
 	private String rotina;
+	private Double tempoAtendimento; 
 	private MedicoResponse medico; 
 	private List<EspecialidadeResponse> especialidade; 
 	private List<VagaResponse> vaga; 

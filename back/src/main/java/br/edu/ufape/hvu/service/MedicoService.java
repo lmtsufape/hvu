@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import br.edu.ufape.hvu.exception.ObjectNotFoundException;
-import br.edu.ufape.hvu.model.Especie;
 import br.edu.ufape.hvu.model.Instituicao;
-import br.edu.ufape.hvu.model.Raca;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.MedicoRepository;

@@ -12,9 +12,9 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
 public  class AgendamentoResponse  {
-	private Long id;
-
-	private TutorResponse tutor; 
+	private long id;
+	private String status;
+	private AnimalResponse animal; 
 
 
 

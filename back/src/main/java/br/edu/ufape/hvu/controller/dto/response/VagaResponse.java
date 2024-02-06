@@ -16,8 +16,10 @@ import lombok.Setter;
 public  class VagaResponse  {
 	private Long id;
 	private LocalDateTime dataHora;
+	private String status;
 	private EspecialidadeResponse especialidade; 
 	private ConsultaResponse consulta; 
+	private TipoConsultaResponse tipoConsulta; 
 
 
 

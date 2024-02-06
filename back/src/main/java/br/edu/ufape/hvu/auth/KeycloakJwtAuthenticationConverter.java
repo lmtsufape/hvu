@@ -58,7 +58,8 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
     }
 
 
-    private Set<String> getResourceRoles(Jwt jwt) {
+    @SuppressWarnings("unused")
+	private Set<String> getResourceRoles(Jwt jwt) {
         Set<String> rolesWithPrefix = new HashSet<>();
         Map<String, JsonNode> map = objectMapper.convertValue(jwt.getClaim("resource_access"), new TypeReference<Map<String, JsonNode>>(){});
         for (Map.Entry<String, JsonNode> jsonNode : map.entrySet()) {
