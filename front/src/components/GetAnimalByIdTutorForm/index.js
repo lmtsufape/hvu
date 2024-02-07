@@ -22,6 +22,11 @@ function GetAnimalByIdTutorForm() {
         }
     }, [id]);
 
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('pt-BR', options);
+    };
+
     const handleEditarClick = (animalId) => {
         router.push(`/updateAnimalTutor/${animalId}`);
     };
@@ -64,7 +69,7 @@ function GetAnimalByIdTutorForm() {
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Data de nascimento</h6>
-                                        <p>{animal.dataNascimento}</p>
+                                        <p>{formatDate(animal.dataNascimento)}</p>
                                     </div>
                                 </div>
                             </div>

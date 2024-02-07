@@ -6,6 +6,7 @@ import Filter from '../GetAgendamentosFilter';
 import { DataCompleta, DataCurta, DiaDaSemana } from '../Date';
 import CalendarGrennIcon from '../CalendarGreenIcon';
 import SearchBar from '../SearchBar';
+import VoltarButton from '../VoltarButton';
 
 function GetAllAgendamentosDiaForm() {
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
@@ -17,28 +18,33 @@ function GetAllAgendamentosDiaForm() {
   return (
     <div className={styles.pagina}>
       <div className={styles.container}>
-        <div className={styles.header}>
-          <div className={styles.header_item1}>Agendamentos da semana</div>
+
+        < VoltarButton />
+        <h1>Agendamentos da semana</h1>
+        
+        <div className={styles.cadendar_container}>
+          <div className={styles.cadendar_box}>
+            <div className={dateStyles.data_completa}>{DataCompleta(dataSelecionada)}</div>
+            <CalendarGrennIcon onDataSelecionada={handleDataSelecionada} />
+          </div>          
           <Filter />
         </div>
 
-        <div className={styles.box}>
-          <div className={styles.itens_box_1}>
-            <div className={dateStyles.data_completa}>{DataCompleta(dataSelecionada)}</div>
-            <CalendarGrennIcon onDataSelecionada={handleDataSelecionada} />
+        <div className={styles.button_container}>
+          <div className={styles.button_box}>
+            <button className={styles.button}>Novo agendamento</button>
+            <button className={styles.button}>Médicos disponíveis</button>
+            <button className={styles.button}>Vagas disponíveis</button>
           </div>
-          <div className={styles.itens_box_2}>
-            <SearchBar />
-            <NovoAgendamentoButton />
-          </div>
+          <SearchBar />
         </div>
 
-        <table className={styles.tabela}>
+        <table className={styles.table}>
           <thead>
             <tr className={styles.linha1}>
-              <th className={styles.coluna1_l1}></th>
+              <th className={styles.column1_line1}></th>
               <th>
-                <div className={styles.coluna_l1}>
+                <div className={styles.line1}>
                   <p className={dateStyles.dia_da_semana}>{DiaDaSemana(dataSelecionada)}</p>
                   <p className={dateStyles.curta}>{DataCurta(dataSelecionada)}</p>
                 </div>
@@ -51,7 +57,7 @@ function GetAllAgendamentosDiaForm() {
               <th className={styles.coluna1}>08:00</th>
               <th className={styles.th}>
                 <button className={styles.botao}>
-                  <div className={styles.button_container}>
+                  <div className={styles.button_button}>
                     <div className={styles.sub1}>
                       <div>Theodore</div>
                       <div>|</div>

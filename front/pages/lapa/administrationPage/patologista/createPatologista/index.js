@@ -8,7 +8,7 @@ function PageCadastroPatologista(){
     return(
         <div>
             <Header03/>
-            <CreatePatologistaCadastroForm/>
+            {/* <CreatePatologistaCadastroForm/> */}
             <Footer/>
         </div>
     )
