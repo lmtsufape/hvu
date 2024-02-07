@@ -35,7 +35,7 @@ public class EspecieService implements EspecieServiceInterface {
 	}
 	
 	public void deleteEspecie(long id){
-		Especie obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Especie with id = " + id));
+		Especie obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Especie"));
 		repository.delete(obj);
 	}	
 	

@@ -43,7 +43,7 @@ public class DiretorService implements DiretorServiceInterface {
 	}
 	
 	public void deleteDiretor(long id){
-		Diretor obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Diretor with id = " + id));
+		Diretor obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Diretor"));
 		repository.delete(obj);
 	}	
 	

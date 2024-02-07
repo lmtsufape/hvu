@@ -108,6 +108,14 @@ public class MedicoController {
 		}
 		
 	}
+
+	@GetMapping("medico/instituicao/{InstituicaoId}")
+	public List<MedicoResponse> findByInstituicao(@PathVariable Long InstituicaoId){
+		return facade.findByInstituicao(InstituicaoId)
+				.stream()
+				.map(MedicoResponse::new)
+				.toList();
+	}
 	
 
 }

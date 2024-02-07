@@ -6,7 +6,7 @@ const text_white_button = {
     login: 'Login',
     adicionar_animal: 'Adicionar animal',
     cadastro: "Cadastre-se",
-    voltar: "Voltar",
+    cancelar: "Cancelar",
     editar: "Editar"
 };
 
@@ -46,16 +46,16 @@ export function CadastrolWhiteButton() {
     );
 }
 
-export function VoltarWhiteButton() {
+export function CancelarWhiteButton() {
     const router = useRouter();
 
-    const handlVoltarClick = () => {
+    const handlCancelarClick = () => {
         router.back();
     };
 
     return (
-        <button className={styles.white_button} onClick={handlVoltarClick}>
-            {text_white_button.voltar}
+        <button className={styles.white_button} onClick={handlCancelarClick}>
+            {text_white_button.cancelar}
         </button>
     );
 }

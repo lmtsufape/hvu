@@ -26,8 +26,9 @@ public  class Agendamento  {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private long id;
+	private String status;
 	@OneToOne
 	@ToString.Exclude
-	private Tutor tutor; 
+	private Animal animal; 
 
 }

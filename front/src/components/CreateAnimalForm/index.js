@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
-import { VoltarWhiteButton } from "../WhiteButton/index";
 import { createAnimal } from "../../../services/animalService";
 import { useRouter } from "next/router";
 import EspeciesList from "@/hooks/useEspecieList";
@@ -20,11 +19,12 @@ function CreateAnimalForm() {
   const [isRacaSelectDisabled, setIsRacaSelectDisabled] = useState(true);
 
   const [animalData, setAnimalData] = useState({
-    nome: "",
-    sexo: "",
-    alergias: "",
-    dataNascimento: "",
-    imagem: "NULL"
+    nome: '',
+    sexo: '',
+    alergias: '',
+    dataNascimento: '',
+    imagem: '',
+    raca: { id: null }
   });
 
   const [errors, setErrors] = useState({
@@ -38,12 +38,11 @@ function CreateAnimalForm() {
 
   useEffect(() => {
     if (especies.length > 0 && selectedEspecie === null) {
-      setSelectedEspecie("");
-      setSelectedEspecie(especies[0]?.id.toString());
-      setSelectedRaca(""); // Adicionando essa linha para garantir que a raça não seja automaticamente selecionada
+      setSelectedEspecie(null);
+      setSelectedRaca(null); 
     }
     if (racas.length > 0 && selectedRaca === null) {
-      setSelectedRaca("");
+      setSelectedRaca(null);
     }
   }, [especies, racas, selectedEspecie, selectedRaca]);
 
@@ -64,7 +63,7 @@ function CreateAnimalForm() {
   const handleEspecieSelection = (event) => {
     const selectedEspecieId = event.target.value;
     setSelectedEspecie(selectedEspecieId);
-    setSelectedRaca("");
+    setSelectedRaca(null);
 
     const racasFiltradas = racas.filter((r) => r.especie.id === parseInt(selectedEspecieId));
     setRacasByEspecie(racasFiltradas);
@@ -77,7 +76,6 @@ function CreateAnimalForm() {
     const selectedRacaId = event.target.value;
     const selectedRacaObj = racas.find((r) => r.id === parseInt(selectedRacaId));
     setSelectedRaca(selectedRacaObj.id);
-    console.log("Selected raça obj:", selectedRacaObj)
   };
   console.log("Selected raça:", selectedRaca)
 
@@ -200,7 +198,7 @@ function CreateAnimalForm() {
         <div className="col">
           <label htmlFor="especie" className="form-label">Espécie</label>
           <select 
-            className='form-select'
+            className={`form-select ${errors.especie ? "is-invalid" : ""}`}
             name="especie"
             aria-label="Selecione a espécie do animal"
             value={selectedEspecie || ""}
@@ -218,7 +216,7 @@ function CreateAnimalForm() {
         <div className="col">
           <label htmlFor="raca" className="form-label">Raça</label>
           <select 
-            className='form-select'
+            className={`form-select ${errors.raca ? "is-invalid" : ""}`}
             name="raca"
             aria-label="Selecione a raça do animal"
             value={selectedRaca || ""}
@@ -252,7 +250,7 @@ function CreateAnimalForm() {
           <div className="col">
             <label htmlFor="sexo" className="form-label">Sexo</label>
             <select 
-              className='form-select'
+              className={`form-select ${errors.sexo ? "is-invalid" : ""}`}
               name="sexo"
               aria-label="Selecione o sexo do animal"
               value={animalData.sexo}
@@ -267,7 +265,6 @@ function CreateAnimalForm() {
         </div>
   
         <div className={styles.button_container}>
-          <VoltarWhiteButton />
           <button className={styles.cadastrar_button} type="submit">
             Cadastrar
           </button>

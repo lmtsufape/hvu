@@ -13,273 +13,268 @@ import br.edu.ufape.hvu.service.*;
 
 @Service
 public class Facade {
-	//Tutor--------------------------------------------------------------
+	// Tutor--------------------------------------------------------------
 	@Autowired
-	private TutorService  tutorService;
-		
+	private TutorServiceInterface tutorServiceInterface;
+
 	public Tutor saveTutor(Tutor newInstance) throws ResponseStatusException {
-		return tutorService.saveTutor(newInstance);
+		return tutorServiceInterface.saveTutor(newInstance);
 	}
 
 	public Tutor updateTutor(Tutor transientObject) {
-		return tutorService.updateTutor(transientObject);
+		return tutorServiceInterface.updateTutor(transientObject);
 	}
 
 	public Tutor findTutorById(long id) {
-		return tutorService.findTutorById(id);
+		return tutorServiceInterface.findTutorById(id);
 	}
-	
+
 	public Tutor findTutorByuserId(String userId) {
-		return tutorService.findTutorByuserId(userId);
+		return tutorServiceInterface.findTutorByuserId(userId);
 	}
-	
+
 	public Tutor findTutorByanimalId(long animalId) {
-		return tutorService.findTutorByanimalId(animalId);
+		return tutorServiceInterface.findTutorByanimalId(animalId);
 	}
 
 	public List<Tutor> getAllTutor() {
-		return tutorService.getAllTutor();
+		return tutorServiceInterface.getAllTutor();
 	}
 
 	public void deleteTutor(Tutor persistentObject) {
-		tutorService.deleteTutor(persistentObject);
+		tutorServiceInterface.deleteTutor(persistentObject);
 	}
 
 	public void deleteTutor(long id) {
-		tutorService.deleteTutor(id);
+		tutorServiceInterface.deleteTutor(id);
 	}
-	
 
-	//NivelHidratacao--------------------------------------------------------------
+	// NivelHidratacao--------------------------------------------------------------
 	@Autowired
-	private NivelHidratacaoService  nivelHidratacaoService;
-		
+	private NivelHidratacaoServiceInterface nivelHidratacaoServiceInterface;
+
 	public NivelHidratacao saveNivelHidratacao(NivelHidratacao newInstance) {
-		return nivelHidratacaoService.saveNivelHidratacao(newInstance);
+		return nivelHidratacaoServiceInterface.saveNivelHidratacao(newInstance);
 	}
 
 	public NivelHidratacao updateNivelHidratacao(NivelHidratacao transientObject) {
-		return nivelHidratacaoService.updateNivelHidratacao(transientObject);
+		return nivelHidratacaoServiceInterface.updateNivelHidratacao(transientObject);
 	}
 
 	public NivelHidratacao findNivelHidratacaoById(long id) {
-		return nivelHidratacaoService.findNivelHidratacaoById(id);
+		return nivelHidratacaoServiceInterface.findNivelHidratacaoById(id);
 	}
 
 	public List<NivelHidratacao> getAllNivelHidratacao() {
-		return nivelHidratacaoService.getAllNivelHidratacao();
+		return nivelHidratacaoServiceInterface.getAllNivelHidratacao();
 	}
 
 	public void deleteNivelHidratacao(NivelHidratacao persistentObject) {
-		nivelHidratacaoService.deleteNivelHidratacao(persistentObject);
+		nivelHidratacaoServiceInterface.deleteNivelHidratacao(persistentObject);
 	}
 
 	public void deleteNivelHidratacao(long id) {
-		nivelHidratacaoService.deleteNivelHidratacao(id);
+		nivelHidratacaoServiceInterface.deleteNivelHidratacao(id);
 	}
-	
 
-	//TipoConsulta--------------------------------------------------------------
+	// TipoConsulta--------------------------------------------------------------
 	@Autowired
-	private TipoConsultaService  tipoConsultaService;
-		
+	private TipoConsultaServiceInterface tipoConsultaServiceInterface;
+
 	public TipoConsulta saveTipoConsulta(TipoConsulta newInstance) {
-		return tipoConsultaService.saveTipoConsulta(newInstance);
+		return tipoConsultaServiceInterface.saveTipoConsulta(newInstance);
 	}
 
 	public TipoConsulta updateTipoConsulta(TipoConsulta transientObject) {
-		return tipoConsultaService.updateTipoConsulta(transientObject);
+		return tipoConsultaServiceInterface.updateTipoConsulta(transientObject);
 	}
 
 	public TipoConsulta findTipoConsultaById(long id) {
-		return tipoConsultaService.findTipoConsultaById(id);
+		return tipoConsultaServiceInterface.findTipoConsultaById(id);
 	}
 
 	public List<TipoConsulta> getAllTipoConsulta() {
-		return tipoConsultaService.getAllTipoConsulta();
+		return tipoConsultaServiceInterface.getAllTipoConsulta();
 	}
 
 	public void deleteTipoConsulta(TipoConsulta persistentObject) {
-		tipoConsultaService.deleteTipoConsulta(persistentObject);
+		tipoConsultaServiceInterface.deleteTipoConsulta(persistentObject);
 	}
 
 	public void deleteTipoConsulta(long id) {
-		tipoConsultaService.deleteTipoConsulta(id);
+		tipoConsultaServiceInterface.deleteTipoConsulta(id);
 	}
-	
 
-	//Usuario--------------------------------------------------------------
+	// Usuario--------------------------------------------------------------
 	@Autowired
-	private UsuarioService  usuarioService;
-		
+	private UsuarioServiceInterface usuarioServiceInterface;
+
 	public Usuario saveUsuario(Usuario newInstance) {
-		return usuarioService.saveUsuario(newInstance);
+		return usuarioServiceInterface.saveUsuario(newInstance);
 	}
 
 	public Usuario updateUsuario(Usuario transientObject) {
-		return usuarioService.updateUsuario(transientObject);
+		return usuarioServiceInterface.updateUsuario(transientObject);
 	}
 
 	public Usuario findUsuarioById(long id) {
-		return usuarioService.findUsuarioById(id);
+		return usuarioServiceInterface.findUsuarioById(id);
 	}
-	
+
 	public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
-		return usuarioService.findUsuarioByuserId(userId);
+		return usuarioServiceInterface.findUsuarioByuserId(userId);
 	}
-	
+
 	public void findDuplicateAccountByuserId(String userId) throws DuplicateAccountException {
 		try {
 			Usuario usuario = findUsuarioByuserId(userId);
-			if(usuario instanceof Tutor) {
+			if (usuario instanceof Tutor) {
 				throw new DuplicateAccountException("tutor");
 			}
-			if(usuario instanceof Diretor) {
+			if (usuario instanceof Diretor) {
 				throw new DuplicateAccountException("diretor");
 			}
-			if(usuario instanceof Medico) {
+			if (usuario instanceof Medico) {
 				throw new DuplicateAccountException("medico");
 			}
-			
-		} catch(IdNotFoundException ex){
+
+		} catch (IdNotFoundException ex) {
 
 		}
-		
+
 	}
 
 	public List<Usuario> getAllUsuario() {
-		return usuarioService.getAllUsuario();
+		return usuarioServiceInterface.getAllUsuario();
 	}
 
 	public void deleteUsuario(Usuario persistentObject) {
-		usuarioService.deleteUsuario(persistentObject);
+		usuarioServiceInterface.deleteUsuario(persistentObject);
 	}
 
 	public void deleteUsuario(long id) {
-		usuarioService.deleteUsuario(id);
+		usuarioServiceInterface.deleteUsuario(id);
 	}
-	
 
-	//MedicacaoPeriodica--------------------------------------------------------------
+	// MedicacaoPeriodica--------------------------------------------------------------
 	@Autowired
-	private MedicacaoPeriodicaService  medicacaoPeriodicaService;
-		
+	private MedicacaoPeriodicaServiceInterface medicacaoPeriodicaServiceInterface;
+
 	public MedicacaoPeriodica saveMedicacaoPeriodica(MedicacaoPeriodica newInstance) {
-		return medicacaoPeriodicaService.saveMedicacaoPeriodica(newInstance);
+		return medicacaoPeriodicaServiceInterface.saveMedicacaoPeriodica(newInstance);
 	}
 
 	public MedicacaoPeriodica updateMedicacaoPeriodica(MedicacaoPeriodica transientObject) {
-		return medicacaoPeriodicaService.updateMedicacaoPeriodica(transientObject);
+		return medicacaoPeriodicaServiceInterface.updateMedicacaoPeriodica(transientObject);
 	}
 
 	public MedicacaoPeriodica findMedicacaoPeriodicaById(long id) {
-		return medicacaoPeriodicaService.findMedicacaoPeriodicaById(id);
+		return medicacaoPeriodicaServiceInterface.findMedicacaoPeriodicaById(id);
 	}
 
 	public List<MedicacaoPeriodica> getAllMedicacaoPeriodica() {
-		return medicacaoPeriodicaService.getAllMedicacaoPeriodica();
+		return medicacaoPeriodicaServiceInterface.getAllMedicacaoPeriodica();
 	}
 
 	public void deleteMedicacaoPeriodica(MedicacaoPeriodica persistentObject) {
-		medicacaoPeriodicaService.deleteMedicacaoPeriodica(persistentObject);
+		medicacaoPeriodicaServiceInterface.deleteMedicacaoPeriodica(persistentObject);
 	}
 
 	public void deleteMedicacaoPeriodica(long id) {
-		medicacaoPeriodicaService.deleteMedicacaoPeriodica(id);
+		medicacaoPeriodicaServiceInterface.deleteMedicacaoPeriodica(id);
 	}
-	
 
-	//AvaliacaoFisicoGeral--------------------------------------------------------------
+	// AvaliacaoFisicoGeral--------------------------------------------------------------
 	@Autowired
-	private AvaliacaoFisicoGeralService  avaliacaoFisicoGeralService;
-		
+	private AvaliacaoFisicoGeralServiceInterface avaliacaoFisicoGeralServiceInterface;
+
 	public AvaliacaoFisicoGeral saveAvaliacaoFisicoGeral(AvaliacaoFisicoGeral newInstance) {
-		return avaliacaoFisicoGeralService.saveAvaliacaoFisicoGeral(newInstance);
+		return avaliacaoFisicoGeralServiceInterface.saveAvaliacaoFisicoGeral(newInstance);
 	}
 
 	public AvaliacaoFisicoGeral updateAvaliacaoFisicoGeral(AvaliacaoFisicoGeral transientObject) {
-		return avaliacaoFisicoGeralService.updateAvaliacaoFisicoGeral(transientObject);
+		return avaliacaoFisicoGeralServiceInterface.updateAvaliacaoFisicoGeral(transientObject);
 	}
 
 	public AvaliacaoFisicoGeral findAvaliacaoFisicoGeralById(long id) {
-		return avaliacaoFisicoGeralService.findAvaliacaoFisicoGeralById(id);
+		return avaliacaoFisicoGeralServiceInterface.findAvaliacaoFisicoGeralById(id);
 	}
 
 	public List<AvaliacaoFisicoGeral> getAllAvaliacaoFisicoGeral() {
-		return avaliacaoFisicoGeralService.getAllAvaliacaoFisicoGeral();
+		return avaliacaoFisicoGeralServiceInterface.getAllAvaliacaoFisicoGeral();
 	}
 
 	public void deleteAvaliacaoFisicoGeral(AvaliacaoFisicoGeral persistentObject) {
-		avaliacaoFisicoGeralService.deleteAvaliacaoFisicoGeral(persistentObject);
+		avaliacaoFisicoGeralServiceInterface.deleteAvaliacaoFisicoGeral(persistentObject);
 	}
 
 	public void deleteAvaliacaoFisicoGeral(long id) {
-		avaliacaoFisicoGeralService.deleteAvaliacaoFisicoGeral(id);
+		avaliacaoFisicoGeralServiceInterface.deleteAvaliacaoFisicoGeral(id);
 	}
-	
 
-	//Cronograma--------------------------------------------------------------
+	// Cronograma--------------------------------------------------------------
 	@Autowired
-	private CronogramaService  cronogramaService;
-		
-	public Cronograma saveCronograma(Cronograma newInstance) {
-		return cronogramaService.saveCronograma(newInstance);
+	private CronogramaServiceInterface cronogramaServiceInterface;
+
+	public Cronograma saveCronograma(Cronograma newInstance, String medico_id) {
+		Medico medico = findMedicoByuserId(medico_id);
+		newInstance.setMedico(medico);
+		Cronograma cronograma = cronogramaServiceInterface.saveCronograma(newInstance);
+		return cronograma;
 	}
 
 	public Cronograma updateCronograma(Cronograma transientObject) {
-		return cronogramaService.updateCronograma(transientObject);
+		return cronogramaServiceInterface.updateCronograma(transientObject);
 	}
 
 	public Cronograma findCronogramaById(long id) {
-		return cronogramaService.findCronogramaById(id);
+		return cronogramaServiceInterface.findCronogramaById(id);
 	}
 
 	public List<Cronograma> getAllCronograma() {
-		return cronogramaService.getAllCronograma();
+		return cronogramaServiceInterface.getAllCronograma();
 	}
 
 	public void deleteCronograma(Cronograma persistentObject) {
-		cronogramaService.deleteCronograma(persistentObject);
+		cronogramaServiceInterface.deleteCronograma(persistentObject);
 	}
 
 	public void deleteCronograma(long id) {
-		cronogramaService.deleteCronograma(id);
+		cronogramaServiceInterface.deleteCronograma(id);
 	}
-	
 
-	//TipoPrognostico--------------------------------------------------------------
+	// TipoPrognostico--------------------------------------------------------------
 	@Autowired
-	private TipoPrognosticoService  tipoPrognosticoService;
-		
+	private TipoPrognosticoServiceInterface tipoPrognosticoServiceInterface;
+
 	public TipoPrognostico saveTipoPrognostico(TipoPrognostico newInstance) {
-		return tipoPrognosticoService.saveTipoPrognostico(newInstance);
+		return tipoPrognosticoServiceInterface.saveTipoPrognostico(newInstance);
 	}
 
 	public TipoPrognostico updateTipoPrognostico(TipoPrognostico transientObject) {
-		return tipoPrognosticoService.updateTipoPrognostico(transientObject);
+		return tipoPrognosticoServiceInterface.updateTipoPrognostico(transientObject);
 	}
 
 	public TipoPrognostico findTipoPrognosticoById(long id) {
-		return tipoPrognosticoService.findTipoPrognosticoById(id);
+		return tipoPrognosticoServiceInterface.findTipoPrognosticoById(id);
 	}
 
 	public List<TipoPrognostico> getAllTipoPrognostico() {
-		return tipoPrognosticoService.getAllTipoPrognostico();
+		return tipoPrognosticoServiceInterface.getAllTipoPrognostico();
 	}
 
 	public void deleteTipoPrognostico(TipoPrognostico persistentObject) {
-		tipoPrognosticoService.deleteTipoPrognostico(persistentObject);
+		tipoPrognosticoServiceInterface.deleteTipoPrognostico(persistentObject);
 	}
 
 	public void deleteTipoPrognostico(long id) {
-		tipoPrognosticoService.deleteTipoPrognostico(id);
+		tipoPrognosticoServiceInterface.deleteTipoPrognostico(id);
 	}
-	
 
-	//Medico--------------------------------------------------------------
+	// Medico--------------------------------------------------------------
 	@Autowired
-	private MedicoService  medicoService;
-		
+	private MedicoServiceInterface medicoService;
+
 	public Medico saveMedico(Medico newInstance) {
 		return medicoService.saveMedico(newInstance);
 	}
@@ -291,7 +286,7 @@ public class Facade {
 	public Medico findMedicoById(long id) {
 		return medicoService.findMedicoById(id);
 	}
-	
+
 	public Medico findMedicoByuserId(String userId) throws IdNotFoundException {
 		return medicoService.findMedicoByuserId(userId);
 	}
@@ -307,1060 +302,1039 @@ public class Facade {
 	public void deleteMedico(long id) {
 		medicoService.deleteMedico(id);
 	}
-	
 
-	//TipoExame--------------------------------------------------------------
+  public List<Medico> findByInstituicao(long InstituicaoId){
+		Instituicao instituicao = findInstituicaoById(InstituicaoId);
+		return medicoService.findByInstituicao(instituicao);
+	}
+
+	// TipoExame--------------------------------------------------------------
 	@Autowired
-	private TipoExameService  tipoExameService;
-		
+	private TipoExameServiceInterface tipoExameServiceInterface;
+
 	public TipoExame saveTipoExame(TipoExame newInstance) {
-		return tipoExameService.saveTipoExame(newInstance);
+		return tipoExameServiceInterface.saveTipoExame(newInstance);
 	}
 
 	public TipoExame updateTipoExame(TipoExame transientObject) {
-		return tipoExameService.updateTipoExame(transientObject);
+		return tipoExameServiceInterface.updateTipoExame(transientObject);
 	}
 
 	public TipoExame findTipoExameById(long id) {
-		return tipoExameService.findTipoExameById(id);
+		return tipoExameServiceInterface.findTipoExameById(id);
 	}
 
 	public List<TipoExame> getAllTipoExame() {
-		return tipoExameService.getAllTipoExame();
+		return tipoExameServiceInterface.getAllTipoExame();
 	}
 
 	public void deleteTipoExame(TipoExame persistentObject) {
-		tipoExameService.deleteTipoExame(persistentObject);
+		tipoExameServiceInterface.deleteTipoExame(persistentObject);
 	}
 
 	public void deleteTipoExame(long id) {
-		tipoExameService.deleteTipoExame(id);
+		tipoExameServiceInterface.deleteTipoExame(id);
 	}
-	
 
-	//Raca--------------------------------------------------------------
+	// Raca--------------------------------------------------------------
 	@Autowired
-	private RacaService  racaService;
-		
+	private RacaServiceInterface racaServiceInterface;
+
 	public Raca saveRaca(Raca newInstance) {
-		return racaService.saveRaca(newInstance);
+		return racaServiceInterface.saveRaca(newInstance);
 	}
 
 	public Raca updateRaca(Raca transientObject) {
-		return racaService.updateRaca(transientObject);
+		return racaServiceInterface.updateRaca(transientObject);
 	}
 
 	public Raca findRacaById(long id) {
-		return racaService.findRacaById(id);
+		return racaServiceInterface.findRacaById(id);
 	}
 
 	public List<Raca> getAllRaca() {
-		return racaService.getAllRaca();
+		return racaServiceInterface.getAllRaca();
 	}
-	
+
 	public List<Raca> findByEspecie(long EspecieId) {
 		Especie especie = findEspecieById(EspecieId);
-		return racaService.findByEspecie(especie);
+		return racaServiceInterface.findByEspecie(especie);
 	}
 
 	public void deleteRaca(Raca persistentObject) {
-		racaService.deleteRaca(persistentObject);
+		racaServiceInterface.deleteRaca(persistentObject);
 	}
 
 	public void deleteRaca(long id) {
-		racaService.deleteRaca(id);
+		racaServiceInterface.deleteRaca(id);
 	}
-	
 
-	//Vaga--------------------------------------------------------------
+	// Vaga--------------------------------------------------------------
 	@Autowired
-	private VagaService  vagaService;
-		
+	private VagaServiceInterface vagaServiceInterface;
+
 	public Vaga saveVaga(Vaga newInstance) {
-		return vagaService.saveVaga(newInstance);
+		return vagaServiceInterface.saveVaga(newInstance);
 	}
 
 	public Vaga updateVaga(Vaga transientObject) {
-		return vagaService.updateVaga(transientObject);
+		return vagaServiceInterface.updateVaga(transientObject);
 	}
 
 	public Vaga findVagaById(long id) {
-		return vagaService.findVagaById(id);
+		return vagaServiceInterface.findVagaById(id);
 	}
 
 	public List<Vaga> getAllVaga() {
-		return vagaService.getAllVaga();
+		return vagaServiceInterface.getAllVaga();
 	}
 
 	public void deleteVaga(Vaga persistentObject) {
-		vagaService.deleteVaga(persistentObject);
+		vagaServiceInterface.deleteVaga(persistentObject);
 	}
 
 	public void deleteVaga(long id) {
-		vagaService.deleteVaga(id);
+		vagaServiceInterface.deleteVaga(id);
 	}
-	
 
-	//Medicamento--------------------------------------------------------------
+	// Medicamento--------------------------------------------------------------
 	@Autowired
-	private MedicamentoService  medicamentoService;
-		
+	private MedicamentoServiceInterface medicamentoServiceInterface;
+
 	public Medicamento saveMedicamento(Medicamento newInstance) {
-		return medicamentoService.saveMedicamento(newInstance);
+		return medicamentoServiceInterface.saveMedicamento(newInstance);
 	}
 
 	public Medicamento updateMedicamento(Medicamento transientObject) {
-		return medicamentoService.updateMedicamento(transientObject);
+		return medicamentoServiceInterface.updateMedicamento(transientObject);
 	}
 
 	public Medicamento findMedicamentoById(long id) {
-		return medicamentoService.findMedicamentoById(id);
+		return medicamentoServiceInterface.findMedicamentoById(id);
 	}
 
 	public List<Medicamento> getAllMedicamento() {
-		return medicamentoService.getAllMedicamento();
+		return medicamentoServiceInterface.getAllMedicamento();
 	}
 
 	public void deleteMedicamento(Medicamento persistentObject) {
-		medicamentoService.deleteMedicamento(persistentObject);
+		medicamentoServiceInterface.deleteMedicamento(persistentObject);
 	}
 
 	public void deleteMedicamento(long id) {
-		medicamentoService.deleteMedicamento(id);
+		medicamentoServiceInterface.deleteMedicamento(id);
 	}
-	
 
-	//Prescricao--------------------------------------------------------------
+	// Prescricao--------------------------------------------------------------
 	@Autowired
-	private PrescricaoService  prescricaoService;
-		
+	private PrescricaoServiceInterface prescricaoServiceInterface;
+
 	public Prescricao savePrescricao(Prescricao newInstance) {
-		return prescricaoService.savePrescricao(newInstance);
+		return prescricaoServiceInterface.savePrescricao(newInstance);
 	}
 
 	public Prescricao updatePrescricao(Prescricao transientObject) {
-		return prescricaoService.updatePrescricao(transientObject);
+		return prescricaoServiceInterface.updatePrescricao(transientObject);
 	}
 
 	public Prescricao findPrescricaoById(long id) {
-		return prescricaoService.findPrescricaoById(id);
+		return prescricaoServiceInterface.findPrescricaoById(id);
 	}
 
 	public List<Prescricao> getAllPrescricao() {
-		return prescricaoService.getAllPrescricao();
+		return prescricaoServiceInterface.getAllPrescricao();
 	}
 
 	public void deletePrescricao(Prescricao persistentObject) {
-		prescricaoService.deletePrescricao(persistentObject);
+		prescricaoServiceInterface.deletePrescricao(persistentObject);
 	}
 
 	public void deletePrescricao(long id) {
-		prescricaoService.deletePrescricao(id);
+		prescricaoServiceInterface.deletePrescricao(id);
 	}
-	
 
-	//TipoMucosa--------------------------------------------------------------
+	// TipoMucosa--------------------------------------------------------------
 	@Autowired
-	private TipoMucosaService  tipoMucosaService;
-		
+	private TipoMucosaServiceInterface tipoMucosaServiceInterface;
+
 	public TipoMucosa saveTipoMucosa(TipoMucosa newInstance) {
-		return tipoMucosaService.saveTipoMucosa(newInstance);
+		return tipoMucosaServiceInterface.saveTipoMucosa(newInstance);
 	}
 
 	public TipoMucosa updateTipoMucosa(TipoMucosa transientObject) {
-		return tipoMucosaService.updateTipoMucosa(transientObject);
+		return tipoMucosaServiceInterface.updateTipoMucosa(transientObject);
 	}
 
 	public TipoMucosa findTipoMucosaById(long id) {
-		return tipoMucosaService.findTipoMucosaById(id);
+		return tipoMucosaServiceInterface.findTipoMucosaById(id);
 	}
 
 	public List<TipoMucosa> getAllTipoMucosa() {
-		return tipoMucosaService.getAllTipoMucosa();
+		return tipoMucosaServiceInterface.getAllTipoMucosa();
 	}
 
 	public void deleteTipoMucosa(TipoMucosa persistentObject) {
-		tipoMucosaService.deleteTipoMucosa(persistentObject);
+		tipoMucosaServiceInterface.deleteTipoMucosa(persistentObject);
 	}
 
 	public void deleteTipoMucosa(long id) {
-		tipoMucosaService.deleteTipoMucosa(id);
+		tipoMucosaServiceInterface.deleteTipoMucosa(id);
 	}
-	
 
-	//Consulta--------------------------------------------------------------
+	// Consulta--------------------------------------------------------------
 	@Autowired
-	private ConsultaService  consultaService;
-		
+	private ConsultaServiceInterface consultaServiceInterface;
+
 	public Consulta saveConsulta(Consulta newInstance) {
-		return consultaService.saveConsulta(newInstance);
+		return consultaServiceInterface.saveConsulta(newInstance);
 	}
 
 	public Consulta updateConsulta(Consulta transientObject) {
-		return consultaService.updateConsulta(transientObject);
+		return consultaServiceInterface.updateConsulta(transientObject);
 	}
 
 	public Consulta findConsultaById(long id) {
-		return consultaService.findConsultaById(id);
+		return consultaServiceInterface.findConsultaById(id);
 	}
 
 	public List<Consulta> getAllConsulta() {
-		return consultaService.getAllConsulta();
+		return consultaServiceInterface.getAllConsulta();
 	}
 
 	public void deleteConsulta(Consulta persistentObject) {
-		consultaService.deleteConsulta(persistentObject);
+		consultaServiceInterface.deleteConsulta(persistentObject);
 	}
 
 	public void deleteConsulta(long id) {
-		consultaService.deleteConsulta(id);
+		consultaServiceInterface.deleteConsulta(id);
 	}
-	
 
-	//HistoricoMedicoPregresso--------------------------------------------------------------
+	// HistoricoMedicoPregresso--------------------------------------------------------------
 	@Autowired
-	private HistoricoMedicoPregressoService  historicoMedicoPregressoService;
-		
+	private HistoricoMedicoPregressoServiceInterface historicoMedicoPregressoServiceInterface;
+
 	public HistoricoMedicoPregresso saveHistoricoMedicoPregresso(HistoricoMedicoPregresso newInstance) {
-		return historicoMedicoPregressoService.saveHistoricoMedicoPregresso(newInstance);
+		return historicoMedicoPregressoServiceInterface.saveHistoricoMedicoPregresso(newInstance);
 	}
 
 	public HistoricoMedicoPregresso updateHistoricoMedicoPregresso(HistoricoMedicoPregresso transientObject) {
-		return historicoMedicoPregressoService.updateHistoricoMedicoPregresso(transientObject);
+		return historicoMedicoPregressoServiceInterface.updateHistoricoMedicoPregresso(transientObject);
 	}
 
 	public HistoricoMedicoPregresso findHistoricoMedicoPregressoById(long id) {
-		return historicoMedicoPregressoService.findHistoricoMedicoPregressoById(id);
+		return historicoMedicoPregressoServiceInterface.findHistoricoMedicoPregressoById(id);
 	}
 
 	public List<HistoricoMedicoPregresso> getAllHistoricoMedicoPregresso() {
-		return historicoMedicoPregressoService.getAllHistoricoMedicoPregresso();
+		return historicoMedicoPregressoServiceInterface.getAllHistoricoMedicoPregresso();
 	}
 
 	public void deleteHistoricoMedicoPregresso(HistoricoMedicoPregresso persistentObject) {
-		historicoMedicoPregressoService.deleteHistoricoMedicoPregresso(persistentObject);
+		historicoMedicoPregressoServiceInterface.deleteHistoricoMedicoPregresso(persistentObject);
 	}
 
 	public void deleteHistoricoMedicoPregresso(long id) {
-		historicoMedicoPregressoService.deleteHistoricoMedicoPregresso(id);
+		historicoMedicoPregressoServiceInterface.deleteHistoricoMedicoPregresso(id);
 	}
-	
 
-	//ExameComplementar--------------------------------------------------------------
+	// ExameComplementar--------------------------------------------------------------
 	@Autowired
-	private ExameComplementarService  exameComplementarService;
-		
+	private ExameComplementarServiceInterface exameComplementarServiceInterface;
+
 	public ExameComplementar saveExameComplementar(ExameComplementar newInstance) {
-		return exameComplementarService.saveExameComplementar(newInstance);
+		return exameComplementarServiceInterface.saveExameComplementar(newInstance);
 	}
 
 	public ExameComplementar updateExameComplementar(ExameComplementar transientObject) {
-		return exameComplementarService.updateExameComplementar(transientObject);
+		return exameComplementarServiceInterface.updateExameComplementar(transientObject);
 	}
 
 	public ExameComplementar findExameComplementarById(long id) {
-		return exameComplementarService.findExameComplementarById(id);
+		return exameComplementarServiceInterface.findExameComplementarById(id);
 	}
 
 	public List<ExameComplementar> getAllExameComplementar() {
-		return exameComplementarService.getAllExameComplementar();
+		return exameComplementarServiceInterface.getAllExameComplementar();
 	}
 
 	public void deleteExameComplementar(ExameComplementar persistentObject) {
-		exameComplementarService.deleteExameComplementar(persistentObject);
+		exameComplementarServiceInterface.deleteExameComplementar(persistentObject);
 	}
 
 	public void deleteExameComplementar(long id) {
-		exameComplementarService.deleteExameComplementar(id);
+		exameComplementarServiceInterface.deleteExameComplementar(id);
 	}
-	
 
-	//Parecer--------------------------------------------------------------
+	// Parecer--------------------------------------------------------------
 	@Autowired
-	private ParecerService  parecerService;
-		
+	private ParecerServiceInterface parecerServiceInterface;
+
 	public Parecer saveParecer(Parecer newInstance) {
-		return parecerService.saveParecer(newInstance);
+		return parecerServiceInterface.saveParecer(newInstance);
 	}
 
 	public Parecer updateParecer(Parecer transientObject) {
-		return parecerService.updateParecer(transientObject);
+		return parecerServiceInterface.updateParecer(transientObject);
 	}
 
 	public Parecer findParecerById(long id) {
-		return parecerService.findParecerById(id);
+		return parecerServiceInterface.findParecerById(id);
 	}
 
 	public List<Parecer> getAllParecer() {
-		return parecerService.getAllParecer();
+		return parecerServiceInterface.getAllParecer();
 	}
 
 	public void deleteParecer(Parecer persistentObject) {
-		parecerService.deleteParecer(persistentObject);
+		parecerServiceInterface.deleteParecer(persistentObject);
 	}
 
 	public void deleteParecer(long id) {
-		parecerService.deleteParecer(id);
+		parecerServiceInterface.deleteParecer(id);
 	}
-	
 
-	//Especialidade--------------------------------------------------------------
+	// Especialidade--------------------------------------------------------------
 	@Autowired
-	private EspecialidadeService  especialidadeService;
-		
+	private EspecialidadeServiceInterface especialidadeServiceInterface;
+
 	public Especialidade saveEspecialidade(Especialidade newInstance) {
-		return especialidadeService.saveEspecialidade(newInstance);
+		return especialidadeServiceInterface.saveEspecialidade(newInstance);
 	}
 
 	public Especialidade updateEspecialidade(Especialidade transientObject) {
-		return especialidadeService.updateEspecialidade(transientObject);
+		return especialidadeServiceInterface.updateEspecialidade(transientObject);
 	}
 
 	public Especialidade findEspecialidadeById(long id) {
-		return especialidadeService.findEspecialidadeById(id);
+		return especialidadeServiceInterface.findEspecialidadeById(id);
 	}
 
 	public List<Especialidade> getAllEspecialidade() {
-		return especialidadeService.getAllEspecialidade();
+		return especialidadeServiceInterface.getAllEspecialidade();
 	}
 
 	public void deleteEspecialidade(Especialidade persistentObject) {
-		especialidadeService.deleteEspecialidade(persistentObject);
+		especialidadeServiceInterface.deleteEspecialidade(persistentObject);
 	}
 
 	public void deleteEspecialidade(long id) {
-		especialidadeService.deleteEspecialidade(id);
+		especialidadeServiceInterface.deleteEspecialidade(id);
 	}
-	
 
-	//Agendamento--------------------------------------------------------------
+	// Agendamento--------------------------------------------------------------
 	@Autowired
-	private AgendamentoService  agendamentoService;
-		
+	private AgendamentoServiceInterface agendamentoServiceInterface;
+
 	public Agendamento saveAgendamento(Agendamento newInstance) {
-		return agendamentoService.saveAgendamento(newInstance);
+		return agendamentoServiceInterface.saveAgendamento(newInstance);
 	}
 
 	public Agendamento updateAgendamento(Agendamento transientObject) {
-		return agendamentoService.updateAgendamento(transientObject);
+		return agendamentoServiceInterface.updateAgendamento(transientObject);
 	}
 
 	public Agendamento findAgendamentoById(long id) {
-		return agendamentoService.findAgendamentoById(id);
+		return agendamentoServiceInterface.findAgendamentoById(id);
 	}
 
 	public List<Agendamento> getAllAgendamento() {
-		return agendamentoService.getAllAgendamento();
+		return agendamentoServiceInterface.getAllAgendamento();
 	}
 
 	public void deleteAgendamento(Agendamento persistentObject) {
-		agendamentoService.deleteAgendamento(persistentObject);
+		agendamentoServiceInterface.deleteAgendamento(persistentObject);
 	}
 
 	public void deleteAgendamento(long id) {
-		agendamentoService.deleteAgendamento(id);
+		agendamentoServiceInterface.deleteAgendamento(id);
 	}
-	
 
-	//TipoLinfonodos--------------------------------------------------------------
+	// TipoLinfonodos--------------------------------------------------------------
 	@Autowired
-	private TipoLinfonodosService  tipoLinfonodosService;
-		
+	private TipoLinfonodosServiceInterface tipoLinfonodosServiceInterface;
+
 	public TipoLinfonodos saveTipoLinfonodos(TipoLinfonodos newInstance) {
-		return tipoLinfonodosService.saveTipoLinfonodos(newInstance);
+		return tipoLinfonodosServiceInterface.saveTipoLinfonodos(newInstance);
 	}
 
 	public TipoLinfonodos updateTipoLinfonodos(TipoLinfonodos transientObject) {
-		return tipoLinfonodosService.updateTipoLinfonodos(transientObject);
+		return tipoLinfonodosServiceInterface.updateTipoLinfonodos(transientObject);
 	}
 
 	public TipoLinfonodos findTipoLinfonodosById(long id) {
-		return tipoLinfonodosService.findTipoLinfonodosById(id);
+		return tipoLinfonodosServiceInterface.findTipoLinfonodosById(id);
 	}
 
 	public List<TipoLinfonodos> getAllTipoLinfonodos() {
-		return tipoLinfonodosService.getAllTipoLinfonodos();
+		return tipoLinfonodosServiceInterface.getAllTipoLinfonodos();
 	}
 
 	public void deleteTipoLinfonodos(TipoLinfonodos persistentObject) {
-		tipoLinfonodosService.deleteTipoLinfonodos(persistentObject);
+		tipoLinfonodosServiceInterface.deleteTipoLinfonodos(persistentObject);
 	}
 
 	public void deleteTipoLinfonodos(long id) {
-		tipoLinfonodosService.deleteTipoLinfonodos(id);
+		tipoLinfonodosServiceInterface.deleteTipoLinfonodos(id);
 	}
-	
 
-	//Endereco--------------------------------------------------------------
+	// Endereco--------------------------------------------------------------
 	@Autowired
-	private EnderecoService  enderecoService;
-		
+	private EnderecoServiceInterface enderecoServiceInterface;
+
 	public Endereco saveEndereco(Endereco newInstance) {
-		return enderecoService.saveEndereco(newInstance);
+		return enderecoServiceInterface.saveEndereco(newInstance);
 	}
 
 	public Endereco updateEndereco(Endereco transientObject) {
-		return enderecoService.updateEndereco(transientObject);
+		return enderecoServiceInterface.updateEndereco(transientObject);
 	}
 
 	public Endereco findEnderecoById(long id) {
-		return enderecoService.findEnderecoById(id);
+		return enderecoServiceInterface.findEnderecoById(id);
 	}
 
 	public List<Endereco> getAllEndereco() {
-		return enderecoService.getAllEndereco();
+		return enderecoServiceInterface.getAllEndereco();
 	}
 
 	public void deleteEndereco(Endereco persistentObject) {
-		enderecoService.deleteEndereco(persistentObject);
+		enderecoServiceInterface.deleteEndereco(persistentObject);
 	}
 
 	public void deleteEndereco(long id) {
-		enderecoService.deleteEndereco(id);
+		enderecoServiceInterface.deleteEndereco(id);
 	}
-	
 
-	//AvaliacaoFisicoEspecial--------------------------------------------------------------
+	// AvaliacaoFisicoEspecial--------------------------------------------------------------
 	@Autowired
-	private AvaliacaoFisicoEspecialService  avaliacaoFisicoEspecialService;
-		
+	private AvaliacaoFisicoEspecialServiceInterface avaliacaoFisicoEspecialServiceInterface;
+
 	public AvaliacaoFisicoEspecial saveAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial newInstance) {
-		return avaliacaoFisicoEspecialService.saveAvaliacaoFisicoEspecial(newInstance);
+		return avaliacaoFisicoEspecialServiceInterface.saveAvaliacaoFisicoEspecial(newInstance);
 	}
 
 	public AvaliacaoFisicoEspecial updateAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial transientObject) {
-		return avaliacaoFisicoEspecialService.updateAvaliacaoFisicoEspecial(transientObject);
+		return avaliacaoFisicoEspecialServiceInterface.updateAvaliacaoFisicoEspecial(transientObject);
 	}
 
 	public AvaliacaoFisicoEspecial findAvaliacaoFisicoEspecialById(long id) {
-		return avaliacaoFisicoEspecialService.findAvaliacaoFisicoEspecialById(id);
+		return avaliacaoFisicoEspecialServiceInterface.findAvaliacaoFisicoEspecialById(id);
 	}
 
 	public List<AvaliacaoFisicoEspecial> getAllAvaliacaoFisicoEspecial() {
-		return avaliacaoFisicoEspecialService.getAllAvaliacaoFisicoEspecial();
+		return avaliacaoFisicoEspecialServiceInterface.getAllAvaliacaoFisicoEspecial();
 	}
 
 	public void deleteAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial persistentObject) {
-		avaliacaoFisicoEspecialService.deleteAvaliacaoFisicoEspecial(persistentObject);
+		avaliacaoFisicoEspecialServiceInterface.deleteAvaliacaoFisicoEspecial(persistentObject);
 	}
 
 	public void deleteAvaliacaoFisicoEspecial(long id) {
-		avaliacaoFisicoEspecialService.deleteAvaliacaoFisicoEspecial(id);
+		avaliacaoFisicoEspecialServiceInterface.deleteAvaliacaoFisicoEspecial(id);
 	}
-	
 
-	//NivelConsciencia--------------------------------------------------------------
+	// NivelConsciencia--------------------------------------------------------------
 	@Autowired
-	private NivelConscienciaService  nivelConscienciaService;
-		
+	private NivelConscienciaServiceInterface nivelConscienciaServiceInterface;
+
 	public NivelConsciencia saveNivelConsciencia(NivelConsciencia newInstance) {
-		return nivelConscienciaService.saveNivelConsciencia(newInstance);
+		return nivelConscienciaServiceInterface.saveNivelConsciencia(newInstance);
 	}
 
 	public NivelConsciencia updateNivelConsciencia(NivelConsciencia transientObject) {
-		return nivelConscienciaService.updateNivelConsciencia(transientObject);
+		return nivelConscienciaServiceInterface.updateNivelConsciencia(transientObject);
 	}
 
 	public NivelConsciencia findNivelConscienciaById(long id) {
-		return nivelConscienciaService.findNivelConscienciaById(id);
+		return nivelConscienciaServiceInterface.findNivelConscienciaById(id);
 	}
 
 	public List<NivelConsciencia> getAllNivelConsciencia() {
-		return nivelConscienciaService.getAllNivelConsciencia();
+		return nivelConscienciaServiceInterface.getAllNivelConsciencia();
 	}
 
 	public void deleteNivelConsciencia(NivelConsciencia persistentObject) {
-		nivelConscienciaService.deleteNivelConsciencia(persistentObject);
+		nivelConscienciaServiceInterface.deleteNivelConsciencia(persistentObject);
 	}
 
 	public void deleteNivelConsciencia(long id) {
-		nivelConscienciaService.deleteNivelConsciencia(id);
+		nivelConscienciaServiceInterface.deleteNivelConsciencia(id);
 	}
-	
 
-	//Estagiario--------------------------------------------------------------
+	// Estagiario--------------------------------------------------------------
 	@Autowired
-	private EstagiarioService  estagiarioService;
-		
+	private EstagiarioServiceInterface estagiarioServiceInterface;
+
 	public Estagiario saveEstagiario(Estagiario newInstance) {
-		return estagiarioService.saveEstagiario(newInstance);
+		return estagiarioServiceInterface.saveEstagiario(newInstance);
 	}
 
 	public Estagiario updateEstagiario(Estagiario transientObject) {
-		return estagiarioService.updateEstagiario(transientObject);
+		return estagiarioServiceInterface.updateEstagiario(transientObject);
 	}
 
 	public Estagiario findEstagiarioById(long id) {
-		return estagiarioService.findEstagiarioById(id);
+		return estagiarioServiceInterface.findEstagiarioById(id);
 	}
 
 	public List<Estagiario> getAllEstagiario() {
-		return estagiarioService.getAllEstagiario();
+		return estagiarioServiceInterface.getAllEstagiario();
 	}
 
 	public void deleteEstagiario(Estagiario persistentObject) {
-		estagiarioService.deleteEstagiario(persistentObject);
+		estagiarioServiceInterface.deleteEstagiario(persistentObject);
 	}
 
 	public void deleteEstagiario(long id) {
-		estagiarioService.deleteEstagiario(id);
+		estagiarioServiceInterface.deleteEstagiario(id);
 	}
-	
 
-	//TipoPostura--------------------------------------------------------------
+	// TipoPostura--------------------------------------------------------------
 	@Autowired
-	private TipoPosturaService  tipoPosturaService;
-		
+	private TipoPosturaServiceInterface tipoPosturaServiceInterface;
+
 	public TipoPostura saveTipoPostura(TipoPostura newInstance) {
-		return tipoPosturaService.saveTipoPostura(newInstance);
+		return tipoPosturaServiceInterface.saveTipoPostura(newInstance);
 	}
 
 	public TipoPostura updateTipoPostura(TipoPostura transientObject) {
-		return tipoPosturaService.updateTipoPostura(transientObject);
+		return tipoPosturaServiceInterface.updateTipoPostura(transientObject);
 	}
 
 	public TipoPostura findTipoPosturaById(long id) {
-		return tipoPosturaService.findTipoPosturaById(id);
+		return tipoPosturaServiceInterface.findTipoPosturaById(id);
 	}
 
 	public List<TipoPostura> getAllTipoPostura() {
-		return tipoPosturaService.getAllTipoPostura();
+		return tipoPosturaServiceInterface.getAllTipoPostura();
 	}
 
 	public void deleteTipoPostura(TipoPostura persistentObject) {
-		tipoPosturaService.deleteTipoPostura(persistentObject);
+		tipoPosturaServiceInterface.deleteTipoPostura(persistentObject);
 	}
 
 	public void deleteTipoPostura(long id) {
-		tipoPosturaService.deleteTipoPostura(id);
+		tipoPosturaServiceInterface.deleteTipoPostura(id);
 	}
-	
 
-	//Diretor--------------------------------------------------------------
+	// Diretor--------------------------------------------------------------
 	@Autowired
-	private DiretorService  diretorService;
-		
+	private DiretorServiceInterface diretorServiceInterface;
+
 	public Diretor saveDiretor(Diretor newInstance) {
-		return diretorService.saveDiretor(newInstance);
+		return diretorServiceInterface.saveDiretor(newInstance);
 	}
 
 	public Diretor updateDiretor(Diretor transientObject) {
-		return diretorService.updateDiretor(transientObject);
+		return diretorServiceInterface.updateDiretor(transientObject);
 	}
 
 	public Diretor findDiretorById(long id) {
-		return diretorService.findDiretorById(id);
+		return diretorServiceInterface.findDiretorById(id);
 	}
-	
+
 	public Diretor findDiretorByuserId(String userId) {
-		return diretorService.findDiretorByuserId(userId);
+		return diretorServiceInterface.findDiretorByuserId(userId);
 	}
 
 	public List<Diretor> getAllDiretor() {
-		return diretorService.getAllDiretor();
+		return diretorServiceInterface.getAllDiretor();
 	}
 
 	public void deleteDiretor(Diretor persistentObject) {
-		diretorService.deleteDiretor(persistentObject);
+		diretorServiceInterface.deleteDiretor(persistentObject);
 	}
 
 	public void deleteDiretor(long id) {
-		diretorService.deleteDiretor(id);
+		diretorServiceInterface.deleteDiretor(id);
 	}
-	
 
-	//Animal--------------------------------------------------------------
+	// Animal--------------------------------------------------------------
 	@Autowired
-	private AnimalService  animalService;
-		
+	private AnimalServiceInterface animalServiceInterface;
+
 	public Animal saveAnimal(Animal newInstance, String tutor_id) {
 		Tutor tutor = findTutorByuserId(tutor_id);
-		Animal animal = animalService.saveAnimal(newInstance);
+		Animal animal = animalServiceInterface.saveAnimal(newInstance);
 		tutor.getAnimal().add(animal);
 		updateTutor(tutor);
 		return animal;
 	}
 
 	public Animal updateAnimal(Animal transientObject) {
-		return animalService.updateAnimal(transientObject);
+		return animalServiceInterface.updateAnimal(transientObject);
 	}
 
 	public Animal findAnimalById(long id) {
-		return animalService.findAnimalById(id);
+		return animalServiceInterface.findAnimalById(id);
 	}
 
 	public List<Animal> getAllAnimal() {
-		return animalService.getAllAnimal();
+		return animalServiceInterface.getAllAnimal();
 	}
 
 	public void deleteAnimal(Animal persistentObject) {
-		animalService.deleteAnimal(persistentObject);
+		animalServiceInterface.deleteAnimal(persistentObject);
 	}
 
 	public void deleteAnimal(long id) {
-		animalService.deleteAnimal(id);
+		animalServiceInterface.deleteAnimal(id);
 	}
-	
 
-	//Especie--------------------------------------------------------------
+	// Especie--------------------------------------------------------------
 	@Autowired
-	private EspecieService  especieService;
-		
+	private EspecieServiceInterface especieServiceInterface;
+
 	public Especie saveEspecie(Especie newInstance) {
-		return especieService.saveEspecie(newInstance);
+		return especieServiceInterface.saveEspecie(newInstance);
 	}
 
 	public Especie updateEspecie(Especie transientObject) {
-		return especieService.updateEspecie(transientObject);
+		return especieServiceInterface.updateEspecie(transientObject);
 	}
 
 	public Especie findEspecieById(long id) {
-		return especieService.findEspecieById(id);
+		return especieServiceInterface.findEspecieById(id);
 	}
 
 	public List<Especie> getAllEspecie() {
-		return especieService.getAllEspecie();
+		return especieServiceInterface.getAllEspecie();
 	}
 
 	public void deleteEspecie(Especie persistentObject) {
-		especieService.deleteEspecie(persistentObject);
+		especieServiceInterface.deleteEspecie(persistentObject);
 	}
 
 	public void deleteEspecie(long id) {
-		especieService.deleteEspecie(id);
+		especieServiceInterface.deleteEspecie(id);
 	}
-	
 
-	//TipoTurgorCutaneo--------------------------------------------------------------
+	// TipoTurgorCutaneo--------------------------------------------------------------
 	@Autowired
-	private TipoTurgorCutaneoService  tipoTurgorCutaneoService;
-		
+	private TipoTurgorCutaneoServiceInterface tipoTurgorCutaneoServiceInterface;
+
 	public TipoTurgorCutaneo saveTipoTurgorCutaneo(TipoTurgorCutaneo newInstance) {
-		return tipoTurgorCutaneoService.saveTipoTurgorCutaneo(newInstance);
+		return tipoTurgorCutaneoServiceInterface.saveTipoTurgorCutaneo(newInstance);
 	}
 
 	public TipoTurgorCutaneo updateTipoTurgorCutaneo(TipoTurgorCutaneo transientObject) {
-		return tipoTurgorCutaneoService.updateTipoTurgorCutaneo(transientObject);
+		return tipoTurgorCutaneoServiceInterface.updateTipoTurgorCutaneo(transientObject);
 	}
 
 	public TipoTurgorCutaneo findTipoTurgorCutaneoById(long id) {
-		return tipoTurgorCutaneoService.findTipoTurgorCutaneoById(id);
+		return tipoTurgorCutaneoServiceInterface.findTipoTurgorCutaneoById(id);
 	}
 
 	public List<TipoTurgorCutaneo> getAllTipoTurgorCutaneo() {
-		return tipoTurgorCutaneoService.getAllTipoTurgorCutaneo();
+		return tipoTurgorCutaneoServiceInterface.getAllTipoTurgorCutaneo();
 	}
 
 	public void deleteTipoTurgorCutaneo(TipoTurgorCutaneo persistentObject) {
-		tipoTurgorCutaneoService.deleteTipoTurgorCutaneo(persistentObject);
+		tipoTurgorCutaneoServiceInterface.deleteTipoTurgorCutaneo(persistentObject);
 	}
 
 	public void deleteTipoTurgorCutaneo(long id) {
-		tipoTurgorCutaneoService.deleteTipoTurgorCutaneo(id);
+		tipoTurgorCutaneoServiceInterface.deleteTipoTurgorCutaneo(id);
 	}
-	
 
-	//ScoreCorporal--------------------------------------------------------------
+	// ScoreCorporal--------------------------------------------------------------
 	@Autowired
-	private ScoreCorporalService  scoreCorporalService;
-		
+	private ScoreCorporalServiceInterface scoreCorporalServiceInterface;
+
 	public ScoreCorporal saveScoreCorporal(ScoreCorporal newInstance) {
-		return scoreCorporalService.saveScoreCorporal(newInstance);
+		return scoreCorporalServiceInterface.saveScoreCorporal(newInstance);
 	}
 
 	public ScoreCorporal updateScoreCorporal(ScoreCorporal transientObject) {
-		return scoreCorporalService.updateScoreCorporal(transientObject);
+		return scoreCorporalServiceInterface.updateScoreCorporal(transientObject);
 	}
 
 	public ScoreCorporal findScoreCorporalById(long id) {
-		return scoreCorporalService.findScoreCorporalById(id);
+		return scoreCorporalServiceInterface.findScoreCorporalById(id);
 	}
 
 	public List<ScoreCorporal> getAllScoreCorporal() {
-		return scoreCorporalService.getAllScoreCorporal();
+		return scoreCorporalServiceInterface.getAllScoreCorporal();
 	}
 
 	public void deleteScoreCorporal(ScoreCorporal persistentObject) {
-		scoreCorporalService.deleteScoreCorporal(persistentObject);
+		scoreCorporalServiceInterface.deleteScoreCorporal(persistentObject);
 	}
 
 	public void deleteScoreCorporal(long id) {
-		scoreCorporalService.deleteScoreCorporal(id);
+		scoreCorporalServiceInterface.deleteScoreCorporal(id);
 	}
-
 
 	// Area--------------------------------------------------------------
 	@Autowired
-	private AreaService AreaService;
+	private AreaServiceInterface areaServiceInterface;
 
 	public Area saveArea(Area newInstance) {
-		return AreaService.saveArea(newInstance);
+		return areaServiceInterface.saveArea(newInstance);
 	}
 
 	public Area updateArea(Area transientObject) {
-		return AreaService.updateArea(transientObject);
+		return areaServiceInterface.updateArea(transientObject);
 	}
 
 	public Area findAreaById(Long id) {
-		return AreaService.findAreaById(id);
+		return areaServiceInterface.findAreaById(id);
 	}
 
 	public List<Area> getAllArea() {
-		return AreaService.getAllArea();
+		return areaServiceInterface.getAllArea();
 	}
 
 	public void deleteArea(Area persistentObject) {
-		AreaService.deleteArea(persistentObject);
+		areaServiceInterface.deleteArea(persistentObject);
 	}
 
 	public void deleteArea(long id) {
-		AreaService.deleteArea(id);
+		areaServiceInterface.deleteArea(id);
 	}
 
 	// CampoLaudo--------------------------------------------------------------
 	@Autowired
-	CampoLaudoService CampoLaudoService;
+	CampoLaudoServiceInterface campoLaudoServiceInterface;
 
 	public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
-		return CampoLaudoService.saveCampoLaudo(newInstance);
+		return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
 	}
 
 	public CampoLaudo updateCampoLaudo(CampoLaudo transientObject) {
-		return CampoLaudoService.updateCampoLaudo(transientObject);
+		return campoLaudoServiceInterface.updateCampoLaudo(transientObject);
 	}
 
 	public CampoLaudo findCampoLaudoById(Long id) {
-		return CampoLaudoService.findCampoLaudoById(id);
+		return campoLaudoServiceInterface.findCampoLaudoById(id);
 	}
 
 	public List<CampoLaudo> getAllCampoLaudo() {
-		return CampoLaudoService.getAllCampoLaudo();
+		return campoLaudoServiceInterface.getAllCampoLaudo();
 	}
 
 	public void deleteCampoLaudo(CampoLaudo persistentObject) {
-		CampoLaudoService.deleteCampoLaudo(persistentObject);
+		campoLaudoServiceInterface.deleteCampoLaudo(persistentObject);
 	}
 
 	public void deleteCampoLaudo(long id) {
-		CampoLaudoService.deleteCampoLaudo(id);
+		campoLaudoServiceInterface.deleteCampoLaudo(id);
 	}
 
 	// Etapa--------------------------------------------------------------
 	@Autowired
-	EtapaService EtapaService;
+	EtapaServiceInterface etapaServiceInterface;
 
 	public Etapa saveEtapa(Etapa newInstance) {
-		return EtapaService.saveEtapa(newInstance);
+		return etapaServiceInterface.saveEtapa(newInstance);
 	}
 
 	public Etapa updateEtapa(Etapa transientObject) {
-		return EtapaService.updateEtapa(transientObject);
+		return etapaServiceInterface.updateEtapa(transientObject);
 	}
 
 	public Etapa findEtapaById(Long id) {
-		return EtapaService.findEtapaById(id);
+		return etapaServiceInterface.findEtapaById(id);
 	}
 
 	public List<Etapa> getAllEtapa() {
-		return EtapaService.getAllEtapa();
+		return etapaServiceInterface.getAllEtapa();
 	}
 
 	public void deleteEtapa(Etapa persistentObject) {
-		EtapaService.deleteEtapa(persistentObject);
+		etapaServiceInterface.deleteEtapa(persistentObject);
 	}
 
 	public void deleteEtapa(long id) {
-		EtapaService.deleteEtapa(id);
+		etapaServiceInterface.deleteEtapa(id);
 	}
 
 	// ExameMicroscopia--------------------------------------------------------------
 	@Autowired
-	ExameMicroscopicoService ExameMicroscopicoService;
+	ExameMicroscopicoServiceInterface exameMicroscopicoServiceInterface;
 
 	public ExameMicroscopico saveExameMicroscopico(ExameMicroscopico newInstance) {
-		return ExameMicroscopicoService.saveExameMicroscopico(newInstance);
+		return exameMicroscopicoServiceInterface.saveExameMicroscopico(newInstance);
 	}
 
 	public List<ExameMicroscopico> getAllExameMicroscopico() {
-		return ExameMicroscopicoService.getAllExameMicroscopico();
+		return exameMicroscopicoServiceInterface.getAllExameMicroscopico();
 	}
 
 	public ExameMicroscopico updateExameMicroscopico(ExameMicroscopico transientObject) {
-		return ExameMicroscopicoService.updateExameMicroscopico(transientObject);
+		return exameMicroscopicoServiceInterface.updateExameMicroscopico(transientObject);
 	}
 
 	public ExameMicroscopico findExameMicroscopicoById(long id) {
-		return ExameMicroscopicoService.findExameMicroscopicoById(id);
+		return exameMicroscopicoServiceInterface.findExameMicroscopicoById(id);
 	}
 
 	public void deleteExameMicroscopico(long id) {
-		ExameMicroscopicoService.deleteExameMicroscopico(id);
+		exameMicroscopicoServiceInterface.deleteExameMicroscopico(id);
 	}
 
 	public void deleteExameMicroscopico(ExameMicroscopico persistentObject) {
-		ExameMicroscopicoService.deleteExameMicroscopico(persistentObject);
+		exameMicroscopicoServiceInterface.deleteExameMicroscopico(persistentObject);
 	}
 
 	// FichaSolicitacaoServico--------------------------------------------------------------
 
 	@Autowired
-	FichaSolicitacaoServicoService FichaSolicitacaoServicoService;
+	FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
 
 	public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
-		return FichaSolicitacaoServicoService.saveFichaSolicitacaoServico(newInstance);
+		return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
 	}
 
 	public FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServico transientObject) {
-		return FichaSolicitacaoServicoService.updateFichaSolicitacaoServico(transientObject);
+		return fichaSolicitacaoServicoServiceInterface.updateFichaSolicitacaoServico(transientObject);
 	}
 
 	public FichaSolicitacaoServico findFichaSolicitacaoServicoById(Long id) {
-		return FichaSolicitacaoServicoService.findFichaSolicitacaoServicoById(id);
+		return fichaSolicitacaoServicoServiceInterface.findFichaSolicitacaoServicoById(id);
 	}
 
 	public List<FichaSolicitacaoServico> getAllFichaSolicitacaoServico() {
-		return FichaSolicitacaoServicoService.getAllFichaSolicitacaoServico();
+		return fichaSolicitacaoServicoServiceInterface.getAllFichaSolicitacaoServico();
 	}
 
 	public void deleteFichaSolicitacaoServico(FichaSolicitacaoServico persistentObject) {
-		FichaSolicitacaoServicoService.deleteFichaSolicitacaoServico(persistentObject);
+		fichaSolicitacaoServicoServiceInterface.deleteFichaSolicitacaoServico(persistentObject);
 	}
 
 	public void deleteFichaSolicitacaoServico(long id) {
-		FichaSolicitacaoServicoService.deleteFichaSolicitacaoServico(id);
+		fichaSolicitacaoServicoServiceInterface.deleteFichaSolicitacaoServico(id);
 	}
 
 	// Foto--------------------------------------------------------------
 
 	@Autowired
 
-	FotoService FotoService;
+	FotoServiceInterface fotoServiceInterface;
 
 	public Foto saveFoto(Foto newInstance) {
-		return FotoService.saveFoto(newInstance);
+		return fotoServiceInterface.saveFoto(newInstance);
 	}
 
 	public Foto updateFoto(Foto transientObject) {
-		return FotoService.updateFoto(transientObject);
+		return fotoServiceInterface.updateFoto(transientObject);
 	}
 
 	public Foto findFotoById(Long id) {
-		return FotoService.findFotoById(id);
+		return fotoServiceInterface.findFotoById(id);
 	}
 
 	public List<Foto> getAllFoto() {
-		return FotoService.getAllFoto();
+		return fotoServiceInterface.getAllFoto();
 	}
 
 	public void deleteFoto(Foto persistentObject) {
-		FotoService.deleteFoto(persistentObject);
+		fotoServiceInterface.deleteFoto(persistentObject);
 	}
 
 	public void deleteFoto(long id) {
-		FotoService.deleteFoto(id);
+		fotoServiceInterface.deleteFoto(id);
 	}
 
 	// Instituicao--------------------------------------------------------------
 
 	@Autowired
-	InstituicaoService InstituicaoService;
+	InstituicaoServiceInterface instituicaoServiceInterface;
 
 	public Instituicao saveInstituicao(Instituicao newInstance) {
-		return InstituicaoService.saveInstituicao(newInstance);
+		return instituicaoServiceInterface.saveInstituicao(newInstance);
 	}
 
 	public Instituicao updateInstituicao(Instituicao transientObject) {
-		return InstituicaoService.updateInstituicao(transientObject);
+		return instituicaoServiceInterface.updateInstituicao(transientObject);
 	}
 
 	public Instituicao findInstituicaoById(long id) {
-		return InstituicaoService.findInstituicaoById(id);
+		return instituicaoServiceInterface.findInstituicaoById(id);
 	}
 
 	public List<Instituicao> getAllInstituicao() {
-		return InstituicaoService.getAllInstituicao();
+		return instituicaoServiceInterface.getAllInstituicao();
 	}
 
 	public void deleteInstituicao(Instituicao persistentObject) {
-		InstituicaoService.deleteInstituicao(persistentObject);
+		instituicaoServiceInterface.deleteInstituicao(persistentObject);
 	}
 
 	public void deleteInstituicao(long id) {
-		InstituicaoService.deleteInstituicao(id);
+		instituicaoServiceInterface.deleteInstituicao(id);
 	}
 
 	// LaudoMicroscopia--------------------------------------------------------------
 
 	@Autowired
-	LaudoMicroscopiaService LaudoMicroscopiaService;
+	LaudoMicroscopiaServiceInterface laudoMicroscopiaServiceInterface;
 
 	public LaudoMicroscopia saveLaudoMicroscopia(LaudoMicroscopia newInstance) {
-		return LaudoMicroscopiaService.saveLaudoMicroscopia(newInstance);
+		return laudoMicroscopiaServiceInterface.saveLaudoMicroscopia(newInstance);
 	}
 
 	public LaudoMicroscopia updateLaudoMicroscopia(LaudoMicroscopia transientObject) {
-		return LaudoMicroscopiaService.updateLaudoMicroscopia(transientObject);
+		return laudoMicroscopiaServiceInterface.updateLaudoMicroscopia(transientObject);
 	}
 
 	public LaudoMicroscopia findLaudoMicroscopiaById(long id) {
-		return LaudoMicroscopiaService.findLaudoMicroscopiaById(id);
+		return laudoMicroscopiaServiceInterface.findLaudoMicroscopiaById(id);
 	}
 
 	public List<LaudoMicroscopia> getAllLaudoMicroscopia() {
-		return LaudoMicroscopiaService.getAllLaudoMicroscopia();
+		return laudoMicroscopiaServiceInterface.getAllLaudoMicroscopia();
 	}
 
 	public void deleteLaudoMicroscopia(LaudoMicroscopia persistentObject) {
-		LaudoMicroscopiaService.deleteLaudoMicroscopia(persistentObject);
+		laudoMicroscopiaServiceInterface.deleteLaudoMicroscopia(persistentObject);
 	}
 
 	public void deleteLaudoMicroscopia(long id) {
-		LaudoMicroscopiaService.deleteLaudoMicroscopia(id);
+		laudoMicroscopiaServiceInterface.deleteLaudoMicroscopia(id);
 	}
 
 	// LaudoNecropsia--------------------------------------------------------------
 	@Autowired
-	LaudoNecropsiaService LaudoNecropsiaService;
+	LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
 
 	public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
-		return LaudoNecropsiaService.saveLaudoNecropsia(newInstance);
+		return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
 	}
 
 	public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsia transientObject) {
-		return LaudoNecropsiaService.updateLaudoNecropsia(transientObject);
+		return laudoNecropsiaServiceInterfcae.updateLaudoNecropsia(transientObject);
 	}
 
 	public LaudoNecropsia findLaudoNecropsiaById(long id) {
-		return LaudoNecropsiaService.findLaudoNecropsiaById(id);
+		return laudoNecropsiaServiceInterfcae.findLaudoNecropsiaById(id);
 	}
 
 	public List<LaudoNecropsia> getAllLaudoNecropsia() {
-		return LaudoNecropsiaService.getAllLaudoNecropsia();
+		return laudoNecropsiaServiceInterfcae.getAllLaudoNecropsia();
 	}
 
 	public void deleteLaudoNecropsia(LaudoNecropsia persistentObject) {
-		LaudoNecropsiaService.deleteLaudoNecropsia(persistentObject);
+		laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(persistentObject);
 	}
 
 	public void deleteLaudoNecropsia(long id) {
-		LaudoNecropsiaService.deleteLaudoNecropsia(id);
+		laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(id);
 	}
 
 	// LivroRegistro--------------------------------------------------------------
 	@Autowired
-	LivroRegistroService LivroRegistroService;
+	LivroRegistroServiceInterface livroRegistroServiceInterface;
 
 	public LivroRegistro saveLivroRegistro(LivroRegistro newInstance) {
-		return LivroRegistroService.saveLivroRegistro(newInstance);
+		return livroRegistroServiceInterface.saveLivroRegistro(newInstance);
 	}
 
 	public LivroRegistro updateLivroRegistro(LivroRegistro transientObject) {
-		return LivroRegistroService.updateLivroRegistro(transientObject);
+		return livroRegistroServiceInterface.updateLivroRegistro(transientObject);
 	}
 
 	public LivroRegistro findLivroRegistroById(long id) {
-		return LivroRegistroService.findLivroRegistroById(id);
+		return livroRegistroServiceInterface.findLivroRegistroById(id);
 	}
 
 	public List<LivroRegistro> getAllLivroRegistro() {
-		return LivroRegistroService.getAllLivroRegistro();
+		return livroRegistroServiceInterface.getAllLivroRegistro();
 	}
 
 	public void deleteLivroRegistro(LivroRegistro persistentObject) {
-		LivroRegistroService.deleteLivroRegistro(persistentObject);
+		livroRegistroServiceInterface.deleteLivroRegistro(persistentObject);
 	}
 
 	public void deleteLivroRegistro(long id) {
-		LivroRegistroService.deleteLivroRegistro(id);
+		livroRegistroServiceInterface.deleteLivroRegistro(id);
 	}
 
 	// MaterialColetado--------------------------------------------------------------
 	@Autowired
 
-	MaterialColetadoService MaterialColetadoService;
+	MaterialColetadoServiceInterface materialColetadoServiceInterface;
 
 	public MaterialColetado saveMaterialColetado(MaterialColetado newInstance) {
-		return MaterialColetadoService.saveMaterialColetado(newInstance);
+		return materialColetadoServiceInterface.saveMaterialColetado(newInstance);
 	}
 
 	public MaterialColetado updateMaterialColetado(MaterialColetado transientObject) {
-		return MaterialColetadoService.updateMaterialColetado(transientObject);
+		return materialColetadoServiceInterface.updateMaterialColetado(transientObject);
 	}
 
 	public MaterialColetado findMaterialColetadoById(long id) {
-		return MaterialColetadoService.findMaterialColetadoById(id);
+		return materialColetadoServiceInterface.findMaterialColetadoById(id);
 	}
 
 	public List<MaterialColetado> getAllMaterialColetado() {
-		return MaterialColetadoService.getAllMaterialColetado();
+		return materialColetadoServiceInterface.getAllMaterialColetado();
 	}
 
 	public void deleteMaterialColetado(MaterialColetado persistentObject) {
-		MaterialColetadoService.deleteMaterialColetado(persistentObject);
+		materialColetadoServiceInterface.deleteMaterialColetado(persistentObject);
 	}
 
 	public void deleteMaterialColetado(long id) {
-		MaterialColetadoService.deleteMaterialColetado(id);
+		materialColetadoServiceInterface.deleteMaterialColetado(id);
 	}
 
 	// Orgao--------------------------------------------------------------
 	@Autowired
 
-	OrgaoService OrgaoService;
+	OrgaoServiceInterface OrgaoServiceInterface;
 
 	public Orgao saveOrgao(Orgao newInstance) {
-		return OrgaoService.saveOrgao(newInstance);
+		return OrgaoServiceInterface.saveOrgao(newInstance);
 	}
 
 	public Orgao updateOrgao(Orgao transientObject) {
-		return OrgaoService.updateOrgao(transientObject);
+		return OrgaoServiceInterface.updateOrgao(transientObject);
 	}
 
 	public Orgao findOrgaoById(long id) {
-		return OrgaoService.findOrgaoById(id);
+		return OrgaoServiceInterface.findOrgaoById(id);
 	}
 
 	public List<Orgao> getAllOrgao() {
-		return OrgaoService.getAllOrgao();
+		return OrgaoServiceInterface.getAllOrgao();
 	}
 
 	public void deleteOrgao(Orgao persistentObject) {
-		OrgaoService.deleteOrgao(persistentObject);
+		OrgaoServiceInterface.deleteOrgao(persistentObject);
 	}
 
 	public void deleteOrgao(long id) {
-		OrgaoService.deleteOrgao(id);
+		OrgaoServiceInterface.deleteOrgao(id);
 	}
 
 	// Rotina--------------------------------------------------------------
 	@Autowired
 
-	RotinaService  RotinaService;
+	RotinaServiceInterface RotinaServiceInterface;
 
 	public Rotina saveRotina(Rotina newInstance) {
-		return RotinaService.saveRotina(newInstance);
+		return RotinaServiceInterface.saveRotina(newInstance);
 	}
 
 	public Rotina updateRotina(Rotina transientObject) {
-		return RotinaService.updateRotina(transientObject);
+		return RotinaServiceInterface.updateRotina(transientObject);
 	}
 
 	public Rotina findRotinaById(long id) {
-		return RotinaService.findRotinaById(id);
+		return RotinaServiceInterface.findRotinaById(id);
 	}
 
 	public List<Rotina> getAllRotina() {
-		return RotinaService.getAllRotina();
+		return RotinaServiceInterface.getAllRotina();
 	}
 
 	public void deleteRotina(Rotina persistentObject) {
-		RotinaService.deleteRotina(persistentObject);
+		RotinaServiceInterface.deleteRotina(persistentObject);
 	}
 
 	public void deleteRotina(long id) {
-		RotinaService.deleteRotina(id);
+		RotinaServiceInterface.deleteRotina(id);
 	}
 
 }
-
-	

@@ -35,7 +35,7 @@ public class AvaliacaoFisicoEspecialService implements AvaliacaoFisicoEspecialSe
 	}
 	
 	public void deleteAvaliacaoFisicoEspecial(long id){
-		AvaliacaoFisicoEspecial obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist AvaliacaoFisicoEspecial with id = " + id));
+		AvaliacaoFisicoEspecial obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "AvaliacaoFisicoEspecial"));
 		repository.delete(obj);
 	}	
 	

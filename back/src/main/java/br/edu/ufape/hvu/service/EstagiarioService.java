@@ -35,7 +35,7 @@ public class EstagiarioService implements EstagiarioServiceInterface {
 	}
 	
 	public void deleteEstagiario(long id){
-		Estagiario obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Estagiario with id = " + id));
+		Estagiario obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Estagiario"));
 		repository.delete(obj);
 	}	
 	

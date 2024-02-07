@@ -9,18 +9,46 @@ function FormularioLogin() {
 
   const router = useRouter();
 
+  const [errors, setErrors] = useState({
+    login: "",
+    senha:""
+  });
+
   const [login, setLogin] = useState("");
   const [senha, setSenha] = useState("");
 
-  const logged = async (e) => {
-      e.preventDefault();
-      try{
-        await postLogin(login, senha);
-        router.push('/getAllAnimalTutor');
-      }catch(error){
-        console.log(error);
-      }  
+    const logged = async (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+            try{
+                await postLogin(login, senha);
+                router.push('/getAllAnimalTutor');
+            }catch(error){
+                console.log(error);
+            }  
+        } 
     }
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!login) {
+            newErrors.login = "Email é obrigatório";
+        } 
+        // else if (login != ){
+        //     newErrors.login = "Email inválido. Digite novamente.";
+        // }
+        if (!senha) {
+            newErrors.senha = "Senha é obrigatória";
+        } 
+        // else if (senha != ) {
+        //     newErrors.senha = "Senha incorreta. Digite Novamente.";
+        // }
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+    };
 
     return (
         <>
@@ -29,13 +57,13 @@ function FormularioLogin() {
                 <label htmlFor="exampleInputEmail1">E-mail</label>
                 <input 
                     type="email" 
-                    className="form-control" 
+                    className={`form-control ${errors.login ? "is-invalid" : ""}`}
                     id="exampleInputEmail1" 
                     aria-describedby="emailHelp" 
                     placeholder="Seu email"
                     name="email"
                     value={login} 
-                    onChange={(e) => setLogin( e.target.value)} 
+                    onChange={(e) => setLogin( e.target.value)}
                     required 
                 />
             </div>
@@ -43,12 +71,13 @@ function FormularioLogin() {
                 <label htmlFor="exampleInputPassword1">Senha</label>
                 <input 
                     type="password" 
-                    className="form-control" 
+                    className={`form-control ${errors.senha ? "is-invalid" : ""}`}
                     id="exampleInputPassword1" 
-                    placeholder="Senha" 
+                    placeholder="Sua senha" 
                     name="senha"
                     value={senha} 
                     onChange={(e) => setSenha( e.target.value)}
+                    errors={errors}
                     required
                 />
             </div>

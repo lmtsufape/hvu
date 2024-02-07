@@ -35,7 +35,7 @@ public class ConsultaService implements ConsultaServiceInterface {
 	}
 	
 	public void deleteConsulta(long id){
-		Consulta obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Consulta with id = " + id));
+		Consulta obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Consulta"));
 		repository.delete(obj);
 	}	
 	

@@ -45,7 +45,7 @@ public class RacaService implements RacaServiceInterface {
 	}
 	
 	public void deleteRaca(long id){
-		Raca obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Raca with id = " + id));
+		Raca obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Raca"));
 		repository.delete(obj);
 	}	
 	

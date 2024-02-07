@@ -13,10 +13,12 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class VagaRequest  {
-	private LocalDateTime dataHora;
-	private EspecialidadeRequest especialidade; 
-	private ConsultaRequest consulta;
 	private long id;
+	private LocalDateTime dataHora;
+	private String status;
+	private EspecialidadeRequest especialidade; 
+	private ConsultaRequest consulta; 
+	private TipoConsultaRequest tipoConsulta; 
 
 
 	public Vaga convertToEntity() {

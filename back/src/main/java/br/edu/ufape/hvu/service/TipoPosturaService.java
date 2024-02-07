@@ -35,7 +35,7 @@ public class TipoPosturaService implements TipoPosturaServiceInterface {
 	}
 	
 	public void deleteTipoPostura(long id){
-		TipoPostura obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist TipoPostura with id = " + id));
+		TipoPostura obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "TipoPostura"));
 		repository.delete(obj);
 	}	
 	

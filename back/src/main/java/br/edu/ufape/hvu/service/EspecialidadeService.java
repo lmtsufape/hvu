@@ -35,7 +35,7 @@ public class EspecialidadeService implements EspecialidadeServiceInterface {
 	}
 	
 	public void deleteEspecialidade(long id){
-		Especialidade obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Especialidade with id = " + id));
+		Especialidade obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Especialidade"));
 		repository.delete(obj);
 	}	
 	

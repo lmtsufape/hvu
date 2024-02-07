@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.service;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Instituicao;
 import br.edu.ufape.hvu.model.Medico;
 
 public interface MedicoServiceInterface {
@@ -11,6 +12,8 @@ public interface MedicoServiceInterface {
 	void deleteMedico(Medico u);
 	void deleteMedico(long id);
 	List<Medico> getAllMedico();
+	Medico findMedicoByuserId(String userId);
+	List<Medico> findByInstituicao(Instituicao instituicao);
     
     
 

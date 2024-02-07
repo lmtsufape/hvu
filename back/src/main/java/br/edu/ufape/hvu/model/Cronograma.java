@@ -32,6 +32,7 @@ public  class Cronograma  {
 	private long id;
 	private String nome;
 	private String rotina;
+	private Double tempoAtendimento; 
 	@ManyToOne
 	@ToString.Exclude
 	private Medico medico; 

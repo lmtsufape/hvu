@@ -62,14 +62,14 @@ export function AgendarGreenButton() {
 }
 
 export function AcessarGreenButton() {
-    const router = useRouter();
+    // const router = useRouter();
 
-    const handleAcessarClick = () => {
-        router.push(`/perfildoanimal/${animal.id}`);
-    };
+    // const handleAcessarClick = () => {
+    //     router.push(`/perfildoanimal/${animal.id}`);
+    // };
 
     return (
-        <button className={styles.green_button} onClick={handleAcessarClick}>
+        <button className={styles.green_button} /*onClick={handleAcessarClick}*/>
             {text_green_button.acessar}
         </button>
     );

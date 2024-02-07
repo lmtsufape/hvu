@@ -33,10 +33,6 @@ public  class TipoConsulta  {
 	@OneToMany
 	@JoinColumn(name = "tipoConsulta_id")
 	@ToString.Exclude
-	private List<Agendamento> agendamento; 
-	@OneToMany
-	@JoinColumn(name = "tipoConsulta_id")
-	@ToString.Exclude
-	private List<Vaga> vaga; 
+	private List<Cronograma> cronograma; 
 
 }

@@ -35,7 +35,7 @@ public class TipoLinfonodosService implements TipoLinfonodosServiceInterface {
 	}
 	
 	public void deleteTipoLinfonodos(long id){
-		TipoLinfonodos obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist TipoLinfonodos with id = " + id));
+		TipoLinfonodos obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "TipoLinfonodos"));
 		repository.delete(obj);
 	}	
 	

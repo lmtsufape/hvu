@@ -14,7 +14,7 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
 public  class AnimalResponse  {
-	private Long id;
+	private long id;
 	private String nome;
 	private String sexo;
 	private String alergias;

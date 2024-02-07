@@ -35,7 +35,7 @@ public class EnderecoService implements EnderecoServiceInterface {
 	}
 	
 	public void deleteEndereco(long id){
-		Endereco obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Endereco with id = " + id));
+		Endereco obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Endereco"));
 		repository.delete(obj);
 	}	
 	

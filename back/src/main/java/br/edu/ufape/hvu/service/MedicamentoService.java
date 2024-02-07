@@ -35,7 +35,7 @@ public class MedicamentoService implements MedicamentoServiceInterface {
 	}
 	
 	public void deleteMedicamento(long id){
-		Medicamento obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Medicamento with id = " + id));
+		Medicamento obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Medicamento"));
 		repository.delete(obj);
 	}	
 	

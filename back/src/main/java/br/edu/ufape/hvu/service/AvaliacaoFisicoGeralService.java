@@ -35,7 +35,7 @@ public class AvaliacaoFisicoGeralService implements AvaliacaoFisicoGeralServiceI
 	}
 	
 	public void deleteAvaliacaoFisicoGeral(long id){
-		AvaliacaoFisicoGeral obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist AvaliacaoFisicoGeral with id = " + id));
+		AvaliacaoFisicoGeral obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "AvaliacaoFisicoGeral"));
 		repository.delete(obj);
 	}	
 	

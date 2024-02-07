@@ -60,7 +60,7 @@ public class TutorService implements TutorServiceInterface {
 	}
 	
 	public void deleteTutor(long id){
-		Tutor obj = repository.findById(id).orElseThrow( () -> new RuntimeException("It doesn't exist Tutor with id = " + id));
+		Tutor obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Tutor"));
 		repository.delete(obj);
 	}	
 	
