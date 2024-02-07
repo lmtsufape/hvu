@@ -3,16 +3,18 @@
 .white_button {
     width: 180px;
     height: 48px;
-    padding: 10px;
     border-radius: 10px;
-    border: 1px solid #327053;
-    gap: 1px;
-    color: #327053;
+    border: 1px solid #39805F;
+    color: #39805F;
     background-color: white;
-    font-size: 16px;
     font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+
 }
 
 .white_button:hover {
-    background-color: #d8cece;
+    background-color: #f3f3f37b;
 }

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./formularioagendarretorno.module.css"
 import { FinalizarGreenButton } from "../GreenButton";
-import { VoltarWhiteButton } from "../WhiteButton";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ptBR from 'date-fns/locale/pt-BR';
@@ -111,8 +110,7 @@ function AgendarConsulta(){
              
   
         <div className={styles.continuarbotao}>
-          <VoltarWhiteButton/>
-            <FinalizarGreenButton/>
+          <FinalizarGreenButton/>
         </div>
       </form>
     </div>

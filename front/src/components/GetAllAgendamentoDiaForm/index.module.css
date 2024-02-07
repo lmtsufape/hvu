@@ -7,48 +7,70 @@
 
 .container {
     width: 1200px;
-    height: 900px;
+    min-height: 900px;
     margin-top: 42px;
     display: flex;
     flex-direction: column;
 }
 
-.header {
-    width: 1200px;
-    height: 42.58px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header_item1 {
+.container h1 {
     font-family: 'Poppins', sans-serif;
     font-size: 24px;
     font-weight: 700;
     line-height: 36px;
     letter-spacing: 0em;
+    text-align: center;
+    margin-top: 56px;
 }
 
-.box {
+.cadendar_container {
+    width: 1200px;
+    height: 42.58px;
+    margin-top: 56px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 60px;
 }
 
-.itens_box_1 {
+.cadendar_box {
     display: flex;
     gap: 21.1px;
     align-items: center;
 }
 
-.itens_box_2 {
+.button_container {
+    border: 1px solid blue;
+    width: 1200px;
+    margin-top: 56px;
     display: flex;
-    gap: 24px;
+    justify-content: space-between;
     align-items: center;
 }
 
-.tabela {
+.button_box {
+    display: flex;
+    gap: 24px;
+}
+
+.button_box button {
+    width: 197.12px;
+    height: 56px;
+    border-radius: 10px;
+    border: 1px solid #39805F;
+    background-color: white;
+    color: #39805F;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+}
+
+.button_box button:hover {
+    background-color:#f3f3f37b;
+}
+
+.table {
     width: 1200px;
     height: 588px;
     margin-top: 50px;
@@ -56,7 +78,8 @@
     border-radius: 12px;
 }
 
-.coluna_l1 {
+.column1_line1 {
+    border: 1px solid brown;
     display: flex;
     flex-direction: column;
     float: left;
@@ -64,18 +87,21 @@
     gap: -10px;
 }
 
-.coluna1 {
-    width: 80px;
-    height: 123px;
+.line1 {
+    border: 1px solid yellow;
+    width: 200px;
+    height: 100px;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 600;
     line-height: 30px;
     letter-spacing: 0em;
-    color: #606060;
-    display: flex;
-    justify-content: center;
-    align-items: top;
 }
 
 .linha1 {
@@ -103,7 +129,7 @@
     border: none;
 }
 
-.button_container {
+.button_button {
     width: 131px;
     height: 65px;
     display: flex;
