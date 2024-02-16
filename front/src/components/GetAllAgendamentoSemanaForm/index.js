@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styles from "./index.module.css";
 import dateStyles from "../Date/index.module.css";
-import NovoAgendamentoButton from "../NovoAgendamentoButton";
 import Filter from "../GetAgendamentosFilter";
 import CalendarGrennIcon from '../CalendarGreenIcon';
 import SearchBar from '../SearchBar';
 import { DataCompleta } from "../Date";
+import VoltarButton from '../VoltarButton';
 
 function GetAllAgendamentosSemanaForm() {
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
@@ -27,20 +27,24 @@ function GetAllAgendamentosSemanaForm() {
     <div className={styles.pagina}>
       <div className={styles.container}>
 
-        <div className={styles.header}>
-          <div className={styles.header_item1}>Agendamentos da semana</div>
+        < VoltarButton />
+        <h1>Agendamentos da semana</h1>
+        
+        <div className={styles.cadendar_container}>
+          <div className={styles.cadendar_box}>
+            <div className={dateStyles.data_completa}>{DataCompleta(dataSelecionada)}</div>
+            <CalendarGrennIcon onDataSelecionada={handleDataSelecionada} />
+          </div>          
           <Filter />
         </div>
 
-        <div className={styles.box}>
-          <div className={styles.itens_box_1}>
-            <div className={dateStyles.data_completa}>{DataCompleta(dataSelecionada)}</div>
-            <CalendarGrennIcon onDataSelecionada={handleDataSelecionada} />
+        <div className={styles.menu}>
+          <div className={styles.button_options}>
+            <button className={styles.button}>Novo agendamento</button>
+            <button className={styles.button}>Médicos disponíveis</button>
+            <button className={styles.button}>Vagas disponíveis</button>
           </div>
-          <div className={styles.itens_box_2}>
-            <SearchBar data={dataSelecionada} />
-            <NovoAgendamentoButton />
-          </div>
+          <SearchBar />
         </div>
 
         <table className={styles.tabela}>
