@@ -4,12 +4,7 @@ import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 
 function CreateRaca() {
-    const [showModal, setShowModal] = useState(false);
 
-    const handleExcluirClick = () => {
-        // Lógica para exclusão aqui
-        setShowModal(false);
-    };
 
     return(
         <div className={styles.container}>
@@ -40,23 +35,11 @@ function CreateRaca() {
                 </div>
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />
-                    <button className={styles.criar_button} onClick={() => setShowModal(true)}>
+                    <button className={styles.criar_button}>
                         Criar
-                    </button>
-                    <button className={styles.excluir_button} onClick={() => setShowModal(true)}>
-                        Excluir
                     </button>
                 </div>
             </div>
-            {showModal && (
-                <div className={styles.modal}>
-                    <div className={styles.modal_content}>
-                        <p>Deseja realmente excluir?</p>
-                        <button onClick={handleExcluirClick}>Sim</button>
-                        <button onClick={() => setShowModal(false)}>Não</button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

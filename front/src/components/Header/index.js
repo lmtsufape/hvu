@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import Image from "next/image";
 import styles from "./index.module.css";
 import {LoginGreenButton} from '../GreenButton';
@@ -26,6 +27,8 @@ export function Header01() {
 
   //Header com botão de Home e Sistema
   export function Header02() {
+    const router = useRouter();
+
     return (
         <header className={styles.header}>
             
@@ -34,8 +37,8 @@ export function Header01() {
             </div>
 
             <div className={styles.box_buttons} >
-                <button type="button" className="btn btn-link" id={styles.black_button_decoration}>Home</button>
-                <button type="button" className="btn btn-link" id={styles.black_button_decoration}>Sistema</button>
+                <button type="button" className="btn btn-link" id={styles.black_button_decoration} onClick={(e) => router.push("/")}>Home</button>
+                <button type="button" className="btn btn-link" id={styles.black_button_decoration} onClick={(e) => router.push("/system")}>Sistema</button>
             </div>
                 
         </header>
