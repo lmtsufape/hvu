@@ -4,6 +4,7 @@ import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
 import { getAllRaca } from '../../../services/racaService';
 import VoltarButton from '../VoltarButton';
+import ExcluirButton from '../ExcluirButton';
 
 function GetAllRacasForm() {
     const [racas, setRacas] = useState([]);
@@ -55,7 +56,7 @@ function GetAllRacasForm() {
                                 >
                                     Acessar
                                 </button>
-                                <button className={styles.excluir_button}>Excluir</button>
+                                < ExcluirButton />
                             </div>
                         </li>
                     ))}

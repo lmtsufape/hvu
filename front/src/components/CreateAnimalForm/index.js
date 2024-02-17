@@ -5,6 +5,7 @@ import { createAnimal } from "../../../services/animalService";
 import { useRouter } from "next/router";
 import EspeciesList from "@/hooks/useEspecieList";
 import RacasList from "@/hooks/useRacaList";
+import VoltarButton from "../VoltarButton";
 
 function CreateAnimalForm() {
   const router = useRouter();
@@ -167,6 +168,7 @@ function CreateAnimalForm() {
 
   return (
     <div className={styles.container}>
+      < VoltarButton />
       <h1>Informações do Animal</h1>
       <form className={styles.form_box} onSubmit={handleSubmit}>
         <div className="row">
@@ -195,47 +197,47 @@ function CreateAnimalForm() {
         </div>
   
         <div className="row">
-        <div className="col">
-          <label htmlFor="especie" className="form-label">Espécie</label>
-          <select 
-            className={`form-select ${errors.especie ? "is-invalid" : ""}`}
-            name="especie"
-            aria-label="Selecione a espécie do animal"
-            value={selectedEspecie || ""}
-            onChange={handleEspecieSelection}
-          >
-            <option value="">Selecione a espécie</option>
-            {especies.map((especie) => (
-              <option key={especie.id} value={especie.id}>
-                {especie.nome}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="col">
+            <label htmlFor="especie" className="form-label">Espécie</label>
+            <select 
+              className={`form-select ${errors.especie ? "is-invalid" : ""}`}
+              name="especie"
+              aria-label="Selecione a espécie do animal"
+              value={selectedEspecie || ""}
+              onChange={handleEspecieSelection}
+            >
+              <option value="">Selecione a espécie</option>
+              {especies.map((especie) => (
+                <option key={especie.id} value={especie.id}>
+                  {especie.nome}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="col">
-          <label htmlFor="raca" className="form-label">Raça</label>
-          <select 
-            className={`form-select ${errors.raca ? "is-invalid" : ""}`}
-            name="raca"
-            aria-label="Selecione a raça do animal"
-            value={selectedRaca || ""}
-            onChange={handleRacaSelection}
-            disabled={isRacaSelectDisabled} 
-          >
-            <option value="">Selecione a raça</option>
-            {racasByEspecie.map((raca) => (
-              <option key={raca.id} value={raca.id}>
-                {raca.nome}
-              </option>
-            ))}
-          </select>
+          <div className="col">
+            <label htmlFor="raca" className="form-label">Raça</label>
+            <select 
+              className={`form-select ${errors.raca ? "is-invalid" : ""}`}
+              name="raca"
+              aria-label="Selecione a raça do animal"
+              value={selectedRaca || ""}
+              onChange={handleRacaSelection}
+              disabled={isRacaSelectDisabled} 
+            >
+              <option value="">Selecione a raça</option>
+              {racasByEspecie.map((raca) => (
+                <option key={raca.id} value={raca.id}>
+                  {raca.nome}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
   
         <div className="row">
           <div className="col">
-            <label htmlFor="peso" className="form-label">Alergias</label>
+            <label htmlFor="alergias" className="form-label">Alergias</label>
             <input 
               type="text"
               className={`form-control ${errors.alergias ? "is-invalid" : ""}`}

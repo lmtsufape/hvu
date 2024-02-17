@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRouter } from "next/router";
 import { createTutor } from "../../../services/tutorService";
@@ -7,6 +7,7 @@ import CreateTutorForm from "./createTutorForm";
 import styles from "./index.module.css";
 import { postRegister } from "../../../common/postRegister";
 import { postLogin } from "../../../common/postLogin";
+import VoltarButton from "../VoltarButton";
 
 function CreateTutorEnderecoForm() {
     const router = useRouter();
@@ -19,7 +20,8 @@ function CreateTutorEnderecoForm() {
         senha: "",
         cpf: "",
         rg: "",
-        telefone: ""
+        telefone: "",
+        confirmarSenha: ""
     });
 
     const [ enderecoFormData, setEnderecoFormData ] = useState({
@@ -32,28 +34,34 @@ function CreateTutorEnderecoForm() {
         }
     );
 
-    
-
     const formData = {
-        ...tutorFormData,
+        nome: tutorFormData.nome,
+        email: tutorFormData.email,
+        senha: tutorFormData.senha,
+        cpf: tutorFormData.cpf,
+        rg: tutorFormData.rg,
+        telefone: tutorFormData.telefone,
         endereco: {...enderecoFormData}
     }
 
     function handleTutorChange(event) {
-
         const { name, value } = event.target;
         setTutorFormData({ ...tutorFormData, [name]: value });
+        localStorage.setItem(name, value); 
     }
-
+    
     function handleEnderecoChange(event) {
         const { name, value } = event.target;
-        setEnderecoFormData({...enderecoFormData, [name]: value})
+        setEnderecoFormData({ ...enderecoFormData, [name]: value });
+        localStorage.setItem(name, value); 
     }
 
     const validateForm = () => {
         const newErrors = {};
         if (!tutorFormData.nome) {
             newErrors.nome = "Nome é obrigatório";
+        } else if (tutorFormData.nome.trim().split(' ').length < 2) {
+            newErrors.nome = "Digite seu nome completo";
         }
         if (!tutorFormData.email) {
             newErrors.email = "E-mail é obrigatório";
@@ -63,14 +71,19 @@ function CreateTutorEnderecoForm() {
         if (!tutorFormData.senha) {
             newErrors.senha = "Senha é obrigatória";
         }
+        if (!tutorFormData.confirmarSenha) {
+            newErrors.confirmarSenha = "Confirme sua senha";
+        } else if (tutorFormData.senha !== tutorFormData.confirmarSenha) {
+            newErrors.confirmarSenha = "As senhas não coincidem";
+        }
         if (!tutorFormData.cpf) {
             newErrors.cpf = "CPF é obrigatório";
-        } else if (!/^\d{11}$/.test(tutorFormData.cpf)) {
+        } else if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(tutorFormData.cpf)) {
             newErrors.cpf = "CPF inválido";
         }
         if (!tutorFormData.rg) {
             newErrors.rg = "RG é obrigatório";
-        } else if (!/^\d{7}$/.test(tutorFormData.rg)) {
+        } else if (!/^\d{2}\.\d{3}\.\d{3}-\d{1}$/.test(tutorFormData.rg)) {
             newErrors.rg = "RG inválido";
         }
         if (!tutorFormData.telefone) {
@@ -87,7 +100,7 @@ function CreateTutorEnderecoForm() {
         }
         if (!enderecoFormData.cep) {
             newErrors.cep = "CEP é obrigatório";
-        } else if (!/^\d{8}$/.test(enderecoFormData.cep)) {
+        } else if (!/^\d{5}-?\d{3}$/.test(enderecoFormData.cep)) {
             newErrors.cep = "CEP inválido";
         }
         if (!enderecoFormData.estado) {
@@ -100,6 +113,35 @@ function CreateTutorEnderecoForm() {
 
         return Object.keys(newErrors).length === 0;
     };
+
+    useEffect(() => {
+        // Carrega os dados do localStorage quando o componente é montado
+        const storedTutorFormData = {};
+        const storedEnderecoFormData = {};
+    
+        Object.keys(tutorFormData).forEach((key) => {
+            const storedValue = localStorage.getItem(key);
+            if (storedValue) {
+                storedTutorFormData[key] = storedValue;
+            }
+        });
+    
+        Object.keys(enderecoFormData).forEach((key) => {
+            const storedValue = localStorage.getItem(key);
+            if (storedValue) {
+                storedEnderecoFormData[key] = storedValue;
+            }
+        });
+    
+        setTutorFormData((prevData) => ({ ...prevData, ...storedTutorFormData }));
+        setEnderecoFormData((prevData) => ({ ...prevData, ...storedEnderecoFormData }));
+    
+        // Limpa os dados do localStorage quando o componente é desmontado
+        return () => {
+            Object.keys(tutorFormData).forEach((key) => localStorage.removeItem(key));
+            Object.keys(enderecoFormData).forEach((key) => localStorage.removeItem(key));
+        };
+    }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -121,6 +163,7 @@ function CreateTutorEnderecoForm() {
 
     return (
         <div className={styles.container}>
+            < VoltarButton />
             <h1>Cadastro</h1>
             <form>
                 <div className={styles.form_box}>

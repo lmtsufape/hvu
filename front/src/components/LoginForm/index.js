@@ -81,7 +81,7 @@ function FormularioLogin() {
                     required
                 />
             </div>
-            <button type="button" className="btn btn-link">Esqueceu a senha? </button>
+            <button type="button" className="btn btn-link" onClick={(e) => router.push("/forgotPassword")}>Esqueceu a senha? </button>
         </div>
 
         <div className={styles.button_box}>
