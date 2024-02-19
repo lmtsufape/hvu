@@ -5,10 +5,10 @@
   width: 80%;
   max-width: 1500px;
   min-width: 300px;
-  min-height: 700px; 
+  min-height: 600px; 
   margin: auto;
-  margin-top: 50px;
-  margin-bottom: -150px;
+  margin-top: 70px;
+  margin-bottom: 50px;
 }
 
 .form_box {
