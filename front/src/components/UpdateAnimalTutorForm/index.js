@@ -4,6 +4,7 @@ import styles from "./index.module.css";
 import { getAnimalById, updateAnimal } from '../../../services/animalService';  
 import EspeciesList from "@/hooks/useEspecieList";
 import RacasList from "@/hooks/useRacaList";
+import VoltarButton from '../VoltarButton';
 
 function UpdateAnimalForm() {
   const router = useRouter();

@@ -19,7 +19,7 @@ export function SubHeader01 () {
     return (
         <div className={styles.button_box}>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleAgendamentosClick}>Agendamentos</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleAnimaisClick}>Animais</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleAnimaisClick}>Meus animais</button>
         </div>
     );
 }
