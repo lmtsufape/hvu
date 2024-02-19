@@ -69,6 +69,8 @@ public class CronogramaController {
 	public CronogramaResponse updateCronograma(@PathVariable Long id, @Valid @RequestBody CronogramaRequest obj) {
 		try {
 			//Cronograma o = obj.convertToEntity();
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
 			Cronograma oldObject = facade.findCronogramaById(id);
 
 			TypeMap<CronogramaRequest, Cronograma> typeMapper = modelMapper
@@ -77,7 +79,7 @@ public class CronogramaController {
 			
 			
 			typeMapper.map(obj, oldObject);	
-			return new CronogramaResponse(facade.updateCronograma(oldObject));
+			return new CronogramaResponse(facade.updateCronograma(oldObject, principal.getSubject()));
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
@@ -87,10 +89,12 @@ public class CronogramaController {
 	@DeleteMapping("cronograma/{id}")
 	public String deleteCronograma(@PathVariable Long id) {
 		try {
-			facade.deleteCronograma(id);
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			facade.deleteCronograma(id, principal.getSubject());
 			return "";
 		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
 		}
 		
 	}
