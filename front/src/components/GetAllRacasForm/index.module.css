@@ -102,24 +102,6 @@
     background-color: #5b977b;
 }
 
-.excluir_button {
-    width: 117px;
-    height: 44px;
-    border-radius: 10px;
-    border: 1px;
-    background-color: #C7122F;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0em;
-    color: white;
-}
-
-.excluir_button:hover {
-    background-color: #c94157;
-}
-
 .adicionar_raca_button {
     width: 190px;
     height: 56px;
