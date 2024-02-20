@@ -27,6 +27,7 @@ public  class Agendamento  {
 	@EqualsAndHashCode.Include
 	private long id;
 	private String status;
+	private boolean tipoEspecial;
 	@ManyToOne
 	@ToString.Exclude
 	private Animal animal; 
