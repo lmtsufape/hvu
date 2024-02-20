@@ -4,6 +4,8 @@ import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton";
 import { getAllAnimal } from '../../../services/animalService';
+import VoltarButton from '../VoltarButton';
+import ExcluirButton from '../ExcluirButton';
 
 function GetAllAnimalTutorForm() {
     const [animais, setAnimais] = useState([]);
@@ -24,6 +26,8 @@ function GetAllAnimalTutorForm() {
 
     return (
         <div className={styles.container}>
+            < VoltarButton />
+            
             <h1>Animais</h1>
 
             <div className={styles.navbar}>
@@ -45,12 +49,15 @@ function GetAllAnimalTutorForm() {
                                 <h6>Espécie</h6>
                                 <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
                             </div>
-                            <button
-                                className={styles.acessar_button}
-                                onClick={() => router.push(`/getAnimalByIdTutor/${animal.id}`)}
-                            >
-                                Acessar
-                            </button>
+                            <div className={styles.button_box}>
+                                <button
+                                    className={styles.acessar_button}
+                                    onClick={() => router.push(`/getAnimalByIdTutor/${animal.id}`)}
+                                >
+                                    Acessar
+                                </button>
+                                < ExcluirButton />
+                            </div>
                         </li>
                     ))}
                 </ul>

@@ -9,6 +9,7 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 2px solid#ECECEC;
+    position: relative;
 }
 
 .box_buttons {
@@ -73,3 +74,69 @@
 #green_button:hover {
     background-color: #5b977b;
 }
+
+.dropdown_container {
+    position: absolute;
+    top: calc(100% + 5px); /* Ajusta a posição para que o dropdown fique abaixo do botão */
+    z-index: 1000; /* Ajusta a camada z para garantir que o dropdown apareça acima do conteúdo abaixo */
+
+    width: 228.65px;
+    height: 101.01px;
+    margin-top: -15px;
+    margin-left: -150px;
+    
+    border-radius: 8.88px;
+    border: 1.11px solid #E6E6E6;
+    box-shadow: 4.439828872680664px 3.329871654510498px 7.769700527191162px 0px #00000012;
+    background-color:white;
+
+    display: flex;
+
+}
+
+.dropdown {
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    gap: 17.76px;
+}
+
+.button1 {
+    display: flex;
+    gap: 11.1px;
+    text-decoration: none;
+    background: none;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    color: #606060;
+}
+
+.button1:hover {
+    text-decoration: underline;
+}
+
+.button2 {
+    display: flex;
+    gap: 11.1px;
+    text-decoration: none;
+    background: none;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    color: #C7122F;
+}
+
+.button2:hover {
+    text-decoration: underline;
+}
+
+
