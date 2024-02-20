@@ -16,6 +16,10 @@
   font-style: normal;
 }
 
+.obrigatorio {
+  color: red;
+}
+
 .titulo {
   font-family: 'Poppins', sans-serif;
   font-size: 22px;

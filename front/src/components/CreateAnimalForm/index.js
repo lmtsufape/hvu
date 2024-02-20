@@ -25,6 +25,7 @@ function CreateAnimalForm() {
     alergias: '',
     dataNascimento: '',
     imagem: '',
+    peso: null,
     raca: { id: null }
   });
 
@@ -86,9 +87,7 @@ function CreateAnimalForm() {
     if (!animalData.nome) {
       newErrors.nome = "Campo obrigatório";
     }
-    if (!animalData.dataNascimento) {
-      newErrors.dataNascimento = "Campo obrigatório";
-    }
+    
     if (!animalData.sexo) {
       newErrors.sexo = "Campo obrigatório";
     }
@@ -98,9 +97,7 @@ function CreateAnimalForm() {
     if (!selectedEspecie) {
       newErrors.especie = "Campo obrigatório";
     }
-    if (!selectedRaca) {
-      newErrors.raca = "Campo obrigatório";
-    }
+    
 
     setErrors(newErrors);
 
@@ -109,20 +106,34 @@ function CreateAnimalForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    let animalToCreate = {};
     if (validateForm()) {
       if (especies.length > 0 && racas.length > 0) {
-        const animalToCreate = {
+        if(selectedRaca === null) {
+
+
+        animalToCreate = {
+          nome: animalData.nome,
+          sexo: animalData.sexo,
+          alergias: animalData.alergias,
+          dataNascimento: animalData.dataNascimento,
+          imagem: animalData.imagem,  
+          peso: animalData.peso,
+          raca: null
+        };
+      }else{
+        animalToCreate = {
           nome: animalData.nome,
           sexo: animalData.sexo,
           alergias: animalData.alergias,
           dataNascimento: animalData.dataNascimento,
           imagem: animalData.imagem,
+          peso: animalData.peso,
           raca: {
             id: parseInt(selectedRaca)
           }
         };
-
+      }
         console.log("objeto do animal:", animalToCreate)
 
         try {
@@ -149,6 +160,7 @@ function CreateAnimalForm() {
       sexo: "",
       alergias: "",
       dataNascimento: "",
+      peso: null,
       imagem: "NULL",
     });
     setSelectedEspecie(especies.length > 0 ? especies[0]?.id.toString() : "");
@@ -173,7 +185,7 @@ function CreateAnimalForm() {
       <form className={styles.form_box} onSubmit={handleSubmit}>
         <div className="row">
           <div className="col">
-            <label htmlFor="nome" className="form-label">Nome</label>
+            <label htmlFor="nome" className="form-label">Nome <span className={styles.obrigatorio}>*</span></label>
             <input
               type="text"
               className={`form-control ${errors.nome ? "is-invalid" : ""}`}
@@ -198,7 +210,7 @@ function CreateAnimalForm() {
   
         <div className="row">
           <div className="col">
-            <label htmlFor="especie" className="form-label">Espécie</label>
+            <label htmlFor="especie" className="form-label">Espécie <span className={styles.obrigatorio}>*</span></label>
             <select 
               className={`form-select ${errors.especie ? "is-invalid" : ""}`}
               name="especie"
@@ -237,7 +249,7 @@ function CreateAnimalForm() {
   
         <div className="row">
           <div className="col">
-            <label htmlFor="alergias" className="form-label">Alergias</label>
+            <label htmlFor="alergias" className="form-label">Alergias <span className={styles.obrigatorio}>*</span></label>
             <input 
               type="text"
               className={`form-control ${errors.alergias ? "is-invalid" : ""}`}
@@ -248,9 +260,29 @@ function CreateAnimalForm() {
             />
             {errors.alergias && <div className="invalid-feedback">{errors.alergias}</div>}
           </div>
+
+          
+       
+          <div className="col"  style={{ position: 'relative', display: 'inline-block' }}>
+            <label htmlFor="peso" className="form-label">Peso </label>
+            <input 
+              type="number"
+              step={0.1}
+              pattern="\d+(\.\d{2})?"
+              min="0"
+              className="form-control"
+              name="peso"
+              placeholder="Peso (Opcional)"
+              value={animalData.peso}
+              onChange={handleAnimalChange}
+              style={{ paddingRight: '30px' }} 
+            />
+            <span style={{ position: 'absolute', right: '20px', top: '15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
+            {errors.alergias && <div className="invalid-feedback">{errors.alergias}</div>}
+          </div>
   
           <div className="col">
-            <label htmlFor="sexo" className="form-label">Sexo</label>
+            <label htmlFor="sexo" className="form-label">Sexo <span className={styles.obrigatorio}>*</span></label>
             <select 
               className={`form-select ${errors.sexo ? "is-invalid" : ""}`}
               name="sexo"

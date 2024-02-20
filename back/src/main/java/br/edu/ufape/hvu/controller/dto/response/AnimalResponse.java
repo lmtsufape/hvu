@@ -21,6 +21,7 @@ public  class AnimalResponse  {
 	private LocalDate dataNascimento;
 	private String imagem;
 	private boolean castrado;
+	private double peso;
 	private RacaResponse raca; 
 	private HistoricoMedicoPregressoResponse historicoMedicoPregresso; 
 

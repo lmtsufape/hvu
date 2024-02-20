@@ -5,6 +5,10 @@
   align-items: center;
 }
   
+.obrigatorio {
+  color: red;
+}
+
 .boxcadastrotutor {
   display: block;
   width: 80%;

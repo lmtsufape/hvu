@@ -11,7 +11,9 @@ function UpdateAnimalPage(){
             <Header03/> 
             <div>
                 <h1 className={styles.titulocadastro}>Editar Perfil</h1>
+             
             </div>
+            
             <UpdateAnimalForm/>
             <Footer/>
         </div>
