@@ -35,6 +35,7 @@ public  class Animal  {
 	private LocalDate dataNascimento;
 	private String imagem;
 	private boolean castrado;
+	private double peso;
 	@ManyToOne
 	@ToString.Exclude
 	private Raca raca; 

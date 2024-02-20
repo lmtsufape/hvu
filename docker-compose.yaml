@@ -77,7 +77,7 @@ services:
     image: react-image
     build: front/.
     volumes:
-      - ./front-hvu/src:/app/src
+      - ./front/src:/app/src
     ports:
       - 3000:3000
     networks:

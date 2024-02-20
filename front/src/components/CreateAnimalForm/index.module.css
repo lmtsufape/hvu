@@ -11,6 +11,10 @@
   margin-bottom: -150px;
 }
 
+.obrigatorio {
+  color: red;
+}
+
 .form_box {
   display: block;
   justify-content: center;
