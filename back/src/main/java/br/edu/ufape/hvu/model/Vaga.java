@@ -37,6 +37,9 @@ public  class Vaga  {
 	@OneToOne
 	@ToString.Exclude
 	private Consulta consulta; 
+	@OneToOne
+	@ToString.Exclude
+	private Agendamento agendamento; 
 	@ManyToOne
 	@ToString.Exclude
 	private TipoConsulta tipoConsulta; 
