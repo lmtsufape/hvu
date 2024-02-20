@@ -4,6 +4,14 @@
   justify-content: center;
   align-items: center;
 }
+
+.obrigatorio {
+  color: red;
+}
+
+.list{
+  list-style-type: none;  
+}
   
 .boxcadastrotutor {
   display: block;

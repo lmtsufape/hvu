@@ -31,7 +31,7 @@ function renderInput(label, name, value, onChange, placeholder, error, type = "t
 
   return (
     <div className="mb-3">
-      <label htmlFor={name} className="form-label">{label}</label>
+      <label htmlFor={name} className="form-label">{label} <span className={styles.obrigatorio}>*</span></label>
       <InputComponent
         type={type}
         className={`form-control ${error ? 'is-invalid' : ''}`}

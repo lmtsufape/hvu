@@ -31,7 +31,7 @@ function renderInput(label, placeholder, name, value, onChange, error, type = "t
 
     return (
         <div className="mb-3">
-            <label htmlFor={name} className="form-label">{label}</label>
+            <label htmlFor={name} className="form-label">{label} <span className={styles.obrigatorio}>*</span></label>
             <InputComponent
                 mask={mask}
                 type={type}

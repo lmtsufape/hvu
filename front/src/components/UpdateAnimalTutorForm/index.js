@@ -4,6 +4,7 @@ import styles from "./index.module.css";
 import { getAnimalById, updateAnimal } from '../../../services/animalService';  
 import EspeciesList from "@/hooks/useEspecieList";
 import RacasList from "@/hooks/useRacaList";
+import VoltarButton from '../VoltarButton';
 
 function UpdateAnimalForm() {
   const router = useRouter();
@@ -142,12 +143,13 @@ console.log(animalData);
 
   return (
     <form className={`${styles.boxcadastrotutor} ${styles.container}`} onSubmit={handleUpdateAnimal}>
+      
       <ul className={styles.form_box}>
         {animalData && (
-          <li key={animalData.id}>
+          <li key={animalData.id} className={styles.list}>
             <div className="row">
               <div className="col">
-                <label htmlFor="nome" className="form-label">Nome</label>
+                <label htmlFor="nome" className="form-label">Nome <span className={styles.obrigatorio}>*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -157,7 +159,7 @@ console.log(animalData);
                 />
               </div>
               <div className="col">
-                <label htmlFor="dataNascimento" className="form-label">Data de Nascimento</label>
+                <label htmlFor="dataNascimento" className="form-label">Data de Nascimento </label>
                 <input
                   type="date"
                   className="form-control"
@@ -170,7 +172,7 @@ console.log(animalData);
 
             <div className="row">
               <div className="col">
-                <label htmlFor="especie" className="form-label">Espécie</label>
+                <label htmlFor="especie" className="form-label">Espécie <span className={styles.obrigatorio}>*</span></label>
                 <select
                   className='form-select'
                   name="especie"
@@ -206,7 +208,7 @@ console.log(animalData);
 
             <div className="row">
               <div className="col">
-                <label htmlFor="alergias" className="form-label">Alergias</label>
+                <label htmlFor="alergias" className="form-label">Alergias <span className={styles.obrigatorio}>*</span></label>
                 <input type="text"
                   className="form-control"
                   name="alergias"
@@ -216,7 +218,7 @@ console.log(animalData);
               </div>
 
               <div className="col">
-                <label htmlFor="sexo" className="form-label">Sexo</label>
+                <label htmlFor="sexo" className="form-label">Sexo <span className={styles.obrigatorio}>*</span></label>
                 <select className="form-select"
                   name="sexo"
                   aria-label={animalData.sexo}

@@ -19,6 +19,7 @@ public  class AnimalRequest  {
 	private LocalDate dataNascimento;
 	private String imagem;
 	private boolean castrado;
+	private double peso;
 	private RacaRequest raca; 
 	private HistoricoMedicoPregressoRequest historicoMedicoPregresso;
 	private long id;

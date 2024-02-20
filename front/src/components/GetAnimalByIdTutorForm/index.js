@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import { getAnimalById } from '../../../services/animalService';
+import VoltarButton from '../VoltarButton';
 
 function GetAnimalByIdTutorForm() {
     const router = useRouter();
@@ -33,6 +34,7 @@ function GetAnimalByIdTutorForm() {
 
     return (
         <div className={styles.container}>
+            < VoltarButton />
             <h1>Perfil do Animal</h1>
             <ul>
                 {animal && ( 
