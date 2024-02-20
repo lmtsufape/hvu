@@ -15,6 +15,7 @@ public  class AgendamentoResponse  {
 	private long id;
 	private String status;
 	private AnimalResponse animal; 
+	private boolean tipoEspecial;
 
 
 

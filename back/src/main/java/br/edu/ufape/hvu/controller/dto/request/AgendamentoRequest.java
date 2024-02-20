@@ -13,6 +13,7 @@ import lombok.Setter;
 public  class AgendamentoRequest  {
 	private long id;
 	private String status;
+	private boolean tipoEspecial;
 	private AnimalRequest animal; 
 
 
