@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,25 +30,25 @@ public  class AvaliacaoFisicoGeral  {
 	private String frequenciaCardiaca;
 	private String frequenciaRespiratoria;
 	private String tpc;
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private TipoMucosa tipoMucosa; 
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private NivelConsciencia nivelConsciencia; 
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private TipoTurgorCutaneo tipoTurgorCutaneo; 
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private NivelHidratacao nivelHidratacao; 
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private TipoLinfonodos tipoLinfonodos; 
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private ScoreCorporal scoreCorporal; 
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
 	private TipoPostura tipoPostura; 
 
