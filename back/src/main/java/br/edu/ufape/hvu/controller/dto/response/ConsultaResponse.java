@@ -29,6 +29,8 @@ public  class ConsultaResponse  {
 	private List<PrescricaoResponse> prescricao; 
 	private List<EstagiarioResponse> estagiario; 
 	private List<ExameComplementarResponse> exameComplementar; 
+	private boolean proximaConsulta;
+	private EspecialidadeResponse encaminhamento;
 
 
 

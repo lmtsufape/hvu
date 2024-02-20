@@ -18,7 +18,8 @@ public  class VagaRequest  {
 	private String status;
 	private EspecialidadeRequest especialidade; 
 	private ConsultaRequest consulta; 
-	private TipoConsultaRequest tipoConsulta; 
+	private TipoConsultaRequest tipoConsulta;
+	private AgendamentoRequest agendamento;
 
 
 	public Vaga convertToEntity() {
