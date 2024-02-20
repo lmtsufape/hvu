@@ -5,6 +5,7 @@ import styles from "./index.module.css";
 import {LoginGreenButton} from '../GreenButton';
 import { LoginWhiteButton } from '../WhiteButton';
 import {CadastrolWhiteButton} from '../WhiteButton';
+import { getAllTutor } from '../../../services/tutorService';
 
 //Header com botão de login e cadastro
 export function Header01() {
@@ -46,25 +47,41 @@ export function Header01() {
 
   //Header com ícone de perfil
   export function Header03() {
+    const router = useRouter();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const [tutores, setTutores] = useState([]);
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
 
     useEffect(() => {
-        function handleClickOutside(event) {
+        const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setDropdownOpen(false);
             }
-        }
+        };
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [dropdownRef]);
+
+    
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const TutoresData = await getAllTutor();
+                setTutores(TutoresData);
+            } catch (error) {
+                console.error('Erro ao buscar tutores:', error);
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <header className={styles.header}>
@@ -79,16 +96,18 @@ export function Header01() {
                 </button>
                 {dropdownOpen && (
                     <div className={styles.dropdown_container}>
-                        <div className={styles.dropdown}>
-                            <button className={styles.button1}>
-                                <div><Image src="/info_icon.svg" alt="Ícone de perfil" width={18.87} height={18.87}/></div>
-                                <div>Meu perfil</div>
-                            </button>
-                            <button className={styles.button2}>
-                                <div><Image src="/left_icon.svg" alt="Ícone de perfil" width={17.88} height={17.88}/></div>
-                                <div>Sair</div>
-                            </button>
-                        </div>
+                        {tutores.map(tutor => (
+                            <div className={styles.dropdown} key={tutor.id}>
+                                <button className={styles.button1} onClick={(e) => router.push(`/meuPerfil/${tutor.id}`)}>
+                                    <div><Image src="/info_icon.svg" alt="Ícone de perfil" width={18.87} height={18.87}/></div>
+                                    <div>Meu perfil</div>
+                                </button>
+                                <button className={styles.button2} onClick={(e) => router.push("/")}>
+                                    <div><Image src="/left_icon.svg" alt="Ícone de perfil" width={17.88} height={17.88}/></div>
+                                    <div>Sair</div>
+                                </button>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

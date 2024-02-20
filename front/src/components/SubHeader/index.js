@@ -1,5 +1,4 @@
 import React from "react";
-import Link from 'next/link';
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css"
 import { useRouter } from "next/router";
@@ -13,7 +12,7 @@ export function SubHeader01 () {
     };
 
     const handleAnimaisClick = () => {
-        router.push('/getAllAnimalTutor');
+        router.push('/meusAnimais');
     };
 
     return (
@@ -32,14 +31,14 @@ export function SubHeader02 () {
         router.push('/agendarconsulta');
     };
 
-    const handleAnimaisClick = () => {
-        router.push('/getAllTutorSecretario');
+    const handlePacientesClick = () => {
+        router.push('/pacientes');
     };
 
     return (
         <div className={styles.button_box}>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleAgendamentosClick}>Agendamentos</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleAnimaisClick}>Animais</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handlePacientesClick}>Pacientes</button>
             <button type="button" className="btn btn-link" id={styles.button_decoration}>Relatórios</button>
         </div>
     );

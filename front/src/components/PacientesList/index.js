@@ -4,8 +4,9 @@ import styles from './index.module.css';
 import SearchBar from '../SearchBar';
 import FiltrarWhiteButton from '../WhiteButton/filtrar_button';
 import { getAllTutor } from '../../../services/tutorService';
+import VoltarButton from '../VoltarButton';
 
-function GetAllTutorSecretarioForm() {
+function PacientesList() {
     const [tutores, setTutores] = useState([]);
 
     const router = useRouter();
@@ -24,6 +25,8 @@ function GetAllTutorSecretarioForm() {
 
     return (
         <div className={styles.container}>
+            < VoltarButton />
+            
             <h1>Pacientes</h1>
 
             <div className={styles.navbar}>
@@ -46,9 +49,14 @@ function GetAllTutorSecretarioForm() {
                     {tutores.map(tutor => (
                         <li key={tutor.id} className={styles.info}>
                             <div>{tutor.nome}</div>
-                            <div>{tutor.animal} && {tutor.animal.nome}</div>
-                            <div>{tutor.animal} && {tutor.animal.raca} && {tutor.animal.raca.especie} && {tutor.animal.raca.especie.nome}</div>
-                            <div>{tutor.animal} && {tutor.animal.raca} && {tutor.animal.raca.nome}</div>
+                            
+                            {tutor.animal.map(animal => (
+                                <React.Fragment key={animal.id}>
+                                    <div>{animal.nome}</div>
+                                    <div>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</div>
+                                    <div>{animal.raca && animal.raca.nome}</div>
+                                </React.Fragment>
+                            ))}
 
                             <div>
                                 <button
@@ -66,4 +74,4 @@ function GetAllTutorSecretarioForm() {
     );
 }
 
-export default GetAllTutorSecretarioForm;
+export default PacientesList;

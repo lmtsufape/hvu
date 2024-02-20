@@ -7,7 +7,7 @@ import { getAllAnimal } from '../../../services/animalService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
 
-function GetAllAnimalTutorForm() {
+function MeusAnimaisList() {
     const [animais, setAnimais] = useState([]);
     
     const router = useRouter();
@@ -66,4 +66,4 @@ function GetAllAnimalTutorForm() {
     );
 }
 
-export default GetAllAnimalTutorForm;
+export default MeusAnimaisList;

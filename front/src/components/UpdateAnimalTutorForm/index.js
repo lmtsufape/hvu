@@ -24,6 +24,7 @@ function UpdateAnimalForm() {
     alergias: '',
     dataNascimento: '',
     imagem: '',
+    peso: '',
     raca: { id: null }
   });
 
@@ -215,6 +216,23 @@ console.log(animalData);
                   value={animalData.alergias}
                   onChange={handleAnimalChange}
                 />
+              </div>
+
+              <div className="col">
+                <label htmlFor="peso" className="form-label">Peso </label>
+                <input 
+                  type="number"
+                  step={0.1}
+                  pattern="\d+(\.\d{2})?"
+                  min="0"
+                  className="form-control"
+                  name="peso"
+                  placeholder="Peso (Opcional)"
+                  value={animalData.peso}
+                  onChange={handleAnimalChange}
+                  style={{ paddingRight: '30px' }} 
+                />
+                <span style={{ position: 'absolute', right: '20px', top: '15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
               </div>
 
               <div className="col">
