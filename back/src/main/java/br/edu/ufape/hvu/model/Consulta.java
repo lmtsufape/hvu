@@ -39,9 +39,13 @@ public  class Consulta  {
 	private String alteracoesClinicasDiversas;
 	private String suspeitasClinicas;
 	private String alimentacao;
+	private boolean proximaConsulta;
 	@ManyToOne
 	@ToString.Exclude
 	private Medico medico; 
+	@ManyToOne
+	@ToString.Exclude
+	private Especialidade encaminhamento; 
 	@OneToOne
 	@ToString.Exclude
 	private AvaliacaoFisicoEspecial avaliacaoFisicoEspecial; 

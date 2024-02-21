@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,8 +27,10 @@ public  class Agendamento  {
 	@EqualsAndHashCode.Include
 	private long id;
 	private String status;
-	@OneToOne
+	private boolean tipoEspecial;
+	@ManyToOne
 	@ToString.Exclude
 	private Animal animal; 
+	
 
 }

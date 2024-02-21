@@ -20,7 +20,8 @@ public  class ConsultaRequest  {
 	private String alteracoesClinicasDiversas;
 	private String suspeitasClinicas;
 	private String alimentacao;
-	private MedicoRequest medico; 
+	private MedicoRequest medico;
+	private EspecialidadeRequest encaminhamento;
 	private AvaliacaoFisicoEspecialRequest avaliacaoFisicoEspecial; 
 	private ParecerRequest parecer; 
 	private AvaliacaoFisicoGeralRequest avaliacaoFisicoGeral; 
@@ -28,6 +29,7 @@ public  class ConsultaRequest  {
 	private List<EstagiarioRequest> estagiario; 
 	private List<ExameComplementarRequest> exameComplementar;
 	private long id;
+	private boolean proximaConsulta;
 
 
 	public Consulta convertToEntity() {

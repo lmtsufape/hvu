@@ -3,9 +3,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {Header03} from "../../src/components/Header"
 import Footer from "../../src/components/Footer"
 import {SubHeader01} from "../../src/components/SubHeader"
-import GetAllAnimalTutorForm from "../../src/components/GetAllAnimalTutorForm"
+import MeusAnimaisList from "../../src/components/MeusAnimais"
 
-function PageConsultarAnimalTutor() {
+function MeusAnimaisPage() {
     return (
         <>
         <div>
@@ -17,7 +17,7 @@ function PageConsultarAnimalTutor() {
         </div>
 
         <div>
-            < GetAllAnimalTutorForm />
+            < MeusAnimaisList />
         </div>
 
         <div>
@@ -27,4 +27,4 @@ function PageConsultarAnimalTutor() {
     );
 }
 
-export default PageConsultarAnimalTutor
+export default MeusAnimaisPage;

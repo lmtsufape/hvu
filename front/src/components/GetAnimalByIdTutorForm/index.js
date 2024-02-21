@@ -41,22 +41,26 @@ function GetAnimalByIdTutorForm() {
                     <li key={animal.id} className={styles.infos_box}>
                         <div className={styles.identificacao}>
                             <div className={styles.nome_animal}>{animal.nome}</div>
-                            <div className={styles.especie_animal}>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</div>
+                            <div className={styles.especie_animal}>Nome</div>
                         </div>
                         <div className={styles.form}>
                             <div className={styles.box}>
                                 <div className={styles.lista}>
                                     <div className={styles.infos}>
-                                        <h6>Nome</h6>
-                                        <p>{animal.nome}</p>
+                                        <h6>Espécie</h6>
+                                        <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Sexo</h6>
                                         <p>{animal.sexo}</p>
                                     </div>
                                     <div className={styles.infos}>
-                                        <h6>Espécie</h6>
-                                        <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
+                                        <h6>Peso</h6>
+                                        {animal.peso ? (
+                                            <p>{animal.peso}</p>
+                                        ) : (
+                                            <p>Peso não fornecido</p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -77,7 +81,7 @@ function GetAnimalByIdTutorForm() {
                             </div>
                             <div className={styles.botao}>
                                 <button className={styles.editar_button} onClick={() => handleEditarClick(animal.id)}>
-                                    Editar
+                                    Editar 
                                 </button>
                             </div>
                         </div>

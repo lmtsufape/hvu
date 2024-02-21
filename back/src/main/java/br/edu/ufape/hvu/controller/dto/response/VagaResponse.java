@@ -20,7 +20,7 @@ public  class VagaResponse  {
 	private EspecialidadeResponse especialidade; 
 	private ConsultaResponse consulta; 
 	private TipoConsultaResponse tipoConsulta; 
-
+	private AgendamentoResponse agendamento;
 
 
 	public VagaResponse(Vaga obj) {

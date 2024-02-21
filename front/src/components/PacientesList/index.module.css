@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
 .container {
     min-height: 900px;
@@ -60,21 +60,6 @@
     color: #2D2D2D;
 }
 
-.acessar_button {
-    width: 180px;
-    height: 48px;
-    border-radius: 10px;
-    border: 1px;
-    font-size: 16px;
-    color: white;
-    background-color: #327053;
-    font-family: 'Poppins', sans-serif;
-}
-
-.acessar_button:hover {
-    background-color: #5b977b;
-}
-
 .line {
     width: 1200px;
     height: 44px;
@@ -97,3 +82,18 @@
     line-height: 24px;
     letter-spacing: 0em;
 }
+
+.acessar_button {
+    width: 180px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px;
+    font-size: 16px;
+    color: white;
+    background-color: #327053;
+    font-family: 'Poppins', sans-serif;
+}
+
+.acessar_button:hover {
+    background-color: #5b977b;
+} */

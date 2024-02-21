@@ -22,7 +22,7 @@ function FormularioLogin() {
         if (validateForm()) {
             try{
                 await postLogin(login, senha);
-                router.push('/getAllAnimalTutor');
+                router.push('/meusAnimais');
             }catch(error){
                 console.log(error);
             }  
