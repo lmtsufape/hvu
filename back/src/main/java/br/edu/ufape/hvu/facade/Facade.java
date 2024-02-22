@@ -76,6 +76,34 @@ public class Facade {
 	public void deleteNivelHidratacao(long id) {
 		nivelHidratacaoServiceInterface.deleteNivelHidratacao(id);
 	}
+	
+	// Cancelamento--------------------------------------------------------------
+		@Autowired
+		private CancelamentoServiceInterface cancelamentoServiceInterface;
+
+		public Cancelamento saveCancelamento(Cancelamento newInstance) {
+			return cancelamentoServiceInterface.saveCancelamento(newInstance);
+		}
+
+		public Cancelamento updateCancelamento(Cancelamento transientObject) {
+			return cancelamentoServiceInterface.updateCancelamento(transientObject);
+		}
+
+		public Cancelamento findCancelamentoById(long id) {
+			return cancelamentoServiceInterface.findCancelamentoById(id);
+		}
+
+		public List<Cancelamento> getAllCancelamento() {
+			return cancelamentoServiceInterface.getAllCancelamento();
+		}
+
+		public void deleteCancelamento(Cancelamento persistentObject) {
+			cancelamentoServiceInterface.deleteCancelamento(persistentObject);
+		}
+
+		public void deleteCancelamento(long id) {
+			cancelamentoServiceInterface.deleteCancelamento(id);
+		}
 
 	// TipoConsulta--------------------------------------------------------------
 	@Autowired
