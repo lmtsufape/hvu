@@ -11,8 +11,5 @@ public interface VagaServiceInterface {
 	void deleteVaga(Vaga u);
 	void deleteVaga(long id);
 	List<Vaga> getAllVaga();
-    
-    
-
-    
+        
 }
