@@ -4,6 +4,8 @@ target/
 
 !**/src/main/**/target/
 !**/src/test/**/target/
+/back/src/main/resources/application.yml
+
 
 
 ### STS ###
