@@ -9,12 +9,13 @@ import br.edu.ufape.hvu.model.Vaga;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Getter @Setter @NoArgsConstructor
 public  class VagaResponse  {
 	private Long id;
+	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataHora;
 	private String status;
 	private EspecialidadeResponse especialidade; 

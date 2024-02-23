@@ -13,7 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -30,7 +32,9 @@ public  class Agendamento  {
 	private boolean tipoEspecial;
 	@ManyToOne
 	@ToString.Exclude
-	private Animal animal; 
+	private Animal animal;
+	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
+	private LocalDateTime dataVaga;
 	
 
 }
