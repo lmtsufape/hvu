@@ -1,3 +1,4 @@
+// ExcluirButton.js
 import React, { useState, useEffect, useRef } from 'react';
 import styles from "./index.module.css";
 
@@ -6,7 +7,7 @@ function ExcluirButton({ itemId, onDelete }) {
     const modalRef = useRef(null);
 
     const handleExcluirClick = () => {
-        onDelete(itemId);
+        onDelete(itemId); // Aqui está corretamente passando o itemId para a função onDelete
         setShowModal(false);
     };
 
@@ -31,7 +32,7 @@ function ExcluirButton({ itemId, onDelete }) {
             {showModal && (
                 <div className={styles.modal} ref={modalRef}>
                     <div className={styles.box1}>
-                        <div>Deseja realmente excluir o animal?</div>
+                        <div>Deseja realmente excluir?</div>
                         <button onClick={() => setShowModal(false)} className={styles.button_close_modal}>X</button>
                     </div>
                     <div className={styles.box2}>

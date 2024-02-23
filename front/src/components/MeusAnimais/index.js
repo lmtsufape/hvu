@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton";
-import { getAllAnimal } from '../../../services/animalService';
+import { getAllAnimal, deleteAnimal } from '../../../services/animalService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
 
@@ -23,6 +23,16 @@ function MeusAnimaisList() {
         };
         fetchData();
     }, []);
+
+    const handleDeleteAnimal = async (animalId) => {
+        try {
+            await deleteAnimal(animalId);
+            setAnimais(animais.filter(animal => animal.id !== animalId));
+            window.location.reload();
+        } catch (error) {
+            console.error('Erro ao excluir a animal:', error);
+        }
+    };
 
     return (
         <div className={styles.container}>
@@ -56,7 +66,7 @@ function MeusAnimaisList() {
                                 >
                                     Acessar
                                 </button>
-                                < ExcluirButton />
+                                < ExcluirButton itemId={animal.id} onDelete={handleDeleteAnimal}/>
                             </div>
                         </li>
                     ))}

@@ -9,7 +9,7 @@ function ForgotPasswordForm() {
                 < VoltarButton />
                 <div className={styles.text_box}>
                     <h1>Recuperação de senha</h1>
-                    <h6>Digite seu E-mail de cadastro. Nós enviaremos um link para recuperação de senha</h6>
+                    <h6>Digite seu E-mail de cadastro. Nós enviaremos um link para recuperação de senha.</h6>
                 </div>
                 
                 <div className="row">

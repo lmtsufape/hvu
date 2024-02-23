@@ -18,6 +18,7 @@ function CreateAnimalForm() {
 
   const [racasByEspecie, setRacasByEspecie] = useState([]);
   const [isRacaSelectDisabled, setIsRacaSelectDisabled] = useState(true);
+  const [especieName, setEspecieName] = useState("");
 
   const [animalData, setAnimalData] = useState({
     nome: '',
@@ -69,7 +70,14 @@ function CreateAnimalForm() {
 
     const racasFiltradas = racas.filter((r) => r.especie.id === parseInt(selectedEspecieId));
     setRacasByEspecie(racasFiltradas);
-    setIsRacaSelectDisabled(false);
+
+    const selectedEspecieName = event.target.options[event.target.selectedIndex].textContent;
+    if(selectedEspecieName === "Exótico e Silvestres") {
+      setIsRacaSelectDisabled(true);
+    } else {
+      setIsRacaSelectDisabled(false);
+    }   
+    setEspecieName(selectedEspecieName); 
   };
 
   console.log("Selected especie:", selectedEspecie)
@@ -97,8 +105,9 @@ function CreateAnimalForm() {
     if (!selectedEspecie) {
       newErrors.especie = "Campo obrigatório";
     }
-    
-
+    if (!isRacaSelectDisabled && !selectedRaca) {
+      newErrors.raca = "Campo obrigatório";
+    }
     setErrors(newErrors);
 
     return Object.values(newErrors).every((error) => error === "");
@@ -110,30 +119,28 @@ function CreateAnimalForm() {
     if (validateForm()) {
       if (especies.length > 0 && racas.length > 0) {
         if(selectedRaca === null) {
-
-
-        animalToCreate = {
-          nome: animalData.nome,
-          sexo: animalData.sexo,
-          alergias: animalData.alergias,
-          dataNascimento: animalData.dataNascimento,
-          imagem: animalData.imagem,  
-          peso: animalData.peso,
-          raca: null
-        };
-      }else{
-        animalToCreate = {
-          nome: animalData.nome,
-          sexo: animalData.sexo,
-          alergias: animalData.alergias,
-          dataNascimento: animalData.dataNascimento,
-          imagem: animalData.imagem,
-          peso: animalData.peso,
-          raca: {
-            id: parseInt(selectedRaca)
-          }
-        };
-      }
+          animalToCreate = {
+            nome: animalData.nome,
+            sexo: animalData.sexo,
+            alergias: animalData.alergias,
+            dataNascimento: animalData.dataNascimento,
+            imagem: animalData.imagem,  
+            peso: animalData.peso,
+            raca: null
+          };
+        }else{
+          animalToCreate = {
+            nome: animalData.nome,
+            sexo: animalData.sexo,
+            alergias: animalData.alergias,
+            dataNascimento: animalData.dataNascimento,
+            imagem: animalData.imagem,
+            peso: animalData.peso,
+            raca: {
+              id: parseInt(selectedRaca)
+            }
+          };
+        }
         console.log("objeto do animal:", animalToCreate)
 
         try {
@@ -228,7 +235,7 @@ function CreateAnimalForm() {
           </div>
 
           <div className="col">
-            <label htmlFor="raca" className="form-label">Raça</label>
+            <label htmlFor="raca" className="form-label">Raça { !isRacaSelectDisabled && <span className={styles.obrigatorio}>*</span> }</label>
             <select 
               className={`form-select ${errors.raca ? "is-invalid" : ""}`}
               name="raca"
@@ -237,7 +244,11 @@ function CreateAnimalForm() {
               onChange={handleRacaSelection}
               disabled={isRacaSelectDisabled} 
             >
-              <option value="">Selecione a raça</option>
+              <option value="" disabled={especieName === "Exótico e Silvestres"}>
+                {especieName === "Exótico e Silvestres"
+                  ? "Não definida"
+                  : "Selecione a raça"}
+              </option>
               {racasByEspecie.map((raca) => (
                 <option key={raca.id} value={raca.id}>
                   {raca.nome}

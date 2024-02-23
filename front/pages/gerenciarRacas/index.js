@@ -1,18 +1,18 @@
 import { Header03 } from "../../src/components/Header";
 import { SubHeader02 } from "../../src/components/SubHeader";
-import GetAllRacasForm from "../../src/components/GetAllRacasForm";
+import GerenciarRacasList from "../../src/components/GerenciarRacas";
 import Footer from "../../src/components/Footer";
 
-function GetAllRacasPage(){
+function GerenciarRacasPage(){
     return(
         <div>
             < Header03 />
             < SubHeader02 />
-            < GetAllRacasForm />
+            < GerenciarRacasList />
             < Footer />
         </div>
 
     );
 }
 
-export default GetAllRacasPage;
+export default GerenciarRacasPage;

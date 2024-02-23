@@ -1,12 +1,13 @@
+// GerenciarRacasList.js
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';  
 import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
-import { getAllRaca } from '../../../services/racaService';
+import { getAllRaca, deleteRaca } from '../../../services/racaService'; // Importe deleteRaca aqui
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
 
-function GetAllRacasForm() {
+function GerenciarRacasList() {
     const [racas, setRacas] = useState([]);
     
     const router = useRouter();
@@ -22,6 +23,16 @@ function GetAllRacasForm() {
         };
         fetchData();
     }, []);
+
+    const handleDeleteRaca = async (racaId) => {
+        try {
+            await deleteRaca(racaId);
+            setRacas(racas.filter(raca => raca.id !== racaId));
+            window.location.reload();
+        } catch (error) {
+            console.error('Erro ao excluir a raça:', error);
+        }
+    };
 
     return (
         <div className={styles.container}>
@@ -51,12 +62,12 @@ function GetAllRacasForm() {
                             </div>
                             <div  className={styles.button_container}>
                                 <button
-                                    className={styles.acessar_button}
+                                    className={styles.editar_button}
                                     onClick={() => router.push(`/getRacaById/${raca.id}`)}
                                 >
-                                    Acessar
+                                    Editar
                                 </button>
-                                < ExcluirButton />
+                                <ExcluirButton itemId={raca.id} onDelete={handleDeleteRaca} /> 
                             </div>
                         </li>
                     ))}
@@ -66,4 +77,4 @@ function GetAllRacasForm() {
     );
 }
 
-export default GetAllRacasForm;
+export default GerenciarRacasList;
