@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Animal;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -31,6 +32,7 @@ public  class ConsultaResponse  {
 	private List<ExameComplementarResponse> exameComplementar; 
 	private boolean proximaConsulta;
 	private EspecialidadeResponse encaminhamento;
+	private AnimalResponse animal;
 
 
 
