@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import styles from "./index.module.css";
+import Image from 'next/image';
 
 function VoltarButton() {
     const router = useRouter();
@@ -12,7 +13,7 @@ function VoltarButton() {
     return(
         <div className={styles.voltar_button_box}>
             <button className={styles.voltar_button} onClick={handlVoltarClick}>
-                <i className="material-icons">arrow_back_ios</i>
+            <Image src="/images/IconMenorQue.svg" alt="Voltar" width={27} height={24}/>
                 <p>Voltar</p>
             </button>
         </div>
