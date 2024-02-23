@@ -7,7 +7,9 @@ import br.edu.ufape.hvu.model.Agendamento;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 
 
 @Getter @Setter @NoArgsConstructor
@@ -16,6 +18,8 @@ public  class AgendamentoResponse  {
 	private String status;
 	private AnimalResponse animal; 
 	private boolean tipoEspecial;
+	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
+	private LocalDateTime dataVaga;
 
 
 

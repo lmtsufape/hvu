@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/banco
-    username: ines
-    password: 0609
+    username: postgres
+    password: postgres
 
   jpa:
     show-sql: false
@@ -11,7 +11,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
   security:
     oauth2:
