@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.request;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Animal;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -30,6 +31,7 @@ public  class ConsultaRequest  {
 	private List<ExameComplementarRequest> exameComplementar;
 	private long id;
 	private boolean proximaConsulta;
+	private AnimalRequest animal;
 
 
 	public Consulta convertToEntity() {

@@ -37,7 +37,6 @@
 }
 
 .info_container {
-    border: 1px solid red;
     width: 1200px;
     height: 136px;
     border-radius: 10px;
@@ -48,7 +47,6 @@
 }
 
 .info_box {
-    border: 1px solid red;
     width: 384px;
     height: 56px;
     display: flex;
@@ -84,7 +82,7 @@
     justify-content: right;
 }
 
-.acessar_button {
+.editar_button {
     width: 117px;
     height: 44px;
     border-radius: 10px;
@@ -98,7 +96,7 @@
     color: white;
 }
 
-.acessar_button:hover {
+.editar_button:hover {
     background-color: #5b977b;
 }
 

@@ -9,11 +9,11 @@ function MainScreenTutor() {
     return (
         <div className={styles.container}>
             <div className={styles.box_button}>
-                <button className={styles.button} onClick={(e) => router.push("/getAllAnimalTutor")}>
+                <button className={styles.button} onClick={(e) => router.push("/meusAnimais")}>
                     <Image src="/pets.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Meus animais</h6>
                 </button>
-                <button className={styles.button}>
+                <button className={styles.button} onClick={(e) => router.push("/meusAgendamentos")}>
                     <Image src="/calendar.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Agendamentos</h6>
                 </button>
