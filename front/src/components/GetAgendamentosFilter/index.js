@@ -6,11 +6,11 @@ function Filter() {
   const router = useRouter();
 
   const handlDiaClick = () => {
-    router.push('/getAllAgendamentoDiaSecretario');
+    router.push('/agendamentosDia');
   };
 
   const handlSemanaClick = () => {
-    router.push('/getAllAgendamentoSemanaSecretario');
+    router.push('/agendamentosSemana');
   };
 
   return ( 

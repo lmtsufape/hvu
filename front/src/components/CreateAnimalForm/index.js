@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import { createAnimal } from "../../../services/animalService";
-import { useRouter } from "next/router";
 import EspeciesList from "@/hooks/useEspecieList";
 import RacasList from "@/hooks/useRacaList";
 import VoltarButton from "../VoltarButton";
@@ -146,6 +146,7 @@ function CreateAnimalForm() {
         try {
           const newAnimal = await createAnimal(animalToCreate);
           console.log(newAnimal);
+          alert("Animal cadastrado com sucesso!");
           router.push("/getAllAnimalTutor");
           resetForm();
         } catch (error) {

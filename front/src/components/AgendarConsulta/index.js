@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import styles from "./index.module.css"
+import styles from "./index.module.css";
+import VoltarButton from "@/components/VoltarButton";
+import { CancelarWhiteButton } from '../WhiteButton';
 
 const HorariosSemana = () => {
   const [selecionarData, setSelecionarData] = useState(new Date());
   const [selecionarHorario, setSelecionarHorario] = useState(null);
+  const [showModal, setShowModal]= useState(false);
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const timeOptions = [
     { value: '08:00', label: '08:00' },
@@ -38,49 +49,105 @@ const HorariosSemana = () => {
   });
 
   return (
-    <div>
-        <div>
-          <h1 className={styles.titulocadastro}>Agendar Consulta</h1>
-        </div>
+    <div className={styles.container}>
+      < VoltarButton />
+
+      <div className={styles.title_box}>
+        <h1>Agendar Consulta</h1>
+      </div>
+
       <div className={styles.boxprincipal}>
+
+        <div className={styles.select_container}>
+          <div className={styles.select_box}>
+            <div><h1>Especialidade</h1></div>
+            <select></select>
+          </div>
+
+          <div className={styles.select_box}>
+            <div><h1>Paciente</h1></div>
+            <select></select>
+          </div>
+        </div>
+
         <h1 className={styles.titulodataconsulta}>Data da Consulta</h1>
         <h2 className={styles.descricaotitulodataconsulta}>Selecione o dia e o horário disponível de sua preferência para o atendimento</h2>
         <div className={styles.containersemana}>
-    {weekDates.map((date) => {
-      if (date.getDay() !== 6 && date.getDay() !== 0) {
-        return (
-          <div key={date} className={styles.containerdia}>
-            <h2 className={styles.diasdasemana}>{date.toLocaleDateString('pt-BR', { weekday: 'short'})}</h2>
-            <p className={styles.data}>{date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</p>
-            <div className="time-buttons">
-              {timeOptions.map((timeOption) => (
-                <button
-                  key={timeOption.value}
-                  className={
-                      date.getDate() === selecionarData.getDate() && selecionarHorario?.value === timeOption.value
-                        ? `${styles.botaohora} selected`
-                        : styles.botaohora
-                    }
-                  onClick={() => {
-                    handleDateChange(date);
-                    handleTimeChange(timeOption);
-                  }}
-                >
-                  {timeOption.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-      }
-      return null;
-    })}
-  </div>
+          {weekDates.map((date) => {
+            if (date.getDay() !== 6 && date.getDay() !== 0) {
+              return (
+                <div key={date} className={styles.containerdia}>
+                  <h2 className={styles.diasdasemana}>{date.toLocaleDateString('pt-BR', { weekday: 'short'})}</h2>
+                  <p className={styles.data}>{date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</p>
+                  <div className="time-buttons">
+                    {timeOptions.map((timeOption) => (
+                      <button
+                        key={timeOption.value}
+                        className={
+                            date.getDate() === selecionarData.getDate() && selecionarHorario?.value === timeOption.value
+                              ? `${styles.botaohora} selected`
+                              : styles.botaohora
+                          }
+                        onClick={() => {
+                          handleDateChange(date);
+                          handleTimeChange(timeOption);
+                        }}
+                      >
+                        {timeOption.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })}
+        </div>
         <div>
           <p>Data selecionada: {selecionarData.toDateString()}</p>
           <p>Horário selecionado: {selecionarHorario ? selecionarHorario.label : 'Nenhum horário selecionado'}</p>
         </div>
+
+        <div className={styles.button_container}>
+          < CancelarWhiteButton />
+          <button className={styles.agendar_button} onClick={openModal}>Agendar</button>
+        </div>
       </div>
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalContent}>
+
+              <div className={styles.container1}>
+                <div className={styles.box}>
+                  <div className={styles.title}>Tem certeza que desaja realizar agendamento?</div>
+                </div>
+
+                <div className={styles.div_button1}>
+                  <button onClick={closeModal} className={styles.button_close_modal}>X</button>
+                </div>
+              </div>
+
+              <div  className={styles.container2}>
+                <div className={styles.box}>
+                  <div className={styles.item}>Paciente</div>
+                  <div className={styles.subtitle}>animal_nome</div>
+                </div>
+
+                <div className={styles.box}>
+                  <div className={styles.item}>Data</div>
+                  <div className={styles.subtitle}>vagaData</div>
+                </div>
+              </div>
+                
+              <div className={styles.div_button2}>
+                <div><button className={styles.button_cancelar_consulta}>Cancelar</button></div>
+                <div><button className={styles.button_agendar_consulta}>Agendar</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
