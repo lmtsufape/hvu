@@ -28,8 +28,12 @@ function GerenciarRacasList() {
             await deleteRaca(racaId);
             setRacas(racas.filter(raca => raca.id !== racaId));
             window.location.reload();
+            alert("Raça excluída com sucesso!");
         } catch (error) {
             console.error('Erro ao excluir a raça:', error);
+            if (error.response && error.response.status === 409) {
+                alert("Esta raça não pode ser excluída por está associada a um animal.");
+            }
         }
     };
 

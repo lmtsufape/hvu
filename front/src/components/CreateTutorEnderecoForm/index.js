@@ -152,6 +152,7 @@ function CreateTutorEnderecoForm() {
                 await postLogin(tutorFormData.email,tutorFormData.senha);
                 const response = await createTutor(formData);
                 console.log(response);
+                alert("Cadastro realizado com sucesso!");
                 router.push('/getAllAnimalTutor');
             } catch (error) {
                 console.error("Erro ao cadastrar tutor:", error);

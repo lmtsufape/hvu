@@ -1,5 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
 
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  gap: 30px;
+}
+
+.title_box {
+  margin-bottom: 20px;
+}
+
+.title_box h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+  color: #000000;
+}
+
 .boxprincipal {
   display: block;
   width: 80%;
@@ -17,71 +40,281 @@
   font-style: normal;
 }
 
+.select_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 40px 0px 40px 0px;
+}
+
+.select_box {
+  width: 568px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+}
+
+.select_box div h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #272727;
+}
+
+.select_box select {
+  width: 568px;
+  height: 48px;
+  padding: 0px, 12px, 0px, 12px;
+  border-radius: 5px;
+  border: 1px solid #B1B1B1;
+  opacity: 0.5px;
+}
+
 .containersemana{
-    display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-    
-  }
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  
+}
 
 .containerdia {
-    margin-right: 1px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    display: flexbox;
-    font-family: 'Poppins', sans-serif;
-    margin-left: 0.5%;
-    margin-right: 0.5%;
-    width: 20%;
-  }
-  
+  margin-right: 1px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  display: flexbox;
+  font-family: 'Poppins', sans-serif;
+  margin-left: 0.5%;
+  margin-right: 0.5%;
+  width: 20%;
+}
+
 .botaohora {
-    display: block;
-    margin-bottom: 5px;
-    margin-left: 8%;
-    padding: 5px;
-    background-color: #EEF8F3;
-    border: none;
-    cursor: pointer;
-    color: #327053;
-    border-radius: 6px;
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    width: 80%;
-    height: 5vh;
-    display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; 
-    
-    
-  }
+  display: block;
+  margin-bottom: 5px;
+  margin-left: 8%;
+  padding: 5px;
+  background-color: #EEF8F3;
+  border: none;
+  cursor: pointer;
+  color: #327053;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  width: 80%;
+  height: 5vh;
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; 
+}
+
 .diasdasemana {
-    font-size: 20px;
-    font-family: 'Poppins', sans-serif;
-    text-transform: capitalize;
-    text-align: center;
-    color: #000000;
-    
-  }
+  font-size: 20px;
+  font-family: 'Poppins', sans-serif;
+  text-transform: capitalize;
+  text-align: center;
+  color: #000000;
+}
+
 .data{
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-    color: #909090;
-  }
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  color: #909090;
+}
 
 .titulodataconsulta{
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-    font-size: 23px;
-    font-weight: 600;
-  }
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 23px;
+  font-weight: 600;
+}
 
 .descricaotitulodataconsulta{
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-    font-size: 17px;
-    color: #404040;
-    margin-top: 3vh;
-    margin-bottom: 8vh;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  color: #404040;
+  margin-top: 3vh;
+  margin-bottom: 8vh;
+}
 
-  }
+.button_container {
+  margin: 40px 0px 40px 0px;
+  display: flex;
+  float: right;
+  gap: 32px;
+}
+
+.agendar_button {
+  width: 180px;
+  height: 48px; 
+  border-radius: 10px;
+  background-color: #39805F;
+  border: 1px solid #39805F;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
+  color: #FFF5F6;
+}
+
+.agendar_button:hover {
+  background-color: #5b977b;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(131, 126, 126, 0.2); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  width: 620px;
+  height: 293px;
+  border-radius: 12px;
+  border: 2px;
+  box-shadow: 4px 5px 15px 0px #00000014;
+  background-color: white;
+  padding: 20px;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContent {
+  width: 580px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+.container1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.container2 {
+  width: 580px;
+  height: 56px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 40px;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  letter-spacing: 0em;
+  color: #272727;
+}
+
+.item {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0em;
+  color: #404040;
+}
+
+.subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0em;
+  color: #39805F;
+}
+
+.div_button1 {
+  height: 56px;
+  display: flex;
+  align-items: top;
+}
+
+.div_button2 {
+  width: 580px;
+  display: flex;
+  justify-content: right;
+  gap: 32px;
+}
+
+.button_close_modal {
+  text-decoration: none;
+  width: 24.12px;
+  height: 24.12px;
+  border-radius: 4.69px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ECECEC;
+  border: 1px solid #ECECEC;
+  color: #909090;
+}
+
+.button_cancelar_consulta {
+  width: 95px;
+  height: 448x;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #606060;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: center;
+  color: #606060;
+  background-color: white;
+}
+
+.button_cancelar_consulta:hover {
+  background-color: #f3f3f37b;
+}
+
+.button_agendar_consulta {
+  width: 95px;
+  height: 448x;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #39805F;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: center;
+  color: #FFF5F6;
+  background-color: #39805F;
+}
+
+.button_agendar_consulta:hover {
+  background-color: #5b977b;
+}
+

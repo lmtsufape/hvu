@@ -58,8 +58,7 @@ export default function MeusAgendamentos() {
                                     <div className={styles.agendamentoBox}>
                                         <div>
                                             <h1>Consulta Clínica</h1>
-                                            {/* Ver como listar os horários para alterar abaixo*/}
-                                            <h2>29/07 às 08:00</h2>
+                                            <h2>{agendamento.dataVaga}</h2>
                                         </div>
                                         <div>
                                             <h1>Paciente</h1>
