@@ -338,9 +338,14 @@ public class Facade {
 		medicoService.deleteMedico(id);
 	}
 
-  public List<Medico> findByInstituicao(long InstituicaoId){
+	public List<Medico> findByInstituicao(long InstituicaoId){
 		Instituicao instituicao = findInstituicaoById(InstituicaoId);
 		return medicoService.findByInstituicao(instituicao);
+	}
+	
+	public List<Medico> findByEspeciallidade(long EspecialidadeId) {
+		Especialidade especialidade = findEspecialidadeById(EspecialidadeId);
+		return medicoService.findByEspecialidade(especialidade);
 	}
 
 	// TipoExame--------------------------------------------------------------

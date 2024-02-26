@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import br.edu.ufape.hvu.exception.ObjectNotFoundException;
+import br.edu.ufape.hvu.model.Especialidade;
 import br.edu.ufape.hvu.model.Instituicao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,15 @@ public class MedicoService implements MedicoServiceInterface {
 		}
 		return medico;
 	}
+	
+	public List<Medico> findByEspecialidade(Especialidade especialidade){
+		List<Medico> medico = repository.findByEspecialidade(especialidade);
+		if(medico.isEmpty()){
+			throw  new ObjectNotFoundException("Medico");
+		}
+		return medico;
+	}
+	
 
 	public List<Medico> getAllMedico(){
 		return repository.findAll();
