@@ -78,5 +78,16 @@ public class VagaController {
 		
 	}
 	
-
+	@GetMapping("vaga/especialidade/{idEspecialidade}")
+	public List<VagaResponse> getVagasByEspecialidade(@PathVariable(value = "idEspecialidade") long idEspecialidade) {
+		return facade.getVagasByEspecialidade(idEspecialidade)
+				.stream()
+				.map(VagaResponse::new)
+				.toList();
+	}
+	
+	@GetMapping("vaga/agendamento/{idAgendamento}")
+	public VagaResponse getVagaByEspecialidade(@PathVariable(value = "idAgendamento") long idAgendamento) {
+		return new VagaResponse(facade.getVagaByAgendamento(idAgendamento));
+	}
 }

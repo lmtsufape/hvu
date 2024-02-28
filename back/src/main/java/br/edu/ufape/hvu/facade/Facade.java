@@ -436,6 +436,16 @@ public class Facade {
 	public void deleteVaga(long id) {
 		vagaServiceInterface.deleteVaga(id);
 	}
+	
+	public List<Vaga> getVagasByEspecialidade(long idEspecialidade) {
+		Especialidade especialidade = especialidadeServiceInterface.findEspecialidadeById(idEspecialidade);
+		return vagaServiceInterface.findVagaByEspecialidade(especialidade);
+	}
+	
+	public Vaga getVagaByAgendamento(long idAgendamento) {
+		Agendamento agendamento = findAgendamentoById(idAgendamento);
+		return vagaServiceInterface.findVagaByAgendamento(agendamento);
+	}
 
 	// Medicamento--------------------------------------------------------------
 	@Autowired

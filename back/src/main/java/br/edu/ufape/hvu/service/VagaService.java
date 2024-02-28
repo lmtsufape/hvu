@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.VagaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
+import br.edu.ufape.hvu.model.Agendamento;
+import br.edu.ufape.hvu.model.Especialidade;
 import br.edu.ufape.hvu.model.Vaga;
 
 @Service
@@ -37,6 +39,15 @@ public class VagaService implements VagaServiceInterface {
 	public void deleteVaga(long id){
 		Vaga obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Vaga"));
 		repository.delete(obj);
+	}
+
+	
+	public List<Vaga> findVagaByEspecialidade(Especialidade especialidade) {
+		return repository.findByEspecialidade(especialidade);
+	}
+
+	public Vaga findVagaByAgendamento(Agendamento agendamento) {
+		return repository.findByAgendamento(agendamento);
 	}	
 	
 	
