@@ -33,9 +33,9 @@ function GetAllAgendamentosDiaForm() {
         <div className={styles.cadendar_container}>
           <div className={styles.cadendar_box}>
             <div className={dateStyles.data_completa}>{DataCompleta(dataSelecionada)}</div>
-            <CalendarGrennIcon onDataSelecionada={handleDataSelecionada} />
+            < CalendarGrennIcon onDataSelecionada={handleDataSelecionada} />
           </div>          
-          <Filter />
+          < Filter />
         </div>
 
         <div className={styles.menu}>
@@ -44,7 +44,7 @@ function GetAllAgendamentosDiaForm() {
             <button className={styles.button}>Médicos disponíveis</button>
             <button className={styles.button}>Vagas disponíveis</button>
           </div>
-          <SearchBar />
+          < SearchBar />
         </div>
 
         <table className={styles.table}>
