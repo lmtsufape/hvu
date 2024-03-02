@@ -66,7 +66,7 @@ function GerenciarRacasList() {
                             <div  className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}
-                                    onClick={() => router.push(`/getRacaById/${raca.id}`)}
+                                    onClick={() => router.push(`/updateRaca/${raca.id}`)}
                                 >
                                     Editar
                                 </button>
