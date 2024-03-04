@@ -244,15 +244,11 @@ public class Facade {
 	@Autowired
 	private CronogramaServiceInterface cronogramaServiceInterface;
 
-	public Cronograma saveCronograma(Cronograma newInstance, String medico_id) {
-		Medico medico = findMedicoByuserId(medico_id);
-		newInstance.setMedico(medico);
+	public Cronograma saveCronograma(Cronograma newInstance) {
 		return cronogramaServiceInterface.saveCronograma(newInstance);
 	}
 
-	public Cronograma updateCronograma(Cronograma transientObject, String medico_id) {
-		Medico medico = findMedicoByuserId(medico_id);
-		transientObject.setMedico(medico);
+	public Cronograma updateCronograma(Cronograma transientObject) {
 		return cronogramaServiceInterface.updateCronograma(transientObject);
 	}
 
@@ -268,14 +264,9 @@ public class Facade {
 		cronogramaServiceInterface.deleteCronograma(persistentObject);
 	}
 
-	public void deleteCronograma(long cronogramaId, String medicoId) {
-		Medico medico = findMedicoByuserId(medicoId);
+	public void deleteCronograma(long cronogramaId) {
 		Cronograma cronograma = findCronogramaById(cronogramaId);
-		if(cronograma.getMedico().equals(medico)) {
-			cronogramaServiceInterface.deleteCronograma(cronograma.getId());
-		} else {
-			throw new RuntimeException("O cronograma de ID " + cronogramaId + "não pertence ao medico logado");
-		}
+		cronogramaServiceInterface.deleteCronograma(cronograma.getId());
 	}
 
 	// TipoPrognostico--------------------------------------------------------------
