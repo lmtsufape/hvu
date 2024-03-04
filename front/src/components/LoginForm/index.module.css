@@ -10,7 +10,7 @@
 
 .container_box {
     width: 1400px;
-    height: 494px;
+    min-height:600px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -138,18 +138,10 @@
     color: #5b977b;
 }
 
-@media (max-width: 1366px) {
 
+@media only screen and (max-width: 700px) {
+    .container_box {
+        flex-direction: column;
+    }
 }
 
-@media (max-width: 1024px) {
-
-}
-
-@media (max-width: 768px) {
-
-}
-
-@media (max-width: 400px) {
-
-}
