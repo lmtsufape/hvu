@@ -54,6 +54,7 @@ function CreateRaca() {
         } catch (error) {
             console.error("Erro ao criar raça:", error);
             console.log("Detalhes do erro:", error.response);
+            alert("Erro ao criar raça, tente novamente.");
         }
     };
 

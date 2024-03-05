@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar uma raca
   export async function updateRaca(racaId, racaData) {
     try {
-      const response = await api.put(`/raca/${racaId}`, racaData);
+      const response = await api.patch(`/raca/${racaId}`, racaData);
       return response.data;
     } catch (error) {
       throw error;
