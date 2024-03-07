@@ -1,35 +1,44 @@
 .backgroundfooter{
     background-color: #327053;
-    Height: 100.78px;
+    height: 6em;
     margin-top: 15px;
-    /*Top: 926.22px*/
-}
-.footercontainer{
+    width: 100%;
     display: flex;
     justify-content: space-around;
     align-items: center;
     min-height: 10%;
     min-width: 10%;
+    gap: 1em;
+    flex-wrap: wrap;
+    bottom: 0;
+    position: relative;
+
+    @media screen and (max-width: 700px) {
+        height: 15em;
+    
+        bottom: 0;
+        position: relative;
+    
+        .logohvu{
+            padding-top: 1em;
+            align-items: center;
+        }
+        .redessociais{
+            gap: 1em;
+            display: flex;
+            padding-bottom: 1em;
+        }
+    
+    }
 }
 .logohvu{
-    flex: 0;
-    margin-left: 50px;
-    margin-top: 1px;
-    min-height: 10%;
-    min-width: 10%;
+    align-items: center;
 }
 .logosufapelmts{
-    flex: 1;
-    text-align: center;
-    margin-top: 1px;
-    gap: 0;
-    justify-content: center;
+
 }
 .redessociais{
+    gap: 1em;
     display: flex;
-    gap: 3px;
-    margin-top: 1px;
-    margin-right: 50px;
-    min-height: 10%;
-    min-width: 10%;
 }
+
