@@ -3,13 +3,13 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton";
-import { getAllAnimal } from '../../../services/animalService';
+import { getAllAnimal, deleteAnimal } from '../../../services/animalService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
 
 function MeusAnimaisList() {
     const [animais, setAnimais] = useState([]);
-    const [searchTerm, setSearchTerm] = useState(''); // Adicione o estado para o termo de busca
+    const [searchTerm, setSearchTerm] = useState('');
 
     const router = useRouter();
 
@@ -25,15 +25,23 @@ function MeusAnimaisList() {
         fetchData();
     }, []);
 
-    // Função para atualizar o termo de busca
     const handleSearchChange = (term) => {
         setSearchTerm(term);
     };
 
-    // Filtragem dos animais de acordo com o termo de busca
     const filteredAnimais = animais.filter(animal =>
         animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleDeleteAnimal = async (animalId) => {
+        try {
+            await deleteAnimal(animalId);
+            setAnimais(animais.filter(animal => animal.id !== animalId))
+            window.location.reload();
+        } catch (error) {
+            console.error('Erro ao excluir o animal: ', error);
+        }
+    }
 
     return (
         <div className={styles.container}>
@@ -45,7 +53,7 @@ function MeusAnimaisList() {
                 <SearchBar
                     className={styles.pesquisa}
                     placeholder={"Buscar animal"}
-                    onSearchChange={handleSearchChange} // Passe a função de atualização de busca
+                    onSearchChange={handleSearchChange}
                 />
                 <AdicionarAnimalWhiteButton />
             </div>
@@ -71,7 +79,7 @@ function MeusAnimaisList() {
                                 >
                                     Acessar
                                 </button>
-                                < ExcluirButton />
+                                < ExcluirButton itemId={animal.id} onDelete={handleDeleteAnimal} />
                             </div>
                         </li>
                     ))}
