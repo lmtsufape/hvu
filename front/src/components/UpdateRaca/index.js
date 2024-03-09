@@ -12,6 +12,7 @@ function UpdateRaca() {
 
     const { especies } = EspeciesList();
     const [raca, setRaca] = useState({
+        id: null,
         nome: "",
         porte: "",
         descricao: "", 
@@ -25,6 +26,7 @@ function UpdateRaca() {
                 try {
                     const racaData = await getRacaById(id);
                     setRaca({
+                        id: racaData.id,
                         nome: racaData.nome,
                         porte: racaData.porte,
                         descricao: racaData.descricao,
@@ -33,7 +35,6 @@ function UpdateRaca() {
                     setSelectedEspecie(racaData.especie.id);
 
                     console.log("racaData:", racaData)
-                    console.log("raca antes:", raca);
                 } catch (error) {
                     console.error('Erro ao buscar raça:', error);
                 }
@@ -52,7 +53,7 @@ function UpdateRaca() {
         const { name, value } = event.target;
         setRaca({ ...raca, [name]: value });
     };
-    console.log("raca depois:", raca);
+    console.log("raca:", raca);
 
     const handleRacaUpdate = async () => {
         if (!selectedEspecie || !raca.nome || !raca.porte) {
@@ -68,17 +69,16 @@ function UpdateRaca() {
                 id: parseInt(selectedEspecie) 
             }
         };
-    
+
+        console.log("racaToUpdate:",racaToUpdate);
+
         try {
-            const response = await updateRaca(id, racaToUpdate);
-            if (response.status === 200) {
-                console.log("Raça editada com sucesso!");
-                router.push("/gerenciarRacas");
-            } else {
-                console.error("Erro ao editar raça:", response.data);
-                alert("Erro ao editar raça. Por favor, tente novamente.");
-            }
+            const response = await updateRaca(raca.id, racaToUpdate);
+            console.log("response:",response);
+            alert("Raça editada com sucesso!");
+            router.push("/gerenciarRacas");
         } catch (error) {
+            console.log("racaToUpdate:",racaToUpdate);
             console.error("Erro ao editar raça:", error);
             alert("Erro ao editar raça. Por favor, tente novamente.");
         }
