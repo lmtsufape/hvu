@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar um agendamento
   export async function updateAgendamento(agendamentoId, agendamentoData) {
     try {
-      const response = await api.put(`/animal/${agendamentoId}`, agendamentoData);
+      const response = await api.patch(`/animal/${agendamentoId}`, agendamentoData);
       return response.data;
     } catch (error) {
       throw error;

@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateTipoTurgorCutaneo(tipoTurgorCutaneoId, tipoTurgorCutaneoData) {
     try {
-      const response = await api.put(`/tipoTurgorCutaneo/${tipoTurgorCutaneoId}`, tipoTurgorCutaneoData);
+      const response = await api.patch(`/tipoTurgorCutaneo/${tipoTurgorCutaneoId}`, tipoTurgorCutaneoData);
       return response.data;
     } catch (error) {
       throw error;

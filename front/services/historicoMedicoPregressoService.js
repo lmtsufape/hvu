@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateHistoricoMedicoPregresso(historicoMedicoPregressoId, historicoMedicoPregressoData) {
     try {
-      const response = await api.put(`/historicoMedicoPregresso/${historicoMedicoPregressoId}`, historicoMedicoPregressoData);
+      const response = await api.patch(`/historicoMedicoPregresso/${historicoMedicoPregressoId}`, historicoMedicoPregressoData);
       return response.data;
     } catch (error) {
       throw error;

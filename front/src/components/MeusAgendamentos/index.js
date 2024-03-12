@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from "./index.module.css";
 import { useRouter } from "next/router";
-import Image from "next/image";;
+import Image from "next/image";
 import VoltarButton from "../VoltarButton";
 import SearchBar from "../SearchBar";
 import { getAgendamento, deleteAgendamento } from "../../../services/agendamentoService";
+import { format } from 'date-fns'; 
 
 export default function MeusAgendamentos() {
     const router = useRouter();
+
+    const [showModal, setShowModal] = useState(false);
+    const modalRef = useRef(null);
 
     const [agendamentos, setAgendamentos] = useState([]);
 
@@ -27,8 +31,11 @@ export default function MeusAgendamentos() {
         try {
             await deleteAgendamento(agendamentoId);
             setAgendamentos(agendamentos.filter(agendamento => agendamento.id !== agendamentoId));
+            setShowModal(false);
+            alert("Agendamento cancelado!");
         } catch (error) {
             console.error('Erro ao excluir agendamento:', error);
+            setShowModal(false);
         }
     };
 
@@ -58,16 +65,28 @@ export default function MeusAgendamentos() {
                                     <div className={styles.agendamentoBox}>
                                         <div>
                                             <h1>Consulta Clínica</h1>
-                                            <h2>{agendamento.dataVaga}</h2>
+                                            <h2>{format(new Date(agendamento.dataVaga), 'dd/MM \'às\' HH:mm')}</h2>
                                         </div>
                                         <div>
                                             <h1>Paciente</h1>
                                             <h2>{agendamento.animal && agendamento.animal.nome}</h2>
                                         </div>
                                         <div>
-                                            <button onClick={() => handleDeleteAgendamento(agendamento.id)}>
+                                            <button className={styles.agendamento_button} onClick={() => setShowModal(true)}>
                                                 <h1>Cancelar</h1>
                                             </button>
+                                            {showModal && (
+                                                <div className={styles.modal} ref={modalRef}>
+                                                    <div className={styles.box1}>
+                                                        <div>Deseja realmente cancelar?</div>
+                                                        <button onClick={() => setShowModal(false)} className={styles.button_close_modal}>X</button>
+                                                    </div>
+                                                    <div className={styles.box2}>
+                                                        <button className={styles.cancelar_button} onClick={() => setShowModal(false)}>Voltar</button>
+                                                        <button className={styles.excluir_button2}  onClick={() => handleDeleteAgendamento(agendamento.id)}>Cancelar</button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

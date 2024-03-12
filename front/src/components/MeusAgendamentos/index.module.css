@@ -61,7 +61,7 @@
     width: 11em;
 }
 
-.agendamentoBox button{
+.agendamento_button{
     color: white;
     background-color: #C7122F;
     padding: 0.3em;
@@ -73,10 +73,10 @@
     border: 1px;
 }
 
-.agendamentoBox button h1{
+.agendamento_button h1{
     font-size: 1em;
     width: auto;
-}
+} 
 
 .agendamentoBox button:hover {
     background-color: #c94157;
@@ -91,7 +91,6 @@
     margin-left: 5em;
     width: 90%;
     margin-top: 2em;
-    
 }
 
 .pesquisaBotao input{
@@ -143,6 +142,100 @@
     text-align: center;
 }
 
+.modal {
+    position: absolute;
+    z-index: 1000;
+    margin-top: 5px;
+    margin-left: -500px;
+    width: 620px;
+    height: 181px;
+    border-radius: 20px;
+    border: 2px solid #ECECEC;
+    box-shadow: 4px 5px 15px 0px #00000014;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.box1 {
+    width: 580px;
+    height:45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.box2 {
+    width: 580px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 32px;
+}
+
+.box1 div {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: 0em;
+    color: #272727;
+}
+
+.button_close_modal {
+    text-decoration: none;
+    width: 24.12px;
+    height: 24.12px;
+    border-radius: 4.69px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ECECEC;
+    border: 1px solid #ECECEC;
+    color: #909090;
+}
+
+.cancelar_button {
+    width: 95px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid #606060;
+    background-color: white;
+    
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    color: #606060;
+}
+
+.cancelar_button:hover {
+    background-color: #f3f3f37b;
+}
+
+.excluir_button2 {
+    width: 95px;
+    height: 48px;
+    border-radius: 10px;
+    border: none;
+    background-color: #C7122F;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    color: #FFF5F6;
+}
+
+.excluir_button2:hover {
+    background-color: #c94157;
+}
+
 @media only screen and (max-width: 700px) {
     .voltar {
       margin-left: 1em;
@@ -170,6 +263,5 @@
       margin-left: 1em;
       margin-right: 1em;
     }
-    
-  }
+}
   

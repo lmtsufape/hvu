@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateTipoMucosa(tipoMucosaId, tipoMucosaData) {
     try {
-      const response = await api.put(`/tipoMucosa/${tipoMucosaId}`, tipoMucosaData);
+      const response = await api.patch(`/tipoMucosa/${tipoMucosaId}`, tipoMucosaData);
       return response.data;
     } catch (error) {
       throw error;

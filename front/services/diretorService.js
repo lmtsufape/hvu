@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateDiretor(diretorId, diretorData) {
     try {
-      const response = await api.put(`/diretor/${diretorId}`, diretorData);
+      const response = await api.patch(`/diretor/${diretorId}`, diretorData);
       return response.data;
     } catch (error) {
       throw error;

@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateAvaliacaoFisicoGeral(avaliacaoFisicoGeralId, avaliacaoFisicoGeralData) {
     try {
-      const response = await api.put(`/avaliacaoFisicoGeral/${avaliacaoFisicoGeralId}`, avaliacaoFisicoGeralData);
+      const response = await api.patch(`/avaliacaoFisicoGeral/${avaliacaoFisicoGeralId}`, avaliacaoFisicoGeralData);
       return response.data;
     } catch (error) {
       throw error;

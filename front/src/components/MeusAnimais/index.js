@@ -38,6 +38,7 @@ function MeusAnimaisList() {
             await deleteAnimal(animalId);
             setAnimais(animais.filter(animal => animal.id !== animalId))
             window.location.reload();
+            alert("Animal excluído com sucesso!");
         } catch (error) {
             console.error('Erro ao excluir o animal: ', error);
         }

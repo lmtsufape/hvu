@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar um tutor
   export async function updateTutor(tutorId, tutorData) {
     try {
-      const response = await api.put(`/usuario/${tutorId}`, tutorData);
+      const response = await api.patch(`/usuario/${tutorId}`, tutorData);
       return response.data;
     } catch (error) {
       throw error;

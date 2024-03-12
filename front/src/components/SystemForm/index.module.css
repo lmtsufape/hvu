@@ -15,7 +15,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 50px;
+    gap: -60px;
 }
 
 .container h1 {
@@ -27,7 +27,7 @@
     color: #000000;
 }
 
-.container h6 {
+.container div h6 {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 400;
@@ -35,4 +35,5 @@
     letter-spacing: 0em;
     text-align: justify;
     color: #404040;
+    /*text-indent: 50px;*/
 }

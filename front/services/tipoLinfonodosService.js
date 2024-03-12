@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateTipoLinfonodos(tipoLinfonodosId, tipoLinfonodosData) {
     try {
-      const response = await api.put(`/tipoLinfonodos/${tipoLinfonodosId}`, tipoLinfonodosData);
+      const response = await api.patch(`/tipoLinfonodos/${tipoLinfonodosId}`, tipoLinfonodosData);
       return response.data;
     } catch (error) {
       throw error;

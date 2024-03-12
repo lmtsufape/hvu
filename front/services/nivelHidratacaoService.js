@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateNivelHidratacao(nivelHidratacaoId, nivelHidratacaoData) {
     try {
-      const response = await api.put(`/nivelHidratacao/${nivelHidratacaoId}`, nivelHidratacaoData);
+      const response = await api.patch(`/nivelHidratacao/${nivelHidratacaoId}`, nivelHidratacaoData);
       return response.data;
     } catch (error) {
       throw error;

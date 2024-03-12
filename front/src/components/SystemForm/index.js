@@ -7,11 +7,24 @@ function SystemForm() {
             < VoltarButton />
             <div className={styles.container}>
                 <h1>Sistema</h1>
-                <h6>
-                    Lorem ipsum dolor sit amet consectetur. Ultrices viverra pretium purus sit viverra sed eu arcu nisi. Nunc vitae ullamcorper ornare vitae velit dis at tellus. Eu ipsum mauris gravida mauris at et. Nam convallis eget neque egestas turpis ut ullamcorper. Massa laoreet elementum sit pellentesque tortor. Nulla natoque duis augue lacus nunc sit nec. Lorem et vestibulum mollis enim erat pellentesque. Nec eget nisi tempus commodo. Magna facilisi vivamus urna convallis praesent turpis aliquam. Sollicitudin sed varius turpis enim etiam pellentesque. Mauris aliquet velit et id odio ante et gravida. Consequat egestas egestas nunc id. Sociis eu ac ut sed eleifend luctus libero. Tincidunt vel lacus consequat tristique dolor.
-                    Quis dignissim placerat volutpat velit. Eget ac pellentesque viverra dolor amet adipiscing nam. Integer scelerisque sit enim elementum blandit sed. Et diam odio mi scelerisque. Aenean aenean risus condimentum tortor in pellentesque nunc nunc elit. Sit massa velit nulla ullamcorper. Magna justo aliquam consequat lacus tincidunt tortor. Morbi amet hac non vitae id. Id in volutpat facilisis proin risus urna phasellus sit.
-                    Donec tortor posuere eu malesuada malesuada volutpat consequat integer massa. Dis at ornare laoreet pulvinar aliquet in in sapien. Aliquam nisl eget amet tellus massa at vitae turpis. In quis sed suspendisse nunc. Libero et tellus interdum accumsan nulla nibh velit pellentesque ornare. Ultrices euismod adipiscing malesuada in quam. Cursus ultricies pharetra facilisi ullamcorper est. Metus fermentum quam pharetra quisque bibendum quam donec pellentesque. Amet lacus dui diam id. Nulla at nisi in proin. Pretium tristique faucibus quisque eu nibh diam enim sit sed. Sed facilisi fermentum placerat diam facilisis tincidunt.
-                </h6>
+                <div>
+                    <h6>Bem-vindo ao nosso site dedicado ao sistema de agendamento do Hospital Universitário Veterinário da Universidade Federal do Agreste de 
+                    Pernambuco (UFAPE).</h6> 
+
+                    <h6>Devido à crescente demanda por serviços veterinários, enfrentávamos desafios significativos em garantir o acesso dos tutores de animais
+                    aos atendimentos oferecidos pela universidade. Apenas em 2022, registramos uma demanda de 6240 serviços, o que evidenciou a importância e 
+                    a necessidade de uma abordagem mais eficiente para lidar com essa demanda.</h6>
+
+                    <h6>Nosso objetivo foi superar esses desafios e melhorar a experiência de todos os envolvidos, tanto os tutores de animais quanto os profissionais de saúde.
+                    Para isso, desenvolvemos uma ferramenta de agendamento online que simplifica e otimiza o processo de marcação de consultas e procedimentos
+                    veterinários.</h6>
+
+                    <h6>Ao utilizar nossa ferramenta de agendamento, os tutores de animais poderão visualizar de forma clara e transparente a disponibilidade de vagas, 
+                    reduzindo assim o número de desistências e garantindo um atendimento mais eficiente e satisfatório para todos.</h6>
+
+                    <h6>Estamos comprometidos em melhorar continuamente nossos serviços e garantir que os animais e seus tutores recebam o cuidado e atenção que merecem. 
+                    Obrigado por fazer parte deste projeto e por sua confiança em nosso sistema de agendamento.</h6>
+                </div>
             </div>
         </div>
     );
