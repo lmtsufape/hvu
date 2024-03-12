@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from "next/router";
 import Select from 'react-select';
 import styles from "./index.module.css";
-import VoltarButton from "@/components/VoltarButton";
+import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from '../WhiteButton';
+import { getAllAnimal } from '../../../services/animalService';
+import { getAllVaga } from '../../../services/vagaService';
+import { createAgendamento } from '../../../services/agendamentoService';
 
 const HorariosSemana = () => {
+  const router = useRouter();
+
   const [selecionarData, setSelecionarData] = useState(new Date());
   const [selecionarHorario, setSelecionarHorario] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const [animais, setAnimais] = useState(null);
+  const [selectedAnimal, setSelectedAnimal] = useState(null); 
+
+  const [vagas, setVagas] = useState(null);
 
   const openModal = () => {
     setShowModal(true);
@@ -28,7 +39,7 @@ const HorariosSemana = () => {
     { value: '16:00', label: '16:00' },
   ];
 
-const diasSemana = {
+  const diasSemana = {
     0: 'Domingo',
     1: 'Segunda',
     2: 'Terça',
@@ -58,10 +69,78 @@ const diasSemana = {
     return currentDate;
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const AnimaisData = await getAllAnimal();
+        setAnimais(AnimaisData);
+        console.log("AnimaisData:", AnimaisData);
+      } catch (error) {
+        console.error('Erro ao buscar animais:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const VagasData = await getAllVaga();
+        setVagas(VagasData);
+        console.log("VagasData:", AnimaisData);
+      } catch (error) {
+        console.error('Erro ao buscar vagas:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleAnimalSelection = (event) => {
+    const animalId = event.target.value;
+    const selectedAnimalInfo = animais.find(animal => animal.id === parseInt(animalId));
+    setSelectedAnimal(selectedAnimalInfo);
+  };
+  console.log("selectedAnimal", selectedAnimal);
+
+  const formatDate = (dateString, selectedTime) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const formattedTime = selectedTime ? ` às ${selectedTime}` : '';
+    return formattedDate + formattedTime;
+  };
+
+  const handleCreateAgendamento = async () => {
+    // Separar a hora e os minutos do horário selecionado
+    const [hour, minute] = selecionarHorario.value.split(':').map(Number);
+    
+    // Clonar a data selecionada para evitar mutação indesejada
+    const selectedDate = new Date(selecionarData);
+  
+    // Definir a hora e os minutos selecionados na data selecionada
+    selectedDate.setHours(hour, minute);
+  
+    const agendamentoToCreate = {
+      animal: { id: selectedAnimal.id },
+      dataVaga: selectedDate.toISOString()
+    };
+  
+    console.log("agendamentoToCreate", agendamentoToCreate);
+  
+    try {
+      const newAgendamento = await createAgendamento(agendamentoToCreate);
+      console.log(newAgendamento);
+      alert("Consulta agendada com sucesso!");
+      router.push("/meusAgendamentos");
+    } catch (error) {
+      console.error("Erro ao agendar consulta:", error);
+    }
+  };
+  
+
   return (
     <div className={styles.container}>
       <div className={styles.voltar_button}>
-        < VoltarButton />
+        <VoltarButton />
       </div>
 
       <div className={styles.title_box}>
@@ -71,22 +150,19 @@ const diasSemana = {
       <div className={styles.boxprincipal}>
         <div className={styles.select_container}>
           <div className={styles.select_box}>
-            <h1>Especialidade</h1>
-            <select class="form-select" aria-label="Default select example">
-              <option selected>Selecione uma especialidade</option>
-              <option value="1">Especialidade 1</option>
-              <option value="2">Especialidade 2</option>
-              <option value="3">Especialidade 3</option>
-            </select>
-          </div>
-
-          <div className={styles.select_box}>
             <h1>Paciente</h1>
-            <select class="form-select" aria-label="Default select example">
-              <option selected>Selecione um paciente</option>
-              <option value="1">José Floquinho</option>
-              <option value="2">Cuscuz</option>
-              <option value="3">Rex</option>
+            <select 
+              className="form-select" aria-label="Default select example"
+              name="animal"
+              value={selectedAnimal ? selectedAnimal.id : ''} // Alterado
+              onChange={handleAnimalSelection}
+            >
+              <option value="">Selecione um paciente</option>
+              {animais && animais.map((animal) => (
+                <option key={animal.id} value={animal.id}>
+                  {animal.nome}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -125,7 +201,7 @@ const diasSemana = {
           })}
         </div>
         <div className={styles.button_container}>
-          < CancelarWhiteButton />
+          <CancelarWhiteButton />
           <button className={styles.agendar_button} onClick={openModal}>Agendar</button>
         </div>
       </div>
@@ -136,7 +212,7 @@ const diasSemana = {
 
               <div className={styles.container1}>
                 <div className={styles.box}>
-                  <div className={styles.title}>Tem certeza que desaja realizar agendamento?</div>
+                  <div className={styles.title}>Tem certeza que deseja realizar o agendamento?</div>
                 </div>
 
                 <div className={styles.div_button1}>
@@ -147,18 +223,18 @@ const diasSemana = {
               <div className={styles.container2}>
                 <div className={styles.box}>
                   <div className={styles.item}>Paciente</div>
-                  <div className={styles.subtitle}>animal_nome</div>
+                  <div className={styles.subtitle}>{selectedAnimal ? selectedAnimal.nome : ''}</div> {/* Alterado */}
                 </div>
 
                 <div className={styles.box}>
                   <div className={styles.item}>Data</div>
-                  <div className={styles.subtitle}>vagaData</div>
+                  <div className={styles.subtitle}>{formatDate(selecionarData, selecionarHorario ? selecionarHorario.label : '')}</div>
                 </div>
               </div>
 
               <div className={styles.div_button2}>
-                <div><button className={styles.button_cancelar_consulta}>Cancelar</button></div>
-                <div><button className={styles.button_agendar_consulta}>Agendar</button></div>
+                <div><button className={styles.button_cancelar_consulta} onClick={closeModal}>Cancelar</button></div>
+                <div><button className={styles.button_agendar_consulta} type='button' onClick={handleCreateAgendamento}>Agendar</button></div>
               </div>
             </div>
           </div>
