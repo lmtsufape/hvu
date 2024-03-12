@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateTipoExame(tipoExameId, tipoExameData) {
     try {
-      const response = await api.put(`/tipoExame/${tipoExameId}`, tipoExameData);
+      const response = await api.patch(`/tipoExame/${tipoExameId}`, tipoExameData);
       return response.data;
     } catch (error) {
       throw error;

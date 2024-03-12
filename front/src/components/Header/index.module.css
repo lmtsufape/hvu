@@ -139,4 +139,6 @@
     text-decoration: underline;
 }
 
-
+.boxlogo {
+    all: unset;
+}

@@ -9,12 +9,14 @@ import { getAllTutor } from '../../../services/tutorService';
 
 //Header com botão de login e cadastro
 export function Header01() {
+    const router = useRouter();
+
     return (
         <header className={styles.header}>
             
-            <div className={styles.boxlogo}>
+            <button className={styles.boxlogo} onClick={(e) => router.push("/")}>
                 <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
-            </div>
+            </button>
 
             <div className={styles.box_buttons} >
             <button type="button" className="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
@@ -32,9 +34,9 @@ export function Header01() {
     return (
         <header className={styles.header}>
             
-            <div className={styles.boxlogo}>
+            <button className={styles.boxlogo} onClick={(e) => router.push("/")}>
                 <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
-            </div>
+            </button>
 
             <div className={styles.box_buttons} >
                 <button type="button" className="btn btn-link" id={styles.black_button_decoration} onClick={(e) => router.push("/")}>Home</button>
@@ -86,9 +88,9 @@ export function Header01() {
     return (
         <header className={styles.header}>
             
-            <div className={styles.boxlogo}>
+            <button className={styles.boxlogo} /*onClick={(e) => router.push("/")}*/>
                 <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
-            </div>
+            </button>
 
             <div className={styles.box_buttons} ref={dropdownRef}>
                 <button type="button" className="btn btn-link" onClick={toggleDropdown}>
@@ -115,19 +117,21 @@ export function Header01() {
     );    
 }
 
-  //Header botão de login
-  export function Header04() {
-    return (
-        <header className={styles.header}>
-            
-            <div className={styles.boxlogo}>
-                <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
-            </div>
+//Header botão de login
+export function Header04() {
+    const router = useRouter();
+return (
+    <header className={styles.header}>
+        
+        <button className={styles.boxlogo} onClick={(e) => router.push("/")}>
+            <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
+        </button>
 
-            <div className={styles.box_buttons} >
-                < LoginWhiteButton />
-            </div>
-                
-        </header>
-    );    
-  }
+        <div className={styles.box_buttons} >
+            < LoginWhiteButton />
+        </div>
+            
+    </header>
+);    
+}
+

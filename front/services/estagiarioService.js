@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar um estagiario
   export async function updateEstagiario(estagiarioId, estagiarioData) {
     try {
-      const response = await api.put(`/estagiario/${estagiarioId}`, estagiarioData);
+      const response = await api.patch(`/estagiario/${estagiarioId}`, estagiarioData);
       return response.data;
     } catch (error) {
       throw error;

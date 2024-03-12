@@ -2,7 +2,10 @@ import React from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from './index.module.css';
 
-function SearchBar() {
+function SearchBar({ placeholder, onSearchChange }) {
+  const handleInputChange = (event) => {
+    onSearchChange(event.target.value);
+  };
 
   return (
     <div className={styles.busca}>
@@ -10,7 +13,8 @@ function SearchBar() {
         type="text"
         className={styles.texto_busca}
         name='animais'
-        placeholder="Buscar animal"
+        placeholder={placeholder}
+        onChange={handleInputChange} // Adicione o evento onChange
       />
 
       <button className={styles.button_busca} type="button">

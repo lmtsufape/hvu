@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateCronograma(cronogramaId, cronogramaData) {
     try {
-      const response = await api.put(`/cronograma/${cronogramaId}`, cronogramaData);
+      const response = await api.patch(`/cronograma/${cronogramaId}`, cronogramaData);
       return response.data;
     } catch (error) {
       throw error;
