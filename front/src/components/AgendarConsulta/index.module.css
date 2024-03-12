@@ -1,17 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
 
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 40px;
-  margin-bottom: 40px;
-  gap: 30px;
+
+
+.voltar_button{
+display: flex;
+align-items: center;
+font-size: 1em;
+margin-left: 7%;
+
 }
 
 .title_box {
-  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  margin-top: 1em;
+  margin-bottom: 3em;
 }
 
 .title_box h1 {
@@ -25,7 +29,7 @@
 
 .boxprincipal {
   display: block;
-  width: 80%;
+  width: 85%;
   max-width: 1500px;
   min-width: 300px;
   height: auto; 
@@ -38,52 +42,63 @@
   border-radius: 10px;
   font-family: 'Poppins', sans-serif;
   font-style: normal;
+  margin-bottom: 4em;
+
+  @media only screen and (max-width: 700px) {
+    .select_container{
+      display: flex;
+      flex-direction: column;
+    }
+    .containersemana {
+      display: flex;
+      flex-direction: column;
+      padding: auto;
+    }
+    .containerdia {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .botaohora {
+      flex: 0 0 48%; 
+      margin-left: 0; 
+      margin-bottom: 2%;
+      width: 12em;
+      margin-top: 1em;
+    }
+    
+  }
 }
 
 .select_container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin: 40px 0px 40px 0px;
+  font-family: 'Poppins', sans-serif;
+  gap: 0.4em;
+  margin-bottom: 2em;
+}
+
+.select_container h1{
+  font-size: 1.3em;
 }
 
 .select_box {
-  width: 568px;
-  height: 80px;
-  display: flex;
-  flex-direction: column;
+  flex: 1;
 }
 
-.select_box div h1 {
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  letter-spacing: 0em;
-  text-align: left;
-  color: #272727;
-}
-
-.select_box select {
-  width: 568px;
-  height: 48px;
-  padding: 0px, 12px, 0px, 12px;
-  border-radius: 5px;
-  border: 1px solid #B1B1B1;
-  opacity: 0.5px;
-}
 
 .containersemana{
   display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
-  align-items: center; /* Centraliza verticalmente */
+  justify-content: center;
+  align-items: center;
   
 }
 
 .containerdia {
   margin-right: 1px;
   padding: 10px;
-  border: 1px solid #ccc;
   display: flexbox;
   font-family: 'Poppins', sans-serif;
   margin-left: 0.5%;
@@ -91,23 +106,50 @@
   width: 20%;
 }
 
+/*botão com a hora em verde*/
 .botaohora {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0.8em;
   margin-left: 8%;
   padding: 5px;
   background-color: #EEF8F3;
   border: none;
   cursor: pointer;
-  color: #327053;
+  color: #404040;
   border-radius: 6px;
   font-family: 'Poppins', sans-serif;
   text-align: center;
   width: 80%;
   height: 5vh;
   display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
+  justify-content: center;
   align-items: center; 
+  padding-bottom: 1.5em;
+  padding-top: 1.5em;
+}
+
+/*Botão de horário indisponível cinza*/
+.botaohoraIndisponivel {
+  display: block;
+  margin-bottom: 0.8em;
+  margin-left: 8%;
+  padding: 5px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  color: #B1B1B1;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  width: 80%;
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  padding-bottom: 1.5em;
+  padding-top: 1.5em;
+  border: 0.5px solid #B1B1B1;
+  text-decoration: line-through;
 }
 
 .diasdasemana {
@@ -127,24 +169,29 @@
 .titulodataconsulta{
   text-align: center;
   font-family: 'Poppins', sans-serif;
-  font-size: 23px;
+  font-size: 1.7em;
   font-weight: 600;
+  font-weight: bold;
 }
 
 .descricaotitulodataconsulta{
   text-align: center;
   font-family: 'Poppins', sans-serif;
-  font-size: 17px;
+  font-size: 1em;
   color: #404040;
   margin-top: 3vh;
   margin-bottom: 8vh;
 }
 
 .button_container {
-  margin: 40px 0px 40px 0px;
+  margin-top: 4em;
+  margin-bottom: 1em;
   display: flex;
-  float: right;
-  gap: 32px;
+  justify-content: end;
+  align-items: center;
+  margin-right: -1em;
+  gap: 1em;
+  margin-right: 0.5em;
 }
 
 .agendar_button {
@@ -312,9 +359,12 @@
   text-align: center;
   color: #FFF5F6;
   background-color: #39805F;
+
 }
 
 .button_agendar_consulta:hover {
   background-color: #5b977b;
 }
+
+
 

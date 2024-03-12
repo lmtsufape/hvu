@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';  
+import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton";
@@ -9,7 +9,8 @@ import ExcluirButton from '../ExcluirButton';
 
 function MeusAnimaisList() {
     const [animais, setAnimais] = useState([]);
-    
+    const [searchTerm, setSearchTerm] = useState('');
+
     const router = useRouter();
 
     useEffect(() => {
@@ -24,34 +25,45 @@ function MeusAnimaisList() {
         fetchData();
     }, []);
 
+    const handleSearchChange = (term) => {
+        setSearchTerm(term);
+    };
+
+    const filteredAnimais = animais.filter(animal =>
+        animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const handleDeleteAnimal = async (animalId) => {
         try {
             await deleteAnimal(animalId);
-            setAnimais(animais.filter(animal => animal.id == !animalId));
+            setAnimais(animais.filter(animal => animal.id !== animalId))
             window.location.reload();
             alert("Animal excluído com sucesso!");
         } catch (error) {
-            console.error('Erro ao excluir a animal:', error);
+            console.error('Erro ao excluir o animal: ', error);
         }
-    };
+    }
 
     return (
         <div className={styles.container}>
             < VoltarButton />
-            
+
             <h1>Animais</h1>
 
             <div className={styles.navbar}>
-                <SearchBar className={styles.pesquisa} />
+                <SearchBar
+                    className={styles.pesquisa}
+                    placeholder={"Buscar animal"}
+                    onSearchChange={handleSearchChange}
+                />
                 <AdicionarAnimalWhiteButton />
             </div>
 
-            {animais.length === 0 ? (
+            {filteredAnimais.length === 0 ? (
                 <p>Não há animais cadastrados.</p>
             ) : (
                 <ul className={styles.lista}>
-                    {animais.map(animal => (
+                    {filteredAnimais.map(animal => (
                         <li key={animal.id} className={styles.info_box}>
                             <div className={styles.info}>
                                 <h6>Paciente</h6>
@@ -68,7 +80,7 @@ function MeusAnimaisList() {
                                 >
                                     Acessar
                                 </button>
-                                < ExcluirButton itemId={animal.id} onDelete={handleDeleteAnimal}/>
+                                < ExcluirButton itemId={animal.id} onDelete={handleDeleteAnimal} />
                             </div>
                         </li>
                     ))}
