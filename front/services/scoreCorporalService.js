@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateScoreCorporal(scoreCorporalId, scoreCorporalData) {
     try {
-      const response = await api.put(`/scoreCorporal/${scoreCorporalId}`, scoreCorporalData);
+      const response = await api.patch(`/scoreCorporal/${scoreCorporalId}`, scoreCorporalData);
       return response.data;
     } catch (error) {
       throw error;

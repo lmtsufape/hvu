@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateVaga(vagaId, vagaData) {
     try {
-      const response = await api.put(`/vaga/${vagaId}`, vagaData);
+      const response = await api.patch(`/vaga/${vagaId}`, vagaData);
       return response.data;
     } catch (error) {
       throw error;

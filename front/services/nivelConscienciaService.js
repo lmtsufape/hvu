@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateNivelConsciencia(nivelConscienciaId, nivelConscienciaData) {
     try {
-      const response = await api.put(`/nivelConsciencia/${nivelConscienciaId}`, nivelConscienciaData);
+      const response = await api.patch(`/nivelConsciencia/${nivelConscienciaId}`, nivelConscienciaData);
       return response.data;
     } catch (error) {
       throw error;

@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar um endereco
   export async function updateEndereco(enderecoId, enderecoData) {
     try {
-      const response = await api.put(`/endereco/${enderecoId}`, enderecoData);
+      const response = await api.patch(`/endereco/${enderecoId}`, enderecoData);
       return response.data;
     } catch (error) {
       throw error;

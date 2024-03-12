@@ -147,7 +147,7 @@ function CreateAnimalForm() {
           const newAnimal = await createAnimal(animalToCreate);
           console.log(newAnimal);
           alert("Animal cadastrado com sucesso!");
-          router.push("/getAllAnimalTutor");
+          router.push("/meusAnimais");
           resetForm();
         } catch (error) {
           console.error("Erro ao criar animal:", error);

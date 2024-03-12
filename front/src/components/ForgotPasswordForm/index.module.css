@@ -1,60 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
 .page {
-    min-height: 600px;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
 }
 
 .container {
-    width: 1152px;
-    margin-top: 50px;
+    width: 90%; 
+    max-width: 670px; 
+    margin-top: 5vh; 
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 1rem; 
     font-weight: 500;
-    line-height: 24px;
-    letter-spacing: 0em;
-
+    line-height: 1.5;
+    letter-spacing: 0;
 }
 
 .text_box {
-    width: 670px;
-    height: 74px;
-    margin-top: 50px;
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px; 
+    margin-top: 5vh; 
+    margin-bottom: 3vh; 
 }
 
 .text_box h1 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 700;
-    line-height: 36px;
-    letter-spacing: 0em;
+    line-height: 1.5;
 }
 
 .text_box h6 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 1rem; 
     font-weight: 400;
-    line-height: 30px;
-    letter-spacing: 0em;
+    line-height: 1.875;
 }
 
 .button {
-    margin-top: 30px;
+    margin-top: 3vh;
     width: 180px;
     height: 48px;
     border-radius: 10px;
     border: 1px solid #327053;
     background-color: #327053;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 1rem; 
     font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0em;
+    line-height: 1.5;
+    letter-spacing: 0;
     color: #FFF5F6;
 }
 

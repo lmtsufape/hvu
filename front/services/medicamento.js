@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar 
   export async function updateMedicamento(medicamentoId, medicamentoData) {
     try {
-      const response = await api.put(`/medicamento/${medicamentoId}`, medicamentoData);
+      const response = await api.patch(`/medicamento/${medicamentoId}`, medicamentoData);
       return response.data;
     } catch (error) {
       throw error;

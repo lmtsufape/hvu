@@ -34,7 +34,7 @@ export async function createUsuario(usuarioData) {
   // Função para atualizar um usuario
   export async function updateUsuario(usuarioId, animalData) {
     try {
-      const response = await api.put(`/usuario/${usuarioId}`, animalData);
+      const response = await api.patch(`/usuario/${usuarioId}`, animalData);
       return response.data;
     } catch (error) {
       throw error;

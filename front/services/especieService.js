@@ -33,7 +33,7 @@ import api from '../common/http-common-back';
   // Função para atualizar uma especie
   export async function updateEspecie(especieId, especieData) {
     try {
-      const response = await api.put(`/especie/${especieId}`, especieData);
+      const response = await api.patch(`/especie/${especieId}`, especieData);
       return response.data;
     } catch (error) {
       throw error;
