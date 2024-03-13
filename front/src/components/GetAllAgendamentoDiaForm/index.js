@@ -41,8 +41,7 @@ function GetAllAgendamentosDiaForm() {
         <div className={styles.menu}>
           <div className={styles.button_options}>
             <button className={styles.button}>Novo agendamento</button>
-            <button className={styles.button}>Médicos disponíveis</button>
-            <button className={styles.button}>Vagas disponíveis</button>
+            <button className={styles.button}>Criar vagas</button>
           </div>
           < SearchBar />
         </div>

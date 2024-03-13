@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import styles from './index.module.css';
+import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
-import FiltrarWhiteButton from '../WhiteButton/filtrar_button';
+import { AdicionarAnimalWhiteButton } from "../WhiteButton";
 import { getAllTutor } from '../../../services/tutorService';
 import VoltarButton from '../VoltarButton';
 
-function PacientesList() {
+function MeusAnimaisList() {
     const [tutores, setTutores] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const router = useRouter();
 
@@ -23,49 +24,59 @@ function PacientesList() {
         fetchData();
     }, []);
 
+    const handleSearchChange = (term) => {
+        setSearchTerm(term);
+    };
+
     return (
         <div className={styles.container}>
-            < VoltarButton />
-            
+            <VoltarButton />
             <h1>Pacientes</h1>
-
             <div className={styles.navbar}>
-                <SearchBar className={styles.pesquisa} />
-                <FiltrarWhiteButton items={tutores} />
+                <SearchBar
+                    className={styles.pesquisa}
+                    placeholder={"Buscar animal"}
+                    onSearchChange={handleSearchChange}
+                />
             </div>
-
             {tutores.length === 0 ? (
-                <p>Não há pacientes cadastrados.</p>
+                <p>Não há tutores cadastrados.</p>
             ) : (
                 <ul className={styles.lista}>
-                    <div className={styles.line}>
-                        <div>Tutor</div>
-                        <div>Animal</div>
-                        <div>Espécie</div>
-                        <div>Raça</div>
-                        <div>Ação</div>
-                    </div>
-                    
                     {tutores.map(tutor => (
-                        <li key={tutor.id} className={styles.info}>
-                            <div>{tutor.nome}</div>
-                            
-                            {tutor.animal.map(animal => (
-                                <React.Fragment key={animal.id}>
-                                    <div>{animal.nome}</div>
-                                    <div>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</div>
-                                    <div>{animal.raca && animal.raca.nome}</div>
-                                </React.Fragment>
-                            ))}
-
-                            <div>
-                                <button
-                                className={styles.acessar_button}
-                                onClick={() => router.push(`/getAnimalByIdSecretario/${tutor.id}`)}
-                                >
-                                    Acessar
-                                </button>
+                        <li key={tutor.id} className={styles.info_box}>
+                            <div className={styles.info}>
+                                <h6>Tutor</h6>
+                                <p>{tutor.nome}</p>
                             </div>
+                            {tutor.animal.length === 0 ? (
+                                <p>Não há animais cadastrados para este tutor.</p>
+                            ) : (
+                                tutor.animal.map(animal => (
+                                    <div key={animal.id} className={styles.info_container}>
+                                        <div className={styles.info}>
+                                            <h6>Paciente</h6>
+                                            <p>{animal.nome}</p>
+                                        </div>
+                                        <div className={styles.info}>
+                                            <h6>Espécie</h6>
+                                            <p>{animal.raca ? animal.raca.especie.nome : 'Não especificado'}</p>
+                                        </div>
+                                        <div className={styles.info}>
+                                            <h6>Raça</h6>
+                                            <p>{animal.raca ? animal.raca.nome : 'Não especificado'}</p>
+                                        </div>
+                                        <div>
+                                            <button
+                                                className={styles.acessar_button}
+                                                onClick={() => router.push(`/getTutorByIdSecretario/${tutor.id}/${animal.id}`)}
+                                            >
+                                                Acessar
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </li>
                     ))}
                 </ul>
@@ -74,4 +85,4 @@ function PacientesList() {
     );
 }
 
-export default PacientesList;
+export default MeusAnimaisList;
