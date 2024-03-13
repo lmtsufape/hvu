@@ -244,11 +244,8 @@ public class Facade {
 	@Autowired
 	private CronogramaServiceInterface cronogramaServiceInterface;
 
-	public Cronograma saveCronograma(Cronograma newInstance, String medico_id) {
-		Medico medico = findMedicoByuserId(medico_id);
-		newInstance.setMedico(medico);
-		Cronograma cronograma = cronogramaServiceInterface.saveCronograma(newInstance);
-		return cronograma;
+	public Cronograma saveCronograma(Cronograma newInstance) {
+		return cronogramaServiceInterface.saveCronograma(newInstance);
 	}
 
 	public Cronograma updateCronograma(Cronograma transientObject) {
@@ -267,8 +264,9 @@ public class Facade {
 		cronogramaServiceInterface.deleteCronograma(persistentObject);
 	}
 
-	public void deleteCronograma(long id) {
-		cronogramaServiceInterface.deleteCronograma(id);
+	public void deleteCronograma(long cronogramaId) {
+		Cronograma cronograma = findCronogramaById(cronogramaId);
+		cronogramaServiceInterface.deleteCronograma(cronograma.getId());
 	}
 
 	// TipoPrognostico--------------------------------------------------------------
@@ -331,9 +329,14 @@ public class Facade {
 		medicoService.deleteMedico(id);
 	}
 
-  public List<Medico> findByInstituicao(long InstituicaoId){
+	public List<Medico> findByInstituicao(long InstituicaoId){
 		Instituicao instituicao = findInstituicaoById(InstituicaoId);
 		return medicoService.findByInstituicao(instituicao);
+	}
+	
+	public List<Medico> findByEspeciallidade(long EspecialidadeId) {
+		Especialidade especialidade = findEspecialidadeById(EspecialidadeId);
+		return medicoService.findByEspecialidade(especialidade);
 	}
 
 	// TipoExame--------------------------------------------------------------
@@ -423,6 +426,16 @@ public class Facade {
 
 	public void deleteVaga(long id) {
 		vagaServiceInterface.deleteVaga(id);
+	}
+	
+	public List<Vaga> getVagasByEspecialidade(long idEspecialidade) {
+		Especialidade especialidade = especialidadeServiceInterface.findEspecialidadeById(idEspecialidade);
+		return vagaServiceInterface.findVagaByEspecialidade(especialidade);
+	}
+	
+	public Vaga getVagaByAgendamento(long idAgendamento) {
+		Agendamento agendamento = findAgendamentoById(idAgendamento);
+		return vagaServiceInterface.findVagaByAgendamento(agendamento);
 	}
 
 	// Medicamento--------------------------------------------------------------
