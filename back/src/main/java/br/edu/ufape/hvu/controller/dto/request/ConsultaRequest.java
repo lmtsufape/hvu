@@ -2,7 +2,6 @@ package br.edu.ufape.hvu.controller.dto.request;
 
 import java.util.List;
 
-import br.edu.ufape.hvu.model.Animal;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
