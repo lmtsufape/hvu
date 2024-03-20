@@ -1,13 +1,12 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
 .container {
-    min-height: 900px;
-    margin-top: -300px;
+    min-height: 600px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     gap: 40px;
     align-items: center;
-    justify-content: center;
 }
 
 .container h1 {
@@ -30,70 +29,78 @@
 .lista {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
+    align-items: center; /* Adicionado */
 }
 
 .info_box {
     width: 1200px;
-    height: 102px;
+    min-height: 139px;
     border-radius: 10px;
     border: 0.5px solid #B1B1B1;
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Alterado */
+    align-items: center; /* Alterado */
+    justify-content: space-around; /* Adicionado */
+    padding: 20px; /* Adicionado */
+    gap: -10px;
+}
+
+.info_container{
+    width: 1100px;
+    min-height: 139px;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    gap: -20px;
 }
 
 .info {
+    width: 100%; /* Alterado */
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.info div {
-    width: 240px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-    letter-spacing: 0em;
-    text-align: center;
-    color: #2D2D2D;
-}
-
-.line {
-    width: 1200px;
-    height: 44px;
-    border-radius: 10px;
-    background-color: #327053;
-    display: flex;
-    justify-content: left;
-    align-items: center;
-}
-
-.line div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 240px;
-    color: white;
+.info h6 {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 600;
     line-height: 24px;
     letter-spacing: 0em;
+    text-align: left;
+    color: #606060;
+}
+
+.info p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #39805F;
+}
+
+.button_box {
+    width: 100%; /* Alterado */
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    justify-content: flex-end; /* Alterado */
 }
 
 .acessar_button {
-    width: 180px;
-    height: 48px;
+    padding: 10px 20px; /* Alterado */
     border-radius: 10px;
-    border: 1px;
+    border: none; /* Alterado */
     font-size: 16px;
     color: white;
     background-color: #327053;
     font-family: 'Poppins', sans-serif;
+    cursor: pointer; /* Adicionado */
 }
 
 .acessar_button:hover {
     background-color: #5b977b;
-} */
+}

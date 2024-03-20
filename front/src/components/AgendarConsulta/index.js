@@ -74,7 +74,6 @@ const HorariosSemana = () => {
       try {
         const AnimaisData = await getAllAnimal();
         setAnimais(AnimaisData);
-        console.log("AnimaisData:", AnimaisData);
       } catch (error) {
         console.error('Erro ao buscar animais:', error);
       }
@@ -87,7 +86,7 @@ const HorariosSemana = () => {
       try {
         const VagasData = await getAllVaga();
         setVagas(VagasData);
-        console.log("VagasData:", AnimaisData);
+        console.log("VagasData:", VagasData);
       } catch (error) {
         console.error('Erro ao buscar vagas:', error);
       }
