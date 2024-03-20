@@ -35,6 +35,9 @@ public  class Vaga  {
 	@ManyToOne
 	@ToString.Exclude
 	private Especialidade especialidade; 
+	@ManyToOne
+	@ToString.Exclude
+	private Medico medico; 
 	@OneToOne
 	@ToString.Exclude
 	private Consulta consulta; 

@@ -1,15 +1,26 @@
 package br.edu.ufape.hvu.facade;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.edu.ufape.hvu.controller.dto.request.EspecialidadeRequest;
+import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
+import jakarta.transaction.Transactional;
 
 @Service
 public class Facade {
@@ -259,6 +270,50 @@ public class Facade {
 	public List<Cronograma> getAllCronograma() {
 		return cronogramaServiceInterface.getAllCronograma();
 	}
+	
+
+
+	public Map<LocalDateTime, List<Cronograma>> scheduleAvailable (LocalDate data, String turno, Especialidade especialidade) {
+	    LocalTime shiftBegin = turno.equals("Manhã") ? LocalTime.of(6, 0) : LocalTime.of(12, 0);
+	    LocalTime shiftEnd = turno.equals("Manhã") ? LocalTime.of(12, 0) : LocalTime.of(20, 0);
+
+	    Map<LocalDateTime, List<Cronograma>> horariosCronogramas = new TreeMap<>();
+
+	    List<Cronograma> cronogramas = findByEspecialidadeAndDiaAndTurno(especialidade, data.getDayOfWeek(), turno); 
+	    for (Cronograma cronograma : cronogramas) {
+	        
+	        List<LocalDateTime> scheduleFilled = findVagaByDataAndEspecialidadeAndMedico(data, especialidade, cronograma.getMedico())
+	                .stream()
+	                .map(Vaga::getDataHora)
+	                .collect(Collectors.toList());
+	        
+	        LocalTime currentTime = cronograma.getHorarios().get(data.getDayOfWeek()).getInicio();
+	        if (currentTime.isBefore(shiftBegin)){
+	        	currentTime = shiftBegin;
+	        }
+	        LocalTime shiftEndCronograma = cronograma.getHorarios().get(data.getDayOfWeek()).getFim();
+      
+	        while (currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).isBefore(shiftEnd) &&
+	        		currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).isBefore(shiftEndCronograma) ||
+	        		currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).equals(shiftEnd) &&
+	                currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).equals(shiftEndCronograma)){
+	            LocalDateTime scheduleFull = LocalDateTime.of(data, currentTime);
+
+	            if (!scheduleFilled.contains(scheduleFull)) {
+	                horariosCronogramas.computeIfAbsent(scheduleFull, k -> new ArrayList<>()).add(cronograma);
+	                scheduleFilled.add(scheduleFull);
+	            }
+
+	            currentTime = currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento()));
+	        }
+	    }
+
+	    return horariosCronogramas;
+	}
+
+	public List<Cronograma> findByEspecialidadeAndDiaAndTurno(Especialidade especialidade, DayOfWeek dia, String turno){
+		return cronogramaServiceInterface.findByEspecialidadeAndDiaAndTurno(especialidade, dia, turno);
+	}
 
 	public void deleteCronograma(Cronograma persistentObject) {
 		cronogramaServiceInterface.deleteCronograma(persistentObject);
@@ -419,6 +474,22 @@ public class Facade {
 	public List<Vaga> getAllVaga() {
 		return vagaServiceInterface.getAllVaga();
 	}
+	
+	public List<Vaga> findVagaByData(LocalDate data){
+		return vagaServiceInterface.findVagasByData(data);
+	}
+	
+	public List<Vaga> findVagaByDataAndEspecialidade(LocalDate data, Especialidade especialidade){
+		return vagaServiceInterface.findVagasByDataAndEspecialidade(data, especialidade);
+	}
+	
+	public List<Vaga> findVagaByDataAndEspecialidadeAndMedico(LocalDate data, Especialidade especialidade, Medico medico){
+		return vagaServiceInterface.findVagasByDataAndEspecialidadeAndMedico(data, especialidade, medico);
+	}
+	
+	public List<Vaga> findVagaByDataAndTurno(LocalDate data, String turno){
+		return vagaServiceInterface.findVagasByDataAndTurno(data, turno);
+	}
 
 	public void deleteVaga(Vaga persistentObject) {
 		vagaServiceInterface.deleteVaga(persistentObject);
@@ -437,6 +508,63 @@ public class Facade {
 		Agendamento agendamento = findAgendamentoById(idAgendamento);
 		return vagaServiceInterface.findVagaByAgendamento(agendamento);
 	}
+	
+	@Transactional
+	public List<Vaga> createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
+	    List<Vaga> vagas = new ArrayList<>();
+		
+		createVagas(vagaRequestDTO.getData(), vagaRequestDTO.getTurnoManha(), "Manhã", vagas);
+	    createVagas(vagaRequestDTO.getData(), vagaRequestDTO.getTurnoTarde(), "Tarde", vagas);
+	    
+	    return vagas;
+	}
+
+	private void createVagas(LocalDate data, List<EspecialidadeRequest> especialidadesIds, String turno, List<Vaga> vagas) {
+
+	    final long[] count = new long[2];
+	    count[0] = findVagaByData(data).size(); // Total vagas no dia
+	    count[1] = findVagaByDataAndTurno(data, turno).size(); // Total vagas no turno
+
+	    if (count[0] >= 8 || count[1] >= 4) {
+	        throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
+	    }
+
+	    especialidadesIds.forEach(especialidadeId -> {
+	        Especialidade especialidade = findEspecialidadeById(especialidadeId.getId());
+	        
+	        Map<LocalDateTime, List<Cronograma>> schedulesAvailable = scheduleAvailable(data, turno, especialidade);
+	            
+	        
+	        for (Map.Entry<LocalDateTime, List<Cronograma>> entry : schedulesAvailable.entrySet()) {
+	            LocalDateTime horario = entry.getKey();
+	            List<Cronograma> cronogramas = entry.getValue();
+	            
+	            for (Cronograma cronograma : cronogramas) { 
+	                if (count[0] < 8 && count[1] < 4) {
+	                    Vaga newVaga = new Vaga();
+	                    newVaga.setDataHora(horario);
+	                    newVaga.setEspecialidade(especialidade);
+	                    newVaga.setStatus("Disponível");
+	                    newVaga.setMedico(cronograma.getMedico());
+	                    saveVaga(newVaga);
+	                    vagas.add(newVaga);
+	                    count[0]++;
+	                    count[1]++;
+	                    break;
+	                } else {
+	                    break; 
+	                }
+	                
+	            }
+	            break;
+	        }
+	        	
+                
+	           
+	        });
+	    }
+	
+
 
 	// Medicamento--------------------------------------------------------------
 	@Autowired

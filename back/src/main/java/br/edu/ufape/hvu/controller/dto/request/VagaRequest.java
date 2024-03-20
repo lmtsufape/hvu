@@ -22,6 +22,7 @@ public  class VagaRequest  {
 	private ConsultaRequest consulta; 
 	private TipoConsultaRequest tipoConsulta;
 	private AgendamentoRequest agendamento;
+	private MedicoRequest medico;
 
 
 	public Vaga convertToEntity() {
