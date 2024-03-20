@@ -18,6 +18,8 @@
     font-weight: 700;
     line-height: 48px;
     letter-spacing: 0em;
+    margin-bottom: 40px;
+    margin-left: auto;
 }
 
 .paragrafo {
@@ -32,4 +34,5 @@
     display: flex;
     align-items: center;
     margin-top: -16px;
+    margin-left: auto;
 }

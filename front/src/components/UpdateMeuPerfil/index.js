@@ -141,7 +141,7 @@ function UpdateMeuPerfil() {
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
                     <button type="button" className={styles.criar_button} onClick={handleTutorUpdate}>
-                        Editar
+                        Salvar
                     </button>
                 </div>
 
