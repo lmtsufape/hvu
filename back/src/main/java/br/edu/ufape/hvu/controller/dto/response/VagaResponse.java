@@ -22,6 +22,7 @@ public  class VagaResponse  {
 	private ConsultaResponse consulta; 
 	private TipoConsultaResponse tipoConsulta; 
 	private AgendamentoResponse agendamento;
+	private MedicoResponse medico;
 
 
 	public VagaResponse(Vaga obj) {

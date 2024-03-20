@@ -12,6 +12,7 @@ import org.modelmapper.TypeMap;
 
 import br.edu.ufape.hvu.model.Vaga;
 import br.edu.ufape.hvu.facade.Facade;
+import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaRequest;
 import br.edu.ufape.hvu.controller.dto.response.VagaResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
@@ -66,6 +67,15 @@ public class VagaController {
 		}
 		
 	}
+	
+	@PostMapping("/gestao-vagas/criar")
+	public List<VagaResponse> createNewVagas(@Valid @RequestBody VagaCreateRequest newObj) {
+		return facade.createVagasByTurno(newObj)
+			.stream()
+			.map(VagaResponse::new)
+			.toList();
+	}
+	
 	
 	@DeleteMapping("vaga/{id}")
 	public String deleteVaga(@PathVariable Long id) {

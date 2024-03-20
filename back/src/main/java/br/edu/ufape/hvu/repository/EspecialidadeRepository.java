@@ -7,7 +7,5 @@ import br.edu.ufape.hvu.model.Especialidade;
 
 @Repository
 public interface EspecialidadeRepository extends JpaRepository<Especialidade, Long> {
-
 	
-
 }
