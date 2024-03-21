@@ -2,18 +2,18 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Header03} from "../../src/components/Header";
 import Footer from "../../src/components/Footer";
-import { SubHeader01 } from "@/components/SubHeader";
-import CreateAnimalForm from "@/components/CreateAnimalForm";
+import { SubHeader02 } from "@/components/SubHeader";
+import CreateMedico from "@/components/CreateMedico";
 
-function CreateAnimalPage(){
+function CreateMedicoPage(){
     return(
         <div>
             < Header03 />
-            < SubHeader01 />
-            < CreateAnimalForm />
+            < SubHeader02 />
+            < CreateMedico />
             < Footer />
         </div>
     )
 }
 
-export default CreateAnimalPage;
+export default CreateMedicoPage;

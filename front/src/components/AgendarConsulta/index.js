@@ -19,6 +19,7 @@ const HorariosSemana = () => {
   const [selectedAnimal, setSelectedAnimal] = useState(null); 
 
   const [vagas, setVagas] = useState(null);
+  const [vagaDataHora, setVagaDataHora] = useState(null);
 
   const openModal = () => {
     setShowModal(true);
@@ -88,6 +89,8 @@ const HorariosSemana = () => {
       try {
         const VagasData = await getAllVaga();
         setVagas(VagasData);
+        if (VagasData) {
+        }
         console.log("VagasData:", VagasData);
       } catch (error) {
         console.error('Erro ao buscar vagas:', error);
@@ -96,12 +99,25 @@ const HorariosSemana = () => {
     fetchData();
   }, []);
 
+  // Extrair horário e data da vagaDataHora
+  useEffect(() => {
+    if (vagaDataHora) {
+      const [data, hora] = vagaDataHora;
+      console.log('Data:', data);
+      console.log('Hora:', hora);
+    }
+  }, [vagaDataHora]);
+
+  console.log("vagas", vagas);
+  console.log("vagaDataHora", vagaDataHora);
+
+
   const handleAnimalSelection = (event) => {
     const animalId = event.target.value;
     const selectedAnimalInfo = animais.find(animal => animal.id === parseInt(animalId));
     setSelectedAnimal(selectedAnimalInfo);
+    console.log("selectedAnimal", selectedAnimal);
   };
-  console.log("selectedAnimal", selectedAnimal);
 
   const formatDate = (dateString, selectedTime) => {
     const date = new Date(dateString);

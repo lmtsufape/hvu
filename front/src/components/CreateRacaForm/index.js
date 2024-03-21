@@ -11,13 +11,14 @@ function CreateRaca() {
     const router = useRouter();
 
     const { especies } = EspeciesList();
+    const [selectedEspecie, setSelectedEspecie] = useState(null);
+
     const [raca, setRaca] = useState({
         nome: "",
         porte: "",
         descricao: "", 
         especie: { id: null }
     });
-    const [selectedEspecie, setSelectedEspecie] = useState(null);
 
     const handleEspecieSelection = (event) => {
         const selectedEspecieId = event.target.value;

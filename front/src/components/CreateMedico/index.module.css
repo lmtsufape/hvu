@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+.container {
+    min-height: 680px;
+    margin-top: 60px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.obrigatorio {
+    color: red;
+  }
+
+.container h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+.inputs_container {
+    width: 1200px;
+    min-height: 264px;
+    border-radius: 20px;
+    border: 0.5px solid #B1B1B1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.button_box {
+    width: 1152px;
+    height: 80px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 32px;
+}
+
+.criar_button {
+    width: 180px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid #39805F;
+    color: #FFF5F6;
+    background-color: #39805F;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+}
+
+.criar_button:hover {
+    background-color: #39805fe6;
+}
+
+.boxcadastro {
+    display: block;
+    width: 80%;
+    max-width: 1500px;
+    min-width: 300px;
+    height: auto; 
+    background-color: white;
+    padding: 30px;
+    margin: auto;
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+}
+
+.titulo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 36px;
+    letter-spacing: 0em;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.errorMessage {
+    color: #ff3333; /* Vermelho */
+    font-size: 0.85rem; /* Tamanho da fonte */
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0em;
+    text-align: left;
+}
