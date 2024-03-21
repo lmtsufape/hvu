@@ -34,9 +34,9 @@ public class AgendamentoController {
 			.toList();
 	}
 	
-	@PostMapping("agendamento")
-	public AgendamentoResponse createAgendamento(@Valid @RequestBody AgendamentoRequest newObj) {
-		return new AgendamentoResponse(facade.saveAgendamento(newObj.convertToEntity()));
+	@PostMapping("agendamento/vaga/{idVaga}")
+	public AgendamentoResponse createAgendamento(@Valid @RequestBody AgendamentoRequest newObj, @PathVariable Long idVaga) {
+		return new AgendamentoResponse(facade.saveAgendamento(newObj.convertToEntity(),idVaga));
 	}
 	
 	@GetMapping("agendamento/{id}")
