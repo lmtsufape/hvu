@@ -794,7 +794,12 @@ public class Facade {
 	@Autowired
 	private AgendamentoServiceInterface agendamentoServiceInterface;
 
-	public Agendamento saveAgendamento(Agendamento newInstance) {
+	public Agendamento saveAgendamento(Agendamento newInstance, Long idVaga) {
+		Vaga vaga = findVagaById(idVaga);
+		vaga.setStatus("Agendado");
+		vaga.setAgendamento(newInstance);
+		newInstance.setDataVaga(vaga.getDataHora());
+		
 		return agendamentoServiceInterface.saveAgendamento(newInstance);
 	}
 

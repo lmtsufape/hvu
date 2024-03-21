@@ -97,7 +97,7 @@ public class VagaController {
 	}
 	
 	@GetMapping("vaga/agendamento/{idAgendamento}")
-	public VagaResponse getVagaByEspecialidade(@PathVariable(value = "idAgendamento") long idAgendamento) {
+	public VagaResponse getVagaByAgendamento(@PathVariable(value = "idAgendamento") long idAgendamento) {
 		return new VagaResponse(facade.getVagaByAgendamento(idAgendamento));
 	}
 }
