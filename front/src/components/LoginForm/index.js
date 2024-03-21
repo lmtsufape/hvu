@@ -3,7 +3,9 @@ import styles from "./index.module.css"
 import { useRouter } from 'next/router';
 import { postLogin } from "../../../common/postLogin";
 import { useState } from "react";
-
+//icone do olho importacao
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function FormularioLogin() {
 
@@ -28,7 +30,7 @@ function FormularioLogin() {
             }  
         } 
     }
-
+    //Funcao para validar o formulario de login
     const validateForm = () => {
         const newErrors = {};
 
@@ -38,6 +40,8 @@ function FormularioLogin() {
         // else if (login != ){
         //     newErrors.login = "Email inválido. Digite novamente.";
         // }
+
+        //verifica se o campo de senha esta vazio
         if (!senha) {
             newErrors.senha = "Senha é obrigatória";
         } 
@@ -50,49 +54,63 @@ function FormularioLogin() {
         return Object.keys(newErrors).length === 0;
     };
 
+    //estado para controlar a visibilidade da senha
+    const [showPassword, setShowPassword] = useState(false);
+
+    //função para alternar a visibilidade da senha
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    //retono do componente
     return (
         <>
-        <div className={styles.form} >
-            <div className="form-group">
-                <label htmlFor="exampleInputEmail1">E-mail</label>
-                <input 
-                    type="email" 
-                    className={`form-control ${errors.login ? "is-invalid" : ""}`}
-                    id="exampleInputEmail1" 
-                    aria-describedby="emailHelp" 
-                    placeholder="Seu email"
-                    name="email"
-                    value={login} 
-                    onChange={(e) => setLogin( e.target.value)}
-                    required 
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="exampleInputPassword1">Senha</label>
-                <input 
-                    type="password" 
-                    className={`form-control ${errors.senha ? "is-invalid" : ""}`}
-                    id="exampleInputPassword1" 
-                    placeholder="Sua senha" 
-                    name="senha"
-                    value={senha} 
-                    onChange={(e) => setSenha( e.target.value)}
-                    errors={errors}
-                    required
-                />
-            </div>
-            <button type="button" className="btn btn-link" onClick={(e) => router.push("/forgotPassword")}>Esqueceu a senha? </button>
-        </div>
+<div className={styles.form}>
+  <div className="form-group">
+    <label htmlFor="exampleInputEmail1">E-mail</label>
+    <input
+      type="email"
+      className={`form-control ${errors.login ? "is-invalid" : ""}`}
+      id="exampleInputEmail1"
+      aria-describedby="emailHelp"
+      placeholder="Seu email"
+      name="email"
+      value={login}
+      onChange={(e) => setLogin(e.target.value)}
+      required
+    />
+  </div>
+  <div className="form-group">
+    <label htmlFor="exampleInputPassword1">Senha</label>
+    <div className="input-group">
+      <input
+        type={showPassword ? 'text' : 'password'}
+        className={`form-control ${errors.senha ? "is-invalid" : ""}`}
+        id="exampleInputPassword1"
+        placeholder="Sua senha"
+        name="senha"
+        value={senha}
+        onChange={(e) => setSenha(e.target.value)}
+        required
+      />
+      <span className={`input-group-text ${styles.eyeIcon}`} onClick={togglePasswordVisibility}>
+        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+      </span>
+    </div>
+  </div>
+  <button type="button" className="btn btn-link" onClick={() => router.push("/forgotPassword")}>Esqueceu a senha? </button>
+</div>
 
-        <div className={styles.button_box}>
-            <button onClick={ (e) => logged(e)}  type="submit" className="btn btn-primary" id={styles.entrar_button}>Entrar</button>
+    
+          <div className={styles.button_box}>
+            <button onClick={logged} type="submit" className="btn btn-primary" id={styles.entrar_button}>Entrar</button>
             <div className={styles.criar_button_box}>
-                <h6>Não possui conta? </h6>
-                <button type="button" onClick={(e) => router.push("/createTutor")} className="btn btn-link">Crie agora</button>
+              <h6>Não possui conta? </h6>
+              <button type="button" onClick={() => router.push("/createTutor")} className="btn btn-link">Crie agora</button>
             </div>
-        </div>
-        </>       
-    );
-}
-
-export default FormularioLogin
+          </div>
+        </>
+      );
+    }
+    
+    export default FormularioLogin;

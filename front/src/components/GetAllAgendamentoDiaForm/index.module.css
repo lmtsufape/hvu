@@ -111,6 +111,7 @@
     height: 88px;
     border-left: 2px solid #ECECEC;
     border-bottom: 1px solid #ECECEC;
+    padding-left: 1em;
 }
 
 .time {
@@ -124,7 +125,7 @@
     color: #606060;
     display: flex;
     justify-content: center;
-    align-items: top;
+    align-items: center;
 }
 
 .infos_container {
@@ -132,52 +133,68 @@
     justify-content: space-between;
 }
 
-.infos_box {
+.infos_box1{
     display: flex;
-    gap: 60px;
+    gap: 2em;
     align-items: center;
-    justify-content: center;
+    width: 15em;
+    justify-content: space-between;
+}
+
+.infos_box2 {
+    display: flex;
+    width: auto;
+    gap: 1em;
+    align-items: center;
+    justify-content: left;
+    margin-left: auto;
+    margin-top: 0.4em;
 }
 
 .info2 {
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 0.9em;
     font-weight: 500;
     line-height: 24px;
     letter-spacing: 0em;
     text-align: center;
+    font-weight: 500;
+    
 }
 
 .info1 {
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 0.9em;
     font-weight: 700;
     line-height: 24px;
     letter-spacing: 0em;
+    justify-content: start;
 }
 
+
+
 .button_precriada {
-    width: 1100px;
-    height: 88px;
-    padding: 0px, 20px, 0px, 20px;
+    display: flex;
+    width: 16em;
+    height: 6em;
     border-radius: 12px;
     background-color: #ECECEC;
     border: 2px solid #ECECEC;
+    align-items: center;
+
 }
 
 .status_precriada {
-    width: 102.05px;
-    height: 41px;
+    width: 6.5em;
+    height: 2.5em;
     display: flex;
     justify-content: center;
     align-items: center;
-
     border-radius: 21.87px;
     border: 0.7px solid #2D2D2D;
-    background-color: #F6F6F6;
-
+    background-color: white;
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 0.5em;
     font-weight: 600;
     line-height: 21px;
     letter-spacing: 0em;
@@ -185,27 +202,27 @@
 }
 
 .button_disponivel {
-    width: 1100px;
-    height: 88px;
-    padding: 0px, 20px, 0px, 20px;
+    display: flex;
+    width: 16em;
+    height: 6em;
     border-radius: 12px;
     background-color: #EEF8F3;
     border: 2px solid #EEF8F3;
+    align-items: center;
+
 }
 
 .status_disponivel {
-    width: 102.05px;
-    height: 41px;
+    width: 6.5em;
+    height: 2.5em;
     display: flex;
     justify-content: center;
     align-items: center;
-
     border-radius: 21.87px;
     border: 0.7px solid #327053;
     background-color: #F6F6F6;
-
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 0.5em;
     font-weight: 600;
     line-height: 21px;
     letter-spacing: 0em;
@@ -213,27 +230,26 @@
 }
 
 .button_cancelado {
-    width: 1100px;
-    height: 88px;
-    padding: 0px, 20px, 0px, 20px;
+    display: flex;
+    width: 16em;
+    height: 6em;
     border-radius: 12px;
+    align-items: center;
     background-color: #FFC1C1;
     border: 2px solid #FFC1C1;
 }
 
 .status_cancelado {
-    width: 102.05px;
-    height: 41px;
+    width: 6.5em;
+    height: 2.5em;
     display: flex;
     justify-content: center;
     align-items: center;
-
     border-radius: 21.87px;
     border: 0.7px solid #C7122F;
     background-color: #FFEFEF;
-
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 0.5em;
     font-weight: 600;
     line-height: 21px;
     letter-spacing: 0em;
@@ -241,27 +257,27 @@
 }
 
 .button_agendado {
-    width: 1100px;
-    height: 88px;
-    padding: 0px, 20px, 0px, 20px;
+    display: flex;
+    width: 16em;
+    height: 6em;
     border-radius: 12px;
+    align-items: center;
     background-color: #CBC7FF;
     border: 2px solid #CBC7FF;
 }
 
 .status_agendado {
-    width: 102.05px;
-    height: 41px;
+    width: 6.5em;
+    height: 2.5em;
     display: flex;
     justify-content: center;
     align-items: center;
-
     border-radius: 21.87px;
     border: 0.7px solid #231C7D;
     background-color: #F2F1FF;
 
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 0.5em;
     font-weight: 600;
     line-height: 21px;
     letter-spacing: 0em;
@@ -269,27 +285,26 @@
 }
 
 .button_finalizado {
-    width: 1100px;
-    height: 88px;
-    padding: 0px, 20px, 0px, 20px;
+    display: flex;
+    width: 16em;
+    height: 6em;
     border-radius: 12px;
+    align-items: center;
     background-color: #4A876B;
     border: 2px solid #4A876B;
 }
 
 .status_finalizado {
-    width: 102.05px;
-    height: 41px;
+    width: 6.5em;
+    height: 2.5em;
     display: flex;
     justify-content: center;
     align-items: center;
-
     border-radius: 21.87px;
     border: 0.7px solid #327053;
     background-color: #FFFFFF;
-
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 0.5em;
     font-weight: 600;
     line-height: 21px;
     letter-spacing: 0em;
@@ -418,5 +433,10 @@
 
 .button_cancelar_consulta:hover {
     background-color: #f3f3f37b;
+}
+
+.cardsJuntos{
+    display: flex;
+    gap: 1em;
 }
   

@@ -16,6 +16,7 @@ export function Header01() {
             
             <button className={styles.boxlogo} onClick={(e) => router.push("/")}>
                 <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
+                <Image src="/UFAPEcor.svg" alt="Logo UFAPE" width={150.38} height={36}/>
             </button>
 
             <div className={styles.box_buttons} >
@@ -36,13 +37,18 @@ export function Header01() {
             
             <button className={styles.boxlogo} onClick={(e) => router.push("/")}>
                 <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
+
+                {/* logo da UFPAE com interação */}
+                <a href="http://ufape.edu.br/" target="blank" rel="noopener">
+                   <Image src="/UFAPEcor.svg" alt="Logo" width={150} height={58} />
+                </a>
+
             </button>
 
             <div className={styles.box_buttons} >
                 <button type="button" className="btn btn-link" id={styles.black_button_decoration} onClick={(e) => router.push("/")}>Home</button>
                 <button type="button" className="btn btn-link" id={styles.black_button_decoration} onClick={(e) => router.push("/system")}>Sistema</button>
             </div>
-                
         </header>
     );    
   }
