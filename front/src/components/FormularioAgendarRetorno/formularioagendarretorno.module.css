@@ -8,19 +8,21 @@
   
   .boxagendarconsulta {
     display: block;
-    width: 80%;
+    width: 90%;
     max-width: 1500px;
     min-width: 300px;
     height: auto; 
     border: 1px;
     background-color: white;
-    padding: 30px;
+    padding: 3em;
     box-sizing: border-box;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
     margin: auto;
     border-radius: 10px;
     font-family: 'Poppins', sans-serif;
     font-style: normal;
+    margin-bottom: 2em;
+
     
   }
 .titulocadastro{
@@ -33,11 +35,11 @@
     margin-bottom: 3%;
 }
 .continuarbotao{
-  margin-top: 50px;
+  margin-top: 3em;
   margin-bottom: 0px;
   display: flex;
   justify-content: flex-end;
-  gap: 3%;
+  gap: 1em;
 }
 .barradeprogresso{
   display: flex;
@@ -74,5 +76,26 @@
 
 .datepicker{
   border: none;
+}
+
+.voltarButton{
+  width: 10em;
+  height: 3em; 
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid #39805F;
+  color: #39805F;
+}
+.continuarButton{
+  width: 10em;
+  height: 3em; 
+  border-radius: 10px;
+  background-color: #39805F;
+  border: none;
+  color: white;
+}
+
+.voltarButtonHeader{
+  margin-left: 5%;
 }
   
