@@ -145,3 +145,16 @@
     }
 }
 
+.input-group .input-group-text {
+    cursor: pointer;
+  }
+  
+  .input-group .input-group-text svg {
+    font-size: 16px; 
+    margin-top: 8px; 
+  }
+  
+  .input-group .input-group-text:hover svg {
+    color: #007bff; 
+  }
+  
