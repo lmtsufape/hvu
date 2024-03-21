@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getAllEspecialidade } from '../../services/especialidadeService';
 
-const EspecialidadelList = () => {
+const EspecialidadeList = () => {
     const [especialidades, setEspecialidades] = useState([]);
     const [error, setError] = useState(null);
 
@@ -21,4 +21,4 @@ const EspecialidadelList = () => {
     return { especialidades, error };
 };
 
-export default EspecialidadelList;
+export default EspecialidadeList;
