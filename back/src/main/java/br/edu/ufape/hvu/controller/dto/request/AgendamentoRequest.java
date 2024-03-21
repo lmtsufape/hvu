@@ -20,6 +20,7 @@ public  class AgendamentoRequest  {
 	private AnimalRequest animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
+	
 
 
 	public Agendamento convertToEntity() {

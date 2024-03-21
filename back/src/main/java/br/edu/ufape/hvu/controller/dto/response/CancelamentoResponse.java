@@ -20,6 +20,7 @@ public class CancelamentoResponse {
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataCancelamento;
 	private EspecialidadeResponse especialidade; 
+	private CancelamentoResponse cancelamento;
 	
 	public CancelamentoResponse(Cancelamento obj) {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
