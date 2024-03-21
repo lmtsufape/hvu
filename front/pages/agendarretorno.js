@@ -9,9 +9,6 @@ function PageAgendarRetorno(){
     return(
         <div>
             <Header03/>
-            <div>
-                <h1 className={styles.titulocadastro}>Agendar Retorno</h1>
-            </div>
         <AgendarRetorno/>
         <Footer/>
         </div>

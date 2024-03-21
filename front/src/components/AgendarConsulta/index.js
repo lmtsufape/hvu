@@ -57,17 +57,19 @@ const HorariosSemana = () => {
     setSelecionarHorario(selectedOption);
   };
 
-  // A ideia aqui é obter a data de início da semana
-  const today = new Date();
-  const startOfWeek = new Date(today);
-  startOfWeek.setDate(today.getDate() - today.getDay());
+  // Função para avançar uma semana
+  const avancarSemana = () => {
+    const proximaSemana = new Date(selecionarData);
+    proximaSemana.setDate(proximaSemana.getDate() + 7);
+    setSelecionarData(proximaSemana);
+  };
 
-  // Aqui serve para criar um array com as datas da semana
-  const weekDates = Array.from({ length: 7 }, (_, index) => {
-    const currentDate = new Date(startOfWeek);
-    currentDate.setDate(startOfWeek.getDate() + index);
-    return currentDate;
-  });
+  // Função para retroceder uma semana
+  const retrocederSemana = () => {
+    const semanaAnterior = new Date(selecionarData);
+    semanaAnterior.setDate(semanaAnterior.getDate() - 7);
+    setSelecionarData(semanaAnterior);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,7 +136,6 @@ const HorariosSemana = () => {
       console.error("Erro ao agendar consulta:", error);
     }
   };
-  
 
   return (
     <div className={styles.container}>
@@ -166,26 +167,33 @@ const HorariosSemana = () => {
           </div>
         </div>
 
+
         <h1 className={styles.titulodataconsulta}>Data da Consulta</h1>
         <h2 className={styles.descricaotitulodataconsulta}>Selecione o dia e o horário disponível de sua preferência para o atendimento</h2>
+        <div className={styles.button_voltar_avancar}>
+          <button className={styles.button_voltar} onClick={retrocederSemana}>⭠</button>
+          <button className={styles.button_avancar} onClick={avancarSemana}>⭢</button>
+        </div>
         <div className={styles.containersemana}>
-          {weekDates.map((date) => {
-            if (date.getDay() !== 6 && date.getDay() !== 0) {
+          {Array.from({ length: 7 }, (_, index) => {
+            const currentDate = new Date(selecionarData);
+            currentDate.setDate(currentDate.getDate() - currentDate.getDay() + index);
+            if (currentDate.getDay() !== 6 && currentDate.getDay() !== 0) {
               return (
-                <div key={date} className={styles.containerdia}>
-                  <h2 className={styles.diasdasemana}>{diasSemana[date.getDay()]}</h2>
-                  <p className={styles.data}>{date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</p>
+                <div key={currentDate} className={styles.containerdia}>
+                  <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
+                  <p className={styles.data}>{currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</p>
                   <div className="time-buttons">
                     {timeOptions.map((timeOption) => (
                       <button
                         key={timeOption.value}
                         className={
-                          date.getDate() === selecionarData.getDate() && selecionarHorario?.value === timeOption.value
+                          currentDate.getDate() === selecionarData.getDate() && selecionarHorario?.value === timeOption.value
                             ? `${styles.botaohora} selected`
                             : styles.botaohora
                         }
                         onClick={() => {
-                          handleDateChange(date);
+                          handleDateChange(currentDate);
                           handleTimeChange(timeOption);
                         }}
                       >
