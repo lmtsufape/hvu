@@ -19,7 +19,7 @@ public class CancelamentoRequest {
 	private LocalDateTime dataVaga;
 	private LocalDateTime dataCancelamento;
 	private EspecialidadeRequest especialidade; 
-	private CancelamentoRequest cancelamento;
+	private AgendamentoRequest agendamento;
 	
 	public Cancelamento convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
