@@ -93,6 +93,14 @@ public class Facade {
 		private CancelamentoServiceInterface cancelamentoServiceInterface;
 
 		public Cancelamento saveCancelamento(Cancelamento newInstance) {
+			Agendamento agendamento = findAgendamentoById(newInstance.getAgendamento().getId());
+			agendamento.setStatus("Cancelado");
+			Vaga vaga = getVagaByAgendamento(agendamento.getId());
+			vaga.setStatus("Disponivel");
+			vaga.setAgendamento(null);
+			newInstance.setDataVaga(vaga.getDataHora());
+			newInstance.setEspecialidade(vaga.getEspecialidade());
+			newInstance.setDataCancelamento(LocalDateTime.now());
 			return cancelamentoServiceInterface.saveCancelamento(newInstance);
 		}
 
@@ -798,8 +806,7 @@ public class Facade {
 		Vaga vaga = findVagaById(idVaga);
 		vaga.setStatus("Agendado");
 		vaga.setAgendamento(newInstance);
-		newInstance.setDataVaga(vaga.getDataHora());
-		
+		newInstance.setDataVaga(vaga.getDataHora());		
 		return agendamentoServiceInterface.saveAgendamento(newInstance);
 	}
 
