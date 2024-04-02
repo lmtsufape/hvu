@@ -52,6 +52,7 @@ function CreateCronograma() {
         const { name, value } = event.target;
         setCronograma({ ...cronograma, [name]: value });
     };
+    console.log("cronograma:", cronograma);
 
     const { especialidades } = EspecialidadeList();
     const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
@@ -113,6 +114,18 @@ function CreateCronograma() {
                 <div className={styles.inputs_box}>
                     <div className="row">
                         <div className="col">
+                            <label htmlFor="nome" className="form-label">Nome</label>
+                            <input
+                                placeholder="Digite o nome"
+                                type="text"
+                                className="form-control"
+                                name="nome"
+                                value={cronograma.nome}
+                                onChange={handleCronogramaChange}
+                            />
+                        </div>
+
+                        <div className="col">
                             <label htmlFor="especialidade" className="form-label">Especialidade</label>
                             <select
                                 className="form-select"
@@ -129,7 +142,9 @@ function CreateCronograma() {
                                 ))}
                             </select>
                         </div>
+                    </div>
 
+                    <div className="row">
                         <div className="col">
                             <label htmlFor="medico" className="form-label">Médico</label>
                             <select
@@ -155,6 +170,7 @@ function CreateCronograma() {
                                 type="text"
                                 className="form-control"
                                 name="tempoAtendimento"
+                                value={cronograma.tempoAtendimento}
                                 onChange={handleCronogramaChange}
                             />
                         </div>

@@ -81,10 +81,12 @@ function CreateMedico() {
             especialidade: {id: parseInt(selectedEspecialidade) }
         };
 
+        console.log("MedicoToCreate:", MedicoToCreate);
+
         try {
             await createMedico(MedicoToCreate);
             alert("Médico cadastrado com sucesso!");
-            router.push("/meuPerfil");
+            // router.push("/meuPerfil");
         } catch (error) {
             console.error("Erro ao criar médico:", error);
             alert("Erro ao criar médico. Por favor, tente novamente.");
@@ -157,7 +159,7 @@ function CreateMedico() {
                             <div className="col">
                                 {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
                                 {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
-                                {renderMedicoInput("Alterar senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
+                                {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
                                 {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
                             </div>
                             <div className="col">

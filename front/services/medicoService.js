@@ -41,7 +41,7 @@ import api from '../common/http-common-back';
   }
   
   // Função para excluir um medico por ID
-  export async function deleteUsuario(medicoId) {
+  export async function deleteMedico(medicoId) {
     try {
       const response = await api.delete(`/medico/${medicoId}`);
       return response.data;
