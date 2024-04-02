@@ -204,20 +204,6 @@ function AgendamentoEspecial() {
                   ))}
                 </select>
               </div>
-
-              <div className="col">
-                <label htmlFor="proximaConsulta" className="form-label">É próxima consulta?</label>
-                <select className="form-select"
-                  name="proximaConsulta"
-                  aria-label="Selecione se é próxima consulta"
-                  value={vaga.proximaConsulta}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Selecione o tipo de consulta</option>
-                  <option value="Sim">Sim</option>
-                <option value="Não">Não</option>
-                </select>
-              </div>
             </div>
           </div>
 
