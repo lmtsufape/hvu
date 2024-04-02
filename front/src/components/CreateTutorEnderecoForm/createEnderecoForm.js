@@ -1,9 +1,36 @@
 import React from "react";
 import InputMask from "react-input-mask";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./createEnderecoForm.module.css";
 
 function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors }) {
+  const handleCEPChange = async (event) => {
+    const cep = event.target.value;
+    handleEnderecoChange(event); // Chama a função handleEnderecoChange para atualizar o estado com o valor do CEP
+
+    if (cep.length === 9) { // Verifica se o CEP foi completamente preenchido
+      try {
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        const { localidade, uf } = response.data;
+        handleEnderecoChange({ // Atualiza o estado com os dados obtidos da API
+          target: {
+            name: "cidade",
+            value: localidade
+          }
+        });
+        handleEnderecoChange({
+          target: {
+            name: "estado",
+            value: uf
+          }
+        });
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error);
+      }
+    }
+  };
+
   return (
     <div className={styles.boxcadastrotutor}>
       <div className={styles.titulo}>Endereço</div>
@@ -12,11 +39,11 @@ function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors }) 
       <div className="mb-3">
         <div className="row">
           <div className="col">
-            {renderInput("Número", "numero", enderecoFormData.numero, handleEnderecoChange, "Ex: 140", errors.numero)}
-            {renderInput("CEP", "cep", enderecoFormData.cep, handleEnderecoChange, "Ex: 55250-000", errors.cep, "text", "99999-999")}
+            {renderInput("CEP", "cep", enderecoFormData.cep, handleCEPChange, "Ex: 55250-000", errors.cep, "text", "99999-999")}
+            {renderInput("Estado", "estado", enderecoFormData.estado, handleEnderecoChange, "Ex: Pernambuco", errors.estado)}
           </div>
           <div className="col">
-            {renderInput("Estado", "estado", enderecoFormData.estado, handleEnderecoChange, "Ex: Pernambuco", errors.estado)}
+            {renderInput("Número", "numero", enderecoFormData.numero, handleEnderecoChange, "Ex: 140", errors.numero)}
             {renderInput("Cidade", "cidade", enderecoFormData.cidade, handleEnderecoChange, "Ex: Garanhuns", errors.cidade)}
           </div>
         </div>

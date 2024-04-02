@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import dateStyles from "../Date/index.module.css";
 import Filter from '../GetAgendamentosFilter';
@@ -8,6 +9,7 @@ import SearchBar from '../SearchBar';
 import VoltarButton from '../VoltarButton';
 
 function GetAllAgendamentosDiaForm() {
+  const router = useRouter();
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -28,7 +30,7 @@ function GetAllAgendamentosDiaForm() {
       <div className={styles.container}>
 
         < VoltarButton />
-        <h1>Agendamentos da semana</h1>
+        <h1>Agendamentos do dia</h1>
 
         <div className={styles.cadendar_container}>
           <div className={styles.cadendar_box}>
@@ -39,8 +41,7 @@ function GetAllAgendamentosDiaForm() {
         </div>
         <div className={styles.menu}>
           <div className={styles.button_options}>
-            <button className={styles.button}>Novo agendamento
-            </button>
+            <button className={styles.button} onClick={(e) => router.push("/agendamentoEspecial")}>Novo agendamento</button>
             <button className={styles.button}>Criar vagas</button>
           </div>
           < SearchBar />

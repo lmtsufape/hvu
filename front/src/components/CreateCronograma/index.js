@@ -20,11 +20,11 @@ function CreateCronograma() {
     });
 
     const [diasDaSemana, setDiasDaSemana] = useState({
-        segunda: false,
-        terca: false,
-        quarta: false,
-        quinta: false,
-        sexta: false
+        Segunda: false,
+        Terça: false,
+        Quarta: false,
+        Quinta: false,
+        Sexta: false
     });
 
     const handleDiasDaSemanaChange = (dia) => {
@@ -52,10 +52,10 @@ function CreateCronograma() {
         const { name, value } = event.target;
         setCronograma({ ...cronograma, [name]: value });
     };
+    console.log("cronograma:", cronograma);
 
     const { especialidades } = EspecialidadeList();
     const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
-
     const handleEspecialidadeSelection = (event) => {
         const selectedEspecialidadeId = event.target.value;
         setSelectedEspecialidade(selectedEspecialidadeId);
@@ -63,7 +63,6 @@ function CreateCronograma() {
 
     const { medicos } = MedicoList();
     const [selectedMedico, setSelectedMedico] = useState(null);
-
     const handleMedicoSelection = (event) => {
         const selectedMedicoId = event.target.value;
         setSelectedMedico(selectedMedicoId);
@@ -77,7 +76,7 @@ function CreateCronograma() {
         const horariosJson = {};
         diasSelecionados.forEach(dia => {
             if (cronograma.horariosJson[dia]) {
-                horariosJson[dia] = cronograma.horariosJson[dia];
+                horariosJson[dia] = cronograma.horariosJson[dia]; 
             } else {
                 horariosJson[dia] = {
                     inicio: "00:00",
@@ -112,10 +111,22 @@ function CreateCronograma() {
             <form className={styles.inputs_container}>
                 <div className={styles.inputs_box}>
                     <div className="row">
-                        <div className="col">
+                        <div className={`col ${styles.col}`}>
+                            <label htmlFor="nome" className="form-label">Nome</label>
+                            <input
+                                placeholder="Digite o nome"
+                                type="text"
+                                className={`form-control ${styles.input}`}
+                                name="nome"
+                                value={cronograma.nome}
+                                onChange={handleCronogramaChange}
+                            />
+                        </div>
+
+                        <div className={`col ${styles.col}`}>
                             <label htmlFor="especialidade" className="form-label">Especialidade</label>
                             <select
-                                className="form-select"
+                                className={`form-select ${styles.input}`}
                                 name="especialidade"
                                 aria-label="Selecione uma especialidade"
                                 value={selectedEspecialidade || ""}
@@ -129,17 +140,19 @@ function CreateCronograma() {
                                 ))}
                             </select>
                         </div>
+                    </div>
 
-                        <div className="col">
-                            <label htmlFor="medico" className="form-label">Médico</label>
+                    <div className="row">
+                        <div className={`col ${styles.col}`}>
+                            <label htmlFor="medico" className="form-label">Veterinário(a)</label>
                             <select
-                                className="form-select"
+                                className={`form-select ${styles.input}`}
                                 name="medico"
-                                aria-label="Selecione o médico"
+                                aria-label="Selecione o(a) veterinário(a)"
                                 value={selectedMedico || ""}
                                 onChange={handleMedicoSelection}
                             >
-                                <option value="">Selecione o médico</option>
+                                <option value="">Selecione o(a) veterinário(a)</option>
                                 {medicos.map((medico) => (
                                     <option key={medico.id} value={medico.id}>
                                         {medico.nome}
@@ -148,13 +161,14 @@ function CreateCronograma() {
                             </select>
                         </div>
 
-                        <div className="col">
+                        <div className={`col ${styles.col}`}>
                             <label htmlFor="tempoAtendimento" className="form-label">Tempo do atendimento</label>
                             <input
                                 placeholder="Digite o tempo em minutos"
                                 type="text"
-                                className="form-control"
+                                className={`form-control ${styles.input}`}
                                 name="tempoAtendimento"
+                                value={cronograma.tempoAtendimento}
                                 onChange={handleCronogramaChange}
                             />
                         </div>
@@ -164,49 +178,234 @@ function CreateCronograma() {
                         <div className={styles.title}><h2>Dias de trabalho</h2></div>
                     </div>
 
-                    {Object.entries(diasDaSemana).map(([dia, selecionado]) => (
-                        <div className="row" key={dia}>
-                            <div className="col">
-                                <label htmlFor={`${dia}-checkbox`} className="form-label">{`${
-                                    dia.charAt(0).toUpperCase() + dia.slice(1)
-                                }`}</label>
-                                <input
-                                    type="checkbox"
-                                    className="form-check-input"
-                                    id={`${dia}-checkbox`}
-                                    checked={selecionado}
-                                    onChange={() => handleDiasDaSemanaChange(dia)}
-                                />
-                            </div>
-
-                            <div className="col">
-                                <label htmlFor={`${dia}-inicio`} className="form-label">Hora início</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id={`${dia}-inicio`}
-                                    placeholder="Digite o horário de início"
-                                    value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
-                                    onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
-                                    disabled={!selecionado}
-                                />
-                            </div>
-
-                            <div className="col">
-                                <label htmlFor={`${dia}-fim`} className="form-label">Hora fim</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id={`${dia}-fim`}
-                                    placeholder="Digite o horário de fim"
-                                    value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
-                                    onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
-                                    disabled={!selecionado}
-                                />
-                            </div>
+                    <div className={`row ${styles.div_space}`}>
+                        <div className="col">
+                            {Object.entries(diasDaSemana)
+                                .filter(([dia]) => ['Segunda'].includes(dia))
+                                .map(([dia, selecionado]) => (
+                                    <div key={dia}>
+                                        <div className={styles.input_space}>
+                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                            </div>
+                                            <input
+                                                type="checkbox"
+                                                className={`form-check-input ${styles.checkbox}`}
+                                                id={`${dia}-checkbox`}
+                                                checked={selecionado}
+                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                            />
+                                        </div>
+                                        {selecionado && (
+                                            <div className={`col ${styles.time_container}`}>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-inicio`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
+                                                    />
+                                                </div>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-fim`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
                         </div>
-                    ))}
 
+                        <div className="col">
+                            {Object.entries(diasDaSemana)
+                                .filter(([dia]) => ['Terça'].includes(dia))
+                                .map(([dia, selecionado]) => (
+                                    <div key={dia}>
+                                        <div className={styles.input_space}>
+                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                            </div>
+                                            <input
+                                                type="checkbox"
+                                                className={`form-check-input ${styles.checkbox}`}
+                                                id={`${dia}-checkbox`}
+                                                checked={selecionado}
+                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                            />
+                                        </div>
+                                        {selecionado && (
+                                            <div className={`col ${styles.time_container}`}>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-inicio`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
+                                                    />
+                                                </div>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-fim`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                        </div>
+
+                        <div className="col">
+                            {Object.entries(diasDaSemana)
+                                .filter(([dia]) => ['Quarta'].includes(dia))
+                                .map(([dia, selecionado]) => (
+                                    <div key={dia}>
+                                        <div className={styles.input_space}>
+                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                            </div>
+                                            <input
+                                                type="checkbox"
+                                                className={`form-check-input ${styles.checkbox}`}
+                                                id={`${dia}-checkbox`}
+                                                checked={selecionado}
+                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                            />
+                                        </div>
+                                        {selecionado && (
+                                            <div className={`col ${styles.time_container}`}>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-inicio`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
+                                                    />
+                                                </div>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-fim`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                        </div>
+
+                        <div className="col">
+                            {Object.entries(diasDaSemana)
+                                .filter(([dia]) => ['Quinta'].includes(dia))
+                                .map(([dia, selecionado]) => (
+                                    <div key={dia}>
+                                        <div className={styles.input_space}>
+                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                            </div>
+                                            <input
+                                                type="checkbox"
+                                                className={`form-check-input ${styles.checkbox}`}
+                                                id={`${dia}-checkbox`}
+                                                checked={selecionado}
+                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                            />
+                                        </div>
+                                        {selecionado && (
+                                            <div className={`col ${styles.time_container}`}>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-inicio`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
+                                                    />
+                                                </div>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-fim`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                        </div>
+
+                        <div className="col">
+                            {Object.entries(diasDaSemana)
+                                .filter(([dia]) => ['Sexta'].includes(dia))
+                                .map(([dia, selecionado]) => (
+                                    <div key={dia}>
+                                        <div className={styles.input_space}>
+                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                            </div>
+                                            <input
+                                                type="checkbox"
+                                                className={`form-check-input ${styles.checkbox}`}
+                                                id={`${dia}-checkbox`}
+                                                checked={selecionado}
+                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                            />
+                                        </div>
+                                        {selecionado && (
+                                            <div className={`col ${styles.time_container}`}>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-inicio`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
+                                                    />
+                                                </div>
+                                                <div className="col">
+                                                    <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
+                                                    <input
+                                                        type="time"
+                                                        className={`form-control ${styles.input}`}
+                                                        id={`${dia}-fim`}
+                                                        value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
+                                                        onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                        </div>
+
+                       
+                    </div> 
                 </div>
 
                 <div className={styles.button_box}>
@@ -222,5 +421,3 @@ function CreateCronograma() {
 }
 
 export default CreateCronograma;
-                                
-                                   

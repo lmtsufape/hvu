@@ -5,6 +5,7 @@ import styles from './index.module.css'
 const text_white_button = {
     login: 'Login',
     adicionar_animal: 'Adicionar animal',
+    adicionar_medico: 'Adicionar médico',
     cadastro: "Cadastre-se",
     cancelar: "Cancelar",
     editar: "Editar"
@@ -34,6 +35,20 @@ export function AdicionarAnimalWhiteButton() {
     return (
             <button className={styles.white_button} onClick={handlAdicionarClick}>
                 {text_white_button.adicionar_animal}
+            </button>
+    );
+}
+
+export function AdicionarMedicoWhiteButton() {
+    const router = useRouter();
+
+    const handlAdicionarClick = () => {
+        router.push('/createMedico');
+    };
+
+    return (
+            <button className={styles.white_button} onClick={handlAdicionarClick}>
+                {text_white_button.adicionar_medico}
             </button>
     );
 }

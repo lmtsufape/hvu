@@ -6,6 +6,7 @@ import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import { createMedico } from "../../../services/medicoService";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
+import axios from "axios";
 
 function CreateMedico() {
     const router = useRouter();
@@ -13,6 +14,7 @@ function CreateMedico() {
     const { especialidades } = EspecialidadeList();
     const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
     const [errors, setErrors] = useState({});
+    const [cityStateLoading, setCityStateLoading] = useState(false);
 
     const [medico, setMedico] = useState({
         nome: "",
@@ -81,10 +83,12 @@ function CreateMedico() {
             especialidade: {id: parseInt(selectedEspecialidade) }
         };
 
+        console.log("MedicoToCreate:", MedicoToCreate);
+
         try {
             await createMedico(MedicoToCreate);
             alert("Médico cadastrado com sucesso!");
-            router.push("/meuPerfil");
+            // router.push("/meuPerfil");
         } catch (error) {
             console.error("Erro ao criar médico:", error);
             alert("Erro ao criar médico. Por favor, tente novamente.");
@@ -142,10 +146,40 @@ function CreateMedico() {
         return errors;
     };
 
+    const handleCEPChange = async (event) => {
+        const cep = event.target.value;
+        setMedico({
+            ...medico,
+            endereco: {
+                ...medico.endereco,
+                cep: cep
+            }
+        });
+        if (cep.length === 9) {
+            try {
+                setCityStateLoading(true);
+                const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+                const { localidade, uf } = response.data;
+                setMedico({
+                    ...medico,
+                    endereco: {
+                        ...medico.endereco,
+                        cidade: localidade,
+                        estado: uf
+                    }
+                });
+                setCityStateLoading(false);
+            } catch (error) {
+                console.error("Erro ao buscar CEP:", error);
+                setCityStateLoading(false);
+            }
+        }
+    };
+
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Cadastro do médico veterinário</h1>
+            <h1>Cadastro do&#40;a&#41; médico&#40;a&#41; veterinário&#40;a&#41;</h1>
 
             <form className={styles.inputs_container}>
 
@@ -157,7 +191,7 @@ function CreateMedico() {
                             <div className="col">
                                 {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
                                 {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
-                                {renderMedicoInput("Alterar senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
+                                {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
                                 {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
                             </div>
                             <div className="col">
@@ -195,11 +229,11 @@ function CreateMedico() {
                         <div className="mb-3">
                             <div className="row">
                                 <div className="col">
-                                    {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, "Digite o número do endereço", "text", errors.numero)}
-                                    {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleEnderecoChange, "Digite o CEP", "text", errors.cep, "99999-999")}
+                                    {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleCEPChange, "Digite o CEP", "text", errors.cep, "99999-999")}
+                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, "Digite o estado", "text", errors.estado)}
                                 </div>
                                 <div className="col">
-                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, "Digite o estado", "text", errors.estado)}
+                                    {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, "Digite o número do endereço", "text", errors.numero)}
                                     {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, "Digite a cidade", "text", errors.cidade)}
                                 </div>
                             </div>
@@ -210,7 +244,7 @@ function CreateMedico() {
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />
                     <button type="button" className={styles.criar_button} onClick={handleCreateMedico}>
-                        Criar
+                        {cityStateLoading ? "Aguarde..." : "Criar"}
                     </button>
                 </div>
 
@@ -239,7 +273,7 @@ function renderMedicoInput(label, placeholder, name, value, onChange, type = "te
     );
 }
 
-function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text",  errorMessage = null, mask) {
+function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", errorMessage = null, mask) {
     const InputComponent = mask ? InputMask : 'input';
     const inputProps = mask ? { mask } : {};
 
