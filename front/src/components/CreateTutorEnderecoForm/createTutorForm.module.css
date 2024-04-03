@@ -37,6 +37,26 @@
   line-height: 36px;
   letter-spacing: 0em;
   text-align: left;
-  margin-bottom: 10px;
+  margin-bottom: 1px;
+}
+
+
+.infoIcon {
+  color: #ffa500; /* Cor do ícone de informação */
+
+}
+
+.informativoLAI{
+  color: #ffa500;
+  margin-left: 5px;
+}
+
+.infoContainer {
+  font-size: 16px; 
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative; /* ou absolute ou fixed */
+  top: -20px;
 }
   
