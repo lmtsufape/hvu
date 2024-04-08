@@ -71,23 +71,14 @@ function CreateAnimalForm() {
     const racasFiltradas = racas.filter((r) => r.especie.id === parseInt(selectedEspecieId));
     setRacasByEspecie(racasFiltradas);
 
-    const selectedEspecieName = event.target.options[event.target.selectedIndex].textContent;
-    if(selectedEspecieName === "Exótico e Silvestres") {
-      setIsRacaSelectDisabled(true);
-    } else {
-      setIsRacaSelectDisabled(false);
-    }   
-    setEspecieName(selectedEspecieName); 
+    setIsRacaSelectDisabled(false);
   };
-
-  console.log("Selected especie:", selectedEspecie)
 
   const handleRacaSelection = (event) => {
     const selectedRacaId = event.target.value;
     const selectedRacaObj = racas.find((r) => r.id === parseInt(selectedRacaId));
     setSelectedRaca(selectedRacaObj.id);
   };
-  console.log("Selected raça:", selectedRaca)
 
   const validateForm = () => {
     const newErrors = {};
@@ -188,7 +179,7 @@ function CreateAnimalForm() {
 
   return (
     <div className={styles.container}>
-      < VoltarButton />
+      <VoltarButton />
       <h1>Informações do Animal</h1>
       <form className={styles.form_box} onSubmit={handleSubmit}>
         <div className="row">
@@ -236,20 +227,16 @@ function CreateAnimalForm() {
           </div>
 
           <div className={`col ${styles.col}`}>
-            <label htmlFor="raca" className="form-label">Raça { !isRacaSelectDisabled && <span className={styles.obrigatorio}>*</span> }</label>
+            <label htmlFor="raca" className="form-label">Raça {selectedEspecie && <span className={styles.obrigatorio}>*</span>}</label>
             <select 
               className={`form-select ${styles.input} ${errors.raca ? "is-invalid" : ""}`}
               name="raca"
               aria-label="Selecione a raça do animal"
               value={selectedRaca || ""}
               onChange={handleRacaSelection}
-              disabled={isRacaSelectDisabled} 
+              disabled={!selectedEspecie} 
             >
-              <option value="" disabled={especieName === "Exótico e Silvestres"}>
-                {especieName === "Exótico e Silvestres"
-                  ? "Não definida"
-                  : "Selecione a raça"}
-              </option>
+              <option value="">Selecione a raça</option>
               {racasByEspecie.map((raca) => (
                 <option key={raca.id} value={raca.id}>
                   {raca.nome}
@@ -273,8 +260,6 @@ function CreateAnimalForm() {
             {errors.alergias && <div className="invalid-feedback">{errors.alergias}</div>}
           </div>
 
-          
-       
           <div className={`col ${styles.col}`}  style={{ position: 'relative', display: 'inline-block' }}>
             <label htmlFor="peso" className="form-label">Peso </label>
             <input 
@@ -290,7 +275,6 @@ function CreateAnimalForm() {
               style={{ paddingRight: '30px' }} 
             />
             <span style={{ position: 'absolute', right: '20px', top: '15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
-            {errors.alergias && <div className="invalid-feedback">{errors.alergias}</div>}
           </div>
   
           <div className={`col ${styles.col}`}>

@@ -1,12 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
 
-.container {
+.page {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.obrigatorio {
-  color: red;
+.container {
+  justify-content: center;
+  align-items: center;
 }
 
 .list{
@@ -15,20 +18,17 @@
   
 .boxcadastrotutor {
   display: block;
-  width: 80%;
+  width: 63%;
   max-width: 1500px;
   min-width: 300px;
   height: auto; 
-  border: 1px;
   background-color: white;
   padding: 30px;
-  box-sizing: border-box;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
-  margin: auto;
   border-radius: 10px;
+  border: 0.5px solid #B1B1B1;
   font-family: 'Poppins', sans-serif;
   font-style: normal;
-  margin-bottom: 95px;
+  margin-bottom: 180px;
 }
 
 .form_box div {
@@ -42,32 +42,7 @@
   color: black ;
   font-family: 'Poppins', sans-serif;
   margin-top: 3%;
-  margin-bottom: 2%;
-}
-
-.button_container{
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 50px;
-  margin-bottom: 0px;
-  gap: 3%;
-}
-
-.atualizar_button {
-  width: 180px;
-  height: 48px;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px;
-  gap: 10px;
-  font-size: 16px;
-  color: white;
-  background-color: #327053;
-  font-family: 'Poppins', sans-serif;
-}
-
-.atualizar_button:hover {
-  background-color: #5b977b;
+  margin-bottom: 10%;
 }
 
 .input {
@@ -98,4 +73,31 @@
   font-weight: 300;
   line-height: 20px;
   color: #000000;
+}
+
+.button_box {
+  display: flex;
+  justify-content:  flex-end;;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 0px;
+  gap: 3%;
+}
+
+.criar_button {
+  width: 180px;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid #39805F;
+  color: #FFF5F6;
+  background-color: #39805F;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
+}
+
+.criar_button:hover {
+  background-color: #39805fe6;
 }
