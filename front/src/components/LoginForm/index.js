@@ -70,10 +70,10 @@ function FormularioLogin() {
     <label htmlFor="exampleInputEmail1">E-mail</label>
     <input
       type="email"
-      className={`form-control ${errors.login ? "is-invalid" : ""}`}
+      className={`form-control ${styles.input} ${errors.login ? "is-invalid" : ""}`}
       id="exampleInputEmail1"
       aria-describedby="emailHelp"
-      placeholder="Seu email"
+      placeholder="Digite seu email"
       name="email"
       value={login}
       onChange={(e) => setLogin(e.target.value)}
@@ -85,9 +85,9 @@ function FormularioLogin() {
     <div className="input-group">
       <input
         type={showPassword ? 'text' : 'password'}
-        className={`form-control ${errors.senha ? "is-invalid" : ""}`}
+        className={`form-control ${styles.input} ${errors.senha ? "is-invalid" : ""}`}
         id="exampleInputPassword1"
-        placeholder="Sua senha"
+        placeholder="Digite sua senha"
         name="senha"
         value={senha}
         onChange={(e) => setSenha(e.target.value)}

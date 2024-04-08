@@ -195,17 +195,17 @@ function CreateMedico() {
                         <div className={styles.titulo}>Profissional</div>
                         {renderMedicoInput("Nome Completo", "Digite o nome completo", "nome", medico.nome, handleMedicoChange, "text", errors.nome)}
                         <div className="row">
-                            <div className="col">
+                            <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
                                 {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
                                 {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
                                 {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
                             </div>
-                            <div className="col">
+                            <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("Telefone", "Digite o telefone", "telefone", medico.telefone, handleMedicoChange, "tel", errors.telefone, "(99) 99999-9999")}
                                 {renderMedicoInput("RG", "Digite o RG", "rg", medico.rg, handleMedicoChange, "text", errors.rg, "99.999.999-9")}
                                 {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
-                                <div className="col">
+                                <div className={`col ${styles.col}`}>
                                     <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
                                     <select
                                         className={`form-select ${errors.especialidade ? styles.errorInput : ""}`}
@@ -235,11 +235,11 @@ function CreateMedico() {
                         {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, "Digite o bairro", "text", errors.bairro)}
                         <div className="mb-3">
                             <div className="row">
-                                <div className="col">
+                                <div className={`col ${styles.col}`}>
                                     {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleCEPChange, "Digite o CEP", "text", errors.cep, "99999-999")}
                                     {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, "Digite o estado", "text", errors.estado)}
                                 </div>
-                                <div className="col">
+                                <div className={`col ${styles.col}`}>
                                     {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, "Digite o número do endereço", "text", errors.numero)}
                                     {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, "Digite a cidade", "text", errors.cidade)}
                                 </div>
@@ -269,17 +269,18 @@ function renderMedicoInput(label, placeholder, name, value, onChange, type = "te
             <InputComponent
                 mask={mask}
                 type={type}
-                className={`form-control ${errorMessage ? styles.errorInput : ""}`}
+                className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
                 name={name}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
             />
-            {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
+            {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
         </div>
     );
 }
 
+// Substitua a renderização das mensagens de erro nos inputs de endereço por classes Bootstrap
 function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", errorMessage = null, mask) {
     const InputComponent = mask ? InputMask : 'input';
     const inputProps = mask ? { mask } : {};
@@ -289,14 +290,14 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
             <label htmlFor={name} className="form-label">{label} <span className={styles.obrigatorio}>*</span></label>
             <InputComponent
                 type={type}
-                className={`form-control ${errorMessage ? styles.errorInput : ""}`}
+                className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
                 name={name}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
                 {...inputProps}
             />
-            {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
+            {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
         </div>
     );
 }

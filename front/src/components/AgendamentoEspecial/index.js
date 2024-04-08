@@ -103,9 +103,9 @@ function AgendamentoEspecial() {
       <div className={`${styles.boxagendarconsulta} ${styles.container}`}>
         <form>
           <div className="row">
-            <div className="col">
+            <div className={`col ${styles.col}`}>
               <label htmlFor="data" className="form-label">Data</label>
-              <div className="form-control">
+              <div className={`form-control ${styles.input}`}>
                 <DatePicker
                   dateFormat="dd/MM/yyyy"
                   className={styles.datepicker}
@@ -116,9 +116,10 @@ function AgendamentoEspecial() {
                 />
               </div>
             </div>
-            <div className="col">
+            <div className={`col ${styles.col}`}>
               <label htmlFor="horario" className="form-label">Horário</label>
-              <select className="form-select"
+              <select 
+                className={`form-select ${styles.input}`}
                 name="horario"
                 aria-label="Selecione o horário"
                 value={escolherHorario || ""}
@@ -139,9 +140,10 @@ function AgendamentoEspecial() {
 
           <div className={styles.espacodosforms}>
             <div className="row">
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="especialidade" className="form-label">Especialidade</label>
-                <select className="form-select"
+                <select 
+                  className={`form-select ${styles.input}`}
                   name="especialidade"
                   aria-label="Selecione a especialidade"
                   value={selectedEspecialidade || ""}
@@ -156,9 +158,10 @@ function AgendamentoEspecial() {
                 </select>
               </div>
               {/* transformar isso aqui em tipo um search */}
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="animal" className="form-label">Paciente</label>
-                <select className="form-select"
+                <select 
+                  className={`form-select ${styles.input}`}
                   name="animal"
                   aria-label="Selecione o paciente"
                   value={selectedAnimal || ""}
@@ -176,10 +179,10 @@ function AgendamentoEspecial() {
           </div>
           <div className={styles.espacodosforms}>
             <div className="row">
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="status" className="form-label">Status</label>
                 <input type="text"
-                  className="form-control"
+                  className={`form-control ${styles.input}`}
                   name="status"
                   placeholder="Digite o status"
                   value={vaga.status}
@@ -188,9 +191,10 @@ function AgendamentoEspecial() {
                 </input>
               </div>
 
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="tipoConsulta" className="form-label">Tipo de Consulta</label>
-                <select className="form-select"
+                <select 
+                  className={`form-select ${styles.input}`}
                   name="tipoConsulta"
                   aria-label="Selecione o tipo de consulta"
                   value={selectedTiposConsulta || ""}

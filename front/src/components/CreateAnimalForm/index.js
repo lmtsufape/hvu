@@ -192,22 +192,22 @@ function CreateAnimalForm() {
       <h1>Informações do Animal</h1>
       <form className={styles.form_box} onSubmit={handleSubmit}>
         <div className="row">
-          <div className="col">
+          <div className={`col ${styles.col}`}>
             <label htmlFor="nome" className="form-label">Nome <span className={styles.obrigatorio}>*</span></label>
             <input
               type="text"
-              className={`form-control ${errors.nome ? "is-invalid" : ""}`}
+              className={`form-control ${styles.input} ${errors.nome ? "is-invalid" : ""}`}
               name="nome"
               placeholder="Insira o nome do animal"
               value={animalData.nome}
               onChange={handleAnimalChange}
             />
           </div>
-          <div className="col">
+          <div className={`col ${styles.col}`}>
             <label htmlFor="nascimento" className="form-label">Data de Nascimento</label>
             <input
               type="date"
-              className={`form-control ${errors.dataNascimento ? "is-invalid" : ""}`}
+              className={`form-control ${styles.input} ${errors.dataNascimento ? "is-invalid" : ""}`}
               name="dataNascimento"
               value={animalData.dataNascimento}
               onChange={handleAnimalChange}
@@ -217,10 +217,10 @@ function CreateAnimalForm() {
         </div>
   
         <div className="row">
-          <div className="col">
+          <div className={`col ${styles.col}`}>
             <label htmlFor="especie" className="form-label">Espécie <span className={styles.obrigatorio}>*</span></label>
             <select 
-              className={`form-select ${errors.especie ? "is-invalid" : ""}`}
+              className={`form-select ${styles.input} ${errors.especie ? "is-invalid" : ""}`}
               name="especie"
               aria-label="Selecione a espécie do animal"
               value={selectedEspecie || ""}
@@ -235,10 +235,10 @@ function CreateAnimalForm() {
             </select>
           </div>
 
-          <div className="col">
+          <div className={`col ${styles.col}`}>
             <label htmlFor="raca" className="form-label">Raça { !isRacaSelectDisabled && <span className={styles.obrigatorio}>*</span> }</label>
             <select 
-              className={`form-select ${errors.raca ? "is-invalid" : ""}`}
+              className={`form-select ${styles.input} ${errors.raca ? "is-invalid" : ""}`}
               name="raca"
               aria-label="Selecione a raça do animal"
               value={selectedRaca || ""}
@@ -260,11 +260,11 @@ function CreateAnimalForm() {
         </div>
   
         <div className="row">
-          <div className="col">
+          <div className={`col ${styles.col}`}>
             <label htmlFor="alergias" className="form-label">Alergias <span className={styles.obrigatorio}>*</span></label>
             <input 
               type="text"
-              className={`form-control ${errors.alergias ? "is-invalid" : ""}`}
+              className={`form-control ${styles.input} ${errors.alergias ? "is-invalid" : ""}`}
               name="alergias"
               placeholder="Alergias"
               value={animalData.alergias}
@@ -275,14 +275,14 @@ function CreateAnimalForm() {
 
           
        
-          <div className="col"  style={{ position: 'relative', display: 'inline-block' }}>
+          <div className={`col ${styles.col}`}  style={{ position: 'relative', display: 'inline-block' }}>
             <label htmlFor="peso" className="form-label">Peso </label>
             <input 
               type="number"
               step={0.1}
               pattern="\d+(\.\d{2})?"
               min="0"
-              className="form-control"
+              className={`form-control ${styles.input}`}
               name="peso"
               placeholder="Peso (Opcional)"
               value={animalData.peso}
@@ -293,10 +293,10 @@ function CreateAnimalForm() {
             {errors.alergias && <div className="invalid-feedback">{errors.alergias}</div>}
           </div>
   
-          <div className="col">
+          <div className={`col ${styles.col}`}>
             <label htmlFor="sexo" className="form-label">Sexo <span className={styles.obrigatorio}>*</span></label>
             <select 
-              className={`form-select ${errors.sexo ? "is-invalid" : ""}`}
+              className={`form-select ${styles.input} ${errors.sexo ? "is-invalid" : ""}`}
               name="sexo"
               aria-label="Selecione o sexo do animal"
               value={animalData.sexo}

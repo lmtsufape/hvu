@@ -2,7 +2,7 @@
 
 .container {
     min-height: 700px;
-    margin-top: 60px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     gap: 40px;
@@ -16,8 +16,6 @@
     line-height: 36px;
     color: #000000;
 }
-
-
 
 .navbar_container {
     display: flex;
@@ -57,18 +55,18 @@
 .info_box h6 {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 24px;
     letter-spacing: 0em;
     text-align: left;
-    color: #404040;
+    color: #606060;
 }
 
 .info_box p {
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
     letter-spacing: 0em;
     text-align: left;
     color: #39805F;

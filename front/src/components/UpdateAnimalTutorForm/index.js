@@ -149,21 +149,21 @@ console.log(animalData);
         {animalData && (
           <li key={animalData.id} className={styles.list}>
             <div className="row">
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="nome" className="form-label">Nome <span className={styles.obrigatorio}>*</span></label>
                 <input
                   type="text"
-                  className="form-control"
+                  className={`form-control ${styles.input}`}
                   name="nome"
                   value={animalData.nome}
                   onChange={handleAnimalChange}
                 />
               </div>
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="dataNascimento" className="form-label">Data de Nascimento </label>
                 <input
                   type="date"
-                  className="form-control"
+                  className={`form-control ${styles.input}`}
                   name="dataNascimento"
                   value={animalData.dataNascimento}
                   onChange={handleAnimalChange}
@@ -172,10 +172,10 @@ console.log(animalData);
             </div>
 
             <div className="row">
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="especie" className="form-label">Espécie <span className={styles.obrigatorio}>*</span></label>
                 <select
-                  className='form-select'
+                  className={`form-select ${styles.input}`}
                   name="especie"
                   aria-label={animalData.raca && animalData.raca.especie && animalData.raca.especie.nome}
                   value={selectedEspecie}
@@ -188,10 +188,10 @@ console.log(animalData);
                   ))}
                 </select>
               </div>
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="raca" className="form-label">Raça</label>
                 <select
-                  className='form-select'
+                  className={`form-select ${styles.input}`}
                   name="raca"
                   aria-label={animalData.raca && animalData.raca.nome}
                   value={selectedRaca}
@@ -208,24 +208,24 @@ console.log(animalData);
             </div>
 
             <div className="row">
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="alergias" className="form-label">Alergias <span className={styles.obrigatorio}>*</span></label>
                 <input type="text"
-                  className="form-control"
+                  className={`form-control ${styles.input}`}
                   name="alergias"
                   value={animalData.alergias}
                   onChange={handleAnimalChange}
                 />
               </div>
 
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="peso" className="form-label">Peso </label>
                 <input 
                   type="number"
                   step={0.1}
                   pattern="\d+(\.\d{2})?"
                   min="0"
-                  className="form-control"
+                  className={`form-control ${styles.input}`}
                   name="peso"
                   placeholder="Peso (Opcional)"
                   value={animalData.peso}
@@ -235,9 +235,9 @@ console.log(animalData);
                 <span style={{ position: 'absolute', right: '20px', top: '15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
               </div>
 
-              <div className="col">
+              <div className={`col ${styles.col}`}>
                 <label htmlFor="sexo" className="form-label">Sexo <span className={styles.obrigatorio}>*</span></label>
-                <select className="form-select"
+                <select className={`form-select ${styles.input}`}
                   name="sexo"
                   aria-label={animalData.sexo}
                   value={animalData.sexo}
