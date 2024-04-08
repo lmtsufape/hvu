@@ -175,7 +175,7 @@ function CreateCronograma() {
                     </div>
 
                     <div className="row">
-                        <div className={styles.title}><h2>Dias de trabalho</h2></div>
+                        <div className={styles.title}><h2>Horários de atendimento</h2></div>
                     </div>
 
                     <div className={`row ${styles.div_space}`}>

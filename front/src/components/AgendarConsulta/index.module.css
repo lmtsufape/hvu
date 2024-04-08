@@ -42,6 +42,28 @@ margin-left: 7%;
   font-style: normal;
   margin-bottom: 4em;
 
+  .input {
+    font-family: 'Poppins', sans-serif;;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #000000;
+}
+
+.input:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px #3d856371;
+    border: 1px solid #ccc;
+}
+
+.input::placeholder {
+    font-family: 'Poppins', sans-serif;;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #000000;
+}
+
   @media only screen and (max-width: 700px) {
     .select_container{
       display: flex;
@@ -86,6 +108,21 @@ margin-left: 7%;
   flex: 1;
 }
 
+.select_box {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #272727;
+}
+
+.select_box select option {
+  font-family: 'Poppins', sans-serif;;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 20px;
+  color: #000000;
+}
 
 .containersemana{
   display: flex;

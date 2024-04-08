@@ -67,10 +67,10 @@ function CreateRaca() {
             <form className={styles.inputs_container}>
                 <div className={styles.inputs_box}>
                     <div className="row">
-                        <div className="col">
+                        <div className={`col ${styles.col}`}>
                             <label htmlFor="especie" className="form-label">Espécie</label>
                             <select
-                                className="form-select"
+                                className={`form-select ${styles.input}`}
                                 name="especie"
                                 aria-label="Selecione uma espécie"
                                 value={selectedEspecie || ""}
@@ -84,21 +84,21 @@ function CreateRaca() {
                                 ))}
                             </select>
                         </div>
-                        <div className="col">
+                        <div className={`col ${styles.col}`}>
                             <label htmlFor="nome" className="form-label">Raça</label>
                             <input
                                 type="text"
-                                className="form-control"
+                                className={`form-control ${styles.input}`}
                                 name="nome"
                                 value={raca.nome}
                                 onChange={handleRacaChange}
                             />
                         </div>
-                        <div className="col">
+                        <div className={`col ${styles.col}`}>
                             <label htmlFor="porte" className="form-label">Porte</label>
                             <input
                                 type="text"
-                                className="form-control"
+                                className={`form-control ${styles.input}`}
                                 name="porte"
                                 value={raca.porte}
                                 onChange={handleRacaChange}

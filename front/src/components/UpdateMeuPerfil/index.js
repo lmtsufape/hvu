@@ -104,12 +104,12 @@ function UpdateMeuPerfil() {
                         <div className={styles.titulo}>Tutor</div>
                         {renderTutorInput("Nome Completo", tutor.nome, "nome", tutor.nome, handleTutorChange, "text")}
                         <div className="row">
-                            <div className="col">
+                            <div className={`col ${styles.col}`}>
                                 {renderTutorInput("E-mail", tutor.email, "email", tutor.email, handleTutorChange, "email")}
                                 {renderTutorInput("CPF", tutor.cpf, "cpf", tutor.cpf, handleTutorChange, "text", "999.999.999-99")}
                                 {renderTutorInput("Alterar senha", "Digite sua nova senha", "senha", tutor.senha, handleTutorChange, "password")}
                             </div>
-                            <div className="col">
+                            <div className={`col ${styles.col}`}>
                                 {renderTutorInput("Telefone", tutor.telefone, "telefone", tutor.telefone, handleTutorChange, "tel", "(99) 99999-9999")}
                                 {renderTutorInput("RG", tutor.rg, "rg", tutor.rg, handleTutorChange, "text", "99.999.999-9")}
                                 {renderTutorInput("Confirmar senha", "Confirme sua nova senha", "confirmarSenha", tutor.confirmarSenha, handleTutorChange, "password")}
@@ -125,11 +125,11 @@ function UpdateMeuPerfil() {
                         {renderEnderecoInput("Bairro", "bairro", tutor.endereco.bairro, handleEnderecoChange, tutor.endereco.bairro,)}
                         <div className="mb-3">
                             <div className="row">
-                            <div className="col">
+                            <div className={`col ${styles.col}`}>
                                 {renderEnderecoInput("Número", "numero", tutor.endereco.numero, handleEnderecoChange, tutor.endereco.numero,)}
                                 {renderEnderecoInput("CEP", "cep", tutor.endereco.cep, handleEnderecoChange, tutor.endereco.cep, "text", "99999-999")}
                             </div>
-                            <div className="col">
+                            <div className={`col ${styles.col}`}>
                                 {renderEnderecoInput("Estado", "estado", tutor.endereco.estado, handleEnderecoChange, tutor.endereco.estado)}
                                 {renderEnderecoInput("Cidade", "cidade", tutor.endereco.cidade, handleEnderecoChange, tutor.endereco.cidade)}
                             </div>
@@ -159,7 +159,7 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
             <InputComponent
                 mask={mask}
                 type={type}
-                className="form-control"
+                className={`form-control ${styles.input}`}
                 name={name}
                 placeholder={placeholder}
                 value={value}
@@ -178,7 +178,7 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
         <label htmlFor={name} className="form-label">{label} <span className={styles.obrigatorio}>*</span></label>
         <InputComponent
           type={type}
-          className="form-control"
+          className={`form-control ${styles.input}`}
           name={name}
           placeholder={placeholder}
           value={value}

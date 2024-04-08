@@ -168,9 +168,10 @@ const HorariosSemana = () => {
           <div className={styles.select_box}>
             <h1>Paciente</h1>
             <select 
-              className="form-select" aria-label="Default select example"
+              className={`form-select ${styles.input}`} 
+              aria-label="Default select example"
               name="animal"
-              value={selectedAnimal ? selectedAnimal.id : ''} // Alterado
+              value={selectedAnimal ? selectedAnimal.id : ''}
               onChange={handleAnimalSelection}
             >
               <option value="">Selecione um paciente</option>

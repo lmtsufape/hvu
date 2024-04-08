@@ -29,6 +29,10 @@
     align-items: center;
 }
 
+.button:hover {
+    box-shadow: 0 0 5px 2px #3d856371;
+}
+
 .button h6 {
     width: 212px;
     height: 72px;

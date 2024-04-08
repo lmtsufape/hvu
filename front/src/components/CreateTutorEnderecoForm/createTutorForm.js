@@ -7,7 +7,7 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
     return (
         <div className={styles.boxcadastrotutor}>
             <div className={styles.cadastrotutor}>
-                <div className={styles.titulo}>Tutor</div>
+                <div className={styles.titulo}>Informações pessoais</div>
                 {renderInput("Nome Completo", "Insira seu nome completo", "nome", tutorFormData.nome, handleTutorChange, errors.nome, "text")}
                 <div className="row">
                     <div className="col">
@@ -35,7 +35,7 @@ function renderInput(label, placeholder, name, value, onChange, error, type = "t
             <InputComponent
                 mask={mask}
                 type={type}
-                className={`form-control ${error ? 'is-invalid' : ''}`}
+                className={`form-control ${styles.input} ${error ? 'is-invalid' : ''}`}
                 name={name}
                 placeholder={placeholder}
                 value={value}

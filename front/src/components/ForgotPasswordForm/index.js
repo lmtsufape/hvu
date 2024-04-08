@@ -17,7 +17,7 @@ function ForgotPasswordForm() {
                         <label htmlFor="email" className="form-label">Email</label>
                         <input 
                         type="text"
-                        className="form-control"
+                        className={`form-control ${styles.input}`}
                         name="email"
                         placeholder="Digite seu email"
                         />

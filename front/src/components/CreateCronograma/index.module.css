@@ -122,6 +122,7 @@
 .input:focus {
     outline: none;
     box-shadow: 0 0 5px 2px #3d856371;
+    border: 1px solid #ccc;
 }
 
 .input::placeholder {
