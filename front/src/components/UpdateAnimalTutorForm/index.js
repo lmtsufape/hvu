@@ -5,6 +5,7 @@ import { getAnimalById, updateAnimal } from '../../../services/animalService';
 import EspeciesList from "@/hooks/useEspecieList";
 import RacasList from "@/hooks/useRacaList";
 import VoltarButton from '../VoltarButton';
+import { CancelarWhiteButton } from '../WhiteButton';
 
 function UpdateAnimalForm() {
   const router = useRouter();
@@ -28,16 +29,6 @@ function UpdateAnimalForm() {
     raca: { id: null }
   });
 
-  // useEffect(() => {
-  //   if (especies.length > 0 && selectedEspecie === null) {
-  //     setSelectedEspecie(especies[0]?.id.toString());
-  //     setSelectedRaca(""); 
-  //   }
-  //   if (racas.length > 0 && selectedRaca === null) {
-  //     setSelectedRaca("");
-  //   }
-  // }, [especies, racas, selectedEspecie, selectedRaca]);
-
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
@@ -46,8 +37,8 @@ function UpdateAnimalForm() {
           setAnimalData(animal);
 
           // Definir espécie e raça selecionadas inicialmente
-          setSelectedEspecie(animal.raca.especie.id);
-          setSelectedRaca(animal.raca.id);
+          setSelectedEspecie(animal.raca.especie.id.toString()); // Convertendo para string
+          setSelectedRaca(animal.raca.id.toString()); // Convertendo para string
         } catch (error) {
           console.error('Erro ao buscar animal:', error);
         }
@@ -103,13 +94,6 @@ function UpdateAnimalForm() {
     }
   };
 
-console.log(animalData);
-  console.log("selected especie:", selectedEspecie);
-
-  console.log("selected raca:", selectedRaca);
-
-  console.log("-------------------");
-
   const handleUpdateAnimal = async (event) => {
     event.preventDefault();
 
@@ -132,17 +116,26 @@ console.log(animalData);
         setAnimalData(updatedAnimal);
 
         if (updatedAnimal.ok) {
-          console.log("animal atualizado com sucesso!");
+          alert("animal atualizado com sucesso!");
+          router.push(`/getAnimalByIdTutor/${id}`);
         } else {
+          alert('Erro ao atualizar o animal, tente novamente.');
           console.error('Erro ao atualizar o animal.');
         }
       } catch (error) {
+        alert('Erro ao atualizar o animal, tente novamente.');
         console.error('Erro ao atualizar o animal:', error);
       }
     }
   };
 
   return (
+    <div className={styles.page}>
+    < VoltarButton />
+    <div>
+      <h1 className={styles.titulocadastro}>Editar informações do animal</h1>
+    </div>
+
     <form className={`${styles.boxcadastrotutor} ${styles.container}`} onSubmit={handleUpdateAnimal}>
       
       <ul className={styles.form_box}>
@@ -150,7 +143,7 @@ console.log(animalData);
           <li key={animalData.id} className={styles.list}>
             <div className="row">
               <div className={`col ${styles.col}`}>
-                <label htmlFor="nome" className="form-label">Nome <span className={styles.obrigatorio}>*</span></label>
+                <label htmlFor="nome" className="form-label">Nome</label>
                 <input
                   type="text"
                   className={`form-control ${styles.input}`}
@@ -173,7 +166,7 @@ console.log(animalData);
 
             <div className="row">
               <div className={`col ${styles.col}`}>
-                <label htmlFor="especie" className="form-label">Espécie <span className={styles.obrigatorio}>*</span></label>
+                <label htmlFor="especie" className="form-label">Espécie</label>
                 <select
                   className={`form-select ${styles.input}`}
                   name="especie"
@@ -197,7 +190,6 @@ console.log(animalData);
                   value={selectedRaca}
                   onChange={handleRacaSelection}
                 >
-                  <option value="">Selecione a raça</option>
                   {racasByEspecie.map((raca) => (
                     <option key={raca.id} value={raca.id.toString()}>
                       {raca.nome}
@@ -209,7 +201,7 @@ console.log(animalData);
 
             <div className="row">
               <div className={`col ${styles.col}`}>
-                <label htmlFor="alergias" className="form-label">Alergias <span className={styles.obrigatorio}>*</span></label>
+                <label htmlFor="alergias" className="form-label">Alergias</label>
                 <input type="text"
                   className={`form-control ${styles.input}`}
                   name="alergias"
@@ -218,7 +210,7 @@ console.log(animalData);
                 />
               </div>
 
-              <div className={`col ${styles.col}`}>
+              <div className={`col ${styles.col}`} style={{ position: 'relative', display: 'inline-block' }}>
                 <label htmlFor="peso" className="form-label">Peso </label>
                 <input 
                   type="number"
@@ -232,11 +224,11 @@ console.log(animalData);
                   onChange={handleAnimalChange}
                   style={{ paddingRight: '30px' }} 
                 />
-                <span style={{ position: 'absolute', right: '20px', top: '15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
+                <span style={{ position: 'absolute', right: '18px', top: '-9px', bottom: '-16px', height: '0', margin: 'auto', pointerEvents: 'none'}}>kg</span>
               </div>
 
               <div className={`col ${styles.col}`}>
-                <label htmlFor="sexo" className="form-label">Sexo <span className={styles.obrigatorio}>*</span></label>
+                <label htmlFor="sexo" className="form-label">Sexo</label>
                 <select className={`form-select ${styles.input}`}
                   name="sexo"
                   aria-label={animalData.sexo}
@@ -250,15 +242,17 @@ console.log(animalData);
               </div>
             </div>
 
-            <div className={styles.button_container}>
-              <button type="submit" className={styles.atualizar_button}>
-                Atualizar
+            <div className={styles.button_box}>
+              < CancelarWhiteButton />
+              <button type="submit" className={styles.criar_button}>
+                Salvar
               </button>
             </div>
           </li>
         )}
       </ul>
     </form>
+    </div>
   );
 }
 
