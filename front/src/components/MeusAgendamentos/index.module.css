@@ -78,10 +78,6 @@
     width: auto;
 } 
 
-.agendamentoBox button:hover {
-    background-color: #c94157;
-}
-
 .pesquisaBotao{
     display: flex;
     align-items: center;
