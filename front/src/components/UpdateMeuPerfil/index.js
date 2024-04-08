@@ -5,10 +5,16 @@ import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import { updateTutor, getTutorById } from "../../../services/tutorService";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 
 function UpdateMeuPerfil() {
     const router = useRouter();
     const { id } = router.query;
+
+    const [showSenha, setShowSenha] = useState(false);
+    const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
 
     const [tutor, setTutor] = useState({
         nome: "",
@@ -107,12 +113,12 @@ function UpdateMeuPerfil() {
                             <div className={`col ${styles.col}`}>
                                 {renderTutorInput("E-mail", tutor.email, "email", tutor.email, handleTutorChange, "email")}
                                 {renderTutorInput("CPF", tutor.cpf, "cpf", tutor.cpf, handleTutorChange, "text", "999.999.999-99")}
-                                {renderTutorInput("Alterar senha", "Digite sua nova senha", "senha", tutor.senha, handleTutorChange, "password")}
+                                {renderTutorInput("Alterar senha", "Digite sua nova senha", "senha", tutor.senha, handleTutorChange, "password", null, showSenha, setShowSenha)}
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderTutorInput("Telefone", tutor.telefone, "telefone", tutor.telefone, handleTutorChange, "tel", "(99) 99999-9999")}
                                 {renderTutorInput("RG", tutor.rg, "rg", tutor.rg, handleTutorChange, "text", "99.999.999-9")}
-                                {renderTutorInput("Confirmar senha", "Confirme sua nova senha", "confirmarSenha", tutor.confirmarSenha, handleTutorChange, "password")}
+                                {renderTutorInput("Confirmar senha", "Confirme sua nova senha", "confirmarSenha", tutor.confirmarSenha, handleTutorChange, "password", null, showConfirmarSenha, setShowConfirmarSenha)}
                             </div>
                         </div>
                     </div>
@@ -134,6 +140,7 @@ function UpdateMeuPerfil() {
                                 {renderEnderecoInput("Cidade", "cidade", tutor.endereco.cidade, handleEnderecoChange, tutor.endereco.cidade)}
                             </div>
                             </div>
+                            
                         </div>
                     </div>                
                 )}
@@ -150,8 +157,14 @@ function UpdateMeuPerfil() {
     );
 }
 
-function renderTutorInput(label, placeholder, name, value, onChange, type = "text", mask = null) {
+function renderTutorInput(label, placeholder, name, value, onChange, type = "text", mask = null, show = false, setShow = null) {
     const InputComponent = mask ? InputMask : 'input';
+
+    //função modificada para aceitar o evento
+    const toggleShow = (event) => {
+        event.preventDefault(); //impede o comportamento padrão do botão submeter o formulario
+        setShow(!show);
+    };
 
     return (
         <div className="mb-3">
@@ -167,6 +180,7 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
             />
         </div>
     );
+    
 }
 
 function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", mask) {

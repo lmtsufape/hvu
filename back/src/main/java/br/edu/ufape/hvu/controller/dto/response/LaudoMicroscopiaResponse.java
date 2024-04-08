@@ -21,8 +21,6 @@ public  class LaudoMicroscopiaResponse  {
 	private EtapaResponse etapa; 
 	private List<EstagiarioResponse> estagiario; 
 
-
-
 	public LaudoMicroscopiaResponse(LaudoMicroscopia obj) {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
 		modelMapper.map(obj, this);	

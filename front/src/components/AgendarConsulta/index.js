@@ -7,19 +7,20 @@ import { CancelarWhiteButton } from '../WhiteButton';
 import { getAllAnimal } from '../../../services/animalService';
 import { getAllVaga } from '../../../services/vagaService';
 import { createAgendamento } from '../../../services/agendamentoService';
+import { set } from 'date-fns';
 
 const HorariosSemana = () => {
   const router = useRouter();
 
   const [selecionarData, setSelecionarData] = useState(new Date());
-  const [selecionarHorario, setSelecionarHorario] = useState(null);
+  const [selecionarHorario, setSelecionarHorario] = useState('');
   const [showModal, setShowModal] = useState(false);
 
   const [animais, setAnimais] = useState(null);
   const [selectedAnimal, setSelectedAnimal] = useState(null); 
 
   const [vagas, setVagas] = useState(null);
-  const [vagaDataHora, setVagaDataHora] = useState(null);
+  const [selectedVaga, setSelectedVaga] = useState(null);
 
   const openModal = () => {
     setShowModal(true);
@@ -29,18 +30,7 @@ const HorariosSemana = () => {
     setShowModal(false);
   };
 
-  const timeOptions = [
-    { value: '08:00', label: '08:00' },
-    { value: '09:00', label: '09:00' },
-    { value: '10:00', label: '10:00' },
-    { value: '11:00', label: '11:00' },
-    { value: '13:00', label: '13:00' },
-    { value: '14:00', label: '14:00' },
-    { value: '15:00', label: '15:00' },
-    { value: '16:00', label: '16:00' },
-  ];
-
-  const diasSemana = {
+  const diasSemana = { 
     0: 'Domingo',
     1: 'Segunda',
     2: 'Terça',
@@ -52,10 +42,6 @@ const HorariosSemana = () => {
 
   const handleDateChange = (date) => {
     setSelecionarData(date);
-  };
-
-  const handleTimeChange = (selectedOption) => {
-    setSelecionarHorario(selectedOption);
   };
 
   // Função para avançar uma semana
@@ -89,8 +75,6 @@ const HorariosSemana = () => {
       try {
         const VagasData = await getAllVaga();
         setVagas(VagasData);
-        if (VagasData) {
-        }
         console.log("VagasData:", VagasData);
       } catch (error) {
         console.error('Erro ao buscar vagas:', error);
@@ -98,19 +82,6 @@ const HorariosSemana = () => {
     };
     fetchData();
   }, []);
-
-  // Extrair horário e data da vagaDataHora
-  useEffect(() => {
-    if (vagaDataHora) {
-      const [data, hora] = vagaDataHora;
-      console.log('Data:', data);
-      console.log('Hora:', hora);
-    }
-  }, [vagaDataHora]);
-
-  console.log("vagas", vagas);
-  console.log("vagaDataHora", vagaDataHora);
-
 
   const handleAnimalSelection = (event) => {
     const animalId = event.target.value;
@@ -127,24 +98,18 @@ const HorariosSemana = () => {
   };
 
   const handleCreateAgendamento = async () => {
-    // Separar a hora e os minutos do horário selecionado
-    const [hour, minute] = selecionarHorario.value.split(':').map(Number);
-    
-    // Clonar a data selecionada para evitar mutação indesejada
-    const selectedDate = new Date(selecionarData);
   
-    // Definir a hora e os minutos selecionados na data selecionada
-    selectedDate.setHours(hour, minute);
   
     const agendamentoToCreate = {
       animal: { id: selectedAnimal.id },
-      dataVaga: selectedDate.toISOString()
+      dataVaga: selecionarHorario,
+      status: 'Agendado'
     };
   
     console.log("agendamentoToCreate", agendamentoToCreate);
   
     try {
-      const newAgendamento = await createAgendamento(agendamentoToCreate);
+      const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
       console.log(newAgendamento);
       alert("Consulta agendada com sucesso!");
       router.push("/meusAgendamentos");
@@ -192,37 +157,65 @@ const HorariosSemana = () => {
           <button className={styles.button_avancar} onClick={avancarSemana}>⭢</button>
         </div>
         <div className={styles.containersemana}>
-          {Array.from({ length: 7 }, (_, index) => {
-            const currentDate = new Date(selecionarData);
-            currentDate.setDate(currentDate.getDate() - currentDate.getDay() + index);
-            if (currentDate.getDay() !== 6 && currentDate.getDay() !== 0) {
+        {Array.from({ length: 7 }, (_, index) => {
+          const currentDate = new Date(selecionarData);
+          currentDate.setDate(currentDate.getDate() - currentDate.getDay() + index);
+          if (currentDate.getDay() !== 6 && currentDate.getDay() !== 0) {
+            const currentDateFormatted = currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const vagasForCurrentDay = vagas && vagas.filter(vaga => {
+              const vagaDate = new Date(vaga.dataHora);
+              const vagaDateFormatted = vagaDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+              return vagaDateFormatted === currentDateFormatted;
+            });
+            if (!vagasForCurrentDay || vagasForCurrentDay.length === 0) {
               return (
                 <div key={currentDate} className={styles.containerdia}>
                   <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
-                  <p className={styles.data}>{currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</p>
-                  <div className="time-buttons">
-                    {timeOptions.map((timeOption) => (
-                      <button
-                        key={timeOption.value}
-                        className={
-                          currentDate.getDate() === selecionarData.getDate() && selecionarHorario?.value === timeOption.value
-                            ? `${styles.botaohora} selected`
-                            : styles.botaohora
-                        }
-                        onClick={() => {
-                          handleDateChange(currentDate);
-                          handleTimeChange(timeOption);
-                        }}
-                      >
-                        {timeOption.label}
-                      </button>
-                    ))}
+                  <p className={styles.data}>{currentDateFormatted}</p>
+                  <div className={styles.no_vagas}>
+                    Não há vagas
                   </div>
                 </div>
               );
             }
-            return null;
-          })}
+            return (
+              <div key={currentDate} className={styles.containerdia}>
+                <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
+                <p className={styles.data}>{currentDateFormatted}</p>
+                <div className="time-buttons">
+                  {vagasForCurrentDay.map((vaga) => (
+                    <button
+                      key={vaga.id}
+                      className={
+                        
+                        vaga.status === 'Agendado' || vaga.status === 'Finalizado' ?
+                        `${styles.botaohoraIndisponivel} }`
+                        :
+                        
+                        (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && !(vaga.status === 'Agendado' || vaga.status === 'Finalizado') ?
+                        `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}`
+                        : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ''}`)
+                    
+                    }
+                      onClick={() => {
+                        if(!(vaga.status === 'Agendado' || vaga.status === 'Finalizado')){
+
+                        handleDateChange(currentDate);
+                        setSelecionarHorario(vaga.dataHora);
+                        setSelectedVaga(vaga);
+                        }
+                      }}
+                    >
+                      {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
+                      <br/>{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          return null;
+        })}
         </div>
         <div className={styles.button_container}>
           <CancelarWhiteButton />
@@ -239,9 +232,6 @@ const HorariosSemana = () => {
                   <div className={styles.title}>Tem certeza que deseja realizar o agendamento?</div>
                 </div>
 
-                <div className={styles.div_button1}>
-                  <button onClick={closeModal} className={styles.button_close_modal}>X</button>
-                </div>
               </div>
 
               <div className={styles.container2}>
@@ -251,8 +241,15 @@ const HorariosSemana = () => {
                 </div>
 
                 <div className={styles.box}>
-                  <div className={styles.item}>Data</div>
-                  <div className={styles.subtitle}>{formatDate(selecionarData, selecionarHorario ? selecionarHorario.label : '')}</div>
+                  <div className={styles.item}>Horário</div>
+                  <div className={styles.subtitle}>{formatDate(selecionarData, 
+                        selecionarHorario ? selecionarHorario.split('T')[1].split(':').slice(0, 2).join(':') : '')}
+                  </div>
+                </div>
+
+                <div className={styles.box}>
+                  <div className={styles.item}>Consulta</div>
+                  <div className={styles.subtitle}>{selectedVaga.tipoConsulta ? selectedVaga.tipoConsulta.tipo : ''}</div> {/* Alterado */}
                 </div>
               </div>
 

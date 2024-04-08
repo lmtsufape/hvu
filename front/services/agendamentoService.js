@@ -1,9 +1,9 @@
 import api from '../common/http-common-back';
 
   // Função para criar um novo agendamento
-  export async function createAgendamento(agendamentoData) {
+  export async function createAgendamento(agendamentoData, idVaga) {
     try {
-      const response = await api.post('/agendamento', agendamentoData);
+      const response = await api.post(`agendamento/vaga/${idVaga}`, agendamentoData);
       return response.data;
     } catch (error) {
       throw error;

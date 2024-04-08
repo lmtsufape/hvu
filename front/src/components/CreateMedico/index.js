@@ -5,6 +5,8 @@ import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import { createMedico } from "../../../services/medicoService";
+import { postRegister } from "../../../common/postRegister";
+import { postLogin } from "../../../common/postLogin";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import axios from "axios";
 
@@ -80,13 +82,18 @@ function CreateMedico() {
                 numero: medico.endereco.numero,
                 bairro: medico.endereco.bairro
             },
-            especialidade: {id: parseInt(selectedEspecialidade) }
+            especialidade: [{id: parseInt(selectedEspecialidade) }]
         };
 
         console.log("MedicoToCreate:", MedicoToCreate);
 
         try {
+            const token = localStorage.getItem("token");
+            const responseRegister = await postRegister( medico.email,medico.nome,medico.senha, "medico");
+            console.log(responseRegister);
+            await postLogin(medico.email,medico.senha);
             await createMedico(MedicoToCreate);
+            localStorage.setItem("token", token);
             alert("Médico cadastrado com sucesso!");
             // router.push("/meuPerfil");
         } catch (error) {

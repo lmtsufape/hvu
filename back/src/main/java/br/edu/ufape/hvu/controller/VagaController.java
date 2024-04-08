@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
+import java.util.Comparator;
 
 import br.edu.ufape.hvu.model.Vaga;
 import br.edu.ufape.hvu.facade.Facade;
@@ -29,10 +30,11 @@ public class VagaController {
 	
 	@GetMapping("vaga")
 	public List<VagaResponse> getAllVaga() {
-		return facade.getAllVaga()
-			.stream()
-			.map(VagaResponse::new)
-			.toList();
+	    return facade.getAllVaga()
+	            .stream()
+	            .sorted(Comparator.comparing(Vaga::getDataHora)) // Ordenar as vagas por dataHora
+	            .map(VagaResponse::new)
+	            .toList();
 	}
 	
 	@PostMapping("vaga")

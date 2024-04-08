@@ -20,11 +20,11 @@ function CreateCronograma() {
     });
 
     const [diasDaSemana, setDiasDaSemana] = useState({
-        Segunda: false,
-        Terça: false,
-        Quarta: false,
-        Quinta: false,
-        Sexta: false
+        Monday: false,
+        Tuesday: false,
+        Wednesday: false,
+        Thursday: false,
+        Friday: false
     });
 
     const handleDiasDaSemanaChange = (dia) => {
@@ -181,12 +181,12 @@ function CreateCronograma() {
                     <div className={`row ${styles.div_space}`}>
                         <div className="col">
                             {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['Segunda'].includes(dia))
+                                .filter(([dia]) => ['Monday'].includes(dia))
                                 .map(([dia, selecionado]) => (
                                     <div key={dia}>
                                         <div className={styles.input_space}>
                                             <div htmlFor={`${dia}-checkbox`} className="form-label">
-                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                                Segunda
                                             </div>
                                             <input
                                                 type="checkbox"
@@ -226,12 +226,12 @@ function CreateCronograma() {
 
                         <div className="col">
                             {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['Terça'].includes(dia))
+                                .filter(([dia]) => ['Tuesday'].includes(dia))
                                 .map(([dia, selecionado]) => (
                                     <div key={dia}>
                                         <div className={styles.input_space}>
                                             <div htmlFor={`${dia}-checkbox`} className="form-label">
-                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                                Terça-feira
                                             </div>
                                             <input
                                                 type="checkbox"
@@ -271,12 +271,12 @@ function CreateCronograma() {
 
                         <div className="col">
                             {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['Quarta'].includes(dia))
+                                .filter(([dia]) => ['Wednesday'].includes(dia))
                                 .map(([dia, selecionado]) => (
                                     <div key={dia}>
                                         <div className={styles.input_space}>
                                             <div htmlFor={`${dia}-checkbox`} className="form-label">
-                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                                Quarta-feira
                                             </div>
                                             <input
                                                 type="checkbox"
@@ -316,12 +316,12 @@ function CreateCronograma() {
 
                         <div className="col">
                             {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['Quinta'].includes(dia))
+                                .filter(([dia]) => ['Thursday'].includes(dia))
                                 .map(([dia, selecionado]) => (
                                     <div key={dia}>
                                         <div className={styles.input_space}>
                                             <div htmlFor={`${dia}-checkbox`} className="form-label">
-                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                                Quinta-feira
                                             </div>
                                             <input
                                                 type="checkbox"
@@ -361,12 +361,12 @@ function CreateCronograma() {
 
                         <div className="col">
                             {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['Sexta'].includes(dia))
+                                .filter(([dia]) => ['Friday'].includes(dia))
                                 .map(([dia, selecionado]) => (
                                     <div key={dia}>
                                         <div className={styles.input_space}>
                                             <div htmlFor={`${dia}-checkbox`} className="form-label">
-                                                {`${dia.charAt(0).toUpperCase() + dia.slice(1)}`}
+                                                Sexta-feira
                                             </div>
                                             <input
                                                 type="checkbox"

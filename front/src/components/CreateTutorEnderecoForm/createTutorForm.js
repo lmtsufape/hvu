@@ -2,12 +2,21 @@ import React from "react";
 import InputMask from "react-input-mask";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./createTutorForm.module.css";
+//inportacao para usar o icone "i"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'; 
 
 function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
     return (
         <div className={styles.boxcadastrotutor}>
             <div className={styles.cadastrotutor}>
-                <div className={styles.titulo}>Informações pessoais</div>
+            <div className={styles.titulo}>Tutor</div>
+                <div className={styles.infoContainer}>
+                    <FontAwesomeIcon icon={faInfoCircle} className={styles.infoIcon} />
+                    <span className={styles.informativoLAI} title="Conforme as diretrizes da Lei de Acesso à Informação (LAI), esclarecemos que os dados do Registro Geral (RG) e do Cadastro de Pessoa Física (CPF) solicitados durante o processo de cadastro são utilizados exclusivamente para verificação de identidade e associação ao registro fiscal, respeitando os mais altos padrões de segurança e privacidade. ">Informativo LAI</span>
+                </div>
+
+                
                 {renderInput("Nome Completo", "Insira seu nome completo", "nome", tutorFormData.nome, handleTutorChange, errors.nome, "text")}
                 <div className="row">
                     <div className="col">
