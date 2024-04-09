@@ -231,15 +231,15 @@ function CreateMedico() {
                 {medico.endereco && (
                     <div className={styles.boxcadastro}>
                         <div className={styles.titulo}>Endereço</div>
-                        {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, "Digite a rua", "text", errors.rua)}
-                        {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, "Digite o bairro", "text", errors.bairro)}
                         <div className="mb-3">
                             <div className="row">
                                 <div className={`col ${styles.col}`}>
+                                    {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, "Digite a rua", "text", errors.rua)}
                                     {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleCEPChange, "Digite o CEP", "text", errors.cep, "99999-999")}
                                     {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, "Digite o estado", "text", errors.estado)}
                                 </div>
                                 <div className={`col ${styles.col}`}>
+                                    {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, "Digite o bairro", "text", errors.bairro)}
                                     {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, "Digite o número do endereço", "text", errors.numero)}
                                     {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, "Digite a cidade", "text", errors.cidade)}
                                 </div>

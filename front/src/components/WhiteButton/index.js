@@ -6,9 +6,11 @@ const text_white_button = {
     login: 'Login',
     adicionar_animal: 'Adicionar animal',
     adicionar_medico: 'Adicionar médico',
+    adicionar_raca: 'Adicionar raça',
     cadastro: "Cadastre-se",
     cancelar: "Cancelar",
-    editar: "Editar"
+    editar: "Editar",
+    criar_agendamento: "Criar agendamento"
 };
 
 export function LoginWhiteButton() {
@@ -53,6 +55,20 @@ export function AdicionarMedicoWhiteButton() {
     );
 }
 
+export function AdicionarRacaWhiteButton() {
+    const router = useRouter();
+
+    const handlAdicionarClick = () => {
+        router.push('/createRaca');
+    };
+
+    return (
+            <button className={styles.white_button} onClick={handlAdicionarClick}>
+                {text_white_button.adicionar_raca}
+            </button>
+    );
+}
+
 export function CadastrolWhiteButton() {
     return (
         <button className={styles.white_button}>
@@ -85,6 +101,20 @@ export function EditarWhiteButton() {
     return (
             <button className={styles.white_button} onClick={handlEditarClick}>
                 {text_white_button.editar}
+            </button>
+    );
+}
+
+export function CriarAgendamentoWhiteButton() {
+    const router = useRouter();
+
+    const handleCriarClick = () => {
+        router.push('/agendarConsulta');
+    };
+
+    return (
+            <button className={styles.white_button} onClick={handleCriarClick}>
+                {text_white_button.criar_agendamento}
             </button>
     );
 }
