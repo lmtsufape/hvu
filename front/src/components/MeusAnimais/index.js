@@ -52,7 +52,6 @@ function MeusAnimaisList() {
 
             <div className={styles.navbar}>
                 <SearchBar
-                    className={styles.pesquisa}
                     placeholder={"Buscar animal"}
                     onSearchChange={handleSearchChange}
                 />

@@ -34,8 +34,8 @@
 .agendamentos{
     margin-bottom: 3em;
 }
-.agendamentoBox{
 
+.agendamentoBox{
     border: 1px solid #B1B1B1;
     width: 90%;
     align-items: center;
@@ -55,10 +55,20 @@
     font-weight: bold;
     width: 9em;
 }
+
 .agendamentoBox h2{
     font-size: 1.1em;
     color: #39805F;
     width: 11em;
+}
+
+.navbar {
+    margin-top: 2em;
+    display: flex;
+    gap: 32px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
 .agendamento_button{
@@ -73,55 +83,14 @@
     border: 1px;
 }
 
+.agendamento_button:hover {
+    background-color: #c94157;
+}
+
 .agendamento_button h1{
     font-size: 1em;
     width: auto;
 } 
-
-.pesquisaBotao{
-    display: flex;
-    align-items: center;
-    justify-content:space-between;
-    font-family: 'Poppins', sans-serif;
-    margin-right: 5em;
-    margin-left: 5em;
-    width: 90%;
-    margin-top: 2em;
-}
-
-.pesquisaBotao input{
-    flex: 1;
-    height: 2.8em;
-    border: 1px #B1B1B1;
-    border-radius: 0.7em;
-    margin-right: -2em;
-    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.30);
-}
-
-.pesquisaBotao button{
-    border: 1px solid #327053;
-    border-radius: 0.7em;
-    background-color: white;
-    padding: 0.5em;
-    padding-top: 0.8em;
-    justify-content: center;
-    align-items: center;
-    margin-left: 2.5em;
-}
-
-.pesquisaBotao button h1{
-    font-size: 1em;
-    color: #327053;
-}
-
-.pesquisaBotao:hover {
-    background-color: #f3f3f37a;
-}
-
-.iconePesquisa{
-    align-items: center;
-    justify-content: center;
-}
 
 .list {
     all: initial;
@@ -234,30 +203,21 @@
 
 @media only screen and (max-width: 700px) {
     .voltar {
-      margin-left: 1em;
+        margin-left: 1em;
     }
   
-    .pesquisaBotao {
-      flex-direction: column;
-      align-items: stretch;
-      margin-right: 1em;
-      margin-left: 1em;
-    }
-  
-    .pesquisaBotao input {
-      margin-right: 0;
-      margin-bottom: 1em;
-    }
-  
-    .pesquisaBotao button {
-      margin-left: 0;
+    .navbar {
+        flex-direction: column;
+        align-items: stretch;
+        margin-right: 1em;
+        margin-left: 1em;
     }
   
     .agendamentoBox {
         flex-direction: column;
-      align-items: stretch;
-      margin-left: 1em;
-      margin-right: 1em;
+        align-items: stretch;
+        margin-left: 1em;
+        margin-right: 1em;
     }
 }
   

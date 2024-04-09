@@ -48,19 +48,19 @@ function GetAllMedicos() {
         <div className={styles.container}>
             < VoltarButton />
 
-            <h1>Médicos</h1>
+            <h1>Visualizar Veterinários&#40;as&#41;</h1>
 
             <div className={styles.navbar}>
                 <SearchBar
                     className={styles.pesquisa}
-                    placeholder={"Buscar médico"}
+                    placeholder={"Buscar veterinário(a)"}
                     onSearchChange={handleSearchChange}
                 />
                 <AdicionarMedicoWhiteButton/>
             </div>
 
             {filteredMedicos.length === 0 ? (
-                <p>Não há médicos cadastrados.</p>
+                <p className={styles.paragrafo}>Não há veterinários&#40;as&#41; cadastrados.</p>
             ) : (
                 <ul className={styles.lista}>
                     {filteredMedicos.map(medico => (

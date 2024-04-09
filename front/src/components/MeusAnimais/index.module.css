@@ -20,11 +20,6 @@
     display: flex;
     gap: 32px;
     text-align: center;
-
-}
-
-.pesquisa {
-    width: 1200px;
 }
 
 .lista {

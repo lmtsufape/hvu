@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';  
 import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
-import { getAllRaca, deleteRaca } from '../../../services/racaService'; // Importe deleteRaca aqui
+import { getAllRaca, deleteRaca } from '../../../services/racaService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
+import FilterEspecieRaca from '../FilterEspecieRaca';
 
 function GerenciarRacasList() {
     const [racas, setRacas] = useState([]);
-    
+    const [filtro, setFiltro] = useState('especie');
+    const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
 
     useEffect(() => {
@@ -32,28 +34,42 @@ function GerenciarRacasList() {
         } catch (error) {
             console.error('Erro ao excluir a raça:', error);
             if (error.response && error.response.status === 409) {
-                alert("Esta raça não pode ser excluída por está associada a um animal.");
+                alert("Esta raça não pode ser excluída por estar associada a um animal.");
             }
         }
     };
 
+    const handleFilterChange = (event) => {
+        setFiltro(event.target.value);
+    };
+
+    // Função para filtrar as raças com base na opção selecionada
+    const filteredRacas = racas.filter(raca => {
+        if (filtro === 'especie') {
+            return raca.especie && raca.especie.nome.toLowerCase().includes(searchTerm.toLowerCase());
+        } else if (filtro === 'raca') {
+            return raca.nome.toLowerCase().includes(searchTerm.toLowerCase());
+        }
+    });
+
     return (
         <div className={styles.container}>
-            < VoltarButton />
+            <VoltarButton />
             <h1>Gerenciar raças</h1>
 
             <div className={styles.navbar_container}>
-                <SearchBar className={styles.search} />
+                <SearchBar placeholder={`Buscar por ${filtro === 'especie' ? 'Espécie' : 'Raça'}`} onSearchChange={setSearchTerm} />
+                <FilterEspecieRaca onChange={handleFilterChange} />
                 <button className={styles.adicionar_raca_button} onClick={() => router.push(`/createRaca`)}>
-                    Adicionar nova raça
+                    Adicionar raça
                 </button>
             </div>
 
-            {racas.length === 0 ? (
-                <p>Não há raças cadastradas.</p>
+            {filteredRacas.length === 0 ? (
+                <p className={styles.paragrafo}>Item pesquisado não existe no sistema.</p>
             ) : (
                 <ul className={styles.list}>
-                    {racas.map(raca => (
+                    {filteredRacas.map(raca => (
                         <li key={raca.id} className={styles.info_container}>
                             <div className={styles.info_box}>
                                 <h6>Espécie</h6>
