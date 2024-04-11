@@ -9,7 +9,7 @@ function MainScreenSecretario() {
     return (
         <div className={styles.container}>
             <div className={styles.box_button}>
-                <button className={styles.button} onClick={(e) => router.push('/agendamentosSemana')}>
+                <button className={styles.button} onClick={(e) => router.push('/agendamentosDia')}>
                     <Image src="/calendar.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Gerenciar agendamentos</h6>
                 </button>
@@ -21,9 +21,9 @@ function MainScreenSecretario() {
                     <Image src="/subtract.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Pacientes</h6>
                 </button>
-                <button className={styles.button}>
+                <button className={styles.button} onClick={(e) => router.push('/getAllMedicos')}>
                     <Image src="/description.svg" alt="Calendário" width={62} height={62}/>
-                    <h6>Relatórios</h6>
+                    <h6>Listagem de Veterinários&#40;as&#41;</h6>
                 </button>
             </div>
         </div>

@@ -10,7 +10,8 @@ const text_white_button = {
     cadastro: "Cadastre-se",
     cancelar: "Cancelar",
     editar: "Editar",
-    criar_agendamento: "Criar agendamento"
+    criar_agendamento: "Criar agendamento",
+    visualizar_agendas: "Visualizar agenda"
 };
 
 export function LoginWhiteButton() {
@@ -115,6 +116,20 @@ export function CriarAgendamentoWhiteButton() {
     return (
             <button className={styles.white_button} onClick={handleCriarClick}>
                 {text_white_button.criar_agendamento}
+            </button>
+    );
+}
+
+export function VisualizarAgendaWhiteButton() {
+    const router = useRouter();
+
+    const handleClick = () => {
+        router.push('/getAllCronograma');
+    };
+
+    return (
+            <button className={styles.white_button} onClick={handleClick}>
+                {text_white_button.visualizar_agendas}
             </button>
     );
 }

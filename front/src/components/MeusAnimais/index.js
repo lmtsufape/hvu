@@ -75,7 +75,7 @@ function MeusAnimaisList() {
                             <div className={styles.button_box}>
                                 <button
                                     className={styles.acessar_button}
-                                    onClick={() => router.push(`/getAnimalByIdTutor/${animal.id}`)}
+                                    onClick={() => router.push(`/getAnimalById/${animal.id}`)}
                                 >
                                     Acessar
                                 </button>
