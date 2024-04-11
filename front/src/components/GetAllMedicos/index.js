@@ -78,7 +78,7 @@ function GetAllMedicos() {
                             <div className={styles.button_box}>
                                 <button
                                     className={styles.acessar_button}
-                                  /*  onClick={() => router.push(`/getAnimalByIdTutor/${medico.id}`)} */
+                                    onClick={() => router.push(`/getMedicoById/${medico.id}`)} 
                                 >
                                     Acessar
                                 </button>

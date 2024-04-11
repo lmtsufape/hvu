@@ -4,7 +4,7 @@ import styles from "./index.module.css";
 import { getAnimalById } from '../../../services/animalService';
 import VoltarButton from '../VoltarButton';
 
-function GetAnimalByIdTutorForm() {
+function GetAnimalByIdForm() {
     const router = useRouter();
     const { id } = router.query;
     const [animal, setAnimal] = useState({});
@@ -92,4 +92,4 @@ function GetAnimalByIdTutorForm() {
     );
 }
 
-export default GetAnimalByIdTutorForm;
+export default GetAnimalByIdForm;

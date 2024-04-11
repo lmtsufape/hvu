@@ -17,7 +17,7 @@ function CreateMedico() {
     const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
     const [errors, setErrors] = useState({});
     const [cityStateLoading, setCityStateLoading] = useState(false);
-
+    
     const [medico, setMedico] = useState({
         nome: "",
         email: "",
@@ -25,6 +25,7 @@ function CreateMedico() {
         cpf: "",
         rg: "",
         telefone: "",
+        instituicao: "",
         crmv: "",
         confirmarSenha: "",
         endereco: {
@@ -95,7 +96,7 @@ function CreateMedico() {
             await createMedico(MedicoToCreate);
             localStorage.setItem("token", token);
             alert("Médico cadastrado com sucesso!");
-            // router.push("/meuPerfil");
+            // router.push("/getMedicoById");
         } catch (error) {
             console.error("Erro ao criar médico:", error);
             alert("Erro ao criar médico. Por favor, tente novamente.");
@@ -166,13 +167,15 @@ function CreateMedico() {
             try {
                 setCityStateLoading(true);
                 const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-                const { localidade, uf } = response.data;
+                const { localidade, uf, logradouro, bairro } = response.data;
                 setMedico({
                     ...medico,
                     endereco: {
                         ...medico.endereco,
                         cidade: localidade,
-                        estado: uf
+                        estado: uf,
+                        rua: logradouro,
+                        bairro: bairro
                     }
                 });
                 setCityStateLoading(false);
@@ -199,16 +202,17 @@ function CreateMedico() {
                                 {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
                                 {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
                                 {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
-                                {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
+                                {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}                                                              
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("Telefone", "Digite o telefone", "telefone", medico.telefone, handleMedicoChange, "tel", errors.telefone, "(99) 99999-9999")}
                                 {renderMedicoInput("RG", "Digite o RG", "rg", medico.rg, handleMedicoChange, "text", errors.rg, "99.999.999-9")}
                                 {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
-                                <div className={`col ${styles.col}`}>
+                                
+                                <div className="mb-3">
                                     <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
                                     <select
-                                        className={`form-select ${errors.especialidade ? styles.errorInput : ""}`}
+                                        className={`form-select ${styles.input} ${errors.especialidade ? "is-invalid" : ""}`}
                                         name="especialidade"
                                         aria-label="Selecione uma especialidade"
                                         value={selectedEspecialidade || ""}
@@ -221,7 +225,7 @@ function CreateMedico() {
                                             </option>
                                         ))}
                                     </select>
-                                    {errors.especialidade && <div className={styles.errorMessage}>{errors.especialidade}</div>}
+                                    {errors.especialidade && <div className="invalid-feedback">{errors.especialidade}</div>}
                                 </div>
                             </div>
                         </div>
@@ -234,14 +238,14 @@ function CreateMedico() {
                         <div className="mb-3">
                             <div className="row">
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, "Digite a rua", "text", errors.rua)}
                                     {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleCEPChange, "Digite o CEP", "text", errors.cep, "99999-999")}
-                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, "Digite o estado", "text", errors.estado)}
+                                    {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, "Digite a rua", "text", errors.rua)}
+                                    {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, "Digite a cidade", "text", errors.cidade)}
                                 </div>
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, "Digite o bairro", "text", errors.bairro)}
                                     {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, "Digite o número do endereço", "text", errors.numero)}
-                                    {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, "Digite a cidade", "text", errors.cidade)}
+                                    {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, "Digite o bairro", "text", errors.bairro)}
+                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, "Digite o estado", "text", errors.estado)}
                                 </div>
                             </div>
                         </div>

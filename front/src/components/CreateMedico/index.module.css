@@ -32,6 +32,31 @@
     align-items: center;
 }
 
+.checkbox {
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    background-color: white;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.checkbox:focus {
+    border: 1px solid #ccc;
+    box-shadow: 0 0 5px 2px #3d856371;
+}
+
+.checkbox:checked {
+    background-color: #327053;
+    border: 1px solid #ccc;
+    box-shadow: #327053;
+}
+
+.input_space {
+    display: flex;
+    gap: 5px;
+}
+
 .button_box {
     width: 1152px;
     height: 80px;

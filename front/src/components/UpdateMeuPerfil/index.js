@@ -76,7 +76,9 @@ function UpdateMeuPerfil() {
                     endereco: {
                         ...tutor.endereco,
                         estado: data.uf,
-                        cidade: data.localidade
+                        cidade: data.localidade,
+                        rua: data.logradouro,
+                        bairro: data.bairro
                     }
                 });
             } else {
@@ -199,18 +201,18 @@ function UpdateMeuPerfil() {
                 {tutor.endereco && (
                     <div className={styles.boxcadastro}>
                         <div className={styles.titulo}>Endereço</div>
-                        {renderEnderecoInput("Rua", "rua", tutor.endereco.rua, handleEnderecoChange, tutor.endereco.rua,)}
-                        {renderEnderecoInput("Bairro", "bairro", tutor.endereco.bairro, handleEnderecoChange, tutor.endereco.bairro,)}
                         <div className="mb-3">
                             <div className="row">
-                            <div className={`col ${styles.col}`}>
-                                {renderEnderecoInput("CEP", "cep", tutor.endereco.cep, handleCepChange, tutor.endereco.cep, "text", "99999-999")}
-                                {renderEnderecoInput("Estado", "estado", tutor.endereco.estado, handleEnderecoChange, tutor.endereco.estado)}
-                            </div>
-                            <div className={`col ${styles.col}`}>
-                                {renderEnderecoInput("Número", "numero", tutor.endereco.numero, handleEnderecoChange, tutor.endereco.numero,)}
-                                {renderEnderecoInput("Cidade", "cidade", tutor.endereco.cidade, handleEnderecoChange, tutor.endereco.cidade)}
-                            </div>
+                                <div className={`col ${styles.col}`}>
+                                    {renderEnderecoInput("CEP", "cep", tutor.endereco.cep, handleCepChange, tutor.endereco.cep, "text", "99999-999")}
+                                    {renderEnderecoInput("Rua", "rua", tutor.endereco.rua, handleEnderecoChange, tutor.endereco.rua,)}
+                                    {renderEnderecoInput("Cidade", "cidade", tutor.endereco.cidade, handleEnderecoChange, tutor.endereco.cidade)}
+                                </div>
+                                <div className={`col ${styles.col}`}>
+                                    {renderEnderecoInput("Número", "numero", tutor.endereco.numero, handleEnderecoChange, tutor.endereco.numero,)}
+                                    {renderEnderecoInput("Bairro", "bairro", tutor.endereco.bairro, handleEnderecoChange, tutor.endereco.bairro,)}
+                                    {renderEnderecoInput("Estado", "estado", tutor.endereco.estado, handleEnderecoChange, tutor.endereco.estado)}
+                                </div>
                             </div>
                         </div>
                     </div>                
@@ -231,6 +233,12 @@ function UpdateMeuPerfil() {
 function renderTutorInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask = null, show = false, setShow = null) {
     const InputComponent = mask ? InputMask : 'input';
 
+    //função modificada para aceitar o evento
+    const toggleShow = (event) => {
+        event.preventDefault(); //impede o comportamento padrão do botão submeter o formulario
+        setShow(!show);
+    };
+
     return (
         <div className="mb-3">
             <label htmlFor={name} className="form-label">{label}</label>
@@ -244,29 +252,35 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
                 onChange={onChange}
             />
             {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
+            {type === "password" && (
+                <div className={styles.input_group_append}>
+                    <button className="btn btn-outline-secondary" type="button" onClick={toggleShow}>
+                        <FontAwesomeIcon icon={show ? faEyeSlash : faEye} />
+                    </button>
+                </div>
+            )}
         </div>
     );
-    
 }
 
 function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", mask) {
     const InputComponent = mask ? InputMask : 'input';
     const inputProps = mask ? { mask } : {};
-  
+
     return (
-      <div className="mb-3">
-        <label htmlFor={name} className="form-label">{label}</label>
-        <InputComponent
-          type={type}
-          className={`form-control ${styles.input}`}
-          name={name}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          {...inputProps}
-        />
-      </div>
+        <div className="mb-3">
+            <label htmlFor={name} className="form-label">{label}</label>
+            <InputComponent
+                type={type}
+                className={`form-control ${styles.input}`}
+                name={name}
+                placeholder={placeholder}
+                value={value}
+                onChange={onChange}
+                {...inputProps}
+            />
+        </div>
     );
-  }
+}
 
 export default UpdateMeuPerfil;
