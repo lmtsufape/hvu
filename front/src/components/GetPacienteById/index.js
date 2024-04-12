@@ -5,7 +5,7 @@ import { getTutorById } from '../../../services/tutorService';
 import { getAnimalById } from '../../../services/animalService';
 import VoltarButton from '../VoltarButton';
 
-function GetTutorByIdForm() {
+function GetPacienteById() {
     const router = useRouter();
     const { id: tutorId, index: animalId } = router.query;
     const [tutor, setTutor] = useState({});
@@ -44,6 +44,14 @@ function GetTutorByIdForm() {
         if (!dateString) return '';
         const date = new Date(dateString);
         return date.toLocaleDateString('pt-BR');
+    };
+
+    // Função para formatar o endereço do tutor
+    const formatTutorAddress = () => {
+        if (tutor.endereco) {
+            return `${tutor.endereco.rua}, ${tutor.endereco.numero} - ${tutor.endereco.bairro}`;
+        }
+        return 'Endereço não definido';
     };
 
     return (
@@ -90,8 +98,14 @@ function GetTutorByIdForm() {
                                             </div>
                                             <div className={styles.infos}>
                                                 <h6>Peso</h6>
-                                                <p>{animal.peso}</p>
+                                                <p>{animal.peso === 0 ? "Não definido" : animal.peso}</p>
                                             </div>
+                                        </div>
+
+                                        <div className={styles.button_box}>
+                                            <button onClick={() => router.push(`/updateAnimalBySecretario/${animal.id}`)}>
+                                                Editar paciente
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -124,8 +138,8 @@ function GetTutorByIdForm() {
                                                 <p>{tutor.rg}</p>
                                             </div>
                                             <div className={styles.infos}>
-                                                <h6>Endereço</h6>
-                                                <p>{tutor.endereco && tutor.endereco.rua}</p>
+                                                <h6>E-mail</h6>
+                                                <p>{tutor.email}</p>
                                             </div>
                                         </div>
 
@@ -135,9 +149,16 @@ function GetTutorByIdForm() {
                                                 <p>{tutor.cpf}</p>
                                             </div>
                                             <div className={styles.infos}>
-                                                <h6>E-mail</h6>
-                                                <p>{tutor.email}</p>
+                                                <h6>Endereço</h6>
+                                                {/* Renderiza o endereço no formato "rua, numero - bairro" */}
+                                                <p>{formatTutorAddress()}</p>
                                             </div>
+                                        </div>
+
+                                        <div className={styles.button_box}>
+                                            <button onClick={() => router.push(`/updateTutorBySecretario/${tutor.id}`)}>
+                                                Editar tutor&#40;a&#41;
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -151,4 +172,4 @@ function GetTutorByIdForm() {
     );
 }
 
-export default GetTutorByIdForm;
+export default GetPacienteById;

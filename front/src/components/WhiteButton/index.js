@@ -5,7 +5,7 @@ import styles from './index.module.css'
 const text_white_button = {
     login: 'Login',
     adicionar_animal: 'Adicionar animal',
-    adicionar_medico: 'Adicionar médico',
+    adicionar_medico: 'Adicionar veterinário(a)',
     adicionar_raca: 'Adicionar raça',
     cadastro: "Cadastre-se",
     cancelar: "Cancelar",

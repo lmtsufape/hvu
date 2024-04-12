@@ -71,9 +71,14 @@ function GetAllMedicos() {
                             </div>
                             <div className={styles.info}>
                                 <h6>Especialidade</h6>
-                                {medico.especialidade && medico.especialidade.map(especialidade => (
-                                    <p key={especialidade.id}>{especialidade.nome}</p>
-                                ))}
+                                <p>
+                                    {medico.especialidade.map((especialidade, index) => (
+                                        <span key={especialidade.id}>
+                                            {especialidade.nome}
+                                            {index !== medico.especialidade.length - 1 ? ', ' : ''}
+                                        </span>
+                                    ))}
+                                </p>
                             </div>
                             <div className={styles.button_box}>
                                 <button

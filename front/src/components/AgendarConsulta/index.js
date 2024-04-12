@@ -22,6 +22,10 @@ const HorariosSemana = () => {
   const [vagas, setVagas] = useState(null);
   const [selectedVaga, setSelectedVaga] = useState(null);
 
+  const [errors, setErrors] = useState({
+    animal: ""
+  });
+
   const openModal = () => {
     setShowModal(true);
   };
@@ -97,9 +101,18 @@ const HorariosSemana = () => {
     return formattedDate + formattedTime;
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!selectedAnimal) {
+      newErrors.nome = "Campo obrigatório";
+    }
+    setErrors(newErrors);
+
+    return Object.values(newErrors).every((error) => error === "");
+  };
+
   const handleCreateAgendamento = async () => {
-  
-  
     const agendamentoToCreate = {
       animal: { id: selectedAnimal.id },
       dataVaga: selecionarHorario,
@@ -107,14 +120,17 @@ const HorariosSemana = () => {
     };
   
     console.log("agendamentoToCreate", agendamentoToCreate);
-  
-    try {
-      const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
-      console.log(newAgendamento);
-      alert("Consulta agendada com sucesso!");
-      router.push("/meusAgendamentos");
-    } catch (error) {
-      console.error("Erro ao agendar consulta:", error);
+    if (validateForm()) {
+      try {
+        const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
+        console.log(newAgendamento);
+        alert("Consulta agendada com sucesso!");
+        router.push("/meusAgendamentos");
+      } catch (error) {
+        console.error("Erro ao agendar consulta:", error);
+      }
+    } else {
+      alert("Formulário inválido. Selecione todos os campos e tente novamente.")
     }
   };
 
@@ -133,7 +149,7 @@ const HorariosSemana = () => {
           <div className={styles.select_box}>
             <h1>Paciente</h1>
             <select 
-              className={`form-select ${styles.input}`} 
+              className={`form-select ${styles.input} ${errors.animal ? "is-invalid" : ""}`} 
               aria-label="Default select example"
               name="animal"
               value={selectedAnimal ? selectedAnimal.id : ''}
@@ -146,6 +162,7 @@ const HorariosSemana = () => {
                 </option>
               ))}
             </select>
+            {errors.animal && <div className="invalid-feedback">{animal.sexo}</div>}
           </div>
         </div>
 

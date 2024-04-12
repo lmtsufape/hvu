@@ -7,7 +7,7 @@ import RacasList from "@/hooks/useRacaList";
 import VoltarButton from '../VoltarButton';
 import { CancelarWhiteButton } from '../WhiteButton';
 
-function UpdateAnimalForm() {
+function UpdateAnimalBySecretario() {
   const router = useRouter();
   const { id } = router.query;
 
@@ -117,7 +117,8 @@ function UpdateAnimalForm() {
 
         if (updatedAnimal.ok) {
           alert("animal atualizado com sucesso!");
-          router.push(`/getAnimalByIdTutor/${id}`);
+          // router.push(`/getTutorByIdSecretario/${id}/${index}`); seria o correto
+          router.push("/pacientes");
         } else {
           alert('Erro ao atualizar o animal, tente novamente.');
           console.error('Erro ao atualizar o animal.');
@@ -150,6 +151,7 @@ function UpdateAnimalForm() {
                   name="nome"
                   value={animalData.nome}
                   onChange={handleAnimalChange}
+                  disabled
                 />
               </div>
               <div className={`col ${styles.col}`}>
@@ -256,4 +258,4 @@ function UpdateAnimalForm() {
   );
 }
 
-export default UpdateAnimalForm;
+export default UpdateAnimalBySecretario;

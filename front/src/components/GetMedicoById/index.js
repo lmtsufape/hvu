@@ -61,6 +61,19 @@ function GetMedicoById() {
                                         <div>{medico.crmv}</div>
                                     </div>
                                 </div>
+                                <div className={styles.item_container}> 
+                                    <div className={styles.item_box}>
+                                        <h6>Especialidade</h6>
+                                        <div>
+                                            {medico.especialidade && medico.especialidade.map((especialidade, index) => (
+                                                <span key={index}>
+                                                    {especialidade.nome}
+                                                    {index !== medico.especialidade.length - 1 ? ', ' : ''}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
                                 
                             </div>
 
@@ -107,6 +120,9 @@ function GetMedicoById() {
                     )}
                 </ul>
                 <div className={styles.button_container}>
+                    <button className={styles.editar_button} onClick={() => router.push(`/updateMedico/${medico.id}`)}>
+                        Editar 
+                    </button>
                     <VisualizarAgendaWhiteButton/>
                 </div>
             </div>

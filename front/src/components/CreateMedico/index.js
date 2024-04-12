@@ -25,7 +25,6 @@ function CreateMedico() {
         cpf: "",
         rg: "",
         telefone: "",
-        instituicao: "",
         crmv: "",
         confirmarSenha: "",
         endereco: {
@@ -36,7 +35,7 @@ function CreateMedico() {
             numero: "",
             bairro: ""
         },
-        especialidade: {id: null}
+        especialidade: []
     });
 
     const handleEspecialidadeSelection = (event) => {
@@ -83,7 +82,7 @@ function CreateMedico() {
                 numero: medico.endereco.numero,
                 bairro: medico.endereco.bairro
             },
-            especialidade: [{id: parseInt(selectedEspecialidade) }]
+            especialidade: [{id: parseInt(selectedEspecialidade)}]
         };
 
         console.log("MedicoToCreate:", MedicoToCreate);
