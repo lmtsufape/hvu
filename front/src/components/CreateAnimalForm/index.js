@@ -149,7 +149,7 @@ function CreateAnimalForm() {
         console.log("Aguardando dados de espécies e raças carregarem...");
       }
     } else {
-      console.log("Formulário inválido, corrija os erros.");
+      alert("Formulário inválido, preencha corretamente e tente novamente.");
     }
   };
 

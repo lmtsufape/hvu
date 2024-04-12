@@ -4,11 +4,12 @@ import InputMask from "react-input-mask";
 import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
-import { updateTutor, getTutorById } from "../../../services/tutorService";
+import { updateMedico, getMedicoById } from "../../../services/medicoService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import EspecialidadeList from "@/hooks/useEspecialidadeList";
 
-function UpdateMeuPerfil() {
+function UpdateMedico() {
     const router = useRouter();
     const { id } = router.query;
     const [errors, setErrors] = useState({});
@@ -17,15 +18,18 @@ function UpdateMeuPerfil() {
     const [alterarSenha, setAlterarSenha] = useState(false);
     const [senhaErro, setSenhaErro] = useState("");
     const [confirmarSenhaErro, setConfirmarSenhaErro] = useState("");
+    const { especialidades } = EspecialidadeList();
+    const [selectedEspecialidade, setSelectedEspecialidade] = useState([]);
 
-    const [tutor, setTutor] = useState({
+    const [medico, setMedico] = useState({
         nome: "",
         email: "",
         senha: "",
         cpf: "",
-        rg: "",
+        crmv: "",
         telefone: "",
         confirmarSenha: "",
+        especialidade: [],
         endereco: {
             cep: "",
             rua: "",
@@ -40,27 +44,35 @@ function UpdateMeuPerfil() {
         if (id) {
             const fetchData = async () => {
                 try {
-                    const TutorData = await getTutorById(id);
-                    setTutor(TutorData);
+                    const MedicoData = await getMedicoById(id);
+                    setMedico(MedicoData);
+                    setSelectedEspecialidade(MedicoData.especialidade.map(espec => espec.id)); // Mapeia para pegar apenas os IDs
                 } catch (error) {
-                    console.error('Erro ao buscar informações de tutor:', error);
+                    console.error('Erro ao buscar informações do(a) veterinário(a):', error);
                 }
             };
             fetchData();
         }
     }, [id]);
 
-    const handleTutorChange = (event) => {
+    const handleEspecialidadeSelection = (event) => {
+        const selectedEspecialidadeId = event.target.value;
+        setSelectedEspecialidade([...selectedEspecialidade, selectedEspecialidadeId]);
+    };
+
+    console.log("espec", selectedEspecialidade);
+
+    const handleMedicoChange = (event) => {
         const { name, value } = event.target;
-        setTutor({ ...tutor, [name]: value });
+        setMedico({ ...medico, [name]: value });
     };
 
     const handleEnderecoChange = (event) => {
         const { name, value } = event.target;
-        setTutor({
-            ...tutor,
+        setMedico({
+            ...medico,
             endereco: {
-                ...tutor.endereco,
+                ...medico.endereco,
                 [name]: value
             }
         });
@@ -71,10 +83,10 @@ function UpdateMeuPerfil() {
             const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
             const data = await response.json();
             if (!data.erro) {
-                setTutor({
-                    ...tutor,
+                setMedico({
+                    ...medico,
                     endereco: {
-                        ...tutor.endereco,
+                        ...medico.endereco,
                         estado: data.uf,
                         cidade: data.localidade,
                         rua: data.logradouro,
@@ -91,10 +103,10 @@ function UpdateMeuPerfil() {
 
     const handleCepChange = (event) => {
         const { value } = event.target;
-        setTutor({
-            ...tutor,
+        setMedico({
+            ...medico,
             endereco: {
-                ...tutor.endereco,
+                ...medico.endereco,
                 cep: value
             }
         });
@@ -104,51 +116,52 @@ function UpdateMeuPerfil() {
     const validateForm = () => {
         const newErrors = {};
         if (alterarSenha) {
-            if (!tutor.senha) {
+            if (!medico.senha) {
                 newErrors.senha = "Senha é obrigatória";
             }
-            if (!tutor.confirmarSenha) {
+            if (!medico.confirmarSenha) {
                 newErrors.confirmarSenha = "Confirme sua senha";
-            } else if (tutor.senha !== tutor.confirmarSenha) {
+            } else if (medico.senha !== medico.confirmarSenha) {
                 newErrors.confirmarSenha = "As senhas não coincidem";
             }
         }
         setErrors(newErrors);
-    
+
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleTutorUpdate = async () => {
+    const handleMedicoUpdate = async () => {
         if (!validateForm()) {
             return;
         }
 
-        const TutorToUpdate = {
-            nome: tutor.nome,
-            email: tutor.email,
-            senha: tutor.senha,
-            cpf: tutor.cpf,
-            rg: tutor.rg,
-            telefone: tutor.telefone,
+        const MedicoToUpdate = {
+            nome: medico.nome,
+            email: medico.email,
+            senha: medico.senha,
+            cpf: medico.cpf,
+            crmv: medico.crmv,
+            telefone: medico.telefone,
+            especialidade: selectedEspecialidade.map(id => ({ id })), // Mapeia para o formato desejado
             endereco: {
-                cep: tutor.endereco.cep,
-                rua: tutor.endereco.rua,
-                estado: tutor.endereco.estado,
-                cidade: tutor.endereco.cidade,
-                numero: tutor.endereco.numero,
-                bairro: tutor.endereco.bairro
+                cep: medico.endereco.cep,
+                rua: medico.endereco.rua,
+                estado: medico.endereco.estado,
+                cidade: medico.endereco.cidade,
+                numero: medico.endereco.numero,
+                bairro: medico.endereco.bairro
             }
         };
-        
+
         try {
-            await updateTutor(tutor.id, TutorToUpdate);
-            console.log("TutorToUpdate:", TutorToUpdate);
+            await updateMedico(medico.id, MedicoToUpdate);
+            console.log("MedicoToUpdate:", MedicoToUpdate);
             alert("Informações editadas com sucesso!");
-            router.push("/meuPerfil");
+            router.push(`getMedicoById/${medico.id}`);
         } catch (error) {
-            console.log("TutorToUpdate:", TutorToUpdate);
-            console.error("Erro ao editar tutor:", error);
-            alert("Erro ao editar tutor. Por favor, tente novamente.");
+            console.log("MedicoToUpdate:", MedicoToUpdate);
+            console.error("Erro ao editar medico:", error);
+            alert("Erro ao editar informações. Por favor, tente novamente.");
         }
     };
 
@@ -161,16 +174,34 @@ function UpdateMeuPerfil() {
 
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
-                        <div className={styles.titulo}>Tutor&#40;a&#41;</div>
-                        {renderTutorInput("Nome Completo", tutor.nome, "nome", tutor.nome, handleTutorChange, "text")}
+                        <div className={styles.titulo}>Veterinário&#40;a&#41;</div>
+                        {renderMedicoInput("Nome Completo", medico.nome, "nome", medico.nome, handleMedicoChange, "text")}
                         <div className="row">
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("E-mail", tutor.email, "email", tutor.email, handleTutorChange, "email")}
-                                {renderTutorInput("CPF", tutor.cpf, "cpf", tutor.cpf, handleTutorChange, "text", null, "999.999.999-99")}
+                                {renderMedicoInput("E-mail", medico.email, "email", medico.email, handleMedicoChange, "email")}
+                                {renderMedicoInput("CPF", medico.cpf, "cpf", medico.cpf, handleMedicoChange, "text", null, "999.999.999-99")}
+
+                                <div className="mb-3">
+                                    <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
+                                    <select
+                                        className={`form-select ${styles.input} ${errors.especialidade ? "is-invalid" : ""}`}
+                                        name="especialidade"
+                                        aria-label="Selecione uma especialidade"
+                                        value={selectedEspecialidade || ""}
+                                        onChange={handleEspecialidadeSelection}
+                                    >
+                                        <option value="">Selecione a especialidade</option>
+                                        {especialidades.map((especialidade) => (
+                                            <option key={especialidade.id} value={especialidade.id}>
+                                                {especialidade.nome}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("Telefone", tutor.telefone, "telefone", tutor.telefone, handleTutorChange, "tel", null, "(99) 99999-9999")}
-                                {renderTutorInput("RG", tutor.rg, "rg", tutor.rg, handleTutorChange, "text", null, "99.999.999-9")}
+                                {renderMedicoInput("Telefone", medico.telefone, "telefone", medico.telefone, handleMedicoChange, "tel", null, "(99) 99999-9999")}
+                                {renderMedicoInput("CRMV", medico.crmv, "crmv", medico.crmv, handleMedicoChange, "text")}
                             </div>
                         </div>
                     </div>
@@ -189,38 +220,38 @@ function UpdateMeuPerfil() {
                     {alterarSenha && (
                         <div className="row">
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("Alterar senha", "Digite sua nova senha", "senha", tutor.senha, handleTutorChange, "password", errors.senha, null, showSenha, setShowSenha)}
+                                {renderMedicoInput("Alterar senha", "Digite sua nova senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha, null, showSenha, setShowSenha)}
                             </div>
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("Confirmar senha", "Confirme sua nova senha", "confirmarSenha", tutor.confirmarSenha, handleTutorChange, "password", errors.confirmarSenha, null, showConfirmarSenha, setShowConfirmarSenha)}
+                                {renderMedicoInput("Confirmar senha", "Confirme sua nova senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha, null, showConfirmarSenha, setShowConfirmarSenha)}
                             </div>
                         </div>
                     )}
                 </div>
 
-                {tutor.endereco && (
+                {medico.endereco && (
                     <div className={styles.boxcadastro}>
                         <div className={styles.titulo}>Endereço</div>
                         <div className="mb-3">
                             <div className="row">
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("CEP", "cep", tutor.endereco.cep, handleCepChange, tutor.endereco.cep, "text", "99999-999")}
-                                    {renderEnderecoInput("Rua", "rua", tutor.endereco.rua, handleEnderecoChange, tutor.endereco.rua,)}
-                                    {renderEnderecoInput("Cidade", "cidade", tutor.endereco.cidade, handleEnderecoChange, tutor.endereco.cidade)}
+                                    {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleCepChange, medico.endereco.cep, "text", "99999-999")}
+                                    {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, medico.endereco.rua)}
+                                    {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, medico.endereco.cidade)}
                                 </div>
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("Número", "numero", tutor.endereco.numero, handleEnderecoChange, tutor.endereco.numero,)}
-                                    {renderEnderecoInput("Bairro", "bairro", tutor.endereco.bairro, handleEnderecoChange, tutor.endereco.bairro,)}
-                                    {renderEnderecoInput("Estado", "estado", tutor.endereco.estado, handleEnderecoChange, tutor.endereco.estado)}
+                                    {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, medico.endereco.numero)}
+                                    {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, medico.endereco.bairro)}
+                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, medico.endereco.estado)}
                                 </div>
                             </div>
                         </div>
-                    </div>                
+                    </div>
                 )}
 
                 <div className={styles.button_box}>
-                    < CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleTutorUpdate}>
+                    <CancelarWhiteButton />
+                    <button type="button" className={styles.criar_button} onClick={handleMedicoUpdate}>
                         Salvar
                     </button>
                 </div>
@@ -230,7 +261,7 @@ function UpdateMeuPerfil() {
     );
 }
 
-function renderTutorInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask = null, show = false, setShow = null) {
+function renderMedicoInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask = null, show = false, setShow = null) {
     const InputComponent = mask ? InputMask : 'input';
 
     //função modificada para aceitar o evento
@@ -283,4 +314,4 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
     );
 }
 
-export default UpdateMeuPerfil;
+export default UpdateMedico;

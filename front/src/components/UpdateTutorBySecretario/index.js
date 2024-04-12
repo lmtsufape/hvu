@@ -8,7 +8,7 @@ import { updateTutor, getTutorById } from "../../../services/tutorService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-function UpdateMeuPerfil() {
+function UpdateTutorBySecretario() {
     const router = useRouter();
     const { id } = router.query;
     const [errors, setErrors] = useState({});
@@ -155,7 +155,7 @@ function UpdateMeuPerfil() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Editar Perfil</h1>
+            <h1>Editar informações do&#40;a&#41; tutor&#40;a&#41;</h1>
 
             <form className={styles.inputs_container}>
 
@@ -283,4 +283,4 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
     );
 }
 
-export default UpdateMeuPerfil;
+export default UpdateTutorBySecretario;
