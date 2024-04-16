@@ -35,6 +35,7 @@
     justify-content: right;
     align-items: center;
     gap: 32px;
+    margin-bottom: 20px;
 }
 
 .criar_button {
@@ -140,6 +141,7 @@
     background-color: white;
     border: 1px solid #ccc;
     cursor: pointer;
+    margin-right: 5px;
 }
 
 .checkbox:focus {

@@ -4,6 +4,7 @@ import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { getMedicoById } from '../../../services/medicoService';
 import { VisualizarAgendaWhiteButton } from '../WhiteButton';
+import { EditarWhiteButton } from '../WhiteButton';
 
 function GetMedicoById() {
     const router = useRouter();
@@ -120,10 +121,8 @@ function GetMedicoById() {
                     )}
                 </ul>
                 <div className={styles.button_container}>
-                    <button className={styles.editar_button} onClick={() => router.push(`/updateMedico/${medico.id}`)}>
-                        Editar 
-                    </button>
-                    <VisualizarAgendaWhiteButton/>
+                    <EditarWhiteButton page={"updateMedico"} id={medico.id}/>
+                    <VisualizarAgendaWhiteButton id={parseInt(medico.id)}/>
                 </div>
             </div>
         </div>
