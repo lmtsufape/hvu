@@ -117,7 +117,7 @@
 }
 
 .input {
-    font-family: 'Poppins', sans-serif;;
+    font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 300;
     line-height: 20px;
@@ -131,7 +131,7 @@
 }
 
 .input::placeholder {
-    font-family: 'Poppins', sans-serif;;
+    font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 300;
     line-height: 20px;
@@ -139,7 +139,7 @@
 }
 
 .col select option {
-    font-family: 'Poppins', sans-serif;;
+    font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 300;
     line-height: 20px;
