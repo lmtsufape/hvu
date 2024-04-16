@@ -14,10 +14,11 @@ function CreateMedico() {
     const router = useRouter();
 
     const { especialidades } = EspecialidadeList();
-    const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
+    const [selectEspecialidade, setSelectEspecialidade] = useState(null);
     const [errors, setErrors] = useState({});
     const [cityStateLoading, setCityStateLoading] = useState(false);
-    
+    const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
+
     const [medico, setMedico] = useState({
         nome: "",
         email: "",
@@ -39,8 +40,13 @@ function CreateMedico() {
     });
 
     const handleEspecialidadeSelection = (event) => {
-        const selectedEspecialidadeId = event.target.value;
-        setSelectedEspecialidade(selectedEspecialidadeId);
+        const especialidadeId = parseInt(event.target.value);
+        if (!selectedEspecialidades.find(espec => espec.id === especialidadeId)) {
+            const especialidadeSelected = especialidades.find(espec => espec.id === especialidadeId);
+            setSelectedEspecialidades([...selectedEspecialidades, especialidadeSelected]);
+        } else {
+            setSelectedEspecialidades(selectedEspecialidades.filter(espec => espec.id !== especialidadeId));
+        }
     };
 
     const handleMedicoChange = (event) => {
@@ -82,16 +88,16 @@ function CreateMedico() {
                 numero: medico.endereco.numero,
                 bairro: medico.endereco.bairro
             },
-            especialidade: [{id: parseInt(selectedEspecialidade)}]
+            especialidade: selectedEspecialidades.map(espec => ({ id: espec.id }))
         };
 
         console.log("MedicoToCreate:", MedicoToCreate);
 
         try {
             const token = localStorage.getItem("token");
-            const responseRegister = await postRegister( medico.email,medico.nome,medico.senha, "medico");
+            const responseRegister = await postRegister(medico.email, medico.nome, medico.senha, "medico");
             console.log(responseRegister);
-            await postLogin(medico.email,medico.senha);
+            await postLogin(medico.email, medico.senha);
             await createMedico(MedicoToCreate);
             localStorage.setItem("token", token);
             alert("Médico cadastrado com sucesso!");
@@ -128,8 +134,8 @@ function CreateMedico() {
         if (!medico.confirmarSenha) {
             errors.confirmarSenha = "Campo obrigatório";
         }
-        if (selectedEspecialidade === null) {
-            errors.especialidade = "Campo obrigatório";
+        if (selectedEspecialidades.length === 0) {
+            errors.especialidade = "Selecione pelo menos uma especialidade.";
         }
         if (!medico.endereco.cep) {
             errors.cep = "Campo obrigatório";
@@ -149,7 +155,7 @@ function CreateMedico() {
         if (!medico.endereco.bairro) {
             errors.bairro = "Campo obrigatório";
         }
-        
+
         return errors;
     };
 
@@ -184,6 +190,7 @@ function CreateMedico() {
             }
         }
     };
+    console.log(especialidades);
 
     return (
         <div className={styles.container}>
@@ -201,20 +208,20 @@ function CreateMedico() {
                                 {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
                                 {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
                                 {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
-                                {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}                                                              
+                                {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("Telefone", "Digite o telefone", "telefone", medico.telefone, handleMedicoChange, "tel", errors.telefone, "(99) 99999-9999")}
                                 {renderMedicoInput("RG", "Digite o RG", "rg", medico.rg, handleMedicoChange, "text", errors.rg, "99.999.999-9")}
                                 {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
-                                
+
                                 <div className="mb-3">
                                     <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
                                     <select
                                         className={`form-select ${styles.input} ${errors.especialidade ? "is-invalid" : ""}`}
                                         name="especialidade"
                                         aria-label="Selecione uma especialidade"
-                                        value={selectedEspecialidade || ""}
+                                        value={selectEspecialidade || ""}
                                         onChange={handleEspecialidadeSelection}
                                     >
                                         <option value="">Selecione a especialidade</option>
@@ -225,6 +232,18 @@ function CreateMedico() {
                                         ))}
                                     </select>
                                     {errors.especialidade && <div className="invalid-feedback">{errors.especialidade}</div>}
+                                </div>
+                                <div>
+                                    {selectedEspecialidades.map(especialidade => (
+                                        <div key={especialidade.id}>
+                                            <input
+                                                type="checkbox"
+                                                checked
+                                                onChange={() => handleEspecialidadeSelection({ target: { value: especialidade.id } })}
+                                            />
+                                            <label>{especialidade.nome}</label>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>

@@ -1,52 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import dateStyles from "../Date/index.module.css";
 import Filter from '../GetAgendamentosFilter';
 import { DataCompleta, DataCurta, DiaDaSemana } from '../Date';
-import CalendarGrennIcon from '../CalendarGreenIcon';
+import CalendarGreenIcon from '../CalendarGreenIcon';
 import SearchBar from '../SearchBar';
 import VoltarButton from '../VoltarButton';
+import { getAgendamento, deleteAgendamento } from "../../../services/agendamentoService";
+import { getAllVaga, updateVaga } from '../../../services/vagaService';
 
 function GetAllAgendamentosDiaForm() {
   const router = useRouter();
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
   const [modalOpen, setModalOpen] = useState(false);
+  const [vagas, setVagas] = useState([]);
+  const [selectedVaga, setSelectedVaga] = useState(null);
 
   const handleDataSelecionada = (novaData) => {
     setDataSelecionada(novaData);
+    console.log("Data Selecionada:", novaData);
   };
 
-  const openModal = () => {
+  const openModal = (vaga) => {
+    setSelectedVaga(vaga);
     setModalOpen(true);
+    console.log("Modal opened");
   };
 
   const closeModal = () => {
     setModalOpen(false);
+    console.log("Modal closed");
   };
+
+  const cancelarConsulta = async () => {
+    if (selectedVaga) {
+      await updateVaga(selectedVaga.id, { status: "cancelado" });
+      router.reload(); // recarrega a página para refletir as mudanças
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const VagasData = await getAllVaga();
+        setVagas(VagasData);
+        console.log("VagasData:", VagasData);
+      } catch (error) {
+        console.error('Erro ao buscar vagas:', error);
+      }
+    };
+    fetchData();
+  }, [dataSelecionada]);
+
+  const horarios = ["08:00", "09:00", "10:00", "11:00", "12:00"];
+  console.log("Horários do dia:", horarios);
+  console.log(vagas);
 
   return (
     <div className={styles.pagina}>
       <div className={styles.container}>
-
-        < VoltarButton />
+        <VoltarButton />
         <h1>Agendamentos do dia</h1>
-
         <div className={styles.cadendar_container}>
           <div className={styles.cadendar_box}>
             <div className={dateStyles.data_completa}>{DataCompleta(dataSelecionada)}</div>
-            < CalendarGrennIcon onDataSelecionada={handleDataSelecionada} />
+            <CalendarGreenIcon onDataSelecionada={handleDataSelecionada} />
           </div>
-          < Filter />
+          <Filter />
         </div>
         <div className={styles.menu}>
           <div className={styles.button_options}>
-            <button className={styles.button} onClick={(e) => router.push("/agendamentoEspecial")}>Novo agendamento</button>
+            <button className={styles.button} onClick={(e) => router.push("/agendamentoEspecial")}>
+              Novo agendamento
+            </button>
             <button className={styles.button}>Criar vagas</button>
           </div>
-          < SearchBar />
+          <SearchBar />
         </div>
-
         <table className={styles.table}>
           <thead>
             <tr className={styles.line1_box}>
@@ -60,251 +91,38 @@ function GetAllAgendamentosDiaForm() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th className={styles.time}>08:00</th>
-              <th className={styles.th}>
-                <div className={styles.cardsJuntos}>
-                  <button className={styles.button_precriada} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Pantufa  &bull; Felino</div>
-                          <h2 className={styles.status_precriada}>Pré-criada</h2>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>08h00 - 09h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_finalizado} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Mel  &bull; Canino</div>
-                          <div className={styles.status_finalizado}>Finalizado</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>08h00 - 09h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_agendado} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Pantufa  &bull; Felino</div>
-                          <div className={styles.status_agendado}>Agendado</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>08h00 - 09h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_precriada} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Pantufa  &bull; Felino</div>
-                          <h2 className={styles.status_precriada}>Pré-criada</h2>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>08h00 - 09h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              </th>
-            </tr>
-            <tr>
-              <th className={styles.time}>09:00</th>
-              <th className={styles.th}>
-                <div className={styles.cardsJuntos}>
-                  <button className={styles.button_disponivel} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Mel  &bull; Canino</div>
-                          <div className={styles.status_disponivel}>Disponível</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>09h00 - 10h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_cancelado} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Duque  &bull; Canino</div>
-                          <div className={styles.status_cancelado}>Cancelado</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>09h00 - 10h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_finalizado} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Mel  &bull; Canino</div>
-                          <div className={styles.status_finalizado}>Finalizado</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>09h00 - 10h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              </th>
-            </tr>
-            <tr>
-              <th className={styles.time}>10:00</th>
-              <th className={styles.th}>
-                <div className={styles.cardsJuntos}>
-                  <button className={styles.button_cancelado} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Duque  &bull; Canino</div>
-                          <div className={styles.status_cancelado}>Cancelado</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>10h00 - 11h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_precriada} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Pantufa  &bull; Felino</div>
-                          <h2 className={styles.status_precriada}>Pré-criada</h2>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>10h00 - 11h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_disponivel} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Mel  &bull; Canino</div>
-                          <div className={styles.status_disponivel}>Disponível</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>10h00 - 11h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_precriada} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Pantufa  &bull; Felino</div>
-                          <h2 className={styles.status_precriada}>Pré-criada</h2>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>10h00 - 11h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              </th>
-            </tr>
-            <tr>
-              <th className={styles.time}>11:00</th>
-              <th className={styles.th}>
-                <div className={styles.cardsJuntos}>
-                  <button className={styles.button_agendado} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Pantufa  &bull; Felino</div>
-                          <div className={styles.status_agendado}>Agendado</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>11h00 - 12h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_cancelado} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Duque  &bull; Canino</div>
-                          <div className={styles.status_cancelado}>Cancelado</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>11h00 - 12h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                  <button className={styles.button_agendado} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Pantufa  &bull; Felino</div>
-                          <div className={styles.status_agendado}>Agendado</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>11h00 - 12h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              </th>
-            </tr>
-            <tr>
-              <th className={styles.time}>12:00</th>
-              <th className={styles.th}>
-                <div className={styles.cardsJuntos}>
-                  <button className={styles.button_finalizado} onClick={openModal}>
-                    <div className={styles.infos_container}>
-                      <div>
-                        <div className={styles.infos_box1}>
-                          <div className={styles.info1}>Mel  &bull; Canino</div>
-                          <div className={styles.status_finalizado}>Finalizado</div>
-                        </div>
-                        <div className={styles.infos_box2}>
-                          <div className={styles.info2}>Exame</div>
-                          <div className={styles.info2}>12h00 - 13h00</div>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              </th>
-            </tr>
+            {horarios.map(horario => (
+              <tr key={horario}>
+                <th className={styles.time}>{horario}</th>
+                <th className={styles.th}>
+                  <div className={styles.cardsJuntos}>
+                    {console.log(`Filtrando vagas para horário: ${horario}`)}
+                    {vagas.filter(vaga => vaga.dataHora.startsWith(dataSelecionada.toISOString().slice(0, 10) + 'T' + horario))
+                      .map(vaga => {
+                        console.log(`Vaga (${vaga.dataHora} - ${vaga.id}):`, vaga);
+                        return (
+                          <button key={vaga.id} className={`${styles.button} ${styles[`button_${vaga.status.toLowerCase()}`]}`} onClick={() => openModal(vaga)}>
+                            <div className={styles.infos_container}>
+                              <div>
+                                <div className={styles.infos_box1}>
+                                  <div className={styles.info1}>{vaga.agendamento.animal.nome} &bull; {vaga.agendamento.animal.especie}</div>
+                                  <h2 className={styles[`status_${vaga.status ? vaga.status.toLowerCase() : ''}`]}>
+                                    {vaga.status === "precriada" ? "Pré-criada" : vaga.status}
+                                  </h2>
+                                </div>
+                                <div className={styles.infos_box2}>
+                                  <div className={styles.info2}>Exame</div>
+                                  <div className={styles.info2}>{horario} - {new Date(vaga.dataHora).getHours() + 1}:00</div>
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                  </div>
+                </th>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -314,8 +132,8 @@ function GetAllAgendamentosDiaForm() {
             <div className={styles.modalContent}>
               <div className={styles.container1}>
                 <div className={styles.box}>
-                  <div className={styles.title}>Animal_nome</div>
-                  <div className={styles.subtitle}>Espécie</div>
+                  <div className={styles.title}>{selectedVaga.agendamento.animal.nome}</div>
+                  <div className={styles.subtitle}>{selectedVaga.agendamento.animal.especie}</div>
                 </div>
                 <div className={styles.div_button1}>
                   <button onClick={closeModal} className={styles.button_close_modal}>X</button>
@@ -332,7 +150,9 @@ function GetAllAgendamentosDiaForm() {
                 </div>
               </div>
               <div className={styles.div_button2}>
-                <button className={styles.button_cancelar_consulta}>Cancelar consulta</button>
+                <button onClick={cancelarConsulta} className={styles.button_cancelar_consulta}>
+                  Cancelar consulta
+                </button>
               </div>
             </div>
           </div>
