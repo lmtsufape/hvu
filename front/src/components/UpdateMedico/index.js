@@ -210,10 +210,11 @@ function UpdateMedico() {
                                         <div key={especialidade.id}>
                                             <input
                                                 type="checkbox"
+                                                className={`form-check-input ${styles.checkbox}`}
                                                 checked
                                                 onChange={() => handleEspecialidadeSelection({ target: { value: especialidade.id } })}
                                             />
-                                            <label>{especialidade.nome}</label>
+                                            <label className={styles.input}>{especialidade.nome}</label>
                                         </div>
                                     ))}
                                 </div>

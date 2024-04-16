@@ -68,6 +68,8 @@ function CreateCronograma() {
         setSelectedMedico(selectedMedicoId);
     };
 
+    console.log("medico", selectedMedico);
+
     const handleCreateCronograma = async () => {
         const diasSelecionados = Object.entries(diasDaSemana)
             .filter(([_, selecionado]) => selecionado)
@@ -97,7 +99,7 @@ function CreateCronograma() {
         try {
             await createCronograma(cronogramaToCreate);
             alert("Agenda criada com sucesso!");
-            // router.push("/");
+            router.push(`/getAllCronograma/${selectedMedico}`);
         } catch (error) {
             console.error("Erro ao criar agenda:", error);
             alert("Erro ao criar agenda. Por favor, tente novamente.");

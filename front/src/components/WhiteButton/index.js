@@ -11,7 +11,8 @@ const text_white_button = {
     cancelar: "Cancelar",
     editar: "Editar",
     criar_agendamento: "Criar agendamento",
-    visualizar_agendas: "Visualizar agenda"
+    visualizar_agendas: "Visualizar agenda",
+    adicionar_cronograma: "Adicionar agenda"
 };
 
 export function LoginWhiteButton() {
@@ -92,11 +93,11 @@ export function CancelarWhiteButton() {
     );
 }
 
-export function EditarWhiteButton() {
+export function EditarWhiteButton({page, id}) {
     const router = useRouter();
 
     const handlEditarClick = () => {
-        router.push('/editarperfil');
+        router.push(`/${page}/${id}`);
     };
 
     return (
@@ -120,16 +121,26 @@ export function CriarAgendamentoWhiteButton() {
     );
 }
 
-export function VisualizarAgendaWhiteButton() {
+export function VisualizarAgendaWhiteButton({id}) {
     const router = useRouter();
 
     const handleClick = () => {
-        router.push('/getAllCronograma');
+        router.push(`/getAllCronograma/${id}`);
     };
 
     return (
             <button className={styles.white_button} onClick={handleClick}>
                 {text_white_button.visualizar_agendas}
             </button>
+    );
+}
+
+export function AdicionarCronograma({page, id}) {
+    const router = useRouter();
+
+    return (
+        <button className={styles.white_button} onClick={()=> router.push(`/${page}/${id}`)}>
+            {text_white_button.adicionar_cronograma}
+        </button>
     );
 }

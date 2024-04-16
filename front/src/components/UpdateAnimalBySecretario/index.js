@@ -118,7 +118,7 @@ function UpdateAnimalBySecretario() {
         if (updatedAnimal.ok) {
           alert("animal atualizado com sucesso!");
           // router.push(`/getTutorByIdSecretario/${id}/${index}`); seria o correto
-          router.push("/pacientes");
+          router.push("/pacientesBySecretario");
         } else {
           alert('Erro ao atualizar o animal, tente novamente.');
           console.error('Erro ao atualizar o animal.');

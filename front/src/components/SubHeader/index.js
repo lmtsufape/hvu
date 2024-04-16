@@ -21,8 +21,8 @@ export function SubHeader02 () {
 
     return (
         <div className={styles.button_box}>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/agendamentosSemana")}>Agendamentos</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/pacientes")}>Pacientes</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/agendamentosDia")}>Agendamentos</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/pacientesBySecretario")}>Pacientes</button>
             <button type="button" className="btn btn-link" id={styles.button_decoration}>Relatórios</button>
         </div>
     );

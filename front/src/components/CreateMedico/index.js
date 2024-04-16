@@ -101,7 +101,7 @@ function CreateMedico() {
             await createMedico(MedicoToCreate);
             localStorage.setItem("token", token);
             alert("Médico cadastrado com sucesso!");
-            // router.push("/getMedicoById");
+            router.push("/getAllMedicos");
         } catch (error) {
             console.error("Erro ao criar médico:", error);
             alert("Erro ao criar médico. Por favor, tente novamente.");
@@ -238,10 +238,11 @@ function CreateMedico() {
                                         <div key={especialidade.id}>
                                             <input
                                                 type="checkbox"
+                                                className={`form-check-input ${styles.checkbox}`}
                                                 checked
                                                 onChange={() => handleEspecialidadeSelection({ target: { value: especialidade.id } })}
                                             />
-                                            <label>{especialidade.nome}</label>
+                                            <label className={styles.input}>{especialidade.nome}</label>
                                         </div>
                                     ))}
                                 </div>

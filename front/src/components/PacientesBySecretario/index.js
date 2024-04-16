@@ -5,7 +5,7 @@ import SearchBar from '../SearchBar';
 import { getAllTutor } from '../../../services/tutorService';
 import VoltarButton from '../VoltarButton';
 
-function MeusAnimaisList() {
+function PacientesBySecretario() {
     const [tutores, setTutores] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -90,4 +90,4 @@ function MeusAnimaisList() {
     );
 }
 
-export default MeusAnimaisList;
+export default PacientesBySecretario;

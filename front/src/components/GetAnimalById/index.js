@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import { getAnimalById } from '../../../services/animalService';
 import VoltarButton from '../VoltarButton';
+import { EditarWhiteButton } from '../WhiteButton';
 
 function GetAnimalByIdForm() {
     const router = useRouter();
@@ -26,10 +27,6 @@ function GetAnimalByIdForm() {
     const formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('pt-BR', options);
-    };
-
-    const handleEditarClick = (animalId) => {
-        router.push(`/updateAnimalTutor/${animalId}`);
     };
 
     return (
@@ -80,9 +77,7 @@ function GetAnimalByIdForm() {
                                 </div>
                             </div>
                             <div className={styles.botao}>
-                                <button className={styles.editar_button} onClick={() => handleEditarClick(animal.id)}>
-                                    Editar 
-                                </button>
+                                <EditarWhiteButton page={"updateAnimalByTutor"} id={animal.id}/>
                             </div>
                         </div>
                     </li>
