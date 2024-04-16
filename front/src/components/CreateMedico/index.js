@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import InputMask from "react-input-mask";
 import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
-import Multiselect from 'multiselect-react-dropdown';
 import { CancelarWhiteButton } from "../WhiteButton";
 import { createMedico } from "../../../services/medicoService";
 import { postRegister } from "../../../common/postRegister";
