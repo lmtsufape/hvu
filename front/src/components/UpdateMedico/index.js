@@ -20,6 +20,8 @@ function UpdateMedico() {
     const [confirmarSenhaErro, setConfirmarSenhaErro] = useState("");
     const { especialidades } = EspecialidadeList();
     const [selectedEspecialidade, setSelectedEspecialidade] = useState([]);
+    const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
+
 
     const [medico, setMedico] = useState({
         nome: "",
@@ -56,8 +58,13 @@ function UpdateMedico() {
     }, [id]);
 
     const handleEspecialidadeSelection = (event) => {
-        const selectedEspecialidadeId = event.target.value;
-        setSelectedEspecialidade([...selectedEspecialidade, selectedEspecialidadeId]);
+        const especialidadeId = parseInt(event.target.value);
+        if (!selectedEspecialidades.find(espec => espec.id === especialidadeId)) {
+            const especialidadeSelected = especialidades.find(espec => espec.id === especialidadeId);
+            setSelectedEspecialidades([...selectedEspecialidades, especialidadeSelected]);
+        } else {
+            setSelectedEspecialidades(selectedEspecialidades.filter(espec => espec.id !== especialidadeId));
+        }
     };
 
     console.log("espec", selectedEspecialidade);
@@ -142,7 +149,7 @@ function UpdateMedico() {
             cpf: medico.cpf,
             crmv: medico.crmv,
             telefone: medico.telefone,
-            especialidade: selectedEspecialidade.map(id => ({ id })), // Mapeia para o formato desejado
+            especialidade: selectedEspecialidades.map(espec => ({ id: espec.id })),
             endereco: {
                 cep: medico.endereco.cep,
                 rua: medico.endereco.rua,
@@ -197,6 +204,18 @@ function UpdateMedico() {
                                             </option>
                                         ))}
                                     </select>
+                                </div>
+                                <div>
+                                    {selectedEspecialidades.map(especialidade => (
+                                        <div key={especialidade.id}>
+                                            <input
+                                                type="checkbox"
+                                                checked
+                                                onChange={() => handleEspecialidadeSelection({ target: { value: especialidade.id } })}
+                                            />
+                                            <label>{especialidade.nome}</label>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                             <div className={`col ${styles.col}`}>
