@@ -232,7 +232,7 @@ function UpdateMeuPerfil() {
 
 function renderTutorInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask = null, show = false, setShow = null) {
     const InputComponent = mask ? InputMask : 'input';
-
+    const inputType = type === "password" ? (show ? "text" : "password") : type;
     //função modificada para aceitar o evento
     const toggleShow = (event) => {
         event.preventDefault(); //impede o comportamento padrão do botão submeter o formulario
@@ -242,9 +242,10 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
     return (
         <div className="mb-3">
             <label htmlFor={name} className="form-label">{label}</label>
+            <div className="input-group">
             <InputComponent
                 mask={mask}
-                type={type}
+                type={inputType}
                 className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
                 name={name}
                 placeholder={placeholder}
@@ -259,6 +260,7 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
                     </button>
                 </div>
             )}
+        </div>
         </div>
     );
 }
