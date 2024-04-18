@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -43,6 +46,17 @@ public class UsuarioController {
 	public UsuarioResponse getUsuarioById(@PathVariable Long id) {
 		try {
 			return new UsuarioResponse(facade.findUsuarioById(id));
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+	}
+	
+	@GetMapping("usuario/current")
+	public UsuarioResponse getCurrentUsuario() {
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt principal = (Jwt) authentication.getPrincipal();
+			return new UsuarioResponse(facade.findUsuarioByuserId(principal.getSubject()));
 		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
