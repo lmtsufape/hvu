@@ -807,6 +807,9 @@ public class Facade {
 
 	public Agendamento saveAgendamento(Agendamento newInstance, Long idVaga) {
 		Vaga vaga = findVagaById(idVaga);
+		if (vaga.getAgendamento() != null || !vaga.getStatus().equalsIgnoreCase("Disponível")){
+            throw new IllegalStateException("A vaga não está disponível.");
+        }
 		vaga.setStatus("Agendado");
 		vaga.setAgendamento(newInstance);
 		newInstance.setDataVaga(vaga.getDataHora());		
