@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.edu.ufape.hvu.controller.dto.request.EspecialidadeRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
+import br.edu.ufape.hvu.controller.dto.request.VagaTipoRequest;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
@@ -527,7 +528,7 @@ public class Facade {
 	    return vagas;
 	}
 
-	private void createVagas(LocalDate data, List<EspecialidadeRequest> especialidadesIds, String turno, List<Vaga> vagas) {
+	private void createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas) {
 
 	    final long[] count = new long[2];
 	    count[0] = findVagaByData(data).size(); // Total vagas no dia
@@ -537,8 +538,9 @@ public class Facade {
 	        throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
 	    }
 
-	    especialidadesIds.forEach(especialidadeId -> {
-	        Especialidade especialidade = findEspecialidadeById(especialidadeId.getId());
+	    vagaTipo.forEach(especialidadeTipo -> {
+	        Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
+	        TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());	        
 	        
 	        Map<LocalDateTime, List<Cronograma>> schedulesAvailable = scheduleAvailable(data, turno, especialidade);
 	            
@@ -554,6 +556,7 @@ public class Facade {
 	                    newVaga.setEspecialidade(especialidade);
 	                    newVaga.setStatus("Disponível");
 	                    newVaga.setMedico(cronograma.getMedico());
+	                    newVaga.setTipoConsulta(tipoConsulta);
 	                    saveVaga(newVaga);
 	                    vagas.add(newVaga);
 	                    count[0]++;
