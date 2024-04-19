@@ -105,8 +105,7 @@
 }
 
 .coluna1 {
-    width: 80px;
-    height: 123px;
+    height: 100%;
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 600;
@@ -115,7 +114,7 @@
     color: #606060;
     display: flex;
     justify-content: center;
-    align-items: top;
+    align-items: center;
 }
 
 .coluna1_l1 {
@@ -132,4 +131,55 @@
 .th {
     border-left: 2px solid #ECECEC;
     border-bottom: 1px solid #ECECEC;
+    height: 6vh;
+}
+
+.agendado{
+    background-color: #CBC7FF;
+    border: 2px solid #CBC7FF;
+    padding: 0 0.5rem 0 0.5rem;
+    border-radius: 1rem;
+    margin: 0.5rem;
+    font-weight: 700;
+    color: #474747;
+}
+
+.finalizado{
+    background-color: #4A876B;
+    border: 2px solid #4A876B;
+    padding: 0 0.5rem 0 0.5rem;
+    border-radius: 1rem;
+    margin: 0.5rem;
+    font-weight: 700;
+    color: #474747;
+}
+
+.precriada{
+    background-color: #ECECEC;
+    border: 2px solid #ECECEC;
+    padding: 0 0.5rem 0 0.5rem;
+    border-radius: 1rem;
+    margin: 0.5rem;
+    font-weight: 700;
+    color: #474747;
+}
+
+.disponivel{
+    background-color: #EEF8F3;
+    border: 2px solid #EEF8F3;
+    padding: 0 0.5rem 0 0.5rem;
+    border-radius: 1rem;
+    margin: 0.5rem;
+    font-weight: 700;
+    color: #474747;
+}
+
+.cancelado{
+    background-color: #FFC1C1;
+    border: 2px solid #FFC1C1;
+    padding: 0 0.5rem 0 0.5rem;
+    border-radius: 1rem;
+    margin: 0.5rem;
+    font-weight: 700;
+    color: #474747;
 }
