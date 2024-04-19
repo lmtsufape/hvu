@@ -112,16 +112,9 @@ function UpdateAnimalByTutor() {
 
     if (id) {
       try {
-        const updatedAnimal = await updateAnimal(id, animalToUpdate);
-        setAnimalData(updatedAnimal);
-
-        if (updatedAnimal.ok) {
-          alert("animal atualizado com sucesso!");
-          router.push(`/getAnimalById/${id}`);
-        } else {
-          alert('Erro ao atualizar o animal, tente novamente.');
-          console.error('Erro ao atualizar o animal.');
-        }
+        await updateAnimal(id, animalToUpdate);
+        alert("animal atualizado com sucesso!");
+        router.push(`/getAnimalById/${id}`);
       } catch (error) {
         alert('Erro ao atualizar o animal, tente novamente.');
         console.error('Erro ao atualizar o animal:', error);

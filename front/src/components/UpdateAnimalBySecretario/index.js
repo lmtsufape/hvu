@@ -112,17 +112,9 @@ function UpdateAnimalBySecretario() {
 
     if (id) {
       try {
-        const updatedAnimal = await updateAnimal(id, animalToUpdate);
-        setAnimalData(updatedAnimal);
-
-        if (updatedAnimal.ok) {
-          alert("animal atualizado com sucesso!");
-          // router.push(`/getTutorByIdSecretario/${id}/${index}`); seria o correto
-          router.push("/pacientesBySecretario");
-        } else {
-          alert('Erro ao atualizar o animal, tente novamente.');
-          console.error('Erro ao atualizar o animal.');
-        }
+        await updateAnimal(id, animalToUpdate);
+        alert("animal atualizado com sucesso!");
+        router.push(`/pacientesBySecretario`);
       } catch (error) {
         alert('Erro ao atualizar o animal, tente novamente.');
         console.error('Erro ao atualizar o animal:', error);
