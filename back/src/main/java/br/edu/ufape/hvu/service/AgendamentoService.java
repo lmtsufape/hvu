@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Agendamento;
+import br.edu.ufape.hvu.model.Animal;
 
 @Service
 public class AgendamentoService implements AgendamentoServiceInterface {
@@ -30,6 +31,14 @@ public class AgendamentoService implements AgendamentoServiceInterface {
 	public List<Agendamento> findAgendamentosByMedicoId(Long medicoId){
 		try {
 			return repository.findAgendamentosByMedicoId(medicoId);
+		} catch (RuntimeException ex) {
+			throw new ServiceException("Erro ao buscar os Agendamentos", ex);
+        }
+	}
+	
+	public List<Agendamento> findAgendamentosByAnimal(Animal animal){
+		try {
+			return repository.findByAnimal(animal);
 		} catch (RuntimeException ex) {
 			throw new ServiceException("Erro ao buscar os Agendamentos", ex);
         }
