@@ -843,6 +843,23 @@ public class Facade {
 		Medico medico = findMedicoById(medicoId);
 		return agendamentoServiceInterface.findAgendamentosByMedicoId(medico.getId());
 	}
+	
+	
+	
+	public List<Agendamento> findAgendamentosByTutorId(String userId) {
+		Tutor tutor = findTutorByuserId(userId);
+            
+        
+        List<Animal> animals = tutor.getAnimal(); // Supondo que você tem um método getAnimais()
+        
+        List<Agendamento> agendamentos = new ArrayList<>();
+        for (Animal animal : animals) {
+            List<Agendamento> agendamentosForAnimal = agendamentoServiceInterface.findAgendamentosByAnimal(animal);
+            agendamentos.addAll(agendamentosForAnimal);
+        }
+        
+        return agendamentos;
+    }
 
 	public void deleteAgendamento(Agendamento persistentObject) {
 		agendamentoServiceInterface.deleteAgendamento(persistentObject);
