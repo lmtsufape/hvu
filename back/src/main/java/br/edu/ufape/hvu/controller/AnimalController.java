@@ -47,6 +47,17 @@ public class AnimalController {
 			.toList();
 	}
 	
+	@GetMapping("animal/tutor")
+	public List<AnimalResponse> getAllAnimalTutor() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		
+		return facade.getAllAnimalTutor(principal.getSubject())
+			.stream()
+			.map(AnimalResponse::new)
+			.toList();
+	}
+	
 	@PostMapping("animal")
 	public AnimalResponse createAnimal(@Valid @RequestBody AnimalRequest newObj) {
 		try {

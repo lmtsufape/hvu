@@ -1,6 +1,8 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
+
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AnimalRepository;
@@ -28,6 +30,8 @@ public class AnimalService implements AnimalServiceInterface {
 	public List<Animal> getAllAnimal(){
 		return repository.findAll();
 	}
+	
+	
 
 	public void deleteAnimal(Animal persistentObject){
 		this.deleteAnimal(persistentObject.getId());
