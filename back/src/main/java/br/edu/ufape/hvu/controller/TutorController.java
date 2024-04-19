@@ -63,6 +63,16 @@ public class TutorController {
 		
 	}
 	
+	@GetMapping("tutor/animal/{id}")
+	public TutorResponse getTutorByAnimalId(@PathVariable Long id) {
+		try {
+			return new TutorResponse(facade.findTutorByanimalId(id));
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+		
+	}
+	
 	@PatchMapping("tutor/{id}")
 	public TutorResponse updateTutor(@PathVariable Long id, @Valid @RequestBody TutorRequest obj) {
 		try {
