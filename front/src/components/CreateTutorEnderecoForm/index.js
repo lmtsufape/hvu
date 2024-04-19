@@ -11,7 +11,7 @@ import VoltarButton from "../VoltarButton";
 
 function CreateTutorEnderecoForm() {
     const router = useRouter();
-
+    const [laiChecked, setLaiChecked] = useState(false);
     const [errors, setErrors] = useState({});
 
     const [tutorFormData, setTutorFormData] = useState({
@@ -24,14 +24,14 @@ function CreateTutorEnderecoForm() {
         confirmarSenha: ""
     });
 
-    const [ enderecoFormData, setEnderecoFormData ] = useState({
+    const [enderecoFormData, setEnderecoFormData] = useState({
         cep: "",
         rua: "",
         estado: "",
         cidade: "",
         numero: "",
         bairro: ""
-        }
+    }
     );
 
     const formData = {
@@ -41,19 +41,23 @@ function CreateTutorEnderecoForm() {
         cpf: tutorFormData.cpf,
         rg: tutorFormData.rg,
         telefone: tutorFormData.telefone,
-        endereco: {...enderecoFormData}
+        endereco: { ...enderecoFormData }
     }
+
+    const handleCheckboxChange = (event) => {
+        setLaiChecked(event.target.checked);
+    };
 
     function handleTutorChange(event) {
         const { name, value } = event.target;
         setTutorFormData({ ...tutorFormData, [name]: value });
-        localStorage.setItem(name, value); 
+        localStorage.setItem(name, value);
     }
-    
+
     function handleEnderecoChange(event) {
         const { name, value } = event.target;
         setEnderecoFormData({ ...enderecoFormData, [name]: value });
-        localStorage.setItem(name, value); 
+        localStorage.setItem(name, value);
     }
 
     const validateForm = () => {
@@ -109,6 +113,9 @@ function CreateTutorEnderecoForm() {
         if (!enderecoFormData.cidade) {
             newErrors.cidade = "Cidade é obrigatório";
         }
+        if (!laiChecked) {
+            newErrors.lai = "É necessário concordar com o termo acima!";
+        }
         setErrors(newErrors);
 
         return Object.keys(newErrors).length === 0;
@@ -118,24 +125,24 @@ function CreateTutorEnderecoForm() {
         // Carrega os dados do localStorage quando o componente é montado
         const storedTutorFormData = {};
         const storedEnderecoFormData = {};
-    
+
         Object.keys(tutorFormData).forEach((key) => {
             const storedValue = localStorage.getItem(key);
             if (storedValue) {
                 storedTutorFormData[key] = storedValue;
             }
         });
-    
+
         Object.keys(enderecoFormData).forEach((key) => {
             const storedValue = localStorage.getItem(key);
             if (storedValue) {
                 storedEnderecoFormData[key] = storedValue;
             }
         });
-    
+
         setTutorFormData((prevData) => ({ ...prevData, ...storedTutorFormData }));
         setEnderecoFormData((prevData) => ({ ...prevData, ...storedEnderecoFormData }));
-    
+
         // Limpa os dados do localStorage quando o componente é desmontado
         return () => {
             Object.keys(tutorFormData).forEach((key) => localStorage.removeItem(key));
@@ -147,9 +154,9 @@ function CreateTutorEnderecoForm() {
         event.preventDefault();
         if (validateForm()) {
             try {
-                const responseRegister = await postRegister( tutorFormData.email,tutorFormData.nome,tutorFormData.senha, "tutor");
+                const responseRegister = await postRegister(tutorFormData.email, tutorFormData.nome, tutorFormData.senha, "tutor");
                 console.log(responseRegister);
-                await postLogin(tutorFormData.email,tutorFormData.senha);
+                await postLogin(tutorFormData.email, tutorFormData.senha);
                 const response = await createTutor(formData);
                 console.log(response);
                 alert("Cadastro realizado com sucesso!");
@@ -180,8 +187,11 @@ function CreateTutorEnderecoForm() {
                             enderecoFormData={enderecoFormData}
                             handleEnderecoChange={handleEnderecoChange}
                             errors={errors}
+                            laiChecked={laiChecked}
+                            handleCheckboxChange={handleCheckboxChange}
                         />
                     </div>
+
                     <div className={styles.box_button}>
                         <button type="button" className={styles.button} onClick={handleSubmit}>
                             Cadastrar
