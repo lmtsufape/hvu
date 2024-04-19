@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -1073,6 +1074,14 @@ public class Facade {
 
 	public List<Animal> getAllAnimal() {
 		return animalServiceInterface.getAllAnimal();
+	}
+	
+	public List<Animal> getAllAnimalTutor(String userId) {
+		Tutor tutor = findTutorByuserId(userId);
+		if(tutor.equals(null) ) {
+			throw new ServiceException("Erro ao buscar os Agendamentos");
+		}
+		return tutor.getAnimal();		
 	}
 
 	public void deleteAnimal(Animal persistentObject) {
