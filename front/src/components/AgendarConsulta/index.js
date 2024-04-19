@@ -22,9 +22,7 @@ const HorariosSemana = () => {
   const [vagas, setVagas] = useState(null);
   const [selectedVaga, setSelectedVaga] = useState(null);
 
-  const [errors, setErrors] = useState({
-    animal: ""
-  });
+  const [errors, setErrors] = useState({});
 
   const openModal = () => {
     setShowModal(true);
@@ -102,17 +100,32 @@ const HorariosSemana = () => {
   };
 
   const validateForm = () => {
-    const newErrors = {};
-
+    const errors = {};
     if (!selectedAnimal) {
-      newErrors.nome = "Campo obrigatório";
+      errors.selectedAnimal = "Campo obrigatório";
     }
-    setErrors(newErrors);
+    if (!selectedVaga) {
+      alert("Selecione uma vaga para realizar o agendamento.");
+    }
+    return errors;
+  };
 
-    return Object.values(newErrors).every((error) => error === "");
+  const handleAgendar = () => {
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+    } else {
+      openModal();
+    }
   };
 
   const handleCreateAgendamento = async () => {
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
+    }
+
     const agendamentoToCreate = {
       animal: { id: selectedAnimal.id },
       dataVaga: selecionarHorario,
@@ -121,26 +134,21 @@ const HorariosSemana = () => {
   
     console.log("agendamentoToCreate", agendamentoToCreate);
     
-    if (validateForm()) {
-      try {
-        const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
-        console.log(newAgendamento);
-        alert("Consulta agendada com sucesso!");
-        router.push("/meusAgendamentos");
-      } catch (error) {
-        console.error("Erro ao agendar consulta:", error);
-        if (error.response && error.response.status === 500) {
-          alert("Vaga não está disponível.");
-        } else {
-          // Se não for 500, faça outra coisa
-          alert("Ocorreu um erro ao agendar a consulta. Por favor, tente novamente.");
-        }
+    try {
+      const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
+      console.log(newAgendamento);
+      alert("Consulta agendada com sucesso!");
+      router.push("/meusAgendamentos");
+    } catch (error) {
+      console.error("Erro ao agendar consulta:", error);
+      if (error.response && error.response.status === 500) {
+        alert("Vaga não está disponível.");
+      } else {
+        // Se não for 500, faça outra coisa
+        alert("Ocorreu um erro ao agendar a consulta. Por favor, tente novamente.");
       }
-    } else {
-      alert("Formulário inválido. Selecione todos os campos e tente novamente.");
     }
   };
-  
 
   return (
     <div className={styles.container}>
@@ -157,7 +165,7 @@ const HorariosSemana = () => {
           <div className={styles.select_box}>
             <h1>Paciente</h1>
             <select 
-              className={`form-select ${styles.input} ${errors.animal ? "is-invalid" : ""}`} 
+              className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`} 
               aria-label="Default select example"
               name="animal"
               value={selectedAnimal ? selectedAnimal.id : ''}
@@ -170,7 +178,7 @@ const HorariosSemana = () => {
                 </option>
               ))}
             </select>
-            {errors.animal && <div className="invalid-feedback">{animal.sexo}</div>}
+            {errors.selectedAnimal && <div className="invalid-feedback">{errors.selectedAnimal}</div>}
           </div>
         </div>
 
@@ -244,7 +252,7 @@ const HorariosSemana = () => {
         </div>
         <div className={styles.button_container}>
           <CancelarWhiteButton />
-          <button className={styles.agendar_button} onClick={openModal}>Agendar</button>
+          <button className={styles.agendar_button} onClick={handleAgendar}>Agendar</button>
         </div>
       </div>
       {showModal && (
@@ -274,7 +282,7 @@ const HorariosSemana = () => {
 
                 <div className={styles.box}>
                   <div className={styles.item}>Consulta</div>
-                  <div className={styles.subtitle}>{selectedVaga.tipoConsulta ? selectedVaga.tipoConsulta.tipo : ''}</div> {/* Alterado */}
+                  <div className={styles.subtitle}>{selectedVaga && selectedVaga.tipoConsulta ? selectedVaga.tipoConsulta.tipo : ''}</div>
                 </div>
               </div>
 
@@ -291,3 +299,5 @@ const HorariosSemana = () => {
 };
 
 export default HorariosSemana;
+
+
