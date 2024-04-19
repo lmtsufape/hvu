@@ -74,7 +74,7 @@ function GetAllAgendamentosDiaForm() {
             <button className={styles.button} onClick={(e) => router.push("/agendamentoEspecial")}>
               Novo agendamento
             </button>
-            <button className={styles.button}>Criar vagas</button>
+            <button className={styles.button} onClick={(e) => router.push("/gerenciarVagas")}>Criar vagas</button>
           </div>
           <SearchBar />
         </div>
