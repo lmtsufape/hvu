@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import VoltarButton from "../VoltarButton";
 import SearchBar from "../SearchBar"; // Importe o componente SearchBar
-import { getAgendamento, deleteAgendamento } from "../../../services/agendamentoService";
+import { getAgendamentoTutor, deleteAgendamento } from "../../../services/agendamentoService";
 import { format } from 'date-fns'; 
 import { CriarAgendamentoWhiteButton } from '../WhiteButton';
 
@@ -18,7 +18,7 @@ export default function MeusAgendamentos() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const agendamentosData = await getAgendamento();
+                const agendamentosData = await getAgendamentoTutor();
                 setAgendamentos(agendamentosData);
             } catch (error) {
                 console.error('Erro ao buscar agendamentos:', error);
