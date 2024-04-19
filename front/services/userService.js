@@ -20,6 +20,15 @@ export async function createUsuario(usuarioData) {
       throw error;
     }
   }
+
+  export async function getCurrentUsuario() {
+    try {
+      const response = await api.get('/usuario/current');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   
   // Função para buscar um usuário por ID
   export async function getUsuarioById(usuarioId) {

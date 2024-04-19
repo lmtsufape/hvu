@@ -5,7 +5,7 @@ import styles from "./index.module.css";
 import {LoginGreenButton} from '../GreenButton';
 import { LoginWhiteButton } from '../WhiteButton';
 import {CadastrolWhiteButton} from '../WhiteButton';
-import { getAllTutor } from '../../../services/tutorService';
+import { getCurrentUsuario } from '../../../services/userService';
 
 //Header com botão de login e cadastro
 export function Header01() {
@@ -58,7 +58,7 @@ export function Header01() {
     const router = useRouter();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
-    const [tutores, setTutores] = useState([]);
+    const [tutores, setTutores] = useState(null);
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -82,7 +82,7 @@ export function Header01() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const TutoresData = await getAllTutor();
+                const TutoresData = await getCurrentUsuario();
                 setTutores(TutoresData);
             } catch (error) {
                 console.error('Erro ao buscar tutores:', error);
@@ -104,9 +104,8 @@ export function Header01() {
                 </button>
                 {dropdownOpen && (
                     <div className={styles.dropdown_container}>
-                        {tutores.map(tutor => (
-                            <div className={styles.dropdown} key={tutor.id}>
-                                <button className={styles.button1} onClick={(e) => router.push(`/meuPerfil/${tutor.id}`)}>
+                            <div className={styles.dropdown}>
+                                <button className={styles.button1} onClick={(e) => router.push(`/meuPerfil/${tutores.id}`)}>
                                     <div><Image src="/info_icon.svg" alt="Ícone de perfil" width={18.87} height={18.87}/></div>
                                     <div>Meu perfil</div>
                                 </button>
@@ -115,7 +114,6 @@ export function Header01() {
                                     <div>Sair</div>
                                 </button>
                             </div>
-                        ))}
                     </div>
                 )}
             </div>
