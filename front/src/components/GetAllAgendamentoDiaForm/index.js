@@ -105,7 +105,7 @@ function GetAllAgendamentosDiaForm() {
                             <div className={styles.infos_container}>
                               <div>
                                 <div className={styles.infos_box1}>
-                                  <div className={styles.info1}>{vaga.agendamento.animal.nome} &bull; {vaga.agendamento.animal.especie}</div>
+                                  <div className={styles.info1}>{vaga.agendamento?.animal.nome} &bull; {vaga.agendamento?.animal.especie}</div>
                                   <h2 className={styles[`status_${vaga.status ? vaga.status.toLowerCase() : ''}`]}>
                                     {vaga.status === "precriada" ? "Pré-criada" : vaga.status}
                                   </h2>
@@ -132,8 +132,8 @@ function GetAllAgendamentosDiaForm() {
             <div className={styles.modalContent}>
               <div className={styles.container1}>
                 <div className={styles.box}>
-                  <div className={styles.title}>{selectedVaga.agendamento.animal.nome}</div>
-                  <div className={styles.subtitle}>{selectedVaga.agendamento.animal.especie}</div>
+                  <div className={styles.title}>{selectedVaga.agendamento?.animal.nome}</div>
+                  <div className={styles.subtitle}>{selectedVaga.agendamento?.animal.especie}</div>
                 </div>
                 <div className={styles.div_button1}>
                   <button onClick={closeModal} className={styles.button_close_modal}>X</button>
