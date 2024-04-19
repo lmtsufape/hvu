@@ -837,6 +837,11 @@ public class Facade {
 	public List<Agendamento> getAllAgendamento() {
 		return agendamentoServiceInterface.getAllAgendamento();
 	}
+	
+	public List<Agendamento> findAgendamentosByMedicoId(Long medicoId){
+		Medico medico = findMedicoById(medicoId);
+		return agendamentoServiceInterface.findAgendamentosByMedicoId(medico.getId());
+	}
 
 	public void deleteAgendamento(Agendamento persistentObject) {
 		agendamentoServiceInterface.deleteAgendamento(persistentObject);

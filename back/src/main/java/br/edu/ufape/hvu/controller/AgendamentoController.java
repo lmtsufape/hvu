@@ -48,6 +48,18 @@ public class AgendamentoController {
 		}
 	}
 	
+	@GetMapping("agendamento/medico/{id}")
+	public List<AgendamentoResponse> getAgendamentosByMedicoId(@PathVariable Long id) {
+		try {
+			return facade.findAgendamentosByMedicoId(id)
+					.stream()
+					.map(AgendamentoResponse::new)
+					.toList();
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+	}
+	
 	@PatchMapping("agendamento/{id}")
 	public AgendamentoResponse updateAgendamento(@PathVariable Long id, @Valid @RequestBody AgendamentoRequest obj) {
 		try {

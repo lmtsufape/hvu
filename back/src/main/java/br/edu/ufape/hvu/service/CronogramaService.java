@@ -48,15 +48,11 @@ public class CronogramaService implements CronogramaServiceInterface {
 	}
 
 	public List<Cronograma> findCronogramaByEspecialidade(Especialidade especialidade) {
-		
-			
-			try {
-				return repository.findByEspecialidade(especialidade);
-			} catch (DataAccessException ex) {
-            // Logar e lançar uma exceção mais específica ou tratar de acordo
-				throw new ServiceException("Erro ao acessar o banco de dados", ex);
-	        }
-		
+		try {
+			return repository.findByEspecialidade(especialidade);
+		} catch (DataAccessException ex) {
+			throw new ServiceException("Erro ao acessar o banco de dados", ex);
+        }
 	}
 	
 	public List<Cronograma> getAllCronograma(){
