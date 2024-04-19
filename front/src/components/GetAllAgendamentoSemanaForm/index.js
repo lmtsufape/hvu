@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import dateStyles from "../Date/index.module.css";
 import Filter from "../GetAgendamentosFilter";
@@ -9,6 +10,8 @@ import VoltarButton from '../VoltarButton';
 import { getAllVaga } from '../../../services/vagaService';
 
 function GetAllAgendamentosSemanaForm() {
+  const router = useRouter();
+
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
   const [vagas, setVagas] = useState([]);
   const [agendamentosPorHora, setAgendamentosPorHora] = useState({});
@@ -68,9 +71,8 @@ function GetAllAgendamentosSemanaForm() {
         </div>
         <div className={styles.menu}>
           <div className={styles.button_options}>
-            <button className={styles.button}>Novo agendamento</button>
-            <button className={styles.button}>Médicos disponíveis</button>
-            <button className={styles.button}>Vagas disponíveis</button>
+            <button className={styles.button} onClick={(e) => router.push("/agendamentoEspecial")}>Novo agendamento</button>
+            <button className={styles.button} onClick={(e) => router.push("/gerenciarVagas")}>Criar vagas</button>
           </div>
           <SearchBar />
         </div>
