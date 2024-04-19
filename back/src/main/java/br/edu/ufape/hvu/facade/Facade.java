@@ -275,6 +275,16 @@ public class Facade {
 	public Cronograma findCronogramaById(long id) {
 		return cronogramaServiceInterface.findCronogramaById(id);
 	}
+	
+	public List<Cronograma> findCronogramaByMedicoId(long id){
+		Medico medico = findMedicoById(id);
+		return cronogramaServiceInterface.findCronogramaByMedico(medico);
+	}
+	
+	public List<Cronograma> findCronogramaByEspecialidadeId(long id){
+		Especialidade especialidade = findEspecialidadeById(id);
+		return cronogramaServiceInterface.findCronogramaByEspecialidade(especialidade);
+	}
 
 	public List<Cronograma> getAllCronograma() {
 		return cronogramaServiceInterface.getAllCronograma();

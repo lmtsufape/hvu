@@ -5,13 +5,20 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import br.edu.ufape.hvu.repository.CronogramaRepository;
+import jakarta.transaction.Transactional;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Cronograma;
 import br.edu.ufape.hvu.model.Especialidade;
 import br.edu.ufape.hvu.model.Horario;
+import br.edu.ufape.hvu.model.Medico;
 
 @Service
 public class CronogramaService implements CronogramaServiceInterface {
@@ -30,7 +37,28 @@ public class CronogramaService implements CronogramaServiceInterface {
 	public Cronograma findCronogramaById(long id) {
 		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Cronograma"));
 	}
+	@Transactional
+	public List<Cronograma> findCronogramaByMedico(Medico medico) {
+		try {
+            return repository.findByMedico(medico);
+        } catch (DataAccessException ex) {
+            // Logar e lançar uma exceção mais específica ou tratar de acordo
+            throw new ServiceException("Erro ao acessar o banco de dados", ex);
+        }
+	}
 
+	public List<Cronograma> findCronogramaByEspecialidade(Especialidade especialidade) {
+		
+			
+			try {
+				return repository.findByEspecialidade(especialidade);
+			} catch (DataAccessException ex) {
+            // Logar e lançar uma exceção mais específica ou tratar de acordo
+				throw new ServiceException("Erro ao acessar o banco de dados", ex);
+	        }
+		
+	}
+	
 	public List<Cronograma> getAllCronograma(){
 		return repository.findAll();
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.edu.ufape.hvu.model.Cronograma;
 import br.edu.ufape.hvu.model.Especialidade;
+import br.edu.ufape.hvu.model.Medico;
 
 public interface CronogramaServiceInterface {
 	Cronograma saveCronograma(Cronograma o);
@@ -14,6 +15,8 @@ public interface CronogramaServiceInterface {
 	void deleteCronograma(long id);
 	List<Cronograma> getAllCronograma();
 	List<Cronograma> findByEspecialidadeAndDiaAndTurno(Especialidade especialidade, DayOfWeek dia, String turno);
+	List<Cronograma> findCronogramaByMedico(Medico medico);
+	List<Cronograma> findCronogramaByEspecialidade(Especialidade especialidade);
     
     
 
