@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
 import { AdicionarAnimalWhiteButton } from "../WhiteButton";
-import { getAllAnimal, deleteAnimal } from '../../../services/animalService';
+import { getAllAnimalTutor, deleteAnimal } from '../../../services/animalService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
 
@@ -16,7 +16,7 @@ function MeusAnimaisList() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const animaisData = await getAllAnimal();
+                const animaisData = await getAllAnimalTutor();
                 setAnimais(animaisData);
             } catch (error) {
                 console.error('Erro ao buscar animais:', error);
