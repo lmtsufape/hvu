@@ -4,7 +4,7 @@ import InputMask from "react-input-mask";
 import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
-import { updateTutor, getTutorById } from "../../../services/tutorService";
+import { updateUsuario, getUsuarioById } from "../../../services/userService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
@@ -19,14 +19,16 @@ function UpdateMeuPerfil() {
     const [confirmarSenhaErro, setConfirmarSenhaErro] = useState("");
 
     const [tutor, setTutor] = useState({
+        id: null,
         nome: "",
         email: "",
         senha: "",
         cpf: "",
-        rg: "",
+        // rg: "",
         telefone: "",
         confirmarSenha: "",
         endereco: {
+            id: null,
             cep: "",
             rua: "",
             estado: "",
@@ -40,7 +42,7 @@ function UpdateMeuPerfil() {
         if (id) {
             const fetchData = async () => {
                 try {
-                    const TutorData = await getTutorById(id);
+                    const TutorData = await getUsuarioById(id);
                     setTutor(TutorData);
                 } catch (error) {
                     console.error('Erro ao buscar informações de tutor:', error);
@@ -128,9 +130,10 @@ function UpdateMeuPerfil() {
             email: tutor.email,
             senha: tutor.senha,
             cpf: tutor.cpf,
-            rg: tutor.rg,
+            // rg: tutor.rg,
             telefone: tutor.telefone,
             endereco: {
+                id: tutor.endereco.id,
                 cep: tutor.endereco.cep,
                 rua: tutor.endereco.rua,
                 estado: tutor.endereco.estado,
@@ -139,12 +142,11 @@ function UpdateMeuPerfil() {
                 bairro: tutor.endereco.bairro
             }
         };
-        
+        console.log("TutorToUpdate:", TutorToUpdate);
         try {
-            await updateTutor(tutor.id, TutorToUpdate);
-            console.log("TutorToUpdate:", TutorToUpdate);
+            await updateUsuario(tutor.id, TutorToUpdate);
             alert("Informações editadas com sucesso!");
-            router.push("/meuPerfil");
+            router.push(`/meuPerfil/${tutor.id}`);
         } catch (error) {
             console.log("TutorToUpdate:", TutorToUpdate);
             console.error("Erro ao editar tutor:", error);
@@ -170,7 +172,7 @@ function UpdateMeuPerfil() {
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderTutorInput("Telefone", tutor.telefone, "telefone", tutor.telefone, handleTutorChange, "tel", null, "(99) 99999-9999")}
-                                {renderTutorInput("RG", tutor.rg, "rg", tutor.rg, handleTutorChange, "text", null, "99.999.999-9")}
+                                {/* {renderTutorInput("RG", tutor.rg, "rg", tutor.rg, handleTutorChange, "text", null, "99.999.999-9")} */}
                             </div>
                         </div>
                     </div>
