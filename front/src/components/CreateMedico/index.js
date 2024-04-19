@@ -160,7 +160,8 @@ function CreateMedico() {
     };
 
     const handleCEPChange = async (event) => {
-        const cep = event.target.value;
+        let cep = event.target.value;
+        cep = cep.replace(/\D/g, ""); // Remove todos os caracteres não numéricos
         setMedico({
             ...medico,
             endereco: {
@@ -168,7 +169,7 @@ function CreateMedico() {
                 cep: cep
             }
         });
-        if (cep.length === 9) {
+        if (/^\d{8}$/.test(cep)) { // Verifica se a string do CEP tem exatamente 8 dígitos
             try {
                 setCityStateLoading(true);
                 const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
@@ -190,7 +191,8 @@ function CreateMedico() {
             }
         }
     };
-    console.log(especialidades);
+    
+    
 
     return (
         <div className={styles.container}>
@@ -258,13 +260,13 @@ function CreateMedico() {
                             <div className="row">
                                 <div className={`col ${styles.col}`}>
                                     {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleCEPChange, "Digite o CEP", "text", errors.cep, "99999-999")}
-                                    {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, "Digite a rua", "text", errors.rua)}
-                                    {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, "Digite a cidade", "text", errors.cidade)}
+                                    {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, "", "text", errors.rua)}
+                                    {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, "", "text", errors.cidade)}
                                 </div>
                                 <div className={`col ${styles.col}`}>
                                     {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, "Digite o número do endereço", "text", errors.numero)}
-                                    {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, "Digite o bairro", "text", errors.bairro)}
-                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, "Digite o estado", "text", errors.estado)}
+                                    {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, "", "text", errors.bairro)}
+                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, "", "text", errors.estado)}
                                 </div>
                             </div>
                         </div>

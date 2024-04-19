@@ -44,6 +44,15 @@ export default function MeusAgendamentos() {
         agendamento.animal && agendamento.animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const compareDates = (a, b) => {
+        const dateA = new Date(a.dataVaga);
+        const dateB = new Date(b.dataVaga);
+        return dateB - dateA;
+    };
+    
+    // Ordena os agendamentos com base nas datas
+    const sortedAgendamentos = filteredAgendamentos.sort(compareDates);
+
     return (
         <div>
             <div className={styles.voltar}>
@@ -60,11 +69,11 @@ export default function MeusAgendamentos() {
                 < CriarAgendamentoWhiteButton /> 
             </div>
 
-            {filteredAgendamentos.length === 0 ? (
+            {sortedAgendamentos.length === 0 ? (
                 <div className={styles.message}>Não há consultas marcadas.</div>
             ) : (
                 <ul className={styles.list}>
-                    {filteredAgendamentos.map(agendamento => (
+                    {sortedAgendamentos.map(agendamento => (
                         <li key={agendamento.id} className={styles.info_container}>
                             <div className={styles.agendamentos}>
                                 <div className={styles.agendamentoBox}>

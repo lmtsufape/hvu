@@ -139,7 +139,7 @@ export function AdicionarCronograma({page, id}) {
     const router = useRouter();
 
     return (
-        <button className={styles.white_button} onClick={()=> router.push(`/${page}/${id}`)}>
+        <button className={styles.white_button} onClick={()=> router.push(`/${page}`)}>
             {text_white_button.adicionar_cronograma}
         </button>
     );

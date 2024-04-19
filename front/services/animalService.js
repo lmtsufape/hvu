@@ -29,6 +29,15 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
+
+  export async function getAnimalByTutor() {
+    try {
+      const response = await api.get(`/animal/tutor`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   
   // Função para atualizar 
   export async function updateAnimal(animalId, animalData) {

@@ -7,7 +7,7 @@ import { getAllCronograma, deleteCronograma } from '../../../services/cronograma
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
 
-function GetAllCronograma() {
+function GetAllCronogramaByMedico() {
     const router = useRouter();
     const { id } = router.query;
 
@@ -59,11 +59,11 @@ function GetAllCronograma() {
                     placeholder={"Buscar agenda"}
                     onSearchChange={handleSearchChange}
                 />
-                <AdicionarCronograma page={"createCronograma"}/>
+                {/* <AdicionarCronograma page={"createCronograma"}/> */}
             </div>
 
             {filteredCronogramas.length === 0 ? (
-                <p>Não há agendas cadastradas.</p>
+                <p className={styles.message}>Não há agendas cadastradas.</p>
             ) : (
                 <ul className={styles.lista}>
                     {filteredCronogramas.map(cronograma => (
@@ -83,7 +83,7 @@ function GetAllCronograma() {
                                 >
                                     Acessar
                                 </button>
-                                <ExcluirButton itemId={cronograma.id} onDelete={handleDeleteCronograma} />
+                                {/* <ExcluirButton itemId={cronograma.id} onDelete={handleDeleteCronograma} /> */}
                             </div>
                         </li>
                     ))}
@@ -93,4 +93,4 @@ function GetAllCronograma() {
     );
 }
 
-export default GetAllCronograma;
+export default GetAllCronogramaByMedico;

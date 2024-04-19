@@ -11,6 +11,8 @@ import { createCronograma } from "../../../services/cronogramaService";
 function CreateCronograma() {
     const router = useRouter();
 
+    const [errors, setErrors] = useState({});
+
     const [cronograma, setCronograma] = useState({
         nome: "",
         tempoAtendimento: null,
@@ -70,7 +72,32 @@ function CreateCronograma() {
 
     console.log("medico", selectedMedico);
 
+    const validateFields = (cronograma) => {
+        const errors = {};
+        if (!cronograma.nome) {
+            errors.nome = "Campo obrigatório";
+        }
+        if (!cronograma.tempoAtendimento) {
+            errors.tempoAtendimento = "Campo obrigatório";
+        }
+        if (selectedEspecialidade === null) {
+            errors.selectedEspecialidade = "Campo obrigatório";
+        }
+        if (selectedMedico === null) {
+            errors.selectedMedico = "Campo obrigatório";
+        }
+
+        return errors;
+    };
+
+
     const handleCreateCronograma = async () => {
+        const validationErrors = validateFields(cronograma);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
         const diasSelecionados = Object.entries(diasDaSemana)
             .filter(([_, selecionado]) => selecionado)
             .map(([dia]) => dia.toUpperCase());
@@ -118,17 +145,18 @@ function CreateCronograma() {
                             <input
                                 placeholder="Digite o nome"
                                 type="text"
-                                className={`form-control ${styles.input}`}
+                                className={`form-control ${styles.input} ${errors.nome ? "is-invalid" : ""}`}
                                 name="nome"
                                 value={cronograma.nome}
                                 onChange={handleCronogramaChange}
                             />
+                            {errors.nome && <div className="invalid-feedback">{errors.nome}</div>}
                         </div>
 
                         <div className={`col ${styles.col}`}>
                             <label htmlFor="especialidade" className="form-label">Especialidade</label>
                             <select
-                                className={`form-select ${styles.input}`}
+                                className={`form-select ${styles.input} ${errors.selectedEspecialidade ? "is-invalid" : ""}`}
                                 name="especialidade"
                                 aria-label="Selecione uma especialidade"
                                 value={selectedEspecialidade || ""}
@@ -141,6 +169,7 @@ function CreateCronograma() {
                                     </option>
                                 ))}
                             </select>
+                            {errors.selectedEspecialidade && <div className="invalid-feedback">{errors.selectedEspecialidade}</div>}
                         </div>
                     </div>
 
@@ -148,7 +177,7 @@ function CreateCronograma() {
                         <div className={`col ${styles.col}`}>
                             <label htmlFor="medico" className="form-label">Veterinário(a)</label>
                             <select
-                                className={`form-select ${styles.input}`}
+                                className={`form-select ${styles.input} ${errors.selectedMedico ? "is-invalid" : ""}`}
                                 name="medico"
                                 aria-label="Selecione o(a) veterinário(a)"
                                 value={selectedMedico || ""}
@@ -161,6 +190,7 @@ function CreateCronograma() {
                                     </option>
                                 ))}
                             </select>
+                            {errors.selectedMedico && <div className="invalid-feedback">{errors.selectedMedico}</div>}
                         </div>
 
                         <div className={`col ${styles.col}`}>
@@ -168,11 +198,12 @@ function CreateCronograma() {
                             <input
                                 placeholder="Digite o tempo em minutos"
                                 type="text"
-                                className={`form-control ${styles.input}`}
+                                className={`form-control ${styles.input} ${errors.tempoAtendimento ? "is-invalid" : ""}`}
                                 name="tempoAtendimento"
                                 value={cronograma.tempoAtendimento}
                                 onChange={handleCronogramaChange}
                             />
+                            {errors.tempoAtendimento && <div className="invalid-feedback">{errors.tempoAtendimento}</div>}
                         </div>
                     </div>
 
