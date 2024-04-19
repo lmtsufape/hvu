@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public class VagaCreateRequest {
 	private LocalDate data;
-	private List<EspecialidadeRequest> turnoManha;
-	private List<EspecialidadeRequest> turnoTarde;
+	private List<VagaTipoRequest> turnoManha;
+	private List<VagaTipoRequest> turnoTarde;
 
 }

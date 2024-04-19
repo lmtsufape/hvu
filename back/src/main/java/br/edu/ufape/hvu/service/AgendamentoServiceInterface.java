@@ -11,6 +11,7 @@ public interface AgendamentoServiceInterface {
 	void deleteAgendamento(Agendamento u);
 	void deleteAgendamento(long id);
 	List<Agendamento> getAllAgendamento();
+	List<Agendamento> findAgendamentosByMedicoId(Long medicoId);
     
     
 

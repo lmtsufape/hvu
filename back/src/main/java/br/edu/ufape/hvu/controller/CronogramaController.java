@@ -60,6 +60,30 @@ public class CronogramaController {
 		}
 	}
 	
+	@GetMapping("cronograma/medico/{id}")
+	public List<CronogramaResponse> getCronogramaByMedicoId(@PathVariable Long id) {
+		try {
+			return facade.findCronogramaByMedicoId(id).stream()
+					.map(CronogramaResponse::new)
+					.toList();
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+	}
+	
+	@GetMapping("cronograma/especialidade/{id}")
+	public List<CronogramaResponse> getCronogramaByEspecialidadeId(@PathVariable Long id) {
+	
+		try {
+			return facade.findCronogramaByEspecialidadeId(id).stream()
+					.map(CronogramaResponse::new)
+					.toList();
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}					
+		
+	}
+	
 	@PatchMapping("cronograma/{id}")
 	public CronogramaResponse updateCronograma(@PathVariable Long id, @Valid @RequestBody CronogramaRequest obj) {
 		try {

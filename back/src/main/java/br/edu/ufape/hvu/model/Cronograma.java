@@ -10,7 +10,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,6 +23,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,8 +45,11 @@ public  class Cronograma  {
 	private long id;
 	private String nome;
 	@Lob
+	@Basic(fetch = FetchType.LAZY)
     private String horariosJson;
+	
     @Transient
+    @Basic(fetch = FetchType.LAZY)
     private Map<DayOfWeek, Horario> horarios;
 	private Double tempoAtendimento; 
 	@ManyToOne
@@ -58,6 +64,7 @@ public  class Cronograma  {
 	@ToString.Exclude
 	private List<Vaga> vaga; 
 	
+	@Transactional
 	public Map<DayOfWeek, Horario> getHorarios() {
 	    if (this.horarios == null) {
 	        desconverterHorarios();
@@ -65,6 +72,7 @@ public  class Cronograma  {
 	    return this.horarios;
 	}
 	
+	@Transactional
 	private void desconverterHorarios() {
 	    if (this.horariosJson != null && !this.horariosJson.isEmpty()) {
 	        ObjectMapper objectMapper = new ObjectMapper();
