@@ -120,6 +120,7 @@ const HorariosSemana = () => {
     };
   
     console.log("agendamentoToCreate", agendamentoToCreate);
+    
     if (validateForm()) {
       try {
         const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
@@ -128,11 +129,18 @@ const HorariosSemana = () => {
         router.push("/meusAgendamentos");
       } catch (error) {
         console.error("Erro ao agendar consulta:", error);
+        if (error.response && error.response.status === 500) {
+          alert("Vaga não está disponível.");
+        } else {
+          // Se não for 500, faça outra coisa
+          alert("Ocorreu um erro ao agendar a consulta. Por favor, tente novamente.");
+        }
       }
     } else {
-      alert("Formulário inválido. Selecione todos os campos e tente novamente.")
+      alert("Formulário inválido. Selecione todos os campos e tente novamente.");
     }
   };
+  
 
   return (
     <div className={styles.container}>
