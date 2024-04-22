@@ -11,13 +11,50 @@ import { createVagaNormal } from "../../../services/vagaService";
 function GerenciarVagas() {
     const router = useRouter();
 
-    const [vagas, setVagas] = useState({
+    const { especialidades } = EspecialidadeList();
+
+    const [vagasData, setVagasData] = useState({
         data: "",
         turnoManha: [],
         turnoTarde: [],
     });
 
-    const [diasDaSemana, setDiasDaSemana] = useState({
+    const handleVagasChange = (numVaga) => {
+        setVagas(prevState => ({
+            ...prevState,
+            [numVaga]: !prevState[numVaga]
+        }));
+    };
+
+    const adicionarAoTurnoManha = (numVaga, especialidadeId, tipoConsultaId) => {
+        handleVagasChange(numVaga);
+    
+        const novoObjeto = {
+            especialidade: { id: especialidadeId },
+            tipoConsulta: { id: tipoConsultaId }
+        };
+    
+        // Atualiza o estado, adicionando o novo objeto à lista de turnoManha
+        setVagasData(prevState => ({
+            ...prevState,
+            turnoManha: [...prevState.turnoManha, novoObjeto]
+        }));
+    };
+
+    const adicionarAoTurnoTarde = () => {
+        const novoObjeto = {
+        especialidade: { id: 1 },
+        tipoConsulta: { id: 1 }
+    };
+
+    // Atualiza o estado, adicionando o novo objeto à lista de turnoTarde
+    setVagasData(prevState => ({
+        ...prevState,
+        turnoTarde: [...prevState.turnoTarde, novoObjeto]
+        }));
+    };
+
+    const [vagas, setVagas] = useState({
         vaga1: false,
         vaga2: false,
         vaga3: false,
@@ -28,39 +65,19 @@ function GerenciarVagas() {
         vaga8: false
     });
 
-    const handleDiasDaSemanaChange = (dia) => {
-        setDiasDaSemana(prevState => ({
-            ...prevState,
-            [dia]: !prevState[dia]
-        }));
-    };
-
-    const handleHorarioChange = (dia, campo) => (event) => {
-        const { value } = event.target;
-        setVagas(prevVagas => ({
-            ...prevVagas,
-            horariosJson: {
-                ...prevVagas.horariosJson,
-                [dia]: {
-                    ...prevVagas.horariosJson[dia],
-                    [campo]: value
-                }
-            }
-        }));
-    };
-
-    const handleVagasChange = (event) => {
+    const handleVagasDataChange = (event) => {
         const { name, value } = event.target;
-        setVagas({ ...vagas, [name]: value });
+        setVagasData({ ...vagasData, [name]: value });
     };
-    console.log("vagas:", vagas);
+    console.log("vagasData:", vagasData);
 
-    const { especialidades } = EspecialidadeList();
+
     const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
     const handleEspecialidadeSelection = (event) => {
         const selectedEspecialidadeId = event.target.value;
         setSelectedEspecialidade(selectedEspecialidadeId);
     };
+    console.log("selectedEspecialidade", selectedEspecialidade);
 
     const { tiposConsulta } = TipoConsultaList();
     const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(null);
@@ -68,29 +85,14 @@ function GerenciarVagas() {
         const selectedTipoConsultaId = event.target.value;
         setSelectedTipoConsulta(selectedTipoConsultaId);
     };
-
     console.log("selectedTipoConsulta", selectedTipoConsulta);
 
 
     const handleCreateVagas = async () => {
-        const turnoManha = Object.entries(diasDaSemana)
-            .filter(([dia, selecionado]) => selecionado && dia.startsWith('vaga'))
-            .map(([dia]) => ({
-                especialidade: { id: 1 }, // Aqui você pode ajustar conforme necessário
-                tipoConsulta: { id: 1 } // Aqui você pode ajustar conforme necessário
-            }));
-
-        const turnoTarde = Object.entries(diasDaSemana)
-            .filter(([dia, selecionado]) => selecionado && dia.startsWith('vaga'))
-            .map(([dia]) => ({
-                especialidade: { id: 1 }, // Aqui você pode ajustar conforme necessário
-                tipoConsulta: { id: 2 } // Aqui você pode ajustar conforme necessário
-            }));
-
         const vagasToCreate = {
-            data: vagas.data,
-            turnoManha: turnoManha,
-            turnoTarde: turnoTarde,
+            data: vagasData.data,
+            turnoManha: vagasData.turnoManha,
+            turnoTarde: vagasData.turnoTarde,
         };
 
         try {
@@ -116,9 +118,9 @@ function GerenciarVagas() {
                             placeholder="Digite a data"
                             type="date"
                             className={`form-control ${styles.input}`}
-                            name="nome"
-                            value={vagas.nome}
-                            onChange={handleVagasChange}
+                            name="data"
+                            value={vagasData.data}
+                            onChange={handleVagasDataChange}
                         />
                     </div>
                 </div>
@@ -131,20 +133,20 @@ function GerenciarVagas() {
 
                     <div className={`row ${styles.div_space}`}>
                         <div className="col">
-                            {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['vaga1'].includes(dia))
-                                .map(([dia, selecionado]) => (
-                                    <div key={dia}>
+                        {Object.entries(vagas)
+                                .filter(([numVaga]) => ['vaga1'].includes(numVaga))
+                                .map(([numVaga, selecionado]) => (
+                                    <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 1
                                             </div>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
-                                                id={`${dia}-checkbox`}
+                                                id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
-                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                                onChange={() => adicionarAoTurnoManha(numVaga, selectedEspecialidade, selectedTipoConsulta)}
                                             />
                                         </div>
                                         {selecionado && (
@@ -155,8 +157,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="especialidade"
                                                         aria-label="Selecione uma especialidade"
-                                                        value={selectedEspecialidade || ""}
-                                                        onChange={handleEspecialidadeSelection}
+                                                        value={selectedEspecialidade || ''}
+                                                        onChange={(event) => handleEspecialidadeSelection(event)}
                                                     >
                                                         <option value="">Selecione a especialidade</option>
                                                         {especialidades.map((especialidade) => (
@@ -173,13 +175,13 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="tipoConsulta"
                                                         aria-label="Selecione um tipo de consulta"
-                                                        value={selectedTipoConsulta || ""}
-                                                        onChange={handleTipoConsultaSelection}
+                                                        value={selectedTipoConsulta || ''}
+                                                        onChange={(event) => handleTipoConsultaSelection(event)}
                                                     >
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
                                                             <option key={tipoConsulta.id} value={tipoConsulta.id}>
-                                                                {tipoConsulta.nome}
+                                                                {tipoConsulta.tipo}
                                                             </option>
                                                         ))}
                                                     </select>
@@ -191,20 +193,20 @@ function GerenciarVagas() {
                         </div>
 
                         <div className="col">
-                            {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['vaga2'].includes(dia))
-                                .map(([dia, selecionado]) => (
-                                    <div key={dia}>
+                            {Object.entries(vagas)
+                                .filter(([numVaga]) => ['vaga2'].includes(numVaga))
+                                .map(([numVaga, selecionado]) => (
+                                    <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 2
                                             </div>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
-                                                id={`${dia}-checkbox`}
+                                                id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
-                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                                onChange={() => handleVagasChange(numVaga)}
                                             />
                                         </div>
                                         {selecionado && (
@@ -239,7 +241,7 @@ function GerenciarVagas() {
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
                                                             <option key={tipoConsulta.id} value={tipoConsulta.id}>
-                                                                {tipoConsulta.nome}
+                                                                {tipoConsulta.tipo}
                                                             </option>
                                                         ))}
                                                     </select>
@@ -251,20 +253,20 @@ function GerenciarVagas() {
                         </div>
 
                         <div className="col">
-                            {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['vaga3'].includes(dia))
-                                .map(([dia, selecionado]) => (
-                                    <div key={dia}>
+                            {Object.entries(vagas)
+                                .filter(([numVaga]) => ['vaga3'].includes(numVaga))
+                                .map(([numVaga, selecionado]) => (
+                                    <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 3
                                             </div>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
-                                                id={`${dia}-checkbox`}
+                                                id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
-                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                                onChange={() => handleVagasChange(numVaga)}
                                             />
                                         </div>
                                         {selecionado && (
@@ -299,7 +301,7 @@ function GerenciarVagas() {
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
                                                             <option key={tipoConsulta.id} value={tipoConsulta.id}>
-                                                                {tipoConsulta.nome}
+                                                                {tipoConsulta.tipo}
                                                             </option>
                                                         ))}
                                                     </select>
@@ -311,20 +313,20 @@ function GerenciarVagas() {
                         </div>
 
                         <div className="col">
-                            {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['vaga4'].includes(dia))
-                                .map(([dia, selecionado]) => (
-                                    <div key={dia}>
+                            {Object.entries(vagas)
+                                .filter(([numVaga]) => ['vaga4'].includes(numVaga))
+                                .map(([numVaga, selecionado]) => (
+                                    <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 4
                                             </div>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
-                                                id={`${dia}-checkbox`}
+                                                id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
-                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                                onChange={() => handleVagasChange(numVaga)}
                                             />
                                         </div>
                                         {selecionado && (
@@ -359,7 +361,7 @@ function GerenciarVagas() {
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
                                                             <option key={tipoConsulta.id} value={tipoConsulta.id}>
-                                                                {tipoConsulta.nome}
+                                                                {tipoConsulta.tipo}
                                                             </option>
                                                         ))}
                                                     </select>
@@ -381,20 +383,20 @@ function GerenciarVagas() {
 
                     <div className={`row ${styles.div_space}`}>
                         <div className="col">
-                            {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['vaga5'].includes(dia))
-                                .map(([dia, selecionado]) => (
-                                    <div key={dia}>
+                            {Object.entries(vagas)
+                                .filter(([numVaga]) => ['vaga5'].includes(numVaga))
+                                .map(([numVaga, selecionado]) => (
+                                    <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 5
                                             </div>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
-                                                id={`${dia}-checkbox`}
+                                                id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
-                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                                onChange={() => handleVagasChange(numVaga)}
                                             />
                                         </div>
                                         {selecionado && (
@@ -429,7 +431,7 @@ function GerenciarVagas() {
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
                                                             <option key={tipoConsulta.id} value={tipoConsulta.id}>
-                                                                {tipoConsulta.nome}
+                                                                {tipoConsulta.tipo}
                                                             </option>
                                                         ))}
                                                     </select>
@@ -441,20 +443,20 @@ function GerenciarVagas() {
                         </div>
 
                         <div className="col">
-                            {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['vaga6'].includes(dia))
-                                .map(([dia, selecionado]) => (
-                                    <div key={dia}>
+                            {Object.entries(vagas)
+                                .filter(([numVaga]) => ['vaga6'].includes(numVaga))
+                                .map(([numVaga, selecionado]) => (
+                                    <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 6
                                             </div>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
-                                                id={`${dia}-checkbox`}
+                                                id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
-                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                                onChange={() => handleVagasChange(numVaga)}
                                             />
                                         </div>
                                         {selecionado && (
@@ -489,7 +491,7 @@ function GerenciarVagas() {
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
                                                             <option key={tipoConsulta.id} value={tipoConsulta.id}>
-                                                                {tipoConsulta.nome}
+                                                                {tipoConsulta.tipo}
                                                             </option>
                                                         ))}
                                                     </select>
@@ -501,20 +503,20 @@ function GerenciarVagas() {
                         </div>
 
                         <div className="col">
-                            {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['vaga7'].includes(dia))
-                                .map(([dia, selecionado]) => (
-                                    <div key={dia}>
+                            {Object.entries(vagas)
+                                .filter(([numVaga]) => ['vaga7'].includes(numVaga))
+                                .map(([numVaga, selecionado]) => (
+                                    <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 7
                                             </div>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
-                                                id={`${dia}-checkbox`}
+                                                id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
-                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                                onChange={() => handleVagasChange(numVaga)}
                                             />
                                         </div>
                                         {selecionado && (
@@ -549,7 +551,7 @@ function GerenciarVagas() {
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
                                                             <option key={tipoConsulta.id} value={tipoConsulta.id}>
-                                                                {tipoConsulta.nome}
+                                                                {tipoConsulta.tipo}
                                                             </option>
                                                         ))}
                                                     </select>
@@ -561,20 +563,20 @@ function GerenciarVagas() {
                         </div>
 
                         <div className="col">
-                            {Object.entries(diasDaSemana)
-                                .filter(([dia]) => ['vaga8'].includes(dia))
-                                .map(([dia, selecionado]) => (
-                                    <div key={dia}>
+                            {Object.entries(vagas)
+                                .filter(([numVaga]) => ['vaga8'].includes(numVaga))
+                                .map(([numVaga, selecionado]) => (
+                                    <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${dia}-checkbox`} className="form-label">
+                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 8
                                             </div>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
-                                                id={`${dia}-checkbox`}
+                                                id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
-                                                onChange={() => handleDiasDaSemanaChange(dia)}
+                                                onChange={() => handleVagasChange(numVaga)}
                                             />
                                         </div>
                                         {selecionado && (
@@ -609,7 +611,7 @@ function GerenciarVagas() {
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
                                                             <option key={tipoConsulta.id} value={tipoConsulta.id}>
-                                                                {tipoConsulta.nome}
+                                                                {tipoConsulta.tipo}
                                                             </option>
                                                         ))}
                                                     </select>
@@ -621,8 +623,6 @@ function GerenciarVagas() {
                         </div>
                     </div>
                 </div>
-                
-                
 
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />

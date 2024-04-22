@@ -2,38 +2,38 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
-import { AdicionarAnimalWhiteButton } from "../WhiteButton";
-import { getAllAnimal, deleteAnimal } from '../../../services/animalService';
-import { getAllVaga } from '../../../services/vagaService';
+import { getAgendamentoMedico } from '../../../services/agendamentoService';
 import VoltarButton from '../VoltarButton';
-import ExcluirButton from '../ExcluirButton';
 
-function MeusAnimaisList() {
-    const [vagas, setVagas] = useState([]);
+function PacientesByMedico() {
+    const [agendamentos, setAgendamentos] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
     const router = useRouter();
 
+    const {medicoId} = router.query;
+    console.log("medicoId:", medicoId);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const vagasData = await getAllVaga();
-                setVagas(vagasData);
+                const agendamentosData = await getAgendamentoMedico(medicoId);
+                setAgendamentos(agendamentosData);
             } catch (error) {
-                console.error('Erro ao buscar vagas:', error);
+                console.error('Erro ao buscar agendamentos do médico:', error);
             }
         };
         fetchData();
     }, []);
-    console.log("vagas:", vagas);
+    console.log("agendamentos:", agendamentos);
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);
     };
 
-  /*  const filteredVagas = vagas.filter(animal =>
+    const filteredAgendamentos = agendamentos.filter(animal =>
         animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
-    ); */
+    ); 
 
     return (
         <div className={styles.container}>
@@ -48,24 +48,24 @@ function MeusAnimaisList() {
                 />
             </div>
 
-            {vagas.length === 0 ? (
-                <p>Não há animais cadastrados.</p>
+            {filteredAgendamentos.length === 0 ? (
+                <p className={styles.message}>Não há pacientes.</p>
             ) : (
                 <ul className={styles.lista}>
-                    {vagas.map(vaga => (
-                        <li key={vaga.id} className={styles.info_box}>
+                    {filteredAgendamentos.map(agendamento => (
+                        <li key={agendamento.id} className={styles.info_box}>
                             <div className={styles.info}>
                                 <h6>Paciente</h6>
-                                <p></p>
+                                <p>{agendamento.animal.nome}</p>
                             </div>
                             <div className={styles.info}>
                                 <h6>Espécie</h6>
-                                <p></p>
+                                <p>{agendamento.animal.raca && agendamento.animal.raca.especie && agendamento.animal.raca.especie.nome}</p>
                             </div>
                             <div className={styles.button_box}>
                                 <button
                                     className={styles.acessar_button}
-                                    onClick={() => router.push(`/getAnimalById/${vaga.agendamento.animal.id}`)}
+                                    onClick={() => router.push(`/getAnimalByIdByMedico/${agendamento.animal.id}`)}
                                 >
                                     Acessar
                                 </button>
@@ -78,4 +78,4 @@ function MeusAnimaisList() {
     );
 }
 
-export default MeusAnimaisList;
+export default PacientesByMedico;

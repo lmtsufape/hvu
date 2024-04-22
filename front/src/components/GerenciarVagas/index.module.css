@@ -63,6 +63,7 @@
     align-items: center;
     gap: 3vh;
     margin-bottom: 5vh; /* Alterado para usar uma porcentagem */
+    margin-top: 5vh;
 }
 
 .criar_button {
