@@ -7,7 +7,7 @@ import RacasList from "@/hooks/useRacaList";
 import VoltarButton from '../VoltarButton';
 import { CancelarWhiteButton } from '../WhiteButton';
 
-function UpdateAnimalBySecretario() {
+function UpdateAnimalBySecretarioAndMedico() {
   const router = useRouter();
   const { id } = router.query;
 
@@ -250,4 +250,4 @@ function UpdateAnimalBySecretario() {
   );
 }
 
-export default UpdateAnimalBySecretario;
+export default UpdateAnimalBySecretarioAndMedico;

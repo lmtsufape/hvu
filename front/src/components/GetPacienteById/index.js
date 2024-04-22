@@ -103,7 +103,7 @@ function GetPacienteById() {
                                         </div>
 
                                         <div className={styles.button_box}>
-                                            <button onClick={() => router.push(`/updateAnimalBySecretario/${animal.id}`)}>
+                                            <button onClick={() => router.push(`/updateAnimalBySecretarioAndMedico/${animal.id}`)}>
                                                 Editar paciente
                                             </button>
                                         </div>

@@ -30,7 +30,7 @@ function MainScreenMedico() {
                     <Image src="/calendar.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Consultar agendamentos</h6>
                 </button>
-                <button className={styles.button} onClick={(e) => router.push(`/pacientesByMedico`)}>
+                <button className={styles.button} onClick={(e) => router.push(`/pacientesByMedico/${userId}`)}>
                     <Image src="/subtract.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Pacientes</h6>
                 </button>

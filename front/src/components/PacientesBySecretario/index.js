@@ -27,10 +27,10 @@ function PacientesBySecretario() {
         setSearchTerm(term);
     };
 
-    // Função para filtrar os tutores com base no nome do animal
+    // Função para filtrar os tutores com base no nome do tutor
     const filteredTutores = tutores.filter(tutor => {
-        // Verifica se algum animal do tutor corresponde ao termo de pesquisa
-        return tutor.animal.some(animal => animal.nome.toLowerCase().includes(searchTerm.toLowerCase()));
+        // Verifica se o nome do tutor corresponde ao termo de pesquisa
+        return tutor.nome.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
     return (
@@ -40,12 +40,12 @@ function PacientesBySecretario() {
             <div className={styles.navbar}>
                 <SearchBar
                     className={styles.pesquisa}
-                    placeholder={"Buscar paciente"}
+                    placeholder={"Buscar tutor(a)"}
                     onSearchChange={handleSearchChange}
                 />
             </div>
             {filteredTutores.length === 0 ? (
-                <p className={styles.paragrafo}>Nenhum tutor encontrado com o animal buscado.</p>
+                <p className={styles.paragrafo}>Nenhum animal encontrado com o&#40;a&#41; tutor&#40;a&#41; buscado.</p>
             ) : (
                 <ul className={styles.lista}>
                     {filteredTutores.map(tutor => (

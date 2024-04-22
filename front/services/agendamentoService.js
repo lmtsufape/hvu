@@ -28,6 +28,15 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
+
+  export async function getAgendamentoMedico(medicoId) {
+    try {
+      const response = await api.get(`/agendamento/medico/${medicoId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   
   // Função para buscar um agendamento por ID
   export async function getAgendamentoById(agendamentoId) {
