@@ -12,45 +12,14 @@ function GerenciarVagas() {
     const router = useRouter();
 
     const { especialidades } = EspecialidadeList();
+    const { tiposConsulta } = TipoConsultaList();
 
-    const [vagasData, setVagasData] = useState({
-        data: "",
-        turnoManha: [],
-        turnoTarde: [],
-    });
+    const [data, setData] = useState("");
 
     const handleVagasChange = (numVaga) => {
         setVagas(prevState => ({
             ...prevState,
             [numVaga]: !prevState[numVaga]
-        }));
-    };
-
-    const adicionarAoTurnoManha = (numVaga, especialidadeId, tipoConsultaId) => {
-        handleVagasChange(numVaga);
-    
-        const novoObjeto = {
-            especialidade: { id: especialidadeId },
-            tipoConsulta: { id: tipoConsultaId }
-        };
-    
-        // Atualiza o estado, adicionando o novo objeto à lista de turnoManha
-        setVagasData(prevState => ({
-            ...prevState,
-            turnoManha: [...prevState.turnoManha, novoObjeto]
-        }));
-    };
-
-    const adicionarAoTurnoTarde = () => {
-        const novoObjeto = {
-        especialidade: { id: 1 },
-        tipoConsulta: { id: 1 }
-    };
-
-    // Atualiza o estado, adicionando o novo objeto à lista de turnoTarde
-    setVagasData(prevState => ({
-        ...prevState,
-        turnoTarde: [...prevState.turnoTarde, novoObjeto]
         }));
     };
 
@@ -65,36 +34,75 @@ function GerenciarVagas() {
         vaga8: false
     });
 
-    const handleVagasDataChange = (event) => {
-        const { name, value } = event.target;
-        setVagasData({ ...vagasData, [name]: value });
+    const handleDataChange = (event) => {
+        setData(event.target.value);
     };
-    console.log("vagasData:", vagasData);
+    console.log("data:", data);
 
 
-    const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
-    const handleEspecialidadeSelection = (event) => {
-        const selectedEspecialidadeId = event.target.value;
-        setSelectedEspecialidade(selectedEspecialidadeId);
+    const [selectedEspecialidade, setSelectedEspecialidade] = useState(new Array(8).fill('')); 
+
+    const handleEspecialidadeSelection = (event, position) => {
+        const selectedEspecialidadeId = event.target.value; 
+        setSelectedEspecialidade(prevSelectedEspecialidade => {
+            const updatedSelectedEspecialidade = [...prevSelectedEspecialidade];
+            updatedSelectedEspecialidade[position] = selectedEspecialidadeId;
+            return updatedSelectedEspecialidade;
+        });
     };
     console.log("selectedEspecialidade", selectedEspecialidade);
+    
+    
+    const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(new Array(8).fill(''));
 
-    const { tiposConsulta } = TipoConsultaList();
-    const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(null);
-    const handleTipoConsultaSelection = (event) => {
+    const handleTipoConsultaSelection = (event, position) => {
         const selectedTipoConsultaId = event.target.value;
-        setSelectedTipoConsulta(selectedTipoConsultaId);
+        setSelectedTipoConsulta(prevSelectedTipoConsulta => {
+            const updatedSelectedTipoConsulta = [...prevSelectedTipoConsulta];
+            updatedSelectedTipoConsulta[position] = selectedTipoConsultaId;
+            return updatedSelectedTipoConsulta;
+        });
     };
     console.log("selectedTipoConsulta", selectedTipoConsulta);
 
 
-    const handleCreateVagas = async () => {
-        const vagasToCreate = {
-            data: vagasData.data,
-            turnoManha: vagasData.turnoManha,
-            turnoTarde: vagasData.turnoTarde,
+    const criarJSON = () => {
+        const turnoManha = [];
+        const turnoTarde = [];
+      
+        for (let i = 0; i < selectedEspecialidade.length; i++) {
+          const especialidadeId = selectedEspecialidade[i];
+          const tipoConsultaId = selectedTipoConsulta[i];
+      
+          // Verifica se os IDs são diferentes de 0 antes de adicionar ao JSON
+          if (especialidadeId !== '' && tipoConsultaId !== '') {
+            const objeto = {
+              especialidade: { id: especialidadeId },
+              tipoConsulta: { id: tipoConsultaId }
+            };
+      
+            if (i < 4) {
+              turnoManha.push(objeto);
+            } else {
+              turnoTarde.push(objeto);
+            }
+          }
+        }
+      
+        const jsonData = {
+          data: data,
+          turnoManha: turnoManha,
+          turnoTarde: turnoTarde
         };
-
+      
+        return jsonData;
+      };
+    
+    const handleCreateVagas = async () => {
+        const vagasToCreate = criarJSON();
+    
+        console.log("VagasToCreate:", vagasToCreate);
+    
         try {
             await createVagaNormal(vagasToCreate);
             alert("Vagas criada com sucesso!");
@@ -108,7 +116,7 @@ function GerenciarVagas() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Criar agenda</h1>
+            <h1>Criar Vagas</h1>
             <form className={styles.inputs_container}>
                 
                 <div className={styles.inputs_box}>
@@ -119,8 +127,8 @@ function GerenciarVagas() {
                             type="date"
                             className={`form-control ${styles.input}`}
                             name="data"
-                            value={vagasData.data}
-                            onChange={handleVagasDataChange}
+                            value={data}
+                            onChange={handleDataChange}
                         />
                     </div>
                 </div>
@@ -134,19 +142,20 @@ function GerenciarVagas() {
                     <div className={`row ${styles.div_space}`}>
                         <div className="col">
                         {Object.entries(vagas)
-                                .filter(([numVaga]) => ['vaga1'].includes(numVaga))
+                                .filter(([numVaga]) => numVaga.includes('vaga1'))
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
+                                            <label htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 1
-                                            </div>
+                                            </label>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
                                                 id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
-                                                onChange={() => adicionarAoTurnoManha(numVaga, selectedEspecialidade, selectedTipoConsulta)}
+                                                onChange={() => handleVagasChange(numVaga)}
+
                                             />
                                         </div>
                                         {selecionado && (
@@ -157,8 +166,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="especialidade"
                                                         aria-label="Selecione uma especialidade"
-                                                        value={selectedEspecialidade || ''}
-                                                        onChange={(event) => handleEspecialidadeSelection(event)}
+                                                        value={selectedEspecialidade[0] || ''}
+                                                        onChange={(event) => handleEspecialidadeSelection(event, 0)}
                                                     >
                                                         <option value="">Selecione a especialidade</option>
                                                         {especialidades.map((especialidade) => (
@@ -175,8 +184,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="tipoConsulta"
                                                         aria-label="Selecione um tipo de consulta"
-                                                        value={selectedTipoConsulta || ''}
-                                                        onChange={(event) => handleTipoConsultaSelection(event)}
+                                                        value={selectedTipoConsulta[0] || ''}
+                                                        onChange={(event) => handleTipoConsultaSelection(event, 0)}
                                                     >
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
@@ -198,9 +207,9 @@ function GerenciarVagas() {
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
+                                            <label htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 2
-                                            </div>
+                                            </label>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
@@ -217,8 +226,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="especialidade"
                                                         aria-label="Selecione uma especialidade"
-                                                        value={selectedEspecialidade || ""}
-                                                        onChange={handleEspecialidadeSelection}
+                                                        value={selectedEspecialidade[1] || ""}
+                                                        onChange={(event) => handleEspecialidadeSelection(event, 1)}
                                                     >
                                                         <option value="">Selecione a especialidade</option>
                                                         {especialidades.map((especialidade) => (
@@ -235,8 +244,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="tipoConsulta"
                                                         aria-label="Selecione um tipo de consulta"
-                                                        value={selectedTipoConsulta || ""}
-                                                        onChange={handleTipoConsultaSelection}
+                                                        value={selectedTipoConsulta[1] || ""}
+                                                        onChange={(event) => handleTipoConsultaSelection(event, 1)}
                                                     >
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
@@ -258,9 +267,9 @@ function GerenciarVagas() {
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
+                                            <label htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 3
-                                            </div>
+                                            </label>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
@@ -277,8 +286,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="especialidade"
                                                         aria-label="Selecione uma especialidade"
-                                                        value={selectedEspecialidade || ""}
-                                                        onChange={handleEspecialidadeSelection}
+                                                        value={selectedEspecialidade[2] || ""}
+                                                        onChange={(event) => handleEspecialidadeSelection(event, 2)}
                                                     >
                                                         <option value="">Selecione a especialidade</option>
                                                         {especialidades.map((especialidade) => (
@@ -295,8 +304,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="tipoConsulta"
                                                         aria-label="Selecione um tipo de consulta"
-                                                        value={selectedTipoConsulta || ""}
-                                                        onChange={handleTipoConsultaSelection}
+                                                        value={selectedTipoConsulta[2] || ""}
+                                                        onChange={(event) => handleTipoConsultaSelection(event, 2)}
                                                     >
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
@@ -318,9 +327,9 @@ function GerenciarVagas() {
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
+                                            <label htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 4
-                                            </div>
+                                            </label>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
@@ -337,8 +346,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="especialidade"
                                                         aria-label="Selecione uma especialidade"
-                                                        value={selectedEspecialidade || ""}
-                                                        onChange={handleEspecialidadeSelection}
+                                                        value={selectedEspecialidade[3] || ""}
+                                                        onChange={(event) => handleEspecialidadeSelection(event, 3)}
                                                     >
                                                         <option value="">Selecione a especialidade</option>
                                                         {especialidades.map((especialidade) => (
@@ -355,8 +364,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="tipoConsulta"
                                                         aria-label="Selecione um tipo de consulta"
-                                                        value={selectedTipoConsulta || ""}
-                                                        onChange={handleTipoConsultaSelection}
+                                                        value={selectedTipoConsulta[3] || ""}
+                                                        onChange={(event) => handleTipoConsultaSelection(event, 3)}
                                                     >
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
@@ -388,9 +397,9 @@ function GerenciarVagas() {
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
+                                            <label htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 5
-                                            </div>
+                                            </label>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
@@ -407,8 +416,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="especialidade"
                                                         aria-label="Selecione uma especialidade"
-                                                        value={selectedEspecialidade || ""}
-                                                        onChange={handleEspecialidadeSelection}
+                                                        value={selectedEspecialidade[4] || ""}
+                                                        onChange={(event) => handleEspecialidadeSelection(event, 4)}
                                                     >
                                                         <option value="">Selecione a especialidade</option>
                                                         {especialidades.map((especialidade) => (
@@ -425,8 +434,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="tipoConsulta"
                                                         aria-label="Selecione um tipo de consulta"
-                                                        value={selectedTipoConsulta || ""}
-                                                        onChange={handleTipoConsultaSelection}
+                                                        value={selectedTipoConsulta[4] || ""}
+                                                        onChange={(event) => handleTipoConsultaSelection(event, 4)}
                                                     >
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
@@ -448,9 +457,9 @@ function GerenciarVagas() {
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
+                                            <label htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 6
-                                            </div>
+                                            </label>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
@@ -467,8 +476,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="especialidade"
                                                         aria-label="Selecione uma especialidade"
-                                                        value={selectedEspecialidade || ""}
-                                                        onChange={handleEspecialidadeSelection}
+                                                        value={selectedEspecialidade[5] || ""}
+                                                        onChange={(event) => handleEspecialidadeSelection(event, 5)}
                                                     >
                                                         <option value="">Selecione a especialidade</option>
                                                         {especialidades.map((especialidade) => (
@@ -485,8 +494,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="tipoConsulta"
                                                         aria-label="Selecione um tipo de consulta"
-                                                        value={selectedTipoConsulta || ""}
-                                                        onChange={handleTipoConsultaSelection}
+                                                        value={selectedTipoConsulta[5] || ""}
+                                                        onChange={(event) => handleTipoConsultaSelection(event, 5)}
                                                     >
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
@@ -508,9 +517,9 @@ function GerenciarVagas() {
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
+                                            <label htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 7
-                                            </div>
+                                            </label>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
@@ -527,8 +536,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="especialidade"
                                                         aria-label="Selecione uma especialidade"
-                                                        value={selectedEspecialidade || ""}
-                                                        onChange={handleEspecialidadeSelection}
+                                                        value={selectedEspecialidade[6] || ""}
+                                                        onChange={(event) => handleEspecialidadeSelection(event, 6)}
                                                     >
                                                         <option value="">Selecione a especialidade</option>
                                                         {especialidades.map((especialidade) => (
@@ -545,8 +554,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="tipoConsulta"
                                                         aria-label="Selecione um tipo de consulta"
-                                                        value={selectedTipoConsulta || ""}
-                                                        onChange={handleTipoConsultaSelection}
+                                                        value={selectedTipoConsulta[6] || ""}
+                                                        onChange={(event) => handleTipoConsultaSelection(event, 6)}
                                                     >
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
@@ -568,9 +577,9 @@ function GerenciarVagas() {
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
-                                            <div htmlFor={`${numVaga}-checkbox`} className="form-label">
+                                            <label htmlFor={`${numVaga}-checkbox`} className="form-label">
                                                 Vaga 8
-                                            </div>
+                                            </label>
                                             <input
                                                 type="checkbox"
                                                 className={`form-check-input ${styles.checkbox}`}
@@ -587,8 +596,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="especialidade"
                                                         aria-label="Selecione uma especialidade"
-                                                        value={selectedEspecialidade || ""}
-                                                        onChange={handleEspecialidadeSelection}
+                                                        value={selectedEspecialidade[7] || ""}
+                                                        onChange={(event) => handleEspecialidadeSelection(event, 7)}
                                                     >
                                                         <option value="">Selecione a especialidade</option>
                                                         {especialidades.map((especialidade) => (
@@ -605,8 +614,8 @@ function GerenciarVagas() {
                                                         className={`form-select ${styles.input}`}
                                                         name="tipoConsulta"
                                                         aria-label="Selecione um tipo de consulta"
-                                                        value={selectedTipoConsulta || ""}
-                                                        onChange={handleTipoConsultaSelection}
+                                                        value={selectedTipoConsulta[7] || ""}
+                                                        onChange={(event) => handleTipoConsultaSelection(event, 7)}
                                                     >
                                                         <option value="">Selecione o tipo de consulta</option>
                                                         {tiposConsulta.map((tipoConsulta) => (
