@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
+import org.modelmapper.convention.MatchingStrategies;
+
 import java.util.Comparator;
 
 import br.edu.ufape.hvu.model.Vaga;
@@ -57,13 +59,18 @@ public class VagaController {
 			//Vaga o = obj.convertToEntity();
 			Vaga oldObject = facade.findVagaById(id);
 
+			oldObject.setTipoConsulta(facade.findTipoConsultaById(obj.getTipoConsulta().getId()));
+			obj.setTipoConsulta(null);
 			TypeMap<VagaRequest, Vaga> typeMapper = modelMapper
 													.typeMap(VagaRequest.class, Vaga.class)
-													.addMappings(mapper -> mapper.skip(Vaga::setId));			
-			
-			
+													.addMappings(mapper -> mapper.skip(Vaga::setId));
+													
 			typeMapper.map(obj, oldObject);	
+			
+			
 			return new VagaResponse(facade.updateVaga(oldObject));
+			
+			
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
