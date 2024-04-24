@@ -11,13 +11,13 @@ function PacientesByMedico() {
 
     const router = useRouter();
 
-    const {medicoId} = router.query;
-    console.log("medicoId:", medicoId);
+    const {id} = router.query;
+    console.log("id:", id);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const agendamentosData = await getAgendamentoMedico(medicoId);
+                const agendamentosData = await getAgendamentoMedico(id);
                 setAgendamentos(agendamentosData);
             } catch (error) {
                 console.error('Erro ao buscar agendamentos do médico:', error);
@@ -31,8 +31,8 @@ function PacientesByMedico() {
         setSearchTerm(term);
     };
 
-    const filteredAgendamentos = agendamentos.filter(animal =>
-        animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredAgendamentos = agendamentos.filter(agendamento =>
+        agendamento.animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
     ); 
 
     return (
