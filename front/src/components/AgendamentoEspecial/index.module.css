@@ -120,6 +120,10 @@
   color: #000000;
 }
 
+.col {
+  margin-bottom: 0.5em;
+}
+
 .col select option {
   font-family: 'Poppins', sans-serif;;
   font-size: 14px;

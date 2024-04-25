@@ -9,14 +9,17 @@ import VoltarButton from "../VoltarButton";
 import AnimalList from "@/hooks/useAnimalList";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import TipoConsultaList from "@/hooks/useTipoConsultaList";
-import MedicoList from "@/hooks/useMedicoList";
 import { createAgendamentoEspecial } from "../../../services/agendamentoService";
+import { getMedicoByEspecialidade } from "../../../services/medicoService";
+import { getAnimalComRetorno, getAnimalSemRetorno } from "../../../services/animalService";
+import { getTipoConsultaById } from "../../../services/tipoConsultaService";
 import { format } from "date-fns";
 
 function AgendamentoEspecial() {
   const router = useRouter();
 
   const [errors, setErrors] = useState({});
+  const [isEspecialiadeDisabled, setIsEspecialiadeDisabled] = useState(true);
 
   const [agendamento, setAgendamento] = useState({
     animal: { id: null },
@@ -26,7 +29,6 @@ function AgendamentoEspecial() {
     tipoConsulta: { id: null },
     medico: { id: null }
   });
-  console.log("agendamento:", agendamento);
 
   const { animais } = AnimalList();
   const [selectedAnimal, setSelectedAnimal] = useState(null);
@@ -35,11 +37,29 @@ function AgendamentoEspecial() {
     setSelectedAnimal(selectedId);
   };
 
-  const { especialidades } = EspecialidadeList();
-  const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
-  const handleEspecialidadeSelection = (event) => {
-    const selectedId = event.target.value;
-    setSelectedEspecialidade(selectedId);
+  const [animaisByTipoConsulta, setAnimaisByTipoConsulta] = useState([]);
+  const filtrarAnimais = async () => {
+    const tipoConsultaObject = async () => {
+      try {
+        await getTipoConsultaById(selectedTiposConsulta);
+      } catch (error) {
+        console.error("Erro ao buscar tipo de consulta pelo id:", error);
+      }
+      
+    }
+    const tipoConsultaTipo = tipoConsultaObject && tipoConsultaObject.tipo ? tipoConsultaObject.tipo.trim().toLowerCase() : '';
+
+    try {
+      if (tipoConsultaTipo == "retorno") {
+        const animaisData = await getAnimalComRetorno();
+        setAnimaisByTipoConsulta(animaisData);
+      } else {
+        const animaisData = await getAnimalSemRetorno();
+        setAnimaisByTipoConsulta(animaisData);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar animais pelo tipo de consulta:", error);
+    }
   };
 
   const { tiposConsulta } = TipoConsultaList();
@@ -47,9 +67,31 @@ function AgendamentoEspecial() {
   const handleTiposConsultaSelection = (event) => {
     const selectedId = event.target.value;
     setSelectedTiposConsulta(selectedId);
+
+    filtrarAnimais();
   };
 
-  const { medicos } = MedicoList();
+  const { especialidades } = EspecialidadeList();
+  const [selectedEspecialidade, setSelectedEspecialidade] = useState();
+  const handleEspecialidadeSelection = (event) => {
+    const selectedId = event.target.value;
+    setSelectedEspecialidade(selectedId);
+    filtrarMedicos();
+  };
+
+  const [medicosByEspecialidade, setMedicosByEspecialidade] = useState([]);
+  const filtrarMedicos = async () => {
+    try {
+      if (selectedEspecialidade) {
+        const medicosData = await getMedicoByEspecialidade(selectedEspecialidade);
+        setMedicosByEspecialidade(medicosData);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar médicos pela especialidade:", error);
+      alert("Erro ao realizar agendamento. Por favor, tente novamente.");
+    }
+  };
+
   const [selectedMedico, setSelectedMedico] = useState(null);
   const handleMedicoSelection = (event) => {
     const selectedId = event.target.value;
@@ -58,7 +100,7 @@ function AgendamentoEspecial() {
 
   function handleTipoEspecialChange(event) {
     const { name, value } = event.target;
-    setAgendamento({ ...agendamento, [name]: value });
+    setAgendamento({ ...agendamento, [name]: value === "true" });
   }
 
   const [escolherData, setEscolherData] = useState(null);
@@ -96,7 +138,6 @@ function AgendamentoEspecial() {
 
     try {
       await createAgendamentoEspecial(agendamentoToCreate);
-      console.log("agendamentoToCreate:", agendamentoToCreate);
       alert("Agendamento especial criado com sucesso!");
       router.push("/agendamentosDia");
     } catch (error) {
@@ -105,24 +146,30 @@ function AgendamentoEspecial() {
     }
   };
 
-  const validateFields = () => {
+  const validateFields = (agendamento) => {
     const errors = {};
-    if (selectedAnimal === null) {
+    if (!selectedAnimal && selectedTiposConsulta) {
       errors.selectedAnimal = "Campo obrigatório";
     }
-    if (selectedEspecialidade === null) {
+    else if (!selectedAnimal && !selectedEspecialidade) {
+      errors.selectedAnimal = "Selecione um tipo de consulta";
+    }
+    if (!selectedEspecialidade) {
       errors.selectedEspecialidade = "Campo obrigatório";
     }
-    if (selectedTiposConsulta === null) {
+    if (!selectedTiposConsulta) {
       errors.selectedTiposConsulta = "Campo obrigatório";
     }
-    if (selectedMedico === null) {
+    if (!selectedMedico && selectedEspecialidade) {
       errors.selectedMedico = "Campo obrigatório";
     }
-    if (escolherHorario === null) {
+    else if (!selectedMedico && !selectedEspecialidade) {
+      errors.selectedMedico = "Selecione uma especialidade";
+    }
+    if (!escolherHorario) {
       errors.escolherHorario = "Campo obrigatório";
     }
-    if (escolherData === null) {
+    if (!escolherData) {
       errors.escolherData = "Campo obrigatório";
     }
     return errors;
@@ -176,27 +223,6 @@ function AgendamentoEspecial() {
           <div className={styles.espacodosforms}>
             <div className="row">
               <div className={`col ${styles.col}`}>
-                <label htmlFor="medico" className="form-label">
-                  Veterinário(a)
-                </label>
-                <select
-                  className={`form-select ${styles.input} ${errors.selectedMedico ? "is-invalid" : ""}`}
-                  name="medico"
-                  aria-label="Selecione o(a) veterinário(a)"
-                  value={selectedMedico || ""}
-                  onChange={handleMedicoSelection}
-                >
-                  <option value="">Selecione o(a) Veterinário(a)</option>
-                  {medicos.map((medico) => (
-                    <option key={medico.id} value={medico.id}>
-                      {medico.nome}
-                    </option>
-                  ))}
-                </select>
-                {errors.selectedMedico && <div className="invalid-feedback">{errors.selectedMedico}</div>}
-              </div>
-
-              <div className={`col ${styles.col}`}>
                 <label htmlFor="especialidade" className="form-label">
                   Especialidade
                 </label>
@@ -216,31 +242,33 @@ function AgendamentoEspecial() {
                 </select>
                 {errors.selectedEspecialidade && <div className="invalid-feedback">{errors.selectedEspecialidade}</div>}
               </div>
+
+              <div className={`col ${styles.col}`}>
+                <label htmlFor="medico" className="form-label">
+                  Veterinário(a)
+                </label>
+                <select
+                  className={`form-select ${styles.input} ${errors.selectedMedico ? "is-invalid" : ""}`}
+                  name="medico"
+                  aria-label="Selecione o(a) veterinário(a)"
+                  value={selectedMedico || ""}
+                  onChange={handleMedicoSelection}
+                  disabled={!selectedEspecialidade}
+                >
+                  <option value="">Selecione o(a) Veterinário(a)</option>
+                  {medicosByEspecialidade.map((medico) => (
+                    <option key={medico.id} value={medico.id}>
+                      {medico.nome}
+                    </option>
+                  ))}
+                </select>
+                {errors.selectedMedico && <div className="invalid-feedback">{errors.selectedMedico}</div>}
+              </div>
             </div>
           </div>
 
           <div className={styles.espacodosforms}>
             <div className="row">
-                <div className={`col ${styles.col}`}>
-                  <label htmlFor="animal" className="form-label">
-                    Paciente
-                  </label>
-                  <select
-                    className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`}
-                    name="animal"
-                    aria-label="Selecione o paciente"
-                    value={selectedAnimal || ""}
-                    onChange={handleAnimalSelection}
-                  >
-                    <option value="">Selecione o paciente</option>
-                    {animais.map((animal) => (
-                      <option key={animal.id} value={animal.id}>
-                        {animal.nome}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.selectedAnimal && <div className="invalid-feedback">{errors.selectedAnimal}</div>}
-                </div>
 
               <div className={`col ${styles.col}`}>
                 <label htmlFor="tipoConsulta" className="form-label">Tipo de Consulta</label>
@@ -260,39 +288,60 @@ function AgendamentoEspecial() {
                 </select>
                 {errors.selectedTiposConsulta && <div className="invalid-feedback">{errors.selectedTiposConsulta}</div>}
               </div>
+
+              <div className={`col ${styles.col}`}>
+                <label htmlFor="animal" className="form-label">
+                  Paciente
+                </label>
+                <select
+                  className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`}
+                  name="animal"
+                  aria-label="Selecione o paciente"
+                  value={selectedAnimal || ""}
+                  onChange={handleAnimalSelection}
+                  disabled={!selectedTiposConsulta}
+                >
+                  <option value="">Selecione o paciente</option>
+                  {animaisByTipoConsulta.map((animal) => (
+                    <option key={animal.id} value={animal.id}>
+                      {animal.nome}
+                    </option>
+                  ))}
+                </select>
+                {errors.selectedAnimal && <div className="invalid-feedback">{errors.selectedAnimal}</div>}
+              </div>
             </div>
           </div>
 
           <div className={styles.espacodosforms}>
             <div className="row">
-            <div className={`col ${styles.col_radio}`}>
-              <label htmlFor="tipoEspecial" className="form-label">É tipo especial?</label>
-              <div>
-                <input
-                  type="radio"
-                  className={`form-check-input ${styles.checkbox}`}
-                  id="sim"
-                  name="tipoEspecial"
-                  value="true"
-                  checked={agendamento.tipoEspecial === "true"}
-                  onChange={handleTipoEspecialChange}
-                />
-                <label htmlFor="sim" className={styles.input}>Sim</label>
+              <div className={`col ${styles.col_radio}`}>
+                <label htmlFor="tipoEspecial" className="form-label">É tipo especial?</label>
+                <div>
+                  <input
+                    type="radio"
+                    className={`form-check-input ${styles.checkbox}`}
+                    id="sim"
+                    name="tipoEspecial"
+                    value="true"
+                    checked={agendamento.tipoEspecial === true}
+                    onChange={handleTipoEspecialChange}
+                  />
+                  <label htmlFor="sim" className={styles.input}>Sim</label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    className={`form-check-input ${styles.checkbox}`}
+                    id="nao"
+                    name="tipoEspecial"
+                    value="false"
+                    checked={agendamento.tipoEspecial === false}
+                    onChange={handleTipoEspecialChange}
+                  />
+                  <label htmlFor="nao" className={styles.input}>Não</label>
+                </div>
               </div>
-              <div>
-                <input
-                  type="radio"
-                  className={`form-check-input ${styles.checkbox}`}
-                  id="nao"
-                  name="tipoEspecial"
-                  value="false"
-                  checked={agendamento.tipoEspecial === "false"}
-                  onChange={handleTipoEspecialChange}
-                />
-                <label htmlFor="nao" className={styles.input}>Não</label>
-              </div>
-            </div>
-
             </div>
           </div>
 

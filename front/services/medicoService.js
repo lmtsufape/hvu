@@ -29,6 +29,15 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
+
+  export async function getMedicoByEspecialidade(EspecialidadeId) {
+    try {
+      const response = await api.get(`/medico/especialidade/${EspecialidadeId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   
   // Função para atualizar um medico
   export async function updateMedico(medicoId, medicoData) {
