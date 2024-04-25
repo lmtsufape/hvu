@@ -15,6 +15,7 @@ import org.modelmapper.TypeMap;
 
 import br.edu.ufape.hvu.model.Agendamento;
 import br.edu.ufape.hvu.facade.Facade;
+import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
 import br.edu.ufape.hvu.controller.dto.request.AgendamentoRequest;
 import br.edu.ufape.hvu.controller.dto.response.AgendamentoResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
@@ -40,6 +41,11 @@ public class AgendamentoController {
 	@PostMapping("agendamento/vaga/{idVaga}")
 	public AgendamentoResponse createAgendamento(@Valid @RequestBody AgendamentoRequest newObj, @PathVariable Long idVaga) {
 		return new AgendamentoResponse(facade.saveAgendamento(newObj.convertToEntity(),idVaga));
+	}
+	
+	@PostMapping("agendamento/especial")
+	public AgendamentoResponse createAgendamentoEspecial(@Valid @RequestBody AgendamentoEspecialRequest newObj) {
+		return new AgendamentoResponse(facade.createAgendamentoEspecial(newObj));
 	}
 	
 	@GetMapping("agendamento/{id}")

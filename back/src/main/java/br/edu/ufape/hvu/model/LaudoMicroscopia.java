@@ -35,7 +35,7 @@ public class LaudoMicroscopia {
     @EqualsAndHashCode.Include
     private long id;
     private String conclusao;
-    @OneToOne
+    @ManyToOne
     @ToString.Exclude
     private FichaSolicitacaoServico fichaSolicitacaoServico;
     @ManyToOne(fetch = FetchType.LAZY)

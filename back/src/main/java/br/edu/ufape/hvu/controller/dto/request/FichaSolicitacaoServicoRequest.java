@@ -20,6 +20,7 @@ public  class FichaSolicitacaoServicoRequest  {
 	private EstadoConservacao estadoConservacao;
 	private String historico;
 	private String caracteristicasAdicionais;
+	private TutorRequest tutor;
 	private AnimalRequest animal; 
 	private MedicoRequest medico;
 	private long id;

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaTipoRequest;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
@@ -823,13 +824,32 @@ public class Facade {
 
 	public Agendamento saveAgendamento(Agendamento newInstance, Long idVaga) {
 		Vaga vaga = findVagaById(idVaga);
-		if (vaga.getAgendamento() != null || !vaga.getStatus().equalsIgnoreCase("Disponível")){
+		if (vaga.getAgendamento() != null ){
             throw new IllegalStateException("A vaga não está disponível.");
         }
+		
 		vaga.setStatus("Agendado");
 		vaga.setAgendamento(newInstance);
-		newInstance.setDataVaga(vaga.getDataHora());		
+		newInstance.setDataVaga(vaga.getDataHora());	
+		newInstance.setStatus(vaga.getStatus());
 		return agendamentoServiceInterface.saveAgendamento(newInstance);
+	}
+	
+	public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject) {
+		Vaga vaga = new Vaga();
+		Agendamento agendamento = new Agendamento();
+		
+		vaga.setEspecialidade(findEspecialidadeById(newObject.getEspecialidade().getId()));	
+		vaga.setMedico(findMedicoById(newObject.getMedico().getId()));
+		vaga.setTipoConsulta(findTipoConsultaById(newObject.getTipoConsulta().getId()));
+		vaga.setDataHora(newObject.getHorario());
+		
+		saveVaga(vaga);
+		
+		agendamento.setAnimal(findAnimalById(newObject.getAnimal().getId()));
+		agendamento.setTipoEspecial(newObject.isTipoEspecial());		
+		
+		return saveAgendamento(agendamento, vaga.getId());
 	}
 
 	public Agendamento updateAgendamento(Agendamento transientObject) {
@@ -1318,7 +1338,6 @@ public class Facade {
 	public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
 		if(newInstance.isCriarLaudoNecropsia()){
 			LaudoNecropsia laudoNecropsia = new LaudoNecropsia();
-			//laudoNecropsia.setFichaSolicitacaoServico(newInstance);
 			laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(laudoNecropsia);
 			newInstance.setLaudoNecropsia(laudoNecropsia);
 		} else {
@@ -1326,13 +1345,11 @@ public class Facade {
 		}
 		if(newInstance.isCriarLaudoMicroscopia()){
 			LaudoMicroscopia laudoMicroscopia = new LaudoMicroscopia();
-			//laudoMircoscopia.setFichaSolicitacaoServico(newInstance);
 			laudoMicroscopiaServiceInterface.saveLaudoMicroscopia(laudoMicroscopia);
 			newInstance.setLaudoMicroscopia(laudoMicroscopia);
 		} else {
 			newInstance.setLaudoMicroscopia(null);
 		}
-
 		return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
 	}
 
