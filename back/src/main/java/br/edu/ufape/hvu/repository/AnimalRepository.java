@@ -8,6 +8,5 @@ import br.edu.ufape.hvu.model.Animal;
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
 
-	
 
 }
