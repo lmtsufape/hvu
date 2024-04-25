@@ -59,10 +59,6 @@ function MeuPerfilList() {
                                         <h6>CPF</h6>
                                         <div>{usuario.cpf}</div>
                                     </div>
-                                    <div className={styles.item_box}>
-                                        <h6>RG</h6>
-                                        <div>{usuario.rg}</div>
-                                    </div>
                                 </div>
                             </div>
 

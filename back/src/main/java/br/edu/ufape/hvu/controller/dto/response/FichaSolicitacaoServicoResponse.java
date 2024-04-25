@@ -26,8 +26,9 @@ public  class FichaSolicitacaoServicoResponse  {
 	private EstadoConservacao estadoConservacao;
 	private String historico;
 	private String caracteristicasAdicionais;
+	private TutorResponse tutor;
 	private AnimalResponse animal; 
-	private MedicoResponse medico; 
+	private MedicoResponse medico;
 	private LaudoMicroscopia laudoMicroscopia;
 	private LaudoNecropsia laudoNecropsia;
 

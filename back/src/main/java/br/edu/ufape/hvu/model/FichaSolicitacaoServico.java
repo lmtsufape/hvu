@@ -4,16 +4,7 @@ import java.util.Date;
 
 import br.edu.ufape.hvu.model.enums.EstadoConservacao;
 import br.edu.ufape.hvu.repository.FichaSolicitacaoServicoRepository;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,6 +35,9 @@ public class FichaSolicitacaoServico {
     @OneToOne
     @ToString.Exclude
     private Animal animal;
+    @OneToOne
+    @ToString.Exclude
+    private Tutor tutor;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medico_id")
     @ToString.Exclude

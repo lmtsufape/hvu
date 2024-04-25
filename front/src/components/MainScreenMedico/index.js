@@ -8,7 +8,6 @@ function MainScreenMedico() {
     const router = useRouter();
 
     const [userId, setUserId] = useState(null);
-
     console.log("userId:", userId);
 
     useEffect(() => {
@@ -26,7 +25,7 @@ function MainScreenMedico() {
     return (
         <div className={styles.container}>
             <div className={styles.box_button}>
-                <button className={styles.button} onClick={(e) => router.push(``)}>
+                <button className={styles.button} onClick={(e) => router.push(`/agendamentosByMedico/${userId}`)}>
                     <Image src="/calendar.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Consultar agendamentos</h6>
                 </button>

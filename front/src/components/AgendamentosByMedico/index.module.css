@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+
+.voltar{
+    display: flex;
+    margin-top: 2.5em;
+    margin-left: 7em;
+}
+
+.voltar h1{
+    font-size: 1.2em;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.titleMeusAgendamentos{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.titleMeusAgendamentos h1{
+    font-size: 1.7em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+    color: #000000;
+}
+
+.cadendar_box {
+    display: flex;
+    gap: 21.1px;
+    align-items: center;
+}
+
+.agendamentos{
+    margin-bottom: 3em;
+}
+
+.agendamentoBox{
+    border: 1px solid #B1B1B1;
+    width: 100%;
+    align-items: center;
+    display: flex;
+    padding: 2.5em;
+    justify-content: space-between;
+    margin:auto;
+    margin-left: 5em;
+    margin-right: 5em;
+    margin-top: 2em;
+    border-radius: 1em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.agendamentoBox h1{
+    font-size: 1.2em;
+    font-weight: bold;
+    width: 9em;
+}
+
+.agendamentoBox h2{
+    font-size: 1.1em;
+    color: #39805F;
+    width: 11em;
+}
+
+.info_container {
+    list-style: none;
+}
+
+.main {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.col {
+    margin-top: 2em;
+    display: flex;
+    width: 30%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+}
+
+.col label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: center;
+}
+
+.input {
+    font-family: 'Poppins', sans-serif;;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #000000;
+}
+
+.input:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px #3d856371;
+    border: 1px solid #ccc;
+}
+
+.input::placeholder {
+    font-family: 'Poppins', sans-serif;;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #000000;
+}
+
+.navbar {
+    margin-top: 2em;
+    display: flex;
+    gap: 32px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.acessar_button {
+    width: 117px;
+    height: 44px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px;
+    gap: 10px;
+    font-size: 16px;
+    color: white;
+    background-color: #327053;
+    font-family: 'Poppins', sans-serif;
+}
+
+.acessar_button:hover {
+    background-color: #5b977b;
+}
+
+.list {
+    all: initial;
+}
+
+.message {
+    min-height: 300px;
+    margin-top: 56px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: center;
+}
+
+@media only screen and (max-width: 700px) {
+    .voltar {
+        margin-left: 1em;
+    }
+  
+    .navbar {
+        flex-direction: column;
+        align-items: stretch;
+        margin-right: 1em;
+        margin-left: 1em;
+    }
+  
+    .agendamentoBox {
+        flex-direction: column;
+        align-items: stretch;
+        margin-left: 1em;
+        margin-right: 1em;
+    }
+}
+  
