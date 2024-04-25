@@ -35,7 +35,14 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 	           "JOIN animal ON a.animal_id = animal.id " +
 	           "JOIN consulta c ON v.consulta_id = c.id AND c.proxima_consulta = true " +
 	           "ORDER BY animal.id, v.data_hora DESC", nativeQuery = true)
-	    List<Vaga> findLatestVagaForEachAnimal();
+    List<Vaga> findLatestVagaForEachAnimal();
+	
+	@Query(value = "SELECT DISTINCT ON (animal.id) v.* FROM Vaga v " +
+	           "JOIN agendamento a ON v.agendamento_id = a.id " +
+	           "JOIN animal ON a.animal_id = animal.id " +
+	           "JOIN consulta c ON v.consulta_id = c.id AND c.proxima_consulta = false " +
+	           "ORDER BY animal.id, v.data_hora DESC", nativeQuery = true)
+	List<Vaga> findLatestVagaForEachAnimalNotReturn();
 	
 	List<Vaga> findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(LocalDateTime begin, LocalDateTime end, Medico medico);
 }
