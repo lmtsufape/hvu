@@ -28,6 +28,24 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
+
+  export async function getAnimalSemRetorno() {
+    try {
+      const response = await api.get('/animal/semRetorno');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  export async function getAnimalComRetorno() {
+    try {
+      const response = await api.get('/animal/retorno');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   
   // Função para buscar por ID
   export async function getAnimalById(animalId) {
