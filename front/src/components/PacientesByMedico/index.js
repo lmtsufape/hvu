@@ -11,8 +11,7 @@ function PacientesByMedico() {
 
     const router = useRouter();
 
-    const {id} = router.query;
-    console.log("id:", id);
+    const { id } = router.query;
 
     useEffect(() => {
         const fetchData = async () => {
