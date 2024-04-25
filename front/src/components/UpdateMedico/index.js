@@ -97,7 +97,8 @@ function UpdateMedico() {
                         estado: data.uf,
                         cidade: data.localidade,
                         rua: data.logradouro,
-                        bairro: data.bairro
+                        bairro: data.bairro,
+                        cep: cep
                     }
                 });
             } else {

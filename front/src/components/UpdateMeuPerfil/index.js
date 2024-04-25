@@ -80,7 +80,8 @@ function UpdateMeuPerfil() {
                         estado: data.uf,
                         cidade: data.localidade,
                         rua: data.logradouro,
-                        bairro: data.bairro
+                        bairro: data.bairro,
+                        cep: cep
                     }
                 });
             } else {
@@ -116,7 +117,7 @@ function UpdateMeuPerfil() {
             }
         }
         setErrors(newErrors);
-    
+
         return Object.keys(newErrors).length === 0;
     };
 
@@ -217,7 +218,7 @@ function UpdateMeuPerfil() {
                                 </div>
                             </div>
                         </div>
-                    </div>                
+                    </div>
                 )}
 
                 <div className={styles.button_box}>
@@ -245,24 +246,24 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
         <div className="mb-3">
             <label htmlFor={name} className="form-label">{label}</label>
             <div className="input-group">
-            <InputComponent
-                mask={mask}
-                type={inputType}
-                className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
-                name={name}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-            />
-            {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
-            {type === "password" && (
-                <div className={styles.input_group_append}>
-                    <button className="btn btn-outline-secondary" type="button" onClick={toggleShow}>
-                        <FontAwesomeIcon icon={show ? faEyeSlash : faEye} />
-                    </button>
-                </div>
-            )}
-        </div>
+                <InputComponent
+                    mask={mask}
+                    type={inputType}
+                    className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
+                    name={name}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
+                />
+                {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
+                {type === "password" && (
+                    <div className={styles.input_group_append}>
+                        <button className="btn btn-outline-secondary" type="button" onClick={toggleShow}>
+                            <FontAwesomeIcon icon={show ? faEyeSlash : faEye} />
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
