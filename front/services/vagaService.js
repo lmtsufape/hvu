@@ -39,6 +39,15 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
+
+  export async function getVagaMedico(medicoId, data) {
+    try {
+      const response = await api.get(`/vaga/medico/${medicoId}/${data}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   
   // Função para atualizar 
   export async function updateVaga(vagaId, vagaData) {
