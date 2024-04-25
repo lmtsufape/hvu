@@ -1,121 +1,150 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "./index.module.css"
-import { FinalizarGreenButton } from "../GreenButton";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import ptBR from 'date-fns/locale/pt-BR';
-import VoltarButton from '../VoltarButton';
+import styles from "./index.module.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import ptBR from "date-fns/locale/pt-BR";
+import VoltarButton from "../VoltarButton";
 import AnimalList from "@/hooks/useAnimalList";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import TipoConsultaList from "@/hooks/useTipoConsultaList";
 import MedicoList from "@/hooks/useMedicoList";
-import { createVagaEspecial } from "../../../services/vagaService";
+import { createAgendamentoEspecial } from "../../../services/agendamentoService";
+import { format } from "date-fns";
 
 function AgendamentoEspecial() {
   const router = useRouter();
-  
-  const [vaga, setVaga] = useState({
-    dataHora: "", // Aqui a data e hora serão armazenadas no formato desejado
-    status: "",
-    especialidade: {id: null},
-    proximaConsulta: "",
-    animal: {id: null},
-    tipoConsulta: {id: null},
-    medico: {id: null},
+
+  const [errors, setErrors] = useState({});
+
+  const [agendamento, setAgendamento] = useState({
+    animal: { id: null },
+    tipoEspecial: true,
+    horario: "",
+    especialidade: { id: null },
+    tipoConsulta: { id: null },
+    medico: { id: null }
   });
-  console.log("vaga:", vaga);
+  console.log("agendamento:", agendamento);
 
   const { animais } = AnimalList();
   const [selectedAnimal, setSelectedAnimal] = useState(null);
   const handleAnimalSelection = (event) => {
-      const selectedId = event.target.value;
-      setSelectedAnimal(selectedId);
+    const selectedId = event.target.value;
+    setSelectedAnimal(selectedId);
   };
 
   const { especialidades } = EspecialidadeList();
   const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
   const handleEspecialidadeSelection = (event) => {
-      const selectedId = event.target.value;
-      setSelectedEspecialidade(selectedId);
+    const selectedId = event.target.value;
+    setSelectedEspecialidade(selectedId);
   };
 
   const { tiposConsulta } = TipoConsultaList();
   const [selectedTiposConsulta, setSelectedTiposConsulta] = useState(null);
   const handleTiposConsultaSelection = (event) => {
-      const selectedId = event.target.value;
-      setSelectedTiposConsulta(selectedId);
+    const selectedId = event.target.value;
+    setSelectedTiposConsulta(selectedId);
   };
 
   const { medicos } = MedicoList();
   const [selectedMedico, setSelectedMedico] = useState(null);
   const handleMedicoSelection = (event) => {
-      const selectedId = event.target.value;
-      setSelectedMedico(selectedId);
+    const selectedId = event.target.value;
+    setSelectedMedico(selectedId);
   };
 
-  function handleInputChange(event) {
+  function handleTipoEspecialChange(event) {
     const { name, value } = event.target;
-    setVaga({ ...vaga, [name]: value })
-  };
+    setAgendamento({ ...agendamento, [name]: value });
+  }
 
   const [escolherData, setEscolherData] = useState(null);
   const [escolherHorario, setEscolherHorario] = useState(null);
 
-  function handleDateChange(date) {
+  const handleDateChange = (date) => {
     setEscolherData(date);
-  }
+  };
 
-  function handleHorarioChange(event) {
+  const handleHorarioChange = (event) => {
     setEscolherHorario(event.target.value);
-  }
-
-  console.log("escolherData:", escolherData);
-  console.log("escolherHorario:", escolherHorario);
-  
+  };
 
   const handleSubmit = async () => {
-    // Aqui combinamos a data e hora selecionadas pelo usuário
-    const dataHora = new Date(escolherData);
-    dataHora.setHours(parseInt(escolherHorario.split('h')[0])); // Obtém apenas a hora e converte para inteiro
-    dataHora.setMinutes(0); // Define os minutos como zero, já que não estamos considerando minutos no formulário
-
-    const vagaToCreate = {
-      dataHora: dataHora.toISOString(), // Formata a data e hora no formato desejado
-      status: vaga.status,
-      especialidade: {id: parseInt(selectedEspecialidade)},
-      proximaConsulta: vaga.proximaConsulta,
-      animal: {id: parseInt(selectedAnimal)},
-      tipoConsulta: {id: parseInt(selectedTiposConsulta)},
-      medico: {id: parseInt(selectedMedico)}
+    const validationErrors = validateFields(agendamento);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
-    console.log("vagaToCreate:", vagaToCreate);
+
+    const formattedDate = format(escolherData, "yyyy-MM-dd");
+    const formattedTime = escolherHorario + ":00";
+    const formattedDateTime = formattedDate + "T" + formattedTime;
+
+    const agendamentoToCreate = {
+      animal: { id: selectedAnimal },
+      tipoEspecial: agendamento.tipoEspecial,
+      horario: formattedDateTime,
+      especialidade: { id: selectedEspecialidade },
+      tipoConsulta: { id: selectedTiposConsulta },
+      medico: { id: selectedMedico }
+    };
+
+    console.log("agendamentoToCreate:", agendamentoToCreate);
 
     try {
-      await createVagaEspecial(vagaToCreate);
-      alert("Agendamento criado com sucesso!");
+      await createAgendamentoEspecial(agendamentoToCreate);
+      console.log("agendamentoToCreate:", agendamentoToCreate);
+      alert("Agendamento especial criado com sucesso!");
       router.push("/agendamentosDia");
     } catch (error) {
-      console.error("Erro ao realizar agendamento:", error);
+      console.error("Erro ao criar agendamento especial:", error);
       alert("Erro ao realizar agendamento. Por favor, tente novamente.");
     }
-  }
+  };
+
+  const validateFields = () => {
+    const errors = {};
+    if (selectedAnimal === null) {
+      errors.selectedAnimal = "Campo obrigatório";
+    }
+    if (selectedEspecialidade === null) {
+      errors.selectedEspecialidade = "Campo obrigatório";
+    }
+    if (selectedTiposConsulta === null) {
+      errors.selectedTiposConsulta = "Campo obrigatório";
+    }
+    if (selectedMedico === null) {
+      errors.selectedMedico = "Campo obrigatório";
+    }
+    if (escolherHorario === null) {
+      errors.escolherHorario = "Campo obrigatório";
+    }
+    if (escolherData === null) {
+      errors.escolherData = "Campo obrigatório";
+    }
+    return errors;
+  };
 
   return (
     <>
-    <div className={styles.voltarButtonHeader}>
-    < VoltarButton />
-    </div>
+      <div className={styles.voltarButtonHeader}>
+        <VoltarButton />
+      </div>
       <div>
         <h1 className={styles.titulocadastro}>Novo agendamento</h1>
       </div>
+
       <div className={`${styles.boxagendarconsulta} ${styles.container}`}>
         <form>
           <div className="row">
             <div className={`col ${styles.col}`}>
-              <label htmlFor="data" className="form-label">Data</label>
-              <div className={`form-control ${styles.input}`}>
+              <label htmlFor="data" className="form-label">
+                Data
+              </label>
+              <div className={`form-control ${styles.input} ${errors.escolherData ? "is-invalid" : ""}`}>
                 <DatePicker
                   dateFormat="dd/MM/yyyy"
                   className={styles.datepicker}
@@ -124,45 +153,55 @@ function AgendamentoEspecial() {
                   selected={escolherData}
                   onChange={handleDateChange}
                 />
+                {errors.escolherData && <div className="invalid-feedback">{errors.escolherData}</div>}
               </div>
             </div>
+
             <div className={`col ${styles.col}`}>
-              <label htmlFor="horario" className="form-label">Horário</label>
-              <input 
+              <label htmlFor="escolherHorario" className="form-label">
+                Horário
+              </label>
+              <input
                 type="time"
-                className={`form-control ${styles.input}`}
+                className={`form-control ${styles.input} ${errors.escolherHorario ? "is-invalid" : ""}`}
                 name="horario"
                 aria-label="Selecione o horário"
                 value={escolherHorario || ""}
                 onChange={handleHorarioChange}
               />
+              {errors.escolherHorario && <div className="invalid-feedback">{errors.escolherHorario}</div>}
             </div>
           </div>
 
           <div className={styles.espacodosforms}>
             <div className="row">
               <div className={`col ${styles.col}`}>
-                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
-                <select 
-                  className={`form-select ${styles.input}`}
+                <label htmlFor="medico" className="form-label">
+                  Veterinário(a)
+                </label>
+                <select
+                  className={`form-select ${styles.input} ${errors.selectedMedico ? "is-invalid" : ""}`}
                   name="medico"
                   aria-label="Selecione o(a) veterinário(a)"
                   value={selectedMedico || ""}
                   onChange={handleMedicoSelection}
                 >
-                  <option value="">Selecione o&#40;a&#41; Veterinário&#40;a&#41;</option>
+                  <option value="">Selecione o(a) Veterinário(a)</option>
                   {medicos.map((medico) => (
                     <option key={medico.id} value={medico.id}>
                       {medico.nome}
                     </option>
                   ))}
                 </select>
+                {errors.selectedMedico && <div className="invalid-feedback">{errors.selectedMedico}</div>}
               </div>
 
               <div className={`col ${styles.col}`}>
-                <label htmlFor="especialidade" className="form-label">Especialidade</label>
-                <select 
-                  className={`form-select ${styles.input}`}
+                <label htmlFor="especialidade" className="form-label">
+                  Especialidade
+                </label>
+                <select
+                  className={`form-select ${styles.input} ${errors.selectedEspecialidade ? "is-invalid" : ""}`}
                   name="especialidade"
                   aria-label="Selecione a especialidade"
                   value={selectedEspecialidade || ""}
@@ -175,51 +214,19 @@ function AgendamentoEspecial() {
                     </option>
                   ))}
                 </select>
-              </div>
-
-              
-            </div>
-          </div>
-          <div className={styles.espacodosforms}>
-            <div className="row">
-              <div className={`col ${styles.col}`}>
-                <label htmlFor="status" className="form-label">Status</label>
-                <input type="text"
-                  className={`form-control ${styles.input}`}
-                  name="status"
-                  placeholder="Digite o status"
-                  value={vaga.status}
-                  onChange={handleInputChange}
-                >
-                </input>
-              </div>
-
-              <div className={`col ${styles.col}`}>
-                <label htmlFor="tipoConsulta" className="form-label">Tipo de Consulta</label>
-                <select 
-                  className={`form-select ${styles.input}`}
-                  name="tipoConsulta"
-                  aria-label="Selecione o tipo de consulta"
-                  value={selectedTiposConsulta || ""}
-                  onChange={handleTiposConsultaSelection}
-                >
-                  <option value="">Selecione o tipo de consulta</option>
-                  {tiposConsulta.map((tipoConsulta) => (
-                    <option key={tipoConsulta.id} value={tipoConsulta.id}>
-                      {tipoConsulta.tipo}
-                    </option>
-                  ))}
-                </select>
+                {errors.selectedEspecialidade && <div className="invalid-feedback">{errors.selectedEspecialidade}</div>}
               </div>
             </div>
           </div>
 
           <div className={styles.espacodosforms}>
             <div className="row">
-              <div className={`col ${styles.col}`}>
-                  <label htmlFor="animal" className="form-label">Paciente</label>
-                  <select 
-                    className={`form-select ${styles.input}`}
+                <div className={`col ${styles.col}`}>
+                  <label htmlFor="animal" className="form-label">
+                    Paciente
+                  </label>
+                  <select
+                    className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`}
                     name="animal"
                     aria-label="Selecione o paciente"
                     value={selectedAnimal || ""}
@@ -232,24 +239,73 @@ function AgendamentoEspecial() {
                       </option>
                     ))}
                   </select>
-              </div>
+                  {errors.selectedAnimal && <div className="invalid-feedback">{errors.selectedAnimal}</div>}
+                </div>
+
               <div className={`col ${styles.col}`}>
-                
+                <label htmlFor="tipoConsulta" className="form-label">Tipo de Consulta</label>
+                <select
+                  className={`form-select ${styles.input} ${errors.selectedTiposConsulta ? "is-invalid" : ""}`}
+                  name="tipoConsulta"
+                  aria-label="Selecione o tipo de consulta"
+                  value={selectedTiposConsulta || ""}
+                  onChange={handleTiposConsultaSelection}
+                >
+                  <option value="">Selecione o tipo de consulta</option>
+                  {tiposConsulta.map((tipoConsulta) => (
+                    <option key={tipoConsulta.id} value={tipoConsulta.id}>
+                      {tipoConsulta.tipo}
+                    </option>
+                  ))}
+                </select>
+                {errors.selectedTiposConsulta && <div className="invalid-feedback">{errors.selectedTiposConsulta}</div>}
               </div>
             </div>
           </div>
 
+          <div className={styles.espacodosforms}>
+            <div className="row">
+            <div className={`col ${styles.col_radio}`}>
+              <label htmlFor="tipoEspecial" className="form-label">É tipo especial?</label>
+              <div>
+                <input
+                  type="radio"
+                  className={`form-check-input ${styles.checkbox}`}
+                  id="sim"
+                  name="tipoEspecial"
+                  value="true"
+                  checked={agendamento.tipoEspecial === "true"}
+                  onChange={handleTipoEspecialChange}
+                />
+                <label htmlFor="sim" className={styles.input}>Sim</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  className={`form-check-input ${styles.checkbox}`}
+                  id="nao"
+                  name="tipoEspecial"
+                  value="false"
+                  checked={agendamento.tipoEspecial === "false"}
+                  onChange={handleTipoEspecialChange}
+                />
+                <label htmlFor="nao" className={styles.input}>Não</label>
+              </div>
+            </div>
+
+            </div>
+          </div>
 
           <div className={styles.continuarbotao}>
             <button className={styles.voltarButton}>Cancelar</button>
-            <button type="button" className={styles.continuarButton}  onClick={handleSubmit}>Criar</button>
+            <button type="button" className={styles.continuarButton} onClick={handleSubmit}>
+              Criar
+            </button>
           </div>
         </form>
       </div>
-      </>
-
-
-      )
+    </>
+  );
 }
 
-  export default AgendamentoEspecial;
+export default AgendamentoEspecial;

@@ -47,6 +47,30 @@ public class AnimalController {
 			.toList();
 	}
 	
+	@GetMapping("animal/retorno")
+	public List<AnimalResponse> findAnimaisWithReturn() {
+		return facade.findAnimaisWithReturn()
+			.stream()
+			.map(AnimalResponse::new)
+			.toList();
+	}
+	@GetMapping("animal/semRetorno")
+	public List<AnimalResponse> findAnimaisWithoutReturn() {
+		return facade.findAnimaisWithoutReturn()
+			.stream()
+			.map(AnimalResponse::new)
+			.toList();
+	}
+	
+	@GetMapping("animal/retorno/{id}")
+	public boolean isAnimalWithRetorno(@PathVariable Long id) {
+		try {
+			return facade.isAnimalWithRetorno(id);
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+	}
+	
 	@GetMapping("animal/tutor")
 	public List<AnimalResponse> getAllAnimalTutor() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

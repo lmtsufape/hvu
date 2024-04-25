@@ -509,6 +509,36 @@ public class Facade {
 		return vagaServiceInterface.findVagasByDataAndEspecialidade(data, especialidade);
 	}
 	
+	public List<Animal> findAnimaisWithReturn(){
+		List<Vaga> vagas = vagaServiceInterface.findLatestVagaForEachAnimal();
+		
+		return vagas.stream()
+        .map(vaga -> vaga.getAgendamento().getAnimal())
+        .collect(Collectors.toList());
+	}
+	
+	public List<Animal> findAnimaisWithoutReturn(){
+		List<Vaga> vagas = vagaServiceInterface.findLatestVagaForEachAnimalNotReturn();
+		
+		List<Animal> allAnimais = getAllAnimal();
+		List<Agendamento> allAgendamento = getAllAgendamento();
+		List<Animal> animalNoReturn = allAnimais.stream()
+									  .filter(animal->allAgendamento.stream()
+									  .noneMatch(agendamento -> agendamento.getAnimal().equals(animal)))
+									  .collect(Collectors.toList());	
+		
+		animalNoReturn
+				.addAll(vagas.stream()
+		        .map(vaga -> vaga.getAgendamento().getAnimal())
+		        .collect(Collectors.toList()));
+		return animalNoReturn;
+	}
+	
+	public boolean isAnimalWithRetorno(Long id) {
+		Animal animal = findAnimalById(id);
+		return findAnimaisWithReturn().contains(animal);
+	}
+	
 	public List<Vaga> findVagaByDataAndEspecialidadeAndMedico(LocalDate data, Especialidade especialidade, Medico medico){
 		return vagaServiceInterface.findVagasByDataAndEspecialidadeAndMedico(data, especialidade, medico);
 	}

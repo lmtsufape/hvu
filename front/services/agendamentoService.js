@@ -9,6 +9,15 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
+
+  export async function createAgendamentoEspecial(agendamentoData) {
+    try {
+      const response = await api.post(`agendamento/especial`, agendamentoData);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   
   // Função para buscar todos os agendamentos
   export async function getAgendamento() {

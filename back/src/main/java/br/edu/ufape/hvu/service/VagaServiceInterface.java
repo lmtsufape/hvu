@@ -21,5 +21,7 @@ public interface VagaServiceInterface {
 	List<Vaga> findVagasByDataAndTurno(LocalDate data, String turno);
 	List<Vaga> findVagasByDataAndEspecialidade(LocalDate data, Especialidade especialidade);
 	List<Vaga> findVagasByDataAndEspecialidadeAndMedico(LocalDate data, Especialidade especialidade, Medico medico);
-	List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Medico medico);     
+	List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Medico medico);    
+	List<Vaga> findLatestVagaForEachAnimal();
+	List<Vaga> findLatestVagaForEachAnimalNotReturn();
 }
