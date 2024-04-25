@@ -1,9 +1,14 @@
 package br.edu.ufape.hvu.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +22,8 @@ import br.edu.ufape.hvu.model.Usuario;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.UsuarioRequest;
 import br.edu.ufape.hvu.controller.dto.response.UsuarioResponse;
+import br.edu.ufape.hvu.controller.dto.response.UsuarioCurrentResponse;
+
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
@@ -52,11 +59,14 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("usuario/current")
-	public UsuarioResponse getCurrentUsuario() {
+	public UsuarioCurrentResponse getCurrentUsuario() {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			Jwt principal = (Jwt) authentication.getPrincipal();
-			return new UsuarioResponse(facade.findUsuarioByuserId(principal.getSubject()));
+			LinkedTreeMap<String,ArrayList<String>> tree = principal.getClaim("realm_access");
+			ArrayList<String> roles = tree.get("roles");
+			
+			return new UsuarioCurrentResponse(new UsuarioResponse( facade.findUsuarioByuserId(principal.getSubject())),roles);
 		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
