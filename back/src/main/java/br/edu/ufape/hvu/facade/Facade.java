@@ -1339,7 +1339,6 @@ public class Facade {
 	public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
 		if(newInstance.isCriarLaudoNecropsia()){
 			LaudoNecropsia laudoNecropsia = new LaudoNecropsia();
-			//laudoNecropsia.setFichaSolicitacaoServico(newInstance);
 			laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(laudoNecropsia);
 			newInstance.setLaudoNecropsia(laudoNecropsia);
 		} else {
@@ -1347,13 +1346,11 @@ public class Facade {
 		}
 		if(newInstance.isCriarLaudoMicroscopia()){
 			LaudoMicroscopia laudoMicroscopia = new LaudoMicroscopia();
-			//laudoMircoscopia.setFichaSolicitacaoServico(newInstance);
 			laudoMicroscopiaServiceInterface.saveLaudoMicroscopia(laudoMicroscopia);
 			newInstance.setLaudoMicroscopia(laudoMicroscopia);
 		} else {
 			newInstance.setLaudoMicroscopia(null);
 		}
-
 		return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
 	}
 
