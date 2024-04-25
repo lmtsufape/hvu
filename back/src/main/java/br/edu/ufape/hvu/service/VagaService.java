@@ -92,6 +92,10 @@ public class VagaService implements VagaServiceInterface {
 	public List<Vaga> findVagaByEspecialidade(Especialidade especialidade) {
 		return repository.findByEspecialidade(especialidade);
 	}
+	
+	public List<Vaga> findLatestVagaForEachAnimal(){
+		return repository.findLatestVagaForEachAnimal();
+	}
 
 	public Vaga findVagaByAgendamento(Agendamento agendamento) {
 		return repository.findByAgendamento(agendamento);

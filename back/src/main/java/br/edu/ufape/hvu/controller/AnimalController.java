@@ -47,6 +47,14 @@ public class AnimalController {
 			.toList();
 	}
 	
+	@GetMapping("animal/retorno")
+	public List<AnimalResponse> findAnimaisWithReturn() {
+		return facade.findAnimaisWithReturn()
+			.stream()
+			.map(AnimalResponse::new)
+			.toList();
+	}
+	
 	@GetMapping("animal/tutor")
 	public List<AnimalResponse> getAllAnimalTutor() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
