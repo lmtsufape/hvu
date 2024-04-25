@@ -3,7 +3,6 @@ import styles from "./index.module.css";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import VoltarButton from "../VoltarButton";
-import SearchBar from "../SearchBar";
 import { getVagaMedico } from '../../../services/vagaService';
 import { format } from 'date-fns'; 
 
@@ -14,8 +13,6 @@ export default function AgendamentosByMedico() {
 
     const [agendamentos, setAgendamentos] = useState([]);
     console.log("agendamentos:", agendamentos);
-
-    const [searchTerm, setSearchTerm] = useState(''); 
 
     const formatDate = (data) => {
         const year = data.getFullYear();
@@ -31,19 +28,30 @@ export default function AgendamentosByMedico() {
         setData(event.target.value);
     };
 
+    const filterAgendamentosByDate = (agendamentos, targetDate) => {
+    const filteredAgendamentos = agendamentos.filter(agendamento => {
+        const agendamentoDate = new Date(agendamento.dataHora);
+        const formattedAgendamentoDate = formatDate(agendamentoDate);
+        return formattedAgendamentoDate === targetDate;
+    });
+    return filteredAgendamentos;
+};
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (id && data) {
                     const agendamentosData = await getVagaMedico(id, data);
-                    setAgendamentos(agendamentosData);
+                    const filteredAgendamentos = filterAgendamentosByDate(agendamentosData, data);
+                    setAgendamentos(filteredAgendamentos);
                 } else {
+                    setAgendamentos([]);
                     console.log("O id ou a data estão indefinidos.");
                 }
             } catch (error) {
                 console.error('Erro ao buscar agendamentos do médico:', error);
             }
-        };
+        };        
         fetchData();
     }, [id, data]);
 
@@ -59,7 +67,7 @@ export default function AgendamentosByMedico() {
     };
     
     // Ordena os agendamentos com base nas datas
-    const sortedAgendamentos = filteredAgendamentos.sort(compareDates);
+    const sortedAgendamentos = agendamentos.sort(compareDates);
 
     return (
         <div>
@@ -71,12 +79,6 @@ export default function AgendamentosByMedico() {
             <div className={styles.titleMeusAgendamentos}>
                 <h1>Agendamentos</h1>
             </div>
-            {/* <div className={styles.navbar}>
-                <SearchBar
-                    placeholder="Buscar agendamento através do nome do animal" 
-                    onSearchChange={setSearchTerm} 
-                />
-            </div> */}
             
             <div className={`col ${styles.col}`}>
                 <label htmlFor="data" className="form-label">Data:</label>
@@ -111,7 +113,7 @@ export default function AgendamentosByMedico() {
                                         <h2>{agendamento.especialidade && agendamento.especialidade.nome}</h2>
                                     </div>
                                     <div> 
-                                        <button className={styles.acessar_button}>
+                                        <button className={styles.acessar_button} onClick={() => router.push(`/getAgendamentoByMedicoById/${agendamento.id}`)}>
                                             Acessar
                                         </button>
                                     </div>

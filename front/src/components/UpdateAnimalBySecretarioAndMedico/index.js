@@ -165,7 +165,7 @@ function UpdateAnimalBySecretarioAndMedico() {
                   className={`form-select ${styles.input}`}
                   name="especie"
                   aria-label={animalData.raca && animalData.raca.especie && animalData.raca.especie.nome}
-                  value={selectedEspecie}
+                  value={selectedEspecie || ''}
                   onChange={handleEspecieSelection}
                 >
                   {especies.map((especie) => (
@@ -181,7 +181,7 @@ function UpdateAnimalBySecretarioAndMedico() {
                   className={`form-select ${styles.input}`}
                   name="raca"
                   aria-label={animalData.raca && animalData.raca.nome}
-                  value={selectedRaca}
+                  value={selectedRaca || ''}
                   onChange={handleRacaSelection}
                 >
                   {racasByEspecie.map((raca) => (
