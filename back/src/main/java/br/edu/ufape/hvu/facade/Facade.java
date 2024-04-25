@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaTipoRequest;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
@@ -823,13 +824,33 @@ public class Facade {
 
 	public Agendamento saveAgendamento(Agendamento newInstance, Long idVaga) {
 		Vaga vaga = findVagaById(idVaga);
-		if (vaga.getAgendamento() != null || !vaga.getStatus().equalsIgnoreCase("Disponível")){
+		if (vaga.getAgendamento() != null || newInstance.isTipoEspecial()?false:!vaga.getStatus().equalsIgnoreCase("Disponível")){
             throw new IllegalStateException("A vaga não está disponível.");
         }
-		vaga.setStatus("Agendado");
+		if(!newInstance.isTipoEspecial())
+		   vaga.setStatus("Agendado");
+		
 		vaga.setAgendamento(newInstance);
 		newInstance.setDataVaga(vaga.getDataHora());		
 		return agendamentoServiceInterface.saveAgendamento(newInstance);
+	}
+	
+	public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject) {
+		Vaga vaga = new Vaga();
+		Agendamento agendamento = new Agendamento();
+		
+		vaga.setEspecialidade(findEspecialidadeById(newObject.getEspecialidade().getId()));	
+		vaga.setMedico(findMedicoById(newObject.getMedico().getId()));
+		vaga.setTipoConsulta(findTipoConsultaById(newObject.getTipoConsulta().getId()));
+		vaga.setDataHora(newObject.getHorario());
+		vaga.setStatus(newObject.getStatus());
+		saveVaga(vaga);
+		
+		agendamento.setAnimal(findAnimalById(newObject.getAnimal().getId()));
+		agendamento.setStatus(newObject.getStatus());
+		agendamento.setTipoEspecial(true);		
+		
+		return saveAgendamento(agendamento, vaga.getId());
 	}
 
 	public Agendamento updateAgendamento(Agendamento transientObject) {
