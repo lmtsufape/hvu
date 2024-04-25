@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.edu.ufape.hvu.controller.dto.request.EspecialidadeRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaTipoRequest;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
@@ -497,6 +496,12 @@ public class Facade {
 	
 	public List<Vaga> findVagaByData(LocalDate data){
 		return vagaServiceInterface.findVagasByData(data);
+	}
+	
+	public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico){
+		Medico medico = findMedicoById(IdMedico);
+		
+		return vagaServiceInterface.findVagasAndAgendamentoByMedico(data, medico);
 	}
 	
 	public List<Vaga> findVagaByDataAndEspecialidade(LocalDate data, Especialidade especialidade){

@@ -29,4 +29,6 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 	@Query("SELECT v FROM Vaga v WHERE v.dataHora BETWEEN :inicioDoDia AND :fimDoDia AND v.medico = :medico AND v.especialidade = :especialidade")
     List<Vaga> findByDataAndEspecialidadeAndMedico(@Param("inicioDoDia") LocalDateTime inicioDoDia, @Param("fimDoDia") 
     LocalDateTime fimDoDia, @Param("especialidade") Especialidade especialidade, @Param("medico") Medico medico);
+	
+	List<Vaga> findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(LocalDateTime begin, LocalDateTime end, Medico medico);
 }

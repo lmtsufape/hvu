@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
-import org.modelmapper.convention.MatchingStrategies;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 
 import br.edu.ufape.hvu.model.Vaga;
@@ -100,6 +100,14 @@ public class VagaController {
 	@GetMapping("vaga/especialidade/{idEspecialidade}")
 	public List<VagaResponse> getVagasByEspecialidade(@PathVariable(value = "idEspecialidade") long idEspecialidade) {
 		return facade.getVagasByEspecialidade(idEspecialidade)
+				.stream()
+				.map(VagaResponse::new)
+				.toList();
+	}
+	
+	@GetMapping("vaga/medico/{idMedico}/{data}")
+	public List<VagaResponse> findVagasAndAgendamentoByMedico(@PathVariable long idMedico, @PathVariable LocalDate data) {
+		return facade.findVagasAndAgendamentoByMedico(data, idMedico)
 				.stream()
 				.map(VagaResponse::new)
 				.toList();
