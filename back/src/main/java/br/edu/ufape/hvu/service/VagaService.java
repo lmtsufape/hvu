@@ -41,6 +41,13 @@ public class VagaService implements VagaServiceInterface {
         return repository.findByData(begin, end);
     }
 	
+	public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Medico medico){
+		LocalDateTime end =  LocalDateTime.now(); 
+        LocalDateTime begin = data.atStartOfDay(); 
+		
+		return repository.findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(begin, end, medico);
+	}
+	
 	public List<Vaga> findVagasByDataAndEspecialidade(LocalDate data, Especialidade especialidade) {
         LocalDateTime begin = data.atStartOfDay(); 
         LocalDateTime end = data.plusDays(1).atStartOfDay().minusSeconds(1); 
