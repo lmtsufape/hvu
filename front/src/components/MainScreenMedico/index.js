@@ -14,7 +14,7 @@ function MainScreenMedico() {
         const fetchData = async () => {
             try {
                 const userData = await getCurrentUsuario();
-                setUserId(userData.id);
+                setUserId(userData.usuario.id);
             } catch (error) {
                 console.error('Erro ao buscar usuário:', error);
             }

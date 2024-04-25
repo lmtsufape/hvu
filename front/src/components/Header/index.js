@@ -83,7 +83,8 @@ export function Header01() {
         const fetchData = async () => {
             try {
                 const TutoresData = await getCurrentUsuario();
-                setTutores(TutoresData);
+                setTutores(TutoresData.usuario);
+                console.log('Tutores:', TutoresData)
             } catch (error) {
                 console.error('Erro ao buscar tutores:', error);
             }

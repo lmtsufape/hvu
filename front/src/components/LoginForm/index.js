@@ -6,6 +6,8 @@ import { useState } from "react";
 //icone do olho importacao
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { getCurrentUsuario } from '../../../services/userService';
+
 
 function FormularioLogin() {
 
@@ -24,7 +26,14 @@ function FormularioLogin() {
         if (validateForm()) {
             try{
                 await postLogin(login, senha);
-                router.push('/mainTutor');
+                const userData = await getCurrentUsuario();
+                if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("secretario")){
+                    router.push('/mainSecretario');
+                }else if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("medico")){
+                    router.push('/mainMedico');
+                }else if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("tutor")){
+                  router.push('/mainTutor');
+                }
             }catch(error){
                 console.log(error);
             }  
