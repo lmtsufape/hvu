@@ -824,14 +824,14 @@ public class Facade {
 
 	public Agendamento saveAgendamento(Agendamento newInstance, Long idVaga) {
 		Vaga vaga = findVagaById(idVaga);
-		if (vaga.getAgendamento() != null || newInstance.isTipoEspecial()?false:!vaga.getStatus().equalsIgnoreCase("Disponível")){
+		if (vaga.getAgendamento() != null ){
             throw new IllegalStateException("A vaga não está disponível.");
         }
-		if(!newInstance.isTipoEspecial())
-		   vaga.setStatus("Agendado");
 		
+		vaga.setStatus("Agendado");
 		vaga.setAgendamento(newInstance);
-		newInstance.setDataVaga(vaga.getDataHora());		
+		newInstance.setDataVaga(vaga.getDataHora());	
+		newInstance.setStatus(vaga.getStatus());
 		return agendamentoServiceInterface.saveAgendamento(newInstance);
 	}
 	
@@ -843,12 +843,11 @@ public class Facade {
 		vaga.setMedico(findMedicoById(newObject.getMedico().getId()));
 		vaga.setTipoConsulta(findTipoConsultaById(newObject.getTipoConsulta().getId()));
 		vaga.setDataHora(newObject.getHorario());
-		vaga.setStatus(newObject.getStatus());
+		
 		saveVaga(vaga);
 		
 		agendamento.setAnimal(findAnimalById(newObject.getAnimal().getId()));
-		agendamento.setStatus(newObject.getStatus());
-		agendamento.setTipoEspecial(true);		
+		agendamento.setTipoEspecial(newObject.isTipoEspecial());		
 		
 		return saveAgendamento(agendamento, vaga.getId());
 	}

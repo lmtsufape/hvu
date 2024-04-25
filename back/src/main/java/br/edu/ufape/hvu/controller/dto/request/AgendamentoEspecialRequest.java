@@ -13,6 +13,6 @@ public class AgendamentoEspecialRequest {
 	private AnimalRequest animal;
 	private TipoConsultaRequest tipoConsulta;
 	private MedicoRequest medico;
-	private String status;
 	private LocalDateTime horario;
+	private boolean tipoEspecial;
 }
