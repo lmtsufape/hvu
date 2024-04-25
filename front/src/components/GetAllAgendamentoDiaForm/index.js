@@ -9,6 +9,7 @@ import SearchBar from '../SearchBar';
 import VoltarButton from '../VoltarButton';
 import { getAgendamento, deleteAgendamento } from "../../../services/agendamentoService";
 import { getAllVaga, updateVaga } from '../../../services/vagaService';
+import { getTutorByAnimal } from '../../../services/tutorService';
 
 function GetAllAgendamentosDiaForm() {
   const router = useRouter();
@@ -16,17 +17,25 @@ function GetAllAgendamentosDiaForm() {
   const [modalOpen, setModalOpen] = useState(false);
   const [vagas, setVagas] = useState([]);
   const [selectedVaga, setSelectedVaga] = useState(null);
+  const [tutor, setTutor] = useState('');
 
   const handleDataSelecionada = (novaData) => {
     setDataSelecionada(novaData);
     console.log("Data Selecionada:", novaData);
   };
 
-  const openModal = (vaga) => {
+  const openModal = async (vaga) => {
     setSelectedVaga(vaga);
     setModalOpen(true);
-    console.log("Modal opened");
+    try {
+      console.log("ID DO BIXO:", vaga.agendamento.animal.id)
+      const tutorSelected = await getTutorByAnimal(vaga.agendamento.animal.id);
+      setTutor(tutorSelected);
+    } catch (error) {
+      console.error('Erro ao obter tutor:', error);
+    }
   };
+
 
   const closeModal = () => {
     setModalOpen(false);
@@ -54,7 +63,6 @@ function GetAllAgendamentosDiaForm() {
   }, [dataSelecionada]);
 
   const horarios = ["08:00", "09:00", "10:00", "11:00", "12:00"];
-  console.log("Horários do dia:", horarios);
   console.log(vagas);
 
   return (
@@ -96,7 +104,6 @@ function GetAllAgendamentosDiaForm() {
                 <th className={styles.time}>{horario}</th>
                 <th className={styles.th}>
                   <div className={styles.cardsJuntos}>
-                    {console.log(`Filtrando vagas para horário: ${horario}`)}
                     {vagas.filter(vaga => vaga.dataHora.startsWith(dataSelecionada.toISOString().slice(0, 10) + 'T' + horario))
                       .map(vaga => {
                         console.log(`Vaga (${vaga.dataHora} - ${vaga.id}):`, vaga);
@@ -142,7 +149,7 @@ function GetAllAgendamentosDiaForm() {
               <div className={styles.container2}>
                 <div className={styles.box}>
                   <div className={styles.title}>Tutor</div>
-                  <div className={styles.subtitle}>tutor_nome</div>
+                  <div className={styles.subtitle}>{tutor.nome}</div>
                 </div>
                 <div className={styles.box}>
                   <div className={styles.title}>Especialidade</div>

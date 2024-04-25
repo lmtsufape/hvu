@@ -211,8 +211,34 @@
     align-items: center;
 
 }
+.button_disponível {
+    display: flex;
+    width: 16em;
+    height: 6em;
+    border-radius: 12px;
+    background-color: #EEF8F3;
+    border: 2px solid #EEF8F3;
+    align-items: center;
+
+}
 
 .status_disponivel {
+    width: 6.5em;
+    height: 2.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 21.87px;
+    border: 0.7px solid #327053;
+    background-color: #F6F6F6;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.5em;
+    font-weight: 600;
+    line-height: 21px;
+    letter-spacing: 0em;
+    color: #327053;
+}
+.status_disponível {
     width: 6.5em;
     height: 2.5em;
     display: flex;

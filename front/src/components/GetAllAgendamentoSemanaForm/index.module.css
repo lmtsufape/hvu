@@ -23,7 +23,7 @@
     margin-top: 56px;
 }
 
-.cadendar_container {
+.calendar_container {
     width: 1200px;
     height: 42.58px;
     margin-top: 56px;
@@ -32,7 +32,7 @@
     align-items: center;
 }
 
-.cadendar_box {
+.calendar_box {
     display: flex;
     gap: 21.1px;
     align-items: center;
@@ -165,6 +165,16 @@
 }
 
 .disponivel{
+    background-color: #EEF8F3;
+    border: 2px solid #EEF8F3;
+    padding: 0 0.5rem 0 0.5rem;
+    border-radius: 1rem;
+    margin: 0.5rem;
+    font-weight: 700;
+    color: #474747;
+}
+
+.disponível{
     background-color: #EEF8F3;
     border: 2px solid #EEF8F3;
     padding: 0 0.5rem 0 0.5rem;
