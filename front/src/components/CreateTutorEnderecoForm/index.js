@@ -56,8 +56,9 @@ function CreateTutorEnderecoForm() {
 
     function handleEnderecoChange(event) {
         const { name, value } = event.target;
-        setEnderecoFormData({ ...enderecoFormData, [name]: value });
         localStorage.setItem(name, value);
+        setEnderecoFormData({ ...enderecoFormData, [name]: value });
+        console.log('estou louco:', enderecoFormData);
     }
 
     const validateForm = () => {

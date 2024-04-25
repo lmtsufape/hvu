@@ -78,7 +78,8 @@ function UpdateTutorBySecretario() {
                         estado: data.uf,
                         cidade: data.localidade,
                         rua: data.logradouro,
-                        bairro: data.bairro
+                        bairro: data.bairro,
+                        cep: cep
                     }
                 });
             } else {
@@ -114,7 +115,7 @@ function UpdateTutorBySecretario() {
             }
         }
         setErrors(newErrors);
-    
+
         return Object.keys(newErrors).length === 0;
     };
 
@@ -139,7 +140,7 @@ function UpdateTutorBySecretario() {
                 bairro: tutor.endereco.bairro
             }
         };
-        
+
         try {
             await updateTutor(tutor.id, TutorToUpdate);
             console.log("TutorToUpdate:", TutorToUpdate);
@@ -215,7 +216,7 @@ function UpdateTutorBySecretario() {
                                 </div>
                             </div>
                         </div>
-                    </div>                
+                    </div>
                 )}
 
                 <div className={styles.button_box}>

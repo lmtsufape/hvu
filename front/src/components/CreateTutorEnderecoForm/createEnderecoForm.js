@@ -3,6 +3,7 @@ import InputMask from "react-input-mask";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./createEnderecoForm.module.css";
+import { number } from 'prop-types';
 
 function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors, laiChecked, handleCheckboxChange }) {
   const [cidade, setCidade] = useState("");
@@ -14,7 +15,7 @@ function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors, la
     const cep = event.target.value;
     handleEnderecoChange(event); // Chama a função handleEnderecoChange para atualizar o estado com o valor do CEP
 
-    if (cep.length === 9) { // Verifica se o CEP foi completamente preenchido
+    if (isNaN(cep[8]) === false) { // Verifica se o CEP foi completamente preenchido
       try {
         const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
         const { localidade, uf, logradouro, bairro } = response.data;
@@ -25,6 +26,7 @@ function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors, la
         setBairro(bairro);
 
         // Atualiza o estado com os dados obtidos da API - cidade, estado, rua e bairro
+
         handleEnderecoChange({
           target: {
             name: "cidade",
@@ -52,6 +54,13 @@ function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors, la
             value: bairro
           }
         });
+        handleEnderecoChange({
+          target: {
+            name: "cep",
+            value: cep
+          }
+        });
+        console.log(response.data.cep)
       } catch (error) {
         console.error("Erro ao buscar CEP:", error);
       }
