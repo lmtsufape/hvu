@@ -127,3 +127,28 @@
   line-height: 20px;
   color: #000000;
 }
+
+.col_radio {
+  display: flex;
+  gap: 10px;
+}
+
+.checkbox {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  background-color: white;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  }
+
+.checkbox:focus {
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px 2px #3d856371;
+}
+
+.checkbox:checked {
+  background-color: #327053;
+  border: 1px solid #ccc;
+  box-shadow: #327053;
+}
