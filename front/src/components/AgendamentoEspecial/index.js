@@ -10,6 +10,7 @@ import VoltarButton from '../VoltarButton';
 import AnimalList from "@/hooks/useAnimalList";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import TipoConsultaList from "@/hooks/useTipoConsultaList";
+import MedicoList from "@/hooks/useMedicoList";
 import { createVagaEspecial } from "../../../services/vagaService";
 
 function AgendamentoEspecial() {
@@ -22,6 +23,7 @@ function AgendamentoEspecial() {
     proximaConsulta: "",
     animal: {id: null},
     tipoConsulta: {id: null},
+    medico: {id: null},
   });
   console.log("vaga:", vaga);
 
@@ -44,6 +46,13 @@ function AgendamentoEspecial() {
   const handleTiposConsultaSelection = (event) => {
       const selectedId = event.target.value;
       setSelectedTiposConsulta(selectedId);
+  };
+
+  const { medicos } = MedicoList();
+  const [selectedMedico, setSelectedMedico] = useState(null);
+  const handleMedicoSelection = (event) => {
+      const selectedId = event.target.value;
+      setSelectedMedico(selectedId);
   };
 
   function handleInputChange(event) {
@@ -79,6 +88,7 @@ function AgendamentoEspecial() {
       proximaConsulta: vaga.proximaConsulta,
       animal: {id: parseInt(selectedAnimal)},
       tipoConsulta: {id: parseInt(selectedTiposConsulta)},
+      medico: {id: parseInt(selectedMedico)}
     }
     console.log("vagaToCreate:", vagaToCreate);
 
@@ -118,28 +128,37 @@ function AgendamentoEspecial() {
             </div>
             <div className={`col ${styles.col}`}>
               <label htmlFor="horario" className="form-label">Horário</label>
-              <select 
-                className={`form-select ${styles.input}`}
+              <input 
+                type="time"
+                className={`form-control ${styles.input}`}
                 name="horario"
                 aria-label="Selecione o horário"
                 value={escolherHorario || ""}
                 onChange={handleHorarioChange}
-              >
-                <option value="">Selecione o horário</option>
-                <option value="08h00">08h00min</option>
-                <option value="09h00">09h00min</option>
-                <option value="10h00">10h00min</option>
-                <option value="11h00">11h00min</option>
-                <option value="13h00">13h00min</option>
-                <option value="14h00">14h00min</option>
-                <option value="15h00">15h00min</option>
-                <option value="16h00">16h00min</option>
-              </select>
+              />
             </div>
           </div>
 
           <div className={styles.espacodosforms}>
             <div className="row">
+              <div className={`col ${styles.col}`}>
+                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                <select 
+                  className={`form-select ${styles.input}`}
+                  name="medico"
+                  aria-label="Selecione o(a) veterinário(a)"
+                  value={selectedMedico || ""}
+                  onChange={handleMedicoSelection}
+                >
+                  <option value="">Selecione o&#40;a&#41; Veterinário&#40;a&#41;</option>
+                  {medicos.map((medico) => (
+                    <option key={medico.id} value={medico.id}>
+                      {medico.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className={`col ${styles.col}`}>
                 <label htmlFor="especialidade" className="form-label">Especialidade</label>
                 <select 
@@ -157,24 +176,8 @@ function AgendamentoEspecial() {
                   ))}
                 </select>
               </div>
-              {/* transformar isso aqui em tipo um search */}
-              <div className={`col ${styles.col}`}>
-                <label htmlFor="animal" className="form-label">Paciente</label>
-                <select 
-                  className={`form-select ${styles.input}`}
-                  name="animal"
-                  aria-label="Selecione o paciente"
-                  value={selectedAnimal || ""}
-                  onChange={handleAnimalSelection}
-                >
-                  <option value="">Selecione o paciente</option>
-                  {animais.map((animal) => (
-                    <option key={animal.id} value={animal.id}>
-                      {animal.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
+
+              
             </div>
           </div>
           <div className={styles.espacodosforms}>
@@ -207,6 +210,31 @@ function AgendamentoEspecial() {
                     </option>
                   ))}
                 </select>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.espacodosforms}>
+            <div className="row">
+              <div className={`col ${styles.col}`}>
+                  <label htmlFor="animal" className="form-label">Paciente</label>
+                  <select 
+                    className={`form-select ${styles.input}`}
+                    name="animal"
+                    aria-label="Selecione o paciente"
+                    value={selectedAnimal || ""}
+                    onChange={handleAnimalSelection}
+                  >
+                    <option value="">Selecione o paciente</option>
+                    {animais.map((animal) => (
+                      <option key={animal.id} value={animal.id}>
+                        {animal.nome}
+                      </option>
+                    ))}
+                  </select>
+              </div>
+              <div className={`col ${styles.col}`}>
+                
               </div>
             </div>
           </div>
