@@ -509,6 +509,14 @@ public class Facade {
 		return vagaServiceInterface.findVagasByDataAndEspecialidade(data, especialidade);
 	}
 	
+	public List<Animal> findAnimaisWithReturn(){
+		List<Vaga> vagas = vagaServiceInterface.findLatestVagaForEachAnimal();
+		
+		return vagas.stream()
+        .map(vaga -> vaga.getAgendamento().getAnimal())
+        .collect(Collectors.toList());
+	}
+	
 	public List<Vaga> findVagaByDataAndEspecialidadeAndMedico(LocalDate data, Especialidade especialidade, Medico medico){
 		return vagaServiceInterface.findVagasByDataAndEspecialidadeAndMedico(data, especialidade, medico);
 	}
