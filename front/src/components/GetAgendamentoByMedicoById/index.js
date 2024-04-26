@@ -115,11 +115,11 @@ function GetAgendamentoByMedicoById() {
                                             <div className={styles.lista}>
                                                 <div className={styles.infos}>
                                                     <h6>Raça</h6>
-                                                    <p>{vaga.agendamento && vaga.agendamento.animal && vaga.agendamento.animal.raca && vaga.agendamento && vaga.agendamento.animal && vaga.agendamento.animal.raca.nome}</p>
+                                                    <p>{vaga.agendamento && vaga.agendamento.animal && vaga.agendamento.animal.raca && vaga.agendamento.animal.raca.nome}</p>
                                                 </div>
                                                 <div className={styles.infos}>
                                                     <h6>Porte</h6>
-                                                    <p>{vaga.agendamento && vaga.agendamento.animal && vaga.agendamento.animal.raca && vaga.agendamento && vaga.agendamento.animal && vaga.agendamento.animal.raca.porte}</p>
+                                                    <p>{vaga.agendamento && vaga.agendamento.animal && vaga.agendamento.animal.raca && vaga.agendamento.animal.raca.porte ? vaga.agendamento.animal.raca.porte : 'Não definido'}</p>
                                                 </div>
                                             </div>
 
@@ -136,7 +136,7 @@ function GetAgendamentoByMedicoById() {
 
                                             <div className={styles.button_box}>
                                                 <button onClick={() => router.push(`/getAnimalByIdByMedico/${vaga.agendamento.animal.id}`)}>
-                                                    Acessar paciente
+                                                    Visualizar paciente
                                                 </button>
                                             </div>
                                         </div>

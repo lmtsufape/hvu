@@ -76,7 +76,7 @@ function PacientesBySecretario() {
                                                 className={styles.acessar_button}
                                                 onClick={() => router.push(`/getTutorByIdSecretario/${tutor.id}/${animal.id}`)}
                                             >
-                                                Acessar
+                                                Visualizar
                                             </button>
                                         </div>
                                     </div>

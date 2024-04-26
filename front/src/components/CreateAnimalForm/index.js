@@ -200,7 +200,7 @@ function CreateAnimalForm() {
               type="date"
               className={`form-control ${styles.input} ${errors.dataNascimento ? "is-invalid" : ""}`}
               name="dataNascimento"
-              value={animalData.dataNascimento}
+              value={animalData.dataNascimento || ""}
               onChange={handleAnimalChange}
             />
             {errors.dataNascimento && <div className="invalid-feedback">{errors.dataNascimento}</div>}
@@ -270,7 +270,7 @@ function CreateAnimalForm() {
               className={`form-control ${styles.input}`}
               name="peso"
               placeholder="Peso (Opcional)"
-              value={animalData.peso}
+              value={animalData.peso || ""}
               onChange={handleAnimalChange}
               style={{ paddingRight: '30px' }} 
             />

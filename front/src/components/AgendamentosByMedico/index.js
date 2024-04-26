@@ -114,7 +114,7 @@ export default function AgendamentosByMedico() {
                                     </div>
                                     <div> 
                                         <button className={styles.acessar_button} onClick={() => router.push(`/getAgendamentoByMedicoById/${agendamento.id}`)}>
-                                            Acessar
+                                            Visualizar
                                         </button>
                                     </div>
                                 </div>
