@@ -66,7 +66,7 @@ function PacientesByMedico() {
                                     className={styles.acessar_button}
                                     onClick={() => router.push(`/getAnimalByIdByMedico/${agendamento.animal.id}`)}
                                 >
-                                    Acessar
+                                    Visualizar
                                 </button>
                             </div>
                         </li>

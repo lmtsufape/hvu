@@ -85,7 +85,7 @@ function GetAllMedicos() {
                                     className={styles.acessar_button}
                                     onClick={() => router.push(`/getMedicoById/${medico.id}`)} 
                                 >
-                                    Acessar
+                                    Visualizar
                                 </button>
                                 < ExcluirButton itemId={medico.id} onDelete={handleDeleteMedico} />
                             </div>

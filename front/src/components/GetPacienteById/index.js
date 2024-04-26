@@ -87,18 +87,18 @@ function GetPacienteById() {
                                             </div>
                                             <div className={styles.infos}>
                                                 <h6>Porte</h6>
-                                                <p>{animal.raca && animal.raca.porte}</p>
+                                                <p>{animal.raca && animal.raca.porte ? animal.raca.porte : 'Não especificado'}</p>
                                             </div>
                                         </div>
 
                                         <div className={styles.lista}>
                                             <div className={styles.infos}>
                                                 <h6>Data de nascimento</h6>
-                                                <p>{formatAnimalDateOfBirth(animal.dataNascimento)}</p>
+                                                <p>{animal.dataNascimento ? formatAnimalDateOfBirth(animal.dataNascimento) : 'Não definida'}</p>
                                             </div>
                                             <div className={styles.infos}>
                                                 <h6>Peso</h6>
-                                                <p>{animal.peso === 0 ? "Não definido" : animal.peso}</p>
+                                                <p>{animal.peso === 0 || animal.peso === '' ? "Não definido" : animal.peso}</p>
                                             </div>
                                         </div>
 

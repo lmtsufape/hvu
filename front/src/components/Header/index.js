@@ -4,7 +4,6 @@ import Image from "next/image";
 import styles from "./index.module.css";
 import {LoginGreenButton} from '../GreenButton';
 import { LoginWhiteButton } from '../WhiteButton';
-import {CadastrolWhiteButton} from '../WhiteButton';
 import { getCurrentUsuario } from '../../../services/userService';
 
 //Header com botão de login e cadastro
@@ -84,9 +83,9 @@ export function Header01() {
             try {
                 const TutoresData = await getCurrentUsuario();
                 setTutores(TutoresData.usuario);
-                console.log('Tutores:', TutoresData)
+                console.log('Usuários:', TutoresData)
             } catch (error) {
-                console.error('Erro ao buscar tutores:', error);
+                console.error('Erro ao buscar usuários:', error);
             }
         };
         fetchData();

@@ -77,7 +77,7 @@ function MeusAnimaisList() {
                                     className={styles.acessar_button}
                                     onClick={() => router.push(`/getAnimalById/${animal.id}`)}
                                 >
-                                    Acessar
+                                    Visualizar
                                 </button>
                                 < ExcluirButton itemId={animal.id} onDelete={handleDeleteAnimal} />
                             </div>

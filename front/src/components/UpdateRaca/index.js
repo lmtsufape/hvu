@@ -134,7 +134,7 @@ function UpdateRaca() {
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
                     <button type="button" className={styles.criar_button} onClick={handleRacaUpdate}>
-                        Editar
+                        Salvar
                     </button>
                 </div>
             </form>

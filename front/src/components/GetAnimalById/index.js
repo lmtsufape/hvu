@@ -53,11 +53,7 @@ function GetAnimalByIdForm() {
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Peso</h6>
-                                        {animal.peso ? (
-                                            <p>{animal.peso}</p>
-                                        ) : (
-                                            <p>Peso não fornecido</p>
-                                        )}
+                                        <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
                                     </div>
                                 </div>
 
@@ -72,7 +68,7 @@ function GetAnimalByIdForm() {
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Data de nascimento</h6>
-                                        <p>{formatDate(animal.dataNascimento)}</p>
+                                        <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
                                     </div>
                                 </div>
                             </div>
