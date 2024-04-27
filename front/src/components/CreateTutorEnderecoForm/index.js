@@ -9,11 +9,13 @@ import { postRegister } from "../../../common/postRegister";
 import { postLogin } from "../../../common/postLogin";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
+// import Alert from "../Alert";
 
 function CreateTutorEnderecoForm() {
     const router = useRouter();
     const [laiChecked, setLaiChecked] = useState(false);
     const [errors, setErrors] = useState({});
+    // const [showAlert, setShowAlert] = useState(false);
 
     const [tutorFormData, setTutorFormData] = useState({
         nome: "",
@@ -57,7 +59,6 @@ function CreateTutorEnderecoForm() {
         const { name, value } = event.target;
         localStorage.setItem(name, value);
         setEnderecoFormData({ ...enderecoFormData, [name]: value });
-        console.log('estou louco:', enderecoFormData);
     }
 
     const validateForm = () => {
@@ -154,6 +155,7 @@ function CreateTutorEnderecoForm() {
                 await postLogin(tutorFormData.email, tutorFormData.senha);
                 const response = await createTutor(formData);
                 console.log(response);
+                // setShowAlert(true); 
                 alert("Cadastro realizado com sucesso!");
                 router.push('/mainTutor');
             } catch (error) {
@@ -195,6 +197,7 @@ function CreateTutorEnderecoForm() {
                 </div>
                 </div>
             </form>
+            {/* <Alert message="Cadastro realizado com sucesso!" show={showAlert} /> */}
         </div>
     );
 }

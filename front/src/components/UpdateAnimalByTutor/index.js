@@ -21,15 +21,7 @@ function UpdateAnimalByTutor() {
 
   const [racasByEspecie, setRacasByEspecie] = useState([]);
 
-  const [animalData, setAnimalData] = useState({
-    nome: '',
-    sexo: '',
-    alergias: '',
-    dataNascimento: '',
-    imagem: '',
-    peso: '',
-    raca: { id: null }
-  });
+  const [animalData, setAnimalData] = useState({ });
 
   useEffect(() => {
     if (id) {
@@ -45,7 +37,6 @@ function UpdateAnimalByTutor() {
           console.error('Erro ao buscar animal:', error);
         }
       };
-
       fetchData();
     }
   }, [id]);
@@ -138,6 +129,7 @@ function UpdateAnimalByTutor() {
       alergias: animalData.alergias,
       dataNascimento: animalData.dataNascimento,
       imagem: animalData.imagem,
+      peso: animalData.peso,
       raca: {
         id: parseInt(selectedRaca)
       }
@@ -234,7 +226,8 @@ function UpdateAnimalByTutor() {
             <div className="row">
               <div className={`col ${styles.col}`}>
                 <label htmlFor="alergias" className="form-label">Alergias</label>
-                <input type="text"
+                <input 
+                  type="text"
                   className={`form-control ${styles.input}  ${errors.alergias ? "is-invalid" : ""}`}
                   name="alergias"
                   value={animalData.alergias}
