@@ -19,13 +19,12 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
                 <div className="row">
                     <div className="col">
                         {renderInput("E-mail", "Insira seu email", "email", tutorFormData.email, handleTutorChange, errors.email, "email")}
-                        {renderInput("CPF", "Insira seu CPF", "cpf", tutorFormData.cpf, handleTutorChange, errors.cpf, "text", "999.999.999-99")}
                         {renderInput("Crie uma senha", "Crie uma senha", "senha", tutorFormData.senha, handleTutorChange, errors.senha, "password", null, showSenha, setShowSenha)}
+                        {renderInput("Confirmar senha", "Confirme sua senha ", "confirmarSenha", tutorFormData.confirmarSenha, handleTutorChange, errors.confirmarSenha, "password", null, showConfirmarSenha, setShowConfirmarSenha)}
                     </div>
                     <div className="col">
                         {renderInput("Telefone", "Insira seu telefone", "telefone", tutorFormData.telefone, handleTutorChange, errors.telefone, "tel", "(99) 99999-9999")}
-                        {renderInput("RG", "Insira seu RG", "rg", tutorFormData.rg, handleTutorChange, errors.rg, "text", "99.999.999-9")}
-                        {renderInput("Confirmar senha", "Confirme sua senha ", "confirmarSenha", tutorFormData.confirmarSenha, handleTutorChange, errors.confirmarSenha, "password", null, showConfirmarSenha, setShowConfirmarSenha)}
+                        {renderInput("CPF", "Insira seu CPF", "cpf", tutorFormData.cpf, handleTutorChange, errors.cpf, "text", "999.999.999-99")}
                     </div>
                 </div>
                 {/* Adição da informação sobre a LAI */}
@@ -60,7 +59,7 @@ function renderInput(label, placeholder, name, value, onChange, error, type = "t
                         </button>
                     </div>
                 )}
-            {error && <div className="invalid-feedback">{error}</div>}
+            {error && <div className={`invalid-feedback ${styles.error_message}`}>{error}</div>}
         </div>
         </div>
     );

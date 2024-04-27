@@ -205,13 +205,12 @@ function CreateMedico() {
                                 {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
                                 {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
                                 {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
-                                {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
+                                {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("Telefone", "Digite o telefone", "telefone", medico.telefone, handleMedicoChange, "tel", errors.telefone, "(99) 99999-9999")}
+                                {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
                                 
-                                {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
-
                                 <div className="mb-3">
                                     <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
                                     <select
@@ -271,7 +270,7 @@ function CreateMedico() {
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />
                     <button type="button" className={styles.criar_button} onClick={handleCreateMedico}>
-                        {cityStateLoading ? "Aguarde..." : "Criar"}
+                        {cityStateLoading ? "Aguarde..." : "Cadastrar"}
                     </button>
                 </div>
 

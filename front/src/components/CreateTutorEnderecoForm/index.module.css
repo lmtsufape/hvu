@@ -24,27 +24,34 @@
 .form_box {
   border-radius: 20px;
   border: 0.5px solid #B1B1B1;
+  min-height: 1030px; 
 }
 
 .box_button {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: right;
   margin-bottom: 30px;
-  margin-top: -20px;
+  margin-top: -10px;
+  margin-right: 32px;
+  gap: 32px;
+  float: right;
 }
 
-.button {
+.criar_button {
   width: 180px;
-  height: 48px;
+  height: 56px;
   border-radius: 10px;
-  border: 1px solid #327053;
-  font-size: 16px;
-  color: white;
-  background-color: #327053;
+  border: 1px solid #39805F;
+  color: #FFF5F6;
+  background-color: #39805F;
   font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
 }
 
-.button:hover {
-  background-color: #5b977b;
+.criar_button:hover {
+  background-color: #39805fe6;
 }

@@ -70,17 +70,20 @@ function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors, la
   return (
     <div className={styles.boxcadastrotutor}>
       <div className={styles.titulo}>Endereço</div>
-      {renderInput("CEP", "cep", enderecoFormData.cep, handleCEPChange, "Ex: 55250-000", errors.cep, "text", "99999-999")}
-      {renderInput("Número", "numero", enderecoFormData.numero, handleEnderecoChange, "Ex: 140", errors.numero)}
+      
+     
       <div className="mb-3">
         <div className="row">
           <div className="col">
-            {renderInput("Rua", "rua", rua, handleEnderecoChange, "Ex: Avenida Bom Pastor", errors.rua)}
-            {renderInput("Bairro", "bairro", bairro, handleEnderecoChange, "Ex: Centro", errors.bairro)}
+            {renderInput("CEP", "cep", enderecoFormData.cep, handleCEPChange, "Digite o cep", errors.cep, "text", "99999-999")}
+            {renderInput("Rua", "rua", rua, handleEnderecoChange, "", errors.rua)}
+            {renderInput("Cidade", "cidade", cidade, handleEnderecoChange, "", errors.cidade)}
+            
           </div>
           <div className="col">
-            {renderInput("Cidade", "cidade", cidade, handleEnderecoChange, "Ex: Garanhuns", errors.cidade)}
-            {renderInput("Estado", "estado", estado, handleEnderecoChange, "Ex: Pernambuco", errors.estado)}
+            {renderInput("Número", "numero", enderecoFormData.numero, handleEnderecoChange, "Digite o número do endereço", errors.numero)}
+            {renderInput("Bairro", "bairro", bairro, handleEnderecoChange, "", errors.bairro)}
+            {renderInput("Estado", "estado", estado, handleEnderecoChange, "", errors.estado)}
           </div>
         </div>
         <div className={`${styles.informacaoLAI} ${errors.lai ? 'is-invalid' : ''}`}>
@@ -90,7 +93,7 @@ function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors, la
           <label>
             <input
               type="checkbox"
-              className={`form-check-input ${styles.checkbox} `}
+              className={`form-check-input ${styles.checkbox}`}
               checked={laiChecked}
               onChange={handleCheckboxChange}
             />
@@ -119,7 +122,7 @@ function renderInput(label, name, value, onChange, placeholder, error, type = "t
         onChange={onChange}
         {...inputProps}
       />
-      {error && <div className="invalid-feedback">{error}</div>}
+      {error && <div className={`invalid-feedback ${styles.error_message}`}>{error}</div>}
     </div>
   );
 }
