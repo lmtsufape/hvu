@@ -36,7 +36,7 @@ function PacientesBySecretario() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Pacientes</h1>
+            <h1>Listagem de pacientes</h1>
             <div className={styles.navbar}>
                 <SearchBar
                     className={styles.pesquisa}

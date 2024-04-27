@@ -167,7 +167,7 @@ function CreateTutorEnderecoForm() {
     return (
         <div className={styles.container}>
             < VoltarButton />
-            <h1>Cadastro do&#40;a&#41; tutor&#40;a&#41;</h1>
+            <h1>Cadastrar tutor&#40;a&#41;</h1>
             <form autoComplete="off">
                 <div className={styles.form_box}>
                     <div>

@@ -183,7 +183,7 @@ function CreateAnimalForm() {
   return (
     <div className={styles.container}>
       <VoltarButton />
-      <h1>Informações do Animal</h1>
+      <h1>Cadastrar animal</h1>
       <form className={styles.form_box} onSubmit={handleSubmit}>
         <div className="row">
           <div className={`col ${styles.col}`}>

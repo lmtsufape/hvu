@@ -180,7 +180,7 @@ function AgendamentoEspecial() {
         <VoltarButton />
       </div>
       <div>
-        <h1 className={styles.titulocadastro}>Novo agendamento</h1>
+        <h1 className={styles.titulocadastro}>Criar agendamento</h1>
       </div>
 
       <div className={`${styles.boxagendarconsulta} ${styles.container}`}>

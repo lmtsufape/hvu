@@ -48,7 +48,7 @@ function MeusAnimaisList() {
         <div className={styles.container}>
             < VoltarButton />
 
-            <h1>Animais</h1>
+            <h1>Meus animais</h1>
 
             <div className={styles.navbar}>
                 <SearchBar

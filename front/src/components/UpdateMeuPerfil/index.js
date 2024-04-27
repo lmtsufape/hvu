@@ -186,7 +186,7 @@ function UpdateMeuPerfil() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Editar Perfil</h1>
+            <h1>Editar meu Perfil</h1>
 
             <form className={styles.inputs_container}>
 

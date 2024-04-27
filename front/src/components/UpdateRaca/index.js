@@ -99,7 +99,7 @@ function UpdateRaca() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Editar raça</h1>
+            <h1>Editar informações da raça</h1>
             <form className={styles.inputs_container}>
                 <div className={styles.inputs_box}>
                     <div className="row">

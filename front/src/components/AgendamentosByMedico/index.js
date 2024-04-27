@@ -77,7 +77,7 @@ export default function AgendamentosByMedico() {
 
             <div className={styles.main}>
             <div className={styles.titleMeusAgendamentos}>
-                <h1>Agendamentos</h1>
+                <h1>Agendamentos do dia</h1>
             </div>
             
             <div className={`col ${styles.col}`}>
