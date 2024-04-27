@@ -147,6 +147,7 @@ function UpdateTutorBySecretario() {
             cpf: tutor.cpf,
             telefone: tutor.telefone,
             endereco: {
+                id: tutor.endereco.id,
                 cep: tutor.endereco.cep,
                 rua: tutor.endereco.rua,
                 estado: tutor.endereco.estado,
