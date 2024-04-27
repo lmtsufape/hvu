@@ -74,16 +74,8 @@ public class MedicoController {
 	@PatchMapping("medico/{id}")
 	public MedicoResponse updateMedico(@PathVariable Long id, @Valid @RequestBody MedicoRequest obj) {
 		try {
-			//Medico o = obj.convertToEntity();
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
-			
 			Medico o = obj.convertToEntity();
 			Medico oldObject = facade.findMedicoById(id);
-			
-			if(!principal.getSubject().equals(oldObject.getUserId())) {
-				throw new AccessDeniedException("This is not your account");
-			}
 		
 			TypeMap<Medico, Medico> typeMapper = modelMapper
 													.typeMap(Medico.class, Medico.class)
@@ -101,14 +93,7 @@ public class MedicoController {
 	@DeleteMapping("medico/{id}")
 	public String deleteMedico(@PathVariable Long id) {
 		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
-			
 			Medico oldObject = facade.findMedicoById(id);
-			
-			if(!principal.getSubject().equals(oldObject.getUserId())) {
-				throw new AccessDeniedException("This is not your account");
-			}
 			facade.deleteMedico(id);
 			return "";
 		} catch (RuntimeException ex) {
