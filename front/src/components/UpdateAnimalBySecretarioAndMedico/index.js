@@ -21,15 +21,7 @@ function UpdateAnimalBySecretarioAndMedico() {
 
   const [racasByEspecie, setRacasByEspecie] = useState([]);
 
-  const [animalData, setAnimalData] = useState({
-    nome: '',
-    sexo: '',
-    alergias: '',
-    dataNascimento: '',
-    imagem: '',
-    peso: '',
-    raca: { id: null }
-  });
+  const [animalData, setAnimalData] = useState({ });
 
   useEffect(() => {
     if (id) {
@@ -45,7 +37,6 @@ function UpdateAnimalBySecretarioAndMedico() {
           console.error('Erro ao buscar animal:', error);
         }
       };
-
       fetchData();
     }
   }, [id]);
@@ -99,9 +90,9 @@ function UpdateAnimalBySecretarioAndMedico() {
   const validateForm = () => {
     const newErrors = {};
 
-    // if (!animalData.nome) {
-    //   newErrors.nome = "Campo obrigatório";
-    // }
+    if (!animalData.nome) {
+      newErrors.nome = "Campo obrigatório";
+    }
     
     if (!animalData.sexo) {
       newErrors.sexo = "Campo obrigatório";
@@ -124,6 +115,12 @@ function UpdateAnimalBySecretarioAndMedico() {
   };
 
   const handleUpdateAnimal = async (event) => {
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
+    }
+
     event.preventDefault();
 
     const animalToUpdate = {
@@ -132,19 +129,19 @@ function UpdateAnimalBySecretarioAndMedico() {
       alergias: animalData.alergias,
       dataNascimento: animalData.dataNascimento,
       imagem: animalData.imagem,
+      peso: animalData.peso,
       raca: {
         id: parseInt(selectedRaca)
       }
     };
 
     console.log("Dados do animal a ser atualizado:", animalToUpdate);
-
     if(validateForm()) {
       if (id) {
         try {
           await updateAnimal(id, animalToUpdate);
           alert("animal atualizado com sucesso!");
-          router.push(`/pacientesBySecretario`);
+          router.push(`/getAnimalById/${id}`);
         } catch (error) {
           console.log('Erro ao atualizar o animal, tente novamente.');
           console.error('Erro ao atualizar o animal:', error);
@@ -157,7 +154,7 @@ function UpdateAnimalBySecretarioAndMedico() {
     <div className={styles.page}>
     < VoltarButton />
     <div>
-      <h1 className={styles.titulocadastro}>Editar informações do animal</h1>
+      <h1 className={styles.titulocadastro}>Editar informações do paciente</h1>
     </div>
 
     <form className={`${styles.boxcadastrotutor} ${styles.container}`} onSubmit={handleUpdateAnimal}>
@@ -170,12 +167,13 @@ function UpdateAnimalBySecretarioAndMedico() {
                 <label htmlFor="nome" className="form-label">Nome</label>
                 <input
                   type="text"
-                  className={`form-control ${styles.input}`}
+                  className={`form-control ${styles.input}  ${errors.nome ? "is-invalid" : ""}`}
                   name="nome"
                   value={animalData.nome}
                   onChange={handleAnimalChange}
                   disabled
                 />
+                {errors.nome && <div className={`invalid-feedback ${styles.error_message}`}>{errors.nome}</div>}
               </div>
               <div className={`col ${styles.col}`}>
                 <label htmlFor="dataNascimento" className="form-label">Data de Nascimento </label>
@@ -193,10 +191,10 @@ function UpdateAnimalBySecretarioAndMedico() {
               <div className={`col ${styles.col}`}>
                 <label htmlFor="especie" className="form-label">Espécie</label>
                 <select
-                  className={`form-control ${styles.input}  ${errors.especie ? "is-invalid" : ""}`}
+                  className={`form-select ${styles.input}  ${errors.selectedEspecie ? "is-invalid" : ""}`}
                   name="especie"
                   aria-label={animalData.raca && animalData.raca.especie && animalData.raca.especie.nome}
-                  value={selectedEspecie || ''}
+                  value={selectedEspecie}
                   onChange={handleEspecieSelection}
                 >
                   {especies.map((especie) => (
@@ -210,10 +208,10 @@ function UpdateAnimalBySecretarioAndMedico() {
               <div className={`col ${styles.col}`}>
                 <label htmlFor="raca" className="form-label">Raça</label>
                 <select
-                  className={`form-control ${styles.input}  ${errors.raca ? "is-invalid" : ""}`}
+                  className={`form-select ${styles.input}  ${errors.selectedRaca ? "is-invalid" : ""}`}
                   name="raca"
                   aria-label={animalData.raca && animalData.raca.nome}
-                  value={selectedRaca || ''}
+                  value={selectedRaca}
                   onChange={handleRacaSelection}
                 >
                   {racasByEspecie.map((raca) => (
@@ -229,7 +227,8 @@ function UpdateAnimalBySecretarioAndMedico() {
             <div className="row">
               <div className={`col ${styles.col}`}>
                 <label htmlFor="alergias" className="form-label">Alergias</label>
-                <input type="text"
+                <input 
+                  type="text"
                   className={`form-control ${styles.input}  ${errors.alergias ? "is-invalid" : ""}`}
                   name="alergias"
                   value={animalData.alergias}
@@ -257,9 +256,8 @@ function UpdateAnimalBySecretarioAndMedico() {
 
               <div className={`col ${styles.col}`}>
                 <label htmlFor="sexo" className="form-label">Sexo</label>
-                <select 
+                <select className={`form-select ${styles.input}  ${errors.sexo ? "is-invalid" : ""}`}
                   name="sexo"
-                  className={`form-control ${styles.input}  ${errors.nome ? "is-invalid" : ""}`}
                   aria-label={animalData.sexo}
                   value={animalData.sexo}
                   onChange={handleAnimalChange}

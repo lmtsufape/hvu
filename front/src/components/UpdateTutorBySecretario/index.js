@@ -18,22 +18,9 @@ function UpdateTutorBySecretario() {
     const [senhaErro, setSenhaErro] = useState("");
     const [confirmarSenhaErro, setConfirmarSenhaErro] = useState("");
 
-    const [tutor, setTutor] = useState({
-        nome: "",
-        email: "",
-        senha: "",
-        cpf: "",
-        telefone: "",
-        confirmarSenha: "",
-        endereco: {
-            cep: "",
-            rua: "",
-            estado: "",
-            cidade: "",
-            numero: "",
-            bairro: ""
-        }
-    });
+    const [tutor, setTutor] = useState({});
+
+    console.log("tutor: ", tutor);
 
     useEffect(() => {
         if (id) {
@@ -170,10 +157,10 @@ function UpdateTutorBySecretario() {
         };
 
         try {
-            await updateTutor(tutor.id, TutorToUpdate);
+            await updateTutor(id, TutorToUpdate);
             console.log("TutorToUpdate:", TutorToUpdate);
             alert("Informações editadas com sucesso!");
-            router.push("/meuPerfil");
+            // router.push("/meuPerfil");
         } catch (error) {
             console.log("TutorToUpdate:", TutorToUpdate);
             console.error("Erro ao editar tutor:", error);
