@@ -11,6 +11,8 @@ import { createVagaNormal } from "../../../services/vagaService";
 function GerenciarVagas() {
     const router = useRouter();
 
+    const [errors, setErrors] = useState({});
+
     const { especialidades } = EspecialidadeList();
     const { tiposConsulta } = TipoConsultaList();
 
@@ -65,6 +67,13 @@ function GerenciarVagas() {
     };
     console.log("selectedTipoConsulta", selectedTipoConsulta);
 
+    const validateFields = (agendamento) => {
+        const errors = {};
+        if (!data) {
+          errors.data = "Campo obrigatório";
+        }
+        return errors;
+    };
 
     const criarJSON = () => {
         const turnoManha = [];
@@ -99,6 +108,12 @@ function GerenciarVagas() {
       };
     
     const handleCreateVagas = async () => {
+        const validationErrors = validateFields(data);
+        if (Object.keys(validationErrors).length > 0) {
+          setErrors(validationErrors);
+          return;
+        }
+
         const vagasToCreate = criarJSON();
     
         console.log("VagasToCreate:", vagasToCreate);
@@ -121,15 +136,16 @@ function GerenciarVagas() {
                 
                 <div className={styles.inputs_box}>
                     <div className={`col ${styles.col}`}>
-                        <label htmlFor="data" className="form-label">Data</label>
+                        <label htmlFor="data" className="form-label">Data  <span className={styles.obrigatorio}>*</span></label>
                         <input
                             placeholder="Digite a data"
                             type="date"
-                            className={`form-control ${styles.input}`}
+                            className={`form-control ${styles.input_data} ${errors.data ? "is-invalid" : ""}`}
                             name="data"
                             value={data}
                             onChange={handleDataChange}
                         />
+                        {errors.data && <div className={`invalid-feedback ${styles.error_message}`}>{errors.data}</div>}
                     </div>
                 </div>
 

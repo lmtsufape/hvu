@@ -11,6 +11,8 @@ function UpdateAnimalByTutor() {
   const router = useRouter();
   const { id } = router.query;
 
+  const [errors, setErrors] = useState({});
+
   const { especies, error: especiesError } = EspeciesList();
   const { racas, error: racasError } = RacasList();
 
@@ -94,7 +96,40 @@ function UpdateAnimalByTutor() {
     }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!animalData.nome) {
+      newErrors.nome = "Campo obrigatório";
+    }
+    
+    if (!animalData.sexo) {
+      newErrors.sexo = "Campo obrigatório";
+    }
+    if (!animalData.alergias) {
+      newErrors.alergias = "Campo obrigatório";
+    }
+    if (!selectedEspecie) {
+      newErrors.especie = "Campo obrigatório";
+    }
+    if (!selectedEspecie && !selectedRaca) {
+      newErrors.raca = "Selecione uma espécie";
+    }
+    if (selectedEspecie && !selectedRaca) {
+      newErrors.raca = "Campo obrigatório";
+    }
+    setErrors(newErrors);
+
+    return Object.values(newErrors).every((error) => error === "");
+  };
+
   const handleUpdateAnimal = async (event) => {
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
+    }
+
     event.preventDefault();
 
     const animalToUpdate = {
@@ -109,15 +144,16 @@ function UpdateAnimalByTutor() {
     };
 
     console.log("Dados do animal a ser atualizado:", animalToUpdate);
-
-    if (id) {
-      try {
-        await updateAnimal(id, animalToUpdate);
-        alert("animal atualizado com sucesso!");
-        router.push(`/getAnimalById/${id}`);
-      } catch (error) {
-        alert('Erro ao atualizar o animal, tente novamente.');
-        console.error('Erro ao atualizar o animal:', error);
+    if(validateForm()) {
+      if (id) {
+        try {
+          await updateAnimal(id, animalToUpdate);
+          alert("animal atualizado com sucesso!");
+          router.push(`/getAnimalById/${id}`);
+        } catch (error) {
+          console.log('Erro ao atualizar o animal, tente novamente.');
+          console.error('Erro ao atualizar o animal:', error);
+        }
       }
     }
   };
@@ -139,11 +175,12 @@ function UpdateAnimalByTutor() {
                 <label htmlFor="nome" className="form-label">Nome</label>
                 <input
                   type="text"
-                  className={`form-control ${styles.input}`}
+                  className={`form-control ${styles.input}  ${errors.nome ? "is-invalid" : ""}`}
                   name="nome"
                   value={animalData.nome}
                   onChange={handleAnimalChange}
                 />
+                {errors.nome && <div className={`invalid-feedback ${styles.error_message}`}>{errors.nome}</div>}
               </div>
               <div className={`col ${styles.col}`}>
                 <label htmlFor="dataNascimento" className="form-label">Data de Nascimento </label>
@@ -161,7 +198,7 @@ function UpdateAnimalByTutor() {
               <div className={`col ${styles.col}`}>
                 <label htmlFor="especie" className="form-label">Espécie</label>
                 <select
-                  className={`form-select ${styles.input}`}
+                  className={`form-select ${styles.input}  ${errors.selectedEspecie ? "is-invalid" : ""}`}
                   name="especie"
                   aria-label={animalData.raca && animalData.raca.especie && animalData.raca.especie.nome}
                   value={selectedEspecie}
@@ -173,11 +210,12 @@ function UpdateAnimalByTutor() {
                     </option>
                   ))}
                 </select>
+                {errors.especie && <div className={`invalid-feedback ${styles.error_message}`}>{errors.especie}</div>}
               </div>
               <div className={`col ${styles.col}`}>
                 <label htmlFor="raca" className="form-label">Raça</label>
                 <select
-                  className={`form-select ${styles.input}`}
+                  className={`form-select ${styles.input}  ${errors.selectedRaca ? "is-invalid" : ""}`}
                   name="raca"
                   aria-label={animalData.raca && animalData.raca.nome}
                   value={selectedRaca}
@@ -189,6 +227,7 @@ function UpdateAnimalByTutor() {
                     </option>
                   ))}
                 </select>
+                {errors.raca && <div className={`invalid-feedback ${styles.error_message}`}>{errors.raca}</div>}
               </div>
             </div>
 
@@ -196,11 +235,12 @@ function UpdateAnimalByTutor() {
               <div className={`col ${styles.col}`}>
                 <label htmlFor="alergias" className="form-label">Alergias</label>
                 <input type="text"
-                  className={`form-control ${styles.input}`}
+                  className={`form-control ${styles.input}  ${errors.alergias ? "is-invalid" : ""}`}
                   name="alergias"
                   value={animalData.alergias}
                   onChange={handleAnimalChange}
                 />
+                {errors.alergias && <div className={`invalid-feedback ${styles.error_message}`}>{errors.alergias}</div>}
               </div>
 
               <div className={`col ${styles.col}`} style={{ position: 'relative', display: 'inline-block' }}>
@@ -222,7 +262,7 @@ function UpdateAnimalByTutor() {
 
               <div className={`col ${styles.col}`}>
                 <label htmlFor="sexo" className="form-label">Sexo</label>
-                <select className={`form-select ${styles.input}`}
+                <select className={`form-select ${styles.input}  ${errors.sexo ? "is-invalid" : ""}`}
                   name="sexo"
                   aria-label={animalData.sexo}
                   value={animalData.sexo}
@@ -232,6 +272,7 @@ function UpdateAnimalByTutor() {
                   <option value="macho">Macho</option>
                   <option value="femea">Fêmea</option>
                 </select>
+                {errors.sexo && <div className={`invalid-feedback ${styles.error_message}`}>{errors.sexo}</div>}
               </div>
             </div>
 

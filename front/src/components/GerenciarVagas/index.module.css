@@ -117,13 +117,22 @@
     color: #000000;
 }
 
-.input:focus {
+.input_data {
+    width:30%;
+    font-family: 'Poppins', sans-serif;;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #000000;
+}
+
+.input:focus && .input_data {
     outline: none;
     box-shadow: 0 0 5px 2px #3d856371;
     border: 1px solid #ccc;
 }
 
-.input::placeholder {
+.input::placeholder && .input_data {
     font-family: 'Poppins', sans-serif;;
     font-size: 14px;
     font-weight: 300;
@@ -158,5 +167,19 @@
     border: 1px solid #ccc;
     box-shadow: #327053;
 }
+
+.obrigatorio {
+    color: #C7122F;
+}
+
+.error_message {
+    margin-top: -0.2em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 24px;
+    color: #C7122F;
+}
+  
 
 

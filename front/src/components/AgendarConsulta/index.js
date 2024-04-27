@@ -105,7 +105,7 @@ const HorariosSemana = () => {
       errors.selectedAnimal = "Campo obrigatório";
     }
     if (!selectedVaga) {
-      alert("Selecione uma vaga para realizar o agendamento.");
+      errors.selectedVaga = "Campo obrigatório";
     }
     return errors;
   };
@@ -163,7 +163,7 @@ const HorariosSemana = () => {
       <div className={styles.boxprincipal}>
         <div className={styles.select_container}>
           <div className={styles.select_box}>
-            <h1>Paciente</h1>
+            <h1>Paciente  <span className={styles.obrigatorio}>*</span></h1>
             <select 
               className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`} 
               aria-label="Default select example"
@@ -178,7 +178,7 @@ const HorariosSemana = () => {
                 </option>
               ))}
             </select>
-            {errors.selectedAnimal && <div className="invalid-feedback">{errors.selectedAnimal}</div>}
+            {errors.selectedAnimal && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedAnimal}</div>}
           </div>
         </div>
 

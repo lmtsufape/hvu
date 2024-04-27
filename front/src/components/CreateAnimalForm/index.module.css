@@ -22,7 +22,7 @@
 .input:focus {
   outline: none;
   box-shadow: 0 0 5px 2px #3d856371;
-  border: 1px solid #ccc;
+  border: 1px solid #cccc;
 }
 
 .input::placeholder {
@@ -39,10 +39,6 @@
   font-weight: 300;
   line-height: 20px;
   color: #000000;
-}
-
-.obrigatorio {
-  color: red;
 }
 
 .form_box {
@@ -130,4 +126,17 @@
   background-color: #f8f9fa;
   color: #6c757d;
   cursor: not-allowed;
+}
+
+.obrigatorio {
+  color: #C7122F;
+}
+
+.error_message {
+  margin-top: -0.2em;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 24px;
+  color: #C7122F;
 }

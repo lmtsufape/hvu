@@ -10,6 +10,8 @@ import { createRaca } from "../../../services/racaService";
 function CreateRaca() {
     const router = useRouter();
 
+    const [errors, setErrors] = useState({});
+
     const { especies } = EspeciesList();
     const [selectedEspecie, setSelectedEspecie] = useState(null);
 
@@ -33,10 +35,22 @@ function CreateRaca() {
     };
     console.log(raca);
 
+    const validateForm = () => {
+        const errors = {};
+        if (selectedEspecie === null) {
+          errors.selectedEspecie = "Campo obrigatório";
+        }
+        if (!raca.nome) {
+          errors.nome = "Campo obrigatório";
+        }
+        return errors;
+      };
+
     const handleSubmit = async () => {
-        if (!selectedEspecie || !raca.nome || !raca.porte) {
-            console.log("Erro: Espécie, nome e porte são obrigatórios.");
-            return;
+        const errors = validateForm();
+        if (Object.keys(errors).length > 0) {
+          setErrors(errors);
+          return;
         }
 
         const racaToCreate = {
@@ -68,9 +82,9 @@ function CreateRaca() {
                 <div className={styles.inputs_box}>
                     <div className="row">
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="especie" className="form-label">Espécie</label>
+                            <label htmlFor="especie" className="form-label">Espécie <span className={styles.obrigatorio}>*</span></label>
                             <select
-                                className={`form-select ${styles.input}`}
+                                className={`form-select ${styles.input} ${errors.selectedEspecie ? "is-invalid" : ""}`}
                                 name="especie"
                                 aria-label="Selecione uma espécie"
                                 value={selectedEspecie || ""}
@@ -83,21 +97,25 @@ function CreateRaca() {
                                     </option>
                                 ))}
                             </select>
+                            {errors.selectedEspecie && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedEspecie}</div>}
                         </div>
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="nome" className="form-label">Raça</label>
+                            <label htmlFor="nome" className="form-label">Raça <span className={styles.obrigatorio}>*</span></label>
                             <input
                                 type="text"
-                                className={`form-control ${styles.input}`}
+                                placeholder="Digite a raça"
+                                className={`form-control ${styles.input} ${errors.nome ? "is-invalid" : ""}`}
                                 name="nome"
                                 value={raca.nome}
                                 onChange={handleRacaChange}
                             />
+                            {errors.nome && <div className={`invalid-feedback ${styles.error_message}`}>{errors.nome}</div>}
                         </div>
                         <div className={`col ${styles.col}`}>
                             <label htmlFor="porte" className="form-label">Porte</label>
                             <input
                                 type="text"
+                                placeholder="Digite o porte"
                                 className={`form-control ${styles.input}`}
                                 name="porte"
                                 value={raca.porte}

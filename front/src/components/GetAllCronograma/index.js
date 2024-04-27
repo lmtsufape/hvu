@@ -81,7 +81,7 @@ function GetAllCronograma() {
                                     className={styles.acessar_button}
                                     onClick={() => router.push(`/getCronogramaById/${cronograma.id}`)} 
                                 >
-                                    Acessar
+                                    Visualizar
                                 </button>
                                 <ExcluirButton itemId={cronograma.id} onDelete={handleDeleteCronograma} />
                             </div>

@@ -141,7 +141,7 @@ function CreateCronograma() {
                 <div className={styles.inputs_box}>
                     <div className="row">
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="nome" className="form-label">Nome</label>
+                            <label htmlFor="nome" className="form-label">Nome de agenda<span className={styles.obrigatorio}>*</span></label>
                             <input
                                 placeholder="Digite o nome"
                                 type="text"
@@ -150,11 +150,11 @@ function CreateCronograma() {
                                 value={cronograma.nome}
                                 onChange={handleCronogramaChange}
                             />
-                            {errors.nome && <div className="invalid-feedback">{errors.nome}</div>}
+                            {errors.nome && <div className={`invalid-feedback ${styles.error_message}`}>{errors.nome}</div>}
                         </div>
 
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="especialidade" className="form-label">Especialidade</label>
+                            <label htmlFor="especialidade" className="form-label">Especialidade<span className={styles.obrigatorio}>*</span></label>
                             <select
                                 className={`form-select ${styles.input} ${errors.selectedEspecialidade ? "is-invalid" : ""}`}
                                 name="especialidade"
@@ -169,13 +169,13 @@ function CreateCronograma() {
                                     </option>
                                 ))}
                             </select>
-                            {errors.selectedEspecialidade && <div className="invalid-feedback">{errors.selectedEspecialidade}</div>}
+                            {errors.selectedEspecialidade && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedEspecialidade}</div>}
                         </div>
                     </div>
 
                     <div className="row">
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="medico" className="form-label">Veterinário(a)</label>
+                            <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;<span className={styles.obrigatorio}>*</span></label>
                             <select
                                 className={`form-select ${styles.input} ${errors.selectedMedico ? "is-invalid" : ""}`}
                                 name="medico"
@@ -190,11 +190,11 @@ function CreateCronograma() {
                                     </option>
                                 ))}
                             </select>
-                            {errors.selectedMedico && <div className="invalid-feedback">{errors.selectedMedico}</div>}
+                            {errors.selectedMedico && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedMedico}</div>}
                         </div>
 
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="tempoAtendimento" className="form-label">Tempo do atendimento</label>
+                            <label htmlFor="tempoAtendimento" className="form-label">Tempo do atendimento<span className={styles.obrigatorio}>*</span></label>
                             <input
                                 placeholder="Digite o tempo em minutos"
                                 type="text"
@@ -203,7 +203,7 @@ function CreateCronograma() {
                                 value={cronograma.tempoAtendimento}
                                 onChange={handleCronogramaChange}
                             />
-                            {errors.tempoAtendimento && <div className="invalid-feedback">{errors.tempoAtendimento}</div>}
+                            {errors.tempoAtendimento && <div className={`invalid-feedback ${styles.error_message}`}>{errors.tempoAtendimento}</div>}
                         </div>
                     </div>
 
