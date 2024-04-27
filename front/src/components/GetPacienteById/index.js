@@ -57,7 +57,7 @@ function GetPacienteById() {
     return (
         <div className={styles.container}>
             <VoltarButton/>
-            <h1>Perfil do Paciente</h1>
+            <h1>Informações do animal</h1>
             <div className={styles.infos_box}>
                 {animal && (
                     <ul>
@@ -118,12 +118,12 @@ function GetPacienteById() {
                     {tutor.nome && (
                         <li key={tutor.id} className={styles.item}>
                             <div className={styles.tutor_dados}>
-                                <div className={styles.nome_animal}>Informações do tutor</div>
+                                <div className={styles.nome_animal}>Informações do&#40;a&#41; tutor&#40;a&#41;</div>
                                 <div className={styles.form}>
                                     <div className={styles.box}>
                                         <div className={styles.lista}>
                                             <div className={styles.infos}>
-                                                <h6>Nome do tutor</h6>
+                                                <h6>Nome</h6>
                                                 <p>{tutor.nome}</p>
                                             </div>
                                             <div className={styles.infos}>

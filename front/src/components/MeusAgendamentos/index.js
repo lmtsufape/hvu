@@ -86,9 +86,15 @@ export default function MeusAgendamentos() {
                                         <h2>{agendamento.animal && agendamento.animal.nome}</h2>
                                     </div>
                                     <div>
-                                        <button className={styles.agendamento_button} onClick={() => setCancelarModalId(agendamento.id)}>
-                                            <h1>Cancelar</h1>
-                                        </button>
+                                        {new Date(agendamento.dataVaga) >= new Date() ? ( // Verifica se a data do agendamento é posterior ou igual à data atual
+                                            <button className={styles.agendamento_button} onClick={() => setCancelarModalId(agendamento.id)}>
+                                                <h1>Cancelar</h1>
+                                            </button>
+                                        ) : (
+                                            <button className={styles.finalizar_button} disabled> {/* Desabilita o botão */}
+                                                <h1>Finalizado</h1>
+                                            </button>
+                                        )}
                                         {cancelarModalId === agendamento.id && (
                                             <div className={styles.modal}>
                                                 <div className={styles.box1}>

@@ -96,7 +96,10 @@ function CreateAnimalForm() {
     if (!selectedEspecie) {
       newErrors.especie = "Campo obrigatório";
     }
-    if (!isRacaSelectDisabled && !selectedRaca) {
+    if (!selectedEspecie && !selectedRaca) {
+      newErrors.raca = "Selecione uma espécie";
+    }
+    if (selectedEspecie && !selectedRaca) {
       newErrors.raca = "Campo obrigatório";
     }
     setErrors(newErrors);
@@ -149,7 +152,7 @@ function CreateAnimalForm() {
         console.log("Aguardando dados de espécies e raças carregarem...");
       }
     } else {
-      alert("Formulário inválido, preencha corretamente e tente novamente.");
+      console.log("Formulário inválido, preencha corretamente e tente novamente.");
     }
   };
 
@@ -180,7 +183,7 @@ function CreateAnimalForm() {
   return (
     <div className={styles.container}>
       <VoltarButton />
-      <h1>Informações do Animal</h1>
+      <h1>Cadastrar animal</h1>
       <form className={styles.form_box} onSubmit={handleSubmit}>
         <div className="row">
           <div className={`col ${styles.col}`}>
@@ -193,17 +196,17 @@ function CreateAnimalForm() {
               value={animalData.nome}
               onChange={handleAnimalChange}
             />
+            {errors.nome && <div className={`invalid-feedback ${styles.error_message}`}>{errors.nome}</div>}
           </div>
           <div className={`col ${styles.col}`}>
             <label htmlFor="nascimento" className="form-label">Data de Nascimento</label>
             <input
               type="date"
-              className={`form-control ${styles.input} ${errors.dataNascimento ? "is-invalid" : ""}`}
+              className={`form-control ${styles.input}`}
               name="dataNascimento"
               value={animalData.dataNascimento || ""}
               onChange={handleAnimalChange}
             />
-            {errors.dataNascimento && <div className="invalid-feedback">{errors.dataNascimento}</div>}
           </div>
         </div>
   
@@ -224,6 +227,7 @@ function CreateAnimalForm() {
                 </option>
               ))}
             </select>
+            {errors.especie && <div className={`invalid-feedback ${styles.error_message}`}>{errors.especie}</div>}
           </div>
 
           <div className={`col ${styles.col}`}>
@@ -243,6 +247,7 @@ function CreateAnimalForm() {
                 </option>
               ))}
             </select>
+            {errors.raca && <div className={`invalid-feedback ${styles.error_message}`}>{errors.raca}</div>}
           </div>
         </div>
   
@@ -257,7 +262,7 @@ function CreateAnimalForm() {
               value={animalData.alergias}
               onChange={handleAnimalChange}
             />
-            {errors.alergias && <div className="invalid-feedback">{errors.alergias}</div>}
+            {errors.alergias && <div className={`invalid-feedback ${styles.error_message}`}>{errors.alergias}</div>}
           </div>
 
           <div className={`col ${styles.col}`}  style={{ position: 'relative', display: 'inline-block' }}>
@@ -274,7 +279,7 @@ function CreateAnimalForm() {
               onChange={handleAnimalChange}
               style={{ paddingRight: '30px' }} 
             />
-            <span style={{ position: 'absolute', right: '20px', top: '15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
+            <span style={{ position: 'absolute', right: '20px', top: '-15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
           </div>
   
           <div className={`col ${styles.col}`}>
@@ -290,7 +295,7 @@ function CreateAnimalForm() {
               <option value="macho">Macho</option>
               <option value="femea">Fêmea</option>
             </select>
-            {errors.sexo && <div className="invalid-feedback">{errors.sexo}</div>}
+            {errors.sexo && <div className={`invalid-feedback ${styles.error_message}`}>{errors.sexo}</div>}
           </div>
         </div>
   

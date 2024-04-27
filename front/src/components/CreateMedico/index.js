@@ -24,7 +24,6 @@ function CreateMedico() {
         email: "",
         senha: "",
         cpf: "",
-        rg: "",
         telefone: "",
         crmv: "",
         confirmarSenha: "",
@@ -77,7 +76,6 @@ function CreateMedico() {
             email: medico.email,
             senha: medico.senha,
             cpf: medico.cpf,
-            rg: medico.rg,
             telefone: medico.telefone,
             crmv: medico.crmv,
             endereco: {
@@ -121,9 +119,6 @@ function CreateMedico() {
         }
         if (!medico.cpf) {
             errors.cpf = "Campo obrigatório";
-        }
-        if (!medico.rg) {
-            errors.rg = "Campo obrigatório";
         }
         if (!medico.telefone) {
             errors.telefone = "Campo obrigatório";
@@ -210,13 +205,12 @@ function CreateMedico() {
                                 {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
                                 {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
                                 {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
-                                {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
+                                {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("Telefone", "Digite o telefone", "telefone", medico.telefone, handleMedicoChange, "tel", errors.telefone, "(99) 99999-9999")}
-                                {renderMedicoInput("RG", "Digite o RG", "rg", medico.rg, handleMedicoChange, "text", errors.rg, "99.999.999-9")}
-                                {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
-
+                                {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
+                                
                                 <div className="mb-3">
                                     <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
                                     <select
@@ -233,7 +227,7 @@ function CreateMedico() {
                                             </option>
                                         ))}
                                     </select>
-                                    {errors.especialidade && <div className="invalid-feedback">{errors.especialidade}</div>}
+                                    {errors.especialidade && <div className={`invalid-feedback ${styles.error_message}`}>{errors.especialidade}</div>}
                                 </div>
                                 <div>
                                     {selectedEspecialidades.map(especialidade => (
@@ -276,7 +270,7 @@ function CreateMedico() {
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />
                     <button type="button" className={styles.criar_button} onClick={handleCreateMedico}>
-                        {cityStateLoading ? "Aguarde..." : "Criar"}
+                        {cityStateLoading ? "Aguarde..." : "Cadastrar"}
                     </button>
                 </div>
 
@@ -300,7 +294,7 @@ function renderMedicoInput(label, placeholder, name, value, onChange, type = "te
                 value={value}
                 onChange={onChange}
             />
-            {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
+            {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }
@@ -322,7 +316,7 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
                 onChange={onChange}
                 {...inputProps}
             />
-            {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
+            {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }

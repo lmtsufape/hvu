@@ -48,7 +48,7 @@ function GetAllMedicos() {
         <div className={styles.container}>
             < VoltarButton />
 
-            <h1>Visualizar Veterinários&#40;as&#41;</h1>
+            <h1>Listagem de Veterinários&#40;as&#41;</h1>
 
             <div className={styles.navbar}>
                 <SearchBar

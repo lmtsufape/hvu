@@ -18,13 +18,12 @@ function UpdateMeuPerfil() {
     const [senhaErro, setSenhaErro] = useState("");
     const [confirmarSenhaErro, setConfirmarSenhaErro] = useState("");
 
-    const [tutor, setTutor] = useState({
+    const [usuario, setUsuario] = useState({
         id: null,
         nome: "",
         email: "",
         senha: "",
         cpf: "",
-        // rg: "",
         telefone: "",
         confirmarSenha: "",
         endereco: {
@@ -42,27 +41,27 @@ function UpdateMeuPerfil() {
         if (id) {
             const fetchData = async () => {
                 try {
-                    const TutorData = await getUsuarioById(id);
-                    setTutor(TutorData);
+                    const usuarioData = await getUsuarioById(id);
+                    setUsuario(usuarioData);
                 } catch (error) {
-                    console.error('Erro ao buscar informações de tutor:', error);
+                    console.error('Erro ao buscar informações de usuario:', error);
                 }
             };
             fetchData();
         }
     }, [id]);
 
-    const handleTutorChange = (event) => {
+    const handleUsuarioChange = (event) => {
         const { name, value } = event.target;
-        setTutor({ ...tutor, [name]: value });
+        setUsuario({ ...usuario, [name]: value });
     };
 
     const handleEnderecoChange = (event) => {
         const { name, value } = event.target;
-        setTutor({
-            ...tutor,
+        setUsuario({
+            ...usuario,
             endereco: {
-                ...tutor.endereco,
+                ...usuario.endereco,
                 [name]: value
             }
         });
@@ -73,10 +72,10 @@ function UpdateMeuPerfil() {
             const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
             const data = await response.json();
             if (!data.erro) {
-                setTutor({
-                    ...tutor,
+                setUsuario({
+                    ...usuario,
                     endereco: {
-                        ...tutor.endereco,
+                        ...usuario.endereco,
                         estado: data.uf,
                         cidade: data.localidade,
                         rua: data.logradouro,
@@ -94,10 +93,10 @@ function UpdateMeuPerfil() {
 
     const handleCepChange = (event) => {
         const { value } = event.target;
-        setTutor({
-            ...tutor,
+        setUsuario({
+            ...usuario,
             endereco: {
-                ...tutor.endereco,
+                ...usuario.endereco,
                 cep: value
             }
         });
@@ -107,73 +106,101 @@ function UpdateMeuPerfil() {
     const validateForm = () => {
         const newErrors = {};
         if (alterarSenha) {
-            if (!tutor.senha) {
+            if (!usuario.senha) {
                 newErrors.senha = "Senha é obrigatória";
             }
-            if (!tutor.confirmarSenha) {
+            if (!usuario.confirmarSenha) {
                 newErrors.confirmarSenha = "Confirme sua senha";
-            } else if (tutor.senha !== tutor.confirmarSenha) {
+            } else if (usuario.senha !== usuario.confirmarSenha) {
                 newErrors.confirmarSenha = "As senhas não coincidem";
             }
+        }
+        if (!usuario.nome) {
+            newErrors.nome = "Campo obrigatório";
+        }
+        if (!usuario.email) {
+            newErrors.email = "Campo obrigatório";
+        }
+        if (!usuario.cpf) {
+            newErrors.cpf = "Campo obrigatório";
+        }
+        if (!usuario.telefone) {
+            newErrors.telefone = "Campo obrigatório";
+        }
+        if (!usuario.endereco.cep) {
+            newErrors.cep = "Campo obrigatório";
+        }
+        if (!usuario.endereco.rua) {
+            newErrors.rua = "Campo obrigatório";
+        }
+        if (!usuario.endereco.estado) {
+            newErrors.estado = "Campo obrigatório";
+        }
+        if (!usuario.endereco.cidade) {
+            newErrors.cidade = "Campo obrigatório";
+        }
+        if (!usuario.endereco.numero) {
+            newErrors.numero = "Campo obrigatório";
+        }
+        if (!usuario.endereco.bairro) {
+            newErrors.bairro = "Campo obrigatório";
         }
         setErrors(newErrors);
 
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleTutorUpdate = async () => {
+    const handleUsuarioUpdate = async () => {
         if (!validateForm()) {
             return;
         }
 
-        const TutorToUpdate = {
-            nome: tutor.nome,
-            email: tutor.email,
-            senha: tutor.senha,
-            cpf: tutor.cpf,
-            // rg: tutor.rg,
-            telefone: tutor.telefone,
+        const usuarioToUpdate = {
+            nome: usuario.nome,
+            email: usuario.email,
+            senha: usuario.senha,
+            cpf: usuario.cpf,
+            telefone: usuario.telefone,
             endereco: {
-                id: tutor.endereco.id,
-                cep: tutor.endereco.cep,
-                rua: tutor.endereco.rua,
-                estado: tutor.endereco.estado,
-                cidade: tutor.endereco.cidade,
-                numero: tutor.endereco.numero,
-                bairro: tutor.endereco.bairro
+                id: usuario.endereco.id,
+                cep: usuario.endereco.cep,
+                rua: usuario.endereco.rua,
+                estado: usuario.endereco.estado,
+                cidade: usuario.endereco.cidade,
+                numero: usuario.endereco.numero,
+                bairro: usuario.endereco.bairro
             }
         };
-        console.log("TutorToUpdate:", TutorToUpdate);
+        console.log("usuarioToUpdate:", usuarioToUpdate);
         try {
-            await updateUsuario(tutor.id, TutorToUpdate);
+            await updateUsuario(usuario.id, usuarioToUpdate);
             alert("Informações editadas com sucesso!");
-            router.push(`/meuPerfil/${tutor.id}`);
+            router.push(`/meuPerfil/${id}`);
         } catch (error) {
-            console.log("TutorToUpdate:", TutorToUpdate);
-            console.error("Erro ao editar tutor:", error);
-            alert("Erro ao editar tutor. Por favor, tente novamente.");
+            console.log("usuarioToUpdate:", usuarioToUpdate);
+            console.error("Erro ao editar usuario:", error);
+            alert("Erro ao editar usuario. Por favor, tente novamente.");
         }
     };
 
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Editar Perfil</h1>
+            <h1>Editar meu Perfil</h1>
 
             <form className={styles.inputs_container}>
 
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
-                        <div className={styles.titulo}>Tutor&#40;a&#41;</div>
-                        {renderTutorInput("Nome Completo", tutor.nome, "nome", tutor.nome, handleTutorChange, "text")}
+                        <div className={styles.titulo}>Minhas informações&#40;a&#41;</div>
+                        {renderUsuarioInput("Nome Completo", usuario.nome, "nome", usuario.nome, handleUsuarioChange, "text", errors.nome)}
                         <div className="row">
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("E-mail", tutor.email, "email", tutor.email, handleTutorChange, "email")}
-                                {renderTutorInput("CPF", tutor.cpf, "cpf", tutor.cpf, handleTutorChange, "text", null, "999.999.999-99")}
+                                {renderUsuarioInput("E-mail", usuario.email, "email", usuario.email, handleUsuarioChange, "email", errors.email)}
+                                {renderUsuarioInput("CPF", usuario.cpf, "cpf", usuario.cpf, handleUsuarioChange, "text", errors.cepf, "999.999.999-99")}
                             </div>
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("Telefone", tutor.telefone, "telefone", tutor.telefone, handleTutorChange, "tel", null, "(99) 99999-9999")}
-                                {/* {renderTutorInput("RG", tutor.rg, "rg", tutor.rg, handleTutorChange, "text", null, "99.999.999-9")} */}
+                                {renderUsuarioInput("Telefone", usuario.telefone, "telefone", usuario.telefone, handleUsuarioChange, "tel", errors.telefone, "(99) 99999-9999")}
                             </div>
                         </div>
                     </div>
@@ -192,29 +219,29 @@ function UpdateMeuPerfil() {
                     {alterarSenha && (
                         <div className="row">
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("Alterar senha", "Digite sua nova senha", "senha", tutor.senha, handleTutorChange, "password", errors.senha, null, showSenha, setShowSenha)}
+                                {renderUsuarioInput("Alterar senha", "Digite sua nova senha", "senha", usuario.senha, handleUsuarioChange, "password", errors.senha, null, showSenha, setShowSenha)}
                             </div>
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("Confirmar senha", "Confirme sua nova senha", "confirmarSenha", tutor.confirmarSenha, handleTutorChange, "password", errors.confirmarSenha, null, showConfirmarSenha, setShowConfirmarSenha)}
+                                {renderUsuarioInput("Confirmar senha", "Confirme sua nova senha", "confirmarSenha", usuario.confirmarSenha, handleUsuarioChange, "password", errors.confirmarSenha, null, showConfirmarSenha, setShowConfirmarSenha)}
                             </div>
                         </div>
                     )}
                 </div>
 
-                {tutor.endereco && (
+                {usuario.endereco && (
                     <div className={styles.boxcadastro}>
                         <div className={styles.titulo}>Endereço</div>
                         <div className="mb-3">
                             <div className="row">
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("CEP", "cep", tutor.endereco.cep, handleCepChange, tutor.endereco.cep, "text", "99999-999")}
-                                    {renderEnderecoInput("Rua", "rua", tutor.endereco.rua, handleEnderecoChange, tutor.endereco.rua,)}
-                                    {renderEnderecoInput("Cidade", "cidade", tutor.endereco.cidade, handleEnderecoChange, tutor.endereco.cidade)}
+                                    {renderEnderecoInput("CEP", "cep", usuario.endereco.cep, handleCepChange, errors.cep, usuario.endereco.cep, "text", "99999-999")}
+                                    {renderEnderecoInput("Rua", "rua", usuario.endereco.rua, handleEnderecoChange, errors.rua, usuario.endereco.rua,)}
+                                    {renderEnderecoInput("Cidade", "cidade", usuario.endereco.cidade, handleEnderecoChange, errors.cidade, usuario.endereco.cidade)}
                                 </div>
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("Número", "numero", tutor.endereco.numero, handleEnderecoChange, tutor.endereco.numero,)}
-                                    {renderEnderecoInput("Bairro", "bairro", tutor.endereco.bairro, handleEnderecoChange, tutor.endereco.bairro,)}
-                                    {renderEnderecoInput("Estado", "estado", tutor.endereco.estado, handleEnderecoChange, tutor.endereco.estado)}
+                                    {renderEnderecoInput("Número", "numero", usuario.endereco.numero, handleEnderecoChange, errors.numero, usuario.endereco.numero,)}
+                                    {renderEnderecoInput("Bairro", "bairro", usuario.endereco.bairro, handleEnderecoChange, errors.bairro, usuario.endereco.bairro,)}
+                                    {renderEnderecoInput("Estado", "estado", usuario.endereco.estado, handleEnderecoChange, errors.estado, usuario.endereco.estado)}
                                 </div>
                             </div>
                         </div>
@@ -223,7 +250,7 @@ function UpdateMeuPerfil() {
 
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleTutorUpdate}>
+                    <button type="button" className={styles.criar_button} onClick={handleUsuarioUpdate}>
                         Salvar
                     </button>
                 </div>
@@ -233,7 +260,7 @@ function UpdateMeuPerfil() {
     );
 }
 
-function renderTutorInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask = null, show = false, setShow = null) {
+function renderUsuarioInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask = null, show = false, setShow = null) {
     const InputComponent = mask ? InputMask : 'input';
     const inputType = type === "password" ? (show ? "text" : "password") : type;
     //função modificada para aceitar o evento
@@ -255,7 +282,7 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
                     value={value}
                     onChange={onChange}
                 />
-                {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
+                {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
                 {type === "password" && (
                     <div className={styles.input_group_append}>
                         <button className="btn btn-outline-secondary" type="button" onClick={toggleShow}>
@@ -268,7 +295,7 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
     );
 }
 
-function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", mask) {
+function renderEnderecoInput(label, name, value, onChange, errorMessage = null, placeholder, type = "text", mask) {
     const InputComponent = mask ? InputMask : 'input';
     const inputProps = mask ? { mask } : {};
 
@@ -277,13 +304,14 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
             <label htmlFor={name} className="form-label">{label}</label>
             <InputComponent
                 type={type}
-                className={`form-control ${styles.input}`}
+                className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
                 name={name}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
                 {...inputProps}
             />
+            {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }

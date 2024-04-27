@@ -19,7 +19,6 @@ function AgendamentoEspecial() {
   const router = useRouter();
 
   const [errors, setErrors] = useState({});
-  const [isEspecialiadeDisabled, setIsEspecialiadeDisabled] = useState(true);
 
   const [agendamento, setAgendamento] = useState({
     animal: { id: null },
@@ -181,16 +180,14 @@ function AgendamentoEspecial() {
         <VoltarButton />
       </div>
       <div>
-        <h1 className={styles.titulocadastro}>Novo agendamento</h1>
+        <h1 className={styles.titulocadastro}>Criar agendamento</h1>
       </div>
 
       <div className={`${styles.boxagendarconsulta} ${styles.container}`}>
         <form>
           <div className="row">
             <div className={`col ${styles.col}`}>
-              <label htmlFor="data" className="form-label">
-                Data
-              </label>
+              <label htmlFor="data" className="form-label">Data <span className={styles.obrigatorio}>*</span></label>
               <div className={`form-control ${styles.input} ${errors.escolherData ? "is-invalid" : ""}`}>
                 <DatePicker
                   dateFormat="dd/MM/yyyy"
@@ -200,14 +197,12 @@ function AgendamentoEspecial() {
                   selected={escolherData}
                   onChange={handleDateChange}
                 />
-                {errors.escolherData && <div className="invalid-feedback">{errors.escolherData}</div>}
               </div>
+              {errors.escolherData && <div className={`invalid-feedback ${styles.error_message}`}>{errors.escolherData}</div>}
             </div>
 
             <div className={`col ${styles.col}`}>
-              <label htmlFor="escolherHorario" className="form-label">
-                Horário
-              </label>
+              <label htmlFor="escolherHorario" className="form-label">Horário <span className={styles.obrigatorio}>*</span></label>
               <input
                 type="time"
                 className={`form-control ${styles.input} ${errors.escolherHorario ? "is-invalid" : ""}`}
@@ -216,16 +211,14 @@ function AgendamentoEspecial() {
                 value={escolherHorario || ""}
                 onChange={handleHorarioChange}
               />
-              {errors.escolherHorario && <div className="invalid-feedback">{errors.escolherHorario}</div>}
+              {errors.escolherHorario && <div className={`invalid-feedback ${styles.error_message}`}>{errors.escolherHorario}</div>}
             </div>
           </div>
 
           <div className={styles.espacodosforms}>
             <div className="row">
               <div className={`col ${styles.col}`}>
-                <label htmlFor="especialidade" className="form-label">
-                  Especialidade
-                </label>
+                <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
                 <select
                   className={`form-select ${styles.input} ${errors.selectedEspecialidade ? "is-invalid" : ""}`}
                   name="especialidade"
@@ -240,13 +233,11 @@ function AgendamentoEspecial() {
                     </option>
                   ))}
                 </select>
-                {errors.selectedEspecialidade && <div className="invalid-feedback">{errors.selectedEspecialidade}</div>}
+                {errors.selectedEspecialidade && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedEspecialidade}</div>}
               </div>
 
               <div className={`col ${styles.col}`}>
-                <label htmlFor="medico" className="form-label">
-                  Veterinário(a)
-                </label>
+                <label htmlFor="medico" className="form-label">Veterinário(a) <span className={styles.obrigatorio}>*</span></label>
                 <select
                   className={`form-select ${styles.input} ${errors.selectedMedico ? "is-invalid" : ""}`}
                   name="medico"
@@ -262,7 +253,7 @@ function AgendamentoEspecial() {
                     </option>
                   ))}
                 </select>
-                {errors.selectedMedico && <div className="invalid-feedback">{errors.selectedMedico}</div>}
+                {errors.selectedMedico && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedMedico}</div>}
               </div>
             </div>
           </div>
@@ -271,7 +262,7 @@ function AgendamentoEspecial() {
             <div className="row">
 
               <div className={`col ${styles.col}`}>
-                <label htmlFor="tipoConsulta" className="form-label">Tipo de Consulta</label>
+                <label htmlFor="tipoConsulta" className="form-label">Tipo de Consulta <span className={styles.obrigatorio}>*</span></label>
                 <select
                   className={`form-select ${styles.input} ${errors.selectedTiposConsulta ? "is-invalid" : ""}`}
                   name="tipoConsulta"
@@ -286,13 +277,11 @@ function AgendamentoEspecial() {
                     </option>
                   ))}
                 </select>
-                {errors.selectedTiposConsulta && <div className="invalid-feedback">{errors.selectedTiposConsulta}</div>}
+                {errors.selectedTiposConsulta && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedTiposConsulta}</div>}
               </div>
 
               <div className={`col ${styles.col}`}>
-                <label htmlFor="animal" className="form-label">
-                  Paciente
-                </label>
+                <label htmlFor="animal" className="form-label">Paciente <span className={styles.obrigatorio}>*</span></label>
                 <select
                   className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`}
                   name="animal"
@@ -308,7 +297,7 @@ function AgendamentoEspecial() {
                     </option>
                   ))}
                 </select>
-                {errors.selectedAnimal && <div className="invalid-feedback">{errors.selectedAnimal}</div>}
+                {errors.selectedAnimal && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedAnimal}</div>}
               </div>
             </div>
           </div>

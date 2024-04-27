@@ -22,7 +22,6 @@ function UpdateMedico() {
     const [selectedEspecialidade, setSelectedEspecialidade] = useState([]);
     const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
 
-
     const [medico, setMedico] = useState({
         nome: "",
         email: "",
@@ -66,8 +65,6 @@ function UpdateMedico() {
             setSelectedEspecialidades(selectedEspecialidades.filter(espec => espec.id !== especialidadeId));
         }
     };
-
-    console.log("espec", selectedEspecialidade);
 
     const handleMedicoChange = (event) => {
         const { name, value } = event.target;
@@ -133,8 +130,44 @@ function UpdateMedico() {
                 newErrors.confirmarSenha = "As senhas não coincidem";
             }
         }
+        if (!medico.nome) {
+            newErrors.nome = "Campo obrigatório";
+        }
+        if (!medico.email) {
+            newErrors.email = "Campo obrigatório"; 
+        }
+        if (!medico.cpf) {
+            newErrors.cpf = "Campo obrigatório"; 
+        }
+        if (!medico.telefone) {
+            newErrors.telefone = "Campo obrigatório"; 
+        }
+        if (!medico.crmv) {
+            newErrors.crmv = "Campo obrigatório"; 
+        }
+        if (selectedEspecialidades.length === 0) {
+            newErrors.especialidade = "Selecione pelo menos uma especialidade."; 
+        }
+        if (!medico.endereco.cep) {
+            newErrors.cep = "Campo obrigatório"; 
+        }
+        if (!medico.endereco.rua) {
+            newErrors.rua = "Campo obrigatório"; 
+        }
+        if (!medico.endereco.estado) {
+            newErrors.estado = "Campo obrigatório"; 
+        }
+        if (!medico.endereco.cidade) {
+            newErrors.cidade = "Campo obrigatório"; 
+        }
+        if (!medico.endereco.numero) {
+            newErrors.numero = "Campo obrigatório"; 
+        }
+        if (!medico.endereco.bairro) {
+            newErrors.bairro = "Campo obrigatório"; 
+        }
         setErrors(newErrors);
-
+    
         return Object.keys(newErrors).length === 0;
     };
 
@@ -161,41 +194,41 @@ function UpdateMedico() {
             }
         };
 
+        console.log("MedicoToUpdate:", MedicoToUpdate);
+
         try {
-            await updateMedico(medico.id, MedicoToUpdate);
-            console.log("MedicoToUpdate:", MedicoToUpdate);
+            await updateMedico(id, MedicoToUpdate);
             alert("Informações editadas com sucesso!");
-            router.push(`getMedicoById/${medico.id}`);
+            router.push(`getMedicoById/${id}`);
         } catch (error) {
-            console.log("MedicoToUpdate:", MedicoToUpdate);
             console.error("Erro ao editar medico:", error);
-            alert("Erro ao editar informações. Por favor, tente novamente.");
+            console.log("Erro ao editar informações. Por favor, tente novamente.");
         }
     };
 
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Editar Perfil</h1>
+            <h1>Editar informações do&#40;a&#41; veterinário&#40;a&#41;</h1>
 
             <form className={styles.inputs_container}>
 
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
                         <div className={styles.titulo}>Veterinário&#40;a&#41;</div>
-                        {renderMedicoInput("Nome Completo", medico.nome, "nome", medico.nome, handleMedicoChange, "text")}
+                        {renderMedicoInput("Nome Completo", medico.nome, "nome", medico.nome, handleMedicoChange, "text", errors.nome)}
                         <div className="row">
                             <div className={`col ${styles.col}`}>
-                                {renderMedicoInput("E-mail", medico.email, "email", medico.email, handleMedicoChange, "email")}
-                                {renderMedicoInput("CPF", medico.cpf, "cpf", medico.cpf, handleMedicoChange, "text", null, "999.999.999-99")}
+                                {renderMedicoInput("E-mail", medico.email, "email", medico.email, handleMedicoChange, "email", errors.email)}
+                                {renderMedicoInput("CPF", medico.cpf, "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, null, "999.999.999-99")}
 
                                 <div className="mb-3">
-                                    <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
+                                    <label htmlFor="especialidade" className="form-label">Especialidade</label>
                                     <select
                                         className={`form-select ${styles.input} ${errors.especialidade ? "is-invalid" : ""}`}
                                         name="especialidade"
                                         aria-label="Selecione uma especialidade"
-                                        value={selectedEspecialidade || ""}
+                                        value={selectedEspecialidade.length > 0 ? selectedEspecialidade[0] : ""}
                                         onChange={handleEspecialidadeSelection}
                                     >
                                         <option value="">Selecione a especialidade</option>
@@ -211,18 +244,19 @@ function UpdateMedico() {
                                         <div key={especialidade.id}>
                                             <input
                                                 type="checkbox"
-                                                className={`form-check-input ${styles.checkbox}`}
+                                                className={`form-check-input ${styles.checkbox} ${errors.especialidade ? "is-invalid" : ""}`}
                                                 checked
                                                 onChange={() => handleEspecialidadeSelection({ target: { value: especialidade.id } })}
                                             />
                                             <label className={styles.input}>{especialidade.nome}</label>
+                                            {errors.especialidade && <div className={`invalid-feedback ${styles.error_message}`}>{errors.especialidade}</div>}
                                         </div>
                                     ))}
                                 </div>
                             </div>
                             <div className={`col ${styles.col}`}>
-                                {renderMedicoInput("Telefone", medico.telefone, "telefone", medico.telefone, handleMedicoChange, "tel", null, "(99) 99999-9999")}
-                                {renderMedicoInput("CRMV", medico.crmv, "crmv", medico.crmv, handleMedicoChange, "text")}
+                                {renderMedicoInput("Telefone", medico.telefone, "telefone", medico.telefone, handleMedicoChange, "tel", errors.telefone, null, "(99) 99999-9999")}
+                                {renderMedicoInput("CRMV", medico.crmv, "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
                             </div>
                         </div>
                     </div>
@@ -256,14 +290,14 @@ function UpdateMedico() {
                         <div className="mb-3">
                             <div className="row">
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleCepChange, medico.endereco.cep, "text", "99999-999")}
-                                    {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, medico.endereco.rua)}
-                                    {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, medico.endereco.cidade)}
+                                    {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleCepChange, errors.cep, medico.endereco.cep, "text", "99999-999")}
+                                    {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, errors.rua, medico.endereco.rua)}
+                                    {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, errors.cidade, medico.endereco.cidade)}
                                 </div>
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, medico.endereco.numero)}
-                                    {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, medico.endereco.bairro)}
-                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, medico.endereco.estado)}
+                                    {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, errors.numero, medico.endereco.numero)}
+                                    {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, errors.bairro, medico.endereco.bairro)}
+                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, errors.estado, medico.endereco.estado)}
                                 </div>
                             </div>
                         </div>
@@ -300,10 +334,10 @@ function renderMedicoInput(label, placeholder, name, value, onChange, type = "te
                 className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
                 name={name}
                 placeholder={placeholder}
-                value={value}
+                value={value || ''}
                 onChange={onChange}
             />
-            {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
+            {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
             {type === "password" && (
                 <div className={styles.input_group_append}>
                     <button className="btn btn-outline-secondary" type="button" onClick={toggleShow}>
@@ -315,7 +349,7 @@ function renderMedicoInput(label, placeholder, name, value, onChange, type = "te
     );
 }
 
-function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", mask) {
+function renderEnderecoInput(label, name, value, onChange, errorMessage = null, placeholder, type = "text", mask) {
     const InputComponent = mask ? InputMask : 'input';
     const inputProps = mask ? { mask } : {};
 
@@ -324,13 +358,14 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
             <label htmlFor={name} className="form-label">{label}</label>
             <InputComponent
                 type={type}
-                className={`form-control ${styles.input}`}
+                className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
                 name={name}
                 placeholder={placeholder}
-                value={value}
+                value={value || ''}
                 onChange={onChange}
                 {...inputProps}
             />
+            {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }

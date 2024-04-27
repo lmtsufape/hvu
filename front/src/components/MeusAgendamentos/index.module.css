@@ -41,7 +41,6 @@
     align-items: center;
     display: flex;
     padding: 2.5em;
-    justify-content: space-between;
     margin:auto;
     margin-left: 5em;
     margin-right: 5em;
@@ -50,16 +49,28 @@
     font-family: 'Poppins', sans-serif;
 }
 
+.agendamentoBox div {
+    width: 100%;
+}
+
 .agendamentoBox h1{
-    font-size: 1.2em;
-    font-weight: bold;
-    width: 9em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #606060;
 }
 
 .agendamentoBox h2{
-    font-size: 1.1em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: left;
     color: #39805F;
-    width: 11em;
 }
 
 .navbar {
@@ -81,6 +92,7 @@
     align-items: center;
     border-radius: 0.7em;
     border: 1px;
+    float: right;
 }
 
 .agendamento_button:hover {
@@ -90,6 +102,28 @@
 .agendamento_button h1{
     font-size: 1em;
     width: auto;
+    text-align: center;
+    color: #FFF5F6
+} 
+
+.finalizar_button {
+    background-color: white;
+    padding: 0.3em;
+    padding-top: 0.8em;
+    width: 7em;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.7em;
+    border: 1px;
+    float: right;
+}
+
+.finalizar_button h1{
+    font-size: 1em;
+    width: auto;
+    text-align: center;
+    color: #606060;
+    text-decoration: underline;
 } 
 
 .list {

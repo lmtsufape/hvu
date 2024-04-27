@@ -8,6 +8,7 @@ import styles from "./index.module.css";
 import { postRegister } from "../../../common/postRegister";
 import { postLogin } from "../../../common/postLogin";
 import VoltarButton from "../VoltarButton";
+import { CancelarWhiteButton } from "../WhiteButton";
 
 function CreateTutorEnderecoForm() {
     const router = useRouter();
@@ -19,7 +20,6 @@ function CreateTutorEnderecoForm() {
         email: "",
         senha: "",
         cpf: "",
-        rg: "",
         telefone: "",
         confirmarSenha: ""
     });
@@ -39,7 +39,6 @@ function CreateTutorEnderecoForm() {
         email: tutorFormData.email,
         senha: tutorFormData.senha,
         cpf: tutorFormData.cpf,
-        rg: tutorFormData.rg,
         telefone: tutorFormData.telefone,
         endereco: { ...enderecoFormData }
     }
@@ -85,11 +84,6 @@ function CreateTutorEnderecoForm() {
             newErrors.cpf = "CPF é obrigatório";
         } else if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(tutorFormData.cpf)) {
             newErrors.cpf = "CPF inválido";
-        }
-        if (!tutorFormData.rg) {
-            newErrors.rg = "RG é obrigatório";
-        } else if (!/^\d{2}\.\d{3}\.\d{3}-\d{1}$/.test(tutorFormData.rg)) {
-            newErrors.rg = "RG inválido";
         }
         if (!tutorFormData.telefone) {
             newErrors.telefone = "Telefone é obrigatório";
@@ -173,7 +167,7 @@ function CreateTutorEnderecoForm() {
     return (
         <div className={styles.container}>
             < VoltarButton />
-            <h1>Cadastro do&#40;a&#41; tutor&#40;a&#41;</h1>
+            <h1>Cadastrar tutor&#40;a&#41;</h1>
             <form autoComplete="off">
                 <div className={styles.form_box}>
                     <div>
@@ -194,10 +188,11 @@ function CreateTutorEnderecoForm() {
                     </div>
 
                     <div className={styles.box_button}>
-                        <button type="button" className={styles.button} onClick={handleSubmit}>
-                            Cadastrar
-                        </button>
-                    </div>
+                    <CancelarWhiteButton />
+                    <button type="button" className={styles.criar_button} onClick={handleSubmit}>
+                        Cadastrar
+                    </button>
+                </div>
                 </div>
             </form>
         </div>

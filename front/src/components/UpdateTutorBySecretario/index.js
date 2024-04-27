@@ -23,7 +23,6 @@ function UpdateTutorBySecretario() {
         email: "",
         senha: "",
         cpf: "",
-        rg: "",
         telefone: "",
         confirmarSenha: "",
         endereco: {
@@ -114,8 +113,38 @@ function UpdateTutorBySecretario() {
                 newErrors.confirmarSenha = "As senhas não coincidem";
             }
         }
+        if (!tutor.nome) {
+            newErrors.nome = "Campo obrigatório";
+        }
+        if (!tutor.email) {
+            newErrors.email = "Campo obrigatório"; 
+        }
+        if (!tutor.cpf) {
+            newErrors.cpf = "Campo obrigatório"; 
+        }
+        if (!tutor.telefone) {
+            newErrors.telefone = "Campo obrigatório"; 
+        }
+        if (!tutor.endereco.cep) {
+            newErrors.cep = "Campo obrigatório"; 
+        }
+        if (!tutor.endereco.rua) {
+            newErrors.rua = "Campo obrigatório"; 
+        }
+        if (!tutor.endereco.estado) {
+            newErrors.estado = "Campo obrigatório"; 
+        }
+        if (!tutor.endereco.cidade) {
+            newErrors.cidade = "Campo obrigatório"; 
+        }
+        if (!tutor.endereco.numero) {
+            newErrors.numero = "Campo obrigatório"; 
+        }
+        if (!tutor.endereco.bairro) {
+            newErrors.bairro = "Campo obrigatório"; 
+        }
         setErrors(newErrors);
-
+    
         return Object.keys(newErrors).length === 0;
     };
 
@@ -129,7 +158,6 @@ function UpdateTutorBySecretario() {
             email: tutor.email,
             senha: tutor.senha,
             cpf: tutor.cpf,
-            rg: tutor.rg,
             telefone: tutor.telefone,
             endereco: {
                 cep: tutor.endereco.cep,
@@ -163,15 +191,14 @@ function UpdateTutorBySecretario() {
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
                         <div className={styles.titulo}>Tutor&#40;a&#41;</div>
-                        {renderTutorInput("Nome Completo", tutor.nome, "nome", tutor.nome, handleTutorChange, "text")}
+                        {renderTutorInput("Nome Completo", tutor.nome, "nome", tutor.nome, handleTutorChange, "text", errors.nome)}
                         <div className="row">
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("E-mail", tutor.email, "email", tutor.email, handleTutorChange, "email")}
-                                {renderTutorInput("CPF", tutor.cpf, "cpf", tutor.cpf, handleTutorChange, "text", null, "999.999.999-99")}
+                                {renderTutorInput("E-mail", tutor.email, "email", tutor.email, handleTutorChange, "email", errors.email)}
+                                {renderTutorInput("CPF", tutor.cpf, "cpf", tutor.cpf, handleTutorChange, "text", errors.cpf, "999.999.999-99")}
                             </div>
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("Telefone", tutor.telefone, "telefone", tutor.telefone, handleTutorChange, "tel", null, "(99) 99999-9999")}
-                                {renderTutorInput("RG", tutor.rg, "rg", tutor.rg, handleTutorChange, "text", null, "99.999.999-9")}
+                                {renderTutorInput("Telefone", tutor.telefone, "telefone", tutor.telefone, handleTutorChange, "tel", errors.telefone, "(99) 99999-9999")}
                             </div>
                         </div>
                     </div>
@@ -205,14 +232,14 @@ function UpdateTutorBySecretario() {
                         <div className="mb-3">
                             <div className="row">
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("CEP", "cep", tutor.endereco.cep, handleCepChange, tutor.endereco.cep, "text", "99999-999")}
-                                    {renderEnderecoInput("Rua", "rua", tutor.endereco.rua, handleEnderecoChange, tutor.endereco.rua,)}
-                                    {renderEnderecoInput("Cidade", "cidade", tutor.endereco.cidade, handleEnderecoChange, tutor.endereco.cidade)}
+                                    {renderEnderecoInput("CEP", "cep", tutor.endereco.cep, handleCepChange, errors.cep, tutor.endereco.cep, "text", "99999-999")}
+                                    {renderEnderecoInput("Rua", "rua", tutor.endereco.rua, handleEnderecoChange, errors.rua, tutor.endereco.rua,)}
+                                    {renderEnderecoInput("Cidade", "cidade", tutor.endereco.cidade, handleEnderecoChange, errors.cidade, tutor.endereco.cidade)}
                                 </div>
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("Número", "numero", tutor.endereco.numero, handleEnderecoChange, tutor.endereco.numero,)}
-                                    {renderEnderecoInput("Bairro", "bairro", tutor.endereco.bairro, handleEnderecoChange, tutor.endereco.bairro,)}
-                                    {renderEnderecoInput("Estado", "estado", tutor.endereco.estado, handleEnderecoChange, tutor.endereco.estado)}
+                                    {renderEnderecoInput("Número", "numero", tutor.endereco.numero, handleEnderecoChange, errors.numero, tutor.endereco.numero,)}
+                                    {renderEnderecoInput("Bairro", "bairro", tutor.endereco.bairro, handleEnderecoChange, errors.bairro, tutor.endereco.bairro,)}
+                                    {renderEnderecoInput("Estado", "estado", tutor.endereco.estado, handleEnderecoChange, errors.estado, tutor.endereco.estado)}
                                 </div>
                             </div>
                         </div>
@@ -252,7 +279,7 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
                 value={value}
                 onChange={onChange}
             />
-            {errorMessage && <div className="invalid-feedback">{errorMessage}</div>}
+            {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
             {type === "password" && (
                 <div className={styles.input_group_append}>
                     <button className="btn btn-outline-secondary" type="button" onClick={toggleShow}>
@@ -264,7 +291,7 @@ function renderTutorInput(label, placeholder, name, value, onChange, type = "tex
     );
 }
 
-function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", mask) {
+function renderEnderecoInput(label, name, value, onChange, errorMessage = null, placeholder, type = "text", mask) {
     const InputComponent = mask ? InputMask : 'input';
     const inputProps = mask ? { mask } : {};
 
@@ -273,13 +300,14 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
             <label htmlFor={name} className="form-label">{label}</label>
             <InputComponent
                 type={type}
-                className={`form-control ${styles.input}`}
+                className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
                 name={name}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
                 {...inputProps}
             />
+            {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }

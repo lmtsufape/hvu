@@ -16,10 +16,6 @@
   font-style: normal;
 }
 
-.obrigatorio {
-  color: red;
-}
-
 .titulo {
   font-family: 'Poppins', sans-serif;
   font-size: 22px;
@@ -77,4 +73,37 @@
   margin-right: 10px; /* Margem à direita do checkbox */
   cursor: pointer; /* Cursor de ponteiro para indicar que é clicável */
   margin-top: 4px;
+}
+
+.obrigatorio {
+  color: #C7122F;
+}
+
+.error_message {
+  margin-top: -0.2em;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 24px;
+  color: #C7122F;
+}
+
+.checkbox {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  background-color: white;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.checkbox:focus {
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px 2px #3d856371;
+}
+
+.checkbox:checked {
+  background-color: #327053;
+  border: 1px solid #ccc;
+  box-shadow: #327053;
 }

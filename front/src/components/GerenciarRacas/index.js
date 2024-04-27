@@ -55,7 +55,7 @@ function GerenciarRacasList() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Gerenciar raças</h1>
+            <h1>Listagem de raças</h1>
 
             <div className={styles.navbar_container}>
                 <SearchBar placeholder={`Buscar por ${filtro === 'especie' ? 'Espécie' : 'Raça'}`} onSearchChange={setSearchTerm} />

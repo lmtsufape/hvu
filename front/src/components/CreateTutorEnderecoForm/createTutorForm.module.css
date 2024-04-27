@@ -4,10 +4,6 @@
   justify-content: center;
   align-items: center;
 }
-  
-.obrigatorio {
-  color: red;
-}
 
 .boxcadastrotutor {
   display: block;
@@ -98,4 +94,17 @@
   display: block;
   margin-top: 10px;
   font-size: 16px;
+}
+
+.obrigatorio {
+  color: #C7122F;
+}
+
+.error_message {
+  margin-top: -0.2em;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 24px;
+  color: #C7122F;
 }
