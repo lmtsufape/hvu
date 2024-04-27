@@ -108,14 +108,10 @@ public class AnimalController {
 	@PatchMapping("animal/{id}")
 	public AnimalResponse updateAnimal(@PathVariable Long id, @Valid @RequestBody AnimalRequest obj) {
 		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
+			
 			//Animal o = obj.convertToEntity();
 			Animal oldObject = facade.findAnimalById(id);
-			Tutor tutor = facade.findTutorByanimalId(oldObject.getId());
-			if(!principal.getSubject().equals(tutor.getUserId())) {
-				throw new AccessDeniedException("This is not your animal");
-			}
+			
 			TypeMap<AnimalRequest, Animal> typeMapper = modelMapper
 													.typeMap(AnimalRequest.class, Animal.class)
 													.addMappings(mapper -> mapper.skip(Animal::setId));			
