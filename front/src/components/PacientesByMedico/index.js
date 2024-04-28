@@ -8,6 +8,7 @@ import VoltarButton from '../VoltarButton';
 function PacientesByMedico() {
     const [agendamentos, setAgendamentos] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [animalIds, setAnimalIds] = useState(new Set()); // Conjunto para armazenar IDs de animais já listados
 
     const router = useRouter();
 
@@ -23,8 +24,7 @@ function PacientesByMedico() {
             }
         };
         fetchData();
-    }, []);
-    console.log("agendamentos:", agendamentos);
+    }, [id]);
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);
@@ -32,11 +32,16 @@ function PacientesByMedico() {
 
     const filteredAgendamentos = agendamentos.filter(agendamento =>
         agendamento.animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
-    ); 
+    ).filter(agendamento => !animalIds.has(agendamento.animal.id)); // Filtrar animais que já foram listados
+
+    const handleAnimalClick = (animalId) => {
+        setAnimalIds(new Set(animalIds).add(animalId)); // Adicionar o ID do animal à lista de IDs listados
+        router.push(`/getAnimalByIdByMedico/${animalId}`);
+    };
 
     return (
         <div className={styles.container}>
-            < VoltarButton />
+            <VoltarButton />
 
             <h1>Pacientes</h1>
 
@@ -51,26 +56,29 @@ function PacientesByMedico() {
                 <p className={styles.message}>Não há pacientes.</p>
             ) : (
                 <ul className={styles.lista}>
-                    {filteredAgendamentos.map(agendamento => (
-                        <li key={agendamento.id} className={styles.info_box}>
-                            <div className={styles.info}>
-                                <h6>Meus pacientes</h6>
-                                <p>{agendamento.animal.nome}</p>
-                            </div>
-                            <div className={styles.info}>
-                                <h6>Espécie</h6>
-                                <p>{agendamento.animal.raca && agendamento.animal.raca.especie && agendamento.animal.raca.especie.nome}</p>
-                            </div>
-                            <div className={styles.button_box}>
-                                <button
-                                    className={styles.acessar_button}
-                                    onClick={() => router.push(`/getAnimalByIdByMedico/${agendamento.animal.id}`)}
-                                >
-                                    Visualizar
-                                </button>
-                            </div>
-                        </li>
-                    ))}
+                    {[...new Set(filteredAgendamentos.map(agendamento => agendamento.animal.id))].map(animalId => {
+                        const agendamento = filteredAgendamentos.find(agendamento => agendamento.animal.id === animalId);
+                        return (
+                            <li key={agendamento.id} className={styles.info_box}>
+                                <div className={styles.info}>
+                                    <h6>Paciente</h6>
+                                    <p>{agendamento.animal.nome}</p>
+                                </div>
+                                <div className={styles.info}>
+                                    <h6>Espécie</h6>
+                                    <p>{agendamento.animal.raca && agendamento.animal.raca.especie && agendamento.animal.raca.especie.nome}</p>
+                                </div>
+                                <div className={styles.button_box}>
+                                    <button
+                                        className={styles.acessar_button}
+                                        onClick={() => handleAnimalClick(agendamento.animal.id)}
+                                    >
+                                        Visualizar
+                                    </button>
+                                </div>
+                            </li>
+                        );
+                    })}
                 </ul>
             )}
         </div>
