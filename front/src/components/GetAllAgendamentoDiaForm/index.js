@@ -9,7 +9,12 @@ import SearchBar from '../SearchBar';
 import VoltarButton from '../VoltarButton';
 import { getAgendamento, deleteAgendamento } from "../../../services/agendamentoService";
 import { getAllVaga, updateVaga } from '../../../services/vagaService';
+import { cancelarAgendamento } from '../../../services/consultaService';
 import { getTutorByAnimal } from '../../../services/tutorService';
+import { Await } from 'react-router-dom';
+import ModalAgendamento from '../ModalAgendamento';
+
+
 
 function GetAllAgendamentosDiaForm() {
   const router = useRouter();
@@ -18,15 +23,33 @@ function GetAllAgendamentosDiaForm() {
   const [vagas, setVagas] = useState([]);
   const [selectedVaga, setSelectedVaga] = useState(null);
   const [tutor, setTutor] = useState('');
+  const [descricaoCancelamento, setDescricaoCancelamento] = useState('');
 
   const handleDataSelecionada = (novaData) => {
     setDataSelecionada(novaData);
     console.log("Data Selecionada:", novaData);
   };
 
+  const handleCancelarConsulta = async () => {
+    try {
+      const cancelamentoData = {
+        descricao: descricaoCancelamento,
+        agendamento: {
+          id: selectedVaga.agendamento.id
+        }
+      };
+      await cancelarAgendamento(cancelamentoData);
+      closeModal();
+      fetchData();
+    } catch (error) {
+      console.error('Erro ao cancelar consulta:', error);
+    }
+  };
+
   const openModal = async (vaga) => {
     setSelectedVaga(vaga);
     setModalOpen(true);
+    console.log("animal: ", selectedVaga?.agendamento);
     try {
       console.log("ID DO BIXO:", vaga.agendamento.animal.id)
       const tutorSelected = await getTutorByAnimal(vaga.agendamento.animal.id);
@@ -39,31 +62,25 @@ function GetAllAgendamentosDiaForm() {
 
   const closeModal = () => {
     setModalOpen(false);
+    setTutor("");
+    setDescricaoCancelamento("");
     console.log("Modal closed");
   };
 
-  const cancelarConsulta = async () => {
-    if (selectedVaga) {
-      await updateVaga(selectedVaga.id, { status: "cancelado" });
-      router.reload(); // recarrega a página para refletir as mudanças
+  const fetchData = async () => {
+    try {
+      const VagasData = await getAllVaga();
+      setVagas(VagasData);
+    } catch (error) {
+      console.error('Erro ao buscar vagas:', error);
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const VagasData = await getAllVaga();
-        setVagas(VagasData);
-        console.log("VagasData:", VagasData);
-      } catch (error) {
-        console.error('Erro ao buscar vagas:', error);
-      }
-    };
     fetchData();
   }, [dataSelecionada]);
 
   const horarios = ["08:00", "09:00", "10:00", "11:00", "12:00"];
-  console.log(vagas);
 
   return (
     <div className={styles.pagina}>
@@ -106,7 +123,6 @@ function GetAllAgendamentosDiaForm() {
                   <div className={styles.cardsJuntos}>
                     {vagas.filter(vaga => vaga.dataHora.startsWith(dataSelecionada.toISOString().slice(0, 10) + 'T' + horario))
                       .map(vaga => {
-                        console.log(`Vaga (${vaga.dataHora} - ${vaga.id}):`, vaga);
                         return (
                           <button key={vaga.id} className={`${styles.button} ${styles[`button_${vaga.status.toLowerCase()}`]}`} onClick={() => openModal(vaga)}>
                             <div className={styles.infos_container}>
@@ -133,38 +149,17 @@ function GetAllAgendamentosDiaForm() {
           </tbody>
         </table>
       </div>
-      {modalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <div className={styles.modalContent}>
-              <div className={styles.container1}>
-                <div className={styles.box}>
-                  <div className={styles.title}>{selectedVaga.agendamento?.animal.nome}</div>
-                  <div className={styles.subtitle}>{selectedVaga.agendamento?.animal.especie}</div>
-                </div>
-                <div className={styles.div_button1}>
-                  <button onClick={closeModal} className={styles.button_close_modal}>X</button>
-                </div>
-              </div>
-              <div className={styles.container2}>
-                <div className={styles.box}>
-                  <div className={styles.title}>Tutor</div>
-                  <div className={styles.subtitle}>{tutor.nome}</div>
-                </div>
-                <div className={styles.box}>
-                  <div className={styles.title}>Especialidade</div>
-                  <div className={styles.subtitle}>especialidade_nome</div>
-                </div>
-              </div>
-              <div className={styles.div_button2}>
-                <button onClick={cancelarConsulta} className={styles.button_cancelar_consulta}>
-                  Cancelar consulta
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+
+      <ModalAgendamento
+        tutor={tutor}
+        selectedVaga={selectedVaga}
+        isOpen={modalOpen}
+        closeModal={closeModal}
+        descricaoCancelamento={descricaoCancelamento}
+        setDescricaoCancelamento={setDescricaoCancelamento}
+        handleCancelarConsulta={handleCancelarConsulta}
+      />
+
     </div>
   );
 }
