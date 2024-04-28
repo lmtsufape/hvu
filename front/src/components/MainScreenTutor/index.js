@@ -15,7 +15,7 @@ function MainScreenTutor() {
                 </button>
                 <button className={styles.button} onClick={(e) => router.push("/meusAgendamentos")}>
                     <Image src="/calendar.svg" alt="Calendário" width={62} height={62}/>
-                    <h6>Agendamentos</h6>
+                    <h6>Meus agendamentos</h6>
                 </button>
             </div>
         </div>

@@ -38,18 +38,9 @@ function AgendamentoEspecial() {
 
   const [animaisByTipoConsulta, setAnimaisByTipoConsulta] = useState([]);
   const filtrarAnimais = async () => {
-    const tipoConsultaObject = async () => {
-      try {
-        await getTipoConsultaById(selectedTiposConsulta);
-      } catch (error) {
-        console.error("Erro ao buscar tipo de consulta pelo id:", error);
-      }
-      
-    }
-    const tipoConsultaTipo = tipoConsultaObject && tipoConsultaObject.tipo ? tipoConsultaObject.tipo.trim().toLowerCase() : '';
-
+    
     try {
-      if (tipoConsultaTipo == "retorno") {
+      if (selectedTiposConsulta.tipo == "Retorno") {
         const animaisData = await getAnimalComRetorno();
         setAnimaisByTipoConsulta(animaisData);
       } else {
@@ -64,11 +55,18 @@ function AgendamentoEspecial() {
   const { tiposConsulta } = TipoConsultaList();
   const [selectedTiposConsulta, setSelectedTiposConsulta] = useState(null);
   const handleTiposConsultaSelection = (event) => {
-    const selectedId = event.target.value;
-    setSelectedTiposConsulta(selectedId);
-
-    filtrarAnimais();
+    const selectedTipo = JSON.parse(event.target.value);
+    setSelectedTiposConsulta(selectedTipo);
+    console.log("selectedTipo:", selectedTipo);
+    
   };
+
+  useEffect(() => {
+    console.log("selectedTiposConsulta updated:", selectedTiposConsulta);
+    if (selectedTiposConsulta) {
+        filtrarAnimais();
+    }
+}, [selectedTiposConsulta]);
 
   const { especialidades } = EspecialidadeList();
   const [selectedEspecialidade, setSelectedEspecialidade] = useState();
@@ -129,7 +127,7 @@ function AgendamentoEspecial() {
       tipoEspecial: agendamento.tipoEspecial,
       horario: formattedDateTime,
       especialidade: { id: selectedEspecialidade },
-      tipoConsulta: { id: selectedTiposConsulta },
+      tipoConsulta: { id: selectedTiposConsulta.id },
       medico: { id: selectedMedico }
     };
 
@@ -267,12 +265,11 @@ function AgendamentoEspecial() {
                   className={`form-select ${styles.input} ${errors.selectedTiposConsulta ? "is-invalid" : ""}`}
                   name="tipoConsulta"
                   aria-label="Selecione o tipo de consulta"
-                  value={selectedTiposConsulta || ""}
-                  onChange={handleTiposConsultaSelection}
+                  value={selectedTiposConsulta ? JSON.stringify(selectedTiposConsulta) : ""}                  onChange={handleTiposConsultaSelection}
                 >
                   <option value="">Selecione o tipo de consulta</option>
                   {tiposConsulta.map((tipoConsulta) => (
-                    <option key={tipoConsulta.id} value={tipoConsulta.id}>
+                    <option key={tipoConsulta.tipo} value={JSON.stringify(tipoConsulta) }>
                       {tipoConsulta.tipo}
                     </option>
                   ))}

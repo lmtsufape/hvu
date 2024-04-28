@@ -4,7 +4,7 @@ import Select from 'react-select';
 import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from '../WhiteButton';
-import { getAllAnimal } from '../../../services/animalService';
+import { getAllAnimalTutor } from '../../../services/animalService';
 import { getAllVaga } from '../../../services/vagaService';
 import { createAgendamento } from '../../../services/agendamentoService';
 import { set } from 'date-fns';
@@ -63,7 +63,7 @@ const HorariosSemana = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const AnimaisData = await getAllAnimal();
+        const AnimaisData = await getAllAnimalTutor();
         setAnimais(AnimaisData);
       } catch (error) {
         console.error('Erro ao buscar animais:', error);

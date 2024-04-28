@@ -160,6 +160,20 @@
     color: #000000;
 }
 
+.obrigatorio {
+    color: #C7122F;
+}
+  
+.error_message {
+    margin-top: -0.2em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 24px;
+    color: #C7122F;
+}
+  
+
 
 @media only screen and (max-width: 700px) {
     .container_box {

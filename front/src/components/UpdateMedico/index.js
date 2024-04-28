@@ -199,7 +199,7 @@ function UpdateMedico() {
         try {
             await updateMedico(id, MedicoToUpdate);
             alert("Informações editadas com sucesso!");
-            router.push(`getMedicoById/${id}`);
+            router.push(`/getMedicoById/${id}`);
         } catch (error) {
             console.error("Erro ao editar medico:", error);
             console.log("Erro ao editar informações. Por favor, tente novamente.");
