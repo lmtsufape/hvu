@@ -76,7 +76,7 @@ function FormularioLogin() {
         <>
 <div className={styles.form}>
   <div className="form-group">
-    <label htmlFor="exampleInputEmail1">E-mail</label>
+    <label htmlFor="exampleInputEmail1">E-mail<span className={styles.obrigatorio}>*</span></label>
     <input
       type="email"
       className={`form-control ${styles.input} ${errors.login ? "is-invalid" : ""}`}
@@ -88,9 +88,10 @@ function FormularioLogin() {
       onChange={(e) => setLogin(e.target.value)}
       required
     />
+    {errors.login && <div className={`invalid-feedback ${styles.error_message}`}>{errors.login}</div>}
   </div>
   <div className="form-group">
-    <label htmlFor="exampleInputPassword1">Senha</label>
+    <label htmlFor="exampleInputPassword1">Senha<span className={styles.obrigatorio}>*</span></label>
     <div className="input-group">
       <input
         type={showPassword ? 'text' : 'password'}
@@ -105,6 +106,7 @@ function FormularioLogin() {
       <span className={`input-group-text ${styles.eyeIcon}`} onClick={togglePasswordVisibility}>
         <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
       </span>
+      {errors.senha && <div className={`invalid-feedback ${styles.error_message}`}>{errors.senha}</div>}
     </div>
   </div>
   <button type="button" className="btn btn-link" onClick={() => router.push("/forgotPassword")}>Esqueceu a senha? </button>

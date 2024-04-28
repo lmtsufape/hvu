@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useState, useEffect} from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css"
 import { useRouter } from "next/router";
@@ -18,57 +18,61 @@ export function SubHeader01 () {
 }
 
 //Com botão de relatório
-export function SubHeader02 () {
+export function SubHeader02() {
+    const [subHeaderComponent, setSubHeaderComponent] = useState(null);
+
+    const loadSubHeaderComponent = async () => {
+        try {
+            const userData = await getCurrentUsuario();
+
+            console.log("user:", userData)
+
+            if (userData.roles && Array.isArray(userData.roles)) {
+                if (userData.roles.includes("secretario")) {
+                    setSubHeaderComponent(<SubheaderSecretario />);
+                } else if (userData.roles.includes("medico")) {
+                    setSubHeaderComponent(<SubheaderMedico medicoId={userData.usuario.id} />);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        loadSubHeaderComponent();
+    }, []); 
+
+    return (
+        <div>
+            {subHeaderComponent}
+        </div>
+    );
+}
+
+export function SubheaderSecretario() {
     const router = useRouter();
-
-    const homeButton = async (e) => {
-        e.preventDefault();
-        try{
-            const userData = await getCurrentUsuario();
-            if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("secretario")){
-                router.push('/mainSecretario');
-            }else if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("medico")){
-                router.push('/mainMedico');
-            }
-        }catch(error){
-            console.log(error);
-        }  
-    }
-
-    const agendamentosButton = async (e) => {
-        e.preventDefault();
-        try{
-            const userData = await getCurrentUsuario();
-            if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("secretario")){
-                router.push('/agendamentosDia');
-            }else if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("medico")){
-                router.push(`/agendamentosByMedico/${userData.usuario.id}`);
-            }
-        }catch(error){
-            console.log(error);
-        }  
-    }
-
-    const pacientesButton = async (e) => {
-        e.preventDefault();
-        try{
-            const userData = await getCurrentUsuario();
-            if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("secretario")){
-                router.push('/pacientesBySecretário');
-            }else if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("medico")){
-                router.push(`/pacientesByMedico/${userData.usuario.id}`);
-            }
-        }catch(error){
-            console.log(error);
-        }  
-    }
 
     return (
         <div className={styles.button_box}>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={homeButton}>Home</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={agendamentosButton}>Agendamentos</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={pacientesButton}>Pacientes</button>
-            {/* <button type="button" className="btn btn-link" id={styles.button_decoration}>Relatórios</button> */}
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/mainSecretario')}>Home</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/agendamentosDia')}>Agendamentos</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarRacas')}>Raças</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/pacientesBySecretario')}>Pacientes</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/getAllMedicos')}>Veterinários&#40;as&#41;</button>
+        </div>
+    );
+}
+
+export function SubheaderMedico({medicoId}) {
+    const router = useRouter();
+
+    return (
+        <div className={styles.button_box}>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/mainMedico')}>Home</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/agendamentosByMedico/${medicoId}`)}>Agendamentos</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/pacientesByMedico/${medicoId}`)}>Pacientes</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/getAllCronogramaByMedico/${medicoId}`)}>Agendas</button>
         </div>
     );
 }

@@ -19,7 +19,7 @@ function MainScreenSecretario() {
                 </button>
                 <button className={styles.button} onClick={(e) => router.push('/pacientesBySecretario')}>
                     <Image src="/subtract.svg" alt="Calendário" width={62} height={62}/>
-                    <h6>Pacientes</h6>
+                    <h6>Listagem de pacientes</h6>
                 </button>
                 <button className={styles.button} onClick={(e) => router.push('/getAllMedicos')}>
                     <Image src="/description.svg" alt="Calendário" width={62} height={62}/>
