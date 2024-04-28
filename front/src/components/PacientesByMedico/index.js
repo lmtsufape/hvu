@@ -61,7 +61,7 @@ function PacientesByMedico() {
                         return (
                             <li key={agendamento.id} className={styles.info_box}>
                                 <div className={styles.info}>
-                                    <h6>Meus pacientes</h6>
+                                    <h6>Paciente</h6>
                                     <p>{agendamento.animal.nome}</p>
                                 </div>
                                 <div className={styles.info}>
