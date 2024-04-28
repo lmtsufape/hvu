@@ -9,13 +9,13 @@ import { postRegister } from "../../../common/postRegister";
 import { postLogin } from "../../../common/postLogin";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
-// import Alert from "../Alert";
+import Alert from "../Alert";
 
 function CreateTutorEnderecoForm() {
     const router = useRouter();
     const [laiChecked, setLaiChecked] = useState(false);
     const [errors, setErrors] = useState({});
-    // const [showAlert, setShowAlert] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
 
     const [tutorFormData, setTutorFormData] = useState({
         nome: "",
@@ -155,9 +155,7 @@ function CreateTutorEnderecoForm() {
                 await postLogin(tutorFormData.email, tutorFormData.senha);
                 const response = await createTutor(formData);
                 console.log(response);
-                // setShowAlert(true); 
-                alert("Cadastro realizado com sucesso!");
-                router.push('/mainTutor');
+                setShowAlert(true);
             } catch (error) {
                 console.error("Erro ao cadastrar tutor:", error);
             }
@@ -190,14 +188,14 @@ function CreateTutorEnderecoForm() {
                     </div>
 
                     <div className={styles.box_button}>
-                    <CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleSubmit}>
-                        Cadastrar
-                    </button>
-                </div>
+                        <CancelarWhiteButton />
+                        <button type="button" className={styles.criar_button} onClick={handleSubmit}>
+                            Cadastrar
+                        </button>
+                    </div>
                 </div>
             </form>
-            {/* <Alert message="Cadastro realizado com sucesso!" show={showAlert} /> */}
+            {<Alert message="Cadastro realizado com sucesso!" show={showAlert} url='/mainTutor' />}
         </div>
     );
 }
