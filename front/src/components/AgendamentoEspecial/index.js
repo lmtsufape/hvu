@@ -14,9 +14,14 @@ import { getMedicoByEspecialidade } from "../../../services/medicoService";
 import { getAnimalComRetorno, getAnimalSemRetorno } from "../../../services/animalService";
 import { getTipoConsultaById } from "../../../services/tipoConsultaService";
 import { format } from "date-fns";
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function AgendamentoEspecial() {
   const router = useRouter();
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   const [errors, setErrors] = useState({});
 
@@ -85,7 +90,6 @@ function AgendamentoEspecial() {
       }
     } catch (error) {
       console.error("Erro ao buscar médicos pela especialidade:", error);
-      alert("Erro ao realizar agendamento. Por favor, tente novamente.");
     }
   };
 
@@ -135,11 +139,10 @@ function AgendamentoEspecial() {
 
     try {
       await createAgendamentoEspecial(agendamentoToCreate);
-      alert("Agendamento especial criado com sucesso!");
-      router.push("/agendamentosDia");
+      setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar agendamento especial:", error);
-      alert("Erro ao realizar agendamento. Por favor, tente novamente.");
+      setShowErrorAlert(true);
     }
   };
 
@@ -338,6 +341,8 @@ function AgendamentoEspecial() {
             </button>
           </div>
         </form>
+        {<Alert message="Agendamento criado com sucesso!" show={showAlert} url='/agendamentosDia' />}
+        {showErrorAlert && <ErrorAlert message="Erro ao realizar agendamento, tente novamente." show={showErrorAlert} />}
       </div>
     </>
   );

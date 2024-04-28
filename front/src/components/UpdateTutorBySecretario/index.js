@@ -7,6 +7,8 @@ import { CancelarWhiteButton } from "../WhiteButton";
 import { updateTutor, getTutorById } from "../../../services/tutorService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function UpdateTutorBySecretario() {
     const router = useRouter();
@@ -17,6 +19,8 @@ function UpdateTutorBySecretario() {
     const [alterarSenha, setAlterarSenha] = useState(false);
     const [senhaErro, setSenhaErro] = useState("");
     const [confirmarSenhaErro, setConfirmarSenhaErro] = useState("");
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [tutor, setTutor] = useState({});
 
@@ -160,12 +164,10 @@ function UpdateTutorBySecretario() {
         try {
             await updateTutor(id, TutorToUpdate);
             console.log("TutorToUpdate:", TutorToUpdate);
-            alert("Informações editadas com sucesso!");
-            // router.push("/meuPerfil");
+            setShowAlert(true);
         } catch (error) {
-            console.log("TutorToUpdate:", TutorToUpdate);
             console.error("Erro ao editar tutor:", error);
-            alert("Erro ao editar tutor. Por favor, tente novamente.");
+            setShowErrorAlert(true);
         }
     };
 
@@ -242,6 +244,8 @@ function UpdateTutorBySecretario() {
                 </div>
 
             </form>
+            {<Alert message="Informações do(a) tutor(a) editadas com sucesso!" show={showAlert} url={`/pacientesBySecretario`} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao editar informações do(a) tutor(a), tente novamente." show={showErrorAlert} />}
         </div>
     );
 }

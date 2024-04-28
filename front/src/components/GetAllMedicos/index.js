@@ -6,10 +6,14 @@ import { AdicionarMedicoWhiteButton } from "../WhiteButton";
 import { getAllMedico, deleteMedico } from '../../../services/medicoService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
+import ErrorAlert from "../ErrorAlert";
 
 function GetAllMedicos() {
     const [medicos, setMedicos] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [deletedMedicoId, setDeletedMedicoId] = useState(null); // Estado para controlar o ID do médico excluído recentemente
 
     const router = useRouter();
 
@@ -23,7 +27,7 @@ function GetAllMedicos() {
             }
         };
         fetchData();
-    }, []);
+    }, [deletedMedicoId]); // Adicione deletedMedicoId como uma dependência
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);
@@ -36,11 +40,12 @@ function GetAllMedicos() {
     const handleDeleteMedico = async (medicoId) => {
         try {
             await deleteMedico(medicoId);
-            setMedicos(medicos.filter(medico => medico.id !== medicoId))
-            window.location.reload();
-            alert("Médico excluído com sucesso!");
+            setMedicos(medicos.filter(medico => medico.id !== medicoId));
+            setDeletedMedicoId(medicoId); // Atualiza o estado para acionar a recuperação da lista
+            setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir o médico: ', error);
+            setShowErrorAlert(true);
         }
     }
 
@@ -93,6 +98,8 @@ function GetAllMedicos() {
                     ))}
                 </ul>
             )}
+            {showAlert && <ErrorAlert message="Veterinário(a) excluído(a) com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao excluir veterinário(a), tente novamente" show={showErrorAlert} />}
         </div>
     );
 }

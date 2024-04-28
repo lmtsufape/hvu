@@ -10,12 +10,14 @@ import { postLogin } from "../../../common/postLogin";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function CreateTutorEnderecoForm() {
     const router = useRouter();
     const [laiChecked, setLaiChecked] = useState(false);
     const [errors, setErrors] = useState({});
     const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [tutorFormData, setTutorFormData] = useState({
         nome: "",
@@ -158,6 +160,7 @@ function CreateTutorEnderecoForm() {
                 setShowAlert(true);
             } catch (error) {
                 console.error("Erro ao cadastrar tutor:", error);
+                setShowErrorAlert(true);
             }
         } else {
             console.log("Formulário inválido. Corrija os erros.");
@@ -196,6 +199,7 @@ function CreateTutorEnderecoForm() {
                 </div>
             </form>
             {<Alert message="Cadastro realizado com sucesso!" show={showAlert} url='/mainTutor' />}
+            {showErrorAlert && <ErrorAlert message="Erro ao realizar cadastro, tente novamente." show={showErrorAlert} />}
         </div>
     );
 }

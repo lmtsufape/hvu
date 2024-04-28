@@ -5,12 +5,17 @@ import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import EspeciesList from "@/hooks/useEspecieList";
 import { updateRaca, getRacaById } from "../../../services/racaService";
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function UpdateRaca() {
     const router = useRouter();
     const { id } = router.query;
 
     const [errors, setErrors] = useState({});
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const { especies } = EspeciesList();
     const [raca, setRaca] = useState({
@@ -87,12 +92,10 @@ function UpdateRaca() {
         try {
             const response = await updateRaca(raca.id, racaToUpdate);
             console.log("response:",response);
-            alert("Raça editada com sucesso!");
-            router.push("/gerenciarRacas");
+            setShowAlert(true);
         } catch (error) {
-            console.log("racaToUpdate:",racaToUpdate);
             console.error("Erro ao editar raça:", error);
-            alert("Erro ao editar raça. Por favor, tente novamente.");
+            setShowErrorAlert(true);
         }
     };
 
@@ -152,6 +155,8 @@ function UpdateRaca() {
                     </button>
                 </div>
             </form>
+            {<Alert message="Informações da raça editadas com sucesso!" show={showAlert} url={`/gerenciarRacas`} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao editar informações da raça, tente novamente." show={showErrorAlert} />}
         </div>
     );
 }

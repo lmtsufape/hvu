@@ -7,9 +7,14 @@ import { CancelarWhiteButton } from "../WhiteButton";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import TipoConsultaList from "@/hooks/useTipoConsultaList";
 import { createVagaNormal } from "../../../services/vagaService";
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function GerenciarVagas() {
     const router = useRouter();
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [errors, setErrors] = useState({});
 
@@ -120,11 +125,10 @@ function GerenciarVagas() {
     
         try {
             await createVagaNormal(vagasToCreate);
-            alert("Vagas criada com sucesso!");
-            router.push(`/agendamentosDia`);
+            setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar vagas:", error);
-            alert("Erro ao criar vagas. Por favor, tente novamente.");
+            setShowErrorAlert(true);
         }
     };
 
@@ -657,6 +661,8 @@ function GerenciarVagas() {
                 </div>
 
             </form>
+            {<Alert message="Vagas cadastradas com sucesso!" show={showAlert} url={`/agendamentosDia`} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao criar vagas, tente novamente." show={showErrorAlert} />}
         </div>
     );
 }

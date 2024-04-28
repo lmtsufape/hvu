@@ -6,10 +6,14 @@ import { AdicionarAnimalWhiteButton } from "../WhiteButton";
 import { getAllAnimalTutor, deleteAnimal } from '../../../services/animalService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
+import ErrorAlert from "../ErrorAlert";
 
 function MeusAnimaisList() {
     const [animais, setAnimais] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [deletedAnimalId, setDeletedAnimalId] = useState(null);
 
     const router = useRouter();
 
@@ -23,7 +27,7 @@ function MeusAnimaisList() {
             }
         };
         fetchData();
-    }, []);
+    }, [deletedAnimalId]); // Adicione deletedAnimalId como uma dependência
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);
@@ -36,11 +40,11 @@ function MeusAnimaisList() {
     const handleDeleteAnimal = async (animalId) => {
         try {
             await deleteAnimal(animalId);
-            setAnimais(animais.filter(animal => animal.id !== animalId))
-            window.location.reload();
-            alert("Animal excluído com sucesso!");
+            setDeletedAnimalId(animalId); // Atualiza o estado para acionar a recuperação da lista
+            setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir o animal: ', error);
+            setShowErrorAlert(true);
         }
     }
 
@@ -59,7 +63,7 @@ function MeusAnimaisList() {
             </div>
 
             {filteredAnimais.length === 0 ? (
-                <p>Não há animais cadastrados.</p>
+                <p className={styles.message}>Não há animais cadastrados.</p>
             ) : (
                 <ul className={styles.lista}>
                     {filteredAnimais.map(animal => (
@@ -85,6 +89,8 @@ function MeusAnimaisList() {
                     ))}
                 </ul>
             )}
+            {showAlert && <ErrorAlert message="Animal excluído com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao excluir animal, tente novamente" show={showErrorAlert} />}
         </div>
     );
 }

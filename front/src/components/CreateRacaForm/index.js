@@ -6,9 +6,14 @@ import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import EspeciesList from "@/hooks/useEspecieList";
 import { createRaca } from "../../../services/racaService";
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function CreateRaca() {
     const router = useRouter();
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [errors, setErrors] = useState({});
 
@@ -65,12 +70,10 @@ function CreateRaca() {
         try {
             const newRaca = await createRaca(racaToCreate);
             console.log("new raça: ", newRaca);
-            router.push("/gerenciarRacas");
-            alert("Raça cadastrada com sucesso!");
+            setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar raça:", error);
-            console.log("Detalhes do erro:", error.response);
-            alert("Erro ao criar raça, tente novamente.");
+            setShowErrorAlert(true);
         }
     };
 
@@ -131,6 +134,8 @@ function CreateRaca() {
                     </button>
                 </div>
             </form>
+            {<Alert message="Raça cadastrada com sucesso!" show={showAlert} url={`/gerenciarRacas`} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao cadastrar raça, tente novamente." show={showErrorAlert} />}
         </div>
     );
 }

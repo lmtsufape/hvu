@@ -8,6 +8,8 @@ import { updateMedico, getMedicoById } from "../../../services/medicoService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function UpdateMedico() {
     const router = useRouter();
@@ -21,6 +23,8 @@ function UpdateMedico() {
     const { especialidades } = EspecialidadeList();
     const [selectedEspecialidade, setSelectedEspecialidade] = useState([]);
     const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [medico, setMedico] = useState({
         nome: "",
@@ -198,11 +202,11 @@ function UpdateMedico() {
 
         try {
             await updateMedico(id, MedicoToUpdate);
-            alert("Informações editadas com sucesso!");
-            router.push(`/getMedicoById/${id}`);
+            setShowAlert(true); 
         } catch (error) {
             console.error("Erro ao editar medico:", error);
             console.log("Erro ao editar informações. Por favor, tente novamente.");
+            setShowErrorAlert(true);   
         }
     };
 
@@ -312,6 +316,8 @@ function UpdateMedico() {
                 </div>
 
             </form>
+            {<Alert message="Informações do(a) veterinário(a) editadas com sucesso!" show={showAlert} url={`/getMedicoById/${id}`} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao editar informações do(a) veterinário(a), tente novamente." show={showErrorAlert} />}
         </div>
     );
 }

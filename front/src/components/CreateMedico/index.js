@@ -9,9 +9,15 @@ import { postRegister } from "../../../common/postRegister";
 import { postLogin } from "../../../common/postLogin";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import axios from "axios";
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function CreateMedico() {
     const router = useRouter();
+
+    
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const { especialidades } = EspecialidadeList();
     const [selectEspecialidade, setSelectEspecialidade] = useState(null);
@@ -98,11 +104,10 @@ function CreateMedico() {
             await postLogin(medico.email, medico.senha);
             await createMedico(MedicoToCreate);
             localStorage.setItem("token", token);
-            alert("Médico cadastrado com sucesso!");
-            router.push("/getAllMedicos");
+            setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar médico:", error);
-            alert("Erro ao criar médico. Por favor, tente novamente.");
+            setShowErrorAlert(true);
         }
     };
 
@@ -275,6 +280,8 @@ function CreateMedico() {
                 </div>
 
             </form>
+            {<Alert message="Veterinário(a) cadastrado(a) com sucesso!" show={showAlert} url={`/getAllMedicos`} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao cadastrar veterinário(a), tente novamente." show={showErrorAlert} />}
         </div>
     );
 }
