@@ -2,19 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import dateStyles from "../Date/index.module.css";
-import Filter from "../GetAgendamentosFilter";
-import CalendarGrennIcon from '../CalendarGreenIcon';
+import CalendarGreenIcon from '../CalendarGreenIcon';
 import SearchBar from '../SearchBar';
-import { DataCompleta } from "../Date";
 import VoltarButton from '../VoltarButton';
+import { DataCompleta } from "../Date";
 import { getAllVaga } from '../../../services/vagaService';
+import { cancelarAgendamento } from '../../../services/consultaService';
+import { getTutorByAnimal } from '../../../services/tutorService';
+import Filter from '../GetAgendamentosFilter';
+import ModalAgendamento from '../ModalAgendamento';
+
 
 function GetAllAgendamentosSemanaForm() {
   const router = useRouter();
-
+  const [modalOpen, setModalOpen] = useState(false);
   const [dataSelecionada, setDataSelecionada] = useState(new Date());
   const [vagas, setVagas] = useState([]);
-  const [agendamentosPorHora, setAgendamentosPorHora] = useState({});
+  const [selectedVaga, setSelectedVaga] = useState(null);
+  const [tutor, setTutor] = useState('');
+  const [descricaoCancelamento, setDescricaoCancelamento] = useState('');
 
   const horarios = ['08:00', '09:00', '10:00', '11:00', '12:00'];
   const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
@@ -26,24 +32,16 @@ function GetAllAgendamentosSemanaForm() {
     dias.push(dia);
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const VagasData = await getAllVaga();
-        setVagas(VagasData);
+  const fetchData = async () => {
+    try {
+      const VagasData = await getAllVaga();
+      setVagas(VagasData);
+    } catch (error) {
+      console.error('Erro ao buscar vagas:', error);
+    }
+  };
 
-        const horarioMap = {};
-        horarios.forEach(horario => {
-          dias.forEach(dia => {
-            const key = `${dia.toISOString().slice(0, 10)}T${horario}:00`;
-            horarioMap[key] = VagasData.filter(vaga => vaga.dataHora.startsWith(key));
-          });
-        });
-        setAgendamentosPorHora(horarioMap);
-      } catch (error) {
-        console.error('Erro ao buscar vagas:', error);
-      }
-    };
+  useEffect(() => {
     fetchData();
   }, [dataSelecionada]);
 
@@ -56,6 +54,42 @@ function GetAllAgendamentosSemanaForm() {
     }
   };
 
+  const handleCancelarConsulta = async () => {
+    try {
+      const cancelamentoData = {
+        descricao: descricaoCancelamento,
+        agendamento: {
+          id: selectedVaga.agendamento.id
+        }
+      };
+      await cancelarAgendamento(cancelamentoData);
+      closeModal();
+      fetchData();
+    } catch (error) {
+      console.error('Erro ao cancelar consulta:', error);
+    }
+  };
+
+  const openModal = async (vaga) => {
+    setSelectedVaga(vaga);
+    console.log(vaga)
+    setModalOpen(true);
+    if (vaga?.agendamento?.animal?.id) {
+      try {
+        const tutorSelected = await getTutorByAnimal(vaga.agendamento.animal.id);
+        setTutor(tutorSelected);
+      } catch (error) {
+        console.error('Erro ao obter tutor:', error);
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setTutor("");
+    setDescricaoCancelamento('');
+  };
+
   return (
     <div className={styles.pagina}>
 
@@ -65,7 +99,7 @@ function GetAllAgendamentosSemanaForm() {
         <div className={styles.calendar_container}>
           <div className={styles.calendar_box}>
             <div className={dateStyles.data_completa}>{DataCompleta(dataSelecionada)}</div>
-            <CalendarGrennIcon onDataSelecionada={setDataSelecionada} />
+            <CalendarGreenIcon onDataSelecionada={setDataSelecionada} />
           </div>
           <Filter />
         </div>
@@ -99,11 +133,11 @@ function GetAllAgendamentosSemanaForm() {
                 <th className={styles.coluna1}>{horario}</th>
                 {dias.map(dia => {
                   const key = `${dia.toISOString().slice(0, 10)}T${horario}:00`;
-                  const agendamentos = agendamentosPorHora[key] || [];
+                  const agendamentos = vagas.filter(vaga => vaga.dataHora.startsWith(key));
                   return (
                     <td key={dia.toISOString()} className={styles.th}>
                       {agendamentos.map((agendamento, idx) => (
-                        <div key={idx} className={styles[agendamento.status.toLowerCase()]}>
+                        <div key={idx} className={styles[agendamento.status.toLowerCase()]} onClick={() => openModal(agendamento)}>
                           <span>
                             {agendamento?.agendamento?.animal?.nome ? agendamento.agendamento.animal.nome : agendamento.status}
                           </span>
@@ -117,6 +151,19 @@ function GetAllAgendamentosSemanaForm() {
           </tbody>
         </table>
       </div>
+
+
+      <ModalAgendamento
+        tutor={tutor}
+        selectedVaga={selectedVaga}
+        isOpen={modalOpen}
+        closeModal={closeModal}
+        descricaoCancelamento={descricaoCancelamento}
+        setDescricaoCancelamento={setDescricaoCancelamento}
+        handleCancelarConsulta={handleCancelarConsulta}
+      />
+
+
     </div>
   );
 }
