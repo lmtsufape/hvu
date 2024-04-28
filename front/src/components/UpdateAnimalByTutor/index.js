@@ -6,12 +6,17 @@ import EspeciesList from "@/hooks/useEspecieList";
 import RacasList from "@/hooks/useRacaList";
 import VoltarButton from '../VoltarButton';
 import { CancelarWhiteButton } from '../WhiteButton';
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function UpdateAnimalByTutor() {
   const router = useRouter();
   const { id } = router.query;
 
   const [errors, setErrors] = useState({});
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   const { especies, error: especiesError } = EspeciesList();
   const { racas, error: racasError } = RacasList();
@@ -140,11 +145,10 @@ function UpdateAnimalByTutor() {
       if (id) {
         try {
           await updateAnimal(id, animalToUpdate);
-          alert("animal atualizado com sucesso!");
-          router.push(`/getAnimalById/${id}`);
+          setShowAlert(true);
         } catch (error) {
-          console.log('Erro ao atualizar o animal, tente novamente.');
           console.error('Erro ao atualizar o animal:', error);
+          setShowErrorAlert(true);
         }
       }
     }
@@ -279,6 +283,8 @@ function UpdateAnimalByTutor() {
         )}
       </ul>
     </form>
+    {<Alert message="Informações do animal editadas com sucesso!" show={showAlert} url={`/getAnimalById/${id}`} />}
+    {showErrorAlert && <ErrorAlert message="Erro ao editar informações do animal, tente novamente." show={showErrorAlert} />}
     </div>
   );
 }

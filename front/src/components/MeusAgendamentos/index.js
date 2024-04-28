@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./index.module.css";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import VoltarButton from "../VoltarButton";
-import SearchBar from "../SearchBar"; // Importe o componente SearchBar
+import SearchBar from "../SearchBar";
 import { getAgendamentoTutor, deleteAgendamento } from "../../../services/agendamentoService";
-import { format } from 'date-fns'; 
+import { format } from 'date-fns';
 import { CriarAgendamentoWhiteButton } from '../WhiteButton';
+import ErrorAlert from "../ErrorAlert";
 
 export default function MeusAgendamentos() {
     const router = useRouter();
 
     const [agendamentos, setAgendamentos] = useState([]);
     const [cancelarModalId, setCancelarModalId] = useState(null);
-    const [searchTerm, setSearchTerm] = useState(''); // Estado para armazenar o termo de pesquisa
+    const [searchTerm, setSearchTerm] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [canceledAgendamentoId, setCanceledAgendamentoId] = useState(null); // Estado para controlar o ID do agendamento cancelado recentemente
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,32 +28,36 @@ export default function MeusAgendamentos() {
             }
         };
         fetchData();
-    }, []);
+    }, [canceledAgendamentoId]); // Adicionar canceledAgendamentoId como uma dependência
 
     const handleDeleteAgendamento = async (agendamentoId) => {
         try {
             await deleteAgendamento(agendamentoId);
             setAgendamentos(agendamentos.filter(agendamento => agendamento.id !== agendamentoId));
             setCancelarModalId(null);
-            alert("Agendamento cancelado!");
+            setCanceledAgendamentoId(agendamentoId); // Atualiza o estado para acionar a recuperação da lista
+            setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir agendamento:', error);
             setCancelarModalId(null);
+            setShowErrorAlert(true);
         }
     };
 
-    // Função para filtrar os agendamentos com base no nome do animal
-    const filteredAgendamentos = agendamentos.filter(agendamento =>
-        agendamento.animal && agendamento.animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const handleSearchChange = (term) => {
+        setSearchTerm(term);
+    };
 
     const compareDates = (a, b) => {
         const dateA = new Date(a.dataVaga);
         const dateB = new Date(b.dataVaga);
         return dateB - dateA;
     };
-    
-    // Ordena os agendamentos com base nas datas
+
+    const filteredAgendamentos = agendamentos.filter(agendamento =>
+        agendamento.animal && agendamento.animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     const sortedAgendamentos = filteredAgendamentos.sort(compareDates);
 
     return (
@@ -63,10 +70,10 @@ export default function MeusAgendamentos() {
             </div>
             <div className={styles.navbar}>
                 <SearchBar
-                    placeholder="Buscar agendamento através do nome do animal" 
-                    onSearchChange={setSearchTerm} 
+                    placeholder="Buscar agendamento através do nome do animal"
+                    onSearchChange={setSearchTerm}
                 />
-                < CriarAgendamentoWhiteButton /> 
+                <CriarAgendamentoWhiteButton />
             </div>
 
             {sortedAgendamentos.length === 0 ? (
@@ -86,12 +93,12 @@ export default function MeusAgendamentos() {
                                         <h2>{agendamento.animal && agendamento.animal.nome}</h2>
                                     </div>
                                     <div>
-                                        {new Date(agendamento.dataVaga) >= new Date() ? ( // Verifica se a data do agendamento é posterior ou igual à data atual
+                                        {new Date(agendamento.dataVaga) >= new Date() ? (
                                             <button className={styles.agendamento_button} onClick={() => setCancelarModalId(agendamento.id)}>
                                                 <h1>Cancelar</h1>
                                             </button>
                                         ) : (
-                                            <button className={styles.finalizar_button} disabled> {/* Desabilita o botão */}
+                                            <button className={styles.finalizar_button} disabled>
                                                 <h1>Finalizado</h1>
                                             </button>
                                         )}
@@ -103,7 +110,7 @@ export default function MeusAgendamentos() {
                                                 </div>
                                                 <div className={styles.box2}>
                                                     <button className={styles.cancelar_button} onClick={() => setCancelarModalId(null)}>Voltar</button>
-                                                    <button className={styles.excluir_button2}  onClick={() => handleDeleteAgendamento(agendamento.id)}>Cancelar</button>
+                                                    <button className={styles.excluir_button2} onClick={() => handleDeleteAgendamento(agendamento.id)}>Cancelar</button>
                                                 </div>
                                             </div>
                                         )}
@@ -114,6 +121,8 @@ export default function MeusAgendamentos() {
                     ))}
                 </ul>
             )}
+            {showAlert && <ErrorAlert message="Agendamento cancelado com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao cancelar agendamento, tente novamente" show={showErrorAlert} />}
         </div>
     )
 }

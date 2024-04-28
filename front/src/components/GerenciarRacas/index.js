@@ -6,11 +6,15 @@ import { getAllRaca, deleteRaca } from '../../../services/racaService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
 import FilterEspecieRaca from '../FilterEspecieRaca';
+import ErrorAlert from "../ErrorAlert";
 
 function GerenciarRacasList() {
     const [racas, setRacas] = useState([]);
     const [filtro, setFiltro] = useState('especie');
     const [searchTerm, setSearchTerm] = useState('');
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [deletedRacaId, setDeletedRacaId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
     const router = useRouter();
 
     useEffect(() => {
@@ -23,18 +27,18 @@ function GerenciarRacasList() {
             }
         };
         fetchData();
-    }, []);
+    }, [deletedRacaId]); // Adicione deletedRacaId como uma dependência
 
     const handleDeleteRaca = async (racaId) => {
         try {
             await deleteRaca(racaId);
             setRacas(racas.filter(raca => raca.id !== racaId));
-            window.location.reload();
-            alert("Raça excluída com sucesso!");
+            setDeletedRacaId(racaId); // Atualiza o estado para acionar a recuperação da lista
+            setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir a raça:', error);
             if (error.response && error.response.status === 409) {
-                alert("Esta raça não pode ser excluída por estar associada a um animal.");
+                setShowErrorAlert(true);
             }
         }
     };
@@ -92,6 +96,9 @@ function GerenciarRacasList() {
                     ))}
                 </ul>
             )}
+            {showAlert && <ErrorAlert message="Raça excluída com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message="Esta raça não pode ser excluída por estar associada a um animal." show={showErrorAlert} />}
+
         </div>
     );
 }

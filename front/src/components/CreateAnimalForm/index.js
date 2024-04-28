@@ -6,6 +6,8 @@ import { createAnimal } from "../../../services/animalService";
 import EspeciesList from "@/hooks/useEspecieList";
 import RacasList from "@/hooks/useRacaList";
 import VoltarButton from "../VoltarButton";
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function CreateAnimalForm() {
   const router = useRouter();
@@ -19,6 +21,9 @@ function CreateAnimalForm() {
   const [racasByEspecie, setRacasByEspecie] = useState([]);
   const [isRacaSelectDisabled, setIsRacaSelectDisabled] = useState(true);
   const [especieName, setEspecieName] = useState("");
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   const [animalData, setAnimalData] = useState({
     nome: '',
@@ -140,13 +145,13 @@ function CreateAnimalForm() {
         try {
           const newAnimal = await createAnimal(animalToCreate);
           console.log(newAnimal);
-          alert("Animal cadastrado com sucesso!");
-          router.push("/meusAnimais");
           resetForm();
+          setShowAlert(true);
         } catch (error) {
           console.error("Erro ao criar animal:", error);
           console.log("Detalhes do erro:", error.response);
           resetForm();
+          setShowErrorAlert(true);
         }
       } else {
         console.log("Aguardando dados de espécies e raças carregarem...");
@@ -305,6 +310,8 @@ function CreateAnimalForm() {
           </button>
         </div>
       </form>
+      {<Alert message="Animal cadastrado com sucesso!" show={showAlert} url='/meusAnimais' />}
+      {showErrorAlert && <ErrorAlert message="Erro ao realizar cadastro, tente novamente." show={showErrorAlert} />}
     </div>
   );
 }

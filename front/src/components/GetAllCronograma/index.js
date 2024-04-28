@@ -6,6 +6,7 @@ import { AdicionarCronograma } from "../WhiteButton";
 import { getAllCronograma, deleteCronograma } from '../../../services/cronogramaService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
+import ErrorAlert from "../ErrorAlert";
 
 function GetAllCronograma() {
     const router = useRouter();
@@ -13,6 +14,9 @@ function GetAllCronograma() {
 
     const [cronogramas, setCronogramas] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,9 +46,10 @@ function GetAllCronograma() {
             await deleteCronograma(cronogramaId);
             setCronogramas(cronogramas.filter(cronograma => cronograma.id !== cronogramaId))
             window.location.reload();
-            alert("Agenda excluída com sucesso!");
+            setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir a agenda: ', error);
+            setShowErrorAlert(true);
         }
     }
 
@@ -89,6 +94,9 @@ function GetAllCronograma() {
                     ))}
                 </ul>
             )}
+            {showAlert && <ErrorAlert message="Agenda excluída com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao excluir agenda, tente novamente" show={showErrorAlert} />}
+            
         </div>
     );
 }

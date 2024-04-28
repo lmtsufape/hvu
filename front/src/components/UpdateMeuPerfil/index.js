@@ -7,6 +7,8 @@ import { CancelarWhiteButton } from "../WhiteButton";
 import { updateUsuario, getUsuarioById } from "../../../services/userService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function UpdateMeuPerfil() {
     const router = useRouter();
@@ -17,6 +19,9 @@ function UpdateMeuPerfil() {
     const [alterarSenha, setAlterarSenha] = useState(false);
     const [senhaErro, setSenhaErro] = useState("");
     const [confirmarSenhaErro, setConfirmarSenhaErro] = useState("");
+    
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [usuario, setUsuario] = useState({
         id: null,
@@ -174,12 +179,10 @@ function UpdateMeuPerfil() {
         console.log("usuarioToUpdate:", usuarioToUpdate);
         try {
             await updateUsuario(usuario.id, usuarioToUpdate);
-            alert("Informações editadas com sucesso!");
-            router.push(`/meuPerfil/${id}`);
+            setShowAlert(true);
         } catch (error) {
-            console.log("usuarioToUpdate:", usuarioToUpdate);
             console.error("Erro ao editar usuario:", error);
-            alert("Erro ao editar usuario. Por favor, tente novamente.");
+            setShowErrorAlert(true);
         }
     };
 
@@ -256,6 +259,8 @@ function UpdateMeuPerfil() {
                 </div>
 
             </form>
+            {<Alert message="Informações editadas com sucesso!" show={showAlert} url={`/meuPerfil/${id}`} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao editar informações, tente novamente." show={showErrorAlert} />}
         </div>
     );
 }

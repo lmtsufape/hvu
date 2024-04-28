@@ -7,9 +7,14 @@ import { CancelarWhiteButton } from "../WhiteButton";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import MedicoList from "@/hooks/useMedicoList";
 import { createCronograma } from "../../../services/cronogramaService";
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 function CreateCronograma() {
     const router = useRouter();
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [errors, setErrors] = useState({});
 
@@ -125,11 +130,10 @@ function CreateCronograma() {
 
         try {
             await createCronograma(cronogramaToCreate);
-            alert("Agenda criada com sucesso!");
-            router.push(`/getAllCronograma/${selectedMedico}`);
+            setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar agenda:", error);
-            alert("Erro ao criar agenda. Por favor, tente novamente.");
+            setShowErrorAlert(true);
         }
     };
 
@@ -449,6 +453,8 @@ function CreateCronograma() {
                 </div>
 
             </form>
+            {<Alert message="Agenda criada com sucesso!" show={showAlert} url={`/getAllCronograma/${selectedMedico}`} />}   
+            {showErrorAlert && <ErrorAlert message="Erro ao criar agenda, tente novamente." show={showErrorAlert} />}
         </div>
     );
 }

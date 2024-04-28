@@ -37,17 +37,6 @@ function GetAllCronogramaByMedico() {
         cronograma.nome.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleDeleteCronograma = async (cronogramaId) => {
-        try {
-            await deleteCronograma(cronogramaId);
-            setCronogramas(cronogramas.filter(cronograma => cronograma.id !== cronogramaId))
-            window.location.reload();
-            alert("Agenda excluída com sucesso!");
-        } catch (error) {
-            console.error('Erro ao excluir a agenda: ', error);
-        }
-    }
-
     return (
         <div className={styles.container}>
             <VoltarButton />
@@ -59,7 +48,6 @@ function GetAllCronogramaByMedico() {
                     placeholder={"Buscar agenda"}
                     onSearchChange={handleSearchChange}
                 />
-                {/* <AdicionarCronograma page={"createCronograma"}/> */}
             </div>
 
             {filteredCronogramas.length === 0 ? (
@@ -83,7 +71,6 @@ function GetAllCronogramaByMedico() {
                                 >
                                     Visualizar
                                 </button>
-                                {/* <ExcluirButton itemId={cronograma.id} onDelete={handleDeleteCronograma} /> */}
                             </div>
                         </li>
                     ))}

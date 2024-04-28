@@ -8,6 +8,8 @@ import { getAllAnimalTutor } from '../../../services/animalService';
 import { getAllVaga } from '../../../services/vagaService';
 import { createAgendamento } from '../../../services/agendamentoService';
 import { set } from 'date-fns';
+import Alert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 const HorariosSemana = () => {
   const router = useRouter();
@@ -23,6 +25,9 @@ const HorariosSemana = () => {
   const [selectedVaga, setSelectedVaga] = useState(null);
 
   const [errors, setErrors] = useState({});
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   const openModal = () => {
     setShowModal(true);
@@ -137,15 +142,15 @@ const HorariosSemana = () => {
     try {
       const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
       console.log(newAgendamento);
-      alert("Consulta agendada com sucesso!");
-      router.push("/meusAgendamentos");
+      setShowAlert(true);
     } catch (error) {
       console.error("Erro ao agendar consulta:", error);
       if (error.response && error.response.status === 500) {
-        alert("Vaga não está disponível.");
+        // alert("Vaga não está disponível.");
+        setShowErrorAlert(true);
       } else {
         // Se não for 500, faça outra coisa
-        alert("Ocorreu um erro ao agendar a consulta. Por favor, tente novamente.");
+        setShowErrorAlert(true);
       }
     }
   };
@@ -294,6 +299,8 @@ const HorariosSemana = () => {
           </div>
         </div>
       )}
+      {<Alert message="Agendamento realizado com sucesso!" show={showAlert} url='/meusAgendamentos' />}
+      {showErrorAlert && <ErrorAlert message="Erro ao realizar agendamento, tente novamente." show={showErrorAlert} />}
     </div>
   );
 };
