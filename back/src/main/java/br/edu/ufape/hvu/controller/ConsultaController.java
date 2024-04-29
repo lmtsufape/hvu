@@ -54,6 +54,21 @@ public class ConsultaController {
 			//Consulta o = obj.convertToEntity();
 			Consulta oldObject = facade.findConsultaById(id);
 
+			if (obj.getMedico() != null) {
+				oldObject.setMedico(obj.getMedico().convertToEntity());
+				obj.setMedico(null);
+			}
+
+			if (obj.getEncaminhamento() != null) {
+				oldObject.setEncaminhamento(obj.getEncaminhamento().convertToEntity());
+				obj.setEncaminhamento(null);
+			}
+
+			if (obj.getPrescricao() != null) {
+				oldObject.setPrescricao(obj.convertToEntity().getPrescricao());
+				obj.setPrescricao(null);
+			}
+
 			TypeMap<ConsultaRequest, Consulta> typeMapper = modelMapper
 													.typeMap(ConsultaRequest.class, Consulta.class)
 													.addMappings(mapper -> mapper.skip(Consulta::setId));			

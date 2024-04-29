@@ -91,6 +91,19 @@ public class AgendamentoController {
 			//Agendamento o = obj.convertToEntity();
 			Agendamento oldObject = facade.findAgendamentoById(id);
 
+			if(obj.getAnimal() != null) {
+				oldObject.setAnimal(obj.getAnimal().convertToEntity());
+			}
+
+			if (obj.getDataVaga() != null) {
+				oldObject.setDataVaga(obj.getDataVaga());
+			}
+
+			if (obj.getStatus() != null) {
+				oldObject.setStatus(obj.getStatus());
+			}
+
+
 			TypeMap<AgendamentoRequest, Agendamento> typeMapper = modelMapper
 													.typeMap(AgendamentoRequest.class, Agendamento.class)
 													.addMappings(mapper -> mapper.skip(Agendamento::setId));			

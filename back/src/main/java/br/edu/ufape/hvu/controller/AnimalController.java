@@ -116,6 +116,19 @@ public class AnimalController {
 			if(!principal.getSubject().equals(tutor.getUserId())) {
 				throw new AccessDeniedException("This is not your animal");
 			}
+
+			if (obj.getRaca() != null) {
+				oldObject.setRaca(obj.getRaca().convertToEntity());
+				obj.setRaca(null);
+			}
+
+			if (obj.getHistoricoMedicoPregresso() != null) {
+				oldObject.setHistoricoMedicoPregresso(obj.getHistoricoMedicoPregresso().convertToEntity());
+				obj.setHistoricoMedicoPregresso(null);
+			}
+
+
+
 			TypeMap<AnimalRequest, Animal> typeMapper = modelMapper
 													.typeMap(AnimalRequest.class, Animal.class)
 													.addMappings(mapper -> mapper.skip(Animal::setId));			

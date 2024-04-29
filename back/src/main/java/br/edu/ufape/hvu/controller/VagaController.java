@@ -2,6 +2,8 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Consulta;
+import br.edu.ufape.hvu.model.Especialidade;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -59,8 +61,30 @@ public class VagaController {
 			//Vaga o = obj.convertToEntity();
 			Vaga oldObject = facade.findVagaById(id);
 
-			oldObject.setTipoConsulta(facade.findTipoConsultaById(obj.getTipoConsulta().getId()));
-			obj.setTipoConsulta(null);
+			if(obj.getTipoConsulta() != null && !obj.getTipoConsulta().convertToEntity().equals(oldObject.getTipoConsulta())){
+				oldObject.setTipoConsulta(facade.findTipoConsultaById(obj.getTipoConsulta().getId()));
+				obj.setTipoConsulta(null);
+			}
+
+			if(obj.getMedico() != null) {
+				Consulta cons = facade.findConsultaById(obj.convertToEntity().getConsulta().getId());
+				oldObject.setMedico(cons.getMedico());
+				obj.setMedico(null);
+			}
+
+			if(obj.getEspecialidade() != null) {
+				Especialidade esp = facade.findEspecialidadeById(obj.convertToEntity().getEspecialidade().getId());
+				oldObject.setEspecialidade(esp);
+				obj.setEspecialidade(null);
+			}
+
+			if(obj.getConsulta() != null) {
+				Consulta cons = facade.findConsultaById(obj.convertToEntity().getConsulta().getId());
+				oldObject.setConsulta(cons);
+				obj.setConsulta(null);
+			}
+
+
 			TypeMap<VagaRequest, Vaga> typeMapper = modelMapper
 													.typeMap(VagaRequest.class, Vaga.class)
 													.addMappings(mapper -> mapper.skip(Vaga::setId));
