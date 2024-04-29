@@ -35,7 +35,7 @@ export default function MeusAgendamentos() {
         const cancelamento = {
             agendamento: {
                 id: agendamentoData.id
-              },
+            },
             descricao: 'Cancelamento solicitado pelo tutor'
         }
         try {
@@ -43,7 +43,7 @@ export default function MeusAgendamentos() {
             setAgendamentos(agendamentos.filter(agendamento => agendamento.id !== agendamentoData.id));
             setCancelarModalId(null);
             setCanceledAgendamentoId(agendamentoData.id); // Atualiza o estado para acionar a recuperação da lista
-            setShowAlert(true); 
+            setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir agendamento:', error);
             setCancelarModalId(null);
@@ -100,7 +100,7 @@ export default function MeusAgendamentos() {
                                         <h2>{agendamento.animal && agendamento.animal.nome}</h2>
                                     </div>
                                     <div>
-                                        {agendamento && agendamento.status === 'Agendado'  ? (
+                                        {agendamento && agendamento.status === 'Agendado' ? (
                                             <button className={styles.agendamento_button} onClick={() => setCancelarModalId(agendamento.id)}>
                                                 <h1>Cancelar</h1>
                                             </button>
@@ -109,20 +109,20 @@ export default function MeusAgendamentos() {
                                                 <h1>{agendamento.status}</h1>
                                             </button>
                                         )}
-                                        {cancelarModalId === agendamento.id && (
-                                            <div className={styles.modal}>
-                                                <div className={styles.box1}>
-                                                    <div>Deseja realmente cancelar?</div>
-                                                    <button onClick={() => setCancelarModalId(null)} className={styles.button_close_modal}>X</button>
-                                                </div>
-                                                <div className={styles.box2}>
-                                                    <button className={styles.cancelar_button} onClick={() => setCancelarModalId(null)}>Voltar</button>
-                                                    <button className={styles.excluir_button2} onClick={() => handleDeleteAgendamento(agendamento)}>Cancelar</button>
-                                                </div>
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
+                                {cancelarModalId === agendamento.id && (
+                                    <div className={styles.modal}>
+                                        <div className={styles.box1}>
+                                            <div>Deseja realmente cancelar?</div>
+                                            <button onClick={() => setCancelarModalId(null)} className={styles.button_close_modal}>X</button>
+                                        </div>
+                                        <div className={styles.box2}>
+                                            <button className={styles.cancelar_button} onClick={() => setCancelarModalId(null)}>Voltar</button>
+                                            <button className={styles.excluir_button2} onClick={() => handleDeleteAgendamento(agendamento)}>Cancelar</button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </li>
                     ))}

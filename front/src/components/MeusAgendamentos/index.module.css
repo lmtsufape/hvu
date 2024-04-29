@@ -143,9 +143,7 @@
 
 .modal {
     position: absolute;
-    z-index: 1000;
-    margin-top: 5px;
-    margin-left: -500px;
+    margin: -2rem 0 0 50rem;
     width: 620px;
     height: 181px;
     border-radius: 20px;
