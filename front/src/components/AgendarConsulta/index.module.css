@@ -14,7 +14,10 @@ margin-left: 7%;
   border: 1px solid #ccc; /* Borda */
   border-radius: 5px; /* Arredondamento da borda */
   text-align: center; /* Alinhamento do texto */
-  height: 100%; /* Altura */
+  height: 5vh; /* Altura */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .title_box {
@@ -133,9 +136,7 @@ margin-left: 7%;
 
 .containersemana{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  
+  justify-content: center;  
 }
 
 .containerdia {
