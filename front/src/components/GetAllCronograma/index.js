@@ -68,7 +68,7 @@ function GetAllCronograma() {
             </div>
 
             {filteredCronogramas.length === 0 ? (
-                <p>Não há agendas cadastradas.</p>
+                <p className={styles.message}>Não há agendas cadastradas.</p>
             ) : (
                 <ul className={styles.lista}>
                     {filteredCronogramas.map(cronograma => (

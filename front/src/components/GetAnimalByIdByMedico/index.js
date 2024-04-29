@@ -71,6 +71,13 @@ function GetAnimalByIdByMedico() {
                                         <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
                                     </div>
                                 </div>
+
+                                <div className={styles.lista}>
+                                    <div className={styles.infos}>
+                                        <h6>Alergias</h6>
+                                        <p>{animal.alergias}</p>
+                                    </div>
+                                </div>
                             </div>
                             <div className={styles.botao}>
                                 <EditarWhiteButton page={"updateAnimalBySecretarioAndMedico"} id={animal.id}/>
