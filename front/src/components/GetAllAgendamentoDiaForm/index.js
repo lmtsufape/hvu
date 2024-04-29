@@ -128,7 +128,13 @@ function GetAllAgendamentosDiaForm() {
                             <div className={styles.infos_container}>
                               <div>
                                 <div className={styles.infos_box1}>
-                                  <div className={styles.info1}>{vaga.agendamento?.animal.nome} &bull; {vaga.agendamento?.animal.especie}</div>
+                                  <div className={styles.info1}>
+                                    {vaga.agendamento?.animal ? (
+                                      <>{vaga.agendamento?.animal.nome} &bull; {vaga.agendamento?.animal.raca.especie.nome}</>
+                                    ) : (
+                                      <>{vaga.status}</>
+                                    )}
+                                  </div>
                                   <h2 className={styles[`status_${vaga.status ? vaga.status.toLowerCase() : ''}`]}>
                                     {vaga.status === "precriada" ? "Pré-criada" : vaga.status}
                                   </h2>

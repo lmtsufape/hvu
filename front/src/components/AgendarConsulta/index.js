@@ -19,7 +19,7 @@ const HorariosSemana = () => {
   const [showModal, setShowModal] = useState(false);
 
   const [animais, setAnimais] = useState(null);
-  const [selectedAnimal, setSelectedAnimal] = useState(null); 
+  const [selectedAnimal, setSelectedAnimal] = useState(null);
 
   const [vagas, setVagas] = useState(null);
   const [selectedVaga, setSelectedVaga] = useState(null);
@@ -37,7 +37,7 @@ const HorariosSemana = () => {
     setShowModal(false);
   };
 
-  const diasSemana = { 
+  const diasSemana = {
     0: 'Domingo',
     1: 'Segunda',
     2: 'Terça',
@@ -136,9 +136,9 @@ const HorariosSemana = () => {
       dataVaga: selecionarHorario,
       status: 'Agendado'
     };
-  
+
     console.log("agendamentoToCreate", agendamentoToCreate);
-    
+
     try {
       const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
       console.log(newAgendamento);
@@ -169,8 +169,8 @@ const HorariosSemana = () => {
         <div className={styles.select_container}>
           <div className={styles.select_box}>
             <h1>Paciente  <span className={styles.obrigatorio}>*</span></h1>
-            <select 
-              className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`} 
+            <select
+              className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`}
               aria-label="Default select example"
               name="animal"
               value={selectedAnimal ? selectedAnimal.id : ''}
@@ -195,65 +195,65 @@ const HorariosSemana = () => {
           <button className={styles.button_avancar} onClick={avancarSemana}>⭢</button>
         </div>
         <div className={styles.containersemana}>
-        {Array.from({ length: 7 }, (_, index) => {
-          const currentDate = new Date(selecionarData);
-          currentDate.setDate(currentDate.getDate() - currentDate.getDay() + index);
-          if (currentDate.getDay() !== 6 && currentDate.getDay() !== 0) {
-            const currentDateFormatted = currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            const vagasForCurrentDay = vagas && vagas.filter(vaga => {
-              const vagaDate = new Date(vaga.dataHora);
-              const vagaDateFormatted = vagaDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-              return vagaDateFormatted === currentDateFormatted;
-            });
-            if (!vagasForCurrentDay || vagasForCurrentDay.length === 0) {
+          {Array.from({ length: 7 }, (_, index) => {
+            const currentDate = new Date(selecionarData);
+            currentDate.setDate(currentDate.getDate() - currentDate.getDay() + index);
+            if (currentDate.getDay() !== 6 && currentDate.getDay() !== 0) {
+              const currentDateFormatted = currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+              const vagasForCurrentDay = vagas && vagas.filter(vaga => {
+                const vagaDate = new Date(vaga.dataHora);
+                const vagaDateFormatted = vagaDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                return vagaDateFormatted === currentDateFormatted;
+              });
+              if (!vagasForCurrentDay || vagasForCurrentDay.length === 0) {
+                return (
+                  <div key={currentDate} className={styles.containerdia}>
+                    <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
+                    <p className={styles.data}>{currentDateFormatted}</p>
+                    <div className={styles.no_vagas}>
+                      Não há vagas
+                    </div>
+                  </div>
+                );
+              }
               return (
                 <div key={currentDate} className={styles.containerdia}>
                   <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
                   <p className={styles.data}>{currentDateFormatted}</p>
-                  <div className={styles.no_vagas}>
-                    Não há vagas
+                  <div className="time-buttons">
+                    {vagasForCurrentDay.map((vaga) => (
+                      <button
+                        key={vaga.id}
+                        className={
+
+                          vaga.status === 'Agendado' || vaga.status === 'Finalizado' ?
+                            `${styles.botaohoraIndisponivel} }`
+                            :
+
+                            (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && !(vaga.status === 'Agendado' || vaga.status === 'Finalizado') ?
+                              `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}`
+                              : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ''}`)
+
+                        }
+                        onClick={() => {
+                          if (!(vaga.status === 'Agendado' || vaga.status === 'Finalizado')) {
+
+                            handleDateChange(currentDate);
+                            setSelecionarHorario(vaga.dataHora);
+                            setSelectedVaga(vaga);
+                          }
+                        }}
+                      >
+                        {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
+                        <br />{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}
+                      </button>
+                    ))}
                   </div>
                 </div>
               );
             }
-            return (
-              <div key={currentDate} className={styles.containerdia}>
-                <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
-                <p className={styles.data}>{currentDateFormatted}</p>
-                <div className="time-buttons">
-                  {vagasForCurrentDay.map((vaga) => (
-                    <button
-                      key={vaga.id}
-                      className={
-                        
-                        vaga.status === 'Agendado' || vaga.status === 'Finalizado' ?
-                        `${styles.botaohoraIndisponivel} }`
-                        :
-                        
-                        (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && !(vaga.status === 'Agendado' || vaga.status === 'Finalizado') ?
-                        `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}`
-                        : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ''}`)
-                    
-                    }
-                      onClick={() => {
-                        if(!(vaga.status === 'Agendado' || vaga.status === 'Finalizado')){
-
-                        handleDateChange(currentDate);
-                        setSelecionarHorario(vaga.dataHora);
-                        setSelectedVaga(vaga);
-                        }
-                      }}
-                    >
-                      {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
-                      <br/>{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          }
-          return null;
-        })}
+            return null;
+          })}
         </div>
         <div className={styles.button_container}>
           <CancelarWhiteButton />
@@ -280,8 +280,8 @@ const HorariosSemana = () => {
 
                 <div className={styles.box}>
                   <div className={styles.item}>Horário</div>
-                  <div className={styles.subtitle}>{formatDate(selecionarData, 
-                        selecionarHorario ? selecionarHorario.split('T')[1].split(':').slice(0, 2).join(':') : '')}
+                  <div className={styles.subtitle}>{formatDate(selecionarData,
+                    selecionarHorario ? selecionarHorario.split('T')[1].split(':').slice(0, 2).join(':') : '')}
                   </div>
                 </div>
 

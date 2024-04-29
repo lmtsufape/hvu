@@ -9,6 +9,13 @@ function GetCronogramaById() {
     const router = useRouter();
     const { id } = router.query;
     const [cronograma, setCronograma] = useState({});
+    const diasDaSemana = {
+        MONDAY: "Segunda-feira",
+        TUESDAY: "Terça-feira",
+        WEDNESDAY: "Quarta-feira",
+        THURSDAY: "Quinta-feira",
+        FRIDAY: "Sexta-feira"
+    };
 
     useEffect(() => {
         if (id) {
@@ -16,6 +23,8 @@ function GetCronogramaById() {
                 try {
                     const cronogramaData = await getCronogramaById(id);
                     setCronograma(cronogramaData);
+
+                    console.log("jsão crono", cronogramaData.horariosJson);
                 } catch (error) {
                     console.error('Erro ao buscar agenda:', error);
                 }
@@ -24,10 +33,21 @@ function GetCronogramaById() {
         }
     }, [id]);
 
+    const traduzir = (horariosJson) => {
+        const dias = JSON.parse(horariosJson);
+        const diasTraduzidos = {};
+        for (const dia in dias) {
+            const horarios = dias[dia];
+            diasTraduzidos[diasDaSemana[dia]] = horarios;
+        }
+        return (diasTraduzidos);
+    }
+
     const formatHorarios = (horariosJson) => {
         if (!horariosJson) return ''; // Verificar se horariosJson é indefinido
-        const horarios = JSON.parse(horariosJson);
+        const horarios = traduzir(horariosJson);
         const dias = Object.keys(horarios);
+
         let formattedHorarios = '';
         dias.forEach((dia, index) => {
             const inicio = horarios[dia].inicio;
@@ -40,6 +60,7 @@ function GetCronogramaById() {
                 formattedHorarios += '; ';
             }
         });
+        console.log("hora: ", formattedHorarios);
         return formattedHorarios;
     };
 
@@ -48,7 +69,7 @@ function GetCronogramaById() {
             <VoltarButton />
             <h1>Detalhes da agenda</h1>
             <ul>
-                {cronograma && ( 
+                {cronograma && (
                     <li key={cronograma.id} className={styles.infos_box}>
                         <div className={styles.identificacao}>
                             <div className={styles.nome_animal}>{cronograma.nome}</div>
@@ -79,7 +100,7 @@ function GetCronogramaById() {
                                 </div>
                             </div>
                             <div className={styles.botao}>
-                              {/*  <EditarWhiteButton page={"updateCronograma"} id={cronograma.id}/> */}
+                                {/*  <EditarWhiteButton page={"updateCronograma"} id={cronograma.id}/> */}
 
                             </div>
                         </div>
