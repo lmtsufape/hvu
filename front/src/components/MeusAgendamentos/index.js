@@ -7,6 +7,7 @@ import { getAgendamentoTutor, deleteAgendamento } from "../../../services/agenda
 import { format } from 'date-fns';
 import { CriarAgendamentoWhiteButton } from '../WhiteButton';
 import ErrorAlert from "../ErrorAlert";
+import { cancelarAgendamento } from '../../../services/consultaService';
 
 export default function MeusAgendamentos() {
     const router = useRouter();
@@ -30,12 +31,18 @@ export default function MeusAgendamentos() {
         fetchData();
     }, [canceledAgendamentoId]); // Adicionar canceledAgendamentoId como uma dependência
 
-    const handleDeleteAgendamento = async (agendamentoId) => {
+    const handleDeleteAgendamento = async (agendamentoData) => {
+        const cancelamento = {
+            agendamento: {
+                id: agendamentoData.id
+              },
+            descricao: 'Cancelamento solicitado pelo tutor'
+        }
         try {
-            await deleteAgendamento(agendamentoId);
-            setAgendamentos(agendamentos.filter(agendamento => agendamento.id !== agendamentoId));
+            await cancelarAgendamento(cancelamento);
+            setAgendamentos(agendamentos.filter(agendamento => agendamento.id !== agendamentoData.id));
             setCancelarModalId(null);
-            setCanceledAgendamentoId(agendamentoId); // Atualiza o estado para acionar a recuperação da lista
+            setCanceledAgendamentoId(agendamentoData.id); // Atualiza o estado para acionar a recuperação da lista
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir agendamento:', error);
@@ -93,13 +100,13 @@ export default function MeusAgendamentos() {
                                         <h2>{agendamento.animal && agendamento.animal.nome}</h2>
                                     </div>
                                     <div>
-                                        {new Date(agendamento.dataVaga) >= new Date() ? (
+                                        {agendamento && agendamento.status === 'Agendado'  ? (
                                             <button className={styles.agendamento_button} onClick={() => setCancelarModalId(agendamento.id)}>
                                                 <h1>Cancelar</h1>
                                             </button>
                                         ) : (
                                             <button className={styles.finalizar_button} disabled>
-                                                <h1>Finalizado</h1>
+                                                <h1>{agendamento.status}</h1>
                                             </button>
                                         )}
                                         {cancelarModalId === agendamento.id && (
@@ -110,7 +117,7 @@ export default function MeusAgendamentos() {
                                                 </div>
                                                 <div className={styles.box2}>
                                                     <button className={styles.cancelar_button} onClick={() => setCancelarModalId(null)}>Voltar</button>
-                                                    <button className={styles.excluir_button2} onClick={() => handleDeleteAgendamento(agendamento.id)}>Cancelar</button>
+                                                    <button className={styles.excluir_button2} onClick={() => handleDeleteAgendamento(agendamento)}>Cancelar</button>
                                                 </div>
                                             </div>
                                         )}
