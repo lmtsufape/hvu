@@ -52,9 +52,7 @@ function MeuPerfilList() {
                                         <h6>Telefone</h6>
                                         <div>{usuario.telefone}</div>
                                     </div>
-                                </div>
 
-                                <div className={styles.item_container}> 
                                     <div className={styles.item_box}>
                                         <h6>CPF</h6>
                                         <div>{usuario.cpf}</div>
@@ -75,16 +73,9 @@ function MeuPerfilList() {
                                             <h6>Bairro</h6>
                                             <div>{usuario.endereco.bairro}</div>
                                         </div>
-                                    </div>
-
-                                    <div className={styles.item_container}> 
                                         <div className={styles.item_box}>
                                             <h6>Número</h6>
                                             <div>{usuario.endereco.numero}</div>
-                                        </div>
-                                        <div className={styles.item_box}>
-                                            <h6>Estado</h6>
-                                            <div>{usuario.endereco.estado}</div>
                                         </div>
                                     </div>
 
@@ -96,6 +87,10 @@ function MeuPerfilList() {
                                         <div className={styles.item_box}>
                                             <h6>Cidade</h6>
                                             <div>{usuario.endereco.cidade}</div>
+                                        </div>
+                                        <div className={styles.item_box}>
+                                            <h6>Estado</h6>
+                                            <div>{usuario.endereco.estado}</div>
                                         </div>
                                     </div>
                                 </div>

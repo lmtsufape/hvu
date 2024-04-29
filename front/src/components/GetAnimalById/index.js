@@ -64,11 +64,18 @@ function GetAnimalByIdForm() {
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Porte</h6>
-                                        <p>{animal.raca && animal.raca.porte}</p>
+                                        <p>{animal.raca && animal.raca.porte === '' ? 'Não definido' : animal.raca && animal.raca.porte}</p>
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Data de nascimento</h6>
                                         <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
+                                    </div>
+                                </div>
+
+                                <div className={styles.lista}>
+                                    <div className={styles.infos}>
+                                        <h6>Alergias</h6>
+                                        <p>{animal.alergias}</p>
                                     </div>
                                 </div>
                             </div>

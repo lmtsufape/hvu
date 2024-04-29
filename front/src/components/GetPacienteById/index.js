@@ -78,6 +78,10 @@ function GetPacienteById() {
                                                 <h6>Sexo</h6>
                                                 <p>{animal.sexo}</p>
                                             </div>
+                                            <div className={styles.infos}>
+                                                <h6>Alergias</h6>
+                                                <p>{animal.alergias}</p>
+                                            </div>
                                         </div>
 
                                         <div className={styles.lista}>
@@ -89,6 +93,7 @@ function GetPacienteById() {
                                                 <h6>Porte</h6>
                                                 <p>{animal.raca && animal.raca.porte ? animal.raca.porte : 'Não especificado'}</p>
                                             </div>
+                                            <div className={styles.infos}></div>
                                         </div>
 
                                         <div className={styles.lista}>
@@ -134,8 +139,8 @@ function GetPacienteById() {
 
                                         <div className={styles.lista}>
                                             <div className={styles.infos}>
-                                                <h6>RG</h6>
-                                                <p>{tutor.rg}</p>
+                                                <h6>CPF</h6>
+                                                <p>{tutor.cpf}</p>
                                             </div>
                                             <div className={styles.infos}>
                                                 <h6>E-mail</h6>
@@ -144,10 +149,6 @@ function GetPacienteById() {
                                         </div>
 
                                         <div className={styles.lista}>
-                                            <div className={styles.infos}>
-                                                <h6>CPF</h6>
-                                                <p>{tutor.cpf}</p>
-                                            </div>
                                             <div className={styles.infos}>
                                                 <h6>Endereço</h6>
                                                 {/* Renderiza o endereço no formato "rua, numero - bairro" */}
