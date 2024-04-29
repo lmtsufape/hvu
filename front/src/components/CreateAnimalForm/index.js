@@ -284,7 +284,7 @@ function CreateAnimalForm() {
               onChange={handleAnimalChange}
               style={{ paddingRight: '30px' }} 
             />
-            <span style={{ position: 'absolute', right: '20px', top: '-15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
+            <span style={{ position: 'absolute', right: '20px', top: '15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
           </div>
   
           <div className={`col ${styles.col}`}>
