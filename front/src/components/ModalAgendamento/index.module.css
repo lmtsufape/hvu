@@ -13,7 +13,20 @@
 
 .modal {
   width: 415px;
-  height: 270px;
+  height: 370px;
+  border-radius: 12px;
+  border: 2px;
+  box-shadow: 4px 5px 15px 0px #00000014;
+  background-color: white;
+  padding: 20px;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal2 {
+  width: 415px;
+  height: 220px;
   border-radius: 12px;
   border: 2px;
   box-shadow: 4px 5px 15px 0px #00000014;
