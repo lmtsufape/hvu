@@ -40,8 +40,8 @@ function MeusAnimaisList() {
     const handleDeleteAnimal = async (animalId) => {
         try {
             await deleteAnimal(animalId);
-            setDeletedAnimalId(animalId); // Atualiza o estado para acionar a recuperação da lista
             setShowAlert(true); 
+            setDeletedAnimalId(animalId); // Atualiza o estado para acionar a recuperação da lista
         } catch (error) {
             console.error('Erro ao excluir o animal: ', error);
             setShowErrorAlert(true);
@@ -90,7 +90,7 @@ function MeusAnimaisList() {
                 </ul>
             )}
             {showAlert && <ErrorAlert message="Animal excluído com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao excluir animal, tente novamente" show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao excluir o animal, pois ele possui agendamento." show={showErrorAlert} />}
         </div>
     );
 }
