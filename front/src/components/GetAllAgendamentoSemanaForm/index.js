@@ -11,6 +11,7 @@ import { cancelarAgendamento } from '../../../services/consultaService';
 import { getTutorByAnimal } from '../../../services/tutorService';
 import Filter from '../GetAgendamentosFilter';
 import ModalAgendamento from '../ModalAgendamento';
+import ErrorAlert from '../ErrorAlert';
 
 
 function GetAllAgendamentosSemanaForm() {
@@ -21,6 +22,8 @@ function GetAllAgendamentosSemanaForm() {
   const [selectedVaga, setSelectedVaga] = useState(null);
   const [tutor, setTutor] = useState('');
   const [descricaoCancelamento, setDescricaoCancelamento] = useState('');
+
+  const [showAlert, setShowAlert] = useState(false);
 
   const horarios = ['08:00', '09:00', '10:00', '11:00', '12:00'];
   const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
@@ -64,6 +67,7 @@ function GetAllAgendamentosSemanaForm() {
       };
       await cancelarAgendamento(cancelamentoData);
       closeModal();
+      setShowAlert(true);
       fetchData();
     } catch (error) {
       console.error('Erro ao cancelar consulta:', error);
@@ -163,6 +167,7 @@ function GetAllAgendamentosSemanaForm() {
         handleCancelarConsulta={handleCancelarConsulta}
       />
 
+      {showAlert && <ErrorAlert message="Agendamento cancelado com sucesso!" show={showAlert} />}   
 
     </div>
   );

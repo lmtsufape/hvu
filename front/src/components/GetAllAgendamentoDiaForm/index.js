@@ -13,7 +13,7 @@ import { cancelarAgendamento } from '../../../services/consultaService';
 import { getTutorByAnimal } from '../../../services/tutorService';
 import { Await } from 'react-router-dom';
 import ModalAgendamento from '../ModalAgendamento';
-
+import ErrorAlert from '../ErrorAlert';
 
 
 function GetAllAgendamentosDiaForm() {
@@ -24,6 +24,8 @@ function GetAllAgendamentosDiaForm() {
   const [selectedVaga, setSelectedVaga] = useState(null);
   const [tutor, setTutor] = useState('');
   const [descricaoCancelamento, setDescricaoCancelamento] = useState('');
+
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleDataSelecionada = (novaData) => {
     setDataSelecionada(novaData);
@@ -40,6 +42,7 @@ function GetAllAgendamentosDiaForm() {
       };
       await cancelarAgendamento(cancelamentoData);
       closeModal();
+      setShowAlert(true);
       fetchData();
     } catch (error) {
       console.error('Erro ao cancelar consulta:', error);
@@ -165,6 +168,8 @@ function GetAllAgendamentosDiaForm() {
         setDescricaoCancelamento={setDescricaoCancelamento}
         handleCancelarConsulta={handleCancelarConsulta}
       />
+
+      {showAlert && <ErrorAlert message="Agendamento cancelado com sucesso!" show={showAlert} />}   
 
     </div>
   );
