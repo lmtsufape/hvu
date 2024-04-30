@@ -16,7 +16,7 @@ import ModalAgendamento from '../ModalAgendamento';
 function GetAllAgendamentosSemanaForm() {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
-  const [dataSelecionada, setDataSelecionada] = useState(new Date());
+  const [dataSelecionada, setDataSelecionada] = useState(new Date(new Date().setHours(0, 0, 0, 0)));
   const [vagas, setVagas] = useState([]);
   const [selectedVaga, setSelectedVaga] = useState(null);
   const [tutor, setTutor] = useState('');
