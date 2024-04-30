@@ -80,7 +80,7 @@ function GetPacienteById() {
                                             </div>
                                             <div className={styles.infos}>
                                                 <h6>Alergias</h6>
-                                                <p>{animal.alergias}</p>
+                                                <p>{animal.alergias ? animal.alergias : 'Não definidas'}</p>
                                             </div>
                                         </div>
 

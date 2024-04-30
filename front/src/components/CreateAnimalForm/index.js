@@ -31,7 +31,6 @@ function CreateAnimalForm() {
     alergias: '',
     dataNascimento: '',
     imagem: '',
-    peso: null,
     raca: { id: null }
   });
 
@@ -39,7 +38,6 @@ function CreateAnimalForm() {
     nome: "",
     dataNascimento: "",
     sexo: "",
-    alergias: "",
     especie: "",
     raca: ""
   });
@@ -95,9 +93,6 @@ function CreateAnimalForm() {
     if (!animalData.sexo) {
       newErrors.sexo = "Campo obrigatório";
     }
-    if (!animalData.alergias) {
-      newErrors.alergias = "Campo obrigatório";
-    }
     if (!selectedEspecie) {
       newErrors.especie = "Campo obrigatório";
     }
@@ -124,7 +119,6 @@ function CreateAnimalForm() {
             alergias: animalData.alergias,
             dataNascimento: animalData.dataNascimento,
             imagem: animalData.imagem,  
-            peso: animalData.peso,
             raca: null
           };
         }else{
@@ -134,7 +128,6 @@ function CreateAnimalForm() {
             alergias: animalData.alergias,
             dataNascimento: animalData.dataNascimento,
             imagem: animalData.imagem,
-            peso: animalData.peso,
             raca: {
               id: parseInt(selectedRaca)
             }
@@ -167,7 +160,6 @@ function CreateAnimalForm() {
       sexo: "",
       alergias: "",
       dataNascimento: "",
-      peso: null,
       imagem: "NULL",
     });
     setSelectedEspecie(especies.length > 0 ? especies[0]?.id.toString() : "");
@@ -197,7 +189,7 @@ function CreateAnimalForm() {
               type="text"
               className={`form-control ${styles.input} ${errors.nome ? "is-invalid" : ""}`}
               name="nome"
-              placeholder="Insira o nome do animal"
+              placeholder="Digite o nome do animal"
               value={animalData.nome}
               onChange={handleAnimalChange}
             />
@@ -258,33 +250,15 @@ function CreateAnimalForm() {
   
         <div className="row">
           <div className={`col ${styles.col}`}>
-            <label htmlFor="alergias" className="form-label">Alergias <span className={styles.obrigatorio}>*</span></label>
+            <label htmlFor="alergias" className="form-label">Alergias</label>
             <input 
               type="text"
-              className={`form-control ${styles.input} ${errors.alergias ? "is-invalid" : ""}`}
+              className={`form-control ${styles.input}`}
               name="alergias"
-              placeholder="Alergias"
+              placeholder="Digite as alergias, se houver"
               value={animalData.alergias}
               onChange={handleAnimalChange}
             />
-            {errors.alergias && <div className={`invalid-feedback ${styles.error_message}`}>{errors.alergias}</div>}
-          </div>
-
-          <div className={`col ${styles.col}`}  style={{ position: 'relative', display: 'inline-block' }}>
-            <label htmlFor="peso" className="form-label">Peso </label>
-            <input 
-              type="number"
-              step={0.1}
-              pattern="\d+(\.\d{2})?"
-              min="0"
-              className={`form-control ${styles.input}`}
-              name="peso"
-              placeholder="Peso (Opcional)"
-              value={animalData.peso || ""}
-              onChange={handleAnimalChange}
-              style={{ paddingRight: '30px' }} 
-            />
-            <span style={{ position: 'absolute', right: '20px', top: '15px', bottom: '0', height: '10px', margin: 'auto', pointerEvents: 'none' }}>kg</span>
           </div>
   
           <div className={`col ${styles.col}`}>
