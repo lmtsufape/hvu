@@ -64,7 +64,7 @@ function GetAnimalByIdByMedico() {
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Porte</h6>
-                                        <p>{animal.raca && animal.raca.porte}</p>
+                                        <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Data de nascimento</h6>

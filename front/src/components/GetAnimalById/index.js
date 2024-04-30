@@ -37,8 +37,8 @@ function GetAnimalByIdForm() {
                 {animal && ( 
                     <li key={animal.id} className={styles.infos_box}>
                         <div className={styles.identificacao}>
-                            <div className={styles.nome_animal}>{animal.nome}</div>
                             <div className={styles.especie_animal}>Nome</div>
+                            <div className={styles.nome_animal}>{animal.nome}</div>
                         </div>
                         <div className={styles.form}>
                             <div className={styles.box}>

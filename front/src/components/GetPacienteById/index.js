@@ -91,7 +91,7 @@ function GetPacienteById() {
                                             </div>
                                             <div className={styles.infos}>
                                                 <h6>Porte</h6>
-                                                <p>{animal.raca && animal.raca.porte ? animal.raca.porte : 'Não especificado'}</p>
+                                                <p>{animal.raca && animal.raca.porte ? animal.raca.porte : 'Não definido'}</p>
                                             </div>
                                             <div className={styles.infos}></div>
                                         </div>
