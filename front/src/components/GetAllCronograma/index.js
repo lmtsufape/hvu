@@ -45,7 +45,6 @@ function GetAllCronograma() {
         try {
             await deleteCronograma(cronogramaId);
             setCronogramas(cronogramas.filter(cronograma => cronograma.id !== cronogramaId))
-            window.location.reload();
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir a agenda: ', error);
@@ -64,7 +63,7 @@ function GetAllCronograma() {
                     placeholder={"Buscar agenda"}
                     onSearchChange={handleSearchChange}
                 />
-                <AdicionarCronograma page={"createCronograma"}/>
+                <AdicionarCronograma page={`createCronograma/${id}`}/>
             </div>
 
             {filteredCronogramas.length === 0 ? (

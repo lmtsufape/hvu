@@ -12,6 +12,7 @@ import ErrorAlert from "../ErrorAlert";
 
 function CreateCronograma() {
     const router = useRouter();
+    const {id} = router.query;
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -69,7 +70,7 @@ function CreateCronograma() {
     };
 
     const { medicos } = MedicoList();
-    const [selectedMedico, setSelectedMedico] = useState(null);
+    const [selectedMedico, setSelectedMedico] = useState(id);
     const handleMedicoSelection = (event) => {
         const selectedMedicoId = event.target.value;
         setSelectedMedico(selectedMedicoId);
@@ -186,6 +187,7 @@ function CreateCronograma() {
                                 aria-label="Selecione o(a) veterinário(a)"
                                 value={selectedMedico || ""}
                                 onChange={handleMedicoSelection}
+                                disabled
                             >
                                 <option value="">Selecione o(a) veterinário(a)</option>
                                 {medicos.map((medico) => (

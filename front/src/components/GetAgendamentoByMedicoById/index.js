@@ -83,7 +83,7 @@ function GetAgendamentoByMedicoById() {
                                                 <p>{vaga.status}</p>
                                             </div>
                                             <div className={styles.infos}>
-                                                <h6>Especialiddade</h6>
+                                                <h6>Especialidade</h6>
                                                 <p>{vaga.especialidade && vaga.especialidade.nome}</p>
                                             </div>
                                         </div>

@@ -102,9 +102,6 @@ function UpdateAnimalBySecretarioAndMedico() {
     if (!animalData.sexo) {
       newErrors.sexo = "Campo obrigatório";
     }
-    if (!animalData.alergias) {
-      newErrors.alergias = "Campo obrigatório";
-    }
     if (!selectedEspecie) {
       newErrors.especie = "Campo obrigatório";
     }
@@ -233,12 +230,11 @@ function UpdateAnimalBySecretarioAndMedico() {
                 <label htmlFor="alergias" className="form-label">Alergias</label>
                 <input 
                   type="text"
-                  className={`form-control ${styles.input}  ${errors.alergias ? "is-invalid" : ""}`}
+                  className={`form-control ${styles.input}`}
                   name="alergias"
                   value={animalData.alergias}
                   onChange={handleAnimalChange}
                 />
-                {errors.alergias && <div className={`invalid-feedback ${styles.error_message}`}>{errors.alergias}</div>}
               </div>
 
               <div className={`col ${styles.col}`} style={{ position: 'relative', display: 'inline-block' }}>

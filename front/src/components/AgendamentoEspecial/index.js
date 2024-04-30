@@ -63,7 +63,7 @@ function AgendamentoEspecial() {
     const selectedTipo = JSON.parse(event.target.value);
     setSelectedTiposConsulta(selectedTipo);
     console.log("selectedTipo:", selectedTipo);
-    
+    filtrarMedicos(selectedTipo.id); // Filtrar médicos quando o tipo de consulta é selecionado
   };
 
   useEffect(() => {
@@ -71,21 +71,21 @@ function AgendamentoEspecial() {
     if (selectedTiposConsulta) {
         filtrarAnimais();
     }
-}, [selectedTiposConsulta]);
+  }, [selectedTiposConsulta]);
 
   const { especialidades } = EspecialidadeList();
   const [selectedEspecialidade, setSelectedEspecialidade] = useState();
   const handleEspecialidadeSelection = (event) => {
     const selectedId = event.target.value;
     setSelectedEspecialidade(selectedId);
-    filtrarMedicos();
+    filtrarMedicos(selectedId); // Filtrar médicos quando a especialidade é selecionada
   };
 
   const [medicosByEspecialidade, setMedicosByEspecialidade] = useState([]);
-  const filtrarMedicos = async () => {
+  const filtrarMedicos = async (especialidadeId) => {
     try {
-      if (selectedEspecialidade) {
-        const medicosData = await getMedicoByEspecialidade(selectedEspecialidade);
+      if (especialidadeId) {
+        const medicosData = await getMedicoByEspecialidade(especialidadeId);
         setMedicosByEspecialidade(medicosData);
       }
     } catch (error) {
