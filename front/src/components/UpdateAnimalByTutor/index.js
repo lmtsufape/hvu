@@ -54,17 +54,16 @@ function UpdateAnimalByTutor() {
 
   const formatDate = (data) => {
     const dataObj = new Date(data);
-    const dia = String(dataObj.getDate()).padStart(2, '0');
-    const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-    const ano = dataObj.getFullYear();
+    const dia = String(dataObj.getUTCDate()).padStart(2, '0');
+    const mes = String(dataObj.getUTCMonth() + 1).padStart(2, '0');
+    const ano = dataObj.getUTCFullYear();
     return `${ano}-${mes}-${dia}`;
-  };
+  }; 
 
   const handleAnimalChange = (event) => {
     try {
       const { name, value } = event.target;
-      const newValue = name === "dataNascimento" ? formatDate(value) : value;
-      setAnimalData({ ...animalData, [name]: newValue });
+      setAnimalData({ ...animalData, [name]: value });
     } catch (error) {
       console.error('Erro ao puxar dados do animal:', error);
     }
@@ -129,7 +128,7 @@ function UpdateAnimalByTutor() {
       nome: animalData.nome,
       sexo: animalData.sexo,
       alergias: animalData.alergias,
-      dataNascimento: animalData.dataNascimento,
+      dataNascimento: formatDate(animalData.dataNascimento),
       imagem: animalData.imagem,
       raca: {
         id: parseInt(selectedRaca)

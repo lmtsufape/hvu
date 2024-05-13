@@ -1,6 +1,6 @@
 import { Header03 } from "../../src/components/Header";
 import Footer from "../../src/components/Footer";
-import { SubHeader02 } from "../../src/components/SubHeader";
+import { SubHeader } from "../../src/components/SubHeader";
 import MainScreenMedico from "../../src/components/MainScreenMedico";
 
 function MainMedicoPage() {
@@ -8,7 +8,7 @@ function MainMedicoPage() {
         <>
         <div>
             < Header03 />
-            < SubHeader02 />
+            < SubHeader />
             < MainScreenMedico />
             < Footer />
         </div>

@@ -8,6 +8,7 @@ import VoltarButton from '../VoltarButton';
 import { CancelarWhiteButton } from '../WhiteButton';
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
+import { getCurrentUsuario } from '../../../services/userService';
 
 function UpdateAnimalBySecretarioAndMedico() {
   const router = useRouter();
@@ -27,6 +28,8 @@ function UpdateAnimalBySecretarioAndMedico() {
   const [racasByEspecie, setRacasByEspecie] = useState([]);
 
   const [animalData, setAnimalData] = useState({ });
+
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
     if (id) {
@@ -52,19 +55,36 @@ function UpdateAnimalBySecretarioAndMedico() {
     setRacasByEspecie(racasFiltradas);
   }, [selectedEspecie, racas]);
 
+  const loadUrl = async () => {
+    try {
+      const userData = await getCurrentUsuario();
+
+      console.log("user:", userData)
+
+      if (userData.roles && Array.isArray(userData.roles)) {
+          if (userData.roles.includes("secretario")) {
+            setUrl('/pacientesBySecretario');
+          } else if (userData.roles.includes("medico")) {
+            setUrl(`/getAnimalByIdByMedico/${id}`);
+          }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const formatDate = (data) => {
     const dataObj = new Date(data);
-    const dia = String(dataObj.getDate()).padStart(2, '0');
-    const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-    const ano = dataObj.getFullYear();
+    const dia = String(dataObj.getUTCDate()).padStart(2, '0');
+    const mes = String(dataObj.getUTCMonth() + 1).padStart(2, '0');
+    const ano = dataObj.getUTCFullYear();
     return `${ano}-${mes}-${dia}`;
-  };
+  }; 
 
   const handleAnimalChange = (event) => {
     try {
       const { name, value } = event.target;
-      const newValue = name === "dataNascimento" ? formatDate(value) : value;
-      setAnimalData({ ...animalData, [name]: newValue });
+      setAnimalData({ ...animalData, [name]: value });
     } catch (error) {
       console.error('Erro ao puxar dados do animal:', error);
     }
@@ -129,7 +149,7 @@ function UpdateAnimalBySecretarioAndMedico() {
       nome: animalData.nome,
       sexo: animalData.sexo,
       alergias: animalData.alergias,
-      dataNascimento: animalData.dataNascimento,
+      dataNascimento: formatDate(animalData.dataNascimento),
       imagem: animalData.imagem,
       peso: animalData.peso,
       raca: {
@@ -143,6 +163,7 @@ function UpdateAnimalBySecretarioAndMedico() {
         try {
           await updateAnimal(id, animalToUpdate);
           setShowAlert(true);
+          loadUrl();
         } catch (error) {
           console.error('Erro ao atualizar o animal:', error);
           setShowErrorAlert(true);
@@ -280,7 +301,7 @@ function UpdateAnimalBySecretarioAndMedico() {
         )}
       </ul>
     </form>
-    {<Alert message="Informações do animal editadas com sucesso!" show={showAlert} url={`/getAnimalById/${id}`} />}
+    {<Alert message="Informações do animal editadas com sucesso!" show={showAlert} url={url} />}
     {showErrorAlert && <ErrorAlert message="Erro ao editar informações do animal, tente novamente." show={showErrorAlert} />}
     </div>
   );

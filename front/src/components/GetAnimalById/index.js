@@ -26,8 +26,11 @@ function GetAnimalByIdForm() {
 
     const formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-        return new Date(dateString).toLocaleDateString('pt-BR', options);
+        const date = new Date(dateString);
+        date.setDate(date.getDate() + 1); // Adicionando um dia para corrigir a subtração incorreta
+        return date.toLocaleDateString('pt-BR', options);
     };
+    
 
     return (
         <div className={styles.container}>

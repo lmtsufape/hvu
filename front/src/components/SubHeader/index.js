@@ -4,21 +4,7 @@ import styles from "./index.module.css"
 import { useRouter } from "next/router";
 import { getCurrentUsuario } from '../../../services/userService';
 
-//Sem botão de relatório
-export function SubHeader01 () {
-    const router = useRouter();
-
-    return (
-        <div className={styles.button_box}>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/mainTutor")}>Home</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/meusAgendamentos")}>Agendamentos</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/meusAnimais")}>Meus animais</button>
-        </div>
-    );
-}
-
-//Com botão de relatório
-export function SubHeader02() {
+export function SubHeader() {
     const [subHeaderComponent, setSubHeaderComponent] = useState(null);
 
     const loadSubHeaderComponent = async () => {
@@ -32,6 +18,8 @@ export function SubHeader02() {
                     setSubHeaderComponent(<SubheaderSecretario />);
                 } else if (userData.roles.includes("medico")) {
                     setSubHeaderComponent(<SubheaderMedico medicoId={userData.usuario.id} />);
+                } else if (userData.roles.includes("tutor")) {
+                    setSubHeaderComponent(<SubHeaderTutor />);
                 }
             }
         } catch (error) {
@@ -46,6 +34,18 @@ export function SubHeader02() {
     return (
         <div>
             {subHeaderComponent}
+        </div>
+    );
+}
+
+export function SubHeaderTutor () {
+    const router = useRouter();
+
+    return (
+        <div className={styles.button_box}>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/mainTutor")}>Home</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/meusAgendamentos")}>Agendamentos</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={(e) => router.push("/meusAnimais")}>Meus animais</button>
         </div>
     );
 }
