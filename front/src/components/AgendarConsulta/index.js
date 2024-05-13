@@ -231,7 +231,7 @@ const HorariosSemana = () => {
                             :
 
                             (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && !(vaga.status === 'Agendado' || vaga.status === 'Finalizado') ?
-                              `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}`
+                              `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}` 
                               : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ''}`)
 
                         }
@@ -243,6 +243,7 @@ const HorariosSemana = () => {
                             setSelectedVaga(vaga);
                           }
                         }}
+                        disabled={vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno'}
                       >
                         {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
                         <br />{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}

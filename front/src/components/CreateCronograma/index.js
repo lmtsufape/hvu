@@ -187,7 +187,7 @@ function CreateCronograma() {
                                 aria-label="Selecione o(a) veterinário(a)"
                                 value={selectedMedico || ""}
                                 onChange={handleMedicoSelection}
-                                disabled
+                                disabled={id !== 'null' ? true : false}
                             >
                                 <option value="">Selecione o(a) veterinário(a)</option>
                                 {medicos.map((medico) => (
