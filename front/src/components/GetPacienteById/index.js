@@ -39,11 +39,11 @@ function GetPacienteById() {
         fetchData();
     }, [animalId]);
 
-    // Função para formatar a data de nascimento do animal
-    const formatAnimalDateOfBirth = (dateString) => {
-        if (!dateString) return '';
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
         const date = new Date(dateString);
-        return date.toLocaleDateString('pt-BR');
+        date.setDate(date.getDate() + 1); // Adicionando um dia para corrigir a subtração incorreta
+        return date.toLocaleDateString('pt-BR', options);
     };
 
     // Função para formatar o endereço do tutor
@@ -99,7 +99,7 @@ function GetPacienteById() {
                                         <div className={styles.lista}>
                                             <div className={styles.infos}>
                                                 <h6>Data de nascimento</h6>
-                                                <p>{animal.dataNascimento ? formatAnimalDateOfBirth(animal.dataNascimento) : 'Não definida'}</p>
+                                                <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
                                             </div>
                                             <div className={styles.infos}>
                                                 <h6>Peso</h6>
