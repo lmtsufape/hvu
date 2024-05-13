@@ -2,7 +2,7 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Header03} from "../../src/components/Header"
 import Footer from "../../src/components/Footer"
-import {SubHeader01} from "../../src/components/SubHeader"
+import {SubHeader} from "../../src/components/SubHeader"
 import MeusAnimaisList from "../../src/components/MeusAnimais"
 
 function MeusAnimaisPage() {
@@ -13,7 +13,7 @@ function MeusAnimaisPage() {
         </div>
 
         <div>
-            < SubHeader01 />
+            < SubHeader />
         </div>
 
         <div>

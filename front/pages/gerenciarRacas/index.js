@@ -1,5 +1,5 @@
 import { Header03 } from "../../src/components/Header";
-import { SubHeader02 } from "../../src/components/SubHeader";
+import { SubHeader } from "../../src/components/SubHeader";
 import GerenciarRacasList from "../../src/components/GerenciarRacas";
 import Footer from "../../src/components/Footer";
 
@@ -7,7 +7,7 @@ function GerenciarRacasPage(){
     return(
         <div>
             < Header03 />
-            < SubHeader02 />
+            < SubHeader/>
             < GerenciarRacasList />
             < Footer />
         </div>
