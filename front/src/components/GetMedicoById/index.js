@@ -38,7 +38,7 @@ function GetMedicoById() {
                             <div className={styles.tutor}>
                                 <div className={styles.item_box}>
                                     <h6>Nome</h6>
-                                    <h7 className={styles.medico_nome}>{medico.nome}</h7>
+                                    <h4 className={styles.medico_nome}>{medico.nome}</h4>
                                 </div>
 
                                 <div className={styles.item_container}> 

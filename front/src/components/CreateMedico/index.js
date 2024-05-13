@@ -119,6 +119,9 @@ function CreateMedico() {
         if (!medico.email) {
             errors.email = "Campo obrigatório";
         }
+        if (!/\S+@\S+\.\S+/.test(medico.email)) {
+            errors.email = "E-mail inválido";
+        }
         if (!medico.senha) {
             errors.senha = "Campo obrigatório";
         }

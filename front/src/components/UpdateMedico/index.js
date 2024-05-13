@@ -51,7 +51,8 @@ function UpdateMedico() {
                 try {
                     const MedicoData = await getMedicoById(id);
                     setMedico(MedicoData);
-                    setSelectedEspecialidade(MedicoData.especialidade.map(espec => espec.id)); // Mapeia para pegar apenas os IDs
+                    // Pré-seleciona as especialidades do médico
+                    setSelectedEspecialidades(MedicoData.especialidade);
                 } catch (error) {
                     console.error('Erro ao buscar informações do(a) veterinário(a):', error);
                 }
@@ -62,13 +63,28 @@ function UpdateMedico() {
 
     const handleEspecialidadeSelection = (event) => {
         const especialidadeId = parseInt(event.target.value);
-        if (!selectedEspecialidades.find(espec => espec.id === especialidadeId)) {
-            const especialidadeSelected = especialidades.find(espec => espec.id === especialidadeId);
-            setSelectedEspecialidades([...selectedEspecialidades, especialidadeSelected]);
+        const especialidadeSelected = especialidades.find(espec => espec.id === especialidadeId);
+    
+        // Verifica se a especialidade já está selecionada
+        if (!selectedEspecialidades.some(espec => espec.id === especialidadeId)) {
+            // Adiciona a especialidade selecionada ao estado
+            setSelectedEspecialidades(prevSelected => [...prevSelected, especialidadeSelected]);
         } else {
-            setSelectedEspecialidades(selectedEspecialidades.filter(espec => espec.id !== especialidadeId));
+            // Remove a especialidade do estado se já estiver selecionada
+            setSelectedEspecialidades(prevSelected => prevSelected.filter(espec => espec.id !== especialidadeId));
         }
     };
+
+    // Atualiza o valor selecionado do select quando as especialidades do médico são alteradas
+    useEffect(() => {
+        // Se houver especialidades pré-selecionadas do médico, atualize o estado selectedEspecialidades
+        if (selectedEspecialidade.length > 0) {
+            const selectedEspecialidadesData = especialidades.filter(especialidade => selectedEspecialidade.includes(especialidade.id));
+            setSelectedEspecialidades(selectedEspecialidadesData);
+        }
+    }, [selectedEspecialidade, especialidades]);
+
+    console.log("Especialidades:", selectedEspecialidades);
 
     const handleMedicoChange = (event) => {
         const { name, value } = event.target;
@@ -140,6 +156,9 @@ function UpdateMedico() {
         if (!medico.email) {
             newErrors.email = "Campo obrigatório"; 
         }
+        if (!/\S+@\S+\.\S+/.test(medico.email)) {
+            newErrors.email = "E-mail inválido";
+        }
         if (!medico.cpf) {
             newErrors.cpf = "Campo obrigatório"; 
         }
@@ -187,7 +206,7 @@ function UpdateMedico() {
             cpf: medico.cpf,
             crmv: medico.crmv,
             telefone: medico.telefone,
-            especialidade: selectedEspecialidades.map(espec => ({ id: espec.id })),
+            especialidade: selectedEspecialidades,
             endereco: {
                 cep: medico.endereco.cep,
                 rua: medico.endereco.rua,
