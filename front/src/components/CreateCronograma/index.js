@@ -225,7 +225,7 @@ function CreateCronograma() {
                                     <div key={dia}>
                                         <div className={styles.input_space}>
                                             <div htmlFor={`${dia}-checkbox`} className="form-label">
-                                                Segunda
+                                                Segunda-feira
                                             </div>
                                             <input
                                                 type="checkbox"
@@ -239,23 +239,47 @@ function CreateCronograma() {
                                             <div className={`col ${styles.time_container}`}>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-inicio`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de início</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-fim`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de fim</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         )}
@@ -284,23 +308,47 @@ function CreateCronograma() {
                                             <div className={`col ${styles.time_container}`}>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-inicio`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de início</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-fim`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de fim</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         )}
@@ -329,23 +377,47 @@ function CreateCronograma() {
                                             <div className={`col ${styles.time_container}`}>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-inicio`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de início</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-fim`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de fim</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         )}
@@ -374,23 +446,47 @@ function CreateCronograma() {
                                             <div className={`col ${styles.time_container}`}>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-inicio`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de início</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-fim`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de fim</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         )}
@@ -419,23 +515,47 @@ function CreateCronograma() {
                                             <div className={`col ${styles.time_container}`}>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-inicio`} className="form-label"><h6 className={styles.time}>Horário de início</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-inicio`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.inicio || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "inicio")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de início</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                                 <div className="col">
                                                     <div htmlFor={`${dia}-fim`} className="form-label"><h6 className={styles.time}>Horário de fim</h6></div>
-                                                    <input
-                                                        type="time"
-                                                        className={`form-control ${styles.input}`}
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
                                                         id={`${dia}-fim`}
                                                         value={cronograma.horariosJson[dia.toUpperCase()]?.fim || ""}
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
-                                                    />
+                                                    >
+                                                        <option value="">Selecione o horário de fim</option>
+                                                        <option value="08:00">08:00</option>
+                                                        <option value="09:00">09:00</option>
+                                                        <option value="10:00">10:00</option>
+                                                        <option value="11:00">11:00</option>
+                                                        <option value="12:00">12:00</option>
+                                                        <option value="13:00">13:00</option>
+                                                        <option value="14:00">14:00</option>
+                                                        <option value="15:00">15:00</option>
+                                                        <option value="16:00">16:00</option>
+                                                        <option value="17:00">17:00</option>
+                                                        <option value="18:00">18:00</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         )}
