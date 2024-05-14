@@ -127,7 +127,9 @@
 } 
 
 .list {
-    all: initial;
+    border: 1px solid red;
+    list-style-type: none;
+    margin-bottom: 5em;
 }
 
 .message {

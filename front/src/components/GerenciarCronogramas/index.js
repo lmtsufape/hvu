@@ -75,9 +75,9 @@ function GerenciarCronogramas() {
                             <div  className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}
-                                    // onClick={() => router.push(`/updateRaca/${raca.id}`)}
+                                    onClick={() => router.push(`/getCronogramaById/${cronograma.id}`)}
                                 >
-                                    Editar
+                                    Visualizar
                                 </button>
                                 <ExcluirButton itemId={cronograma.id} onDelete={handleDeleteCronograma} /> 
                             </div>

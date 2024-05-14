@@ -40,7 +40,7 @@ function MainScreenSecretario() {
                     <Image src="/pets.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Gerenciar especialidades</h6>
                 </button>
-                <button className={styles.button} onClick={(e) => router.push('/gerenciarTipoConsulta')}>
+                <button className={styles.button} onClick={(e) => router.push('/gerenciarTiposConsulta')}>
                     <Image src="/pets.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Gerenciar tipos de consulta</h6>
                 </button>
