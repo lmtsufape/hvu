@@ -100,7 +100,7 @@ function GetCronogramaById() {
                                 </div>
                             </div>
                             <div className={styles.botao}>
-                                {/*  <EditarWhiteButton page={"updateCronograma"} id={cronograma.id}/> */}
+                                <EditarWhiteButton page={"updateCronograma"} id={cronograma.id}/>
 
                             </div>
                         </div>

@@ -75,7 +75,7 @@ function GerenciarTiposConsulta() {
                             <div  className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}
-                                    // onClick={() => router.push(`/updateRaca/${raca.id}`)}
+                                    onClick={() => router.push(`/updateTipoConsulta/${tipoConsulta.id}`)}
                                 >
                                     Editar
                                 </button>
