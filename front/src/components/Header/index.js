@@ -12,12 +12,16 @@ export function Header01() {
 
     return (
         <header className={styles.header}>
-            
-            <button className={styles.boxlogo} onClick={(e) => router.push("/")}>
-                <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
-                <Image src="/UFAPEcor.svg" alt="Logo UFAPE" width={150.38} height={36}/>
-            </button>
 
+            <div className={styles.boxlogo}>
+                <div>
+                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54}/>
+                </div>
+                <div>
+                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82}/>
+                </div>
+            </div>
+            
             <div className={styles.box_buttons} >
             <button type="button" className="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
             < LoginGreenButton />
@@ -34,15 +38,14 @@ export function Header01() {
     return (
         <header className={styles.header}>
             
-            <button className={styles.boxlogo} onClick={(e) => router.push("/")}>
-                <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
-
-                {/* logo da UFPAE com interação */}
-                <a href="http://ufape.edu.br/" target="blank" rel="noopener">
-                   <Image src="/UFAPEcor.svg" alt="Logo" width={150} height={58} />
-                </a>
-
-            </button>
+            <div className={styles.boxlogo}>
+                <div>
+                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54}/>
+                </div>
+                <div>
+                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82}/>
+                </div>
+            </div>
 
             <div className={styles.box_buttons} >
                 <button type="button" className="btn btn-link" id={styles.black_button_decoration} onClick={(e) => router.push("/")}>Home</button>
@@ -94,9 +97,14 @@ export function Header01() {
     return (
         <header className={styles.header}>
             
-            <button className={styles.boxlogo} /*onClick={(e) => router.push("/")}*/>
-                <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
-            </button>
+            <div className={styles.boxlogo}>
+                <div>
+                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54}/>
+                </div>
+                <div>
+                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82}/>
+                </div>
+            </div>
 
             <div className={styles.box_buttons} ref={dropdownRef}>
                 <button type="button" className="btn btn-link" onClick={toggleDropdown}>
@@ -127,9 +135,14 @@ export function Header04() {
 return (
     <header className={styles.header}>
         
-        <button className={styles.boxlogo} onClick={(e) => router.push("/")}>
-            <Image src="/blacklogohvu.svg" alt="Logo HVU" width={150.38} height={36}/>
-        </button>
+        <div className={styles.boxlogo}>
+            <div>
+                <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54}/>
+            </div>
+            <div>
+                <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82}/>
+            </div>
+        </div>
 
         <div className={styles.box_buttons} >
             < LoginWhiteButton />

@@ -140,5 +140,8 @@
 }
 
 .boxlogo {
-    all: unset;
+    display: flex;
+    gap: 18px;
 }
+
+

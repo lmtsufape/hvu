@@ -9,15 +9,24 @@ margin-left: 7%;
 }
 
 .no_vagas {
-  background-color: #f0f0f0; /* Cor de fundo */
-  padding: 10px; /* Espaçamento interno */
-  border: 1px solid #ccc; /* Borda */
-  border-radius: 5px; /* Arredondamento da borda */
-  text-align: center; /* Alinhamento do texto */
-  height: 5vh; /* Altura */
+  display: block;
+  margin-bottom: 0.8em;
+  margin-left: 8%;
+  padding: 5px;
+  background-color: #EEF8F3;
+  border: none;
+  cursor: pointer;
+  color: #272727;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  width: 80%;
+  height: 5vh;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center; 
+  padding-bottom: 1.5em;
+  padding-top: 1.5em;
 }
 
 .title_box {
@@ -170,6 +179,23 @@ margin-left: 7%;
   padding-top: 1.5em;
 }
 
+.botaoPrimeiraConsulta:disabled {
+  background-color: white;
+  border: none;
+  color: #B1B1B1;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  width: 80%;
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  padding-bottom: 1.5em;
+  padding-top: 1.5em;
+  border: 0.5px solid #B1B1B1;
+}
+
 .botaoRetorno {
   display: block;
   margin-bottom: 0.8em;
@@ -191,7 +217,7 @@ margin-left: 7%;
   padding-top: 1.5em;
 }
 
-/* .botaoRetorno:disabled {
+.botaoRetorno:disabled {
   background-color: white;
   border: none;
   color: #B1B1B1;
@@ -206,7 +232,7 @@ margin-left: 7%;
   padding-bottom: 1.5em;
   padding-top: 1.5em;
   border: 0.5px solid #B1B1B1;
-} */
+} 
 
 /* //botão com a hora em verde/ */
 .botaohora {

@@ -133,10 +133,13 @@ const HorariosSemana = () => {
   const validateForm = () => {
     const errors = {};
     if (!selectedAnimal) {
-      errors.selectedAnimal = "Campo obrigatório";
+      errors.selectedAnimal = "Selecione um animal";
     }
-    if (!selectedVaga) {
-      errors.selectedVaga = "Campo obrigatório";
+    if (!selectedVaga && !selectedAnimal) {
+      errors.selectedAnimal = "Selecione um animal";
+    }
+    if (!selectedVaga && selectedAnimal) {
+      errors.selectedAnimal = "Selecione uma vaga";
     }
     return errors;
   };
@@ -181,6 +184,8 @@ const HorariosSemana = () => {
     }
   };
 
+  console.log("selectedVaga:", selectedVaga);
+
   return (
     <div className={styles.container}>
       <div className={styles.voltar_button}>
@@ -214,7 +219,8 @@ const HorariosSemana = () => {
         </div>
 
         <h1 className={styles.titulodataconsulta}>Data da Consulta</h1>
-        <h2 className={styles.descricaotitulodataconsulta}>Selecione o dia e o horário disponível de sua preferência para o atendimento</h2>
+        <h2 className={`${styles.descricaotitulodataconsulta} ${errors.selectedVaga ? "is-invalid" : ""}`}>Selecione o dia e o horário disponível de sua preferência para o atendimento</h2>
+        {errors.selectedVaga && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedVaga}</div>}
         <div className={styles.button_voltar_avancar}>
           <button className={styles.button_voltar} onClick={retrocederSemana}>⭠</button>
           <button className={styles.button_avancar} onClick={avancarSemana}>⭢</button>
