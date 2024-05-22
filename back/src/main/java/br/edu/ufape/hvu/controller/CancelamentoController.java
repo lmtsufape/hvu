@@ -61,6 +61,11 @@ public class CancelamentoController {
 			//Cancelamento o = obj.convertToEntity();
 			Cancelamento oldObject = facade.findCancelamentoById(id);
 
+			if(obj.getEspecialidade() != null){
+				oldObject.setEspecialidade(facade.findEspecialidadeById(obj.getEspecialidade().getId()));
+				obj.setEspecialidade(null);
+			}
+
 			TypeMap<CancelamentoRequest, Cancelamento> typeMapper = modelMapper
 													.typeMap(CancelamentoRequest.class, Cancelamento.class)
 													.addMappings(mapper -> mapper.skip(Cancelamento::setId));			

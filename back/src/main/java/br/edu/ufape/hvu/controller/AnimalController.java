@@ -111,6 +111,11 @@ public class AnimalController {
 			
 			//Animal o = obj.convertToEntity();
 			Animal oldObject = facade.findAnimalById(id);
+
+			if(obj.getRaca() != null){
+				oldObject.setRaca(facade.findRacaById(obj.getRaca().getId()));
+				obj.setRaca(null);
+			}
 			
 			TypeMap<AnimalRequest, Animal> typeMapper = modelMapper
 													.typeMap(AnimalRequest.class, Animal.class)

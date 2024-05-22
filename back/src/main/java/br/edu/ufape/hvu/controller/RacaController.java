@@ -63,6 +63,11 @@ public class RacaController {
 			//Raca o = obj.convertToEntity();
 			Raca oldObject = facade.findRacaById(id);
 
+			if (obj.getEspecie() != null) {
+				oldObject.setEspecie(facade.findEspecieById(obj.getEspecie().getId()));
+				obj.setEspecie(null);
+			}
+
 			TypeMap<RacaRequest, Raca> typeMapper = modelMapper
 													.typeMap(RacaRequest.class, Raca.class)
 													.addMappings(mapper -> mapper.skip(Raca::setId));			

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/banco
-    username: ines
-    password: 0609
+    url: jdbc:postgresql://localhost:5437/banco
+    username: postgres
+    password: 098098
     auto-commit: false
 
   jpa:

@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 @CrossOrigin (origins = "http://localhost:8081/" )
 @RestController
 @RequestMapping("/api/v1/")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class FichaSolicitacaoServicoController {
 	@Autowired
 	private Facade facade;
@@ -53,6 +56,12 @@ public class FichaSolicitacaoServicoController {
 		try {
 			//FichaSolicitacaoServico o = obj.convertToEntity();
 			FichaSolicitacaoServico oldObject = facade.findFichaSolicitacaoServicoById(id);
+
+			if(obj.getMedico() != null){
+				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
+				obj.setMedico(null);
+			}
+
 
 			TypeMap<FichaSolicitacaoServicoRequest, FichaSolicitacaoServico> typeMapper = modelMapper
 													.typeMap(FichaSolicitacaoServicoRequest.class, FichaSolicitacaoServico.class)

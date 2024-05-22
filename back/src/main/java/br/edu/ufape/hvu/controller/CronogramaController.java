@@ -89,6 +89,18 @@ public class CronogramaController {
 		try {
 			Cronograma oldObject = facade.findCronogramaById(id);
 
+			// medico
+			if(obj.getMedico() != null){
+				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
+				obj.setMedico(null);
+			}
+
+			if (obj.getEspecialidade() != null) {
+				oldObject.setEspecialidade(facade.findEspecialidadeById(obj.getEspecialidade().getId()));
+				obj.setEspecialidade(null);
+			}
+
+
 			TypeMap<CronogramaRequest, Cronograma> typeMapper = modelMapper
 													.typeMap(CronogramaRequest.class, Cronograma.class)
 													.addMappings(mapper -> mapper.skip(Cronograma::setId));			

@@ -59,8 +59,21 @@ public class VagaController {
 			//Vaga o = obj.convertToEntity();
 			Vaga oldObject = facade.findVagaById(id);
 
-			oldObject.setTipoConsulta(facade.findTipoConsultaById(obj.getTipoConsulta().getId()));
-			obj.setTipoConsulta(null);
+			if (obj.getTipoConsulta() != null) {
+				oldObject.setTipoConsulta(facade.findTipoConsultaById(obj.getTipoConsulta().getId()));
+				obj.setTipoConsulta(null);
+			}
+
+			if (obj.getEspecialidade() != null) {
+				oldObject.setEspecialidade(facade.findEspecialidadeById(obj.getEspecialidade().getId()));
+				obj.setEspecialidade(null);
+			}
+
+			if(obj.getMedico() != null){
+				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
+				obj.setMedico(null);
+			}
+
 			TypeMap<VagaRequest, Vaga> typeMapper = modelMapper
 													.typeMap(VagaRequest.class, Vaga.class)
 													.addMappings(mapper -> mapper.skip(Vaga::setId));

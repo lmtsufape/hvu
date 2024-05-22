@@ -76,6 +76,12 @@ public class MedicoController {
 		try {
 			Medico o = obj.convertToEntity();
 			Medico oldObject = facade.findMedicoById(id);
+
+			// instituicao
+			if (obj.getInstituicao() != null) {
+				oldObject.setInstituicao(facade.findInstituicaoById(obj.getInstituicao().getId()));
+				obj.setInstituicao(null);
+			}
 		
 			TypeMap<Medico, Medico> typeMapper = modelMapper
 													.typeMap(Medico.class, Medico.class)

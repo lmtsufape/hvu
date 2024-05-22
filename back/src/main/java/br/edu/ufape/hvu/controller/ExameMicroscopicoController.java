@@ -54,6 +54,26 @@ public class ExameMicroscopicoController {
 			//ExameMicroscopico o = obj.convertToEntity();
 			ExameMicroscopico oldObject = facade.findExameMicroscopicoById(id);
 
+			//etapa
+			if (obj.getEtapa() != null) {
+				oldObject.setEtapa(facade.findEtapaById(obj.getEtapa().getId()));
+				obj.setEtapa(null);
+			}
+
+			// Laudo Microscopia
+			if (obj.getLaudoMicroscopia() != null) {
+				oldObject.setLaudoMicroscopia(facade.findLaudoMicroscopiaById(obj.getLaudoMicroscopia().getId()));
+				obj.setLaudoMicroscopia(null);
+			}
+
+			// foto
+			if (obj.getFoto() != null) {
+				oldObject.setFoto(facade.findFotoById(obj.getFoto().getId()));
+				obj.setFoto(null);
+			}
+
+
+
 			TypeMap<ExameMicroscopicoRequest, ExameMicroscopico> typeMapper = modelMapper
 													.typeMap(ExameMicroscopicoRequest.class, ExameMicroscopico.class)
 													.addMappings(mapper -> mapper.skip(ExameMicroscopico::setId));			

@@ -54,6 +54,20 @@ public class RotinaController {
 			//Rotina o = obj.convertToEntity();
 			Rotina oldObject = facade.findRotinaById(id);
 
+
+			//etapa
+			if (obj.getEtapa() != null) {
+				oldObject.setEtapa(facade.findEtapaById(obj.getEtapa().getId()));
+				obj.setEtapa(null);
+			}
+
+			//exameMicroscopico
+			if (obj.getExameMicroscopico() != null) {
+				oldObject.setExameMicroscopico(facade.findExameMicroscopicoById(obj.getExameMicroscopico().getId()));
+				obj.setExameMicroscopico(null);
+			}
+
+
 			TypeMap<RotinaRequest, Rotina> typeMapper = modelMapper
 													.typeMap(RotinaRequest.class, Rotina.class)
 													.addMappings(mapper -> mapper.skip(Rotina::setId));			

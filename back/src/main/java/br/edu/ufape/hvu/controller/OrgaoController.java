@@ -54,6 +54,11 @@ public class OrgaoController {
 			//Orgao o = obj.convertToEntity();
 			Orgao oldObject = facade.findOrgaoById(id);
 
+			if (obj.getFoto() != null) {
+				oldObject.setFoto(facade.findFotoById(obj.getFoto().getId()));
+				obj.setFoto(null);
+			}
+
 			TypeMap<OrgaoRequest, Orgao> typeMapper = modelMapper
 													.typeMap(OrgaoRequest.class, Orgao.class)
 													.addMappings(mapper -> mapper.skip(Orgao::setId));			

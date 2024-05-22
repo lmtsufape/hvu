@@ -54,6 +54,11 @@ public class LivroRegistroController {
 			//LivroRegistro o = obj.convertToEntity();
 			LivroRegistro oldObject = facade.findLivroRegistroById(id);
 
+			if(obj.getMedico() != null){
+				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
+				obj.setMedico(null);
+			}
+
 			TypeMap<LivroRegistroRequest, LivroRegistro> typeMapper = modelMapper
 													.typeMap(LivroRegistroRequest.class, LivroRegistro.class)
 													.addMappings(mapper -> mapper.skip(LivroRegistro::setId));			

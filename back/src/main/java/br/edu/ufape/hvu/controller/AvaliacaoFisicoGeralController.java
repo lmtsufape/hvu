@@ -54,6 +54,48 @@ public class AvaliacaoFisicoGeralController {
 			//AvaliacaoFisicoGeral o = obj.convertToEntity();
 			AvaliacaoFisicoGeral oldObject = facade.findAvaliacaoFisicoGeralById(id);
 
+			//tipoPostura
+			if(obj.getTipoPostura() != null){
+				oldObject.setTipoPostura(facade.findTipoPosturaById(obj.getTipoPostura().getId()));
+				obj.setTipoPostura(null);
+			}
+
+			//scoreCorporal
+			if(obj.getScoreCorporal() != null){
+				oldObject.setScoreCorporal(facade.findScoreCorporalById(obj.getScoreCorporal().getId()));
+				obj.setScoreCorporal(null);
+			}
+
+			//tipoLinfonodos
+			if(obj.getTipoLinfonodos() != null){
+				oldObject.setTipoLinfonodos(facade.findTipoLinfonodosById(obj.getTipoLinfonodos().getId()));
+				obj.setTipoLinfonodos(null);
+			}
+
+			//nivelHidratacao
+			if(obj.getNivelHidratacao() != null){
+				oldObject.setNivelHidratacao(facade.findNivelHidratacaoById(obj.getNivelHidratacao().getId()));
+				obj.setNivelHidratacao(null);
+			}
+
+			//tipoTurgorCutaneo
+			if(obj.getTipoTurgorCutaneo() != null){
+				oldObject.setTipoTurgorCutaneo(facade.findTipoTurgorCutaneoById(obj.getTipoTurgorCutaneo().getId()));
+				obj.setTipoTurgorCutaneo(null);
+			}
+
+			// nivelConsciencia
+			if(obj.getNivelConsciencia() != null){
+				oldObject.setNivelConsciencia(facade.findNivelConscienciaById(obj.getNivelConsciencia().getId()));
+				obj.setNivelConsciencia(null);
+			}
+
+			// tipoMucosa
+			if(obj.getTipoMucosa() != null){
+				oldObject.setTipoMucosa(facade.findTipoMucosaById(obj.getTipoMucosa().getId()));
+				obj.setTipoMucosa(null);
+			}
+
 			TypeMap<AvaliacaoFisicoGeralRequest, AvaliacaoFisicoGeral> typeMapper = modelMapper
 													.typeMap(AvaliacaoFisicoGeralRequest.class, AvaliacaoFisicoGeral.class)
 													.addMappings(mapper -> mapper.skip(AvaliacaoFisicoGeral::setId));			
