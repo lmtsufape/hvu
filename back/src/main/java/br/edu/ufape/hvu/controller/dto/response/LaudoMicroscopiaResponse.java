@@ -16,7 +16,6 @@ import lombok.Setter;
 public  class LaudoMicroscopiaResponse  {
 	private Long id;
 	private String conclusao;
-	private FichaSolicitacaoServicoResponse fichaSolicitacaoServico; 
 	private CampoLaudoResponse campoLaudo; 
 	private EtapaResponse etapa; 
 	private List<EstagiarioResponse> estagiario; 

@@ -14,8 +14,6 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class FichaSolicitacaoServicoRequest  {
-	private boolean criarLaudoNecropsia; //indica se deve criar o laudo de necropsia
-	private boolean criarLaudoMicroscopia; //indica se deve criar o laudo de microscopia
 	private Date dataHoraObito;
 	private EstadoConservacao estadoConservacao;
 	private String historico;
