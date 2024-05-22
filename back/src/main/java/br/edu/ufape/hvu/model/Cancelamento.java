@@ -39,5 +39,9 @@ public class Cancelamento {
 	@OneToOne
 	@ToString.Exclude
 	private Agendamento agendamento;
+	@OneToOne
+	@ToString.Exclude
+	private Vaga vaga;
+	
 
 }

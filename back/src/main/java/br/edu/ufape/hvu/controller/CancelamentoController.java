@@ -41,9 +41,14 @@ public class CancelamentoController {
 			.toList();
 	}
 	
-	@PostMapping("cancelamento")
-	public CancelamentoResponse createCancelamento(@Valid @RequestBody CancelamentoRequest newObj) {
-		return new CancelamentoResponse(facade.saveCancelamento(newObj.convertToEntity()));
+	@PostMapping("cancelamento/agendamento")
+	public CancelamentoResponse createCancelamentoAgendamento(@Valid @RequestBody CancelamentoRequest newObj) {
+		return new CancelamentoResponse(facade.cancelarAgendamento(newObj.convertToEntity()));
+	}
+	
+	@PostMapping("cancelamento/vaga")
+	public CancelamentoResponse createCancelamentoVaga(@Valid @RequestBody CancelamentoRequest newObj) {
+		return new CancelamentoResponse(facade.cancelarVaga(newObj.convertToEntity()));
 	}
 	
 	@GetMapping("cancelamento/{id}")
