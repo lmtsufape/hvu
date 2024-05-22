@@ -59,11 +59,6 @@ public class LaudoNecropsiaController {
 				oldObject.setCampoLaudo(facade.findCampoLaudoById(obj.getCampoLaudo().getId()));
 				obj.setCampoLaudo(null);
 			}
-			// foto
-			if(obj.getFoto() != null){
-				oldObject.setFoto(facade.findFotoById(obj.getFoto().getId()));
-				obj.setFoto(null);
-			}
 
 			TypeMap<LaudoNecropsiaRequest, LaudoNecropsia> typeMapper = modelMapper
 													.typeMap(LaudoNecropsiaRequest.class, LaudoNecropsia.class)
