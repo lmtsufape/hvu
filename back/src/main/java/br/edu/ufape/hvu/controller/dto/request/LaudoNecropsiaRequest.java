@@ -19,8 +19,7 @@ public  class LaudoNecropsiaRequest  {
 	private Microscopia tipoMicroscopia;
 	private String conclusao;
 	private FichaSolicitacaoServicoRequest fichaSolicitacaoServico; 
-	private CampoLaudoRequest campoLaudo; 
-	private LaudoMicroscopiaRequest laudoMicroscopia; 
+	private CampoLaudoRequest campoLaudo;
 	private FotoRequest foto; 
 	private List<EstagiarioRequest> estagiario;
 	private long id;
