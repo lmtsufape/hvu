@@ -21,6 +21,7 @@ public class CancelamentoResponse {
 	private LocalDateTime dataCancelamento;
 	private EspecialidadeResponse especialidade; 
 	private AgendamentoResponse agendamento;
+	private VagaResponse vaga;
 	
 	public CancelamentoResponse(Cancelamento obj) {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
