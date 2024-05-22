@@ -23,6 +23,7 @@ public  class AnimalRequest  {
 	private RacaRequest raca; 
 	private HistoricoMedicoPregressoRequest historicoMedicoPregresso;
 	private long id;
+	private String numeroFicha;
 
 
 	public Animal convertToEntity() {
