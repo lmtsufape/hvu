@@ -6,9 +6,8 @@ export default function Text() {
         <div className={styles.texto_box}>
             <h1 className={styles.titulo}>Hospital Veterinário Universitário</h1>
             
-            <p className={styles.paragrafo}>Aqui você pode agendar atendimentos 
-            para o seu pet de forma simples e rápida. Crie uma conta  e marque a 
-            próxima consulta com nossos veterinários.</p>
+            <p className={styles.paragrafo}>Toda a estrutura necessária para o seu pet, com uma 
+            equipe de veterinários especializados sempre à disposição!</p>
         </div>
         
     );

@@ -7,7 +7,7 @@ function Footer() {
       <footer className={styles.backgroundfooter}>
             <div className={styles.logohvu}>
                 <a href="http://ufape.edu.br/hvu" target="blank" rel="noopener">
-            <Image src="/hvu_white_logo.svg" alt="Logo" width={150} height={40}/>
+            <Image src="/hvu_white_logo.svg" alt="Logo" width={127.44} height={79.05}/>
             </a>
             </div>
                 <div  className={styles.logosufapelmts}>
