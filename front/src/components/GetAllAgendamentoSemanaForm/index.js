@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import dateStyles from "../Date/index.module.css";
 import CalendarGreenIcon from '../CalendarGreenIcon';
-import SearchBar from '../SearchBar';
 import VoltarButton from '../VoltarButton';
 import { DataCompleta } from "../Date";
 import { getAllVaga } from '../../../services/vagaService';
@@ -112,7 +111,6 @@ function GetAllAgendamentosSemanaForm() {
             <button className={styles.button} onClick={(e) => router.push("/agendamentoEspecial")}>Novo agendamento</button>
             <button className={styles.button} onClick={(e) => router.push("/gerenciarVagas")}>Criar vagas</button>
           </div>
-          <SearchBar />
         </div>
 
 

@@ -4,10 +4,9 @@ import Select from 'react-select';
 import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from '../WhiteButton';
-import { getAllAnimalTutor } from '../../../services/animalService';
+import { getAllAnimalTutor, getRetornoByAnimalId } from '../../../services/animalService';
 import { getAllVaga } from '../../../services/vagaService';
 import { createAgendamento } from '../../../services/agendamentoService';
-import { set } from 'date-fns';
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 
@@ -23,6 +22,8 @@ const HorariosSemana = () => {
 
   const [vagas, setVagas] = useState(null);
   const [selectedVaga, setSelectedVaga] = useState(null);
+
+  const [retorno, setRetorno] = useState(null);
 
   const [errors, setErrors] = useState({});
 
@@ -89,6 +90,31 @@ const HorariosSemana = () => {
     };
     fetchData();
   }, []);
+
+  console.log("selectedAnimal:", selectedAnimal);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchData = async () => {
+      try {
+        const data = await getRetornoByAnimalId(selectedAnimal.id);
+        if (isMounted) {
+          setRetorno(data);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar status de retorno do animal:', error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedAnimal]);
+
+  console.log("retorno:", retorno);
 
   const handleAnimalSelection = (event) => {
     const animalId = event.target.value;
@@ -187,7 +213,6 @@ const HorariosSemana = () => {
           </div>
         </div>
 
-
         <h1 className={styles.titulodataconsulta}>Data da Consulta</h1>
         <h2 className={styles.descricaotitulodataconsulta}>Selecione o dia e o horário disponível de sua preferência para o atendimento</h2>
         <div className={styles.button_voltar_avancar}>
@@ -221,34 +246,34 @@ const HorariosSemana = () => {
                   <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
                   <p className={styles.data}>{currentDateFormatted}</p>
                   <div className="time-buttons">
-                    {vagasForCurrentDay.map((vaga) => (
-                      <button
-                        key={vaga.id}
-                        className={
-
-                          vaga.status === 'Agendado' || vaga.status === 'Finalizado' ?
-                            `${styles.botaohoraIndisponivel} }`
-                            :
-
-                            (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && !(vaga.status === 'Agendado' || vaga.status === 'Finalizado') ?
-                              `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}` 
-                              : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ''}`)
-
-                        }
-                        onClick={() => {
-                          if (!(vaga.status === 'Agendado' || vaga.status === 'Finalizado')) {
-
-                            handleDateChange(currentDate);
-                            setSelecionarHorario(vaga.dataHora);
-                            setSelectedVaga(vaga);
+                    {vagasForCurrentDay.map((vaga) => {
+                      const vagaDate = new Date(vaga.dataHora);
+                      const isPast = vagaDate < new Date();
+                      return (
+                        <button
+                          key={vaga.id}
+                          className={
+                            isPast || vaga.status === 'Agendado' || vaga.status === 'Finalizado' ?
+                              `${styles.botaohoraIndisponivel}`
+                              :
+                              (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && !(vaga.status === 'Agendado' || vaga.status === 'Finalizado') ?
+                                `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}` 
+                                : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ''}`)
                           }
-                        }}
-                        disabled={vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno'}
-                      >
-                        {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
-                        <br />{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}
-                      </button>
-                    ))}
+                          onClick={() => {
+                            if (!(vaga.status === 'Agendado' || vaga.status === 'Finalizado' || isPast)) {
+                              handleDateChange(currentDate);
+                              setSelecionarHorario(vaga.dataHora);
+                              setSelectedVaga(vaga);
+                            }
+                          }}
+                          disabled={!selectedAnimal || (retorno ? vaga.tipoConsulta.tipo !== 'Retorno' : vaga.tipoConsulta.tipo === 'Retorno') || isPast}
+                        >
+                          {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
+                          <br />{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               );
