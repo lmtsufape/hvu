@@ -46,6 +46,15 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
+
+  export async function getRetornoByAnimalId(animalId) {
+    try {
+      const response = await api.get(`/animal/retorno/${animalId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   
   // Função para buscar por ID
   export async function getAnimalById(animalId) {

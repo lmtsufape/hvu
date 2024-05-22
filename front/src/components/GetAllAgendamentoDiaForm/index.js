@@ -5,7 +5,6 @@ import dateStyles from "../Date/index.module.css";
 import Filter from '../GetAgendamentosFilter';
 import { DataCompleta, DataCurta, DiaDaSemana } from '../Date';
 import CalendarGreenIcon from '../CalendarGreenIcon';
-import SearchBar from '../SearchBar';
 import VoltarButton from '../VoltarButton';
 import { getAgendamento, deleteAgendamento } from "../../../services/agendamentoService";
 import { getAllVaga, updateVaga } from '../../../services/vagaService';
@@ -104,7 +103,6 @@ function GetAllAgendamentosDiaForm() {
             </button>
             <button className={styles.button} onClick={(e) => router.push("/gerenciarVagas")}>Criar vagas</button>
           </div>
-          <SearchBar />
         </div>
         <table className={styles.table}>
           <thead>
