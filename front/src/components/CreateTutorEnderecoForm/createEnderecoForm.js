@@ -3,87 +3,50 @@ import InputMask from "react-input-mask";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./createEnderecoForm.module.css";
-import { number } from 'prop-types';
 
 function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors, laiChecked, handleCheckboxChange }) {
-  const [cidade, setCidade] = useState("");
-  const [estado, setEstado] = useState("");
-  const [rua, setRua] = useState("");
-  const [bairro, setBairro] = useState("");
-
   const handleCEPChange = async (event) => {
-    const cep = event.target.value;
+    const cep = event.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
     handleEnderecoChange(event); // Chama a função handleEnderecoChange para atualizar o estado com o valor do CEP
 
-    if (isNaN(cep[8]) === false) { // Verifica se o CEP foi completamente preenchido
+    if (cep.length === 8) { // Verifica se o CEP tem 8 dígitos
       try {
         const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        if (response.data.erro) {
+          throw new Error('CEP não encontrado');
+        }
+        
         const { localidade, uf, logradouro, bairro } = response.data;
 
-        setCidade(localidade);
-        setEstado(uf);
-        setRua(logradouro);
-        setBairro(bairro);
+        // Atualiza o estado local
+        handleEnderecoChange({ target: { name: "cidade", value: localidade } });
+        handleEnderecoChange({ target: { name: "estado", value: uf } });
+        handleEnderecoChange({ target: { name: "rua", value: logradouro } });
+        handleEnderecoChange({ target: { name: "bairro", value: bairro } });
 
-        // Atualiza o estado com os dados obtidos da API - cidade, estado, rua e bairro
-
-        handleEnderecoChange({
-          target: {
-            name: "cidade",
-            value: localidade
-          }
-        });
-
-        handleEnderecoChange({
-          target: {
-            name: "estado",
-            value: uf
-          }
-        });
-
-        handleEnderecoChange({
-          target: {
-            name: "rua",
-            value: logradouro
-          }
-        });
-
-        handleEnderecoChange({
-          target: {
-            name: "bairro",
-            value: bairro
-          }
-        });
-        handleEnderecoChange({
-          target: {
-            name: "cep",
-            value: cep
-          }
-        });
-        console.log(response.data.cep)
       } catch (error) {
         console.error("Erro ao buscar CEP:", error);
+        // Opcional: definir um estado de erro ou mensagem de erro para exibir ao usuário
       }
     }
   };
 
+  console.log("enderecoFormData:", enderecoFormData);
+
   return (
     <div className={styles.boxcadastrotutor}>
       <div className={styles.titulo}>Endereço</div>
-      
-     
       <div className="mb-3">
         <div className="row">
           <div className="col">
             {renderInput("CEP", "cep", enderecoFormData.cep, handleCEPChange, "Digite o cep", errors.cep, "text", "99999-999")}
-            {renderInput("Rua", "rua", rua, handleEnderecoChange, "", errors.rua)}
-            {renderInput("Cidade", "cidade", cidade, handleEnderecoChange, "", errors.cidade)}
-            
+            {renderInput("Rua", "rua", enderecoFormData.rua, handleEnderecoChange, "", errors.rua)}
+            {renderInput("Cidade", "cidade", enderecoFormData.cidade, handleEnderecoChange, "", errors.cidade)}
           </div>
           <div className="col">
             {renderInput("Número", "numero", enderecoFormData.numero, handleEnderecoChange, "Digite o número do endereço", errors.numero)}
-            {renderInput("Bairro", "bairro", bairro, handleEnderecoChange, "", errors.bairro)}
-            {renderInput("Estado", "estado", estado, handleEnderecoChange, "", errors.estado)}
+            {renderInput("Bairro", "bairro", enderecoFormData.bairro, handleEnderecoChange, "", errors.bairro)}
+            {renderInput("Estado", "estado", enderecoFormData.estado, handleEnderecoChange, "", errors.estado)}
           </div>
         </div>
         <div className={`${styles.informacaoLAI} ${errors.lai ? 'is-invalid' : ''}`}>
@@ -100,7 +63,7 @@ function CreateEnderecoForm({ enderecoFormData, handleEnderecoChange, errors, la
             Eu compreendo e aceito as condições da LAI.
           </label>
         </div>
-        {errors.lai && <p className="invalid-feedback" style={{ display: "block" }}>{errors.lai}</p>}
+        {errors.lai && <p className={`invalid-feedback ${styles.error_message}`} style={{ display: "block" }}>{errors.lai}</p>}
       </div>
     </div>
   );
