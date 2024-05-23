@@ -94,11 +94,26 @@ public class Facade {
 		@Autowired
 		private CancelamentoServiceInterface cancelamentoServiceInterface;
 
-		public Cancelamento saveCancelamento(Cancelamento newInstance) {
+		public Cancelamento cancelarAgendamento(Cancelamento newInstance) {
 			Agendamento agendamento = findAgendamentoById(newInstance.getAgendamento().getId());
 			agendamento.setStatus("Cancelado");
 			Vaga vaga = getVagaByAgendamento(agendamento.getId());
 			vaga.setStatus("Disponivel");
+			vaga.setAgendamento(null);
+			newInstance.setDataVaga(vaga.getDataHora());
+			newInstance.setEspecialidade(vaga.getEspecialidade());
+			newInstance.setDataCancelamento(LocalDateTime.now());
+			return cancelamentoServiceInterface.saveCancelamento(newInstance);
+		}
+		
+		public Cancelamento cancelarVaga(Cancelamento newInstance) {
+			Vaga vaga = findVagaById(newInstance.getVaga().getId());
+			vaga.setStatus("Cancelado");
+			if(vaga.getAgendamento() != null) {
+				Agendamento agendamento = findAgendamentoById(vaga.getAgendamento().getId());
+				agendamento.setStatus("Cancelado");			
+			}
+			vaga.setStatus("Cancelado");
 			vaga.setAgendamento(null);
 			newInstance.setDataVaga(vaga.getDataHora());
 			newInstance.setEspecialidade(vaga.getEspecialidade());
