@@ -60,9 +60,10 @@ export function SubheaderSecretario() {
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/pacientesBySecretario')}>Pacientes</button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/getAllMedicos')}>Veterinários&#40;as&#41;</button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarAgendas')}>Agendas</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarRacas')}>Raças</button>
+          {/*  <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarRacas')}>Raças</button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarEspecies')}>Espécies</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarTiposConsulta')}>Tipos de consulta</button><button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarEspecialidades')}>Especialidades</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarTiposConsulta')}>Tipos de consulta</button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarEspecialidades')}>Especialidades</button> */}
         </div>
     );
 }
