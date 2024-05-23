@@ -93,7 +93,10 @@ function GetPacienteById() {
                                                 <h6>Porte</h6>
                                                 <p>{animal.raca && animal.raca.porte ? animal.raca.porte : 'Não definido'}</p>
                                             </div>
-                                            <div className={styles.infos}></div>
+                                            <div className={styles.infos}>
+                                                <h6>Número da ficha</h6>
+                                                <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
+                                            </div>
                                         </div>
 
                                         <div className={styles.lista}>
