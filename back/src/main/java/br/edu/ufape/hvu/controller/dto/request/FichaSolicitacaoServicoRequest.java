@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.request;
 
 import java.util.Date;
 
+import br.edu.ufape.hvu.model.enums.Acondicionamento;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -14,8 +15,12 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class FichaSolicitacaoServicoRequest  {
+	private String fichaClinica;
 	private Date dataHoraObito;
+	private Date dataRecebimento;
 	private EstadoConservacao estadoConservacao;
+	private Acondicionamento acondicionamento;
+	private Boolean eutanasia;
 	private String historico;
 	private String caracteristicasAdicionais;
 	private TutorRequest tutor;
