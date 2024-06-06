@@ -129,6 +129,11 @@ public class Facade {
 			return cancelamentoServiceInterface.findCancelamentoById(id);
 		}
 
+		public List<Cancelamento> findCancelamentoByTutorId(long id) {
+			Tutor tutor = findTutorById(id);
+			return cancelamentoServiceInterface.findCancelamentosByTutorId(tutor.getId());
+		}
+
 		public List<Cancelamento> getAllCancelamento() {
 			return cancelamentoServiceInterface.getAllCancelamento();
 		}

@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.service;
 
 import java.util.List;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,14 @@ public class CancelamentoService implements CancelamentoServiceInterface {
 
 	public Cancelamento findCancelamentoById(long id) {
 		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Cancelamento"));
+	}
+
+	public List<Cancelamento> findCancelamentosByTutorId(long tutorId) {
+		try {
+			return repository.findCancelamentosByTutorId(tutorId);
+		} catch (RuntimeException e) {
+			throw new ServiceException("Erro ao buscar os cancelamentos", e);
+		}
 	}
 
 	public List<Cancelamento> getAllCancelamento(){

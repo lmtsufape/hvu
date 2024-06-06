@@ -50,7 +50,7 @@ public class CancelamentoController {
 	public CancelamentoResponse createCancelamentoVaga(@Valid @RequestBody CancelamentoRequest newObj) {
 		return new CancelamentoResponse(facade.cancelarVaga(newObj.convertToEntity()));
 	}
-	
+
 	@GetMapping("cancelamento/{id}")
 	public CancelamentoResponse getCancelamentoById(@PathVariable Long id) {
 		try {
@@ -59,7 +59,19 @@ public class CancelamentoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@GetMapping("cancelamento/tutor/{id}")
+	public List<CancelamentoResponse> getCancelamentosByTutorId(@PathVariable Long id) {
+		try {
+			return facade.findCancelamentoByTutorId(id)
+					.stream()
+					.map(CancelamentoResponse::new)
+					.toList();
+		} catch (IdNotFoundException ex) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+		}
+	}
+
 	@PatchMapping("cancelamento/{id}")
 	public CancelamentoResponse updateCancelamento(@PathVariable Long id, @Valid @RequestBody CancelamentoRequest obj) {
 		try {
@@ -94,7 +106,5 @@ public class CancelamentoController {
 		}
 		
 	}
-	
-
 }
 
