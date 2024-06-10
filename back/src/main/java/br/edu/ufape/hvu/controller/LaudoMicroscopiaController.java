@@ -18,7 +18,7 @@ import br.edu.ufape.hvu.controller.dto.response.LaudoMicroscopiaResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
-@CrossOrigin (origins = "http://localhost:8081/" )
+@CrossOrigin (origins = "http://localhost:3000/" )
 @RestController
 @RequestMapping("/api/v1/")
 public class LaudoMicroscopiaController {
