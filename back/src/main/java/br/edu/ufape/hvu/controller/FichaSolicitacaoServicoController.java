@@ -36,12 +36,15 @@ public class FichaSolicitacaoServicoController {
 			.map(FichaSolicitacaoServicoResponse::new)
 			.toList();
 	}
-	
+
 	@PostMapping("fichaSolicitacaoServico")
 	public FichaSolicitacaoServicoResponse createFichaSolicitacaoServico(@Valid @RequestBody FichaSolicitacaoServicoRequest newObj) {
-		return new FichaSolicitacaoServicoResponse(facade.saveFichaSolicitacaoServico(newObj.convertToEntity()));
+		FichaSolicitacaoServico fichaSolicitacaoServico = newObj.convertToEntity();
+		fichaSolicitacaoServico.gerarCodigoPatologia();
+		FichaSolicitacaoServico savedFicha = facade.saveFichaSolicitacaoServico(fichaSolicitacaoServico);
+		return new FichaSolicitacaoServicoResponse(savedFicha);
 	}
-	
+
 	@GetMapping("fichaSolicitacaoServico/{id}")
 	public FichaSolicitacaoServicoResponse getFichaSolicitacaoServicoById(@PathVariable Long id) {
 		try {
