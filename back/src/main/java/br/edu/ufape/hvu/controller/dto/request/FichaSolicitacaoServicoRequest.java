@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller.dto.request;
 import java.util.Date;
 
 import br.edu.ufape.hvu.model.enums.Acondicionamento;
+import br.edu.ufape.hvu.model.enums.TipoServico;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -16,6 +17,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public  class FichaSolicitacaoServicoRequest  {
 	private String fichaClinica;
+	private TipoServico tipoServico;
 	private Date dataHoraObito;
 	private Date dataRecebimento;
 	private EstadoConservacao estadoConservacao;

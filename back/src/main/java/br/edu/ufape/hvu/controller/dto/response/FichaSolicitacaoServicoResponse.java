@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 import java.util.Date;
 
 import br.edu.ufape.hvu.model.enums.Acondicionamento;
+import br.edu.ufape.hvu.model.enums.TipoServico;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -20,6 +21,8 @@ import lombok.Setter;
 public  class FichaSolicitacaoServicoResponse  {
 	private Long id;
 	private String fichaClinica;
+	private String codigoPatologia;
+	private TipoServico tipoServico;
 	private Date dataHoraObito;
 	private Date dataRecebimento;
 	private EstadoConservacao estadoConservacao;
