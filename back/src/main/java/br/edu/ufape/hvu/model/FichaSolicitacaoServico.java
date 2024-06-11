@@ -1,6 +1,8 @@
 package br.edu.ufape.hvu.model;
 
 import java.util.Date;
+
+import br.edu.ufape.hvu.model.enums.Acondicionamento;
 import br.edu.ufape.hvu.model.enums.EstadoConservacao;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,8 +25,12 @@ public class FichaSolicitacaoServico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private long id;
+    private String fichaClinica;
     private Date dataHoraObito;
+    private Date dataRecebimento;
     private EstadoConservacao estadoConservacao;
+    private Acondicionamento acondicionamento;
+    private Boolean eutanasia;
     private String historico;
     private String caracteristicasAdicionais;
     @OneToOne
