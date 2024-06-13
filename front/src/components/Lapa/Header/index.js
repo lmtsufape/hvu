@@ -53,7 +53,7 @@ export function Header01() {
 
             <div className={styles.box_buttons} >
                 <button type="button" class="btn btn-link">
-                    <img src='/images/icone_perfil.svg'/>
+                    <img src='/icone_perfil.svg'/>
                 </button>
             </div>
                 

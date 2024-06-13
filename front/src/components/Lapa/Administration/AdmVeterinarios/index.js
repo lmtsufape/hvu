@@ -12,6 +12,10 @@ function GerenciaVeterinario() {
         router.push('/lapa/administrationPage/');
     };
 
+    const handleCriarVeterinarioClick = () => {
+        router.push('/createMedico');
+    };
+
     return (
         <div className={styles.container}>
 
@@ -21,7 +25,7 @@ function GerenciaVeterinario() {
 
             <div className={styles.box_button}>
 
-                <button className={styles.button}>Novo Veterinário</button>
+                <button type="button" className={styles.button} onClick={handleCriarVeterinarioClick}>Novo Veterinário</button>
 
                 <button className={styles.button}>Remover Veterinário</button>
 

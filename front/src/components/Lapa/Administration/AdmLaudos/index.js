@@ -12,6 +12,10 @@ function GerenciaLaudo() {
         router.push('/lapa/administrationPage/');
     };
 
+    const handleNovoLaudoClick = () => {
+        router.push('/lapa/administrationPage/laudo/novoLaudo');
+    };
+
     return (
         <div className={styles.container}>
 
@@ -21,7 +25,7 @@ function GerenciaLaudo() {
 
             <div className={styles.box_button}>
 
-                <button className={styles.button}>Novo Laudo</button>
+                <button type="button" className={styles.button} onClick={handleNovoLaudoClick}>Novo Laudo</button>
 
                 <button className={styles.button}>Remover Laudo</button>
 

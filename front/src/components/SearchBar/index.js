@@ -18,7 +18,7 @@ function SearchBar({ placeholder, onSearchChange }) {
       />
 
       <button className={styles.button_busca} type="button">
-        <img src='./images/icone_busca.svg' alt="Lupa de busca" />
+        <img src='/images/icone_busca.svg' alt="Lupa de busca" />
       </button>
     </div>
   );

@@ -10,13 +10,13 @@
 .box_button {
     display: flex;
     justify-content: center;
-    gap: 100px;
+    gap: 60px;
     margin-bottom: 50px;
 }
 
 .button {
-    width: 350px;
-    height: 250px;
+    width: 290px;
+    height: 220px;
     padding: 24px, 40px, 24px;
     display: flex;
     flex-direction: column;
