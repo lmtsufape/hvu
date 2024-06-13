@@ -43,8 +43,4 @@ public  class Animal  {
 	@OneToOne
 	@ToString.Exclude
 	private HistoricoMedicoPregresso historicoMedicoPregresso;
-
-	@ManyToOne
-	@ToString.Exclude
-	private Tutor tutor;
 }

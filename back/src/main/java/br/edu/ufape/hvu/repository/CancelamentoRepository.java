@@ -14,9 +14,8 @@ public interface CancelamentoRepository extends JpaRepository<Cancelamento, Long
 
     @Query("SELECT c FROM Cancelamento c " +
             "JOIN c.agendamento a " +
-            "JOIN a.animal an " +
-            "JOIN an.tutor t " +
-            "WHERE t.id = :tutorId")
+            "JOIN a.animal n " +
+            "WHERE n.id IN (SELECT an.id FROM Tutor t JOIN t.animal an WHERE t.id = :tutorId)")
     List<Cancelamento> findCancelamentosByTutorId(@Param("tutorId") Long tutorId);
 
 
