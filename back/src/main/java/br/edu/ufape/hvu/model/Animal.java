@@ -42,6 +42,5 @@ public  class Animal  {
 	private Raca raca; 
 	@OneToOne
 	@ToString.Exclude
-	private HistoricoMedicoPregresso historicoMedicoPregresso; 
-
+	private HistoricoMedicoPregresso historicoMedicoPregresso;
 }

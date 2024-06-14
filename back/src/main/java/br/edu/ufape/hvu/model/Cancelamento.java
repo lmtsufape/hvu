@@ -42,6 +42,5 @@ public class Cancelamento {
 	@OneToOne
 	@ToString.Exclude
 	private Vaga vaga;
-	
 
 }
