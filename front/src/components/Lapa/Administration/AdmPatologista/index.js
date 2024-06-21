@@ -8,6 +8,10 @@ function GerenciaPatologista() {
 
     const router = useRouter();
 
+    const handleCriarPatologistaClick = () => {
+        router.push('/createMedico');
+    };
+
     const handleMenuAnteriorClick = () => {
         router.push('/lapa/administrationPage/');
     };
@@ -21,7 +25,7 @@ function GerenciaPatologista() {
 
             <div className={styles.box_button}>
 
-                <button className={styles.button}>Novo Patologista</button>
+                <button type="button" className={styles.button} onClick={handleCriarPatologistaClick}>Novo Patologista</button>
 
                 <button className={styles.button}>Remover Patologista</button>
 
