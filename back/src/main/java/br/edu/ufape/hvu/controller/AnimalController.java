@@ -81,6 +81,15 @@ public class AnimalController {
 			.map(AnimalResponse::new)
 			.toList();
 	}
+
+	@GetMapping("animal/numeroficha/{fichaNumero}")
+	public List<AnimalResponse> getAnimaisByNumeroficha(@PathVariable String fichaNumero) {
+		List<Animal> animals = facade.getAnimalByFichaNumber(fichaNumero);
+		if (animals.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrado animal com o número de ficha: " + fichaNumero);
+		}
+		return animals.stream().map(AnimalResponse::new).toList();
+	}
 	
 	@PostMapping("animal")
 	public AnimalResponse createAnimal(@Valid @RequestBody AnimalRequest newObj) {
