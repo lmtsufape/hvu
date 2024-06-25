@@ -36,7 +36,7 @@ public  class Orgao  {
 	private Boolean sexoMacho;
 	private Boolean sexoFemea;
 
-    	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "foto_id")
 	@ToString.Exclude
 	private Foto foto;

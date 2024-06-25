@@ -1,12 +1,6 @@
 package br.edu.ufape.hvu.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,8 +21,9 @@ public  class CampoLaudo  {
 	@EqualsAndHashCode.Include
 	private long id;
 	private String descricao;
-	@OneToOne
+	@ManyToOne
 	@ToString.Exclude
-	private Orgao orgao; 
+	private Orgao orgao;
+
 
 }

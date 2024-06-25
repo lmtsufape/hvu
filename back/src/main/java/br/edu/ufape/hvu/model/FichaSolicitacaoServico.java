@@ -6,6 +6,7 @@ import java.util.Map;
 
 import br.edu.ufape.hvu.model.enums.Acondicionamento;
 import br.edu.ufape.hvu.model.enums.EstadoConservacao;
+import br.edu.ufape.hvu.model.enums.TipoMaterial;
 import br.edu.ufape.hvu.model.enums.TipoServico;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,7 @@ public class FichaSolicitacaoServico {
     private Date dataRecebimento;
     private EstadoConservacao estadoConservacao;
     private Acondicionamento acondicionamento;
+    private TipoMaterial material;
     private Boolean eutanasia;
     private String historico;
     private String caracteristicasAdicionais;
