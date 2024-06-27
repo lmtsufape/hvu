@@ -8,12 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import br.edu.ufape.hvu.model.Animal;
 
-import java.util.List;
-
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
 
     @Query("SELECT a FROM Animal a where a.numeroFicha = :numeroFicha")
-    List<Animal> findAnimalByFicha(@Param("numeroFicha") String numeroFicha);
+    Animal findAnimalByFicha(@Param("numeroFicha") String numeroFicha);
 
 }

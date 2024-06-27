@@ -32,11 +32,12 @@ public class AnimalService implements AnimalServiceInterface {
 	}
 
 
-	public List<Animal> findAnimalByFichaNumber(String fichaNumber) {
+	public Animal findAnimalByFichaNumber(String fichaNumber) {
 		try {
+			// retorna um unico animal por meio do numeor da ficha
 			return repository.findAnimalByFicha(fichaNumber);
 		} catch (RuntimeException e) {
-			throw new ServiceException("Erro ao buscar animal por meio do numero da ficha");
+			throw new ServiceException("Erro ao buscar animal por meio do numero da ficha, verifique o número da ficha");
 		}
 	}
 

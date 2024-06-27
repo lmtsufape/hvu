@@ -1176,7 +1176,7 @@ public class Facade {
 		return tutor.getAnimal();
 	}
 
-	public List<Animal> getAnimalByFichaNumber(String fichaNumero){
+	public Animal getAnimalByFichaNumber(String fichaNumero){
 		return animalServiceInterface.findAnimalByFichaNumber(fichaNumero);
 	}
 

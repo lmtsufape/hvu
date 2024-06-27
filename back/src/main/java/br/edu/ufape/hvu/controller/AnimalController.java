@@ -83,12 +83,12 @@ public class AnimalController {
 	}
 
 	@GetMapping("animal/numeroficha/{fichaNumero}")
-	public List<AnimalResponse> getAnimaisByNumeroficha(@PathVariable String fichaNumero) {
-		List<Animal> animals = facade.getAnimalByFichaNumber(fichaNumero);
-		if (animals.isEmpty()) {
+	public AnimalResponse getAnimaisByNumeroficha(@PathVariable String fichaNumero) {
+		Animal animals = facade.getAnimalByFichaNumber(fichaNumero);
+		if (animals == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrado animal com o número de ficha: " + fichaNumero);
 		}
-		return animals.stream().map(AnimalResponse::new).toList();
+		return new AnimalResponse(animals);
 	}
 	
 	@PostMapping("animal")
