@@ -30,8 +30,17 @@ public class AnimalService implements AnimalServiceInterface {
 	public List<Animal> getAllAnimal(){
 		return repository.findAll();
 	}
-	
-	
+
+
+	public Animal findAnimalByFichaNumber(String fichaNumber) {
+		try {
+			// retorna um unico animal por meio do numeor da ficha
+			return repository.findAnimalByFicha(fichaNumber);
+		} catch (RuntimeException e) {
+			throw new ServiceException("Erro ao buscar animal por meio do numero da ficha, verifique o número da ficha");
+		}
+	}
+
 
 	public void deleteAnimal(Animal persistentObject){
 		this.deleteAnimal(persistentObject.getId());

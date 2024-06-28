@@ -1173,7 +1173,11 @@ public class Facade {
 		if(tutor.equals(null) ) {
 			throw new ServiceException("Erro ao buscar os Agendamentos");
 		}
-		return tutor.getAnimal();		
+		return tutor.getAnimal();
+	}
+
+	public Animal getAnimalByFichaNumber(String fichaNumero){
+		return animalServiceInterface.findAnimalByFichaNumber(fichaNumero);
 	}
 
 	public void deleteAnimal(Animal persistentObject) {
