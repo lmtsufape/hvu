@@ -1472,35 +1472,7 @@ public class Facade {
 		instituicaoServiceInterface.deleteInstituicao(id);
 	}
 
-	// LaudoMicroscopia--------------------------------------------------------------
-
-	@Autowired
-	LaudoMicroscopiaServiceInterface laudoMicroscopiaServiceInterface;
-
-	public LaudoMicroscopia saveLaudoMicroscopia(LaudoMicroscopia newInstance) {
-		return laudoMicroscopiaServiceInterface.saveLaudoMicroscopia(newInstance);
-	}
-
-	public LaudoMicroscopia updateLaudoMicroscopia(LaudoMicroscopia transientObject) {
-		return laudoMicroscopiaServiceInterface.updateLaudoMicroscopia(transientObject);
-	}
-
-	public LaudoMicroscopia findLaudoMicroscopiaById(long id) {
-		return laudoMicroscopiaServiceInterface.findLaudoMicroscopiaById(id);
-	}
-
-	public List<LaudoMicroscopia> getAllLaudoMicroscopia() {
-		return laudoMicroscopiaServiceInterface.getAllLaudoMicroscopia();
-	}
-
-	public void deleteLaudoMicroscopia(LaudoMicroscopia persistentObject) {
-		laudoMicroscopiaServiceInterface.deleteLaudoMicroscopia(persistentObject);
-	}
-
-	public void deleteLaudoMicroscopia(long id) {
-		laudoMicroscopiaServiceInterface.deleteLaudoMicroscopia(id);
-	}
-
+	
 	// LaudoNecropsia--------------------------------------------------------------
 	@Autowired
 	LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;

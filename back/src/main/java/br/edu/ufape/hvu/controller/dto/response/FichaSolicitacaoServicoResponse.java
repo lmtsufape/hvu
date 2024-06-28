@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 import java.util.Date;
 
 import br.edu.ufape.hvu.model.enums.Acondicionamento;
+import br.edu.ufape.hvu.model.enums.TipoMaterial;
 import br.edu.ufape.hvu.model.enums.TipoServico;
 import org.modelmapper.ModelMapper;
 
@@ -27,6 +28,7 @@ public  class FichaSolicitacaoServicoResponse  {
 	private Date dataRecebimento;
 	private EstadoConservacao estadoConservacao;
 	private Acondicionamento acondicionamento;
+	private TipoMaterial material;
 	private Boolean eutanasia;
 	private String historico;
 	private String caracteristicasAdicionais;

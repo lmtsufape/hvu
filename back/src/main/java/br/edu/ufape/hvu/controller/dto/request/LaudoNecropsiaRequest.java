@@ -6,31 +6,23 @@ import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.LaudoNecropsia;
-import br.edu.ufape.hvu.model.enums.Microscopia;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Getter @Setter @NoArgsConstructor 
-public  class LaudoNecropsiaRequest  {
-	private String fichaClinica;
-	private String ficha;
-	private Microscopia tipoMicroscopia;
+@Getter @Setter @NoArgsConstructor
+public class LaudoNecropsiaRequest {
 	private String conclusao;
-	private FichaSolicitacaoServicoRequest fichaSolicitacaoServico; 
-	private CampoLaudoRequest campoLaudo;
-	private FotoRequest foto; 
+	private FichaSolicitacaoServicoRequest fichaSolicitacaoServico;
+	private List<CampoLaudoRequest> campoLaudo;
+	private String CampoMicroscopia;
 	private List<EstagiarioRequest> estagiario;
 	private long id;
-
 
 	public LaudoNecropsia convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
 		LaudoNecropsia obj = modelMapper.map(this, LaudoNecropsia.class);
 		return obj;
 	}
-
-
-
 }
