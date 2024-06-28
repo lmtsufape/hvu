@@ -33,18 +33,18 @@ function CreateFichaForm() {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   const [fichaDeSolicitacaoData, setFichaDeSolicitacaoData] = useState({
-    fichaClinica: "",
-    tipoServico: "",
-    dataHoraObito: "",
-    dataRecebimento: "",
-    estadoConservacao: "",
-    acondicionamento: "",
+    fichaClinica: '',
+    tipoServico: '',
+    dataHoraObito: '',
+    dataRecebimento: '',
+    estadoConservacao: '',
+    acondicionamento: '',
     eutanasia: false,
-    historico: "",
-    caracteristicasAdicionais: "",
-    tutorId: null,
-    animalId: null,
-    medicoId: null,
+    historico: '',
+    caracteristicasAdicionais: '',
+    tutor: { id: null },
+    animal: { id: null },
+    medico: { id: null },
   });
   
   const [errors, setErrors] = useState({
@@ -59,7 +59,7 @@ function CreateFichaForm() {
     caracteristicasAdicionais: "",
     tutor: "",
     animal: "",
-    medico: "",
+    medico: ""
   });  
 
   useEffect(() => {
@@ -74,112 +74,143 @@ function CreateFichaForm() {
     }
   }, [tutores, animais, medicos, selectedTutor, selectedAnimal, selectedMedico]);
 
-  const handleTutorSelection = async (event) => {
-    const selectedTutorId = event.target.value;
+  const handleTutorSelection = (event) => {
+    const selectedTutorId = parseInt(event.target.value);
     setSelectedTutor(selectedTutorId);
-    setSelectedAnimal(null);
-    setSelectedMedico(null);
-  
-    try {
-      const response = await getAnimalByTutor(selectedTutorId);
-      const animaisFiltrados = response.data;
-      setAnimaisByTutor(animaisFiltrados);
-  
-      if (animaisFiltrados.length === 0) {
-        setShowAlert(true);
-      } else {
-        setShowAlert(false);
-      }
-  
-      const tutorDetails = tutores.find(tutor => tutor.id === parseInt(selectedTutorId));
-      setSelectedTutorDetails(tutorDetails);
-    } catch (error) {
-      setShowErrorAlert(true);
-    }
+    setFichaDeSolicitacaoData(prevData => ({
+      ...prevData,
+      tutor: { id: selectedTutorId }
+    }));
+    console.log('Tutor selecionado:', selectedTutorId);
+    console.log('Dados da ficha de solicitação:', fichaDeSolicitacaoData);
   };
-
-  
 
   const handleAnimalSelection = (event) => {
-    const selectedAnimalId = event.target.value;
-    const animalDetails = animais.find(animal => animal.id === parseInt(selectedAnimalId));
-    setSelectedAnimalDetails(animalDetails);
-    setSelectedAnimal(selectedAnimalId); // Correção: Definindo o ID do animal selecionado
+    const selectedAnimalId = parseInt(event.target.value);
+    setSelectedAnimal(selectedAnimalId);
+    setFichaDeSolicitacaoData(prevData => ({
+      ...prevData,
+      animal: { id: selectedAnimalId }
+    }));
+    console.log('Animal selecionado:', selectedAnimalId);
+    console.log('Dados da ficha de solicitação:', fichaDeSolicitacaoData);
   };
-  
-  const handleMedicoSelection = (event) => {
-    const selectedMedicoId = event.target.value;
-    const medicoDetails = medicos.find(medico => medico.id === parseInt(selectedMedicoId));
-    setSelectedMedicoDetails(medicoDetails);
-    setSelectedMedico(selectedMedicoId); // Correção: Definindo o ID do médico selecionado
-  };  
 
-  const formatDate = (data) => {
-    if (!data) return ''; // Verifica se a data é válida
-    const dataObj = new Date(data);
-    const dia = String(dataObj.getDate()).padStart(2, '0');
-    const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-    const ano = dataObj.getFullYear();
-    const hora = String(dataObj.getHours()).padStart(2, '0');
-    const minutos = String(dataObj.getMinutes()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}T${hora}:${minutos}`;
+  const handleMedicoSelection = (event) => {
+    const selectedMedicoId = parseInt(event.target.value);
+    setSelectedMedico(selectedMedicoId);
+    setFichaDeSolicitacaoData(prevData => ({
+      ...prevData,
+      medico: { id: selectedMedicoId }
+    }));
+    console.log('Médico selecionado:', selectedMedicoId);
+    console.log('Dados da ficha de solicitação:', fichaDeSolicitacaoData);
   };
- 
+
   const handleFichaDeSolicitacaoChange = (event) => {
     const { name, value, type, checked } = event.target;
-  
-    // Verificar se o tipo é um checkbox
-    const newValue = type === 'checkbox' ? checked : value;
-  
-    setFichaDeSolicitacaoData({ ...fichaDeSolicitacaoData, [name]: newValue });
-  };
-  
+    const newValue = type === "checkbox" ? checked : value;
+  console.log(fichaDeSolicitacaoData);
 
-  const validateForm = () => {
-    const newErrors = {};
-  
-    if (!fichaDeSolicitacaoData.dataHoraObito) {
-      newErrors.dataHoraObito = "Campo obrigatório";
-    }
-    setErrors(newErrors);
-  
-    return Object.values(newErrors).every((error) => error === "");
+  setFichaDeSolicitacaoData({
+    ...fichaDeSolicitacaoData,
+    [name]: newValue,
+  });
   };
+  
+  const formatDate = (date) => {
+    if (!date) return "";
+    return new Date(date).toISOString();
+  };
+  
+  const validateForm = () => {
+  const newErrors = {};
+
+  if (!fichaDeSolicitacaoData.fichaClinica) {
+    newErrors.fichaClinica = "Ficha Clínica é obrigatória.";
+  }
+  if (!fichaDeSolicitacaoData.tipoServico) {
+    newErrors.tipoServico = "Tipo de Serviço é obrigatório.";
+  }
+  if (!fichaDeSolicitacaoData.dataHoraObito) {
+    newErrors.dataHoraObito = "Data e Hora do Óbito são obrigatórias.";
+  }
+  if (!fichaDeSolicitacaoData.dataRecebimento) {
+    newErrors.dataRecebimento = "Data de Recebimento é obrigatória.";
+  }
+  if (!fichaDeSolicitacaoData.estadoConservacao) {
+    newErrors.estadoConservacao = "Estado de Conservação é obrigatório.";
+  }
+  if (!fichaDeSolicitacaoData.acondicionamento) {
+    newErrors.acondicionamento = "Acondicionamento é obrigatório.";
+  }
+  if (!fichaDeSolicitacaoData.tutor.id) {
+    newErrors.tutor = "Selecione um Tutor.";
+  }
+  if (!fichaDeSolicitacaoData.animal.id) {
+    newErrors.animal = "Selecione um Animal.";
+  }
+  if (!fichaDeSolicitacaoData.medico.id) {
+    newErrors.medico = "Selecione um Médico.";
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (validateForm()) {
-      const fichaDeSolicitacaoToCreate = {
-        dataHoraObito: fichaDeSolicitacaoData.dataHoraObito,
-        dataRecebimento: fichaDeSolicitacaoData.dataRecebimento,
-        estadoConservacao: fichaDeSolicitacaoData.estadoConservacao,
-        acondicionamento: fichaDeSolicitacaoData.acondicionamento,
-        eutanasia: fichaDeSolicitacaoData.eutanasia,
-        historico: fichaDeSolicitacaoData.historico,
-        caracteristicasAdicionais: fichaDeSolicitacaoData.caracteristicasAdicionais,
-        tutorId: selectedTutor ? parseInt(selectedTutor) : null,
-        animalId: selectedAnimal ? parseInt(selectedAnimal.id) : null,
-        medicoId: selectedMedico ? parseInt(selectedMedico.id) : null,
-      };
-  
-      try {
-        const newFicha = await createFichaSolicitacao(fichaDeSolicitacaoToCreate);
-        console.log(newFicha);
-        setShowAlert(true);
-        resetForm();
-      } catch (error) {
-        console.error("Erro ao criar ficha de solicitação:", error);
-        console.log("Detalhes do erro:", error.response);
-        setShowErrorAlert(true);
-      }
+        const fichaDeSolicitacaoToCreate = {
+          fichaClinica: fichaDeSolicitacaoData.fichaClinica,
+          tipoServico: fichaDeSolicitacaoData.tipoServico,
+          dataHoraObito: formatDate(fichaDeSolicitacaoData.dataHoraObito),
+          dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
+          estadoConservacao: fichaDeSolicitacaoData.estadoConservacao,
+          acondicionamento: fichaDeSolicitacaoData.acondicionamento,
+          eutanasia: fichaDeSolicitacaoData.eutanasia,
+          historico: fichaDeSolicitacaoData.historico,
+          caracteristicasAdicionais: fichaDeSolicitacaoData.caracteristicasAdicionais,
+          tutor: { 
+            id: selectedTutor
+          },
+          animal: { 
+            id: selectedAnimal 
+          },
+          medico: { 
+            id: selectedMedico
+          }
+        };
+
+        try {
+            const newFicha = await createFichaSolicitacao(fichaDeSolicitacaoToCreate);
+            console.log(newFicha);
+            setShowAlert(true);
+            resetForm();
+        } catch (error) {
+            console.error("Erro ao criar ficha de solicitação:", error);
+            if (error.response) {
+                console.log("Detalhes do erro:", error.response);
+                if (error.response.status === 400) {
+                    alert("Erro ao enviar dados: Verifique os campos preenchidos.");
+                } else {
+                    alert("Erro ao criar ficha de solicitação. Por favor, tente novamente mais tarde.");
+                }
+            } else {
+                alert("Erro de rede ou servidor. Por favor, tente novamente mais tarde.");
+            }
+            setShowErrorAlert(true);
+        }
     } else {
-      console.log("Formulário inválido, preencha corretamente e tente novamente.");
+        console.log("Formulário inválido, preencha corretamente e tente novamente.");
     }
-  };  
+  };
   
   const resetForm = () => {
     setFichaDeSolicitacaoData({
+      fichaClinica: "",
+      tipoServico: "",
       dataHoraObito: "",
       dataRecebimento: "", 
       estadoConservacao: "",
@@ -187,16 +218,14 @@ function CreateFichaForm() {
       eutanasia: false,
       historico: "",
       caracteristicasAdicionais: "",
-      tutorId: null,
-      animalId: null,
-      medicoId: null,
+      tutor: { id: null },
+      animal: { id: null },
+      medico: { id: null },
     });
   
-    setSelectedTutor(null);
-    setSelectedAnimal(null);
-    setSelectedMedico(null);
-  
     setErrors({
+      fichaClinica: "",
+      tipoServico: "",
       dataHoraObito: "",
       dataRecebimento: "", // Novo campo: Data de Recebimento
       estadoConservacao: "",
@@ -223,22 +252,28 @@ function CreateFichaForm() {
             <input
               type="datetime-local"
               className={`form-control ${errors.dataHoraObito ? "is-invalid" : ""}`}
+              id="dataHoraObito"
               name="dataHoraObito"
-              value={formatDate(fichaDeSolicitacaoData.dataHoraObito)}
+              value={fichaDeSolicitacaoData.dataHoraObito}
               onChange={handleFichaDeSolicitacaoChange}
             />
             {errors.dataHoraObito && <div className="invalid-feedback">{errors.dataHoraObito}</div>}
           </div>
           <div className="col">
             <label htmlFor="estadoConservacao" className="form-label">Estado de Conservação</label>
-            <input
-              type="text"
-              className={`form-control ${errors.estadoConservacao ? "is-invalid" : ""}`}
+            <select
+              className={`form-select ${errors.estadoConservacao ? "is-invalid" : ""}`}
+              id="estadoConservacao"
               name="estadoConservacao"
-              placeholder="Insira o Estado de Conservação"
               value={fichaDeSolicitacaoData.estadoConservacao}
               onChange={handleFichaDeSolicitacaoChange}
-            />
+            >
+              <option value="">Selecione o estado de conservação</option>
+              <option value="BOM">Bom</option>
+              <option value="REGULAR">Regular</option>
+              <option value="RUIM">Ruim</option>
+            </select>
+            {errors.estadoConservacao && <div className="invalid-feedback">{errors.estadoConservacao}</div>}
           </div>
           <div className="col">
               <label htmlFor="eutanasia" className="form-label">Eutanásia</label>
@@ -281,6 +316,18 @@ function CreateFichaForm() {
               onChange={handleFichaDeSolicitacaoChange}
             />
           </div>
+          <div className="col">
+            <label htmlFor="fichaClinica" className="form-label">Ficha Clínica</label>
+            <input
+              type="text"
+              className={`form-control ${errors.fichaClinica ? "is-invalid" : ""}`}
+              name="fichaClinica"
+              placeholder="Insira a Ficha Clínica"
+              value={fichaDeSolicitacaoData.fichaClinica}
+              onChange={handleFichaDeSolicitacaoChange}
+            />
+            {errors.fichaClinica && <div className="invalid-feedback">{errors.fichaClinica}</div>}
+          </div>
         </div>
         <div className="row">
             <h1></h1>
@@ -289,8 +336,9 @@ function CreateFichaForm() {
               <input
                 type="datetime-local"
                 className={`form-control ${errors.dataRecebimento ? "is-invalid" : ""}`}
+                id= "dataRecebimento"
                 name="dataRecebimento"
-                value={formatDate(fichaDeSolicitacaoData.dataRecebimento)}
+                value={fichaDeSolicitacaoData.dataRecebimento}
                 onChange={handleFichaDeSolicitacaoChange}
               />
               {errors.dataRecebimento && <div className="invalid-feedback">{errors.dataRecebimento}</div>}
@@ -356,6 +404,7 @@ function CreateFichaForm() {
               <label htmlFor="animal" className="form-label">Animal</label>
               <select
                 className={`form-control ${errors.animal ? "is-invalid" : ""}`}
+                id="animal"
                 name="animal"
                 value={selectedAnimal || ""}
                 onChange={handleAnimalSelection}
@@ -377,6 +426,7 @@ function CreateFichaForm() {
             <label htmlFor="medico" className="form-label">Veterinário</label>
             <select 
               className={`form-select ${errors.medico ? "is-invalid" : ""}`}
+              id="medico"
               name="medico"
               aria-label="Selecione o Médico"
               value={selectedMedico || ""}
@@ -397,8 +447,8 @@ function CreateFichaForm() {
             Cadastrar
           </button>
         </div>
-
       </form>
+      {<Alert message="Ficha de Solicitação cadastrada com sucesso!" show={showAlert} url='/lapa/telaprincipallaudos/laudosEmAndamento' />}
     </div>
   );
    

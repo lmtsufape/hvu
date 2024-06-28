@@ -34,8 +34,9 @@
     border-radius: 10px;
     border: 0.5px solid #B1B1B1;
     display: flex;
-    justify-content: center;
+    justify-content: space-between; /* Ajuste */
     align-items: center;
+    padding: 0 20px; /* Ajuste */
 
 }
 
