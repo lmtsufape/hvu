@@ -22,7 +22,6 @@ public  class ExameMicroscopicoResponse  {
 	private String foto_path;
 	private OrgaoResponse orgao; 
 	private EtapaResponse etapa; 
-	private LaudoMicroscopiaResponse laudoMicroscopia;
 	private FotoResponse foto;
 
 
