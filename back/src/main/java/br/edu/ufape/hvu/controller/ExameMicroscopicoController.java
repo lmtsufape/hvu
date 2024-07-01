@@ -60,6 +60,8 @@ public class ExameMicroscopicoController {
 				obj.setEtapa(null);
 			}
 
+
+
 			// foto
 			if (obj.getFoto() != null) {
 				oldObject.setFoto(facade.findFotoById(obj.getFoto().getId()));
