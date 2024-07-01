@@ -20,7 +20,6 @@ public  class ExameMicroscopicoRequest  {
 	private String foto_path;
 	private OrgaoRequest orgao; 
 	private EtapaRequest etapa; 
-	private LaudoMicroscopiaRequest laudoMicroscopia; 
 	private long id;
 	private FotoRequest foto;
 
