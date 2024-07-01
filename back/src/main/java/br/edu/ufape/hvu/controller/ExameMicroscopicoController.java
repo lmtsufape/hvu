@@ -60,12 +60,6 @@ public class ExameMicroscopicoController {
 				obj.setEtapa(null);
 			}
 
-			// Laudo Microscopia
-			if (obj.getLaudoMicroscopia() != null) {
-				oldObject.setLaudoMicroscopia(facade.findLaudoMicroscopiaById(obj.getLaudoMicroscopia().getId()));
-				obj.setLaudoMicroscopia(null);
-			}
-
 			// foto
 			if (obj.getFoto() != null) {
 				oldObject.setFoto(facade.findFotoById(obj.getFoto().getId()));

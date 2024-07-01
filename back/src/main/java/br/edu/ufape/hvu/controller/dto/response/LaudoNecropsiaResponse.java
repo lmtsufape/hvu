@@ -19,7 +19,6 @@ public  class LaudoNecropsiaResponse  {
 	private FichaSolicitacaoServicoResponse fichaSolicitacaoServico;
 	private List<CampoLaudoResponse> campoLaudo;
 	private String CampoMicroscopia;
-	private LaudoMicroscopiaResponse laudoMicroscopia;
 	private List<EstagiarioResponse> estagiario;
 
 

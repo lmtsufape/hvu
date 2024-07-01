@@ -38,14 +38,10 @@ public  class ExameMicroscopico  {
 	@OneToOne
 	@ToString.Exclude
 	private Orgao orgao; 
-		@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "etapa_id")
 	@ToString.Exclude
 	private Etapa etapa; 
-    	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "laudoMicroscopia_id")
-	@ToString.Exclude
-	private LaudoMicroscopia laudoMicroscopia;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "foto_id")

@@ -21,8 +21,7 @@ public  class ExameMicroscopicoResponse  {
 	private Date dataHora;
 	private String foto_path;
 	private OrgaoResponse orgao; 
-	private EtapaResponse etapa; 
-	private LaudoMicroscopiaResponse laudoMicroscopia;
+	private EtapaResponse etapa;
 	private FotoResponse foto;
 
 
