@@ -47,10 +47,10 @@ function GerenciarVagas() {
     console.log("data:", data);
 
 
-    const [selectedEspecialidade, setSelectedEspecialidade] = useState(new Array(8).fill('')); 
+    const [selectedEspecialidade, setSelectedEspecialidade] = useState(new Array(8).fill(''));
 
     const handleEspecialidadeSelection = (event, position) => {
-        const selectedEspecialidadeId = event.target.value; 
+        const selectedEspecialidadeId = event.target.value;
         setSelectedEspecialidade(prevSelectedEspecialidade => {
             const updatedSelectedEspecialidade = [...prevSelectedEspecialidade];
             updatedSelectedEspecialidade[position] = selectedEspecialidadeId;
@@ -58,8 +58,8 @@ function GerenciarVagas() {
         });
     };
     console.log("selectedEspecialidade", selectedEspecialidade);
-    
-    
+
+
     const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(new Array(8).fill(''));
 
     const handleTipoConsultaSelection = (event, position) => {
@@ -75,7 +75,7 @@ function GerenciarVagas() {
     const validateFields = (agendamento) => {
         const errors = {};
         if (!data) {
-          errors.data = "Campo obrigatório";
+            errors.data = "Campo obrigatório";
         }
         return errors;
     };
@@ -83,46 +83,46 @@ function GerenciarVagas() {
     const criarJSON = () => {
         const turnoManha = [];
         const turnoTarde = [];
-      
+
         for (let i = 0; i < selectedEspecialidade.length; i++) {
-          const especialidadeId = selectedEspecialidade[i];
-          const tipoConsultaId = selectedTipoConsulta[i];
-      
-          // Verifica se os IDs são diferentes de 0 antes de adicionar ao JSON
-          if (especialidadeId !== '' && tipoConsultaId !== '') {
-            const objeto = {
-              especialidade: { id: especialidadeId },
-              tipoConsulta: { id: tipoConsultaId }
-            };
-      
-            if (i < 4) {
-              turnoManha.push(objeto);
-            } else {
-              turnoTarde.push(objeto);
+            const especialidadeId = selectedEspecialidade[i];
+            const tipoConsultaId = selectedTipoConsulta[i];
+
+            // Verifica se os IDs são diferentes de 0 antes de adicionar ao JSON
+            if (especialidadeId !== '' && tipoConsultaId !== '') {
+                const objeto = {
+                    especialidade: { id: especialidadeId },
+                    tipoConsulta: { id: tipoConsultaId }
+                };
+
+                if (i < 4) {
+                    turnoManha.push(objeto);
+                } else {
+                    turnoTarde.push(objeto);
+                }
             }
-          }
         }
-      
+
         const jsonData = {
-          data: data,
-          turnoManha: turnoManha,
-          turnoTarde: turnoTarde
+            data: data,
+            turnoManha: turnoManha,
+            turnoTarde: turnoTarde
         };
-      
+
         return jsonData;
-      };
-    
+    };
+
     const handleCreateVagas = async () => {
         const validationErrors = validateFields(data);
         if (Object.keys(validationErrors).length > 0) {
-          setErrors(validationErrors);
-          return;
+            setErrors(validationErrors);
+            return;
         }
 
         const vagasToCreate = criarJSON();
-    
+
         console.log("VagasToCreate:", vagasToCreate);
-    
+
         try {
             await createVagaNormal(vagasToCreate);
             setShowAlert(true);
@@ -137,7 +137,7 @@ function GerenciarVagas() {
             <VoltarButton />
             <h1>Criar Vagas</h1>
             <form className={styles.inputs_container}>
-                
+
                 <div className={styles.inputs_box}>
                     <div className={`col ${styles.col}`}>
                         <label htmlFor="data" className="form-label">Data  <span className={styles.obrigatorio}>*</span></label>
@@ -161,13 +161,13 @@ function GerenciarVagas() {
 
                     <div className={`row ${styles.div_space}`}>
                         <div className="col">
-                        {Object.entries(vagas)
+                            {Object.entries(vagas)
                                 .filter(([numVaga]) => numVaga.includes('vaga1'))
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 1
+                                                Vaga 1 | 08:00 às 09:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -215,6 +215,18 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="veterinario"
+                                                        aria-label="Selecione um veterinário(a)"
+                                                        value={''}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -228,7 +240,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 2
+                                                Vaga 2 | 09:00 às 10:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -275,6 +287,18 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="veterinario"
+                                                        aria-label="Selecione um veterinário(a)"
+                                                        value={''}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -288,7 +312,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 3
+                                                Vaga 3 | 10:00 às 11:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -335,6 +359,18 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="veterinario"
+                                                        aria-label="Selecione um veterinário(a)"
+                                                        value={''}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -348,7 +384,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 4
+                                                Vaga 4 | 11:00 às 12:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -395,14 +431,26 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="veterinario"
+                                                        aria-label="Selecione um veterinário(a)"
+                                                        value={''}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
                                 ))}
                         </div>
-                        
-                       
-                    </div> 
+
+
+                    </div>
                 </div>
 
                 <div className={styles.inputs_box}>
@@ -418,7 +466,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 5
+                                                Vaga 5 | 13:00 às 14:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -465,6 +513,18 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="veterinario"
+                                                        aria-label="Selecione um veterinário(a)"
+                                                        value={''}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -478,7 +538,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 6
+                                                Vaga 6 | 14:00 às 15:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -525,6 +585,18 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="veterinario"
+                                                        aria-label="Selecione um veterinário(a)"
+                                                        value={''}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -538,7 +610,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 7
+                                                Vaga 7 | 15:00 às 16:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -585,6 +657,18 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="veterinario"
+                                                        aria-label="Selecione um veterinário(a)"
+                                                        value={''}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -598,7 +682,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 8
+                                                Vaga 8 | 16:00 às 17:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -643,6 +727,18 @@ function GerenciarVagas() {
                                                                 {tipoConsulta.tipo}
                                                             </option>
                                                         ))}
+                                                    </select>
+                                                </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="veterinario"
+                                                        aria-label="Selecione um veterinário(a)"
+                                                        value={''}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
                                                     </select>
                                                 </div>
                                             </div>

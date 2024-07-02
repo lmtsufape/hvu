@@ -82,6 +82,22 @@ const ModalAgendamento = ({
                 </div>
               </div>
 
+              <div className={styles.box}>
+                <div className={styles.title}>Descrição do Cancelamento</div>
+                <input
+                  type="text"
+                  value={descricaoCancelamento}
+                  onChange={(e) => setDescricaoCancelamento(e.target.value)}
+                  className={styles.input}
+                  placeholder="Digite a descrição do cancelamento"
+                />
+              </div>
+              <div className={styles.div_button2}>
+                <button onClick={handleCancelarConsulta} className={styles.button_cancelar_consulta} disabled={!descricaoCancelamento.trim()}>
+                  Cancelar consulta
+                </button>
+              </div>
+
             </div>
           </div>
         </div>

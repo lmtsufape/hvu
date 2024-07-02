@@ -318,3 +318,13 @@
 .button_cancelar_consulta:hover {
     background-color: #f3f3f37b;
 }
+
+.separator {
+    height: 1rem;
+    background-color: #ECECEC; /* Ou a cor que preferir */
+  }
+  
+  .separatorCell {
+    background-color: #ECECEC; /* Ou a cor que preferir */
+  }
+  
