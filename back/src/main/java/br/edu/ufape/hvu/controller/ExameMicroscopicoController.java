@@ -60,7 +60,7 @@ public class ExameMicroscopicoController {
 				obj.setEtapa(null);
 			}
 
-			// Laudo Microscopia
+
 
 			// foto
 			if (obj.getFoto() != null) {

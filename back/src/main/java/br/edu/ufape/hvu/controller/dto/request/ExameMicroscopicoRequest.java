@@ -19,7 +19,8 @@ public  class ExameMicroscopicoRequest  {
 	private Date dataHora;
 	private String foto_path;
 	private OrgaoRequest orgao; 
-	private EtapaRequest etapa; 
+	private EtapaRequest etapa;
+
 	private long id;
 	private FotoRequest foto;
 
