@@ -48,7 +48,9 @@ function GetAllAgendamentosDiaForm() {
     } else {
       try {
         const cancelamentoData = {
-          id: selectedVaga.id,
+          vaga: {
+            id: selectedVaga.id
+          },
           descricao: descricaoCancelamento
         }
         await cancelarVaga(cancelamentoData);
