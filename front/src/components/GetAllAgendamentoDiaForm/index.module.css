@@ -466,3 +466,12 @@
     gap: 1em;
 }
   
+.separator {
+    height: 1rem;
+    background-color: #ECECEC; /* Ou a cor que preferir */
+  }
+  
+  .separatorCell {
+    background-color: #ECECEC; /* Ou a cor que preferir */
+  }
+  
