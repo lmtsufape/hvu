@@ -145,3 +145,39 @@
 }
 
 
+@media only screen and (max-width: 700px) {
+    .header {
+        width: 100%; /* Ajusta a largura para 100% da tela */
+        height: auto; /* Ajusta a altura automaticamente */
+        padding: 0 20px; /* Ajusta o padding para telas menores */
+        align-items: center; /* Centraliza os itens */
+        gap: 130px;
+    }
+
+    .box_buttons {
+        width: 100%; /* Ajusta a largura para 100% */
+        justify-content: center; /* Centraliza horizontalmente */
+        gap: 10px; /* Reduz o espaço entre os botões */
+        margin-top: 10px; /* Adiciona um espaço acima */
+    }
+
+    #black_button_decoration,
+    #white_button,
+    #green_button {
+        width: 100%; /* Ajusta a largura para 100% */
+        text-align: center; /* Centraliza o texto */
+    }
+
+    .dropdown_container {
+        width: 90%; /* Ajusta a largura do dropdown */
+        margin-left: 0; /* Remove a margem à esquerda */
+    }
+
+    .dropdown {
+        align-items: center; /* Centraliza os itens no dropdown */
+    }
+
+    .boxlogo {
+        margin-bottom: 10px; /* Adiciona um espaço abaixo */
+    }
+}
