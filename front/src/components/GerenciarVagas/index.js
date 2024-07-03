@@ -6,6 +6,7 @@ import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import TipoConsultaList from "@/hooks/useTipoConsultaList";
+import MedicoList from "@/hooks/useMedicoList";
 import { createVagaNormal } from "../../../services/vagaService";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
@@ -20,6 +21,7 @@ function GerenciarVagas() {
 
     const { especialidades } = EspecialidadeList();
     const { tiposConsulta } = TipoConsultaList();
+    const { medicos } = MedicoList();
 
     const [data, setData] = useState("");
 
@@ -44,7 +46,7 @@ function GerenciarVagas() {
     const handleDataChange = (event) => {
         setData(event.target.value);
     };
-    console.log("data:", data);
+    /*console.log("data:", data);*/
 
 
     const [selectedEspecialidade, setSelectedEspecialidade] = useState(new Array(8).fill(''));
@@ -57,7 +59,7 @@ function GerenciarVagas() {
             return updatedSelectedEspecialidade;
         });
     };
-    console.log("selectedEspecialidade", selectedEspecialidade);
+    /*console.log("selectedEspecialidade", selectedEspecialidade);*/
 
 
     const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(new Array(8).fill(''));
@@ -70,7 +72,19 @@ function GerenciarVagas() {
             return updatedSelectedTipoConsulta;
         });
     };
-    console.log("selectedTipoConsulta", selectedTipoConsulta);
+    /*console.log("selectedTipoConsulta", selectedTipoConsulta);*/
+
+    const [selectedMedico, setSelectedMedico] = useState(new Array(8).fill(''));
+
+    const handleMedicoSelection = (event, position) => {
+        const selectedMedicoId = event.target.value;
+        setSelectedMedico(prevSelectedMedico => {
+            const updatedSelectedMedico = [...prevSelectedMedico];
+            updatedSelectedMedico[position] = selectedMedicoId;
+            return updatedSelectedMedico;
+        });
+    };
+   /* console.log("selectedMedico", selectedMedico); */
 
     const validateFields = (agendamento) => {
         const errors = {};
@@ -87,12 +101,14 @@ function GerenciarVagas() {
         for (let i = 0; i < selectedEspecialidade.length; i++) {
             const especialidadeId = selectedEspecialidade[i];
             const tipoConsultaId = selectedTipoConsulta[i];
+            const medicoId = selectedMedico[i];
 
             // Verifica se os IDs são diferentes de 0 antes de adicionar ao JSON
-            if (especialidadeId !== '' && tipoConsultaId !== '') {
+            if (especialidadeId !== '' && tipoConsultaId !== '' && medicoId !== '') {
                 const objeto = {
                     especialidade: { id: especialidadeId },
-                    tipoConsulta: { id: tipoConsultaId }
+                    tipoConsulta: { id: tipoConsultaId },
+                    medico: { id: medicoId }
                 };
 
                 if (i < 4) {
@@ -175,7 +191,6 @@ function GerenciarVagas() {
                                                 id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
                                                 onChange={() => handleVagasChange(numVaga)}
-
                                             />
                                         </div>
                                         {selecionado && (
@@ -217,14 +232,20 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
-                                                        name="veterinario"
-                                                        aria-label="Selecione um veterinário(a)"
-                                                        value={''}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[0] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 0)}
                                                     >
                                                         <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -289,14 +310,20 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
-                                                        name="veterinario"
-                                                        aria-label="Selecione um veterinário(a)"
-                                                        value={''}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[1] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 1)}
                                                     >
                                                         <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -361,14 +388,20 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
-                                                        name="veterinario"
-                                                        aria-label="Selecione um veterinário(a)"
-                                                        value={''}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[2] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 2)}
                                                     >
                                                         <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -433,14 +466,20 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
-                                                        name="veterinario"
-                                                        aria-label="Selecione um veterinário(a)"
-                                                        value={''}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[3] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 3)}
                                                     >
                                                         <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -515,14 +554,20 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
-                                                        name="veterinario"
-                                                        aria-label="Selecione um veterinário(a)"
-                                                        value={''}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[4] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 4)}
                                                     >
                                                         <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -587,14 +632,20 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
-                                                        name="veterinario"
-                                                        aria-label="Selecione um veterinário(a)"
-                                                        value={''}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[5] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 5)}
                                                     >
                                                         <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -659,14 +710,20 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
-                                                        name="veterinario"
-                                                        aria-label="Selecione um veterinário(a)"
-                                                        value={''}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[6] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 6)}
                                                     >
                                                         <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -731,14 +788,20 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                    <label htmlFor="" className="form-label">Veterinário(a)</label>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
-                                                        name="veterinario"
-                                                        aria-label="Selecione um veterinário(a)"
-                                                        value={''}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[7] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 7)}
                                                     >
                                                         <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
