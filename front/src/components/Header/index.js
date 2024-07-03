@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Image from "next/image";
 import styles from "./index.module.css";
-import {LoginGreenButton} from '../GreenButton';
+import { LoginGreenButton } from '../GreenButton';
 import { LoginWhiteButton } from '../WhiteButton';
 import { getCurrentUsuario } from '../../../services/userService';
+import { logout } from '../../../common/logout'
 
 //Header com botão de login e cadastro
 export function Header01() {
@@ -15,35 +16,35 @@ export function Header01() {
 
             <div className={styles.boxlogo}>
                 <div>
-                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54}/>
+                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54} />
                 </div>
                 <div>
-                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82}/>
+                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82} />
                 </div>
             </div>
-            
-            <div className={styles.box_buttons} >
-            <button type="button" className="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
-            < LoginGreenButton />
-            </div>
-                
-        </header>
-    );    
-  }
 
-  //Header com botão de Home e Sistema
-  export function Header02() {
+            <div className={styles.box_buttons} >
+                <button type="button" className="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
+                < LoginGreenButton />
+            </div>
+
+        </header>
+    );
+}
+
+//Header com botão de Home e Sistema
+export function Header02() {
     const router = useRouter();
 
     return (
         <header className={styles.header}>
-            
+
             <div className={styles.boxlogo}>
                 <div>
-                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54}/>
+                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54} />
                 </div>
                 <div>
-                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82}/>
+                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82} />
                 </div>
             </div>
 
@@ -52,11 +53,11 @@ export function Header01() {
                 <button type="button" className="btn btn-link" id={styles.black_button_decoration} onClick={(e) => router.push("/system")}>Sistema</button>
             </div>
         </header>
-    );    
-  }
+    );
+}
 
-  //Header com ícone de perfil
-  export function Header03() {
+//Header com ícone de perfil
+export function Header03() {
     const router = useRouter();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -79,7 +80,7 @@ export function Header01() {
         };
     }, [dropdownRef]);
 
-    
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -96,59 +97,59 @@ export function Header01() {
 
     return (
         <header className={styles.header}>
-            
+
             <div className={styles.boxlogo}>
                 <div>
-                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54}/>
+                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54} />
                 </div>
                 <div>
-                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82}/>
+                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82} />
                 </div>
             </div>
 
             <div className={styles.box_buttons} ref={dropdownRef}>
                 <button type="button" className="btn btn-link" onClick={toggleDropdown}>
-                <Image src="/icone_perfil.svg" alt="Ícone de perfil" width={59.2} height={59.2}/>
+                    <Image src="/icone_perfil.svg" alt="Ícone de perfil" width={59.2} height={59.2} />
                 </button>
                 {dropdownOpen && (
                     <div className={styles.dropdown_container}>
-                            <div className={styles.dropdown}>
-                                <button className={styles.button1} onClick={(e) => router.push(`/meuPerfil/${tutores.id}`)}>
-                                    <div><Image src="/info_icon.svg" alt="Ícone de perfil" width={18.87} height={18.87}/></div>
-                                    <div>Meu perfil</div>
-                                </button>
-                                <button className={styles.button2} onClick={(e) => router.push("/")}>
-                                    <div><Image src="/left_icon.svg" alt="Ícone de perfil" width={17.88} height={17.88}/></div>
-                                    <div>Sair</div>
-                                </button>
-                            </div>
+                        <div className={styles.dropdown}>
+                            <button className={styles.button1} onClick={(e) => router.push(`/meuPerfil/${tutores.id}`)}>
+                                <div><Image src="/info_icon.svg" alt="Ícone de perfil" width={18.87} height={18.87} /></div>
+                                <div>Meu perfil</div>
+                            </button>
+                            <button className={styles.button2} onClick={(e) => logout()}>
+                                <div><Image src="/left_icon.svg" alt="Ícone de perfil" width={17.88} height={17.88} /></div>
+                                <div>Sair</div>
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
         </header>
-    );    
+    );
 }
 
 //Header botão de login
 export function Header04() {
     const router = useRouter();
-return (
-    <header className={styles.header}>
-        
-        <div className={styles.boxlogo}>
-            <div>
-                <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54}/>
-            </div>
-            <div>
-                <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82}/>
-            </div>
-        </div>
+    return (
+        <header className={styles.header}>
 
-        <div className={styles.box_buttons} >
-            < LoginWhiteButton />
-        </div>
-            
-    </header>
-);    
+            <div className={styles.boxlogo}>
+                <div>
+                    <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54} />
+                </div>
+                <div>
+                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82} />
+                </div>
+            </div>
+
+            <div className={styles.box_buttons} >
+                < LoginWhiteButton />
+            </div>
+
+        </header>
+    );
 }
 
