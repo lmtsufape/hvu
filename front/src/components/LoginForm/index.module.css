@@ -176,9 +176,50 @@
 
 
 @media only screen and (max-width: 700px) {
+    .container {
+        margin-top: 100px;
+        margin-bottom: 100px;
+        padding: 0 20px;
+    }
     .container_box {
         flex-direction: column;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
     }
+    .form_box {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        padding: 50px 10px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .button_box {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    #entrar_button {
+        width: 100%;
+    }
+
+    .criar_button_box {
+        margin-top: 10px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
 }
 
 .input-group .input-group-text {
@@ -193,4 +234,7 @@
   .input-group .input-group-text:hover svg {
     color: #007bff; 
   }
+
+
+
   
