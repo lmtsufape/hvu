@@ -66,13 +66,13 @@ function GetAllAgendamentosDiaForm() {
   const openModal = async (vaga) => {
     setSelectedVaga(vaga);
     setModalOpen(true);
-    console.log("animal: ", selectedVaga?.agendamento);
-    try {
-      console.log("ID DO BIXO:", vaga.agendamento.animal.id);
-      const tutorSelected = await getTutorByAnimal(vaga.agendamento.animal.id);
-      setTutor(tutorSelected);
-    } catch (error) {
-      console.error('Erro ao obter tutor:', error);
+    if (vaga?.agendamento?.animal?.id) {
+      try {
+        const tutorSelected = await getTutorByAnimal(vaga.agendamento.animal.id);
+        setTutor(tutorSelected);
+      } catch (error) {
+        console.error('Erro ao obter tutor:', error);
+      }
     }
   };
 
@@ -96,7 +96,7 @@ function GetAllAgendamentosDiaForm() {
     fetchData();
   }, [dataSelecionada]);
 
-  const horarios = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+  const horarios = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
 
   return (
     <div className={styles.pagina}>
@@ -137,33 +137,36 @@ function GetAllAgendamentosDiaForm() {
                   <th className={styles.time}>{horario}</th>
                   <th className={styles.th}>
                     <div className={styles.cardsJuntos}>
-                      {vagas.filter(vaga => vaga.dataHora.startsWith(dataSelecionada.toISOString().slice(0, 10) + 'T' + horario))
-                        .map(vaga => {
-                          return (
-                            <button key={vaga.id} className={`${styles.button} ${styles[`button_${vaga.status.toLowerCase()}`]}`} onClick={() => openModal(vaga)}>
-                              <div className={styles.infos_container}>
-                                <div>
-                                  <div className={styles.infos_box1}>
-                                    <div className={styles.info1}>
-                                      {vaga.agendamento?.animal ? (
-                                        <>{vaga.agendamento?.animal.nome} &bull; {vaga.agendamento?.animal.raca.especie.nome}</>
-                                      ) : (
-                                        <>{vaga.status}</>
-                                      )}
-                                    </div>
-                                    <h2 className={styles[`status_${vaga.status ? vaga.status.toLowerCase() : ''}`]}>
-                                      {vaga.status === "precriada" ? "Pré-criada" : vaga.status}
-                                    </h2>
+                      {vagas.filter(vaga => {
+                        const vagaHora = new Date(vaga.dataHora).getHours();
+                        const horarioHora = parseInt(horario.split(':')[0], 10);
+                        return vaga.dataHora.startsWith(dataSelecionada.toISOString().slice(0, 10)) && vagaHora === horarioHora;
+                      }).map(vaga => {
+                        return (
+                          <button key={vaga.id} className={`${styles.button} ${styles[`button_${vaga.status.toLowerCase()}`]}`} onClick={() => openModal(vaga)}>
+                            <div className={styles.infos_container}>
+                              <div>
+                                <div className={styles.infos_box1}>
+                                  <div className={styles.info1}>
+                                    {vaga.agendamento?.animal ? (
+                                      <>{vaga.agendamento?.animal.nome} &bull; {vaga.agendamento?.animal.raca.especie.nome}</>
+                                    ) : (
+                                      <>{vaga.status}</>
+                                    )}
                                   </div>
-                                  <div className={styles.infos_box2}>
-                                    <div className={styles.info2}>Exame</div>
-                                    <div className={styles.info2}>{horario} - {new Date(vaga.dataHora).getHours() + 1}:00</div>
-                                  </div>
+                                  <h2 className={styles[`status_${vaga.status ? vaga.status.toLowerCase() : ''}`]}>
+                                    {vaga.status === "precriada" ? "Pré-criada" : vaga.status}
+                                  </h2>
+                                </div>
+                                <div className={styles.infos_box2}>
+                                  <div className={styles.info2}>Exame</div>
+                                  <div className={styles.info2}>{horario} - {new Date(vaga.dataHora).getHours() + 1}:00</div>
                                 </div>
                               </div>
-                            </button>
-                          );
-                        })}
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
                   </th>
                 </tr>
