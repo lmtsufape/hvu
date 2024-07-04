@@ -12,10 +12,12 @@ import axios from "axios";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
 function CreateMedico() {
     const router = useRouter();
 
-    
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
@@ -43,6 +45,9 @@ function CreateMedico() {
         },
         especialidade: []
     });
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleEspecialidadeSelection = (event) => {
         const especialidadeId = parseInt(event.target.value);
@@ -194,8 +199,14 @@ function CreateMedico() {
             }
         }
     };
-    
-    
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
 
     return (
         <div className={styles.container}>
@@ -212,13 +223,13 @@ function CreateMedico() {
                             <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
                                 {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
-                                {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
-                                {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
+                                {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha, null, showPassword, togglePasswordVisibility)}
+                                {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha, null, showConfirmPassword, toggleConfirmPasswordVisibility)}
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("Telefone", "Digite o telefone", "telefone", medico.telefone, handleMedicoChange, "tel", errors.telefone, "(99) 99999-9999")}
                                 {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
-                                
+
                                 <div className="mb-3">
                                     <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
                                     <select
@@ -289,27 +300,33 @@ function CreateMedico() {
     );
 }
 
-function renderMedicoInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask) {
+function renderMedicoInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask = null, showPassword = false, togglePasswordVisibility = null) {
     const InputComponent = mask ? InputMask : 'input';
 
     return (
         <div className="mb-3">
             <label htmlFor={name} className="form-label">{label} <span className={styles.obrigatorio}>*</span></label>
-            <InputComponent
-                mask={mask}
-                type={type}
-                className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
-                name={name}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-            />
+            <div className="input-group">
+                <InputComponent
+                    mask={mask}
+                    type={showPassword ? 'text' : type}
+                    className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
+                    name={name}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
+                />
+                {type === 'password' && (
+                    <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
+                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                    </span>
+                )}
+            </div>
             {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }
 
-// Substitua a renderização das mensagens de erro nos inputs de endereço por classes Bootstrap
 function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", errorMessage = null, mask) {
     const InputComponent = mask ? InputMask : 'input';
     const inputProps = mask ? { mask } : {};
