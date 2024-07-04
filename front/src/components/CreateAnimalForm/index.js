@@ -53,12 +53,13 @@ function CreateAnimalForm() {
   }, [especies, racas, selectedEspecie, selectedRaca]);
 
   const formatDate = (data) => {
+    if (!data) return ""; // Retorna vazio se não houver data
     const dataObj = new Date(data);
-    const dia = String(dataObj.getUTCDate()).padStart(2, '0');
-    const mes = String(dataObj.getUTCMonth() + 1).padStart(2, '0');
+    const dia = String(dataObj.getUTCDate()).padStart(2, "0");
+    const mes = String(dataObj.getUTCMonth() + 1).padStart(2, "0");
     const ano = dataObj.getUTCFullYear();
     return `${ano}-${mes}-${dia}`;
-  }; 
+  };
 
   const handleAnimalChange = (event) => {
     const { name, value } = event.target;
