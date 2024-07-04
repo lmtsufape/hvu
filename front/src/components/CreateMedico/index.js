@@ -186,6 +186,7 @@ function CreateMedico() {
                     ...medico,
                     endereco: {
                         ...medico.endereco,
+                        cep: cep,
                         cidade: localidade,
                         estado: uf,
                         rua: logradouro,
