@@ -25,7 +25,7 @@ import br.edu.ufape.hvu.model.Cronograma;
 import jakarta.validation.Valid;
 
 
-@CrossOrigin (origins = "http://localhost:3000/" )
+ 
 @RestController
 @RequestMapping("/api/v1/")
 public class CronogramaController {

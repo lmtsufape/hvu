@@ -21,7 +21,7 @@ import br.edu.ufape.hvu.controller.dto.response.VagaResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
-@CrossOrigin (origins = "http://localhost:3000/" )
+ 
 @RestController
 @RequestMapping("/api/v1/")
 public class VagaController {

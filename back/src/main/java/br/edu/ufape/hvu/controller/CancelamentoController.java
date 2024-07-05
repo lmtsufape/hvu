@@ -24,7 +24,7 @@ import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.model.Cancelamento;
 import jakarta.validation.Valid;
 
-@CrossOrigin (origins = "http://localhost:3000/" )
+ 
 @RestController
 @RequestMapping("/api/v1/")
 public class CancelamentoController {
