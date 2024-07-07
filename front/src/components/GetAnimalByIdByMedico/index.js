@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import { getAnimalById } from '../../../services/animalService';
 import VoltarButton from '../VoltarButton';
-import { EditarWhiteButton } from '../WhiteButton';
+import { EditarWhiteButton, ConsultasWhiteButton } from '../WhiteButton';
 
 function GetAnimalByIdByMedico() {
     const router = useRouter();
@@ -84,6 +84,7 @@ function GetAnimalByIdByMedico() {
                                 </div>
                             </div>
                             <div className={styles.botao}>
+                                <ConsultasWhiteButton page={"getConsultasById"} id={animal.id}/>
                                 <EditarWhiteButton page={"updateAnimalBySecretarioAndMedico"} id={animal.id}/>
                             </div>
                         </div>
