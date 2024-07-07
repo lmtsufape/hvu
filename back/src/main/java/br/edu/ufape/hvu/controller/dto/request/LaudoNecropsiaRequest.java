@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.request;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Foto;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -18,6 +19,7 @@ public class LaudoNecropsiaRequest {
 	private List<CampoLaudoRequest> campoLaudo;
 	private String CampoMicroscopia;
 	private List<EstagiarioRequest> estagiario;
+	private List<FotoRequest> foto;
 	private long id;
 
 	public LaudoNecropsia convertToEntity() {

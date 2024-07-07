@@ -1,5 +1,6 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
+import br.edu.ufape.hvu.controller.dto.response.OrgaoResponse;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -11,9 +12,9 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class FotoRequest  {
+	private long id;
 	private String titulo;
 	private String foto_path;
-	private long id;
 
 
 	public Foto convertToEntity() {
