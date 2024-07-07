@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Foto;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -15,12 +16,11 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public  class OrgaoResponse  {
 	private Long id;
-	private String image_path;
 	private String nome;
 	private Boolean sexoMacho;
 	private Boolean sexoFemea;
-	private FotoResponse foto; 
-	private List<AreaResponse> area; 
+	private List<AreaResponse> area;
+	private FotoResponse foto;
 
 
 
