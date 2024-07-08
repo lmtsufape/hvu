@@ -32,7 +32,7 @@ function GetAnimalByIdByMedico() {
     return (
         <div className={styles.container}>
             < VoltarButton />
-            <h1>Informações do Animal</h1>
+            <h1>Informações do animal</h1>
             <ul>
                 {animal && ( 
                     <li key={animal.id} className={styles.infos_box}>

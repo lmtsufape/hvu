@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+.container {
+    min-width: 1200;
+    min-height: 100px;
+    margin-bottom: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 42px;
+}
+
+.container h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+}
+
+.infos_box {
+    display: flex;
+    flex-direction: column;
+    min-width: 1200px;
+    min-height: 100px;
+    border-radius: 20px;
+    border: 0.5px solid #B1B1B1;
+    gap: 56px;
+}
+
+.identificacao {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: 28px;
+    margin-top: 32px;
+}
+
+.nome_animal {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: 0em;
+    
+}
+
+.especie_animal {
+    color: #39805F;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    
+}
+
+.box {
+    display: flex;
+    gap: 400px;
+    margin-left: 28px;
+    margin-bottom: 32px;
+
+}
+
+.lista {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.infos {
+    display: flex;
+    flex-direction: column;
+}
+
+.infos p {
+    margin-top: -6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    color: #39805F;
+}
+
+.infos h6 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #404040;
+}
+
+.botao {
+    display: flex;
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 32px;
+    margin-right: 32px;
+    gap: 32px;
+}
