@@ -32,7 +32,7 @@ function GetAnimalByIdByMedico() {
     return (
         <div className={styles.container}>
             < VoltarButton />
-            <h1>Informações do Animal</h1>
+            <h1>Informações do animal</h1>
             <ul>
                 {animal && ( 
                     <li key={animal.id} className={styles.infos_box}>
@@ -84,7 +84,7 @@ function GetAnimalByIdByMedico() {
                                 </div>
                             </div>
                             <div className={styles.botao}>
-                                <ConsultasWhiteButton page={"getConsultasById"} id={animal.id}/>
+                                <ConsultasWhiteButton page={"getAllConsultas"} id={animal.id}/>
                                 <EditarWhiteButton page={"updateAnimalBySecretarioAndMedico"} id={animal.id}/>
                             </div>
                         </div>

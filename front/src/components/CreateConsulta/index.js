@@ -227,7 +227,7 @@ function CreateConsulta() {
                   value={medicoEncaminhamento || ""}
                   onChange={handleMedicoSelection}
                 >
-                  <option value="">Selecione um(a) veterinário(a)</option>
+                  <option value="">Selecione um&#40;a&#41; veterinário&#40;a&#41;</option>
                   {medicos.map((medico) => (
                     <option key={medico.id} value={medico.id}>
                       {medico.nome}
