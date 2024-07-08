@@ -84,7 +84,7 @@ function GetAnimalByIdByMedico() {
                                 </div>
                             </div>
                             <div className={styles.botao}>
-                                <ConsultasWhiteButton page={"getConsultasById"} id={animal.id}/>
+                                <ConsultasWhiteButton page={"getAllConsultas"} id={animal.id}/>
                                 <EditarWhiteButton page={"updateAnimalBySecretarioAndMedico"} id={animal.id}/>
                             </div>
                         </div>
