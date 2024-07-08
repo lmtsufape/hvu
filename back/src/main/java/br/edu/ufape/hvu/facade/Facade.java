@@ -1,5 +1,7 @@
 package br.edu.ufape.hvu.facade;
 
+import java.io.File;
+import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1302,7 +1304,7 @@ public class Facade {
 
 	// CampoLaudo--------------------------------------------------------------
 	@Autowired
-	CampoLaudoServiceInterface campoLaudoServiceInterface;
+	private CampoLaudoServiceInterface campoLaudoServiceInterface;
 
 	public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
 		return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
@@ -1330,7 +1332,7 @@ public class Facade {
 
 	// Etapa--------------------------------------------------------------
 	@Autowired
-	EtapaServiceInterface etapaServiceInterface;
+	private EtapaServiceInterface etapaServiceInterface;
 
 	public Etapa saveEtapa(Etapa newInstance) {
 		return etapaServiceInterface.saveEtapa(newInstance);
@@ -1358,7 +1360,7 @@ public class Facade {
 
 	// ExameMicroscopia--------------------------------------------------------------
 	@Autowired
-	ExameMicroscopicoServiceInterface exameMicroscopicoServiceInterface;
+	private ExameMicroscopicoServiceInterface exameMicroscopicoServiceInterface;
 
 	public ExameMicroscopico saveExameMicroscopico(ExameMicroscopico newInstance) {
 		return exameMicroscopicoServiceInterface.saveExameMicroscopico(newInstance);
@@ -1387,7 +1389,7 @@ public class Facade {
 	// FichaSolicitacaoServico--------------------------------------------------------------
 
 	@Autowired
-	FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
+	private FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
 
 	public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
 		return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
@@ -1417,7 +1419,7 @@ public class Facade {
 
 	@Autowired
 
-	FotoServiceInterface fotoServiceInterface;
+	private FotoServiceInterface fotoServiceInterface;
 
 	public Foto saveFoto(Foto newInstance) {
 		return fotoServiceInterface.saveFoto(newInstance);
@@ -1446,7 +1448,7 @@ public class Facade {
 	// Instituicao--------------------------------------------------------------
 
 	@Autowired
-	InstituicaoServiceInterface instituicaoServiceInterface;
+	private InstituicaoServiceInterface instituicaoServiceInterface;
 
 	public Instituicao saveInstituicao(Instituicao newInstance) {
 		return instituicaoServiceInterface.saveInstituicao(newInstance);
@@ -1475,7 +1477,7 @@ public class Facade {
 	
 	// LaudoNecropsia--------------------------------------------------------------
 	@Autowired
-	LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
+	private LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
 
 	public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
 		return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
@@ -1503,7 +1505,7 @@ public class Facade {
 
 	// LivroRegistro--------------------------------------------------------------
 	@Autowired
-	LivroRegistroServiceInterface livroRegistroServiceInterface;
+	private LivroRegistroServiceInterface livroRegistroServiceInterface;
 
 	public LivroRegistro saveLivroRegistro(LivroRegistro newInstance) {
 		return livroRegistroServiceInterface.saveLivroRegistro(newInstance);
@@ -1532,7 +1534,7 @@ public class Facade {
 	// MaterialColetado--------------------------------------------------------------
 	@Autowired
 
-	MaterialColetadoServiceInterface materialColetadoServiceInterface;
+	private MaterialColetadoServiceInterface materialColetadoServiceInterface;
 
 	public MaterialColetado saveMaterialColetado(MaterialColetado newInstance) {
 		return materialColetadoServiceInterface.saveMaterialColetado(newInstance);
@@ -1561,7 +1563,7 @@ public class Facade {
 	// Orgao--------------------------------------------------------------
 	@Autowired
 
-	OrgaoServiceInterface OrgaoServiceInterface;
+	private OrgaoServiceInterface OrgaoServiceInterface;
 
 	public Orgao saveOrgao(Orgao newInstance) {
 		return OrgaoServiceInterface.saveOrgao(newInstance);
@@ -1590,7 +1592,7 @@ public class Facade {
 	// Rotina--------------------------------------------------------------
 	@Autowired
 
-	RotinaServiceInterface RotinaServiceInterface;
+	private RotinaServiceInterface RotinaServiceInterface;
 
 	public Rotina saveRotina(Rotina newInstance) {
 		return RotinaServiceInterface.saveRotina(newInstance);
@@ -1614,6 +1616,24 @@ public class Facade {
 
 	public void deleteRotina(long id) {
 		RotinaServiceInterface.deleteRotina(id);
+	}
+
+	// Arquivo --------------------------------------------------------------
+
+	@Autowired
+	private FileServiceInterface fileService;
+
+	public File findFile(String fileName) {
+		return fileService.findFile(fileName);
+	}
+
+	public String storeFile(InputStream file, String fileName) {
+		String fn = System.currentTimeMillis() + "-" + fileName;
+		return fileService.storeFile(file, fn.replace(" ", ""));
+	}
+
+	public void deleteFile(String fileName) {
+		fileService.deleteFile(fileName);
 	}
 
 }

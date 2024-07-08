@@ -36,5 +36,7 @@ public class LaudoNecropsia {
     @ManyToMany
     @ToString.Exclude
     private List<Estagiario> estagiario;
+    @OneToMany
+    private List<Foto> foto;
 
 }

@@ -9,8 +9,10 @@ import br.edu.ufape.hvu.model.Foto;
 
 @Service
 public class FotoService implements FotoServiceInterface {
+
 	@Autowired
 	private FotoRepository repository;
+
 
 
 	public Foto saveFoto(Foto newInstance) {

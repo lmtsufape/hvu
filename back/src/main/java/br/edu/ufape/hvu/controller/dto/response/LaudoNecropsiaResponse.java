@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Foto;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -20,6 +21,7 @@ public  class LaudoNecropsiaResponse  {
 	private List<CampoLaudoResponse> campoLaudo;
 	private String CampoMicroscopia;
 	private List<EstagiarioResponse> estagiario;
+	private List<FotoResponse> foto;
 
 
 
