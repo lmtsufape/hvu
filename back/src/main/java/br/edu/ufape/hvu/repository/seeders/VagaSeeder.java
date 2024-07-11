@@ -19,7 +19,7 @@ public class VagaSeeder {
     final private AgendamentoRepository agendamentoRepository;
 
 
-    @PostConstruct
+  //  @PostConstruct
     public void init(){
         if(vagaRepository.count() > 0){
             return;

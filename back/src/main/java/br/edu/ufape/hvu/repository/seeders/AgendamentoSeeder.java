@@ -16,7 +16,7 @@ public class AgendamentoSeeder {
     final private AgendamentoRepository agendamentoRepository;
     final private AnimalRepository animalRepository;
 
-    @PostConstruct
+  //  @PostConstruct
     public void init(){
         if(agendamentoRepository.count() > 0){
             return;
@@ -28,9 +28,5 @@ public class AgendamentoSeeder {
         agendamento.setStatus("Aguardando");
         agendamento.setTipoEspecial(false);
         agendamentoRepository.save(agendamento);
-
-
-
-
     }
 }

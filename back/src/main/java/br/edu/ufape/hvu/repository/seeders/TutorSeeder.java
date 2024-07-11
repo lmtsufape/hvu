@@ -16,7 +16,7 @@ public class TutorSeeder {
     final private TutorRepository tutorRepository;
     final private UsuarioSeeder usuarioSeeder;
 
-    @PostConstruct
+   // @PostConstruct
     public void init(){
         if(tutorRepository.count() > 0){
             return;
