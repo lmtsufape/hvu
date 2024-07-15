@@ -47,6 +47,23 @@ public class ConsultaController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
+
+	@GetMapping("consulta/numeroficha/{numeroficha}")
+	public List<ConsultaResponse> getConsultasByAnimalNumeroFicha (@PathVariable String numeroficha) {
+		List<Consulta> consutas = facade.getConsultasByAnimalFichaNumero(numeroficha);
+		return consutas
+				.stream()
+				.map(ConsultaResponse::new)
+				.toList();
+	}
+
+	@GetMapping("consulta/animalid/{id}")
+	public List<ConsultaResponse> getConsultaByAnimalId(@PathVariable Long id){
+		List<Consulta> consultas = facade.getConsultaByAnimalId(id);
+		return consultas.stream()
+				.map(ConsultaResponse::new)
+				.toList();
+	}
 	
 	@PatchMapping("consulta/{id}")
 	public ConsultaResponse updateConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest obj) {
