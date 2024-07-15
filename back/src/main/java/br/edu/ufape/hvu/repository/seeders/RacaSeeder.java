@@ -14,7 +14,7 @@ public class RacaSeeder {
     final private RacaRepository racaRepository;
     final private EspecieRepository especieRepository;
 
-    @PostConstruct
+
     public void init(){
         if(racaRepository.count() > 0){
             return;

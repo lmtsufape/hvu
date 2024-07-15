@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class TipoConsultaSeeder {
     final private TipoConsultaRepository tipoConsultaRepository;
 
-    @PostConstruct
+
     public void init(){
         if(tipoConsultaRepository.count() > 0){
             return;

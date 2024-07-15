@@ -12,7 +12,7 @@ import java.util.List;
 public class EspecieSeeder {
     private final EspecieRepository especieRepository;
 
-    @PostConstruct
+
     public void init(){
         if(especieRepository.count() > 0){
             return;

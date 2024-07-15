@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class FotoSeeder {
     final private FotoRepository fotoRepository;
 
-    @PostConstruct
+
     public void init(){
         if(fotoRepository.count() > 0){
             return;

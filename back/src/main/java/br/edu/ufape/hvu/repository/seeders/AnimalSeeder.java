@@ -18,7 +18,7 @@ public class AnimalSeeder {
     final private AnimalRepository animalRepository;
     final private RacaRepository racaRepository;
 
-    @PostConstruct
+
     public void init(){
         if(animalRepository.count() > 0){
             return;
