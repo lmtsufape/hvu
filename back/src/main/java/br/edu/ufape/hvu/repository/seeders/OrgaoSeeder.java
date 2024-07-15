@@ -17,7 +17,7 @@ public class OrgaoSeeder {
     final private FotoRepository fotoRepository;
     final private AreaRepository areaRepository;
 
-    @PostConstruct
+
     public void init(){
         if(orgaoRepository.count() > 0){
             return;

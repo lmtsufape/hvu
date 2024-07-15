@@ -13,7 +13,7 @@ public class InstituicaoSeeder {
     private final InstituicaoRepository instituicaoRepository;
     private final UsuarioSeeder usuarioSeeder;
 
-    @PostConstruct
+
     public void init(){
         if(instituicaoRepository.count() > 0) {
             return;

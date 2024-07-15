@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class EstagiarioSeeder {
     private final EstagiarioRepository estagiarioRepository;
 
-    @PostConstruct
+
     public void init(){
         if(estagiarioRepository.count() > 0){
             return;
