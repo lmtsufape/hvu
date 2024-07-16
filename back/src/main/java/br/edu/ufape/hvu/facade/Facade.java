@@ -750,6 +750,14 @@ public class Facade {
 		return consultaServiceInterface.getAllConsulta();
 	}
 
+	public List<Consulta> getConsultasByAnimalFichaNumero (String numeroFicha){
+		return consultaServiceInterface.getConsultasByAnimalFichaNumero(numeroFicha);
+	}
+
+	public List<Consulta> getConsultaByAnimalId(Long id){
+		return consultaServiceInterface.getConsultasByAnimalId(id);
+	}
+
 	public void deleteConsulta(Consulta persistentObject) {
 		consultaServiceInterface.deleteConsulta(persistentObject);
 	}
