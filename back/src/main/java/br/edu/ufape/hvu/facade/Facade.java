@@ -588,83 +588,77 @@ public class Facade {
 	}
 
 	@Transactional
-	public List<Vaga> createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
+	public String createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
 		List<Vaga> vagas = new ArrayList<>();
 		LocalDate startDate = vagaRequestDTO.getData();
 		LocalDate endDate = vagaRequestDTO.getDataFinal();
-		int contadorCriadas = 0;
-		int contadorNaoCriadas = 0;
 		final long[] countCriacao = new long[2]; // countCriacao[0] quantidade criada, countCriacao[1] nao criada
-		final String detalhe = "";
+		StringBuilder detalheBuilder = new StringBuilder();
 
 		if (endDate == null) {
-			// Se dataFinal não está presente, processa apenas a data inicial
 			if (!isWeekend(startDate)) {
-				createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas,countCriacao,detalhe);
-				createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao,detalhe);
+				detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
+				detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
 			}
 		} else {
-			// Se dataFinal está presente, itera sobre o intervalo de datas
 			LocalDate currentDate = startDate;
 			while (!currentDate.isAfter(endDate)) {
 				if (!isWeekend(currentDate)) {
-					createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao,detalhe);
-					createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao,detalhe);
+					detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
+					detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
 				}
 				currentDate = currentDate.plusDays(1);
 			}
 		}
 
-		return vagas;
+		return detalheBuilder.toString().trim();
 	}
 
 	private boolean isWeekend(LocalDate date) {
 		return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
 	}
 
-	private void createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas,long[] countCriacao, String detalhe) {
+	private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao) {
+		final long[] count = new long[2];
+		count[0] = findVagaByData(data).size(); // Total vagas no dia
+		count[1] = findVagaByDataAndTurno(data, turno).size(); // Total vagas no turno
 
-	    final long[] count = new long[2];
-	    count[0] = findVagaByData(data).size(); // Total vagas no dia
-	    count[1] = findVagaByDataAndTurno(data, turno).size(); // Total vagas no turno
+		if (count[0] >= 16 || count[1] >= 8) {
+			throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
+		}
 
-	    if (count[0] >= 16 || count[1] >= 8) {
-	        throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
-	    }
-
-        StringBuilder detalheBuilder = new StringBuilder(detalhe);
-        for (VagaTipoRequest especialidadeTipo : vagaTipo) {
+		StringBuilder detalheBuilder = new StringBuilder();
+		for (VagaTipoRequest especialidadeTipo : vagaTipo) {
 			LocalDateTime dateTime = LocalDateTime.of(data, especialidadeTipo.getHorario());
-            try {
+			try {
+				Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
+				TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());
+				Medico medico = findMedicoById(especialidadeTipo.getMedico().getId());
 
-                Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
-                TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());
-                Medico medico = findMedicoById(especialidadeTipo.getMedico().getId());
+				if (count[0] < 16 && count[1] < 8) {
+					Vaga newVaga = new Vaga();
 
-                if (count[0] < 16 && count[1] < 8) {
-                    Vaga newVaga = new Vaga();
+					newVaga.setDataHora(dateTime);
+					newVaga.setEspecialidade(especialidade);
+					newVaga.setStatus("Disponível");
+					newVaga.setMedico(medico);
+					newVaga.setTipoConsulta(tipoConsulta);
+					saveVaga(newVaga);
+					vagas.add(newVaga);
+					count[0]++;
+					count[1]++;
+					countCriacao[0]++;
+					detalheBuilder.append("Vaga ").append(dateTime).append(" adicionada com sucesso. ");
+				}
+			} catch (RuntimeException e) {
+				countCriacao[1]++;
+				detalheBuilder.append("Vaga ").append(dateTime).append(" não foi adicionada: ").append(e.getMessage()).append(". ");
+			}
+		}
+		return detalheBuilder.toString().trim();
+	}
 
-                    newVaga.setDataHora(dateTime);
-                    newVaga.setEspecialidade(especialidade);
-                    newVaga.setStatus("Disponível");
-                    newVaga.setMedico(medico);
-                    newVaga.setTipoConsulta(tipoConsulta);
-                    saveVaga(newVaga);
-                    vagas.add(newVaga);
-                    count[0]++;
-                    count[1]++;
-                    countCriacao[0]++;
 
-                }
-            } catch (RuntimeException e) {
-                countCriacao[1]++;
-                detalheBuilder.append("Vaga ").append(dateTime).append(" não foi adicionada, ");
-            }
-
-        }
-        detalhe = detalheBuilder.toString();
-    }
-	
 
 
 	// Medicamento--------------------------------------------------------------
