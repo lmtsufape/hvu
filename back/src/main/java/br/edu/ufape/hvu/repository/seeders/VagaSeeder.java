@@ -19,7 +19,6 @@ public class VagaSeeder {
     final private AgendamentoRepository agendamentoRepository;
 
 
-
     public void init(){
         if(vagaRepository.count() > 0){
             return;

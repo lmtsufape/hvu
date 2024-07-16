@@ -586,63 +586,84 @@ public class Facade {
 		Agendamento agendamento = findAgendamentoById(idAgendamento);
 		return vagaServiceInterface.findVagaByAgendamento(agendamento);
 	}
-	
+
 	@Transactional
 	public List<Vaga> createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
-	    List<Vaga> vagas = new ArrayList<>();
-		
-		createVagas(vagaRequestDTO.getData(), vagaRequestDTO.getTurnoManha(), "Manhã", vagas);
-	    createVagas(vagaRequestDTO.getData(), vagaRequestDTO.getTurnoTarde(), "Tarde", vagas);
-	    
-	    return vagas;
+		List<Vaga> vagas = new ArrayList<>();
+		LocalDate startDate = vagaRequestDTO.getData();
+		LocalDate endDate = vagaRequestDTO.getDataFinal();
+		int contadorCriadas = 0;
+		int contadorNaoCriadas = 0;
+		final long[] countCriacao = new long[2]; // countCriacao[0] quantidade criada, countCriacao[1] nao criada
+		final String detalhe = "";
+
+		if (endDate == null) {
+			// Se dataFinal não está presente, processa apenas a data inicial
+			if (!isWeekend(startDate)) {
+				createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas,countCriacao,detalhe);
+				createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao,detalhe);
+			}
+		} else {
+			// Se dataFinal está presente, itera sobre o intervalo de datas
+			LocalDate currentDate = startDate;
+			while (!currentDate.isAfter(endDate)) {
+				if (!isWeekend(currentDate)) {
+					createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao,detalhe);
+					createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao,detalhe);
+				}
+				currentDate = currentDate.plusDays(1);
+			}
+		}
+
+		return vagas;
 	}
 
-	private void createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas) {
+	private boolean isWeekend(LocalDate date) {
+		return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+	}
+
+	private void createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas,long[] countCriacao, String detalhe) {
 
 	    final long[] count = new long[2];
 	    count[0] = findVagaByData(data).size(); // Total vagas no dia
 	    count[1] = findVagaByDataAndTurno(data, turno).size(); // Total vagas no turno
 
-	    if (count[0] >= 8 || count[1] >= 4) {
+	    if (count[0] >= 16 || count[1] >= 8) {
 	        throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
 	    }
 
-	    vagaTipo.forEach(especialidadeTipo -> {
-	        Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
-	        TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());	        
-	        
-	        Map<LocalDateTime, List<Cronograma>> schedulesAvailable = scheduleAvailable(data, turno, especialidade);
-	            
-	        
-	        for (Map.Entry<LocalDateTime, List<Cronograma>> entry : schedulesAvailable.entrySet()) {
-	            LocalDateTime horario = entry.getKey();
-	            List<Cronograma> cronogramas = entry.getValue();
-	            
-	            for (Cronograma cronograma : cronogramas) { 
-	                if (count[0] < 8 && count[1] < 4) {
-	                    Vaga newVaga = new Vaga();
-	                    newVaga.setDataHora(horario);
-	                    newVaga.setEspecialidade(especialidade);
-	                    newVaga.setStatus("Disponível");
-	                    newVaga.setMedico(cronograma.getMedico());
-	                    newVaga.setTipoConsulta(tipoConsulta);
-	                    saveVaga(newVaga);
-	                    vagas.add(newVaga);
-	                    count[0]++;
-	                    count[1]++;
-	                    break;
-	                } else {
-	                    break; 
-	                }
-	                
-	            }
-	            break;
-	        }
-	        	
-                
-	           
-	        });
-	    }
+        StringBuilder detalheBuilder = new StringBuilder(detalhe);
+        for (VagaTipoRequest especialidadeTipo : vagaTipo) {
+			LocalDateTime dateTime = LocalDateTime.of(data, especialidadeTipo.getHorario());
+            try {
+
+                Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
+                TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());
+                Medico medico = findMedicoById(especialidadeTipo.getMedico().getId());
+
+                if (count[0] < 16 && count[1] < 8) {
+                    Vaga newVaga = new Vaga();
+
+                    newVaga.setDataHora(dateTime);
+                    newVaga.setEspecialidade(especialidade);
+                    newVaga.setStatus("Disponível");
+                    newVaga.setMedico(medico);
+                    newVaga.setTipoConsulta(tipoConsulta);
+                    saveVaga(newVaga);
+                    vagas.add(newVaga);
+                    count[0]++;
+                    count[1]++;
+                    countCriacao[0]++;
+
+                }
+            } catch (RuntimeException e) {
+                countCriacao[1]++;
+                detalheBuilder.append("Vaga ").append(dateTime).append(" não foi adicionada, ");
+            }
+
+        }
+        detalhe = detalheBuilder.toString();
+    }
 	
 
 
