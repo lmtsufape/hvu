@@ -11,6 +11,8 @@ function GetAgendamentoByMedicoById() {
     const [vaga, setVaga] = useState({});
     const [finalizarModal, setFinalizarModal] = useState(false); // Estado para controlar o modal de finalização
 
+    console.log("vaga:", vaga);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -45,13 +47,13 @@ function GetAgendamentoByMedicoById() {
         try {
             // Atualiza o status da vaga para "Finalizado"
             const updatedVaga = { ...vaga, status: 'Finalizado' };
-            await updateVaga(updatedVaga);
+            await updateVaga(id, updatedVaga);
             setVaga(updatedVaga); // Atualiza o estado local da vaga
             setFinalizarModal(false); // Fecha o modal após finalizar
             router.push(`/agendamentosByMedico/${vaga.medico.id}`)
         } catch (error) {
             console.error('Erro ao finalizar agendamento:', error);
-            // Lidar com erro aqui
+            alert('Erro ao finalizar agendamento. Tente novamente mais tarde.');
         }
     };
 
