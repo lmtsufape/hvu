@@ -13,7 +13,7 @@ import java.util.List;
 public class EspecialidadeSeeder {
     private final EspecialidadeRepository especialidadeRepository;
 
-    @PostConstruct
+
     public void init(){
         if(especialidadeRepository.count() > 0){
             return;

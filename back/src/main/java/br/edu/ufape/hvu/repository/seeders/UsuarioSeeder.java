@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class UsuarioSeeder{
     final private UsuarioRepository usuarioRepository;
 
-    @PostConstruct
+
     public void init(){
         if(usuarioRepository.count() > 0){
             return;

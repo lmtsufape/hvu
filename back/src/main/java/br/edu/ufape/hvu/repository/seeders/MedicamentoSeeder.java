@@ -13,7 +13,7 @@ import java.util.List;
 public class MedicamentoSeeder {
     final private MedicamentoRepository medicamentoRepository;
 
-    @PostConstruct
+
     public void init(){
         if(medicamentoRepository.count() > 0){
             return;

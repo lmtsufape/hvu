@@ -16,7 +16,6 @@ public class AgendamentoSeeder {
     final private AgendamentoRepository agendamentoRepository;
     final private AnimalRepository animalRepository;
 
-  //  @PostConstruct
     public void init(){
         if(agendamentoRepository.count() > 0){
             return;
