@@ -141,7 +141,17 @@
 
 .boxlogo {
     display: flex;
+    align-items: center;
     gap: 18px;
+}
+
+.hvu {
+    width: 174px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 22.5px;
+    color: #272727;
 }
 
 

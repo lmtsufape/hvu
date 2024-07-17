@@ -3,7 +3,7 @@ import styles from "./index.module.css";
 import { useRouter } from "next/router";
 import VoltarButton from "../VoltarButton";
 import SearchBar from "../SearchBar";
-import { getAllConsulta } from '../../../services/consultaService';
+import { getConsultaByAnimal } from '../../../services/consultaService';
 import { CriarConsulta } from '../WhiteButton';
 
 function GetAllConsultas() {
@@ -16,10 +16,8 @@ function GetAllConsultas() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const consultasData = await getAllConsulta();
-                // Filtra as consultas pelo id do animal
-                const consultasFiltradas = consultasData.filter(consulta => consulta.animal && consulta.animal.id === parseInt(id));
-                setConsultas(consultasFiltradas);
+                const consultasData = await getConsultaByAnimal(id);
+                setConsultas(consultasData);
             } catch (error) {
                 console.error('Erro ao buscar consultas:', error);
             }
