@@ -1,5 +1,6 @@
 package br.edu.ufape.hvu.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +23,9 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 	@Query("SELECT v FROM Vaga v WHERE v.dataHora BETWEEN :inicioDoDia AND :fimDoDia")
 	List<Vaga> findByData(@Param("inicioDoDia") LocalDateTime inicioDoDia, 
 	                          @Param("fimDoDia") LocalDateTime fimDoDia);
+
+	List<Vaga> findByDataHoraBetween(LocalDateTime dataInicio, LocalDateTime dataFinal);
+
 	@Query("SELECT v FROM Vaga v WHERE v.dataHora BETWEEN :inicioDoDia AND :fimDoDia AND v.especialidade = :especialidade")
     List<Vaga> findByDataAndEspecialidade(@Param("inicioDoDia") LocalDateTime inicioDoDia, @Param("fimDoDia") 
     LocalDateTime fimDoDia, @Param("especialidade") Especialidade especialidade);

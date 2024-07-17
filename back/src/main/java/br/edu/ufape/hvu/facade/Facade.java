@@ -520,7 +520,12 @@ public class Facade {
 	public List<Vaga> findVagaByData(LocalDate data){
 		return vagaServiceInterface.findVagasByData(data);
 	}
-	
+
+	public List<Vaga> findVagaBetweenInicialAndFinalDate(LocalDate dataInicial, LocalDate dataFinal){
+		return vagaServiceInterface.findVagaBetweenInicialAndFinalDate(dataInicial,dataFinal);
+	}
+
+
 	public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico){
 		Medico medico = findMedicoById(IdMedico);
 		

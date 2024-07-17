@@ -17,7 +17,6 @@ public class VagaService implements VagaServiceInterface {
 	@Autowired
 	private VagaRepository repository;
 
-
 	public Vaga saveVaga(Vaga newInstance) {
 		return repository.save(newInstance);
 	}
@@ -99,6 +98,12 @@ public class VagaService implements VagaServiceInterface {
 	
 	public List<Vaga> findLatestVagaForEachAnimalNotReturn(){
 		return repository.findLatestVagaForEachAnimalNotReturn();
+	}
+
+	public List<Vaga> findVagaBetweenInicialAndFinalDate(LocalDate dataInicial, LocalDate dataFinal) {
+		LocalDateTime inicio = dataInicial.atStartOfDay();
+		LocalDateTime fim = dataFinal.atTime(23, 59, 59);
+		return repository.findByDataHoraBetween(inicio, fim);
 	}
 
 	public Vaga findVagaByAgendamento(Agendamento agendamento) {
