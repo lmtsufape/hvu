@@ -586,64 +586,79 @@ public class Facade {
 		Agendamento agendamento = findAgendamentoById(idAgendamento);
 		return vagaServiceInterface.findVagaByAgendamento(agendamento);
 	}
-	
+
 	@Transactional
-	public List<Vaga> createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
-	    List<Vaga> vagas = new ArrayList<>();
-		
-		createVagas(vagaRequestDTO.getData(), vagaRequestDTO.getTurnoManha(), "Manhã", vagas);
-	    createVagas(vagaRequestDTO.getData(), vagaRequestDTO.getTurnoTarde(), "Tarde", vagas);
-	    
-	    return vagas;
+	public String createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
+		List<Vaga> vagas = new ArrayList<>();
+		LocalDate startDate = vagaRequestDTO.getData();
+		LocalDate endDate = vagaRequestDTO.getDataFinal();
+		final long[] countCriacao = new long[2]; // countCriacao[0] quantidade criada, countCriacao[1] nao criada
+		StringBuilder detalheBuilder = new StringBuilder();
+
+		if (endDate == null) {
+			if (!isWeekend(startDate)) {
+				detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
+				detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+			}
+		} else {
+			LocalDate currentDate = startDate;
+			while (!currentDate.isAfter(endDate)) {
+				if (!isWeekend(currentDate)) {
+					detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
+					detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+				}
+				currentDate = currentDate.plusDays(1);
+			}
+		}
+
+		return detalheBuilder.toString().trim();
 	}
 
-	private void createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas) {
+	private boolean isWeekend(LocalDate date) {
+		return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+	}
 
-	    final long[] count = new long[2];
-	    count[0] = findVagaByData(data).size(); // Total vagas no dia
-	    count[1] = findVagaByDataAndTurno(data, turno).size(); // Total vagas no turno
+	private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao) {
+		final long[] count = new long[2];
+		count[0] = findVagaByData(data).size(); // Total vagas no dia
+		count[1] = findVagaByDataAndTurno(data, turno).size(); // Total vagas no turno
 
-	    if (count[0] >= 8 || count[1] >= 4) {
-	        throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
-	    }
+		if (count[0] >= 16 || count[1] >= 8) {
+			throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
+		}
 
-	    vagaTipo.forEach(especialidadeTipo -> {
-	        Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
-	        TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());	        
-	        
-	        Map<LocalDateTime, List<Cronograma>> schedulesAvailable = scheduleAvailable(data, turno, especialidade);
-	            
-	        
-	        for (Map.Entry<LocalDateTime, List<Cronograma>> entry : schedulesAvailable.entrySet()) {
-	            LocalDateTime horario = entry.getKey();
-	            List<Cronograma> cronogramas = entry.getValue();
-	            
-	            for (Cronograma cronograma : cronogramas) { 
-	                if (count[0] < 8 && count[1] < 4) {
-	                    Vaga newVaga = new Vaga();
-	                    newVaga.setDataHora(horario);
-	                    newVaga.setEspecialidade(especialidade);
-	                    newVaga.setStatus("Disponível");
-	                    newVaga.setMedico(cronograma.getMedico());
-	                    newVaga.setTipoConsulta(tipoConsulta);
-	                    saveVaga(newVaga);
-	                    vagas.add(newVaga);
-	                    count[0]++;
-	                    count[1]++;
-	                    break;
-	                } else {
-	                    break; 
-	                }
-	                
-	            }
-	            break;
-	        }
-	        	
-                
-	           
-	        });
-	    }
-	
+		StringBuilder detalheBuilder = new StringBuilder();
+		for (VagaTipoRequest especialidadeTipo : vagaTipo) {
+			LocalDateTime dateTime = LocalDateTime.of(data, especialidadeTipo.getHorario());
+			try {
+				Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
+				TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());
+				Medico medico = findMedicoById(especialidadeTipo.getMedico().getId());
+
+				if (count[0] < 16 && count[1] < 8) {
+					Vaga newVaga = new Vaga();
+
+					newVaga.setDataHora(dateTime);
+					newVaga.setEspecialidade(especialidade);
+					newVaga.setStatus("Disponível");
+					newVaga.setMedico(medico);
+					newVaga.setTipoConsulta(tipoConsulta);
+					saveVaga(newVaga);
+					vagas.add(newVaga);
+					count[0]++;
+					count[1]++;
+					countCriacao[0]++;
+					detalheBuilder.append("Vaga ").append(dateTime).append(" adicionada com sucesso. ");
+				}
+			} catch (RuntimeException e) {
+				countCriacao[1]++;
+				detalheBuilder.append("Vaga ").append(dateTime).append(" não foi adicionada: ").append(e.getMessage()).append(". ");
+			}
+		}
+		return detalheBuilder.toString().trim();
+	}
+
+
 
 
 	// Medicamento--------------------------------------------------------------
@@ -748,6 +763,14 @@ public class Facade {
 
 	public List<Consulta> getAllConsulta() {
 		return consultaServiceInterface.getAllConsulta();
+	}
+
+	public List<Consulta> getConsultasByAnimalFichaNumero (String numeroFicha){
+		return consultaServiceInterface.getConsultasByAnimalFichaNumero(numeroFicha);
+	}
+
+	public List<Consulta> getConsultaByAnimalId(Long id){
+		return consultaServiceInterface.getConsultasByAnimalId(id);
 	}
 
 	public void deleteConsulta(Consulta persistentObject) {

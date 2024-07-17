@@ -22,7 +22,7 @@ public class MedicoSeeder {
     private final InstituicaoRepository instituicaoRepository;
     private final UsuarioSeeder usuarioSeeder;
 
-    @PostConstruct
+
     public void init(){
         if(medicoRepository.count() > 0){
             return;

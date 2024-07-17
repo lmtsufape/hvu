@@ -24,6 +24,7 @@ function GerenciarVagas() {
     const { medicos } = MedicoList();
 
     const [data, setData] = useState("");
+    const [dataFim, setDataFim] = useState("");
 
     const handleVagasChange = (numVaga) => {
         setVagas(prevState => ({
@@ -46,11 +47,11 @@ function GerenciarVagas() {
     const handleDataChange = (event) => {
         setData(event.target.value);
     };
-    /*console.log("data:", data);*/
-
+    const handleDataFimChange = (event) => {
+        setDataFim(event.target.value);
+    };
 
     const [selectedEspecialidade, setSelectedEspecialidade] = useState(new Array(8).fill(''));
-
     const handleEspecialidadeSelection = (event, position) => {
         const selectedEspecialidadeId = event.target.value;
         setSelectedEspecialidade(prevSelectedEspecialidade => {
@@ -59,11 +60,8 @@ function GerenciarVagas() {
             return updatedSelectedEspecialidade;
         });
     };
-    /*console.log("selectedEspecialidade", selectedEspecialidade);*/
-
 
     const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(new Array(8).fill(''));
-
     const handleTipoConsultaSelection = (event, position) => {
         const selectedTipoConsultaId = event.target.value;
         setSelectedTipoConsulta(prevSelectedTipoConsulta => {
@@ -72,10 +70,8 @@ function GerenciarVagas() {
             return updatedSelectedTipoConsulta;
         });
     };
-    /*console.log("selectedTipoConsulta", selectedTipoConsulta);*/
 
     const [selectedMedico, setSelectedMedico] = useState(new Array(8).fill(''));
-
     const handleMedicoSelection = (event, position) => {
         const selectedMedicoId = event.target.value;
         setSelectedMedico(prevSelectedMedico => {
@@ -84,12 +80,14 @@ function GerenciarVagas() {
             return updatedSelectedMedico;
         });
     };
-   /* console.log("selectedMedico", selectedMedico); */
 
-    const validateFields = (agendamento) => {
+    const validateFields = () => {
         const errors = {};
         if (!data) {
             errors.data = "Campo obrigatório";
+        }
+        if (!dataFim) {
+            errors.dataFim = "Campo obrigatório";
         }
         return errors;
     };
@@ -98,17 +96,20 @@ function GerenciarVagas() {
         const turnoManha = [];
         const turnoTarde = [];
 
+        const horariosManha = ["08:00", "09:00", "10:00", "11:00"];
+        const horariosTarde = ["13:00", "14:00", "15:00", "16:00"];
+
         for (let i = 0; i < selectedEspecialidade.length; i++) {
             const especialidadeId = selectedEspecialidade[i];
             const tipoConsultaId = selectedTipoConsulta[i];
             const medicoId = selectedMedico[i];
 
-            // Verifica se os IDs são diferentes de 0 antes de adicionar ao JSON
             if (especialidadeId !== '' && tipoConsultaId !== '' && medicoId !== '') {
                 const objeto = {
                     especialidade: { id: especialidadeId },
                     tipoConsulta: { id: tipoConsultaId },
-                    medico: { id: medicoId }
+                    medico: { id: medicoId },
+                    horario: i < 4 ? horariosManha[i] : horariosTarde[i - 4]
                 };
 
                 if (i < 4) {
@@ -121,6 +122,7 @@ function GerenciarVagas() {
 
         const jsonData = {
             data: data,
+            dataFinal: dataFim,
             turnoManha: turnoManha,
             turnoTarde: turnoTarde
         };
@@ -129,7 +131,7 @@ function GerenciarVagas() {
     };
 
     const handleCreateVagas = async () => {
-        const validationErrors = validateFields(data);
+        const validationErrors = validateFields();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
@@ -153,10 +155,9 @@ function GerenciarVagas() {
             <VoltarButton />
             <h1>Criar Vagas</h1>
             <form className={styles.inputs_container}>
-
                 <div className={styles.inputs_box}>
                     <div className={`col ${styles.col}`}>
-                        <label htmlFor="data" className="form-label">Data  <span className={styles.obrigatorio}>*</span></label>
+                        <label htmlFor="data" className="form-label">Data início  <span className={styles.obrigatorio}>*</span></label>
                         <input
                             placeholder="Digite a data"
                             type="date"
@@ -168,13 +169,24 @@ function GerenciarVagas() {
                         {errors.data && <div className={`invalid-feedback ${styles.error_message}`}>{errors.data}</div>}
                     </div>
                 </div>
-
                 <div className={styles.inputs_box}>
-
+                    <div className={`col ${styles.col}`}>
+                        <label htmlFor="dataFim" className="form-label">Data fim <span className={styles.obrigatorio}>*</span></label>
+                        <input
+                            placeholder="Digite a data"
+                            type="date"
+                            className={`form-control ${styles.input_data} ${errors.dataFim ? "is-invalid" : ""}`}
+                            name="dataFim"
+                            value={dataFim}
+                            onChange={handleDataFimChange}
+                        />
+                        {errors.dataFim && <div className={`invalid-feedback ${styles.error_message}`}>{errors.dataFim}</div>}
+                    </div>
+                </div>
+                <div className={styles.inputs_box}>
                     <div className="row">
                         <div className={styles.title}><h2>Turno manhã:</h2></div>
                     </div>
-
                     <div className={`row ${styles.div_space}`}>
                         <div className="col">
                             {Object.entries(vagas)
@@ -212,7 +224,6 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
-
                                                 <div className={`col ${styles.col}`}>
                                                     <label htmlFor="tipoConsulta" className="form-label">Tipo de consulta</label>
                                                     <select
@@ -230,7 +241,6 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
-
                                                 <div className={`col ${styles.col}`}>
                                                     <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
@@ -253,7 +263,6 @@ function GerenciarVagas() {
                                     </div>
                                 ))}
                         </div>
-
                         <div className="col">
                             {Object.entries(vagas)
                                 .filter(([numVaga]) => ['vaga2'].includes(numVaga))
@@ -290,7 +299,6 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
-
                                                 <div className={`col ${styles.col}`}>
                                                     <label htmlFor="tipoConsulta" className="form-label">Tipo de consulta</label>
                                                     <select
@@ -308,9 +316,8 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
-
                                                 <div className={`col ${styles.col}`}>
-                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
                                                         name="medico"
@@ -388,7 +395,7 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
                                                         name="medico"
@@ -466,7 +473,7 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
                                                         name="medico"
@@ -554,7 +561,7 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
                                                         name="medico"
@@ -632,7 +639,7 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
                                                         name="medico"
@@ -710,7 +717,7 @@ function GerenciarVagas() {
                                                 </div>
 
                                                 <div className={`col ${styles.col}`}>
-                                                <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
                                                     <select
                                                         className={`form-select ${styles.input}`}
                                                         name="medico"

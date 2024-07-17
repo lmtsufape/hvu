@@ -14,8 +14,6 @@ public class ConsultaSeeder {
     final private ConsultaRepository consultaRepository;
     final private MedicoRepository medicoRepository;
 
-
-    @PostConstruct
     public void init(){
         if(consultaRepository.count() > 0){
             return;

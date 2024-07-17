@@ -21,7 +21,6 @@ public class CronogramaSeeder {
     final private MedicoRepository medicoRepository;
     final private VagaRepository vagaRepository;
 
-    @PostConstruct
     public void init(){
         if(cronogramaRepository.count() > 0){
             return;
