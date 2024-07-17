@@ -30,6 +30,15 @@ export async function getConsultaById(consultaId) {
   }
 }
 
+export async function getConsultaByAnimal(animalId) {
+  try {
+    const response = await api.get(`/consulta/animalid/${animalId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // Função para atualizar uma consulta
 export async function updateConsulta(consultaId, consultaData) {
   try {
