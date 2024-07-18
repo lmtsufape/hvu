@@ -62,7 +62,7 @@ export async function deleteConsulta(consultaId) {
 // Endpoint para cancelar agendamento pelo id
 export async function cancelarAgendamento(cancelamentoData) {
   try {
-    const response = await api.post(`/cancelamento`, cancelamentoData);
+    const response = await api.post(`/cancelamento/agendamento`, cancelamentoData);
   } catch (error) {
     throw error;
   }
