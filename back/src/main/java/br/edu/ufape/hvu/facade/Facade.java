@@ -1664,4 +1664,32 @@ public class Facade {
 		fileService.deleteFile(fileName);
 	}
 
+	// CampoLaudoMicroscopia --------------------------------------------------------------
+
+	@Autowired
+	private CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
+
+	public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
+		return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
+	}
+
+	public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopia transientObject) {
+		return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(transientObject);
+	}
+
+	public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {
+		return campoLaudoMicroscopiaServiceInterface.findCampoLaudoMicroscopiaById(id);
+	}
+
+	public List<CampoLaudoMicroscopia> getAllCampoLaudoMicroscopia() {
+		return campoLaudoMicroscopiaServiceInterface.getAllCampoLaudoMicroscopia();
+	}
+
+	public void deleteCampoLaudoMicroscopia(CampoLaudoMicroscopia persistentObject) {
+		campoLaudoMicroscopiaServiceInterface.deleteCampoLaudoMicroscopia(persistentObject.getId());
+	}
+
+	public void deleteCampoLaudoMicroscopia(long id) {
+		campoLaudoMicroscopiaServiceInterface.deleteCampoLaudoMicroscopia(id);
+	}
 }

@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.CampoLaudoMicroscopia;
 import br.edu.ufape.hvu.model.Foto;
 import org.modelmapper.ModelMapper;
 
@@ -19,7 +20,7 @@ public  class LaudoNecropsiaResponse  {
 	private String conclusao;
 	private FichaSolicitacaoServicoResponse fichaSolicitacaoServico;
 	private List<CampoLaudoResponse> campoLaudo;
-	private String CampoMicroscopia;
+	private List<CampoLaudoMicroscopiaResponse> campoMicroscopia;
 	private List<EstagiarioResponse> estagiario;
 	private List<FotoResponse> foto;
 
