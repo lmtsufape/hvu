@@ -738,6 +738,12 @@ public class Facade {
 	private ConsultaServiceInterface consultaServiceInterface;
 
 	public Consulta saveConsulta(Consulta newInstance) {
+		Vaga vagaDaConsulta = vagaServiceInterface.findVagaByConsulta(newInstance);
+		Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
+
+		vagaDaConsulta.setStatus("Finalizado");
+		agendamentoVaga.setStatus("Finalizado");
+
 		return consultaServiceInterface.saveConsulta(newInstance);
 	}
 

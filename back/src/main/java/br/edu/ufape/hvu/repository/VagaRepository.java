@@ -4,15 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.edu.ufape.hvu.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import br.edu.ufape.hvu.model.Vaga;
-import br.edu.ufape.hvu.model.Agendamento;
-import br.edu.ufape.hvu.model.Especialidade;
-import br.edu.ufape.hvu.model.Medico;
 
 
 @Repository
@@ -47,6 +43,8 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 	           "JOIN consulta c ON v.consulta_id = c.id AND c.proxima_consulta = false " +
 	           "ORDER BY animal.id, v.data_hora DESC", nativeQuery = true)
 	List<Vaga> findLatestVagaForEachAnimalNotReturn();
+
+	Vaga findByConsulta(Consulta consulta);
 	
 	List<Vaga> findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(LocalDateTime begin, LocalDateTime end, Medico medico);
 }
