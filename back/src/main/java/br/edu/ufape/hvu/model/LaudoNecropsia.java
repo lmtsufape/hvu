@@ -32,7 +32,10 @@ public class LaudoNecropsia {
     @JoinColumn(name = "campoLaudo_id")
     @ToString.Exclude
     private List<CampoLaudo> campoLaudo;
-    private String CampoMicroscopia;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "campoLaudoMicroscopia_id")
+    @ToString.Exclude
+    private List<CampoLaudoMicroscopia> campoMicroscopia;
     @ManyToMany
     @ToString.Exclude
     private List<Estagiario> estagiario;
