@@ -77,3 +77,12 @@ export async function cancelarVaga(cancelamentoData) {
     throw error;
   }
 }
+
+export async function getVagaByAgendamento(agendamentoId) {
+  try {
+    const response = await api.get(`/vaga/agendamento/${agendamentoId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
