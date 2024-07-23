@@ -45,18 +45,10 @@ function FormularioLogin() {
 
         if (!login) {
             newErrors.login = "Email é obrigatório";
-        } 
-        // else if (login != ){
-        //     newErrors.login = "Email inválido. Digite novamente.";
-        // }
-
-        //verifica se o campo de senha esta vazio
+        }
         if (!senha) {
             newErrors.senha = "Senha é obrigatória";
         } 
-        // else if (senha != ) {
-        //     newErrors.senha = "Senha incorreta. Digite Novamente.";
-        // }
 
         setErrors(newErrors);
 
