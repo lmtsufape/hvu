@@ -86,3 +86,23 @@ export async function getVagaByAgendamento(agendamentoId) {
     throw error;
   }
 }
+
+//Função para pegar vaga pela data
+export async function getVagaByDate(date) {
+  try {
+    const response = await api.get(`vaga/data/${date}`)
+    return response.data
+  } catch (error) {
+    throw error;
+  }
+}
+
+//Função para pegar vaga por período
+export async function getVagaByPeriod(dateInicio, dateFim) {
+  try {
+    const response = await api.get(`vaga/data/${dateInicio}/${dateFim}`)
+    return response.data
+  } catch (error) {
+    throw error;
+  }
+}
