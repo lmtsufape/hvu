@@ -743,7 +743,7 @@ public class Facade {
 
 		vagaDaConsulta.setStatus("Finalizado");
 		agendamentoVaga.setStatus("Finalizado");
-
+		vagaDaConsulta.setAgendamento(agendamentoVaga);
 		updateVaga(vagaDaConsulta);
 		updateAgendamento(agendamentoVaga);
 
