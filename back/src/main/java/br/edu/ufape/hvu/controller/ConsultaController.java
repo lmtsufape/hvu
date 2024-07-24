@@ -33,10 +33,10 @@ public class ConsultaController {
 			.map(ConsultaResponse::new)
 			.toList();
 	}
-	
-	@PostMapping("consulta")
-	public ConsultaResponse createConsulta(@Valid @RequestBody ConsultaRequest newObj) {
-		return new ConsultaResponse(facade.saveConsulta(newObj.convertToEntity()));
+
+	@PostMapping("/consulta/{id}")
+	public ConsultaResponse createConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest newObj) {
+		return new ConsultaResponse(facade.saveConsulta(id, newObj.convertToEntity()));
 	}
 	
 	@GetMapping("consulta/{id}")

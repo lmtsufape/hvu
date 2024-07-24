@@ -737,12 +737,15 @@ public class Facade {
 	@Autowired
 	private ConsultaServiceInterface consultaServiceInterface;
 
-	public Consulta saveConsulta(Consulta newInstance) {
-		Vaga vagaDaConsulta = vagaServiceInterface.findVagaByConsulta(newInstance);
+	public Consulta saveConsulta(Long id, Consulta newInstance) {
+		Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
 		Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
 
 		vagaDaConsulta.setStatus("Finalizado");
 		agendamentoVaga.setStatus("Finalizado");
+
+		updateVaga(vagaDaConsulta);
+		updateAgendamento(agendamentoVaga);
 
 		return consultaServiceInterface.saveConsulta(newInstance);
 	}
