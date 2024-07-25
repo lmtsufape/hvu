@@ -3,14 +3,12 @@ package br.edu.ufape.hvu.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import br.edu.ufape.hvu.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.VagaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
-import br.edu.ufape.hvu.model.Agendamento;
-import br.edu.ufape.hvu.model.Especialidade;
-import br.edu.ufape.hvu.model.Medico;
-import br.edu.ufape.hvu.model.Vaga;
 
 @Service
 public class VagaService implements VagaServiceInterface {
@@ -110,6 +108,7 @@ public class VagaService implements VagaServiceInterface {
 		return repository.findByAgendamento(agendamento);
 	}	
 	
-	
+	public Vaga findVagaByConsulta(Consulta consulta){ return repository.findByConsulta(consulta);}
+
 	
 }
