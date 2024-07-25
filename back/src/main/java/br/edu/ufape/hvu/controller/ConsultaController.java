@@ -34,7 +34,7 @@ public class ConsultaController {
 			.toList();
 	}
 
-	@PostMapping("/consulta/{id}")
+	@PostMapping("consulta/{id}")
 	public ConsultaResponse createConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest newObj) {
 		return new ConsultaResponse(facade.saveConsulta(id, newObj.convertToEntity()));
 	}

@@ -741,13 +741,16 @@ public class Facade {
 		Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
 		Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
 
+		Consulta consulta = consultaServiceInterface.saveConsulta(newInstance);
 		vagaDaConsulta.setStatus("Finalizado");
 		agendamentoVaga.setStatus("Finalizado");
+
 		vagaDaConsulta.setAgendamento(agendamentoVaga);
+		vagaDaConsulta.setConsulta(consulta);
 		updateVaga(vagaDaConsulta);
 		updateAgendamento(agendamentoVaga);
 
-		return consultaServiceInterface.saveConsulta(newInstance);
+		return consulta;
 	}
 
 	public Consulta updateConsulta(Consulta transientObject) {
