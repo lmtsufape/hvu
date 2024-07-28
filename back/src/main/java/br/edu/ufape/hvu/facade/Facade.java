@@ -567,7 +567,7 @@ public class Facade {
 		boolean consultaEmAberto = allAgendamentos.stream()
 				.anyMatch(agendamento -> agendamento.getAnimal() != null &&
 						agendamento.getAnimal().getId() == id &&
-						!agendamento.getStatus().equals("Finalizado"));
+						!agendamento.getStatus().equals("Finalizado") && !agendamento.getStatus().equals("Cancelado") );
 
 		if(consultaEmAberto){
 			return "Bloqueado";
