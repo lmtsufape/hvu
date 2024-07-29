@@ -15,7 +15,7 @@ public class FotoSeeder {
         if(fotoRepository.count() > 0){
             return;
         }
-        fotoRepository.save(new Foto(1, "Titulo de foto", "https://www.google.com"));
+        fotoRepository.save(new Foto(1, "Coracao", "1720372624011-coracao.webp"));
 
     }
 }

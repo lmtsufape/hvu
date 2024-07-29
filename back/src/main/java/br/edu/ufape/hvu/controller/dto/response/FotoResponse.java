@@ -1,5 +1,7 @@
 package br.edu.ufape.hvu.controller.dto.response;
 
+import br.edu.ufape.hvu.controller.dto.request.LaudoNecropsiaRequest;
+import br.edu.ufape.hvu.controller.dto.request.OrgaoRequest;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;

@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+
+.voltar{
+    display: flex;
+    margin-top: 2.5em;
+    margin-left: 5em;
+}
+
+.voltar h1{
+    font-size: 1.2em;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.titleMeusAgendamentos{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.titleMeusAgendamentos h1{
+    font-size: 1.7em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+    color: #000000;
+}
+
+.agendamentos{
+    margin-bottom: 3em;
+}
+
+.agendamentoBox{
+    border: 1px solid #B1B1B1;
+    width: 90%;
+    align-items: center;
+    display: flex;
+    padding: 2.5em;
+    margin:auto;
+    margin-left: 5em;
+    margin-right: 5em;
+    margin-top: 2em;
+    border-radius: 1em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.agendamentoBox div {
+    width: 100%;
+}
+
+.agendamentoBox h1{
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #606060;
+}
+
+.agendamentoBox h2{
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #39805F;
+}
+
+.navbar {
+    margin-top: 2em;
+    display: flex;
+    gap: 32px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.agendamento_button{
+    color: white;
+    background-color: #C7122F;
+    padding: 0.3em;
+    padding-top: 0.8em;
+    width: 7em;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.7em;
+    border: 1px;
+    float: right;
+}
+
+.agendamento_button:hover {
+    background-color: #c94157;
+}
+
+.agendamento_button h1{
+    font-size: 1em;
+    width: auto;
+    text-align: center;
+    color: #FFF5F6
+} 
+
+.finalizar_button {
+    background-color: white;
+    padding: 0.3em;
+    padding-top: 0.8em;
+    width: 7em;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.7em;
+    border: 1px;
+    float: right;
+}
+
+.finalizar_button h1{
+    font-size: 1em;
+    width: auto;
+    text-align: center;
+    color: #606060;
+    text-decoration: underline;
+} 
+
+.list {
+    list-style-type: none;
+    margin-bottom: 5em;
+}
+
+.message {
+    min-height: 300px;
+    margin-top: 56px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: center;
+}
+
+.modal {
+    position: absolute;
+    margin: -2rem 0 0 50rem;
+    width: 620px;
+    height: 181px;
+    border-radius: 20px;
+    border: 2px solid #ECECEC;
+    box-shadow: 4px 5px 15px 0px #00000014;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.box1 {
+    width: 580px;
+    height:45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.box2 {
+    width: 580px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 32px;
+}
+
+.box1 div {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: 0em;
+    color: #272727;
+}
+
+.button_close_modal {
+    text-decoration: none;
+    width: 24.12px;
+    height: 24.12px;
+    border-radius: 4.69px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ECECEC;
+    border: 1px solid #ECECEC;
+    color: #909090;
+}
+
+.cancelar_button {
+    width: 95px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid #606060;
+    background-color: white;
+    
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    color: #606060;
+}
+
+.cancelar_button:hover {
+    background-color: #f3f3f37b;
+}
+
+.excluir_button2 {
+    width: 95px;
+    height: 48px;
+    border-radius: 10px;
+    border: none;
+    background-color: #C7122F;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    color: #FFF5F6;
+}
+
+.excluir_button2:hover {
+    background-color: #c94157;
+}
+
+.acessar_button {
+    float: right;
+    width: 117px;
+    height: 44px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px;
+    gap: 10px;
+    font-size: 16px;
+    color: white;
+    background-color: #327053;
+    font-family: 'Poppins', sans-serif;
+}
+
+.acessar_button:hover {
+    background-color: #5b977b;
+}
+
+@media only screen and (max-width: 700px) {
+    .voltar {
+        margin-left: 1em;
+    }
+  
+    .navbar {
+        flex-direction: column;
+        align-items: stretch;
+        margin-right: 1em;
+        margin-left: 1em;
+    }
+  
+    .agendamentoBox {
+        flex-direction: column;
+        align-items: stretch;
+        margin-left: 1em;
+        margin-right: 1em;
+    }
+}
+  

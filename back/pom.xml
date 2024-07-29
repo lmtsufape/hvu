@@ -89,10 +89,14 @@
 			<artifactId>javafaker</artifactId>
 			<version>0.15</version>
 		</dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
 
-
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>

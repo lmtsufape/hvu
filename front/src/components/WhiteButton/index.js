@@ -12,7 +12,9 @@ const text_white_button = {
     editar: "Editar",
     criar_agendamento: "Criar agendamento",
     visualizar_agendas: "Visualizar agenda",
-    adicionar_cronograma: "Adicionar agenda"
+    adicionar_cronograma: "Adicionar agenda",
+    visualizar_consultas: "Visualizar consultas",
+    criar_consulta: "Criar consulta"
 };
 
 export function LoginWhiteButton() {
@@ -107,6 +109,20 @@ export function EditarWhiteButton({page, id}) {
     );
 }
 
+export function ConsultasWhiteButton({page, id}) {
+    const router = useRouter();
+
+    const handleConsultasClick = () => {
+        router.push(`/${page}/${id}`);
+    };
+
+    return (
+            <button className={styles.white_button} onClick={handleConsultasClick}>
+                {text_white_button.visualizar_consultas}
+            </button>
+    );
+}
+
 export function CriarAgendamentoWhiteButton() {
     const router = useRouter();
 
@@ -141,6 +157,16 @@ export function AdicionarCronograma({page, id}) {
     return (
         <button className={styles.white_button} onClick={()=> router.push(`/${page}`)}>
             {text_white_button.adicionar_cronograma}
+        </button>
+    );
+}
+
+export function CriarConsulta({page, id}) {
+    const router = useRouter();
+
+    return (
+        <button className={styles.white_button} onClick={()=> router.push(`/${page}/${id}`)}>
+            {text_white_button.criar_consulta}
         </button>
     );
 }

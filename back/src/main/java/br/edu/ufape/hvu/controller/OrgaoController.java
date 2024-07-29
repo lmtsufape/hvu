@@ -17,7 +17,7 @@ import br.edu.ufape.hvu.controller.dto.response.OrgaoResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
-@CrossOrigin (origins = "http://localhost:3000/" )
+ 
 @RestController
 @RequestMapping("/api/v1/")
 public class OrgaoController {
@@ -54,10 +54,6 @@ public class OrgaoController {
 			//Orgao o = obj.convertToEntity();
 			Orgao oldObject = facade.findOrgaoById(id);
 
-			if (obj.getFoto() != null) {
-				oldObject.setFoto(facade.findFotoById(obj.getFoto().getId()));
-				obj.setFoto(null);
-			}
 
 			TypeMap<OrgaoRequest, Orgao> typeMapper = modelMapper
 													.typeMap(OrgaoRequest.class, Orgao.class)

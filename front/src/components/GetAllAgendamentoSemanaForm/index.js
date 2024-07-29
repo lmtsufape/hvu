@@ -23,7 +23,7 @@ function GetAllAgendamentosSemanaForm() {
   const [descricaoCancelamento, setDescricaoCancelamento] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
-  const horarios = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+  const horarios = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
   const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
   const dias = [];
 
@@ -74,7 +74,9 @@ function GetAllAgendamentosSemanaForm() {
     } else {
       try {
         const cancelamentoData = {
-          id: selectedVaga.id,
+          vaga: {
+            id: selectedVaga.id
+          },
           descricao: descricaoCancelamento
         }
         await cancelarVaga(cancelamentoData);
@@ -145,7 +147,11 @@ function GetAllAgendamentosSemanaForm() {
                   <th className={styles.coluna1}>{horario}</th>
                   {dias.map(dia => {
                     const key = `${dia.toISOString().slice(0, 10)}T${horario}:00`;
-                    const agendamentos = vagas.filter(vaga => vaga.dataHora.startsWith(key));
+                    const agendamentos = vagas.filter(vaga => {
+                      const vagaHora = new Date(vaga.dataHora).getHours();
+                      const horarioHora = parseInt(horario.split(':')[0], 10);
+                      return vaga.dataHora.startsWith(dia.toISOString().slice(0, 10)) && vagaHora === horarioHora;
+                    });
                     return (
                       <td key={dia.toISOString()} className={styles.th}>
                         {agendamentos.map((agendamento, idx) => (

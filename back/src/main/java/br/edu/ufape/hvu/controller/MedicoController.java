@@ -30,7 +30,7 @@ import br.edu.ufape.hvu.model.Medico;
 import jakarta.validation.Valid;
 
 
-@CrossOrigin (origins = "http://localhost:3000/" )
+ 
 @RestController
 @RequestMapping("/api/v1/")
 public class MedicoController {
