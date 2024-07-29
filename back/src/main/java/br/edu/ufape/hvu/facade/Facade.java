@@ -4,10 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.hibernate.service.spi.ServiceException;
@@ -597,9 +594,22 @@ public class Facade {
 
 	private void createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas) {
 
+		List<Vaga> vagasByData = findVagaByData(data);
+		List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
+		for (int index = 0; index <= vagasByData.size(); index++){
+			if (Objects.equals(vagasByData.get(index).getStatus(), "Cancelado")){
+				vagasByData.remove(index);
+			}
+		}
+
+		for (int index = 0; index <= vagasByDataAndTurno.size(); index++){
+			if (Objects.equals(vagasByDataAndTurno.get(index).getStatus(), "Cancelado")){
+				vagasByDataAndTurno.remove(index);
+			}
+		}
 	    final long[] count = new long[2];
-	    count[0] = findVagaByData(data).size(); // Total vagas no dia
-	    count[1] = findVagaByDataAndTurno(data, turno).size(); // Total vagas no turno
+	    count[0] = vagasByData.size(); // Total vagas no dia
+	    count[1] = vagasByDataAndTurno.size(); // Total vagas no turno
 
 	    if (count[0] >= 8 || count[1] >= 4) {
 	        throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
