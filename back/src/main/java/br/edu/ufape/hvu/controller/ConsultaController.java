@@ -33,10 +33,10 @@ public class ConsultaController {
 			.map(ConsultaResponse::new)
 			.toList();
 	}
-	
-	@PostMapping("consulta")
-	public ConsultaResponse createConsulta(@Valid @RequestBody ConsultaRequest newObj) {
-		return new ConsultaResponse(facade.saveConsulta(newObj.convertToEntity()));
+
+	@PostMapping("consulta/{id}")
+	public ConsultaResponse createConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest newObj) {
+		return new ConsultaResponse(facade.saveConsulta(id, newObj.convertToEntity()));
 	}
 	
 	@GetMapping("consulta/{id}")
@@ -46,6 +46,23 @@ public class ConsultaController {
 		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
+	}
+
+	@GetMapping("consulta/numeroficha/{numeroficha}")
+	public List<ConsultaResponse> getConsultasByAnimalNumeroFicha (@PathVariable String numeroficha) {
+		List<Consulta> consutas = facade.getConsultasByAnimalFichaNumero(numeroficha);
+		return consutas
+				.stream()
+				.map(ConsultaResponse::new)
+				.toList();
+	}
+
+	@GetMapping("consulta/animalid/{id}")
+	public List<ConsultaResponse> getConsultaByAnimalId(@PathVariable Long id){
+		List<Consulta> consultas = facade.getConsultaByAnimalId(id);
+		return consultas.stream()
+				.map(ConsultaResponse::new)
+				.toList();
 	}
 	
 	@PatchMapping("consulta/{id}")

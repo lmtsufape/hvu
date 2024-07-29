@@ -5,7 +5,7 @@ import dateStyles from "../Date/index.module.css";
 import CalendarGreenIcon from '../CalendarGreenIcon';
 import VoltarButton from '../VoltarButton';
 import { DataCompleta } from "../Date";
-import { getAllVaga } from '../../../services/vagaService';
+import { getVagaByPeriod } from '../../../services/vagaService';
 import { cancelarAgendamento } from '../../../services/consultaService';
 import { cancelarVaga } from '../../../services/vagaService';
 import { getTutorByAnimal } from '../../../services/tutorService';
@@ -34,8 +34,10 @@ function GetAllAgendamentosSemanaForm() {
   }
 
   const fetchData = async () => {
+    const dataInicio = dias[0].toISOString().slice(0, 10);
+    const dataFim = dias[6].toISOString().slice(0, 10);
     try {
-      const VagasData = await getAllVaga();
+      const VagasData = await getVagaByPeriod(dataInicio, dataFim);
       setVagas(VagasData);
     } catch (error) {
       console.error('Erro ao buscar vagas:', error);
@@ -147,7 +149,7 @@ function GetAllAgendamentosSemanaForm() {
                   <th className={styles.coluna1}>{horario}</th>
                   {dias.map(dia => {
                     const key = `${dia.toISOString().slice(0, 10)}T${horario}:00`;
-                    const agendamentos = vagas.filter(vaga => {
+                    const agendamentos = vagas?.filter(vaga => {
                       const vagaHora = new Date(vaga.dataHora).getHours();
                       const horarioHora = parseInt(horario.split(':')[0], 10);
                       return vaga.dataHora.startsWith(dia.toISOString().slice(0, 10)) && vagaHora === horarioHora;

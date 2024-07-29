@@ -9,6 +9,7 @@ import { getAllVaga } from '../../../services/vagaService';
 import { createAgendamento } from '../../../services/agendamentoService';
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
+import Image from "next/image";
 
 const HorariosSemana = () => {
   const router = useRouter();
@@ -221,6 +222,19 @@ const HorariosSemana = () => {
         <h1 className={styles.titulodataconsulta}>Data da Consulta</h1>
         <h2 className={`${styles.descricaotitulodataconsulta} ${errors.selectedVaga ? "is-invalid" : ""}`}>Selecione o dia e o horário disponível de sua preferência para o atendimento</h2>
         {errors.selectedVaga && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedVaga}</div>}
+
+        <div className={styles.legenda_box}>
+          <div className={styles.legenda}>
+            <h3><Image src='/blue_rectangle.svg' width={15.73} height={15.73}/></h3>
+            <h3>Primeira consulta</h3>
+          </div>
+
+          <div className={styles.legenda}>
+            <h3><Image src='/pink_rectangle.svg' width={15.73} height={15.73}/></h3>
+            <h3>Consulta de retorno</h3>
+          </div>
+        </div>
+
         <div className={styles.button_voltar_avancar}>
           <button className={styles.button_voltar} onClick={retrocederSemana}>⭠</button>
           <button className={styles.button_avancar} onClick={avancarSemana}>⭢</button>

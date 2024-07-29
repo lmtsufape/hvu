@@ -116,6 +116,34 @@ function CreateMedico() {
         }
     };
 
+    const isValidCPF = (cpf) => {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf.length !== 11) return false;
+
+        // Elimina CPFs inválidos conhecidos
+        if (/^(\d)\1+$/.test(cpf)) return false;
+
+        // Valida 1o digito
+        let add = 0;
+        for (let i = 0; i < 9; i++) {
+            add += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+        let rev = 11 - (add % 11);
+        if (rev === 10 || rev === 11) rev = 0;
+        if (rev !== parseInt(cpf.charAt(9))) return false;
+
+        // Valida 2o digito
+        add = 0;
+        for (let i = 0; i < 10; i++) {
+            add += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+        rev = 11 - (add % 11);
+        if (rev === 10 || rev === 11) rev = 0;
+        if (rev !== parseInt(cpf.charAt(10))) return false;
+
+        return true;
+    };
+
     const validateFields = (medico) => {
         const errors = {};
         if (!medico.nome) {
@@ -129,9 +157,13 @@ function CreateMedico() {
         }
         if (!medico.senha) {
             errors.senha = "Campo obrigatório";
+        } else if (medico.senha.length < 8) {
+            errors.senha = "A senha deve ter pelo menos 8 caracteres.";
         }
         if (!medico.cpf) {
             errors.cpf = "Campo obrigatório";
+        } else if (!isValidCPF(medico.cpf)) {
+            errors.cpf = "CPF inválido";
         }
         if (!medico.telefone) {
             errors.telefone = "Campo obrigatório";
@@ -141,6 +173,8 @@ function CreateMedico() {
         }
         if (!medico.confirmarSenha) {
             errors.confirmarSenha = "Campo obrigatório";
+        } else if (medico.confirmarSenha !== medico.senha) {
+            errors.confirmarSenha = "As senhas não coincidem.";
         }
         if (selectedEspecialidades.length === 0) {
             errors.especialidade = "Selecione pelo menos uma especialidade.";
@@ -212,7 +246,7 @@ function CreateMedico() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Cadastro do&#40;a&#41; médico&#40;a&#41; veterinário&#40;a&#41;</h1>
+            <h1>Cadastro do(a) médico(a) veterinário(a)</h1>
 
             <form className={styles.inputs_container}>
 

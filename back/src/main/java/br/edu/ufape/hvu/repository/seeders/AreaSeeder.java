@@ -16,7 +16,6 @@ public class AreaSeeder {
     final private AreaRepository areaRepository;
     final private EspecieRepository especieRepository;
 
-
     public void init(){
         if(areaRepository.count() > 0){
             return;

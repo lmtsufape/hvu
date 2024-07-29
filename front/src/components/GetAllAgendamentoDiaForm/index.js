@@ -7,7 +7,7 @@ import { DataCompleta, DataCurta, DiaDaSemana } from '../Date';
 import CalendarGreenIcon from '../CalendarGreenIcon';
 import VoltarButton from '../VoltarButton';
 import { getAgendamento, deleteAgendamento } from "../../../services/agendamentoService";
-import { getAllVaga, updateVaga } from '../../../services/vagaService';
+import { getAllVaga, updateVaga, getVagaByDate } from '../../../services/vagaService';
 import { cancelarAgendamento } from '../../../services/consultaService';
 import { cancelarVaga } from '../../../services/vagaService';
 import { getTutorByAnimal } from '../../../services/tutorService';
@@ -84,8 +84,9 @@ function GetAllAgendamentosDiaForm() {
   };
 
   const fetchData = async () => {
+    const dataFormatada = dataSelecionada.toISOString().slice(0, 10); // Obtém 'yyyy-mm-dd'
     try {
-      const VagasData = await getAllVaga();
+      const VagasData = await getVagaByDate(dataFormatada);
       setVagas(VagasData);
     } catch (error) {
       console.error('Erro ao buscar vagas:', error);
@@ -137,7 +138,7 @@ function GetAllAgendamentosDiaForm() {
                   <th className={styles.time}>{horario}</th>
                   <th className={styles.th}>
                     <div className={styles.cardsJuntos}>
-                      {vagas.filter(vaga => {
+                      {vagas?.filter(vaga => {
                         const vagaHora = new Date(vaga.dataHora).getHours();
                         const horarioHora = parseInt(horario.split(':')[0], 10);
                         return vaga.dataHora.startsWith(dataSelecionada.toISOString().slice(0, 10)) && vagaHora === horarioHora;
@@ -159,7 +160,9 @@ function GetAllAgendamentosDiaForm() {
                                   </h2>
                                 </div>
                                 <div className={styles.infos_box2}>
-                                  <div className={styles.info2}>Exame</div>
+                                  <div className={styles.info2}>
+                                    {vaga?.especialidade?.nome}
+                                  </div>
                                   <div className={styles.info2}>{horario} - {new Date(vaga.dataHora).getHours() + 1}:00</div>
                                 </div>
                               </div>

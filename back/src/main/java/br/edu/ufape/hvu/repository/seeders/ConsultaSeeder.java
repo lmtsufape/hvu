@@ -14,8 +14,6 @@ public class ConsultaSeeder {
     final private ConsultaRepository consultaRepository;
     final private MedicoRepository medicoRepository;
 
-
-
     public void init(){
         if(consultaRepository.count() > 0){
             return;
