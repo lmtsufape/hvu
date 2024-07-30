@@ -2,7 +2,6 @@ package br.edu.ufape.hvu.model;
 
 import java.util.Date;
 
-import br.edu.ufape.hvu.model.enums.Ficha;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +32,6 @@ public  class LivroRegistro  {
 	private long id;
 	private String requisicao;
 	private String origem;
-	private Ficha ficha;
 	private String fichaInterna;
 	private Date date;
     	@ManyToOne(fetch = FetchType.LAZY)

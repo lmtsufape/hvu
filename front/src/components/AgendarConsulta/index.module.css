@@ -163,7 +163,7 @@ margin-left: 7%;
   margin-bottom: 0.8em;
   margin-left: 8%;
   padding: 5px;
-  background-color: #0a4e85;
+  background-color: #3273C8;
   border: none;
   cursor: pointer;
   color: #EEF8F3;
@@ -201,7 +201,7 @@ margin-left: 7%;
   margin-bottom: 0.8em;
   margin-left: 8%;
   padding: 5px;
-  background-color: #be224c;
+  background-color: #E44771;
   border: none;
   cursor: pointer;
   color: #EEF8F3;
@@ -562,4 +562,24 @@ margin-left: 7%;
   font-weight: 300;
   line-height: 24px;
   color: #C7122F;
+}
+
+.legenda_box {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32px;
+}
+
+.legenda {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.legenda h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12.95px;
+  font-weight: 600;
+  line-height: 19.43px;
+
 }

@@ -11,8 +11,8 @@ public interface ConsultaServiceInterface {
 	void deleteConsulta(Consulta u);
 	void deleteConsulta(long id);
 	List<Consulta> getAllConsulta();
-    
-    
+    List<Consulta> getConsultasByAnimalFichaNumero(String animalFichaNumero);
+	List<Consulta> getConsultasByAnimalId(Long id);
 
     
 }

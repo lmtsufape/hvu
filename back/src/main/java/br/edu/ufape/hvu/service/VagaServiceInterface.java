@@ -1,12 +1,10 @@
 package br.edu.ufape.hvu.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import br.edu.ufape.hvu.model.Agendamento;
-import br.edu.ufape.hvu.model.Especialidade;
-import br.edu.ufape.hvu.model.Medico;
-import br.edu.ufape.hvu.model.Vaga;
+import br.edu.ufape.hvu.model.*;
 
 public interface VagaServiceInterface {
 	Vaga saveVaga(Vaga o);
@@ -24,4 +22,6 @@ public interface VagaServiceInterface {
 	List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Medico medico);    
 	List<Vaga> findLatestVagaForEachAnimal();
 	List<Vaga> findLatestVagaForEachAnimalNotReturn();
+	List<Vaga> findVagaBetweenInicialAndFinalDate(LocalDate dataInicial, LocalDate dataFinal);
+	Vaga findVagaByConsulta(Consulta consulta);
 }

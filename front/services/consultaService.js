@@ -30,6 +30,15 @@ export async function getConsultaById(consultaId) {
   }
 }
 
+export async function getConsultaByAnimal(animalId) {
+  try {
+    const response = await api.get(`/consulta/animalid/${animalId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // Função para atualizar uma consulta
 export async function updateConsulta(consultaId, consultaData) {
   try {
@@ -53,7 +62,7 @@ export async function deleteConsulta(consultaId) {
 // Endpoint para cancelar agendamento pelo id
 export async function cancelarAgendamento(cancelamentoData) {
   try {
-    const response = await api.post(`/cancelamento`, cancelamentoData);
+    const response = await api.post(`/cancelamento/agendamento`, cancelamentoData);
   } catch (error) {
     throw error;
   }

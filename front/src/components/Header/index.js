@@ -19,7 +19,7 @@ export function Header01() {
                     <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54} />
                 </div>
                 <div>
-                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82} />
+                    <h2 className={styles.hvu}>Hospital Veterinário Universitário da UFAPE</h2>
                 </div>
             </div>
 
@@ -44,7 +44,7 @@ export function Header02() {
                     <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54} />
                 </div>
                 <div>
-                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82} />
+                    <h2 className={styles.hvu}>Hospital Veterinário Universitário da UFAPE</h2>
                 </div>
             </div>
 
@@ -103,7 +103,7 @@ export function Header03() {
                     <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54} />
                 </div>
                 <div>
-                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82} />
+                    <h2 className={styles.hvu}>Hospital Veterinário Universitário da UFAPE</h2>
                 </div>
             </div>
 
@@ -141,7 +141,7 @@ export function Header04() {
                     <Image src="/hvu_black_logo.svg" alt="Logo HVU" width={116.94} height={72.54} />
                 </div>
                 <div>
-                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82} />
+                    <h2 className={styles.hvu}>Hospital Veterinário Universitário da UFAPE</h2>
                 </div>
             </div>
 

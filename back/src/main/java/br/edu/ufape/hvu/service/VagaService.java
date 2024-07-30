@@ -3,20 +3,17 @@ package br.edu.ufape.hvu.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import br.edu.ufape.hvu.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.VagaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
-import br.edu.ufape.hvu.model.Agendamento;
-import br.edu.ufape.hvu.model.Especialidade;
-import br.edu.ufape.hvu.model.Medico;
-import br.edu.ufape.hvu.model.Vaga;
 
 @Service
 public class VagaService implements VagaServiceInterface {
 	@Autowired
 	private VagaRepository repository;
-
 
 	public Vaga saveVaga(Vaga newInstance) {
 		return repository.save(newInstance);
@@ -42,7 +39,7 @@ public class VagaService implements VagaServiceInterface {
     }
 	
 	public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Medico medico){
-		LocalDateTime end =  LocalDateTime.now(); 
+		LocalDateTime end =  data.plusDays(1).atStartOfDay().minusSeconds(1); 
         LocalDateTime begin = data.atStartOfDay(); 
 		
 		return repository.findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(begin, end, medico);
@@ -101,10 +98,17 @@ public class VagaService implements VagaServiceInterface {
 		return repository.findLatestVagaForEachAnimalNotReturn();
 	}
 
+	public List<Vaga> findVagaBetweenInicialAndFinalDate(LocalDate dataInicial, LocalDate dataFinal) {
+		LocalDateTime inicio = dataInicial.atStartOfDay();
+		LocalDateTime fim = dataFinal.atTime(23, 59, 59);
+		return repository.findByDataHoraBetween(inicio, fim);
+	}
+
 	public Vaga findVagaByAgendamento(Agendamento agendamento) {
 		return repository.findByAgendamento(agendamento);
 	}	
 	
-	
+	public Vaga findVagaByConsulta(Consulta consulta){ return repository.findByConsulta(consulta);}
+
 	
 }

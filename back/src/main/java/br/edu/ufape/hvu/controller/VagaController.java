@@ -1,7 +1,9 @@
 package br.edu.ufape.hvu.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -52,6 +54,24 @@ public class VagaController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
+
+	@GetMapping("vaga/data/{date}")
+	List<VagaResponse> getVagasByDay(@PathVariable LocalDate date){
+		List<Vaga> vagas = facade.findVagaByData(date);
+		return vagas
+				.stream()
+				.map(VagaResponse::new)
+				.toList();
+	}
+
+	@GetMapping("vaga/data/{dataInicio}/{dataFinal}")
+	List<VagaResponse> getVagaBetweenInicialDateAndFinal(@PathVariable LocalDate dataInicio, @PathVariable LocalDate dataFinal){
+		List<Vaga> vagas = facade.findVagaBetweenInicialAndFinalDate(dataInicio, dataFinal);
+		return vagas
+				.stream()
+				.map(VagaResponse::new)
+				.toList();
+	}
 	
 	@PatchMapping("vaga/{id}")
 	public VagaResponse updateVaga(@PathVariable Long id, @Valid @RequestBody VagaRequest obj) {
@@ -91,11 +111,9 @@ public class VagaController {
 	}
 	
 	@PostMapping("/gestao-vagas/criar")
-	public List<VagaResponse> createNewVagas(@Valid @RequestBody VagaCreateRequest newObj) {
-		return facade.createVagasByTurno(newObj)
-			.stream()
-			.map(VagaResponse::new)
-			.toList();
+	public String createNewVagas(@Valid @RequestBody VagaCreateRequest newObj) {
+		return facade.createVagasByTurno(newObj);
+
 	}
 	
 	

@@ -16,7 +16,6 @@ public class TutorSeeder {
     final private TutorRepository tutorRepository;
     final private UsuarioSeeder usuarioSeeder;
 
-
     public void init(){
         if(tutorRepository.count() > 0){
             return;
