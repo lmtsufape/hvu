@@ -14,7 +14,8 @@ const text_white_button = {
     visualizar_agendas: "Visualizar agenda",
     adicionar_cronograma: "Adicionar agenda",
     visualizar_consultas: "Visualizar consultas",
-    criar_consulta: "Criar consulta"
+    criar_consulta: "Criar consulta",
+    visualizar_paciente: "Visualizar paciente",
 };
 
 export function LoginWhiteButton() {
@@ -167,6 +168,16 @@ export function CriarConsulta({page, id}) {
     return (
         <button className={styles.white_button} onClick={()=> router.push(`/${page}/${id}`)}>
             {text_white_button.criar_consulta}
+        </button>
+    );
+}
+
+export function VisualizarPaciente({page, id}) {
+    const router = useRouter();
+
+    return (
+        <button className={styles.white_button} onClick={()=> router.push(`/${page}/${id}`)}>
+            {text_white_button.visualizar_paciente}
         </button>
     );
 }

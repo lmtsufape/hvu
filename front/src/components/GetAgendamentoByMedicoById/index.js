@@ -4,12 +4,12 @@ import styles from './index.module.css';
 import { getVagaById, updateVaga } from '../../../services/vagaService';
 import VoltarButton from '../VoltarButton';
 import { format } from 'date-fns';
+import { CriarConsulta, VisualizarPaciente } from '../WhiteButton';
 
 function GetAgendamentoByMedicoById() {
     const router = useRouter();
     const { id } = router.query;
     const [vaga, setVaga] = useState({});
-    const [finalizarModal, setFinalizarModal] = useState(false); // Estado para controlar o modal de finalização
 
     console.log("vaga:", vaga);
 
@@ -41,20 +41,6 @@ function GetAgendamentoByMedicoById() {
     const formatHour = (dataHora) => {
         if (typeof dataHora !== 'string') return ''; // Verifica se dataHora é uma string
         return format(new Date(dataHora.replace('T', ' ')), 'HH:mm');
-    };
-
-    const handleFinalizarConsulta = async () => {
-        try {
-            // Atualiza o status da vaga para "Finalizado"
-            const updatedVaga = { ...vaga, status: 'Finalizado' };
-            await updateVaga(id, updatedVaga);
-            setVaga(updatedVaga); // Atualiza o estado local da vaga
-            setFinalizarModal(false); // Fecha o modal após finalizar
-            router.push(`/agendamentosByMedico/${vaga.medico.id}`)
-        } catch (error) {
-            console.error('Erro ao finalizar agendamento:', error);
-            alert('Erro ao finalizar agendamento. Tente novamente mais tarde.');
-        }
     };
 
     return (
@@ -105,22 +91,8 @@ function GetAgendamentoByMedicoById() {
                                         </div>
 
                                         <div className={styles.button_box}>
-                                            <button className={styles.finalizar_button} onClick={() => setFinalizarModal(true)}>
-                                                Finalizar consulta
-                                            </button>
+                                            <CriarConsulta page={'createConsulta'} id={id} />
                                         </div>
-                                        {finalizarModal && (
-                                            <div className={styles.modal}>
-                                                <div className={styles.box1}>
-                                                    <div>Deseja finalizar a consulta?</div>
-                                                    <button onClick={() => setFinalizarModal(false)} className={styles.button_close_modal}>X</button>
-                                                </div>
-                                                <div className={styles.box2}>
-                                                    <button className={styles.cancelar_button} onClick={() => setFinalizarModal(false)}>Cancelar</button>
-                                                    <button className={styles.excluir_button2} onClick={handleFinalizarConsulta}>Confirmar</button>
-                                                </div>
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -169,9 +141,7 @@ function GetAgendamentoByMedicoById() {
                                             </div>
 
                                             <div className={styles.button_box}>
-                                                <button className={styles.visualizar_button} onClick={() => router.push(`/getAnimalByIdByMedico/${vaga.agendamento.animal.id}`)}>
-                                                    Visualizar paciente
-                                                </button>
+                                                <VisualizarPaciente page={'getAnimalByIdByMedico'} id={vaga.agendamento.animal.id} />
                                             </div>
                                         </div>
                                     </div>

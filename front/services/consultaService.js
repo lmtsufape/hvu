@@ -1,9 +1,9 @@
 import api from '../common/http-common-back';
 
 // Função para criar uma nova consulta
-export async function createConsulta(consultaData) {
+export async function createConsulta(consultaData, vagaId) {
   try {
-    const response = await api.post('/consulta', consultaData);
+    const response = await api.post(`/consulta/${vagaId}`, consultaData);
     return response.data;
   } catch (error) {
     throw error;
