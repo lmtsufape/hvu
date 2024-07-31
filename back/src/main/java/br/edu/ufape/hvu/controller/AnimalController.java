@@ -63,9 +63,9 @@ public class AnimalController {
 	}
 	
 	@GetMapping("animal/retorno/{id}")
-	public boolean isAnimalWithRetorno(@PathVariable Long id) {
+	public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(@PathVariable Long id) {
 		try {
-			return facade.isAnimalWithRetorno(id);
+			return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id);
 		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}

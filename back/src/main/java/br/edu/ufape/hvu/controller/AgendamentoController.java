@@ -1,5 +1,6 @@
 package br.edu.ufape.hvu.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,8 @@ import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
 import br.edu.ufape.hvu.controller.dto.request.AgendamentoRequest;
 import br.edu.ufape.hvu.controller.dto.response.AgendamentoResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
+
+import javax.xml.crypto.Data;
 
 
  
@@ -84,7 +87,12 @@ public class AgendamentoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+	@GetMapping("agendamento/datasnaopodeagendar/{tutorId}")
+	public List<LocalDateTime> retornaDatasQueTutorNaoPodeAgendar(@PathVariable String tutorId){
+	return facade.retornaVagaQueTutorNaoPodeAgendar(tutorId);
+	}
+
+
 	@PatchMapping("agendamento/{id}")
 	public AgendamentoResponse updateAgendamento(@PathVariable Long id, @Valid @RequestBody AgendamentoRequest obj) {
 		try {
@@ -99,7 +107,7 @@ public class AgendamentoController {
 			TypeMap<AgendamentoRequest, Agendamento> typeMapper = modelMapper
 													.typeMap(AgendamentoRequest.class, Agendamento.class)
 													.addMappings(mapper -> mapper.skip(Agendamento::setId));			
-			
+
 			
 			typeMapper.map(obj, oldObject);	
 			return new AgendamentoResponse(facade.updateAgendamento(oldObject));
