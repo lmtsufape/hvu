@@ -6,11 +6,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import VoltarButton from "../VoltarButton";
 import useMedicoList from "@/hooks/useMedicoList";
 import { createConsulta } from "../../../services/consultaService";
-import { getAnimalById } from "../../../services/animalService";
-import { getMedicoById } from "../../../services/medicoService";
+import { getVagaById } from "../../../services/vagaService";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
-import { getCurrentUsuario } from '../../../services/userService';
 
 function CreateConsulta() {
   const router = useRouter();
@@ -35,61 +33,32 @@ function CreateConsulta() {
     animal: { id: null }
   });
 
-  const [animalData, setAnimalData] = useState({});
-  const [medicoData, setMedicoData] = useState({});
+  const [vagaData, setVagaData] = useState({});
 
   const { medicos, error: medicosError } = useMedicoList();
   const [medicoEncaminhamento, setMedicoEncaminhamento] = useState(null);
-  const [medicoEncaminhamentoId, setMedicoEncaminhamentoId] = useState(null);
+  const handleMedicoEncaminhamentoSelection = (event) => {
+    const selectedMedicoId = event.target.value;
+    setMedicoEncaminhamento(selectedMedicoId);
+  };
 
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
         try {
-          const animal = await getAnimalById(id);
-          setAnimalData(animal);
+          const vagaJson = await getVagaById(id);
+          setVagaData(vagaJson);
         } catch (error) {
-          console.error('Erro ao buscar animal:', error);
+          console.error('Erro ao buscar vaga:', error);
         }
       };
       fetchData();
     }
   }, [id]);
-
-  useEffect(() => {
-    if (medicoEncaminhamentoId) {
-      const fetchData = async () => {
-        try {
-          const medico = await getMedicoById(medicoEncaminhamentoId);
-          setMedicoEncaminhamento(medico);
-        } catch (error) {
-          console.error('Erro ao buscar veterinário(a):', error);
-        }
-      };
-      fetchData();
-    }
-  }, [id]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const medico = await getCurrentUsuario();
-        setMedicoData(medico.usuario);
-      } catch (error) {
-        console.error('Erro ao buscar veterinário(a):', error);
-      }
-    };
-    fetchData();
-  }, []);
 
   const handleConsultaChange = (event) => {
     const { name, value } = event.target;
     setConsulta({ ...consulta, [name]: value });
-  };
-
-  const handleMedicoSelection = (event) => {
-    const selectedMedico = event.target.value;
-    setMedicoEncaminhamentoId(selectedMedico);
   };
 
   function handleProximaConsultaChange(event) {
@@ -122,8 +91,7 @@ function CreateConsulta() {
   };
 
   console.log("consulta:", consulta);
-  console.log("animalData:", animalData);
-  console.log("medicoData:", medicoData);
+  console.log("vagaData:", vagaData);
   console.log("medicoEncaminhamento:", medicoEncaminhamento);
 
   const handleSubmit = async () => {
@@ -140,16 +108,16 @@ function CreateConsulta() {
       alteracoesClinicasDiversas: consulta.alteracoesClinicasDiversas,
       suspeitasClinicas: consulta.suspeitasClinicas,
       alimentacao: consulta.alimentacao,
-      medico: medicoData,
+      medico: {id: vagaData.medico.id},
       proximaConsulta: consulta.proximaConsulta,
-      encaminhamento: medicoEncaminhamento,
-      animal: animalData
+      encaminhamento: {id: parseInt(medicoEncaminhamento)},
+      animal: {id: vagaData.agendamento.animal.id}
     };
 
     console.log("consultaToCreate:", consultaToCreate);
 
     try {
-      await createConsulta(consultaToCreate);
+      await createConsulta(consultaToCreate, id);
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar consulta:", error);
@@ -174,7 +142,7 @@ function CreateConsulta() {
               <input
                 type="text"
                 className={`form-control ${styles.input}`}
-                placeholder={animalData.nome || "Carregando..."}
+                placeholder={vagaData.agendamento && vagaData.agendamento.animal && vagaData.agendamento.animal.nome || "Carregando..."}
                 disabled
               />
             </div>
@@ -184,7 +152,7 @@ function CreateConsulta() {
               <input
                 type="text"
                 className={`form-control ${styles.input}`}
-                placeholder={medicoData.nome || "Carregando..."}
+                placeholder={vagaData.medico && vagaData.medico.nome || "Carregando..."}
                 disabled
               />
             </div>
@@ -224,10 +192,10 @@ function CreateConsulta() {
                   className={`form-select ${styles.input}`}
                   name="encaminhamento"
                   aria-label="Selecione um(a) veterinário(a)"
-                  value={medicoEncaminhamentoId || ""}
-                  onChange={handleMedicoSelection}
+                  value={medicoEncaminhamento || ""}
+                  onChange={handleMedicoEncaminhamentoSelection}
                 >
-                  <option value="">Selecione um(a) veterinário(a)</option>
+                  <option value="">Selecione um&#40;a&#41; veterinário&#40;a&#41;</option>
                   {medicos.map((medico) => (
                     <option key={medico.id} value={medico.id}>
                       {medico.nome}
@@ -341,8 +309,14 @@ function CreateConsulta() {
             </button>
           </div>
         </form>
-        {showAlert && <Alert message="Consulta criada com sucesso!" show={showAlert} url={`/getAllConsultas/${animalData.id}`} />}
-        {showErrorAlert && <ErrorAlert message="Erro ao criar consulta, tente novamente." show={showErrorAlert} />}
+        
+        {showAlert && <Alert message="Consulta criada com sucesso!" show={showAlert} url={`/getAllConsultas/${vagaData.agendamento.animal.id}`} />}
+        {vagaData.consulta === null ? (
+          showErrorAlert && <ErrorAlert message="Erro ao criar consulta, tente novamente." show={showErrorAlert} />
+        ) : (
+          showErrorAlert && <ErrorAlert message="Consulta já foi criada, tente editá-la." show={showErrorAlert} />
+        )}
+        
       </div>
     </>
   );

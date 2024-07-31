@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import VoltarButton from "../VoltarButton";
 import SearchBar from "../SearchBar";
 import { getConsultaByAnimal } from '../../../services/consultaService';
-import { CriarConsulta } from '../WhiteButton';
+// import { CriarConsulta } from '../WhiteButton';
 
 function GetAllConsultas() {
     const router = useRouter();
@@ -44,7 +44,7 @@ function GetAllConsultas() {
                     placeholder="Buscar consulta através do nome do(a) veterinário(a)"
                     onSearchChange={handleSearchChange}
                 />
-                <CriarConsulta page={'createConsulta'} id={id} />
+             {/*   <CriarConsulta page={'createConsulta'} id={id} />  */}
             </div>
 
             {consultas.length === 0 ? (
