@@ -4,10 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.hibernate.service.spi.ServiceException;
@@ -23,6 +20,8 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 import jakarta.transaction.Transactional;
+
+import javax.xml.crypto.Data;
 
 @Service
 public class Facade {
@@ -967,7 +966,7 @@ public class Facade {
 	
 	
 	public List<Agendamento> findAgendamentosByTutorId(String userId) {
-		Tutor tutor = findTutorByuserId(userId);
+		Tutor tutor = findTutorById(Long.parseLong(userId));
             
         
         List<Animal> animals = tutor.getAnimal(); // Supondo que você tem um método getAnimais()
@@ -980,6 +979,23 @@ public class Facade {
         
         return agendamentos;
     }
+
+	public List<LocalDateTime> retornaVagaQueTutorNaoPodeAgendar(String id){
+		List<Agendamento> agendamentosTutor = findAgendamentosByTutorId(id);
+
+		List<Agendamento> filtroAgedamentos = agendamentosTutor.stream()
+				.filter(agendamento -> agendamento.getStatus().equals("Agendado"))
+				.toList();
+
+		Set<LocalDateTime> datasFiltradas = filtroAgedamentos
+				.stream()
+				.map(Agendamento::getDataVaga)
+				.collect(Collectors.toSet());
+
+		return datasFiltradas
+				.stream()
+				.toList();
+	}
 
 	public void deleteAgendamento(Agendamento persistentObject) {
 		agendamentoServiceInterface.deleteAgendamento(persistentObject);
