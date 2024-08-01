@@ -3,13 +3,16 @@ import { Header03 } from "../../src/components/Header";
 import { SubHeader } from "../../src/components/SubHeader";
 import CreateRaca from "../../src/components/CreateRacaForm";
 import Footer from "../../src/components/Footer";
+import "@/styles/styles.css";
 
 function CreateRacaPage() {
     return(
-        <div>
+        <div className="divPai">
             < Header03 />
             < SubHeader />
-            < CreateRaca />
+            <div className="flexStyle">
+                < CreateRaca />
+            </div>
             < Footer />
         </div>
     );

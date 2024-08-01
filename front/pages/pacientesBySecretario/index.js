@@ -4,13 +4,16 @@ import {Header03} from "../../src/components/Header";
 import Footer from "../../src/components/Footer";
 import {SubHeader} from "../../src/components/SubHeader";
 import PacientesBySecretario from "../../src/components/PacientesBySecretario";
+import "@/styles/styles.css";
 
 function PacientesBySecretarioPage() {
     return (
-        <div>
+        <div className="divPai">
             < Header03 />
             < SubHeader />
-            < PacientesBySecretario />
+            <div className="flexStyle">
+                < PacientesBySecretario />
+            </div>
             < Footer />
         </div>
     );

@@ -4,13 +4,16 @@ import {Header03} from "../../src/components/Header";
 import Footer from "../../src/components/Footer";
 import { SubHeader } from "@/components/SubHeader";
 import AgendamentosByMedico from "../../src/components/AgendamentosByMedico";
+import "@/styles/styles.css"; 
 
 export default function AgendamentosByMedicoPage(){
     return(
-        <div>
+        <div className="divPai">
             < Header03 />
             < SubHeader />
-            < AgendamentosByMedico />
+            <div className="flexStyle">
+                < AgendamentosByMedico />
+            </div>
             < Footer />
         </div>
     )

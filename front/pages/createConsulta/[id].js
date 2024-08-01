@@ -4,13 +4,16 @@ import {Header03} from "../../src/components/Header";
 import { SubHeader } from "@/components/SubHeader";
 import Footer from "../../src/components/Footer";
 import CreateConsulta from "../../src/components/CreateConsulta"
+import "@/styles/styles.css"
 
 function CreateConsultaPage(){
     return(
-        <div>
+        <div className="divPai">
             <Header03/>
             <SubHeader/>
-            <CreateConsulta/>
+            <div className="flexStyle">
+                <CreateConsulta/>
+            </div>
             <Footer/>
         </div>
     )
