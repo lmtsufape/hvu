@@ -598,17 +598,8 @@ public class Facade {
 
 		List<Vaga> vagasByData = findVagaByData(data);
 		List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
-		for (int index = 0; index <= vagasByData.size(); index++){
-			if (Objects.equals(vagasByData.get(index).getStatus(), "Cancelado")){
-				vagasByData.remove(index);
-			}
-		}
-
-		for (int index = 0; index <= vagasByDataAndTurno.size(); index++){
-			if (Objects.equals(vagasByDataAndTurno.get(index).getStatus(), "Cancelado")){
-				vagasByDataAndTurno.remove(index);
-			}
-		}
+		vagasByData.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
+		vagasByDataAndTurno.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
 	    final long[] count = new long[2];
 	    count[0] = vagasByData.size(); // Total vagas no dia
 	    count[1] = vagasByDataAndTurno.size(); // Total vagas no turno
