@@ -643,9 +643,22 @@ public class Facade {
 	}
 
 	private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao) {
-		final long[] count = new long[2];
-		count[0] = findVagaByData(data).size(); // Total vagas no dia
-		count[1] = findVagaByDataAndTurno(data, turno).size(); // Total vagas no turno
+		List<Vaga> vagasByData = findVagaByData(data);
+		List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
+		for (int index = 0; index <= vagasByData.size(); index++){
+			if (Objects.equals(vagasByData.get(index).getStatus(), "Cancelado")){
+				vagasByData.remove(index);
+			}
+		}
+
+		for (int index = 0; index <= vagasByDataAndTurno.size(); index++){
+			if (Objects.equals(vagasByDataAndTurno.get(index).getStatus(), "Cancelado")){
+				vagasByDataAndTurno.remove(index);
+			}
+		}
+	    final long[] count = new long[2];
+	    count[0] = vagasByData.size(); // Total vagas no dia
+	    count[1] = vagasByDataAndTurno.size();  // Total vagas no turno
 
 		if (count[0] >= 16 || count[1] >= 8) {
 			throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
