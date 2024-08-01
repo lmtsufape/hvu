@@ -4,13 +4,16 @@ import {Header03} from "../../src/components/Header";
 import Footer from "../../src/components/Footer";
 import { SubHeader } from "@/components/SubHeader";
 import CreateAnimalForm from "@/components/CreateAnimalForm";
+import "@/styles/styles.css"
 
 function CreateAnimalPage(){
     return(
-        <div>
+        <div className="divPai">
             < Header03 />
             < SubHeader />
-            < CreateAnimalForm />
+            <div className="flexStyle">
+                < CreateAnimalForm />
+            </div>
             < Footer />
         </div>
     )
