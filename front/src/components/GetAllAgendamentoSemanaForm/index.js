@@ -58,36 +58,19 @@ function GetAllAgendamentosSemanaForm() {
   };
 
   const handleCancelarConsulta = async () => {
-    if (selectedVaga.agendamento?.id) {
-      try {
-        const cancelamentoData = {
-          descricao: descricaoCancelamento,
-          agendamento: {
-            id: selectedVaga.agendamento.id
-          }
-        };
-        await cancelarAgendamento(cancelamentoData);
-        closeModal();
-        setShowAlert(true);
-        fetchData();
-      } catch (error) {
-        console.error('Erro ao cancelar consulta:', error);
+    try {
+      const cancelamentoData = {
+        vaga: {
+          id: selectedVaga.id
+        },
+        descricao: descricaoCancelamento
       }
-    } else {
-      try {
-        const cancelamentoData = {
-          vaga: {
-            id: selectedVaga.id
-          },
-          descricao: descricaoCancelamento
-        }
-        await cancelarVaga(cancelamentoData);
-        closeModal();
-        setShowAlert(true);
-        fetchData();
-      } catch (error) {
-        console.error('Erro ao cancelar vaga:', error);
-      }
+      await cancelarVaga(cancelamentoData);
+      closeModal();
+      setShowAlert(true);
+      fetchData();
+    } catch (error) {
+      console.error('Erro ao cancelar vaga:', error);
     }
   };
 
@@ -159,7 +142,7 @@ function GetAllAgendamentosSemanaForm() {
                         {agendamentos.map((agendamento, idx) => (
                           <div key={idx} className={styles[agendamento.status.toLowerCase()]} onClick={() => openModal(agendamento)}>
                             <span>
-                              {agendamento?.agendamento?.animal?.nome ? agendamento.agendamento.animal.nome : agendamento.status}
+                              {agendamento?.agendamento?.animal?.nome ? agendamento.agendamento.animal.nome : agendamento.medico?.nome}
                             </span>
                           </div>
                         ))}

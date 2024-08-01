@@ -30,36 +30,19 @@ function GetAllAgendamentosDiaForm() {
   };
 
   const handleCancelarConsulta = async () => {
-    if (selectedVaga.agendamento?.id) {
-      try {
-        const cancelamentoData = {
-          descricao: descricaoCancelamento,
-          agendamento: {
-            id: selectedVaga.agendamento.id
-          }
-        };
-        await cancelarAgendamento(cancelamentoData);
-        closeModal();
-        setShowAlert(true);
-        fetchData();
-      } catch (error) {
-        console.error('Erro ao cancelar consulta:', error);
+    try {
+      const cancelamentoData = {
+        vaga: {
+          id: selectedVaga.id
+        },
+        descricao: descricaoCancelamento
       }
-    } else {
-      try {
-        const cancelamentoData = {
-          vaga: {
-            id: selectedVaga.id
-          },
-          descricao: descricaoCancelamento
-        }
-        await cancelarVaga(cancelamentoData);
-        closeModal();
-        setShowAlert(true);
-        fetchData();
-      } catch (error) {
-        console.error('Erro ao cancelar vaga:', error);
-      }
+      await cancelarVaga(cancelamentoData);
+      closeModal();
+      setShowAlert(true);
+      fetchData();
+    } catch (error) {
+      console.error('Erro ao cancelar vaga:', error);
     }
   };
 
@@ -150,9 +133,9 @@ function GetAllAgendamentosDiaForm() {
                                 <div className={styles.infos_box1}>
                                   <div className={styles.info1}>
                                     {vaga.agendamento?.animal ? (
-                                      <>{vaga.agendamento?.animal.nome} &bull; {vaga.agendamento?.animal.raca.especie.nome}</>
+                                      <>{vaga.agendamento?.animal.nome} &bull; {vaga.tipoConsulta?.tipo}</>
                                     ) : (
-                                      <>{vaga.status}</>
+                                      <>{vaga.medico?.nome}</>
                                     )}
                                   </div>
                                   <h2 className={styles[`status_${vaga.status ? vaga.status.toLowerCase() : ''}`]}>
