@@ -566,7 +566,7 @@ public class Facade {
 		boolean consultaEmAberto = allAgendamentos.stream()
 				.anyMatch(agendamento -> agendamento.getAnimal() != null &&
 						agendamento.getAnimal().getId() == id &&
-						!agendamento.getStatus().equals("Finalizado") && !agendamento.getStatus().equals("Cancelado") );
+						!agendamento.getStatus().equals("Finalizado") && !agendamento.getStatus().equals("Cancelado"));
 
 		if(consultaEmAberto){
 			return "Bloqueado";
@@ -966,9 +966,8 @@ public class Facade {
 	
 	
 	public List<Agendamento> findAgendamentosByTutorId(String userId) {
-		Tutor tutor = findTutorById(Long.parseLong(userId));
-            
-        
+		Tutor tutor = findTutorByuserId(userId);
+
         List<Animal> animals = tutor.getAnimal(); // Supondo que você tem um método getAnimais()
         
         List<Agendamento> agendamentos = new ArrayList<>();
@@ -981,7 +980,13 @@ public class Facade {
     }
 
 	public List<LocalDateTime> retornaVagaQueTutorNaoPodeAgendar(String id){
-		List<Agendamento> agendamentosTutor = findAgendamentosByTutorId(id);
+		Tutor tutor = findTutorById(Long.parseLong(id));
+
+		List<Agendamento> agendamentosTutor = new ArrayList<>();
+		for (Animal animal : tutor.getAnimal()) {
+			List<Agendamento> agendamentosForAnimal = agendamentoServiceInterface.findAgendamentosByAnimal(animal);
+			agendamentosTutor.addAll(agendamentosForAnimal);
+		}
 
 		List<Agendamento> filtroAgedamentos = agendamentosTutor.stream()
 				.filter(agendamento -> agendamento.getStatus().equals("Agendado"))
