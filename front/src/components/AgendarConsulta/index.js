@@ -6,7 +6,8 @@ import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from '../WhiteButton';
 import { getAllAnimalTutor, getRetornoByAnimalId } from '../../../services/animalService';
 import { getAllVaga } from '../../../services/vagaService';
-import { createAgendamento } from '../../../services/agendamentoService';
+import { createAgendamento, getDatasNaoPodeAgendar } from '../../../services/agendamentoService';
+import { getCurrentUsuario } from '../../../services/userService';
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 import Image from "next/image";
@@ -24,12 +25,22 @@ const HorariosSemana = () => {
   const [vagas, setVagas] = useState(null);
   const [selectedVaga, setSelectedVaga] = useState(null);
 
-  const [retorno, setRetorno] = useState(null);
+  const [retorno, setRetorno] = useState("");
+
+  const [datasProibidas, setDatasProibidas] = useState([]);
+  const [tutorId, setTutorId] = useState(null);
 
   const [errors, setErrors] = useState({});
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+
+  console.log("retorno:", retorno);
+  console.log("selectedAnimal:", selectedAnimal);
+  console.log("datasProibidas:", datasProibidas);
+  console.log("selecionarData:", selecionarData);
+  console.log("selecionarHorario:", selecionarHorario);
+  console.log("datasProibidas:", datasProibidas);
 
   const openModal = () => {
     setShowModal(true);
@@ -92,7 +103,19 @@ const HorariosSemana = () => {
     fetchData();
   }, []);
 
-  console.log("selectedAnimal:", selectedAnimal);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const user = await getCurrentUsuario();
+        setTutorId(user.usuario.id);
+        const datas = await getDatasNaoPodeAgendar(user.usuario.id);
+        setDatasProibidas(datas);
+      } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -115,13 +138,10 @@ const HorariosSemana = () => {
     };
   }, [selectedAnimal]);
 
-  console.log("retorno:", retorno);
-
   const handleAnimalSelection = (event) => {
     const animalId = event.target.value;
     const selectedAnimalInfo = animais.find(animal => animal.id === parseInt(animalId));
     setSelectedAnimal(selectedAnimalInfo);
-    console.log("selectedAnimal", selectedAnimal);
   };
 
   const formatDate = (dateString, selectedTime) => {
@@ -161,31 +181,32 @@ const HorariosSemana = () => {
       return;
     }
 
+    const agendamentoDate = new Date(selecionarHorario).toISOString().split('T')[0];
+
+    const isDateProhibited = datasProibidas.some(dataProibida => {
+      const dataProibidaDate = new Date(dataProibida).toISOString().split('T')[0];
+      return dataProibidaDate === agendamentoDate;
+    });
+
+    if (isDateProhibited) {
+      setShowErrorAlert(true);
+      return;
+    }
+
     const agendamentoToCreate = {
       animal: { id: selectedAnimal.id },
       dataVaga: selecionarHorario,
       status: 'Agendado'
     };
 
-    console.log("agendamentoToCreate", agendamentoToCreate);
-
     try {
       const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
-      console.log(newAgendamento);
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao agendar consulta:", error);
-      if (error.response && error.response.status === 500) {
-        // alert("Vaga não está disponível.");
-        setShowErrorAlert(true);
-      } else {
-        // Se não for 500, faça outra coisa
-        setShowErrorAlert(true);
-      }
+      setShowErrorAlert(true);
     }
   };
-
-  console.log("selectedVaga:", selectedVaga);
 
   return (
     <div className={styles.container}>
@@ -273,7 +294,7 @@ const HorariosSemana = () => {
                         <button
                           key={vaga.id}
                           className={
-                            isPast || vaga.status === 'Agendado' || vaga.status === 'Finalizado' ?
+                            isPast || vaga.status === 'Agendado' || vaga.status === 'Finalizado' || vaga.status === 'Cancelado' ?
                               `${styles.botaohoraIndisponivel}`
                               :
                               (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && !(vaga.status === 'Agendado' || vaga.status === 'Finalizado') ?
@@ -352,5 +373,3 @@ const HorariosSemana = () => {
 };
 
 export default HorariosSemana;
-
-
