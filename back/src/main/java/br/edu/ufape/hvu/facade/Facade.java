@@ -570,7 +570,7 @@ public class Facade {
 
 		if(consultaEmAberto){
 			return "Bloqueado";
-		}else if(!isAnimalWithRetorno(id)){
+		}else if(isAnimalWithRetorno(id)){
 			return "Retorno";
 		}else{
 			return "Primeira Consulta";
