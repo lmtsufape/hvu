@@ -8,7 +8,6 @@ import br.edu.ufape.hvu.repository.EspecialidadeRepository;
 import br.edu.ufape.hvu.repository.InstituicaoRepository;
 import br.edu.ufape.hvu.repository.MedicoRepository;
 import com.github.javafaker.Faker;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +46,7 @@ public class MedicoSeeder {
         medico.setTelefone(faker.phoneNumber().phoneNumber());
         medico.setCpf(faker.idNumber().valid());
         medico.setSenha("12345678");
+        medico.setDeleted(false);
         medico.setEndereco(endereco);
         medico.setCrmv(faker.idNumber().valid());
         medico.setEspecialidade(Collections.singletonList(especialidade));
