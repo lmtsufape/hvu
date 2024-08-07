@@ -5,27 +5,41 @@ import styles from "./index.module.css";
 import { createFichaSolicitacao } from "../../../../../services/fichaSolicitacaoService";
 import TutorList from "@/hooks/useTutorList";
 import AnimalList from "@/hooks/useAnimalList";
-import AnimalByTutorList from "@/hooks/useAnimalByTuorList";
-import { getAnimalByTutor } from "../../../../../services/animalService";
 import MedicoList from "@/hooks/useMedicoList";
 import VoltarButton from "../../VoltarButton";
 import Alert from "@/components/Alert";
-import ErrorAlert from "@/components/ErrorAlert";
+import { Modal, Button } from 'react-bootstrap';
 
 function CreateFichaForm() {
   const router = useRouter();
+
+  const [filteredTutores, setFilteredTutores] = useState([]);
+  const [searchError, setSearchError] = useState(false); // Estado para controlar erros de pesquisa
+  const [showModal, setShowModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchErrorMedico, setSearchErrorMedico] = useState(false); // Estado para controle de erro na pesquisa de médicos veterinários
+  const [searchTermMedico, setSearchTermMedico] = useState('');
+  const [showMedicoModal, setShowMedicoModal] = useState(false);
+  const [filteredMedicos, setFilteredMedicos] = useState([]);
+  const [filteredAnimals, setFilteredAnimals] = useState([]); 
+
+
+  
+  const handleShowModal = () => {
+    if (searchTerm) {
+      setShowModal(true);
+    } else {
+      setSearchError(true); // Set search error state if search term is empty
+    }
+  };
 
   const { tutores, error: tutoreserror } = TutorList();
   const { animais, error: animaiserror } = AnimalList();
   const { medicos, error: medicoserror } = MedicoList();
 
-  const [selectedTutor, setSelectedTutor] = useState(null);
-  const [selectedAnimal, setSelectedAnimal] = useState(null);
-  const [selectedMedico, setSelectedMedico] = useState(null);
-
-  const [selectedTutorDetails, setSelectedTutorDetails] = useState(null);
-  const [selectedAnimalDetails, setSelectedAnimalDetails] = useState(null);
-  const [selectedMedicoDetails, setSelectedMedicoDetails] = useState(null);
+  const [selectedTutor, setSelectedTutor] = useState([]);
+  const [selectedAnimal, setSelectedAnimal] = useState([]);
+  const [selectedMedico, setSelectedMedico] = useState([]);
 
   const [animaisByTutor, setAnimaisByTutor] = useState([]);
 
@@ -74,16 +88,52 @@ function CreateFichaForm() {
     }
   }, [tutores, animais, medicos, selectedTutor, selectedAnimal, selectedMedico]);
 
-  const handleTutorSelection = (event) => {
-    const selectedTutorId = parseInt(event.target.value);
-    setSelectedTutor(selectedTutorId);
+  const handleSearch = (event) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+  
+    if (term) {
+      const filtered = tutores.filter(t => 
+        t.id.toString().includes(term) || t.nome.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredTutores(filtered);
+      setSearchError(false);
+    } else {
+      setFilteredTutores([]);
+      setSearchError(true); 
+    }
+  };
+  
+  const handleTutorSelection = (tutor) => {
+    if (!tutor || !tutor.id) {
+      console.error('Tutor inválido:', tutor);
+      return;
+    }
+  
+    // Armazena o ID do tutor selecionado localmente
+    setSelectedTutor(tutor.id);
+  
+    // Atualiza os dados da ficha de solicitação enviando apenas o ID do tutor para o backend
     setFichaDeSolicitacaoData(prevData => ({
       ...prevData,
-      tutor: { id: selectedTutorId }
+      tutor: {
+        id: tutor.id // Envia apenas o ID para o backend
+      }
     }));
-    console.log('Tutor selecionado:', selectedTutorId);
-    console.log('Dados da ficha de solicitação:', fichaDeSolicitacaoData);
+  
+    // Fecha o modal após a seleção do tutor
+    setShowModal(false);
+  
+    // Define o termo de pesquisa como o nome do tutor selecionado
+    setSearchTerm(tutor.nome);
+
+    setFilteredAnimals(tutor.animal);
+  
+    console.log('Tutor selecionado:', tutor.id); // Mostra apenas o ID do tutor
+    console.log('Dados da ficha de solicitação atualizados:', fichaDeSolicitacaoData);
   };
+  
+  
 
   const handleAnimalSelection = (event) => {
     const selectedAnimalId = parseInt(event.target.value);
@@ -95,17 +145,46 @@ function CreateFichaForm() {
     console.log('Animal selecionado:', selectedAnimalId);
     console.log('Dados da ficha de solicitação:', fichaDeSolicitacaoData);
   };
+  
+  const handleMedicoSearch = (event) => {
+    const term = event.target.value;
+    setSearchTermMedico(term);
 
-  const handleMedicoSelection = (event) => {
-    const selectedMedicoId = parseInt(event.target.value);
-    setSelectedMedico(selectedMedicoId);
+    if (term) {
+      const filtered = medicos.filter(medico =>
+        medico.id.toString().includes(term) || medico.nome.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredMedicos(filtered);
+      setSearchErrorMedico(false);
+    } else {
+      setFilteredMedicos([]);
+    }
+  };
+
+  const handleShowMedicoModal = () => {
+    if (searchTermMedico) {
+      setShowMedicoModal(true);
+    } else {
+      setSearchErrorMedico(true);
+    }
+  };
+
+  const handleMedicoSelection = (medico) => {
+    const selectedMedicoId = medico.id; // Obtém o ID diretamente do objeto medico
+    
+    setSelectedMedico(selectedMedicoId); // Armazena o ID do médico selecionado
     setFichaDeSolicitacaoData(prevData => ({
       ...prevData,
-      medico: { id: selectedMedicoId }
+      medico: { id: selectedMedicoId } // Armazena apenas o ID do médico selecionado
     }));
-    console.log('Médico selecionado:', selectedMedicoId);
-    console.log('Dados da ficha de solicitação:', fichaDeSolicitacaoData);
+    setShowMedicoModal(false); // Fecha o modal após a seleção do médico
+    setSearchTermMedico(medico.nome); // Define o termo de pesquisa como o nome do médico selecionado
+  
+    console.log('Médico selecionado:', selectedMedicoId); // Mostra apenas o ID do médico
+    console.log('Dados da ficha de solicitação atualizados:', fichaDeSolicitacaoData);
   };
+
+  
 
   const handleFichaDeSolicitacaoChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -367,7 +446,7 @@ function CreateFichaForm() {
                 onChange={handleFichaDeSolicitacaoChange}
               >
                 <option value="">Selecione o tipo de Serviço</option>
-                <option value="NECROPSIA_SEM_MICROSCOPIA">Necropsia</option>
+                <option value="NECROPSIA">Necropsia</option>
                 <option value="MICROSCOPIA">Microscopia</option>
                 <option value="NECROPSIA_COM_MICROSCOPIA">Necropsia com Microscopia</option>
               </select>
@@ -376,71 +455,156 @@ function CreateFichaForm() {
           </div>
                        
 
-        <div className="row">
-          <h2>Identificação do Tutor</h2>
-          <div className="col">
-            <label htmlFor="tutor" className="form-label">Tutor</label>
-            <select 
-              className={`form-select ${errors.tutor ? "is-invalid" : ""}`}
-              name="tutor"
-              aria-label="Selecione o Tutor do animal"
-              value={selectedTutor || ""}
-              onChange={handleTutorSelection}
-            >
-              <option value="">Selecione o Tutor</option>
-              {tutores.map((tutor) => (
-                <option key={tutor.id} value={tutor.id}>
-                  {tutor.nome}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="row">
-          <h2>Identificação do Animal</h2>
-          <div className="col">
-            <div className="mb-3">
-              <label htmlFor="animal" className="form-label">Animal</label>
-              <select
-                className={`form-control ${errors.animal ? "is-invalid" : ""}`}
-                id="animal"
-                name="animal"
-                value={selectedAnimal || ""}
-                onChange={handleAnimalSelection}
-              >
-                <option value="">Selecione um animal</option>
-                {animais && animais.map((animal) => (
-                  <option key={animal.id} value={animal.id}>
-                    {animal.nome}
-                  </option>
-                ))}
-              </select>
+          <div className="row">
+          <div className="row">
+            <h2>Identificação do Tutor</h2>
+            <div className="col">
+              <label htmlFor="search" className="form-label">Pesquisar Tutor</label>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className={`form-control ${searchError ? 'is-invalid' : ''}`}
+                  id="search"
+                  placeholder="Digite o ID ou nome do tutor"
+                  value={searchTerm}
+                  onChange={(event) => handleSearch(event)}  // Aqui deve chamar handleSearch para filtrar tutores
+                />
+                <button
+                  className="btn btn-outline-secondary"
+                  type="button"
+                  onClick={handleShowModal}
+                >
+                  Buscar
+                </button>
+              </div>
+              {searchError && (
+                <div className="invalid-feedback">
+                  Por favor, digite um termo de pesquisa válido.
+                </div>
+              )}
             </div>
           </div>
+
+          <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Selecione o Tutor</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {filteredTutores.length > 0 ? (
+                <ul className="list-group">
+                  {filteredTutores.map(tutor => (
+                    <li 
+                      key={tutor.id} 
+                      className="list-group-item" 
+                      onClick={() => handleTutorSelection(tutor)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <strong>Nome:</strong> {tutor.nome} <br />
+                      <strong>Email:</strong> {tutor.email} <br />
+                      <strong>Telefone:</strong> {tutor.telefone} <br />
+                      <strong>Endereço:</strong> {tutor.endereco.cep}, {tutor.endereco.rua}, {tutor.endereco.numero}, {tutor.endereco.bairro}, {tutor.endereco.municipio}, {tutor.endereco.cidade}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Nenhum tutor encontrado.</p>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowModal(false)}>
+                Fechar
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
 
+
         <div className="row">
-          <h2>Veterinário Requisitante</h2>
-          <div className="col">
-            <label htmlFor="medico" className="form-label">Veterinário</label>
-            <select 
-              className={`form-select ${errors.medico ? "is-invalid" : ""}`}
-              id="medico"
-              name="medico"
-              aria-label="Selecione o Médico"
-              value={selectedMedico || ""}
-              onChange={handleMedicoSelection}
+        <h2>Identificação do Animal</h2>
+        <div className="col">
+          <div className="mb-3">
+            <label htmlFor="animal" className="form-label">Animal</label>
+            <select
+              className={`form-control`}
+              id="animal"
+              name="animal"
+              onChange={handleAnimalSelection}
             >
-              <option value="">Selecione o veterinário</option>
-              {medicos && medicos.map((medico) => (
-                <option key={medico.id} value={medico.id}>
-                  {medico.nome}
+              <option value="">Selecione um animal</option>
+              {filteredAnimals.map((animal) => (
+                <option key={animal.id} value={animal.id}>
+                  {animal.nome}
                 </option>
               ))}
             </select>
           </div>
         </div>
+      </div>
+
+        <div className="row">
+        <div className="row">
+          <h2>Identificação do Veterinário</h2>
+          <div className="col">
+            <label htmlFor="searchMedico" className="form-label">Pesquisar Veterinário</label>
+            <div className="input-group">
+              <input
+                type="text"
+                className={`form-control ${searchErrorMedico ? 'is-invalid' : ''}`}
+                id="searchMedico"
+                placeholder="Digite o ID ou nome do médico"
+                value={searchTermMedico}
+                onChange={(event) => handleMedicoSearch(event)}
+              />
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={handleShowMedicoModal}
+              >
+                Buscar
+              </button>
+            </div>
+            {searchErrorMedico && (
+              <div className="invalid-feedback">
+                Por favor, digite um termo de pesquisa válido.
+              </div>
+            )}
+          </div>
+        </div>
+
+
+        <Modal show={showMedicoModal} onHide={() => setShowMedicoModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Selecione o Médico Veterinário</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {filteredMedicos.length > 0 ? (
+              <ul className="list-group">
+                {filteredMedicos.map(medico => (
+                  <li
+                    key={medico.id}
+                    className="list-group-item"
+                    onClick={() => handleMedicoSelection(medico)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <strong>Nome:</strong> {medico.nome} <br />
+                    <strong>Email:</strong> {medico.email} <br />
+                    <strong>Telefone:</strong> {medico.telefone} <br />
+                    <strong>CRMV:</strong> {medico.crmv}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Nenhum médico veterinário encontrado.</p>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowMedicoModal(false)}>
+              Fechar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+
 
         <div className={styles.button_container}>
           <button className={styles.cadastrar_button} type="submit">

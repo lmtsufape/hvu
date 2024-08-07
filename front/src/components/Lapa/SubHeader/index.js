@@ -11,51 +11,14 @@ export function SubHeaderGeral () {
     const handleHomeLaudosClick = () => {
         router.push('/lapa/telaprincipallaudos');
     };
-
-    const handleTutorClick = () => {
-        router.push('/lapa/administrationPage/tutor');
+    const handleGeralClick = () => {
+        router.push('/lapa/cadastrosGerais');
     };
-
-    const handleAnimaisClick = () => {
-        router.push('/lapa/administrationPage/animal');
-    };
-
-    const handleVeterinarioClick = () => {
-        router.push('/lapa/administrationPage/veterinario');
-    };
-
-    const handlePatologistasClick = () => {
-        router.push('/lapa/administrationPage/patologista');
-    };
-
-    const handleNecropsiastasClick = () => {
-        router.push('/lapa/administrationPage/necropsia');
-    };
-
-    const handleHistopatologicaClick = () => {
-        router.push('/lapa/administrationPage/histopatologica');
-    }; 
-
-    const handleCaafClick = () => {
-        router.push('/lapa/administrationPage/caaf');
-    };
-
-    const handleLaudosClick = () => {
-        router.push('/lapa/administrationPage/laudo');
-    };
-
+ 
     return (
         <div className={styles.button_box}>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleHomeLaudosClick}>Home</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleTutorClick}>Tutor</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleAnimaisClick}>Animal</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleVeterinarioClick}>Veterinário</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handlePatologistasClick}>Patologista</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleNecropsiastasClick}>Necropsia</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleHistopatologicaClick}>Histopatologia</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleCaafClick}>CAAF</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleLaudosClick}>Laudo</button>
-           
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleGeralClick}>Cadastros Gerais </button>
             
         </div>
     );
