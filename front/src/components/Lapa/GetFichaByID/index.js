@@ -4,6 +4,8 @@ import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { getFichaSolicitacaoById } from '../../../../services/fichaSolicitacaoService';
 import { EditarWhiteButton } from '@/components/WhiteButton';
+import GeneratePdfButton from '../PdfFichaDeSolicitacao';
+import App from '../PdfFichaDeSolicitacao';
 
 function GetFichaSolicitacaoById() {
     const router = useRouter();
@@ -135,6 +137,7 @@ function GetFichaSolicitacaoById() {
                 </ul>
                 <div className={styles.button_container}>
                     <EditarWhiteButton page={"/lapa/updateFicha"} id={ficha.id}/>
+                    <App ficha={ficha} />
                 </div>
             </div>
         </div>

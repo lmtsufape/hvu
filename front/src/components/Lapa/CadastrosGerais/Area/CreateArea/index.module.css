@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+.container {
+    min-height: 80vh; /* Alterado para usar uma porcentagem */
+    margin-top: 6vh; /* Alterado para usar uma porcentagem */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4vh;
+}
+
+.container h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0em;
+}
+
+.inputs_container {
+    width: 90%; /* Alterado para usar uma porcentagem */
+    max-width: 1200px; /* Adicionado um limite máximo */
+    height: 40vh; /* Alterado para usar uma porcentagem */
+    border-radius: 20px;
+    border: 0.5px solid #B1B1B1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6vh;
+}
+
+.inputs_box {
+    width: 90%; /* Alterado para usar uma porcentagem */
+    max-width: 1152px; /* Adicionado um limite máximo */
+    margin-top: 7vh;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem; /* Alterado para usar um valor relativo */
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: #272727;
+}
+
+.button_box {
+    width: 90%; /* Alterado para usar uma porcentagem */
+    max-width: 1152px;
+    height: 10vh;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 3vh;
+}
+
+.criar_button {
+    width: 180px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid #39805F;
+    color: #FFF5F6;
+    background-color: #39805F;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+}
+
+.criar_button:hover {
+    background-color: #39805fe6;
+}
+
+.input {
+    font-family: 'Poppins', sans-serif;;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #000000;
+}
+
+.input:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px #3d856371;
+    border: 1px solid #ccc;
+}
+
+.input::placeholder {
+    font-family: 'Poppins', sans-serif;;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #000000;
+}
+
+.col select option {
+    font-family: 'Poppins', sans-serif;;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #000000;
+}
+
+.obrigatorio {
+    color: #C7122F;
+  }
+  
+  .error_message {
+    margin-top: -0.2em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 24px;
+    color: #C7122F;
+  }
