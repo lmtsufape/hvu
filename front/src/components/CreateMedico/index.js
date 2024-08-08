@@ -46,6 +46,8 @@ function CreateMedico() {
         especialidade: []
     });
 
+    console.log("medico:", medico);
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -76,11 +78,11 @@ function CreateMedico() {
     };
 
     const handleCreateMedico = async () => {
-        const validationErrors = validateFields(medico);
+       {/*} const validationErrors = validateFields(medico);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
-        }
+        } */}
 
         const MedicoToCreate = {
             nome: medico.nome,

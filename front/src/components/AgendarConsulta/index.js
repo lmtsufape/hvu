@@ -183,7 +183,7 @@ const HorariosSemana = () => {
 
     const agendamentoDate = new Date(selecionarHorario).toISOString().split('T')[0];
 
-    const isDateProhibited = datasProibidas.some(dataProibida => {
+  {/*  const isDateProhibited = datasProibidas.some(dataProibida => {
       const dataProibidaDate = new Date(dataProibida).toISOString().split('T')[0];
       return dataProibidaDate === agendamentoDate;
     });
@@ -191,7 +191,7 @@ const HorariosSemana = () => {
     if (isDateProhibited) {
       setShowErrorAlert(true);
       return;
-    }
+    } */}
 
     const agendamentoToCreate = {
       animal: { id: selectedAnimal.id },
@@ -308,7 +308,7 @@ const HorariosSemana = () => {
                               setSelectedVaga(vaga);
                             }
                           }}
-                          disabled={!selectedAnimal || (retorno ? vaga.tipoConsulta.tipo !== 'Retorno' : vaga.tipoConsulta.tipo === 'Retorno') || isPast}
+                          disabled={!selectedAnimal || (retorno.toLowerCase() !== vaga.tipoConsulta.tipo.toLowerCase()) || isPast}
                         >
                           {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
                           <br />{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}

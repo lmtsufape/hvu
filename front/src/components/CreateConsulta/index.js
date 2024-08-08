@@ -192,7 +192,7 @@ function CreateConsulta() {
                   className={`form-select ${styles.input}`}
                   name="encaminhamento"
                   aria-label="Selecione um(a) veterinário(a)"
-                  value={medicoEncaminhamento || ""}
+                  value={medicoEncaminhamento || null}
                   onChange={handleMedicoEncaminhamentoSelection}
                 >
                   <option value="">Selecione um&#40;a&#41; veterinário&#40;a&#41;</option>
