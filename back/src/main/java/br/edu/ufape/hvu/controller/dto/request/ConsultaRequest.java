@@ -1,5 +1,6 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -31,6 +32,7 @@ public  class ConsultaRequest  {
 	private long id;
 	private boolean proximaConsulta;
 	private AnimalRequest animal;
+	private LocalDateTime horario;
 
 
 	public Consulta convertToEntity() {
