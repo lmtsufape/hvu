@@ -30,7 +30,8 @@ function CreateConsulta() {
     parecer: null,
     proximaConsulta: false,
     encaminhamento: null,
-    animal: { id: null }
+    animal: { id: null },
+    dataVaga: ""
   });
 
   const [vagaData, setVagaData] = useState({});
@@ -111,7 +112,8 @@ function CreateConsulta() {
       medico: {id: vagaData.medico.id},
       proximaConsulta: consulta.proximaConsulta,
       encaminhamento: {id: parseInt(medicoEncaminhamento)},
-      animal: {id: vagaData.agendamento.animal.id}
+      animal: {id: vagaData.agendamento.animal.id},
+      dataVaga: vagaData.dataHora
     };
 
     console.log("consultaToCreate:", consultaToCreate);
