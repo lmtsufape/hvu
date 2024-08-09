@@ -13,6 +13,8 @@ function GetAllConsultas() {
     const [consultas, setConsultas] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
+    console.log("consultas:", consultas);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -30,6 +32,17 @@ function GetAllConsultas() {
     const handleSearchChange = (term) => {
         setSearchTerm(term);
     };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+      
+        return `${day}/${month} às ${hours}:${minutes}`;
+      };
 
     return (
         <div>
@@ -57,6 +70,10 @@ function GetAllConsultas() {
                                 <div className={styles.agendamentoBox}>
                                     <div>
                                         <h1>Consulta Clínica</h1>
+                                        <h2>{formatDate(consulta.dataVaga)}</h2>
+                                    </div>
+                                    <div>
+                                        <h1>Paciente</h1>
                                         <h2>{consulta.animal && consulta.animal.nome}</h2>
                                     </div>
                                     <div>
