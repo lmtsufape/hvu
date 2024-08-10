@@ -43,7 +43,7 @@ function UpdateFoto() {
     const validateForm = () => {
         const errors = {};
         if (!foto.titulo) {
-          errors.titulo = "Campo obrigatório";
+            errors.titulo = "Campo obrigatório";
         }
         return errors;
     };
@@ -62,7 +62,7 @@ function UpdateFoto() {
         }
 
         try {
-            await updateFoto(foto.id, formData);
+            await updateFoto(id, formData);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao editar foto:", error);
@@ -73,7 +73,7 @@ function UpdateFoto() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Editar informações da foto</h1>
+            <h1>Editar Informações da Foto</h1>
             <form className={styles.inputs_container}>
                 <div className={styles.inputs_box}>
                     <div className="row">

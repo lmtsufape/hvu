@@ -1,89 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';  
+import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import SearchBar from '../../../../SearchBar';
-import { getAllFoto, deleteFoto } from '../../../../../../services/fotoService';
+import { getAllOrgao, deleteOrgao } from '../../../../../../services/orgaoService';
 import VoltarButton from '../../../VoltarButton';
 import ExcluirButton from '../../../../ExcluirButton';
 import ErrorAlert from "../../../../ErrorAlert";
 
-function GerenciarFotos() {
-    const [fotos, setFotos] = useState([]);
+function GerenciarOrgaos() {
+    const [orgaos, setOrgaos] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
-    const [deletedFotoId, setDeletedFotoId] = useState(null);
+    const [deletedOrgaoId, setDeletedOrgaoId] = useState(null);
     const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const fotosData = await getAllFoto();
-                setFotos(fotosData);
+                const orgaosData = await getAllOrgao();
+                setOrgaos(orgaosData);
             } catch (error) {
-                console.error('Erro ao buscar fotos:', error);
+                console.error('Erro ao buscar órgãos:', error);
             }
         };
         fetchData();
-    }, [deletedFotoId]);
+    }, [deletedOrgaoId]);
 
-    const handleDeleteFoto = async (fotoId) => {
+    const handleDeleteOrgao = async (orgaoId) => {
         try {
-            await deleteFoto(fotoId);
-            setFotos(fotos.filter(foto => foto.id !== fotoId));
-            setDeletedFotoId(fotoId);
-            setShowAlert(true); 
+            await deleteOrgao(orgaoId);
+            setOrgaos(orgaos.filter(orgao => orgao.id !== orgaoId));
+            setDeletedOrgaoId(orgaoId);
+            setShowAlert(true);
         } catch (error) {
-            console.error('Erro ao excluir foto:', error);
+            console.error('Erro ao excluir órgão:', error);
             if (error.response && error.response.status === 409) {
                 setShowErrorAlert(true);
             }
         }
     };
 
-    const filteredFotos = fotos.filter(foto => {
-        return foto.titulo.toLowerCase().includes(searchTerm.toLowerCase());
+    const filteredOrgaos = orgaos.filter(orgao => {
+        return orgao.nome.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Listagem de fotos</h1>
+            <h1>Listagem de Órgãos</h1>
 
             <div className={styles.navbar_container}>
-                <SearchBar placeholder={`Buscar por título`} onSearchChange={setSearchTerm} />
-                <button className={styles.adicionar_raca_button} onClick={() => router.push(`/lapa/createFoto`)}>
-                    Adicionar foto
+            <SearchBar placeholder="Buscar por nome" onSearchChange={setSearchTerm} />
+                <button className={styles.adicionar_raca_button} onClick={() => router.push('/lapa/createOrgao')}>
+                    Adicionar Órgão
                 </button>
             </div>
-
-            {filteredFotos.length === 0 ? (
-                <p className={styles.paragrafo}> Foto não encontrada.</p>
+ 
+            {filteredOrgaos.length === 0 ? (
+                <p className={styles.paragrafo}> Órgão não encontrado.</p>
             ) : (
                 <ul className={styles.list}>
-                    {filteredFotos.map(foto => (
-                        <li key={foto.id} className={styles.info_container}>
+                    {filteredOrgaos.map(orgao => (
+                        <li key={orgao.id} className={styles.info_container}>
                             <div className={styles.info_box}>
-                                <h6>Título</h6>
-                                <p>{foto.titulo}</p>
+                                <h6>Nome</h6>
+                                <p>{orgao.nome}</p>
                             </div>
                             <div className={styles.button_container}>
-                                <button
-                                    className={styles.editar_button}
-                                    onClick={() => router.push(`/lapa/updateFoto/${foto.id}`)}
+                            <button
+                                className={styles.editar_button}
+                                onClick={() => router.push(`/lapa/updateOrgao/${orgao.id}`)}
                                 >
                                     Editar
                                 </button>
-                                <ExcluirButton itemId={foto.id} onDelete={handleDeleteFoto} /> 
+                                <ExcluirButton itemId={orgao.id} onDelete={handleDeleteOrgao} /> 
                             </div>
                         </li>
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Foto excluída com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Esta foto não pode ser excluída." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message="Órgão excluído com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message="Este órgão não pode ser excluído." show={showErrorAlert} />}
         </div>
     );
 }
 
-export default GerenciarFotos;
+export default GerenciarOrgaos;

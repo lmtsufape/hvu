@@ -4,7 +4,6 @@ import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { getLaudoNecropsiaById } from '../../../../../../services/laudoNecropsiaService';
 import { EditarWhiteButton } from '@/components/WhiteButton';
-import GeneratePdfButton from '../PdfLaudoNecropsia'; // Ajuste conforme necessário
 
 function GetLaudoNecropsiaById() {
     const router = useRouter();
