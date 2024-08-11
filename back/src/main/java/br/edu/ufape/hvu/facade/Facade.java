@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import br.edu.ufape.hvu.controller.dto.request.ReagendamentoRequest;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,6 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 import jakarta.transaction.Transactional;
-
-import javax.xml.crypto.Data;
 
 @Service
 public class Facade {
@@ -948,6 +947,20 @@ public class Facade {
 
 	public Agendamento updateAgendamento(Agendamento transientObject) {
 		return agendamentoServiceInterface.updateAgendamento(transientObject);
+	}
+
+	public Agendamento reagendarAgendamento(Long id, ReagendamentoRequest obj){
+		Agendamento agendamento = findAgendamentoById(id);
+		Vaga vaga = getVagaByAgendamento(agendamento.getId());
+
+		agendamento.setDataVaga(obj.getDataHorario());
+		vaga.setDataHora(obj.getDataHorario());
+
+		vaga.setAgendamento(agendamento);
+		updateAgendamento(agendamento);
+		updateVaga(vaga);
+
+		return agendamentoServiceInterface.findAgendamentoById(id);
 	}
 
 	public Agendamento findAgendamentoById(long id) {
