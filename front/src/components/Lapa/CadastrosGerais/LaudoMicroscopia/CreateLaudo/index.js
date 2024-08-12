@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
 import { CancelarWhiteButton } from "../../../../WhiteButton";
-import { createLaudoNecropsia } from "../../../../../../services/laudoNecropsiaService";
+import { createLaudoMicroscopia } from "../../../../../../services/laudoMicroscopiaService";
 import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
 import FichaSolicitacaoServicoList from "@/hooks/useFichaSolicitacaoList";
@@ -13,34 +13,29 @@ import EstagiarioList from "@/hooks/useEstagiarioList";
 import FotosList from "@/hooks/useFotoList";
 import LaudoMicroscopiaList from "@/hooks/useLaudoMicroscopiaList";
 
-function CreateLaudoNecropsia() {
+function CreateLaudoMicroscopia() {
     const router = useRouter();
 
     const [laudo, setLaudo] = useState({
-        id: 0,
-        conclusao: "",
-        fichaSolicitacaoServico: { id: null },
-        campoLaudo: [], 
-        campoMicroscopia: []
+        campoLaudo: [{ id: "" }],
+        estagiario: [{ id: "" }],
+        foto: [{ id: "" }],
+        campoMicroscopia: [], // Certifique-se de que isso seja um array
+        conclusao: ""
     });
-
+    
     const [errors, setErrors] = useState({});
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
-
-    // Ficha de Solicitação de Serviços
-    const [filteredFichas, setFilteredFichas] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchError, setSearchError] = useState(false);
-    const [selectedFicha, setSelectedFicha] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredFichas, setFilteredFichas] = useState([]);
+    const [searchError, setSearchError] = useState(false);
 
     const { fichas = [], error: fichasError } = FichaSolicitacaoServicoList();
-
-    // Campo Laudo
     const { campoLaudo = [], error: campoLaudoError } = CampoLaudoList();
-
-    // Microscopia
+    const { estagiarios = [], error: estagiariosError } = EstagiarioList();
+    const { fotos = [], error: fotosError } = FotosList();
     const { campoMicroscopiaOptions = [], error: microscopiaError } = LaudoMicroscopiaList();
 
     const handleCampoLaudoChange = (event, index) => {
@@ -63,27 +58,18 @@ function CreateLaudoNecropsia() {
         }));
     };
 
-    const removeCampoLaudoField = (index) => {
-        setLaudo(prevData => ({
-            ...prevData,
-            campoLaudo: prevData.campoLaudo.filter((_, i) => i !== index)
-        }));
-    };
-
-    // Microscopia
-    const handleMicroscopiaChange = (event, index) => {
-        const selectedMicroscopiaId = parseInt(event.target.value);
-        setLaudo(prevData => {
-            const newCampoMicroscopia = [...prevData.campoMicroscopia];
-            newCampoMicroscopia[index] = { id: selectedMicroscopiaId };
-            return { ...prevData, campoMicroscopia: newCampoMicroscopia };
-        });
-    };
-
     const addMicroscopiaField = () => {
         setLaudo(prevData => ({
             ...prevData,
             campoMicroscopia: [...prevData.campoMicroscopia, { id: "" }]
+        }));
+    };
+    
+
+    const removeCampoLaudoField = (index) => {
+        setLaudo(prevData => ({
+            ...prevData,
+            campoLaudo: prevData.campoLaudo.filter((_, i) => i !== index)
         }));
     };
 
@@ -93,31 +79,26 @@ function CreateLaudoNecropsia() {
             campoMicroscopia: prevData.campoMicroscopia.filter((_, i) => i !== index)
         }));
     };
+    
 
-    // Estagiário
-    const [selectedEstagiarioId, setSelectedEstagiarioId] = useState("");
-
-    const { estagiarios = [], error: estagiariosError } = EstagiarioList();
+    const handleMicroscopiaChange = (event) => {
+        const selectedMicroscopia = event.target.value;
+        setLaudo(prevData => ({
+            ...prevData,
+            campoMicroscopia: selectedMicroscopia
+        }));
+    };
 
     const handleEstagiarioChange = (event) => {
         const estagiarioId = event.target.value;
-        setSelectedEstagiarioId(estagiarioId);
-
         setLaudo(prevData => ({
             ...prevData,
             estagiario: [{ id: parseInt(estagiarioId) }]
         }));
     };
 
-    // Foto
-    const [selectedFotoId, setSelectedFotoId] = useState("");
-
-    const { fotos = [], error: fotosError } = FotosList();
-
     const handleFotoChange = (event) => {
         const fotoId = event.target.value;
-        setSelectedFotoId(fotoId);
-
         setLaudo(prevData => ({
             ...prevData,
             foto: [{ id: parseInt(fotoId) }]
@@ -152,19 +133,19 @@ function CreateLaudoNecropsia() {
             conclusao: laudo.conclusao,
             fichaSolicitacaoServico: { id: laudo.fichaSolicitacaoServico.id },
             campoLaudo: laudo.campoLaudo.map(campo => ({ id: campo.id })),
-            estagiario: [{ id: selectedEstagiarioId }],
-            foto: [{ id: selectedFotoId }],
-            campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id })) // Corrigido
+            estagiario: laudo.estagiario,
+            foto: laudo.foto,
+            campoMicroscopia: laudo.campoMicroscopia
         };
 
         try {
-            await createLaudoNecropsia(laudoToSend);
+            await createLaudoMicroscopia(laudoToSend);
             setShowAlert(true);
             setTimeout(() => {
-                router.push("/lapa/gerenciarLaudos");
+                router.push("/laudoMicroscopia/gerenciarLaudos");
             }, 2000);
         } catch (error) {
-            console.error("Erro ao criar laudo de necropsia:", error);
+            console.error("Erro ao criar laudo de microscopia:", error);
             setShowErrorAlert(true);
         }
     };
@@ -186,24 +167,22 @@ function CreateLaudoNecropsia() {
     };
 
     const handleFichaSelection = (ficha) => {
-        if (!ficha || !ficha.id) {
+        if (ficha?.id) {
+            setLaudo(prevData => ({
+                ...prevData,
+                fichaSolicitacaoServico: { id: ficha.id }
+            }));
+            setShowModal(false);
+            setSearchTerm(ficha.codigoPatologia);
+        } else {
             console.error('Ficha inválida:', ficha);
-            return;
         }
-
-        setLaudo(prevData => ({
-            ...prevData,
-            fichaSolicitacaoServico: { id: ficha.id }
-        }));
-
-        setShowModal(false);
-        setSearchTerm(ficha.codigoPatologia);
     };
 
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Criar Laudo de Necropsia</h1>
+            <h1>Criar Laudo de Microscopia</h1>
             <div className={styles.form_box}>
                 <div className={styles.inputs_container}>
                     <div className={styles.inputs_box}>
@@ -275,7 +254,7 @@ function CreateLaudoNecropsia() {
                             <select
                                 id="estagiario"
                                 className="form-select"
-                                value={selectedEstagiarioId}
+                                value={laudo.estagiario[0]?.id || ""}
                                 onChange={handleEstagiarioChange}
                             >
                                 <option value="">Selecione o Estagiário</option>
@@ -291,7 +270,7 @@ function CreateLaudoNecropsia() {
                             <select
                                 id="foto"
                                 className="form-select"
-                                value={selectedFotoId}
+                                value={laudo.foto[0]?.id || ""}
                                 onChange={handleFotoChange}
                             >
                                 <option value="">Selecione a Foto</option>
@@ -341,7 +320,9 @@ function CreateLaudoNecropsia() {
                             </div>
                         </div>
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="conclusao" className="form-label">Diagnóstico do Patologista <span className={styles.obrigatorio}>*</span></label>
+                            <label htmlFor="conclusao" className="form-label">
+                                Diagnóstico do Patologista <span className={styles.obrigatorio}>*</span>
+                            </label>
                             <textarea
                                 className={`form-control ${styles.input} ${errors.conclusao ? "is-invalid" : ""}`}
                                 name="conclusao"
@@ -359,8 +340,8 @@ function CreateLaudoNecropsia() {
                     </div>
                 </div>
             </div>
-            {showAlert && <Alert message="Laudo de necropsia criado com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao criar laudo de necropsia, tente novamente." show={showErrorAlert} />}
+            {showAlert && <Alert message="Laudo de microscopia criado com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao criar laudo de microscopia, tente novamente." show={showErrorAlert} />}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
@@ -385,4 +366,5 @@ function CreateLaudoNecropsia() {
     );
 }
 
-export default CreateLaudoNecropsia;
+export default CreateLaudoMicroscopia;
+

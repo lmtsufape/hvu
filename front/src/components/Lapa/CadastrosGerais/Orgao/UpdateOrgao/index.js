@@ -74,9 +74,9 @@ function UpdateOrgao() {
         if (!orgao.foto.id) {
             errors.foto = "Campo obrigatório";
         }
-        if (!orgao.area[0].id) {
+        if (!orgao.area || !orgao.area[0] || !orgao.area[0].id) {
             errors.area = "Campo obrigatório";
-        }
+        }        
         return errors;
     };
 

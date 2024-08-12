@@ -1,18 +1,18 @@
 import { Header03 } from "@/components/Lapa/Header";
 import { SubHeaderGeral} from "@/components/Lapa/SubHeader";
 import Footer from "@/components/Lapa/Footer";
-import GerenciarOrgaos from "@/components/Lapa/CadastrosGerais/Orgao/gerenciarOrgaos";
+import GerenciarMicroscopia from "@/components/Lapa/CadastrosGerais/Microscopia/GerenciarMicroscopia";
 
-function GerenciarOrgaosPage(){
+function GerenciarMicroscopiaPage(){
     return(
         <div>
             < Header03 />
             < SubHeaderGeral/>
-            < GerenciarOrgaos />
+            < GerenciarMicroscopia />
             < Footer />
         </div>
 
     );
 }
 
-export default GerenciarOrgaosPage;
+export default GerenciarMicroscopiaPage;

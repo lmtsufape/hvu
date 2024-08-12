@@ -1,18 +1,18 @@
 import { Header03 } from "@/components/Lapa/Header";
 import { SubHeaderGeral} from "@/components/Lapa/SubHeader";
+import GerenciarLaudos from "@/components/Lapa/CadastrosGerais/LaudoMicroscopia/GerenciarLaudos";
 import Footer from "@/components/Lapa/Footer";
-import GerenciarOrgaos from "@/components/Lapa/CadastrosGerais/Orgao/gerenciarOrgaos";
 
-function GerenciarOrgaosPage(){
+function GerenciarLaudosPage(){
     return(
         <div>
             < Header03 />
             < SubHeaderGeral/>
-            < GerenciarOrgaos />
+            < GerenciarLaudos />
             < Footer />
         </div>
 
     );
 }
 
-export default GerenciarOrgaosPage;
+export default GerenciarLaudosPage;

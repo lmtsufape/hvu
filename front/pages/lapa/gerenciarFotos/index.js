@@ -3,7 +3,7 @@ import { SubHeaderGeral} from "@/components/Lapa/SubHeader";
 import GerenciarFotos from "@/components/Lapa/CadastrosGerais/Foto/GerenciarFotos";
 import Footer from "@/components/Lapa/Footer";
 
-function GerenciarRacasPage(){
+function GerenciarFotosPage(){
     return(
         <div>
             < Header03 />
@@ -15,4 +15,4 @@ function GerenciarRacasPage(){
     );
 }
 
-export default GerenciarRacasPage;
+export default GerenciarFotosPage;
