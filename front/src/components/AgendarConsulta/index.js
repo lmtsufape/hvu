@@ -318,6 +318,12 @@ const HorariosSemana = () => {
           return null;
         })}
       </div>
+
+      <div className={styles.aviso}>
+        <div><span className={styles.obrigatorio}>*</span> Permitido apenas um agendamento por dia;</div>
+        <div><span className={styles.obrigatorio}>*</span> Um animal não pode agendar uma nova consulta se possuir agendamento em aberto.</div>
+      </div>
+
         <div className={styles.button_container}>
           <CancelarWhiteButton />
           <button className={styles.agendar_button} onClick={handleAgendar}>Agendar</button>
