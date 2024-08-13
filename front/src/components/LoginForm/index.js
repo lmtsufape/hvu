@@ -26,10 +26,10 @@ function FormularioLogin() {
     if (validateForm()) {
         try {
             const response = await postLogin(login, senha);
-         {/*}   if (response.status !== 200) {
+            if (response.status !== 200) {
                 setErrors({senha: "Email ou senha inválidos. Verifique seus dados.", login:"." });
                 return;
-            } */}
+            } 
             
             const userData = await getCurrentUsuario();
             if (userData.roles && Array.isArray(userData.roles)) {
@@ -43,7 +43,7 @@ function FormularioLogin() {
             }
         } catch (error) {
             console.log(error);
-      //      setErrors({login: "Erro ao fazer login. Verifique seus dados.", senha });
+            setErrors({login: "Erro ao fazer login. Verifique seus dados.", senha:"." });
         }
     }
   }
