@@ -92,9 +92,13 @@ public class AgendamentoController {
 	}
 
 
-	@PatchMapping("agendamento/reagendamento/{id}")
-	public Agendamento reagendarAgendamento(@PathVariable Long id, @Valid @RequestBody ReagendamentoRequest newObj) {
-		return facade.reagendarAgendamento(id,newObj);
+	@PatchMapping("agendamento/reagendamento/{idAgendamento}/{idVaga}")
+	public Agendamento reagendarAgendamento(@PathVariable Long idAgendamento, @PathVariable Long idVaga) {
+		try {
+			return facade.reagendarAgendamento(idAgendamento,idVaga);
+		}catch (RuntimeException ex) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+		}
 	}
 
 	@PatchMapping("agendamento/{id}")
