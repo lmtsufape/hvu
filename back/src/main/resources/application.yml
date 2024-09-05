@@ -45,6 +45,7 @@ server:
   port: 8081
 
 common:
+  seeders: true
   front: http://localhost:3000/,https://lmtsteste06.ufape.edu.br/
   back: http://localhost:8081/,https://lmtsteste03.ufape.edu.br/
   docker: http://localhost:8000/,https://lmtsteste04.ufape.edu.br/
