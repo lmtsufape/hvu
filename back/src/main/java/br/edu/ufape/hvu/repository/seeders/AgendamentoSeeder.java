@@ -4,7 +4,6 @@ import br.edu.ufape.hvu.model.Agendamento;
 import br.edu.ufape.hvu.model.Animal;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.repository.AnimalRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

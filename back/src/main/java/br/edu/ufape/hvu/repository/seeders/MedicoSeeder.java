@@ -30,27 +30,28 @@ public class MedicoSeeder {
         List<Especialidade> especialidades = especialidadeRepository.findAll();
         List<Instituicao> instituicoes = instituicaoRepository.findAll();
 
-        for(int i = 0; i < 3; i++){
 
-            Endereco endereco = usuarioSeeder.criarEndereco(faker);
-            Medico medico = criarMedico(faker, endereco, especialidades.get(0), instituicoes.get(0));
 
-            medicoRepository.save(medico);
-        }
+        Endereco endereco = usuarioSeeder.criarEndereco(faker);
+        Medico medico = criarMedico(faker, endereco, especialidades.get(0), instituicoes.get(0));
+
+        medicoRepository.save(medico);
+
     }
 
     protected Medico criarMedico(Faker faker, Endereco endereco, Especialidade especialidade, Instituicao instituicao){
         Medico medico = new Medico();
-        medico.setNome(faker.name().fullName());
-        medico.setEmail(faker.internet().emailAddress());
+        medico.setNome("medico");
+        medico.setEmail("medico@medico.com");
         medico.setTelefone(faker.phoneNumber().phoneNumber());
         medico.setCpf(faker.idNumber().valid());
-        medico.setSenha("12345678");
+        medico.setSenha("password");
         medico.setDeleted(false);
         medico.setEndereco(endereco);
         medico.setCrmv(faker.idNumber().valid());
         medico.setEspecialidade(Collections.singletonList(especialidade));
         medico.setInstituicao(instituicao);
+        medico.setUserId("cae7d352-e323-45c5-b6b7-390eab7846f6");
 
         return medico;
     }

@@ -5,7 +5,6 @@ import br.edu.ufape.hvu.model.Endereco;
 import br.edu.ufape.hvu.model.Usuario;
 import br.edu.ufape.hvu.repository.UsuarioRepository;
 import com.github.javafaker.Faker;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
