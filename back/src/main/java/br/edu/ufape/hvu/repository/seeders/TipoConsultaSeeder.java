@@ -2,7 +2,6 @@ package br.edu.ufape.hvu.repository.seeders;
 
 import br.edu.ufape.hvu.model.TipoConsulta;
 import br.edu.ufape.hvu.repository.TipoConsultaRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
