@@ -85,3 +85,12 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
+
+  export async function reagendamento(reagendamentoData, agendamentoId) {
+    try {
+      const response = await api.patch(`/agendamento/reagendamento/${agendamentoId}`, reagendamentoData);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
