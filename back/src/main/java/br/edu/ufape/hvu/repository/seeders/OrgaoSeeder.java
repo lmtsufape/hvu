@@ -4,7 +4,6 @@ import br.edu.ufape.hvu.model.Orgao;
 import br.edu.ufape.hvu.repository.AreaRepository;
 import br.edu.ufape.hvu.repository.FotoRepository;
 import br.edu.ufape.hvu.repository.OrgaoRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
