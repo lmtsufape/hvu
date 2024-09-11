@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import br.edu.ufape.hvu.controller.dto.request.ReagendamentoRequest;
+import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -113,7 +114,6 @@ public class Facade {
 				Agendamento agendamento = findAgendamentoById(vaga.getAgendamento().getId());
 				agendamento.setStatus("Cancelado");			
 			}
-			vaga.setStatus("Cancelado");
 			vaga.setAgendamento(null);
 			newInstance.setDataVaga(vaga.getDataHora());
 			newInstance.setEspecialidade(vaga.getEspecialidade());
@@ -500,6 +500,7 @@ public class Facade {
 	private VagaServiceInterface vagaServiceInterface;
 
 	public Vaga saveVaga(Vaga newInstance) {
+		newInstance.setStatus(String.valueOf(StatusAgendamentoEVaga.Disponivel));
 		return vagaServiceInterface.saveVaga(newInstance);
 	}
 
@@ -970,18 +971,39 @@ public class Facade {
 		return agendamentoServiceInterface.updateAgendamento(transientObject);
 	}
 
-	public Agendamento reagendarAgendamento(Long id, ReagendamentoRequest obj){
-		Agendamento agendamento = findAgendamentoById(id);
-		Vaga vaga = getVagaByAgendamento(agendamento.getId());
+	// Reagenda um agendamento para uma nova vaga
+	public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga){
+		Agendamento agendamento = findAgendamentoById(idAgendamento);
+		Vaga vagaAntiga = getVagaByAgendamento(agendamento.getId());
+		Vaga novaVaga = findVagaById(idVaga);
 
-		agendamento.setDataVaga(obj.getDataHorario());
-		vaga.setDataHora(obj.getDataHorario());
+		// cancelando vaga anterior, que é a vaga antiga que precisa ser reagendada
+		if (vagaAntiga != null){
+			vagaAntiga.setStatus(String.valueOf(StatusAgendamentoEVaga.Cancelado));
+			vagaAntiga.setAgendamento(null);
+			updateVaga(vagaAntiga); //atualiza vaga antiga no banco
+		}
 
-		vaga.setAgendamento(agendamento);
+		// veririfa se agendamento da vaga recebida está preenchido
+		if(novaVaga.getAgendamento() != null){
+			throw new RuntimeException("A nova vaga já está ocupada.");
+		}
+
+		// verifica se a nova vaga recibida esta cancelada
+		if(novaVaga.getStatus().equals(String.valueOf(StatusAgendamentoEVaga.Cancelado))){
+			throw new RuntimeException("A nova vaga está cancelada.");
+		}
+
+		// atulizando agendamento e vaga atual, que é a nova vaga do agendamento
+		novaVaga.setStatus(String.valueOf(StatusAgendamentoEVaga.Agendado));
+		agendamento.setDataVaga(novaVaga.getDataHora());
+		agendamento.setStatus(novaVaga.getStatus());
+		novaVaga.setAgendamento(agendamento);
+
+		//atualizando no banco...
 		updateAgendamento(agendamento);
-		updateVaga(vaga);
-
-		return agendamentoServiceInterface.findAgendamentoById(id);
+		updateVaga(novaVaga);
+		return agendamento;
 	}
 
 	public Agendamento findAgendamentoById(long id) {
