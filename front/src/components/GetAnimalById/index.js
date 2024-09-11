@@ -80,6 +80,10 @@ function GetAnimalByIdForm() {
                                         <h6>Alergias</h6>
                                         <p>{animal.alergias ? animal.alergias : 'Não definidas'}</p>
                                     </div>
+                                    <div className={styles.infos}>
+                                        <h6>Número da ficha</h6>
+                                        <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
+                                    </div>
                                 </div>
                             </div>
                             <div className={styles.botao}>

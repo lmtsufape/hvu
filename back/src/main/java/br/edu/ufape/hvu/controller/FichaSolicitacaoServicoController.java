@@ -18,7 +18,7 @@ import br.edu.ufape.hvu.controller.dto.response.FichaSolicitacaoServicoResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
-@CrossOrigin (origins = "http://localhost:8081/" )
+ 
 @RestController
 @RequestMapping("/api/v1/")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -36,12 +36,15 @@ public class FichaSolicitacaoServicoController {
 			.map(FichaSolicitacaoServicoResponse::new)
 			.toList();
 	}
-	
+
 	@PostMapping("fichaSolicitacaoServico")
 	public FichaSolicitacaoServicoResponse createFichaSolicitacaoServico(@Valid @RequestBody FichaSolicitacaoServicoRequest newObj) {
-		return new FichaSolicitacaoServicoResponse(facade.saveFichaSolicitacaoServico(newObj.convertToEntity()));
+		FichaSolicitacaoServico fichaSolicitacaoServico = newObj.convertToEntity();
+		fichaSolicitacaoServico.gerarCodigoPatologia();
+		FichaSolicitacaoServico savedFicha = facade.saveFichaSolicitacaoServico(fichaSolicitacaoServico);
+		return new FichaSolicitacaoServicoResponse(savedFicha);
 	}
-	
+
 	@GetMapping("fichaSolicitacaoServico/{id}")
 	public FichaSolicitacaoServicoResponse getFichaSolicitacaoServicoById(@PathVariable Long id) {
 		try {

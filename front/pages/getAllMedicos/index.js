@@ -4,26 +4,18 @@ import {Header03} from "../../src/components/Header"
 import Footer from "../../src/components/Footer"
 import {SubHeader} from "../../src/components/SubHeader"
 import GetAllMedicos from "../../src/components/GetAllMedicos"
+import "@/styles/styles.css";
 
 function GetAllMedicosPage() {
     return (
-        <>
-        <div>
-            < Header03 />
+        <div className='divPai'>
+            <Header03 />
+            <SubHeader />
+            <div className='flexStyle'>
+                <GetAllMedicos />
+            </div>
+            <Footer />
         </div>
-
-        <div>
-            < SubHeader />
-        </div>
-
-        <div>
-            < GetAllMedicos />
-        </div>
-
-        <div>
-            < Footer />
-        </div>
-        </>
     );
 }
 

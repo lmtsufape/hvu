@@ -2,18 +2,18 @@ import { Header03 } from "../../src/components/Header";
 import Footer from "../../src/components/Footer";
 import MainScreenTutor from "../../src/components/MainScreenTutor"
 import { SubHeader } from "../../src/components/SubHeader";
+import "@/styles/styles.css";
 
 function MainSecretarioPage() {
     return (
-        <>
-        <div>
+        <div className='divPai'>
             < Header03 />
             < SubHeader />
-            < MainScreenTutor />
+            <div className='flexStyle'>
+                < MainScreenTutor />
+            </div>
             < Footer />
         </div>
-
-        </>
     );
 }
 

@@ -2,13 +2,16 @@ import { Header03 } from "../../src/components/Header";
 import { SubHeader } from "../../src/components/SubHeader";
 import GerenciarRacasList from "../../src/components/GerenciarRacas";
 import Footer from "../../src/components/Footer";
+import "@/styles/styles.css";
 
 function GerenciarRacasPage(){
     return(
-        <div>
+        <div className="divPai">
             < Header03 />
             < SubHeader/>
-            < GerenciarRacasList />
+            <div className="flexStyle">
+                < GerenciarRacasList />
+            </div>
             < Footer />
         </div>
 

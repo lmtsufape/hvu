@@ -12,10 +12,12 @@ import axios from "axios";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
 function CreateMedico() {
     const router = useRouter();
 
-    
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
@@ -44,6 +46,11 @@ function CreateMedico() {
         especialidade: []
     });
 
+    console.log("medico:", medico);
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const handleEspecialidadeSelection = (event) => {
         const especialidadeId = parseInt(event.target.value);
         if (!selectedEspecialidades.find(espec => espec.id === especialidadeId)) {
@@ -71,11 +78,11 @@ function CreateMedico() {
     };
 
     const handleCreateMedico = async () => {
-        const validationErrors = validateFields(medico);
+       {/*} const validationErrors = validateFields(medico);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
-        }
+        } */}
 
         const MedicoToCreate = {
             nome: medico.nome,
@@ -111,6 +118,34 @@ function CreateMedico() {
         }
     };
 
+    const isValidCPF = (cpf) => {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf.length !== 11) return false;
+
+        // Elimina CPFs inválidos conhecidos
+        if (/^(\d)\1+$/.test(cpf)) return false;
+
+        // Valida 1o digito
+        let add = 0;
+        for (let i = 0; i < 9; i++) {
+            add += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+        let rev = 11 - (add % 11);
+        if (rev === 10 || rev === 11) rev = 0;
+        if (rev !== parseInt(cpf.charAt(9))) return false;
+
+        // Valida 2o digito
+        add = 0;
+        for (let i = 0; i < 10; i++) {
+            add += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+        rev = 11 - (add % 11);
+        if (rev === 10 || rev === 11) rev = 0;
+        if (rev !== parseInt(cpf.charAt(10))) return false;
+
+        return true;
+    };
+
     const validateFields = (medico) => {
         const errors = {};
         if (!medico.nome) {
@@ -124,9 +159,13 @@ function CreateMedico() {
         }
         if (!medico.senha) {
             errors.senha = "Campo obrigatório";
+        } else if (medico.senha.length < 8) {
+            errors.senha = "A senha deve ter pelo menos 8 caracteres.";
         }
         if (!medico.cpf) {
             errors.cpf = "Campo obrigatório";
+        } else if (!isValidCPF(medico.cpf)) {
+            errors.cpf = "CPF inválido";
         }
         if (!medico.telefone) {
             errors.telefone = "Campo obrigatório";
@@ -136,6 +175,8 @@ function CreateMedico() {
         }
         if (!medico.confirmarSenha) {
             errors.confirmarSenha = "Campo obrigatório";
+        } else if (medico.confirmarSenha !== medico.senha) {
+            errors.confirmarSenha = "As senhas não coincidem.";
         }
         if (selectedEspecialidades.length === 0) {
             errors.especialidade = "Selecione pelo menos uma especialidade.";
@@ -181,6 +222,7 @@ function CreateMedico() {
                     ...medico,
                     endereco: {
                         ...medico.endereco,
+                        cep: cep,
                         cidade: localidade,
                         estado: uf,
                         rua: logradouro,
@@ -194,13 +236,19 @@ function CreateMedico() {
             }
         }
     };
-    
-    
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
 
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Cadastro do&#40;a&#41; médico&#40;a&#41; veterinário&#40;a&#41;</h1>
+            <h1>Cadastro do(a) médico(a) veterinário(a)</h1>
 
             <form className={styles.inputs_container}>
 
@@ -212,13 +260,13 @@ function CreateMedico() {
                             <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
                                 {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
-                                {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
-                                {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
+                                {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha, null, showPassword, togglePasswordVisibility)}
+                                {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha, null, showConfirmPassword, toggleConfirmPasswordVisibility)}
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderMedicoInput("Telefone", "Digite o telefone", "telefone", medico.telefone, handleMedicoChange, "tel", errors.telefone, "(99) 99999-9999")}
                                 {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
-                                
+
                                 <div className="mb-3">
                                     <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
                                     <select
@@ -289,27 +337,33 @@ function CreateMedico() {
     );
 }
 
-function renderMedicoInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask) {
+function renderMedicoInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask = null, showPassword = false, togglePasswordVisibility = null) {
     const InputComponent = mask ? InputMask : 'input';
 
     return (
         <div className="mb-3">
             <label htmlFor={name} className="form-label">{label} <span className={styles.obrigatorio}>*</span></label>
-            <InputComponent
-                mask={mask}
-                type={type}
-                className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
-                name={name}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-            />
+            <div className="input-group">
+                <InputComponent
+                    mask={mask}
+                    type={showPassword ? 'text' : type}
+                    className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
+                    name={name}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
+                />
+                {type === 'password' && (
+                    <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
+                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                    </span>
+                )}
+            </div>
             {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }
 
-// Substitua a renderização das mensagens de erro nos inputs de endereço por classes Bootstrap
 function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", errorMessage = null, mask) {
     const InputComponent = mask ? InputMask : 'input';
     const inputProps = mask ? { mask } : {};

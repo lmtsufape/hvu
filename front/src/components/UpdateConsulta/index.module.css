@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+.container {
+  justify-content: center;
+  align-items: center;
+}
+
+.boxagendarconsulta {
+  display: block;
+  width: 70%;
+  max-width: 1500px;
+  min-width: 300px;
+  height: auto; 
+  background-color: white;
+  padding: 3em;
+  margin: auto;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  margin-bottom: 2em;
+  border-radius: 20px;
+  border: 0.5px solid #B1B1B1;
+}
+
+.titulocadastro{
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: black ;
+  font-family: 'Poppins', sans-serif;
+  margin-top: 3%;
+  margin-bottom: 3%;
+}
+
+.continuarbotao{
+  margin-top: 3em;
+  margin-bottom: 0px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1em;
+}
+
+.barradeprogresso{
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  vertical-align: middle;
+  color: #d3d3d3;
+ 
+}
+.textobarradeprogresso{
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  width: 40vb;
+  height: 5vh;
+  border-bottom: 0.5vh solid;
+  font-size: 15px;
+  border-radius: 2px;
+  margin-left: -23px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+.textodocentro{
+  margin-left: 10vh;
+  margin-right: 10vh;
+}
+
+.espacodosforms{
+  margin-top: 10px;
+}
+
+.datepicker{
+  border: none;
+}
+
+.voltarButton{
+  width: 10em;
+  height: 3em; 
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid #39805F;
+  color: #39805F;
+}
+.continuarButton{
+  width: 10em;
+  height: 3em; 
+  border-radius: 10px;
+  background-color: #39805F;
+  border: none;
+  color: white;
+}
+
+.voltarButtonHeader{
+  margin-left: 5%;
+}
+  
+
+.input {
+  font-family: 'Poppins', sans-serif;;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 20px;
+  color: #000000;
+  resize: vertical;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
+  border: 1px solid #ccc;
+}
+
+.input::placeholder {
+  font-family: 'Poppins', sans-serif;;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 20px;
+  color: #000000;
+}
+
+.col {
+  margin-bottom: 0.5em;
+}
+
+.col select option {
+  font-family: 'Poppins', sans-serif;;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 20px;
+  color: #000000;
+}
+
+.col_radio {
+  display: flex;
+  gap: 10px;
+}
+
+.checkbox {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  background-color: white;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  }
+
+.checkbox:focus {
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px 2px #3d856371;
+}
+
+.checkbox:checked {
+  background-color: #327053;
+  border: 1px solid #ccc;
+  box-shadow: #327053;
+}
+
+.obrigatorio {
+  color: #C7122F;
+}
+
+.error_message {
+  margin-top: -0.2em;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 24px;
+  color: #C7122F;
+}
+

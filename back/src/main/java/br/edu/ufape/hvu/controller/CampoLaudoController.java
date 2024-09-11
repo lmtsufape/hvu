@@ -17,7 +17,7 @@ import br.edu.ufape.hvu.controller.dto.response.CampoLaudoResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
-@CrossOrigin (origins = "http://localhost:8081/" )
+ 
 @RestController
 @RequestMapping("/api/v1/")
 public class CampoLaudoController {

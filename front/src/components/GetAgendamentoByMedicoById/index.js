@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './index.module.css';
-import { getVagaById } from '../../../services/vagaService';
+import { getVagaById, updateVaga } from '../../../services/vagaService';
 import VoltarButton from '../VoltarButton';
 import { format } from 'date-fns';
+import { CriarConsulta, VisualizarPaciente } from '../WhiteButton';
 
 function GetAgendamentoByMedicoById() {
     const router = useRouter();
     const { id } = router.query;
     const [vaga, setVaga] = useState({});
+
+    console.log("vaga:", vaga);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,7 +42,6 @@ function GetAgendamentoByMedicoById() {
         if (typeof dataHora !== 'string') return ''; // Verifica se dataHora é uma string
         return format(new Date(dataHora.replace('T', ' ')), 'HH:mm');
     };
-
 
     return (
         <div className={styles.container}>
@@ -72,7 +74,7 @@ function GetAgendamentoByMedicoById() {
                                                 <p>{formatHour(vaga.dataHora)}</p>
                                             </div>
                                             <div className={styles.infos}>
-                                                <h6>Veterinário&#40;a&#41;</h6>
+                                                <h6>Veterinário(a)</h6>
                                                 <p>{vaga.medico && vaga.medico.nome}</p>
                                             </div>
                                         </div>
@@ -86,6 +88,10 @@ function GetAgendamentoByMedicoById() {
                                                 <h6>Especialidade</h6>
                                                 <p>{vaga.especialidade && vaga.especialidade.nome}</p>
                                             </div>
+                                        </div>
+
+                                        <div className={styles.button_box}>
+                                            <CriarConsulta page={'createConsulta'} id={id} />
                                         </div>
                                     </div>
                                 </div>
@@ -135,9 +141,7 @@ function GetAgendamentoByMedicoById() {
                                             </div>
 
                                             <div className={styles.button_box}>
-                                                <button onClick={() => router.push(`/getAnimalByIdByMedico/${vaga.agendamento.animal.id}`)}>
-                                                    Visualizar paciente
-                                                </button>
+                                                <VisualizarPaciente page={'getAnimalByIdByMedico'} id={vaga.agendamento.animal.id} />
                                             </div>
                                         </div>
                                     </div>

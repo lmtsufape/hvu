@@ -17,7 +17,7 @@ import br.edu.ufape.hvu.controller.dto.response.ExameMicroscopicoResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
-@CrossOrigin (origins = "http://localhost:8081/" )
+ 
 @RestController
 @RequestMapping("/api/v1/")
 public class ExameMicroscopicoController {
@@ -60,11 +60,7 @@ public class ExameMicroscopicoController {
 				obj.setEtapa(null);
 			}
 
-			// Laudo Microscopia
-			if (obj.getLaudoMicroscopia() != null) {
-				oldObject.setLaudoMicroscopia(facade.findLaudoMicroscopiaById(obj.getLaudoMicroscopia().getId()));
-				obj.setLaudoMicroscopia(null);
-			}
+
 
 			// foto
 			if (obj.getFoto() != null) {

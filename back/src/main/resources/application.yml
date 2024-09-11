@@ -1,8 +1,10 @@
+files.storage: ./var/hvu/files/
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5437/banco
+    url: jdbc:postgresql://localhost:5432/banco
     username: postgres
-    password: 098098
+    password: 1234
     auto-commit: false
 
   jpa:
@@ -42,6 +44,12 @@ springdoc:
 server:
   port: 8081
 
+common:
+  seeders: true
+  front: http://localhost:3000/,https://lmtsteste06.ufape.edu.br/
+  back: http://localhost:8081/,https://lmtsteste03.ufape.edu.br/
+  docker: http://localhost:8000/,https://lmtsteste04.ufape.edu.br/
+
 ---
 spring:
   config:
@@ -56,3 +64,6 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://keycloak:8080/realms/lmts/protocol/openid-connect/certs
+
+
+

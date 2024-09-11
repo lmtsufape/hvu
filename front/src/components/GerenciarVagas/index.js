@@ -6,6 +6,7 @@ import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import TipoConsultaList from "@/hooks/useTipoConsultaList";
+import MedicoList from "@/hooks/useMedicoList";
 import { createVagaNormal } from "../../../services/vagaService";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
@@ -20,8 +21,10 @@ function GerenciarVagas() {
 
     const { especialidades } = EspecialidadeList();
     const { tiposConsulta } = TipoConsultaList();
+    const { medicos } = MedicoList();
 
     const [data, setData] = useState("");
+    const [dataFim, setDataFim] = useState("");
 
     const handleVagasChange = (numVaga) => {
         setVagas(prevState => ({
@@ -44,24 +47,21 @@ function GerenciarVagas() {
     const handleDataChange = (event) => {
         setData(event.target.value);
     };
-    console.log("data:", data);
+    const handleDataFimChange = (event) => {
+        setDataFim(event.target.value);
+    };
 
-
-    const [selectedEspecialidade, setSelectedEspecialidade] = useState(new Array(8).fill('')); 
-
+    const [selectedEspecialidade, setSelectedEspecialidade] = useState(new Array(8).fill(''));
     const handleEspecialidadeSelection = (event, position) => {
-        const selectedEspecialidadeId = event.target.value; 
+        const selectedEspecialidadeId = event.target.value;
         setSelectedEspecialidade(prevSelectedEspecialidade => {
             const updatedSelectedEspecialidade = [...prevSelectedEspecialidade];
             updatedSelectedEspecialidade[position] = selectedEspecialidadeId;
             return updatedSelectedEspecialidade;
         });
     };
-    console.log("selectedEspecialidade", selectedEspecialidade);
-    
-    
-    const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(new Array(8).fill(''));
 
+    const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(new Array(8).fill(''));
     const handleTipoConsultaSelection = (event, position) => {
         const selectedTipoConsultaId = event.target.value;
         setSelectedTipoConsulta(prevSelectedTipoConsulta => {
@@ -70,12 +70,24 @@ function GerenciarVagas() {
             return updatedSelectedTipoConsulta;
         });
     };
-    console.log("selectedTipoConsulta", selectedTipoConsulta);
 
-    const validateFields = (agendamento) => {
+    const [selectedMedico, setSelectedMedico] = useState(new Array(8).fill(''));
+    const handleMedicoSelection = (event, position) => {
+        const selectedMedicoId = event.target.value;
+        setSelectedMedico(prevSelectedMedico => {
+            const updatedSelectedMedico = [...prevSelectedMedico];
+            updatedSelectedMedico[position] = selectedMedicoId;
+            return updatedSelectedMedico;
+        });
+    };
+
+    const validateFields = () => {
         const errors = {};
         if (!data) {
-          errors.data = "Campo obrigatório";
+            errors.data = "Campo obrigatório";
+        }
+        if (!dataFim) {
+            errors.dataFim = "Campo obrigatório";
         }
         return errors;
     };
@@ -83,46 +95,52 @@ function GerenciarVagas() {
     const criarJSON = () => {
         const turnoManha = [];
         const turnoTarde = [];
-      
+
+        const horariosManha = ["08:00", "09:00", "10:00", "11:00"];
+        const horariosTarde = ["13:00", "14:00", "15:00", "16:00"];
+
         for (let i = 0; i < selectedEspecialidade.length; i++) {
-          const especialidadeId = selectedEspecialidade[i];
-          const tipoConsultaId = selectedTipoConsulta[i];
-      
-          // Verifica se os IDs são diferentes de 0 antes de adicionar ao JSON
-          if (especialidadeId !== '' && tipoConsultaId !== '') {
-            const objeto = {
-              especialidade: { id: especialidadeId },
-              tipoConsulta: { id: tipoConsultaId }
-            };
-      
-            if (i < 4) {
-              turnoManha.push(objeto);
-            } else {
-              turnoTarde.push(objeto);
+            const especialidadeId = selectedEspecialidade[i];
+            const tipoConsultaId = selectedTipoConsulta[i];
+            const medicoId = selectedMedico[i];
+
+            if (especialidadeId !== '' && tipoConsultaId !== '' && medicoId !== '') {
+                const objeto = {
+                    especialidade: { id: especialidadeId },
+                    tipoConsulta: { id: tipoConsultaId },
+                    medico: { id: medicoId },
+                    horario: i < 4 ? horariosManha[i] : horariosTarde[i - 4]
+                };
+
+                if (i < 4) {
+                    turnoManha.push(objeto);
+                } else {
+                    turnoTarde.push(objeto);
+                }
             }
-          }
         }
-      
+
         const jsonData = {
-          data: data,
-          turnoManha: turnoManha,
-          turnoTarde: turnoTarde
+            data: data,
+            dataFinal: dataFim,
+            turnoManha: turnoManha,
+            turnoTarde: turnoTarde
         };
-      
+
         return jsonData;
-      };
-    
+    };
+
     const handleCreateVagas = async () => {
-        const validationErrors = validateFields(data);
+        const validationErrors = validateFields();
         if (Object.keys(validationErrors).length > 0) {
-          setErrors(validationErrors);
-          return;
+            setErrors(validationErrors);
+            return;
         }
 
         const vagasToCreate = criarJSON();
-    
+
         console.log("VagasToCreate:", vagasToCreate);
-    
+
         try {
             await createVagaNormal(vagasToCreate);
             setShowAlert(true);
@@ -137,10 +155,9 @@ function GerenciarVagas() {
             <VoltarButton />
             <h1>Criar Vagas</h1>
             <form className={styles.inputs_container}>
-                
                 <div className={styles.inputs_box}>
                     <div className={`col ${styles.col}`}>
-                        <label htmlFor="data" className="form-label">Data  <span className={styles.obrigatorio}>*</span></label>
+                        <label htmlFor="data" className="form-label">Data início  <span className={styles.obrigatorio}>*</span></label>
                         <input
                             placeholder="Digite a data"
                             type="date"
@@ -152,22 +169,33 @@ function GerenciarVagas() {
                         {errors.data && <div className={`invalid-feedback ${styles.error_message}`}>{errors.data}</div>}
                     </div>
                 </div>
-
                 <div className={styles.inputs_box}>
-
+                    <div className={`col ${styles.col}`}>
+                        <label htmlFor="dataFim" className="form-label">Data fim <span className={styles.obrigatorio}>*</span></label>
+                        <input
+                            placeholder="Digite a data"
+                            type="date"
+                            className={`form-control ${styles.input_data} ${errors.dataFim ? "is-invalid" : ""}`}
+                            name="dataFim"
+                            value={dataFim}
+                            onChange={handleDataFimChange}
+                        />
+                        {errors.dataFim && <div className={`invalid-feedback ${styles.error_message}`}>{errors.dataFim}</div>}
+                    </div>
+                </div>
+                <div className={styles.inputs_box}>
                     <div className="row">
                         <div className={styles.title}><h2>Turno manhã:</h2></div>
                     </div>
-
                     <div className={`row ${styles.div_space}`}>
                         <div className="col">
-                        {Object.entries(vagas)
+                            {Object.entries(vagas)
                                 .filter(([numVaga]) => numVaga.includes('vaga1'))
                                 .map(([numVaga, selecionado]) => (
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 1
+                                                Vaga 1 | 08:00 às 09:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -175,7 +203,6 @@ function GerenciarVagas() {
                                                 id={`${numVaga}-checkbox`}
                                                 checked={selecionado}
                                                 onChange={() => handleVagasChange(numVaga)}
-
                                             />
                                         </div>
                                         {selecionado && (
@@ -197,7 +224,6 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
-
                                                 <div className={`col ${styles.col}`}>
                                                     <label htmlFor="tipoConsulta" className="form-label">Tipo de consulta</label>
                                                     <select
@@ -215,12 +241,28 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[0] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 0)}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
                                 ))}
                         </div>
-
                         <div className="col">
                             {Object.entries(vagas)
                                 .filter(([numVaga]) => ['vaga2'].includes(numVaga))
@@ -228,7 +270,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 2
+                                                Vaga 2 | 09:00 às 10:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -257,7 +299,6 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
-
                                                 <div className={`col ${styles.col}`}>
                                                     <label htmlFor="tipoConsulta" className="form-label">Tipo de consulta</label>
                                                     <select
@@ -275,6 +316,23 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[1] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 1)}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -288,7 +346,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 3
+                                                Vaga 3 | 10:00 às 11:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -335,6 +393,24 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[2] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 2)}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -348,7 +424,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 4
+                                                Vaga 4 | 11:00 às 12:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -395,14 +471,32 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[3] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 3)}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
                                 ))}
                         </div>
-                        
-                       
-                    </div> 
+
+
+                    </div>
                 </div>
 
                 <div className={styles.inputs_box}>
@@ -418,7 +512,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 5
+                                                Vaga 5 | 13:00 às 14:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -465,6 +559,24 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[4] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 4)}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -478,7 +590,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 6
+                                                Vaga 6 | 14:00 às 15:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -525,6 +637,24 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[5] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 5)}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -538,7 +668,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 7
+                                                Vaga 7 | 15:00 às 16:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -585,6 +715,24 @@ function GerenciarVagas() {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[6] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 6)}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -598,7 +746,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 8
+                                                Vaga 8 | 16:00 às 17:00
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -641,6 +789,24 @@ function GerenciarVagas() {
                                                         {tiposConsulta.map((tipoConsulta) => (
                                                             <option key={tipoConsulta.id} value={tipoConsulta.id}>
                                                                 {tipoConsulta.tipo}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+
+                                                <div className={`col ${styles.col}`}>
+                                                    <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;</label>
+                                                    <select
+                                                        className={`form-select ${styles.input}`}
+                                                        name="medico"
+                                                        aria-label="Selecione um(a) veterinário(a)"
+                                                        value={selectedMedico[7] || ''}
+                                                        onChange={(event) => handleMedicoSelection(event, 7)}
+                                                    >
+                                                        <option value="">Selecione o veterinário(a)</option>
+                                                        {medicos.map((medico) => (
+                                                            <option key={medico.id} value={medico.id}>
+                                                                {medico.nome}
                                                             </option>
                                                         ))}
                                                     </select>

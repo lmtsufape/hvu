@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+
+.container {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column; /* Alinha o conteúdo em coluna */
+    justify-content: center; 
+    align-items: center;
+    text-align: center; /* Centraliza o texto */
+}
+
+.heading {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+
+.box_button_container {
+    display: flex;
+    justify-content: center; /* Centraliza os botões horizontalmente */
+    gap: 32px; /* Espaçamento entre os botões */
+}
+
+.button {
+    width: 260px;
+    height: 210px;
+    border: none;
+    border-radius: 24px;
+    box-shadow: 0px 0px 10px 0px #0000001A;
+    text-decoration: none;
+    background-color: #FFFFFF;
+    padding-top: 3em;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center; 
+    align-items: center;
+}
+
+.button:hover {
+    box-shadow: 0 0 5px 2px #3d856371;
+}
+
+.button h6 {
+    color: #327053;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: 0em; 
+    margin: 0; /* Remove margens padrão do <h6> */
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; 
+}
+
+.popupContent {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+}
+
+.closeButton {
+    background: #327053;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.closeButton:hover {
+    background: #276943;
+}

@@ -1,15 +1,4 @@
 
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(131, 126, 126, 0.2); 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 .modal {
   width: 415px;
@@ -25,8 +14,8 @@
   align-items: center;
 }
 .modal2 {
-  width: 415px;
-  height: 220px;
+  width: 28rem;
+  height: 23rem;
   border-radius: 12px;
   border: 2px;
   box-shadow: 4px 5px 15px 0px #00000014;
@@ -100,7 +89,8 @@
 .div_button2 {
   width: 370px;
   display: flex;
-  justify-content: right;
+  justify-content: center;
+  gap: 40px;
 }
 
 .button_close_modal {
@@ -133,5 +123,25 @@
 }
 
 .button_cancelar_consulta:hover {
+  background-color: #f3f3f37b;
+}
+
+.button_reagendar_consulta {
+  width: 170px;
+  height: 44px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #909090;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22.5px;
+  letter-spacing: 0em;
+  text-align: center;
+  color: #909090;
+  background-color: white;
+}
+
+.button_reagendar_consulta:hover {
   background-color: #f3f3f37b;
 }

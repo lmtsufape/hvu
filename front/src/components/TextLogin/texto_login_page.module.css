@@ -34,3 +34,27 @@
     align-items: center;
     margin-left: auto;
 }
+@media only screen and (max-width: 700px) {
+    
+    .texto_box {
+        width: 90%; /* Ajusta a largura para 90% da tela */
+        height: auto; /* Ajusta a altura automaticamente */
+        padding: 0 10px; /* Adiciona padding para espaçamento */
+    }
+
+    .titulo {
+        width: 100%; /* Ajusta a largura para 100% da div pai */
+        font-size: 24px; /* Ajusta o tamanho da fonte */
+        line-height: 36px; /* Ajusta a altura da linha */
+        margin-left: 0; /* Remove a margem esquerda */
+        margin-right: 0;
+    }
+
+    .paragrafo {
+        width: 100%; /* Ajusta a largura para 100% da div pai*/
+        font-size: 15px; /* Ajusta o tamanho da fonte */
+        line-height: 22px; /* Ajusta a altura da linha */
+        margin-left: 0; /* Remove a margem esquerda */
+        margin-right: 0;
+    }
+}

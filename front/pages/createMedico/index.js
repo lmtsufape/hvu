@@ -4,13 +4,16 @@ import {Header03} from "../../src/components/Header";
 import Footer from "../../src/components/Footer";
 import { SubHeader } from "@/components/SubHeader";
 import CreateMedico from "@/components/CreateMedico";
+import "@/styles/styles.css"
 
 function CreateMedicoPage(){
     return(
-        <div>
+        <div className="divPai">
             < Header03 />
             < SubHeader />
-            < CreateMedico />
+            <div className="flexStyle">
+                < CreateMedico />
+            </div>
             < Footer />
         </div>
     )

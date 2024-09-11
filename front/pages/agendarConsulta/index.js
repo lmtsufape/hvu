@@ -4,12 +4,16 @@ import Footer from "../../src/components/Footer";
 import AgendarConsulta from "../../src/components/AgendarConsulta"
 import { SubHeader } from "@/components/SubHeader";
 
+import "@/styles/styles.css"
+
 function AgendarConsultaPage(){
     return(
-        <div>
+        <div className="divPai">
             <Header03/>
             < SubHeader />
-            <AgendarConsulta/>
+            <div className="flexStyle">
+                <AgendarConsulta/>
+            </div>
             <Footer/>
         </div>
     )

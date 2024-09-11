@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import InputMask from "react-input-mask";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./createTutorForm.module.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 
 function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
@@ -55,7 +55,7 @@ function renderInput(label, placeholder, name, value, onChange, error, type = "t
             {type === "password" && (
                     <div className="input-group-append">
                         <button className="btn btn-outline-secondary" type="button" onClick={() => setShow(!show)}>
-                            <FontAwesomeIcon icon={show ? faEyeSlash : faEye} />
+                          {/*  <FontAwesomeIcon icon={show ? faEyeSlash : faEye} /> */}
                         </button>
                     </div>
                 )}

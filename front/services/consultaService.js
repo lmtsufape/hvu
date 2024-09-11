@@ -1,9 +1,9 @@
 import api from '../common/http-common-back';
 
 // Função para criar uma nova consulta
-export async function createConsulta(consultaData) {
+export async function createConsulta(consultaData, vagaId) {
   try {
-    const response = await api.post('/consulta', consultaData);
+    const response = await api.post(`/consulta/${vagaId}`, consultaData);
     return response.data;
   } catch (error) {
     throw error;
@@ -30,6 +30,15 @@ export async function getConsultaById(consultaId) {
   }
 }
 
+export async function getConsultaByAnimal(animalId) {
+  try {
+    const response = await api.get(`/consulta/animalid/${animalId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // Função para atualizar uma consulta
 export async function updateConsulta(consultaId, consultaData) {
   try {
@@ -50,10 +59,10 @@ export async function deleteConsulta(consultaId) {
   }
 }
 
-// Endpoint para cancelar consulta pelo id
+// Endpoint para cancelar agendamento pelo id
 export async function cancelarAgendamento(cancelamentoData) {
   try {
-    const response = await api.post(`/cancelamento`, cancelamentoData);
+    const response = await api.post(`/cancelamento/agendamento`, cancelamentoData);
   } catch (error) {
     throw error;
   }

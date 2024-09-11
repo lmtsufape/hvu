@@ -6,14 +6,11 @@ import Filter from '../GetAgendamentosFilter';
 import { DataCompleta, DataCurta, DiaDaSemana } from '../Date';
 import CalendarGreenIcon from '../CalendarGreenIcon';
 import VoltarButton from '../VoltarButton';
-import { getAgendamento, deleteAgendamento } from "../../../services/agendamentoService";
-import { getAllVaga, updateVaga } from '../../../services/vagaService';
-import { cancelarAgendamento } from '../../../services/consultaService';
+import { getVagaByDate } from '../../../services/vagaService';
+import { cancelarVaga } from '../../../services/vagaService';
 import { getTutorByAnimal } from '../../../services/tutorService';
-import { Await } from 'react-router-dom';
 import ModalAgendamento from '../ModalAgendamento';
 import ErrorAlert from '../ErrorAlert';
-
 
 function GetAllAgendamentosDiaForm() {
   const router = useRouter();
@@ -23,7 +20,6 @@ function GetAllAgendamentosDiaForm() {
   const [selectedVaga, setSelectedVaga] = useState(null);
   const [tutor, setTutor] = useState('');
   const [descricaoCancelamento, setDescricaoCancelamento] = useState('');
-
   const [showAlert, setShowAlert] = useState(false);
 
   const handleDataSelecionada = (novaData) => {
@@ -34,33 +30,32 @@ function GetAllAgendamentosDiaForm() {
   const handleCancelarConsulta = async () => {
     try {
       const cancelamentoData = {
-        descricao: descricaoCancelamento,
-        agendamento: {
-          id: selectedVaga.agendamento.id
-        }
-      };
-      await cancelarAgendamento(cancelamentoData);
+        vaga: {
+          id: selectedVaga.id
+        },
+        descricao: descricaoCancelamento
+      }
+      await cancelarVaga(cancelamentoData);
       closeModal();
       setShowAlert(true);
       fetchData();
     } catch (error) {
-      console.error('Erro ao cancelar consulta:', error);
+      console.error('Erro ao cancelar vaga:', error);
     }
   };
 
   const openModal = async (vaga) => {
     setSelectedVaga(vaga);
     setModalOpen(true);
-    console.log("animal: ", selectedVaga?.agendamento);
-    try {
-      console.log("ID DO BIXO:", vaga.agendamento.animal.id)
-      const tutorSelected = await getTutorByAnimal(vaga.agendamento.animal.id);
-      setTutor(tutorSelected);
-    } catch (error) {
-      console.error('Erro ao obter tutor:', error);
+    if (vaga?.agendamento?.animal?.id) {
+      try {
+        const tutorSelected = await getTutorByAnimal(vaga.agendamento.animal.id);
+        setTutor(tutorSelected);
+      } catch (error) {
+        console.error('Erro ao obter tutor:', error);
+      }
     }
   };
-
 
   const closeModal = () => {
     setModalOpen(false);
@@ -70,8 +65,9 @@ function GetAllAgendamentosDiaForm() {
   };
 
   const fetchData = async () => {
+    const dataFormatada = dataSelecionada.toISOString().slice(0, 10); // Obtém 'yyyy-mm-dd'
     try {
-      const VagasData = await getAllVaga();
+      const VagasData = await getVagaByDate(dataFormatada);
       setVagas(VagasData);
     } catch (error) {
       console.error('Erro ao buscar vagas:', error);
@@ -82,7 +78,7 @@ function GetAllAgendamentosDiaForm() {
     fetchData();
   }, [dataSelecionada]);
 
-  const horarios = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14,00", "15,00", "16:00", "17,00", "18:00"];
+  const horarios = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
 
   return (
     <div className={styles.pagina}>
@@ -117,13 +113,17 @@ function GetAllAgendamentosDiaForm() {
             </tr>
           </thead>
           <tbody>
-            {horarios.map(horario => (
-              <tr key={horario}>
-                <th className={styles.time}>{horario}</th>
-                <th className={styles.th}>
-                  <div className={styles.cardsJuntos}>
-                    {vagas.filter(vaga => vaga.dataHora.startsWith(dataSelecionada.toISOString().slice(0, 10) + 'T' + horario))
-                      .map(vaga => {
+            {horarios.map((horario, index) => (
+              <React.Fragment key={index}>
+                <tr>
+                  <th className={styles.time}>{horario}</th>
+                  <th className={styles.th}>
+                    <div className={styles.cardsJuntos}>
+                      {vagas?.filter(vaga => {
+                        const vagaHora = new Date(vaga.dataHora).getHours();
+                        const horarioHora = parseInt(horario.split(':')[0], 10);
+                        return vaga.dataHora.startsWith(dataSelecionada.toISOString().slice(0, 10)) && vagaHora === horarioHora;
+                      }).map(vaga => {
                         return (
                           <button key={vaga.id} className={`${styles.button} ${styles[`button_${vaga.status.toLowerCase()}`]}`} onClick={() => openModal(vaga)}>
                             <div className={styles.infos_container}>
@@ -131,9 +131,9 @@ function GetAllAgendamentosDiaForm() {
                                 <div className={styles.infos_box1}>
                                   <div className={styles.info1}>
                                     {vaga.agendamento?.animal ? (
-                                      <>{vaga.agendamento?.animal.nome} &bull; {vaga.agendamento?.animal.raca.especie.nome}</>
+                                      <>{vaga.agendamento?.animal.nome} &bull; {vaga.tipoConsulta?.tipo}</>
                                     ) : (
-                                      <>{vaga.status}</>
+                                      <>{vaga.medico?.nome}</>
                                     )}
                                   </div>
                                   <h2 className={styles[`status_${vaga.status ? vaga.status.toLowerCase() : ''}`]}>
@@ -141,7 +141,9 @@ function GetAllAgendamentosDiaForm() {
                                   </h2>
                                 </div>
                                 <div className={styles.infos_box2}>
-                                  <div className={styles.info2}>Exame</div>
+                                  <div className={styles.info2}>
+                                    {vaga?.especialidade?.nome}
+                                  </div>
                                   <div className={styles.info2}>{horario} - {new Date(vaga.dataHora).getHours() + 1}:00</div>
                                 </div>
                               </div>
@@ -149,9 +151,15 @@ function GetAllAgendamentosDiaForm() {
                           </button>
                         );
                       })}
-                  </div>
-                </th>
-              </tr>
+                    </div>
+                  </th>
+                </tr>
+                {horario === "11:00" && (
+                  <tr key="separator" className={styles.separator}>
+                    <td colSpan={2} className={styles.separatorCell}></td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>
@@ -167,8 +175,7 @@ function GetAllAgendamentosDiaForm() {
         handleCancelarConsulta={handleCancelarConsulta}
       />
 
-      {showAlert && <ErrorAlert message="Agendamento cancelado com sucesso!" show={showAlert} />}   
-
+      {showAlert && <ErrorAlert message="Agendamento cancelado com sucesso!" show={showAlert} />}
     </div>
   );
 }

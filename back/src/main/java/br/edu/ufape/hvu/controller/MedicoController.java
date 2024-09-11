@@ -30,7 +30,7 @@ import br.edu.ufape.hvu.model.Medico;
 import jakarta.validation.Valid;
 
 
-@CrossOrigin (origins = "http://localhost:3000/" )
+ 
 @RestController
 @RequestMapping("/api/v1/")
 public class MedicoController {
@@ -100,7 +100,7 @@ public class MedicoController {
 	public String deleteMedico(@PathVariable Long id) {
 		try {
 			Medico oldObject = facade.findMedicoById(id);
-			facade.deleteMedico(id);
+			facade.deleteMedico(oldObject);
 			return "";
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());

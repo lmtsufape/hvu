@@ -1,5 +1,7 @@
 package br.edu.ufape.hvu.facade;
 
+import java.io.File;
+import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -608,64 +610,83 @@ public class Facade {
 		Agendamento agendamento = findAgendamentoById(idAgendamento);
 		return vagaServiceInterface.findVagaByAgendamento(agendamento);
 	}
-	
+
 	@Transactional
-	public List<Vaga> createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
-	    List<Vaga> vagas = new ArrayList<>();
-		
-		createVagas(vagaRequestDTO.getData(), vagaRequestDTO.getTurnoManha(), "Manhã", vagas);
-	    createVagas(vagaRequestDTO.getData(), vagaRequestDTO.getTurnoTarde(), "Tarde", vagas);
-	    
-	    return vagas;
+	public String createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
+		List<Vaga> vagas = new ArrayList<>();
+		LocalDate startDate = vagaRequestDTO.getData();
+		LocalDate endDate = vagaRequestDTO.getDataFinal();
+		final long[] countCriacao = new long[2]; // countCriacao[0] quantidade criada, countCriacao[1] nao criada
+		StringBuilder detalheBuilder = new StringBuilder();
+
+		if (endDate == null) {
+			if (!isWeekend(startDate)) {
+				detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
+				detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+			}
+		} else {
+			LocalDate currentDate = startDate;
+			while (!currentDate.isAfter(endDate)) {
+				if (!isWeekend(currentDate)) {
+					detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
+					detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+				}
+				currentDate = currentDate.plusDays(1);
+			}
+		}
+
+		return detalheBuilder.toString().trim();
 	}
 
-	private void createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas) {
+	private boolean isWeekend(LocalDate date) {
+		return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+	}
 
+	private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao) {
+		List<Vaga> vagasByData = findVagaByData(data);
+		List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
+		vagasByData.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
+		vagasByDataAndTurno.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
 	    final long[] count = new long[2];
-	    count[0] = findVagaByData(data).size(); // Total vagas no dia
-	    count[1] = findVagaByDataAndTurno(data, turno).size(); // Total vagas no turno
+	    count[0] = vagasByData.size(); // Total vagas no dia
+	    count[1] = vagasByDataAndTurno.size();  // Total vagas no turno
 
-	    if (count[0] >= 8 || count[1] >= 4) {
-	        throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
-	    }
+		if (count[0] >= 16 || count[1] >= 8) {
+			throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
+		}
 
-	    vagaTipo.forEach(especialidadeTipo -> {
-	        Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
-	        TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());	        
-	        
-	        Map<LocalDateTime, List<Cronograma>> schedulesAvailable = scheduleAvailable(data, turno, especialidade);
-	            
-	        
-	        for (Map.Entry<LocalDateTime, List<Cronograma>> entry : schedulesAvailable.entrySet()) {
-	            LocalDateTime horario = entry.getKey();
-	            List<Cronograma> cronogramas = entry.getValue();
-	            
-	            for (Cronograma cronograma : cronogramas) { 
-	                if (count[0] < 8 && count[1] < 4) {
-	                    Vaga newVaga = new Vaga();
-	                    newVaga.setDataHora(horario);
-	                    newVaga.setEspecialidade(especialidade);
-	                    newVaga.setStatus("Disponível");
-	                    newVaga.setMedico(cronograma.getMedico());
-	                    newVaga.setTipoConsulta(tipoConsulta);
-	                    saveVaga(newVaga);
-	                    vagas.add(newVaga);
-	                    count[0]++;
-	                    count[1]++;
-	                    break;
-	                } else {
-	                    break; 
-	                }
-	                
-	            }
-	            break;
-	        }
-	        	
-                
-	           
-	        });
-	    }
-	
+		StringBuilder detalheBuilder = new StringBuilder();
+		for (VagaTipoRequest especialidadeTipo : vagaTipo) {
+			LocalDateTime dateTime = LocalDateTime.of(data, especialidadeTipo.getHorario());
+			try {
+				Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
+				TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());
+				Medico medico = findMedicoById(especialidadeTipo.getMedico().getId());
+
+				if (count[0] < 16 && count[1] < 8) {
+					Vaga newVaga = new Vaga();
+
+					newVaga.setDataHora(dateTime);
+					newVaga.setEspecialidade(especialidade);
+					newVaga.setStatus("Disponível");
+					newVaga.setMedico(medico);
+					newVaga.setTipoConsulta(tipoConsulta);
+					saveVaga(newVaga);
+					vagas.add(newVaga);
+					count[0]++;
+					count[1]++;
+					countCriacao[0]++;
+					detalheBuilder.append("Vaga ").append(dateTime).append(" adicionada com sucesso. ");
+				}
+			} catch (RuntimeException e) {
+				countCriacao[1]++;
+				detalheBuilder.append("Vaga ").append(dateTime).append(" não foi adicionada: ").append(e.getMessage()).append(". ");
+			}
+		}
+		return detalheBuilder.toString().trim();
+	}
+
+
 
 
 	// Medicamento--------------------------------------------------------------
@@ -1403,7 +1424,7 @@ public class Facade {
 
 	// CampoLaudo--------------------------------------------------------------
 	@Autowired
-	CampoLaudoServiceInterface campoLaudoServiceInterface;
+	private CampoLaudoServiceInterface campoLaudoServiceInterface;
 
 	public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
 		return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
@@ -1431,7 +1452,7 @@ public class Facade {
 
 	// Etapa--------------------------------------------------------------
 	@Autowired
-	EtapaServiceInterface etapaServiceInterface;
+	private EtapaServiceInterface etapaServiceInterface;
 
 	public Etapa saveEtapa(Etapa newInstance) {
 		return etapaServiceInterface.saveEtapa(newInstance);
@@ -1459,7 +1480,7 @@ public class Facade {
 
 	// ExameMicroscopia--------------------------------------------------------------
 	@Autowired
-	ExameMicroscopicoServiceInterface exameMicroscopicoServiceInterface;
+	private ExameMicroscopicoServiceInterface exameMicroscopicoServiceInterface;
 
 	public ExameMicroscopico saveExameMicroscopico(ExameMicroscopico newInstance) {
 		return exameMicroscopicoServiceInterface.saveExameMicroscopico(newInstance);
@@ -1488,7 +1509,7 @@ public class Facade {
 	// FichaSolicitacaoServico--------------------------------------------------------------
 
 	@Autowired
-	FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
+	private FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
 
 	public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
 		return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
@@ -1518,7 +1539,7 @@ public class Facade {
 
 	@Autowired
 
-	FotoServiceInterface fotoServiceInterface;
+	private FotoServiceInterface fotoServiceInterface;
 
 	public Foto saveFoto(Foto newInstance) {
 		return fotoServiceInterface.saveFoto(newInstance);
@@ -1547,7 +1568,7 @@ public class Facade {
 	// Instituicao--------------------------------------------------------------
 
 	@Autowired
-	InstituicaoServiceInterface instituicaoServiceInterface;
+	private InstituicaoServiceInterface instituicaoServiceInterface;
 
 	public Instituicao saveInstituicao(Instituicao newInstance) {
 		return instituicaoServiceInterface.saveInstituicao(newInstance);
@@ -1573,38 +1594,10 @@ public class Facade {
 		instituicaoServiceInterface.deleteInstituicao(id);
 	}
 
-	// LaudoMicroscopia--------------------------------------------------------------
-
-	@Autowired
-	LaudoMicroscopiaServiceInterface laudoMicroscopiaServiceInterface;
-
-	public LaudoMicroscopia saveLaudoMicroscopia(LaudoMicroscopia newInstance) {
-		return laudoMicroscopiaServiceInterface.saveLaudoMicroscopia(newInstance);
-	}
-
-	public LaudoMicroscopia updateLaudoMicroscopia(LaudoMicroscopia transientObject) {
-		return laudoMicroscopiaServiceInterface.updateLaudoMicroscopia(transientObject);
-	}
-
-	public LaudoMicroscopia findLaudoMicroscopiaById(long id) {
-		return laudoMicroscopiaServiceInterface.findLaudoMicroscopiaById(id);
-	}
-
-	public List<LaudoMicroscopia> getAllLaudoMicroscopia() {
-		return laudoMicroscopiaServiceInterface.getAllLaudoMicroscopia();
-	}
-
-	public void deleteLaudoMicroscopia(LaudoMicroscopia persistentObject) {
-		laudoMicroscopiaServiceInterface.deleteLaudoMicroscopia(persistentObject);
-	}
-
-	public void deleteLaudoMicroscopia(long id) {
-		laudoMicroscopiaServiceInterface.deleteLaudoMicroscopia(id);
-	}
-
+	
 	// LaudoNecropsia--------------------------------------------------------------
 	@Autowired
-	LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
+	private LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
 
 	public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
 		return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
@@ -1632,7 +1625,7 @@ public class Facade {
 
 	// LivroRegistro--------------------------------------------------------------
 	@Autowired
-	LivroRegistroServiceInterface livroRegistroServiceInterface;
+	private LivroRegistroServiceInterface livroRegistroServiceInterface;
 
 	public LivroRegistro saveLivroRegistro(LivroRegistro newInstance) {
 		return livroRegistroServiceInterface.saveLivroRegistro(newInstance);
@@ -1661,7 +1654,7 @@ public class Facade {
 	// MaterialColetado--------------------------------------------------------------
 	@Autowired
 
-	MaterialColetadoServiceInterface materialColetadoServiceInterface;
+	private MaterialColetadoServiceInterface materialColetadoServiceInterface;
 
 	public MaterialColetado saveMaterialColetado(MaterialColetado newInstance) {
 		return materialColetadoServiceInterface.saveMaterialColetado(newInstance);
@@ -1690,7 +1683,7 @@ public class Facade {
 	// Orgao--------------------------------------------------------------
 	@Autowired
 
-	OrgaoServiceInterface OrgaoServiceInterface;
+	private OrgaoServiceInterface OrgaoServiceInterface;
 
 	public Orgao saveOrgao(Orgao newInstance) {
 		return OrgaoServiceInterface.saveOrgao(newInstance);
@@ -1719,7 +1712,7 @@ public class Facade {
 	// Rotina--------------------------------------------------------------
 	@Autowired
 
-	RotinaServiceInterface RotinaServiceInterface;
+	private RotinaServiceInterface RotinaServiceInterface;
 
 	public Rotina saveRotina(Rotina newInstance) {
 		return RotinaServiceInterface.saveRotina(newInstance);
@@ -1745,4 +1738,50 @@ public class Facade {
 		RotinaServiceInterface.deleteRotina(id);
 	}
 
+	// Arquivo --------------------------------------------------------------
+
+	@Autowired
+	private FileServiceInterface fileService;
+
+	public File findFile(String fileName) {
+		return fileService.findFile(fileName);
+	}
+
+	public String storeFile(InputStream file, String fileName) {
+		String fn = System.currentTimeMillis() + "-" + fileName;
+		return fileService.storeFile(file, fn.replace(" ", ""));
+	}
+
+	public void deleteFile(String fileName) {
+		fileService.deleteFile(fileName);
+	}
+
+	// CampoLaudoMicroscopia --------------------------------------------------------------
+
+	@Autowired
+	private CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
+
+	public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
+		return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
+	}
+
+	public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopia transientObject) {
+		return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(transientObject);
+	}
+
+	public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {
+		return campoLaudoMicroscopiaServiceInterface.findCampoLaudoMicroscopiaById(id);
+	}
+
+	public List<CampoLaudoMicroscopia> getAllCampoLaudoMicroscopia() {
+		return campoLaudoMicroscopiaServiceInterface.getAllCampoLaudoMicroscopia();
+	}
+
+	public void deleteCampoLaudoMicroscopia(CampoLaudoMicroscopia persistentObject) {
+		campoLaudoMicroscopiaServiceInterface.deleteCampoLaudoMicroscopia(persistentObject.getId());
+	}
+
+	public void deleteCampoLaudoMicroscopia(long id) {
+		campoLaudoMicroscopiaServiceInterface.deleteCampoLaudoMicroscopia(id);
+	}
 }
