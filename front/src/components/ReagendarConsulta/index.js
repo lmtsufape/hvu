@@ -31,7 +31,11 @@ function ReagendarConsulta() {
                 const vagasList = await getAllVaga();
                 console.log("vagasList:", vagasList);
     
-                setVagas(vagasList.filter(vaga => vaga.status === "Disponível"));
+                // Função para normalizar strings removendo acentos e convertendo para minúsculas
+                const normalizeString = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    
+                // Filtrando vagas com status "disponível" (normalizado)
+                setVagas(vagasList.filter(vaga => normalizeString(vaga.status) === "disponivel"));
             } catch (error) {
                 console.error('Erro ao buscar vagas:', error);
             }
@@ -41,12 +45,12 @@ function ReagendarConsulta() {
             fetchData();
         }
     }, [id]);
+    
 
     const handleNovaDataChange = (event) => {
         const novaDataSelecionada = event.target.value;
         setNovaData(novaDataSelecionada); 
 
-        // Aguarda o preenchimento de `vagas` e faz o filtro apenas se houver vagas carregadas
         if (vagas.length > 0) {
             const vagasDisponiveisNaData = vagas.filter(vaga => vaga.dataHora.startsWith(novaDataSelecionada));
             setVagasFiltradas(vagasDisponiveisNaData);
