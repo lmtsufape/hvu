@@ -7,7 +7,6 @@ font-size: 1em;
 margin-left: 7%;
 
 }
-
 .no_vagas {
   display: block;
   margin-bottom: 0.8em;
@@ -171,7 +170,7 @@ margin-left: 7%;
   font-family: 'Poppins', sans-serif;
   text-align: center;
   width: 80%;
-  height: 5vh;
+  height: 8px;
   display: flex;
   justify-content: center;
   align-items: center; 
@@ -187,7 +186,7 @@ margin-left: 7%;
   font-family: 'Poppins', sans-serif;
   text-align: center;
   width: 80%;
-  height: 5vh;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center; 
@@ -209,7 +208,7 @@ margin-left: 7%;
   font-family: 'Poppins', sans-serif;
   text-align: center;
   width: 80%;
-  height: 5vh;
+  height: 8vh;
   display: flex;
   justify-content: center;
   align-items: center; 
@@ -225,7 +224,7 @@ margin-left: 7%;
   font-family: 'Poppins', sans-serif;
   text-align: center;
   width: 80%;
-  height: 5vh;
+  height: 8vh;
   display: flex;
   justify-content: center;
   align-items: center; 
@@ -247,7 +246,7 @@ margin-left: 7%;
   border-radius: 6px;
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  width: 80%;
+  width: 90%;
   height: 5vh;
   display: flex;
   justify-content: center;
@@ -273,8 +272,8 @@ margin-left: 7%;
   border-radius: 6px;
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  width: 80%;
-  height: 5vh;
+  width: 90%;
+  height: 8vh;
   display: flex;
   justify-content: center;
   align-items: center; 
@@ -550,6 +549,11 @@ margin-left: 7%;
 .button_avancar:hover{
   background-color: #5b977b;
 }
+.button_cancelar_consulta{
+  justify-content: center;
+  align-items: center;
+  height: 50em;
+}
 
 .obrigatorio {
   color: #C7122F;
@@ -590,4 +594,96 @@ margin-left: 7%;
   font-size: 16px;
   font-weight: 500;
   line-height: 30px;
+}
+
+@media only screen and (max-width: 600px) {
+  .container {
+    width: auto;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.title_box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+
+.boxprincipal {
+  display: block;
+  width: auto; 
+  max-width: 65%;
+  min-width: 200px;
+  height: auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 0.9px solid #B1B1B1;
+  margin: 0 0 7em auto;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  margin-bottom: 5em;
+}
+.title_box h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+  color: #000000;
+}
+
+.diasdasemana {
+    font-size: 18px;
+}
+
+.title_box h1 {
+  font-size: 1.8em;/* Reduza o tamanho do título */
+  align-items: center;
+  flex-direction: column;
+}
+.aviso {
+  margin-top: 2em;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 30px;
+}
+
+
+.data {
+    font-size: 16px;
+}
+
+.botaohora, .botaoPrimeiraConsulta, .botaoRetorno, .botaohoraIndisponivel {
+    font-size: auto;
+    height: 6em;
+}
+
+.select_box select {
+    font-size: 0.9em; /* Tamanho da fonte menor para seletores */
+}
+
+.button_container {
+    flex-direction: column;
+    align-items: center;
+}
+
+.titulodataconsulta {
+    font-size: 1.8em;
+}
+
+.descricaotitulodataconsulta {
+    font-size: 0.8em;
+}
+
+.button_cancelar_consulta, .button_agendar_consulta {
+    font-size: 12px;
+    width: 140px;
+    height: 35px;
+}
+
 }
