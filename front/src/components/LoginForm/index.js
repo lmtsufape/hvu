@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 import { postLogin } from "../../../common/postLogin";
 import { useState } from "react";
 //icone do olho importacao
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { getCurrentUsuario } from '../../../services/userService';
 
 
@@ -105,7 +105,7 @@ function FormularioLogin() {
                 required
               />
               <span className={`input-group-text ${styles.eyeIcon}`} onClick={togglePasswordVisibility}>
-            {/*    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} /> */} 
+            {   <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} /> } 
               </span>
               {errors.senha && <div className={`invalid-feedback ${styles.error_message}`}>{errors.senha}</div>}
             </div>
