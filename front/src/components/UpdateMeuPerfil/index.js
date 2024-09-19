@@ -195,7 +195,7 @@ function UpdateMeuPerfil() {
 
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
-                        <div className={styles.titulo}>Minhas informações&#40;a&#41;</div>
+                        <div className={styles.titulo}>Minhas informações</div>
                         {renderUsuarioInput("Nome Completo", usuario.nome, "nome", usuario.nome, handleUsuarioChange, "text", errors.nome)}
                         <div className="row">
                             <div className={`col ${styles.col}`}>
