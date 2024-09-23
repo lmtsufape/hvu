@@ -1,70 +1,71 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(131, 126, 126, 0.2); 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 9999;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(131, 126, 126, 0.2);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .modal {
-    width: 415px;
-    height: 270px;
-    border-radius: 12px;
-    border: 2px;
-    box-shadow: 4px 5px 15px 0px #00000014;
-    background-color: white;
-    padding: 20px;
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	width: 415px;
+	height: 270px;
+	border-radius: 12px;
+	border: 2px;
+	box-shadow: 4px 5px 15px 0px #00000014;
+	background-color: white;
+	padding: 20px;
+	z-index: 9999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .modalContent {
-    width: 370px;
-    height: 230px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 32px;
+	width: 370px;
+	height: 230px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 32px;
 }
 
 .title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 24px;
-    letter-spacing: 0em;
-    color: #404040;
-    text-align: center;
+	font-family: "Poppins", sans-serif;
+	font-size: 16px;
+	font-weight: 300;
+	line-height: 24px;
+	letter-spacing: 0em;
+	color: #404040;
+	text-align: center;
 }
 
 .div_button2 {
-    width: 370px;
-    display: flex;
-    justify-content: right;
+	width: 370px;
+	display: flex;
+	justify-content: right;
 }
 
 .button_cancelar_consulta {
-    width: 117px;
-    height: 44px;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px;
-    gap: 10px;
-    font-size: 16px;
-    color: white;
-    background-color: #327053;
-    font-family: 'Poppins', sans-serif;
+	width: 117px;
+	height: 44px;
+	padding: 10px;
+	border-radius: 10px;
+	border: 1px;
+	gap: 10px;
+	font-size: 16px;
+	color: white;
+	background-color: #327053;
+	font-family: "Poppins", sans-serif;
 }
 
 .button_cancelar_consulta:hover {
-    background-color: #5b977b;
+	background-color: #5b977b;
 }
