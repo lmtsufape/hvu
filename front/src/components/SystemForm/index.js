@@ -8,7 +8,7 @@ function SystemForm() {
             <div className={styles.container}>
                 <h1>Sistema</h1>
                 <div>
-                    <h6>Bem-vindo ao nosso site dedicado ao sistema de agendamento do Hospital Universitário Veterinário da Universidade Federal do Agreste de 
+                    <h6>Bem-vindo ao nosso site dedicado a gestão do Hospital Universitário Veterinário da Universidade Federal do Agreste de 
                     Pernambuco (UFAPE).</h6> 
 
                     <h6>Devido à crescente demanda por serviços veterinários, enfrentávamos desafios significativos em garantir o acesso dos tutores de animais
