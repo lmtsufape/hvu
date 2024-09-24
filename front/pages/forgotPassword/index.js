@@ -1,4 +1,5 @@
 import { Header02 } from "@/components/Header";
+import { SubHeader } from "../../src/components/SubHeader";
 import ForgotPasswordForm from "@/components/ForgotPasswordForm";
 import Footer from "@/components/Footer";
 import "@/styles/styles.css";
