@@ -96,6 +96,7 @@ export function Header02() {
 export function Header03() {
 	const router = useRouter();
 	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const [currentUser, setCurrentUser] = useState(false);
 	const dropdownRef = useRef(null);
 	const [tutores, setTutores] = useState(null);
 
@@ -120,6 +121,7 @@ export function Header03() {
 		const fetchData = async () => {
 			try {
 				const TutoresData = await getCurrentUsuario();
+				setCurrentUser(TutoresData);
 				setTutores(TutoresData.usuario);
 				console.log("Usuários:", TutoresData);
 			} catch (error) {
@@ -129,10 +131,22 @@ export function Header03() {
 		fetchData();
 	}, []);
 
+	const handleGoHome = () => {
+		if (currentUser.roles && Array.isArray(currentUser.roles)) {
+			if (currentUser.roles.includes("secretario")) {
+				router.push("/mainSecretario");
+			} else if (currentUser.roles.includes("medico")) {
+				router.push("/mainMedico");
+			} else if (currentUser.roles.includes("tutor")) {
+				router.push("/mainTutor");
+			}
+		}
+	};
+
 	return (
 		<header className={styles.header}>
 			<div className={styles.boxlogo}>
-				<div>
+				<div onClick={handleGoHome} style={{ cursor: "pointer" }}>
 					<Image
 						src="/hvu_black_logo.svg"
 						alt="Logo HVU"
@@ -161,6 +175,7 @@ export function Header03() {
 						<div className={styles.dropdown}>
 							<button
 								className={styles.button1}
+								style={{ cursor: "pointer" }}
 								onClick={(e) => router.push(`/meuPerfil/${tutores.id}`)}
 							>
 								<div>
