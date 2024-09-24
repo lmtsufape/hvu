@@ -115,7 +115,7 @@ function CreateEnderecoForm({
 						>
 							Lei nº 13.709/2018
 						</a>
-						, conhecida como Lei Geral de Proteção de Dados Pessoais LGPD, 
+						, conhecida como Lei Geral de Proteção de Dados Pessoais - LGPD, 
 						regula o tratamento de dados pessoais e protege os direitos dos 
 						cidadãos em relação à privacidade e à segurança de suas informações.<br></br>
 						De acordo com a LGPD, temos o compromisso de garantir a transparência e
