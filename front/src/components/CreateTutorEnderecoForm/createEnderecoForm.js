@@ -109,19 +109,18 @@ function CreateEnderecoForm({
 					<p>
 						A{" "}
 						<a
-							href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm"
+							href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Lei nº 12.527/2011
+							Lei nº 13.709/2018
 						</a>
-						, conhecida como Lei de Acesso à Informação - LAI, regulamenta o
-						direito fundamental, previsto na Constituição, de qualquer pessoa
-						física ou jurídica solicitar e receber informações públicas
-						produzidas ou custodiadas pelos órgãos e entidades públicos. A LAI
-						também garante o direito de acesso às informações produzidas ou
-						custodiadas pelas entidades privadas sem fins lucrativos que recebam
-						recurso público para a realização de ações de interesse público.
+						, conhecida como Lei Geral de Proteção de Dados Pessoais - LGPD, 
+						regula o tratamento de dados pessoais e protege os direitos dos 
+						cidadãos em relação à privacidade e à segurança de suas informações.<br></br>
+						De acordo com a LGPD, temos o compromisso de garantir a transparência e
+						 o controle sobre como seus dados são utilizados, assegurando que o 
+						 tratamento ocorra conforme as finalidades estabelecidas.
 					</p>
 					<label>
 						<input
