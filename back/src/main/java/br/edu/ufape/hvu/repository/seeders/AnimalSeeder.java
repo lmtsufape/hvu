@@ -5,6 +5,7 @@ import br.edu.ufape.hvu.model.Raca;
 import br.edu.ufape.hvu.repository.AnimalRepository;
 import br.edu.ufape.hvu.repository.RacaRepository;
 import com.github.javafaker.Faker;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

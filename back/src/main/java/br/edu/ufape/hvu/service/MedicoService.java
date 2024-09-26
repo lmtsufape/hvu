@@ -39,7 +39,7 @@ public class MedicoService implements MedicoServiceInterface {
 	}
 
 	public List<Medico> findByInstituicao(Instituicao instituicao){
-		List<Medico> medico = repository.findByInstituicaoAndDeletedFalse(instituicao);
+		List<Medico> medico = repository.findByInstituicao(instituicao);
 		if(medico.isEmpty()){
 			throw  new ObjectNotFoundException("Medico");
 		}
@@ -47,7 +47,7 @@ public class MedicoService implements MedicoServiceInterface {
 	}
 	
 	public List<Medico> findByEspecialidade(Especialidade especialidade){
-		List<Medico> medico = repository.findByEspecialidadeAndDeletedFalse(especialidade);
+		List<Medico> medico = repository.findByEspecialidade(especialidade);
 		if(medico.isEmpty()){
 			throw  new ObjectNotFoundException("Medico");
 		}
@@ -56,12 +56,11 @@ public class MedicoService implements MedicoServiceInterface {
 	
 
 	public List<Medico> getAllMedico(){
-		return repository.findByDeletedFalse();
+		return repository.findAll();
 	}
 
 	public void deleteMedico(Medico persistentObject){
-		persistentObject.setDeleted(true);
-		repository.save(persistentObject);
+		this.deleteMedico(persistentObject.getId());
 		
 	}
 	

@@ -3,7 +3,6 @@ package br.edu.ufape.hvu.repository.seeders;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component @RequiredArgsConstructor
@@ -24,18 +23,11 @@ public class DatabaseSeeder {
     private final CronogramaSeeder cronogramaSeeder;
     private final EstagiarioSeeder estagiarioSeeder;
     private final TutorSeeder tutorSeeder;
-    private final DiretorSeeder diretorSeeder;
     private final FotoSeeder fotoSeeder;
     private final OrgaoSeeder orgaoSeeder;
 
-    @Value("${common.seeders}")
-    private boolean seeders;
-
     @PostConstruct
     public void init(){
-        if (!seeders) {
-            return;
-        }
         usuarioSeeder.init();
         estagiarioSeeder.init();
         especialidadeSeeder.init();
@@ -46,7 +38,6 @@ public class DatabaseSeeder {
         racaSeeder.init();
         animalSeeder.init();
         tutorSeeder.init();
-        diretorSeeder.init();
         agendamentoSeeder.init();
         vagaSeeder.init();
         medicamentoSeeder.init();

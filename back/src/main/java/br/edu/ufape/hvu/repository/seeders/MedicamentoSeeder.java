@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.repository.seeders;
 
 import br.edu.ufape.hvu.model.Medicamento;
 import br.edu.ufape.hvu.repository.MedicamentoRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

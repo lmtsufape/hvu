@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.repository.seeders;
 
 import br.edu.ufape.hvu.model.Especie;
 import br.edu.ufape.hvu.repository.EspecieRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

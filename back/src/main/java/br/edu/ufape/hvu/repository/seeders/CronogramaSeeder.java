@@ -8,6 +8,7 @@ import br.edu.ufape.hvu.repository.CronogramaRepository;
 import br.edu.ufape.hvu.repository.EspecialidadeRepository;
 import br.edu.ufape.hvu.repository.MedicoRepository;
 import br.edu.ufape.hvu.repository.VagaRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

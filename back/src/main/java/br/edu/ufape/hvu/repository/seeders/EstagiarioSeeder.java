@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.repository.seeders;
 import br.edu.ufape.hvu.model.Estagiario;
 import br.edu.ufape.hvu.repository.EstagiarioRepository;
 import com.github.javafaker.Faker;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

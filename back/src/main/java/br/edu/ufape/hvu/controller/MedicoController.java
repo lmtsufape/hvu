@@ -100,7 +100,7 @@ public class MedicoController {
 	public String deleteMedico(@PathVariable Long id) {
 		try {
 			Medico oldObject = facade.findMedicoById(id);
-			facade.deleteMedico(oldObject);
+			facade.deleteMedico(id);
 			return "";
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
