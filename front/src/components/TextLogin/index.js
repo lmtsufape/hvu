@@ -8,7 +8,7 @@ export default function Text() {
             Gestão do HVU-UFAPE</h1>
             
             <p className={styles.paragrafo}>Toda a estrutura necessária para o seu pet, com uma 
-            equipe de veterinários especializados sempre à disposição!</p>
+            equipe de veterinários especializados à disposição!</p>
         </div>
         
     );
