@@ -58,9 +58,9 @@ import api from '../common/http-common-back';
   }
   
   // Função para atualizar um agendamento
-  export async function updateAgendamento(agendamentoId, agendamentoData) {
+  export async function updateAgendamento(agendamentoId, dataAgendamento) {
     try {
-      const response = await api.patch(`/animal/${agendamentoId}`, agendamentoData);
+      const response = await api.patch(`/agendamento/${agendamentoId}`, dataAgendamento);
       return response.data;
     } catch (error) {
       throw error;
@@ -86,11 +86,11 @@ import api from '../common/http-common-back';
     }
   }
 
-  export async function reagendamento(reagendamentoData, agendamentoId) {
-    try {
-      const response = await api.patch(`/agendamento/reagendamento/${agendamentoId}`, reagendamentoData);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+export async function reagendamento(agendamentoId, vagaId, reagendamentoData) {
+  try {
+    const response = await api.patch(`/agendamento/reagendamento/${agendamentoId}/${vagaId}`, reagendamentoData);
+    return response.data;
+  } catch (error) {
+    throw error;
   }
+}

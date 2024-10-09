@@ -1,21 +1,22 @@
 
 
-.modal {
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro semitransparente */
+  z-index: 999; /* Um valor menor que o modal */
+}
+
+.modal, .modal2 {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 415px;
   height: 370px;
-  border-radius: 12px;
-  border: 2px;
-  box-shadow: 4px 5px 15px 0px #00000014;
-  background-color: white;
-  padding: 20px;
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.modal2 {
-  width: 28rem;
-  height: 23rem;
   border-radius: 12px;
   border: 2px;
   box-shadow: 4px 5px 15px 0px #00000014;

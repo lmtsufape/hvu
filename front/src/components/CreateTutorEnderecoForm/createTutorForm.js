@@ -1,13 +1,12 @@
-
 import React, { useState } from "react";
 import InputMask from "react-input-mask";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./createTutorForm.module.css";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
+
     const [showSenha, setShowSenha] = useState(false);
     const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
     return (
@@ -35,35 +34,58 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
     );
 }
 
+function renderInput(
+	label,
+	placeholder,
+	name,
+	value,
+	onChange,
+	error,
+	type = "text",
+	mask = null,
+	show,
+	setShow
+) {
+	const InputComponent = mask ? InputMask : "input";
+	const inputType = type === "password" ? (show ? "text" : "password") : type;
 
-function renderInput(label, placeholder, name, value, onChange, error, type = "text", mask = null, show, setShow) {
-    const InputComponent = mask ? InputMask : 'input';
-    const inputType = type === "password" ? (show ? "text" : "password") : type;
-
-    return (
-        <div className="mb-3">
-            <label htmlFor={name} className="form-label">{label} <span className={styles.obrigatorio}>*</span></label>
-            <div className="input-group">
-            <InputComponent
-                mask={mask}
-                type={inputType}
-                className={`form-control ${styles.input} ${error ? 'is-invalid' : ''}`}
-                name={name}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-            />
-            {type === "password" && (
-                    <div className="input-group-append">
-                        <button className="btn btn-outline-secondary" type="button" onClick={() => setShow(!show)}>
-                          {/*  <FontAwesomeIcon icon={show ? faEyeSlash : faEye} /> */}
-                        </button>
-                    </div>
-                )}
-            {error && <div className={`invalid-feedback ${styles.error_message}`}>{error}</div>}
-        </div>
-        </div>
-    );
+	return (
+		<div className="mb-3">
+			<label htmlFor={name} className="form-label">
+				{label}
+				<span className={styles.obrigatorio}>*</span>
+			</label>
+			<div className="input-group">
+				<InputComponent
+					mask={mask}
+					type={inputType}
+					className={`form-control ${styles.input} ${
+						error ? "is-invalid" : ""
+					}`}
+					name={name}
+					placeholder={placeholder}
+					value={value}
+					onChange={onChange}
+				/>
+				{type === "password" && (
+					<div className="input-group-append">
+						<button
+							className="btn btn-outline-secondary"
+							type="button"
+							onClick={() => setShow(!show)}
+						>
+							{<FontAwesomeIcon icon={show ? faEyeSlash : faEye} />}
+						</button>
+					</div>
+				)}
+				{error && (
+					<div className={`invalid-feedback ${styles.error_message}`}>
+						{error}
+					</div>
+				)}
+			</div>
+		</div>
+	);
 }
 
 export default CreateTutorForm;
