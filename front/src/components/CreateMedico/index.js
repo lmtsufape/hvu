@@ -5,8 +5,6 @@ import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import { createMedico } from "../../../services/medicoService";
-import { postRegister } from "../../../common/postRegister";
-import { postLogin } from "../../../common/postLogin";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import axios from "axios";
 import Alert from "../Alert";
@@ -105,10 +103,6 @@ function CreateMedico() {
         console.log("MedicoToCreate:", MedicoToCreate);
 
         try {
-            const token = localStorage.getItem("token");
-            const responseRegister = await postRegister(medico.email, medico.nome, medico.senha, "medico");
-            console.log(responseRegister);
-            await postLogin(medico.email, medico.senha);
             await createMedico(MedicoToCreate);
             localStorage.setItem("token", token);
             setShowAlert(true);

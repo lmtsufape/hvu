@@ -32,7 +32,6 @@ public  class Usuario implements Serializable {
 	private long id;
 	private String email;
 	private String cpf;
-	private String senha;
 	private String telefone;
 	private String nome;
 	private String userId;
