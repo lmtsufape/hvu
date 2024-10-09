@@ -6,11 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,10 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
 import br.edu.ufape.hvu.controller.dto.request.MedicoRequest;
 import br.edu.ufape.hvu.controller.dto.response.MedicoResponse;
-import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.model.Medico;
@@ -46,21 +40,15 @@ public class MedicoController {
 			.map(MedicoResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PostMapping("medico")
 	public MedicoResponse createMedico(@Valid @RequestBody MedicoRequest newObj) {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
-			facade.findDuplicateAccountByuserId(principal.getSubject());
-			Medico o = newObj.convertToEntity();
-			o.setUserId(principal.getSubject());
-			return new MedicoResponse(facade.saveMedico(o));
-		} catch(DuplicateAccountException ex){
-			throw ex;
-		}
-		
-	}
+        String password = newObj.getSenha();
+        Medico o = newObj.convertToEntity();
+        return new MedicoResponse(facade.saveMedico(o, password));
+
+    }
 	
 	@GetMapping("medico/{id}")
 	public MedicoResponse getMedicoById(@PathVariable Long id) {
