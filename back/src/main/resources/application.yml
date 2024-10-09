@@ -3,8 +3,8 @@ files.storage: ./var/hvu/files/
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/banco
-    username: ines
-    password: 0609
+    username: postgres
+    password: 1234
     auto-commit: false
 
   jpa:

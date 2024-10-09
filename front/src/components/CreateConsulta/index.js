@@ -30,7 +30,8 @@ function CreateConsulta() {
     parecer: null,
     proximaConsulta: false,
     encaminhamento: null,
-    animal: { id: null }
+    animal: { id: null },
+    dataVaga: ""
   });
 
   const [vagaData, setVagaData] = useState({});
@@ -111,7 +112,8 @@ function CreateConsulta() {
       medico: {id: vagaData.medico.id},
       proximaConsulta: consulta.proximaConsulta,
       encaminhamento: {id: parseInt(medicoEncaminhamento)},
-      animal: {id: vagaData.agendamento.animal.id}
+      animal: {id: vagaData.agendamento.animal.id},
+      dataVaga: vagaData.dataHora
     };
 
     console.log("consultaToCreate:", consultaToCreate);
@@ -192,7 +194,7 @@ function CreateConsulta() {
                   className={`form-select ${styles.input}`}
                   name="encaminhamento"
                   aria-label="Selecione um(a) veterinário(a)"
-                  value={medicoEncaminhamento || ""}
+                  value={medicoEncaminhamento || null}
                   onChange={handleMedicoEncaminhamentoSelection}
                 >
                   <option value="">Selecione um&#40;a&#41; veterinário&#40;a&#41;</option>

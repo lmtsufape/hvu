@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.edu.ufape.hvu.controller.dto.request.ReagendamentoRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,6 @@ import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
 import br.edu.ufape.hvu.controller.dto.request.AgendamentoRequest;
 import br.edu.ufape.hvu.controller.dto.response.AgendamentoResponse;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
-
-import javax.xml.crypto.Data;
 
 
  
@@ -92,6 +91,11 @@ public class AgendamentoController {
 	return facade.retornaVagaQueTutorNaoPodeAgendar(tutorId);
 	}
 
+
+	@PatchMapping("agendamento/reagendamento/{id}")
+	public Agendamento reagendarAgendamento(@PathVariable Long id, @Valid @RequestBody ReagendamentoRequest newObj) {
+		return facade.reagendarAgendamento(id,newObj);
+	}
 
 	@PatchMapping("agendamento/{id}")
 	public AgendamentoResponse updateAgendamento(@PathVariable Long id, @Valid @RequestBody AgendamentoRequest obj) {

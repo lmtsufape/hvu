@@ -46,6 +46,21 @@ export function AdicionarAnimalWhiteButton() {
     );
 }
 
+
+export function AdicionarAnimalWhiteButtonLapa() {
+    const router = useRouter();
+
+    const handlAdicionarClick = () => {
+        router.push('/lapa/createAnimal');
+    };
+
+    return (
+            <button className={styles.white_button} onClick={handlAdicionarClick}>
+                {text_white_button.adicionar_animal}
+            </button>
+    );
+}
+
 export function AdicionarMedicoWhiteButton() {
     const router = useRouter();
 

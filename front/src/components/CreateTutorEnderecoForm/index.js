@@ -150,6 +150,7 @@ function CreateTutorEnderecoForm() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (validateForm()) {
+            console.log("form:", formData);
             try {
                 const response = await createTutor(formData);
                 await postLogin(tutorFormData.email, tutorFormData.senha);

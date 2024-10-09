@@ -1,5 +1,6 @@
 package br.edu.ufape.hvu.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity
@@ -70,6 +71,6 @@ public  class Consulta  {
 	@ManyToOne
 	@ToString.Exclude
 	private Animal animal;
-
-
+	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
+	private LocalDateTime dataVaga;
 }

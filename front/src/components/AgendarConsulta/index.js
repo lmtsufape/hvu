@@ -6,7 +6,8 @@ import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from '../WhiteButton';
 import { getAllAnimalTutor, getRetornoByAnimalId } from '../../../services/animalService';
 import { getAllVaga } from '../../../services/vagaService';
-import { createAgendamento } from '../../../services/agendamentoService';
+import { createAgendamento, getDatasNaoPodeAgendar } from '../../../services/agendamentoService';
+import { getCurrentUsuario } from '../../../services/userService';
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 import Image from "next/image";
@@ -24,12 +25,19 @@ const HorariosSemana = () => {
   const [vagas, setVagas] = useState(null);
   const [selectedVaga, setSelectedVaga] = useState(null);
 
-  const [retorno, setRetorno] = useState(null);
+  const [retorno, setRetorno] = useState("");
+
+  const [datasProibidas, setDatasProibidas] = useState([]);
+  const [tutorId, setTutorId] = useState(null);
 
   const [errors, setErrors] = useState({});
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+
+  console.log("retorno:", retorno);
+  console.log("selectedAnimal:", selectedAnimal);
+  console.log("datasProibidas:", datasProibidas);
 
   const openModal = () => {
     setShowModal(true);
@@ -92,7 +100,18 @@ const HorariosSemana = () => {
     fetchData();
   }, []);
 
-  console.log("selectedAnimal:", selectedAnimal);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const user = await getCurrentUsuario();
+        const datas = await getDatasNaoPodeAgendar(user.usuario.id);
+        setDatasProibidas(datas);
+      } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -115,13 +134,10 @@ const HorariosSemana = () => {
     };
   }, [selectedAnimal]);
 
-  console.log("retorno:", retorno);
-
   const handleAnimalSelection = (event) => {
     const animalId = event.target.value;
     const selectedAnimalInfo = animais.find(animal => animal.id === parseInt(animalId));
     setSelectedAnimal(selectedAnimalInfo);
-    console.log("selectedAnimal", selectedAnimal);
   };
 
   const formatDate = (dateString, selectedTime) => {
@@ -161,31 +177,22 @@ const HorariosSemana = () => {
       return;
     }
 
+    const agendamentoDate = new Date(selecionarHorario).toISOString().split('T')[0];
+
     const agendamentoToCreate = {
       animal: { id: selectedAnimal.id },
       dataVaga: selecionarHorario,
       status: 'Agendado'
     };
 
-    console.log("agendamentoToCreate", agendamentoToCreate);
-
     try {
       const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
-      console.log(newAgendamento);
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao agendar consulta:", error);
-      if (error.response && error.response.status === 500) {
-        // alert("Vaga não está disponível.");
-        setShowErrorAlert(true);
-      } else {
-        // Se não for 500, faça outra coisa
-        setShowErrorAlert(true);
-      }
+      setShowErrorAlert(true);
     }
   };
-
-  console.log("selectedVaga:", selectedVaga);
 
   return (
     <div className={styles.container}>
@@ -240,67 +247,83 @@ const HorariosSemana = () => {
           <button className={styles.button_avancar} onClick={avancarSemana}>⭢</button>
         </div>
         <div className={styles.containersemana}>
-          {Array.from({ length: 7 }, (_, index) => {
-            const currentDate = new Date(selecionarData);
-            currentDate.setDate(currentDate.getDate() - currentDate.getDay() + index);
-            if (currentDate.getDay() !== 6 && currentDate.getDay() !== 0) {
-              const currentDateFormatted = currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-              const vagasForCurrentDay = vagas && vagas.filter(vaga => {
-                const vagaDate = new Date(vaga.dataHora);
-                const vagaDateFormatted = vagaDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                return vagaDateFormatted === currentDateFormatted;
-              });
-              if (!vagasForCurrentDay || vagasForCurrentDay.length === 0) {
-                return (
-                  <div key={currentDate} className={styles.containerdia}>
-                    <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
-                    <p className={styles.data}>{currentDateFormatted}</p>
-                    <div className={styles.no_vagas}>
-                      Não há vagas
-                    </div>
-                  </div>
-                );
-              }
+        {Array.from({ length: 7 }, (_, index) => {
+          const currentDate = new Date(selecionarData);
+          currentDate.setDate(currentDate.getDate() - currentDate.getDay() + index);
+          if (currentDate.getDay() !== 6 && currentDate.getDay() !== 0) {
+            const currentDateFormatted = currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const vagasForCurrentDay = vagas && vagas.filter(vaga => {
+              const vagaDate = new Date(vaga.dataHora);
+              const vagaDateFormatted = vagaDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+              return vagaDateFormatted === currentDateFormatted;
+            });
+            
+            // Verifica se a data atual está na lista de datas proibidas
+            const isDateProhibited = datasProibidas.some(dataProibida => {
+              const dataProibidaDate = new Date(dataProibida).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+              return dataProibidaDate === currentDateFormatted;
+            });
+
+            if (!vagasForCurrentDay || vagasForCurrentDay.length === 0) {
               return (
                 <div key={currentDate} className={styles.containerdia}>
                   <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
                   <p className={styles.data}>{currentDateFormatted}</p>
-                  <div className="time-buttons">
-                    {vagasForCurrentDay.map((vaga) => {
-                      const vagaDate = new Date(vaga.dataHora);
-                      const isPast = vagaDate < new Date();
-                      return (
-                        <button
-                          key={vaga.id}
-                          className={
-                            isPast || vaga.status === 'Agendado' || vaga.status === 'Finalizado' ?
-                              `${styles.botaohoraIndisponivel}`
-                              :
-                              (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && !(vaga.status === 'Agendado' || vaga.status === 'Finalizado') ?
-                                `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}` 
-                                : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ''}`)
-                          }
-                          onClick={() => {
-                            if (!(vaga.status === 'Agendado' || vaga.status === 'Finalizado' || isPast)) {
-                              handleDateChange(currentDate);
-                              setSelecionarHorario(vaga.dataHora);
-                              setSelectedVaga(vaga);
-                            }
-                          }}
-                          disabled={!selectedAnimal || (retorno ? vaga.tipoConsulta.tipo !== 'Retorno' : vaga.tipoConsulta.tipo === 'Retorno') || isPast}
-                        >
-                          {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
-                          <br />{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}
-                        </button>
-                      );
-                    })}
+                  <div className={styles.no_vagas}>
+                    Não há vagas
                   </div>
                 </div>
               );
             }
-            return null;
-          })}
-        </div>
+            
+            return (
+              <div key={currentDate} className={styles.containerdia}>
+                <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
+                <p className={styles.data}>{currentDateFormatted}</p>
+                <div className="time-buttons">
+                  {vagasForCurrentDay.map((vaga) => {
+                    const vagaDate = new Date(vaga.dataHora);
+                    const isPast = vagaDate < new Date();
+                    const isProhibited = isDateProhibited || vaga.status === 'Agendado' || vaga.status === 'Finalizado' || vaga.status === 'Cancelado';
+
+                    return (
+                      <button
+                        key={vaga.id}
+                        className={
+                          isPast || isProhibited
+                            ? `${styles.botaohoraIndisponivel}`
+                            : (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' 
+                                ? `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}`
+                                : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ''}`
+                              )
+                        }
+                        onClick={() => {
+                          if (!isProhibited && !isPast) {
+                            handleDateChange(currentDate);
+                            setSelecionarHorario(vaga.dataHora);
+                            setSelectedVaga(vaga);
+                          }
+                        }}
+                        disabled={isProhibited || !selectedAnimal || (retorno.toLowerCase() !== vaga.tipoConsulta.tipo.toLowerCase()) || isPast}
+                      >
+                        {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
+                        <br />{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
+
+      <div className={styles.aviso}>
+        <div><span className={styles.obrigatorio}>*</span> Permitido apenas um agendamento por dia;</div>
+        <div><span className={styles.obrigatorio}>*</span> Um animal não pode agendar uma nova consulta se possuir agendamento em aberto.</div>
+      </div>
+
         <div className={styles.button_container}>
           <CancelarWhiteButton />
           <button className={styles.agendar_button} onClick={handleAgendar}>Agendar</button>
@@ -352,5 +375,3 @@ const HorariosSemana = () => {
 };
 
 export default HorariosSemana;
-
-
