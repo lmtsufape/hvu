@@ -144,6 +144,7 @@ function FormularioLogin() {
 
         <button
           className="btn btn-link"
+          type="button"
           onClick={() => router.push("/forgotPassword")}
         >
           Esqueceu a senha?{" "}
