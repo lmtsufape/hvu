@@ -2,6 +2,7 @@ import api from "./http-common-back";
 
 
 export async function postLogin(login, password){
+    localStorage.clear();
     try{
         const response = await api.post("/auth/login", {
             email: login,
