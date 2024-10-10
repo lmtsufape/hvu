@@ -3,7 +3,7 @@ package br.edu.ufape.hvu.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import br.edu.ufape.hvu.controller.dto.request.ReagendamentoRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -31,7 +31,9 @@ public class AgendamentoController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("agendamento")
 	public List<AgendamentoResponse> getAllAgendamento() {
 		return facade.getAllAgendamento()
@@ -70,8 +72,7 @@ public class AgendamentoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
-	
+
 	@GetMapping("agendamento/tutor")
 	public List<AgendamentoResponse> findAgendamentosByTutorId() {
 		try {
@@ -86,11 +87,11 @@ public class AgendamentoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
+
 	@GetMapping("agendamento/datasnaopodeagendar/{tutorId}")
 	public List<LocalDateTime> retornaDatasQueTutorNaoPodeAgendar(@PathVariable String tutorId){
 	return facade.retornaVagaQueTutorNaoPodeAgendar(tutorId);
 	}
-
 
 	@PatchMapping("agendamento/reagendamento/{idAgendamento}/{idVaga}")
 	public Agendamento reagendarAgendamento(@PathVariable Long idAgendamento, @PathVariable Long idVaga) {
@@ -101,14 +102,17 @@ public class AgendamentoController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@PatchMapping("agendamento/{id}")
 	public AgendamentoResponse updateAgendamento(@PathVariable Long id, @Valid @RequestBody AgendamentoRequest obj) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
 			//Agendamento o = obj.convertToEntity();
 			Agendamento oldObject = facade.findAgendamentoById(id);
 
 			if(obj.getAnimal() != null){
-				oldObject.setAnimal(facade.findAnimalById(obj.getAnimal().getId()));
+				oldObject.setAnimal(facade.findAnimalById(obj.getAnimal().getId(), principal.getSubject()));
 				obj.setAnimal(null);
 			}
 

@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,8 @@ public class TutorController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("tutor")
 	public List<TutorResponse> getAllTutor() {
 		return facade.getAllTutor()
@@ -72,17 +74,20 @@ public class TutorController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@PatchMapping("tutor/{id}")
 	public TutorResponse updateTutor(@PathVariable Long id, @Valid @RequestBody TutorRequest obj) {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			Jwt principal = (Jwt) authentication.getPrincipal();
-			
+
 			Tutor o = obj.convertToEntity();
 			Tutor oldObject = facade.findTutorById(id);
-			
-			if(!principal.getSubject().equals(oldObject.getUserId())) {
+
+			System.out.println("AQUI VAI O PRINT COM OS IDS"+oldObject.getUserId() + principal.getSubject());
+
+			if(!oldObject.getUserId().equals(principal.getSubject())) {
 				throw new AccessDeniedException("This is not your account");
 			}
 		

@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +34,8 @@ public class CronogramaController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("cronograma")
 	public List<CronogramaResponse> getAllCronograma() {
 		return facade.getAllCronograma()
@@ -41,7 +43,8 @@ public class CronogramaController {
 			.map(CronogramaResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PostMapping("cronograma")
 	public CronogramaResponse createCronograma(@Valid @RequestBody CronogramaRequest newObj) {
 		try {
@@ -50,7 +53,8 @@ public class CronogramaController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("cronograma/{id}")
 	public CronogramaResponse getCronogramaById(@PathVariable Long id) {
 		try {
@@ -83,7 +87,8 @@ public class CronogramaController {
 		}					
 		
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("cronograma/{id}")
 	public CronogramaResponse updateCronograma(@PathVariable Long id, @Valid @RequestBody CronogramaRequest obj) {
 		try {
@@ -113,7 +118,8 @@ public class CronogramaController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("cronograma/{id}")
 	public String deleteCronograma(@PathVariable Long id) {
 		try {
@@ -124,6 +130,4 @@ public class CronogramaController {
 		}
 		
 	}
-	
-
 }

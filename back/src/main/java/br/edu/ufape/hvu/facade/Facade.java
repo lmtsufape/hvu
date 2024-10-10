@@ -13,6 +13,7 @@ import br.edu.ufape.hvu.controller.dto.request.ReagendamentoRequest;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -182,12 +183,12 @@ public class Facade {
 		return usuarioServiceInterface.saveUsuario(newInstance);
 	}
 
-	public Usuario updateUsuario(Usuario transientObject) {
-		return usuarioServiceInterface.updateUsuario(transientObject);
+	public Usuario updateUsuario(Usuario transientObject, String idSession) {
+		return usuarioServiceInterface.updateUsuario(transientObject, idSession);
 	}
 
-	public Usuario findUsuarioById(long id) {
-		return usuarioServiceInterface.findUsuarioById(id);
+	public Usuario findUsuarioById(long id, String idSession) {
+		return usuarioServiceInterface.findUsuarioById(id, idSession);
 	}
 
 	public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
@@ -563,7 +564,7 @@ public class Facade {
 	public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(Long id){
 		// verifica se animal já tem uma consulta em aberto -> "Bloqueado"
 		List<Agendamento> allAgendamentos = getAllAgendamento();
-		Animal animal = findAnimalById(id);
+		Animal animal = animalServiceInterface.findAnimalById(id);
 
 		boolean consultaEmAberto = allAgendamentos.stream()
 				.anyMatch(agendamento -> agendamento.getAnimal() != null &&
@@ -579,9 +580,8 @@ public class Facade {
 		}
 	}
 
-
 	public boolean isAnimalWithRetorno(Long id) {
-		Animal animal = findAnimalById(id);
+		Animal animal = animalServiceInterface.findAnimalById(id);
 		return findAnimaisWithReturn().contains(animal);
 	}
 	
@@ -961,7 +961,7 @@ public class Facade {
 		
 		saveVaga(vaga);
 		
-		agendamento.setAnimal(findAnimalById(newObject.getAnimal().getId()));
+		agendamento.setAnimal(animalServiceInterface.findAnimalById(newObject.getAnimal().getId()));
 		agendamento.setTipoEspecial(newObject.isTipoEspecial());		
 		
 		return saveAgendamento(agendamento, vaga.getId());
@@ -1278,11 +1278,23 @@ public class Facade {
 		return animal;
 	}
 
-	public Animal updateAnimal(Animal transientObject) {
+	public Animal updateAnimal(Animal transientObject, String idSession) {
+		Tutor tutor = tutorServiceInterface.findTutorByanimalId(transientObject.getId());
+
+		if(!tutor.getUserId().equals(idSession)) {
+			throw new AccessDeniedException("This is not your animal");
+		}
+
 		return animalServiceInterface.updateAnimal(transientObject);
 	}
 
-	public Animal findAnimalById(long id) {
+	public Animal findAnimalById(long id, String idSession) {
+		Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
+
+		if (!tutor.getUserId().equals(idSession)) {
+			throw new AccessDeniedException("This is not your animal");
+		}
+
 		return animalServiceInterface.findAnimalById(id);
 	}
 

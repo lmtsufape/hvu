@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,7 +36,8 @@ public class UsuarioController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("usuario")
 	public List<UsuarioResponse> getAllUsuario() {
 		return facade.getAllUsuario()
@@ -51,8 +53,10 @@ public class UsuarioController {
 	
 	@GetMapping("usuario/{id}")
 	public UsuarioResponse getUsuarioById(@PathVariable Long id) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
-			return new UsuarioResponse(facade.findUsuarioById(id));
+			return new UsuarioResponse(facade.findUsuarioById(id, principal.getSubject()));
 		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
@@ -74,9 +78,11 @@ public class UsuarioController {
 	
 	@PatchMapping("usuario/{id}")
 	public UsuarioResponse updateUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioRequest obj) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
 			//Usuario o = obj.convertToEntity();
-			Usuario oldObject = facade.findUsuarioById(id);
+			Usuario oldObject = facade.findUsuarioById(id, principal.getSubject());
 
 			TypeMap<UsuarioRequest, Usuario> typeMapper = modelMapper
 													.typeMap(UsuarioRequest.class, Usuario.class)
@@ -84,7 +90,7 @@ public class UsuarioController {
 			
 			
 			typeMapper.map(obj, oldObject);	
-			return new UsuarioResponse(facade.updateUsuario(oldObject));
+			return new UsuarioResponse(facade.updateUsuario(oldObject, principal.getSubject()));
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}

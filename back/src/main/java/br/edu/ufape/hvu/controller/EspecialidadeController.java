@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class EspecialidadeController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("especialidade")
 	public List<EspecialidadeResponse> getAllEspecialidade() {
 		return facade.getAllEspecialidade()
@@ -33,12 +35,14 @@ public class EspecialidadeController {
 			.map(EspecialidadeResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PostMapping("especialidade")
 	public EspecialidadeResponse createEspecialidade(@Valid @RequestBody EspecialidadeRequest newObj) {
 		return new EspecialidadeResponse(facade.saveEspecialidade(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("especialidade/{id}")
 	public EspecialidadeResponse getEspecialidadeById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class EspecialidadeController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("especialidade/{id}")
 	public EspecialidadeResponse updateEspecialidade(@PathVariable Long id, @Valid @RequestBody EspecialidadeRequest obj) {
 		try {
@@ -66,7 +71,8 @@ public class EspecialidadeController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("especialidade/{id}")
 	public String deleteEspecialidade(@PathVariable Long id) {
 		try {
