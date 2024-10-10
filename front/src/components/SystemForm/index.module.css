@@ -6,7 +6,7 @@
     flex-direction: column;
     align-items: center;
     gap: 50px;
-    margin-top: -160px;
+    margin-top: 0em;
 }
 
 .titulo{
@@ -40,4 +40,8 @@
     text-align: justify;
     color: #404040;
     /*text-indent: 50px;*/
+}
+
+.voltar{
+    margin-top: -1.3em;
 }
