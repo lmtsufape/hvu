@@ -12,11 +12,10 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public  class UsuarioRequest  {
 	private String email;
-	private String cpf;
 	private String senha;
+	private String cpf;
 	private String telefone;
 	private String nome;
-	private String userId;
 	private EnderecoRequest endereco; 
 	private long id;
 

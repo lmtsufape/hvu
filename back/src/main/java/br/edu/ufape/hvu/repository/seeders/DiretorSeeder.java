@@ -40,7 +40,6 @@ public class DiretorSeeder {
         diretor.setTelefone(faker.phoneNumber().phoneNumber());
         diretor.setDeleted(false);
         diretor.setCpf(faker.idNumber().valid());
-        diretor.setSenha("password");
         diretor.setEndereco(endereco);
         diretor.setMatricula(faker.idNumber().valid());
         diretor.setUserId("cee73780-6579-4c61-a53a-37a4259f4514");

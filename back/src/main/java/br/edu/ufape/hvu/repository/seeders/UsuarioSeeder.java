@@ -46,7 +46,6 @@ public class UsuarioSeeder{
         usuario.setEmail(faker.internet().emailAddress());
         usuario.setTelefone(faker.phoneNumber().phoneNumber());
         usuario.setCpf(faker.idNumber().valid());
-        usuario.setSenha("12345678");
         usuario.setEndereco(endereco);
         return usuario;
     }

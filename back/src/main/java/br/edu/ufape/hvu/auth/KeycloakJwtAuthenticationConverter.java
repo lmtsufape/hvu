@@ -74,7 +74,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
     }
 
     private String createRole(String... values) {
-        StringBuilder role = new StringBuilder("ROLE_"); //adicionando o prefiso ROLE_
+        StringBuilder role = new StringBuilder("ROLE_");  // Adiciona o prefixo ROLE_
         for (String value : values) {
             role.append(value.toUpperCase());
         }

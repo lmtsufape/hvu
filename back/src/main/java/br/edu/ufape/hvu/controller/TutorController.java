@@ -44,12 +44,9 @@ public class TutorController {
 	@PostMapping("tutor")
 	public TutorResponse createTutor(@Valid @RequestBody TutorRequest newObj) {
 		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
-			facade.findDuplicateAccountByuserId(principal.getSubject());
+			String password = newObj.getSenha();
 			Tutor o = newObj.convertToEntity();
-			o.setUserId(principal.getSubject());
-			return new TutorResponse(facade.saveTutor(o));
+			return new TutorResponse(facade.saveTutor(o, password));
 		} catch(DuplicateAccountException ex){
 			throw ex;
 		}
@@ -115,7 +112,7 @@ public class TutorController {
 			if(!principal.getSubject().equals(oldObject.getUserId())) {
 				throw new AccessDeniedException("This is not your account");
 			}
-			facade.deleteTutor(id);
+			facade.deleteTutor(id, principal.getSubject());
 			return "";
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());

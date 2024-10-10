@@ -6,83 +6,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
-	const [showSenha, setShowSenha] = useState(false);
-	const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
-	return (
-		<div className={styles.boxcadastrotutor}>
-			<div className={styles.cadastrotutor}>
-				{renderInput(
-					"Nome Completo",
-					"Insira seu nome completo",
-					"nome",
-					tutorFormData.nome,
-					handleTutorChange,
-					errors.nome,
-					"text"
-				)}
-				<div className="row">
-					<div className="col">
-						{renderInput(
-							"E-mail",
-							"Insira seu email",
-							"email",
-							tutorFormData.email,
-							handleTutorChange,
-							errors.email,
-							"email"
-						)}
-						{renderInput(
-							"Crie uma senha",
-							"Crie uma senha",
-							"senha",
-							tutorFormData.senha,
-							handleTutorChange,
-							errors.senha,
-							"password",
-							null,
-							showSenha,
-							setShowSenha
-						)}
-						{renderInput(
-							"Confirmar senha",
-							"Confirme sua senha ",
-							"confirmarSenha",
-							tutorFormData.confirmarSenha,
-							handleTutorChange,
-							errors.confirmarSenha,
-							"password",
-							null,
-							showConfirmarSenha,
-							setShowConfirmarSenha
-						)}
-					</div>
-					<div className="col">
-						{renderInput(
-							"Telefone",
-							"Insira seu telefone",
-							"telefone",
-							tutorFormData.telefone,
-							handleTutorChange,
-							errors.telefone,
-							"tel",
-							"(99) 99999-9999"
-						)}
-						{renderInput(
-							"CPF",
-							"Insira seu CPF",
-							"cpf",
-							tutorFormData.cpf,
-							handleTutorChange,
-							errors.cpf,
-							"text",
-							"999.999.999-99"
-						)}
-					</div>
-				</div>
-				{/* Adição da informação sobre a LAI */}
-			</div>
-		</div>
-	);
+
+    const [showSenha, setShowSenha] = useState(false);
+    const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
+    return (
+        <div className={styles.boxcadastrotutor}>
+            <div className={styles.cadastrotutor}>
+            <div className={styles.titulo}>Tutor</div>
+                
+                {renderInput("Nome Completo", "Insira seu nome completo", "nome", tutorFormData.nome, handleTutorChange, errors.nome, "text")}
+                <div className="row">
+                    <div className="col">
+                        {renderInput("E-mail", "Insira seu email", "email", tutorFormData.email, handleTutorChange, errors.email, "email")}
+                        {renderInput("Crie uma senha", "Crie uma senha", "senha", tutorFormData.senha, handleTutorChange, errors.senha, "password", null, showSenha, setShowSenha)}
+                        {renderInput("CPF", "Insira seu CPF", "cpf", tutorFormData.cpf, handleTutorChange, errors.cpf, "text", "999.999.999-99")}
+                    </div>
+                    <div className="col">
+                        {renderInput("Telefone", "Insira seu telefone", "telefone", tutorFormData.telefone, handleTutorChange, errors.telefone, "tel", "(99) 99999-9999")}
+                        {renderInput("Confirmar senha", "Confirme sua senha ", "confirmarSenha", tutorFormData.confirmarSenha, handleTutorChange, errors.confirmarSenha, "password", null, showConfirmarSenha, setShowConfirmarSenha)}
+                        
+                    </div>
+                </div>
+                {/* Adição da informação sobre a LAI */}
+            
+            </div>
+        </div>
+    );
 }
 
 function renderInput(

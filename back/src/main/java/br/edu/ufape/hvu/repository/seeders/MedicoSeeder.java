@@ -45,7 +45,6 @@ public class MedicoSeeder {
         medico.setEmail("medico@medico.com");
         medico.setTelefone(faker.phoneNumber().phoneNumber());
         medico.setCpf(faker.idNumber().valid());
-        medico.setSenha("password");
         medico.setDeleted(false);
         medico.setEndereco(endereco);
         medico.setCrmv(faker.idNumber().valid());

@@ -10,9 +10,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import br.edu.ufape.hvu.controller.dto.request.ReagendamentoRequest;
+import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
+import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,18 +29,53 @@ import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 import jakarta.transaction.Transactional;
 
-@Service
-public class Facade {
-	// Tutor--------------------------------------------------------------
-	@Autowired
-	private TutorServiceInterface tutorServiceInterface;
+import javax.xml.crypto.Data;
 
-	public Tutor saveTutor(Tutor newInstance) throws ResponseStatusException {
-		return tutorServiceInterface.saveTutor(newInstance);
+@Service @RequiredArgsConstructor
+public class Facade {
+	// Auth--------------------------------------------------------------
+	private final KeycloakService keycloakService;
+
+	public TokenResponse login(String username, String password) {
+		return keycloakService.login(username, password);
 	}
 
+	public TokenResponse refresh(String refreshToken) {
+		return keycloakService.refreshToken(refreshToken);
+	}
+	// Tutor--------------------------------------------------------------
+
+	private final TutorServiceInterface tutorServiceInterface;
+
+
+
+	@Transactional
+	public Tutor saveTutor(Tutor newInstance, String password) throws ResponseStatusException {
+		String userKcId = null;
+		keycloakService.createUser(newInstance.getCpf(), newInstance.getEmail(), password, "tutor");
+		try {
+			userKcId = keycloakService.getUserId(newInstance.getEmail());
+			newInstance.setUserId(userKcId);
+			return tutorServiceInterface.saveTutor(newInstance);
+		}catch (DataIntegrityViolationException e){
+			keycloakService.deleteUser(userKcId);
+			throw e;
+		}catch (Exception e){
+			keycloakService.deleteUser(userKcId);
+			throw new RuntimeException("Ocorreu um erro inesperado ao salvar o usuário: "+ e.getMessage(), e);
+		}
+
+	}
+
+	@Transactional
 	public Tutor updateTutor(Tutor transientObject) {
-		return tutorServiceInterface.updateTutor(transientObject);
+		try {
+			Tutor newTutor =  tutorServiceInterface.updateTutor(transientObject);
+			keycloakService.updateUser(newTutor.getUserId(), newTutor.getEmail());
+			return newTutor;
+		}catch (Exception e){
+			throw new RuntimeException("Error updating user: " + e.getMessage());
+		}
 	}
 
 	public Tutor findTutorById(long id) {
@@ -60,8 +98,14 @@ public class Facade {
 		tutorServiceInterface.deleteTutor(persistentObject);
 	}
 
-	public void deleteTutor(long id) {
-		tutorServiceInterface.deleteTutor(id);
+	@Transactional
+	public void deleteTutor(long id, String idSession) {
+		try {
+			tutorServiceInterface.deleteTutor(id);
+			keycloakService.deleteUser(idSession);
+		}catch (Exception e){
+			throw new RuntimeException("Error deleting user");
+		}
 	}
 
 	// NivelHidratacao--------------------------------------------------------------
@@ -394,15 +438,34 @@ public class Facade {
 	}
 
 	// Medico--------------------------------------------------------------
-	@Autowired
-	private MedicoServiceInterface medicoService;
+	private final MedicoServiceInterface medicoService;
 
-	public Medico saveMedico(Medico newInstance) {
-		return medicoService.saveMedico(newInstance);
+	@Transactional
+	public Medico saveMedico(Medico newInstance, String password) {
+		String userKcId = null;
+		keycloakService.createUser(newInstance.getCpf(), newInstance.getEmail(), password, "medico");
+		try {
+			userKcId = keycloakService.getUserId(newInstance.getEmail());
+			newInstance.setUserId(userKcId);
+			return medicoService.saveMedico(newInstance);
+		}catch (DataIntegrityViolationException e){
+			keycloakService.deleteUser(userKcId);
+			throw e;
+		}catch (Exception e){
+			keycloakService.deleteUser(userKcId);
+			throw new RuntimeException("Ocorreu um erro inesperado ao salvar o usuário: "+ e.getMessage(), e);
+		}
 	}
 
+	@Transactional
 	public Medico updateMedico(Medico transientObject) {
-		return medicoService.updateMedico(transientObject);
+		try {
+			Medico newMedico =  medicoService.updateMedico(transientObject);
+			keycloakService.updateUser(newMedico.getUserId(), newMedico.getEmail());
+			return newMedico;
+		}catch (Exception e){
+			throw new RuntimeException("Error updating user: " + e.getMessage());
+		}
 	}
 
 	public Medico findMedicoById(long id) {
@@ -413,12 +476,19 @@ public class Facade {
 		return medicoService.findMedicoByuserId(userId);
 	}
 
+
 	public List<Medico> getAllMedico() {
 		return medicoService.getAllMedico();
 	}
 
+
 	public void deleteMedico(Medico persistentObject) {
-		medicoService.deleteMedico(persistentObject);
+		try {
+			medicoService.deleteMedico(persistentObject);
+			keycloakService.deleteUser(persistentObject.getUserId());
+		}catch (Exception e){
+			throw new RuntimeException("Error deleting user");
+		}
 	}
 
 	public void deleteMedico(long id) {
