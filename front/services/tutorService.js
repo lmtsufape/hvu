@@ -2,6 +2,7 @@ import api from '../common/http-common-back';
 
 // Função para criar um novo tutor
 export async function createTutor(tutorData) {
+  localStorage.clear();
   try {
     const response = await api.post('/tutor', tutorData);
     return response.data;
