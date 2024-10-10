@@ -7,6 +7,7 @@ import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -38,7 +39,8 @@ public class AnimalController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("animal")
 	public List<AnimalResponse> getAllAnimal() {
 		return facade.getAllAnimal()
@@ -54,6 +56,7 @@ public class AnimalController {
 			.map(AnimalResponse::new)
 			.toList();
 	}
+
 	@GetMapping("animal/semRetorno")
 	public List<AnimalResponse> findAnimaisWithoutReturn() {
 		return facade.findAnimaisWithoutReturn()
@@ -61,7 +64,8 @@ public class AnimalController {
 			.map(AnimalResponse::new)
 			.toList();
 	}
-	
+
+
 	@GetMapping("animal/retorno/{id}")
 	public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(@PathVariable Long id) {
 		try {
@@ -70,7 +74,8 @@ public class AnimalController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole('TUTOR')")
 	@GetMapping("animal/tutor")
 	public List<AnimalResponse> getAllAnimalTutor() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -90,7 +95,8 @@ public class AnimalController {
 		}
 		return new AnimalResponse(animals);
 	}
-	
+
+	@PreAuthorize("hasRole('TUTOR')")
 	@PostMapping("animal")
 	public AnimalResponse createAnimal(@Valid @RequestBody AnimalRequest newObj) {
 		try {
@@ -107,19 +113,23 @@ public class AnimalController {
 	
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
-			return new AnimalResponse(facade.findAnimalById(id));
+			return new AnimalResponse(facade.findAnimalById(id, principal.getSubject()));
 		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@PatchMapping("animal/{id}")
 	public AnimalResponse updateAnimal(@PathVariable Long id, @Valid @RequestBody AnimalRequest obj) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
-			
 			//Animal o = obj.convertToEntity();
-			Animal oldObject = facade.findAnimalById(id);
+			Animal oldObject = facade.findAnimalById(id, principal.getSubject());
 
 			if(obj.getRaca() != null){
 				oldObject.setRaca(facade.findRacaById(obj.getRaca().getId()));
@@ -132,7 +142,7 @@ public class AnimalController {
 			
 			
 			typeMapper.map(obj, oldObject);	
-			return new AnimalResponse(facade.updateAnimal(oldObject));
+			return new AnimalResponse(facade.updateAnimal(oldObject, principal.getSubject()));
 		} catch (IdNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         } catch (RuntimeException ex) {
@@ -140,13 +150,13 @@ public class AnimalController {
         }
 		
 	}
-	
+
 	@DeleteMapping("animal/{id}")
 	public String deleteAnimal(@PathVariable Long id) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
-			Animal oldObject = facade.findAnimalById(id);
+			Animal oldObject = facade.findAnimalById(id, principal.getSubject());
 			Tutor tutor = facade.findTutorByanimalId(oldObject.getId());
 			if(!principal.getSubject().equals(tutor.getUserId())) {
 				throw new AccessDeniedException("This is not your animal");
@@ -160,6 +170,4 @@ public class AnimalController {
         }
 		
 	}
-	
-
 }

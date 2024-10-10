@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class TipoConsultaController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("tipoConsulta")
 	public List<TipoConsultaResponse> getAllTipoConsulta() {
 		return facade.getAllTipoConsulta()
@@ -33,12 +35,14 @@ public class TipoConsultaController {
 			.map(TipoConsultaResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PostMapping("tipoConsulta")
 	public TipoConsultaResponse createTipoConsulta(@Valid @RequestBody TipoConsultaRequest newObj) {
 		return new TipoConsultaResponse(facade.saveTipoConsulta(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("tipoConsulta/{id}")
 	public TipoConsultaResponse getTipoConsultaById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class TipoConsultaController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("tipoConsulta/{id}")
 	public TipoConsultaResponse updateTipoConsulta(@PathVariable Long id, @Valid @RequestBody TipoConsultaRequest obj) {
 		try {
@@ -66,7 +71,8 @@ public class TipoConsultaController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("tipoConsulta/{id}")
 	public String deleteTipoConsulta(@PathVariable Long id) {
 		try {
@@ -75,8 +81,5 @@ public class TipoConsultaController {
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
-		
 	}
-	
-
 }

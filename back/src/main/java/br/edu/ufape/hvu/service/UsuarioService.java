@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.UsuarioRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
@@ -19,12 +20,20 @@ public class UsuarioService implements UsuarioServiceInterface {
 		return repository.save(newInstance);
 	}
 
-	public Usuario updateUsuario(Usuario transientObject) {
+	public Usuario updateUsuario(Usuario transientObject, String idSession) {
+		if(!transientObject.getUserId().equals(idSession)){
+			throw new AccessDeniedException("This is not your account");
+		}
 		return repository.save(transientObject);
 	}
 
-	public Usuario findUsuarioById(long id) {
-		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Usuario"));
+	public Usuario findUsuarioById(long id, String idSession) {
+		Usuario user = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Usuario"));
+
+		if(!user.getUserId().equals(idSession)){
+			throw new AccessDeniedException("This is not your account");
+		}
+		return user;
 	}
 	
 	public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {

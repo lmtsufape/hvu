@@ -2,6 +2,9 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -67,6 +70,8 @@ public class ConsultaController {
 	
 	@PatchMapping("consulta/{id}")
 	public ConsultaResponse updateConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest obj) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
 			//Consulta o = obj.convertToEntity();
 			Consulta oldObject = facade.findConsultaById(id);
@@ -85,7 +90,7 @@ public class ConsultaController {
 
 			// animal
 			if (obj.getAnimal() != null) {
-				oldObject.setAnimal(facade.findAnimalById( obj.getAnimal().getId()));
+				oldObject.setAnimal(facade.findAnimalById(obj.getAnimal().getId(), principal.getSubject()));
 				obj.setAnimal(null);
 			}
 

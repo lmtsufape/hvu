@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class RacaController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("raca")
 	public List<RacaResponse> getAllRaca() {
 		return facade.getAllRaca()
@@ -33,7 +35,8 @@ public class RacaController {
 			.map(RacaResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PostMapping("raca")
 	public RacaResponse createRaca(@Valid @RequestBody RacaRequest newObj) {
 		return new RacaResponse(facade.saveRaca(newObj.convertToEntity()));
@@ -46,9 +49,9 @@ public class RacaController {
 		} catch (IdNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
-		
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("raca/especie/{EspecieId}")
 	public List<RacaResponse> findByEspecie(@PathVariable Long EspecieId) {
 		return facade.findByEspecie(EspecieId)
@@ -56,7 +59,8 @@ public class RacaController {
 			.map(RacaResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("raca/{id}")
 	public RacaResponse updateRaca(@PathVariable Long id, @Valid @RequestBody RacaRequest obj) {
 		try {
@@ -80,7 +84,8 @@ public class RacaController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("raca/{id}")
 	public String deleteRaca(@PathVariable Long id) {
 		try {
@@ -91,6 +96,4 @@ public class RacaController {
 		}
 		
 	}
-	
-
 }

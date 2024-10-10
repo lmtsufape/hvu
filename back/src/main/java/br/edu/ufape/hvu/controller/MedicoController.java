@@ -6,6 +6,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +38,8 @@ public class MedicoController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("medico")
 	public List<MedicoResponse> getAllMedico() {
 		return facade.getAllMedico()
@@ -58,7 +65,8 @@ public class MedicoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@PatchMapping("medico/{id}")
 	public MedicoResponse updateMedico(@PathVariable Long id, @Valid @RequestBody MedicoRequest obj) {
 		try {
@@ -83,7 +91,8 @@ public class MedicoController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@DeleteMapping("medico/{id}")
 	public String deleteMedico(@PathVariable Long id) {
 		try {
@@ -103,7 +112,7 @@ public class MedicoController {
 				.map(MedicoResponse::new)
 				.toList();
 	}
-	
+
 	@GetMapping("medico/especialidade/{EspecialidadeId}")
 	public List<MedicoResponse> findByEspecialidade(@PathVariable Long EspecialidadeId){
 		return facade.findByEspeciallidade(EspecialidadeId)
@@ -111,8 +120,4 @@ public class MedicoController {
 				.map(MedicoResponse::new)
 				.toList();
 	}
-	
-	
-	
-
 }

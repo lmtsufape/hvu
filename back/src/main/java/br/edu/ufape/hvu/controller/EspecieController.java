@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class EspecieController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("especie")
 	public List<EspecieResponse> getAllEspecie() {
 		return facade.getAllEspecie()
@@ -33,12 +35,14 @@ public class EspecieController {
 			.map(EspecieResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PostMapping("especie")
 	public EspecieResponse createEspecie(@Valid @RequestBody EspecieRequest newObj) {
 		return new EspecieResponse(facade.saveEspecie(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("especie/{id}")
 	public EspecieResponse getEspecieById(@PathVariable Long id) {
 		try {
@@ -48,7 +52,8 @@ public class EspecieController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("especie/{id}")
 	public EspecieResponse updateEspecie(@PathVariable Long id, @Valid @RequestBody EspecieRequest obj) {
 		try {
@@ -65,9 +70,9 @@ public class EspecieController {
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
-		
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("especie/{id}")
 	public String deleteEspecie(@PathVariable Long id) {
 		try {
@@ -78,6 +83,4 @@ public class EspecieController {
 		}
 		
 	}
-	
-
 }
