@@ -13,7 +13,17 @@ function GerenciarTiposConsulta() {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [deletedTipoConsultaId, setDeletedTipoConsultaId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true); 
+    
     const router = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,10 +32,26 @@ function GerenciarTiposConsulta() {
                 setTiposConsulta(tiposConsultaData);
             } catch (error) {
                 console.error('Erro ao buscar tipos de consulta:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
     }, [deletedTipoConsultaId]); // Adicione deletedTipoConsultaId como uma dependência
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleDeleteTipoConsulta = async (tipoConsultaId) => {
         try {

@@ -19,6 +19,12 @@ function CreateCronograma() {
 
     const [errors, setErrors] = useState({});
 
+    const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
+    const [selectedMedico, setSelectedMedico] = useState(id);
+
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     const [cronograma, setCronograma] = useState({
         nome: "",
         tempoAtendimento: null,
@@ -26,6 +32,24 @@ function CreateCronograma() {
         medico: { id: null },
         especialidade: { id: null }
     });
+
+    const [diasDaSemana, setDiasDaSemana] = useState({
+        Monday: false,
+        Tuesday: false,
+        Wednesday: false,
+        Thursday: false,
+        Friday: false
+    });
+
+    const { especialidades } = EspecialidadeList();
+    const { medicos } = MedicoList();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         if (id) {
@@ -45,19 +69,27 @@ function CreateCronograma() {
                     console.log("racaData:", cronogramaData)
                 } catch (error) {
                     console.error('Erro ao buscar raça:', error);
+                } finally {
+                    setLoading(false); // Marcar como carregado após buscar os dados
                 }
             };
             fetchData();
         }
     }, [id]);
 
-    const [diasDaSemana, setDiasDaSemana] = useState({
-        Monday: false,
-        Tuesday: false,
-        Wednesday: false,
-        Thursday: false,
-        Friday: false
-    });
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleDiasDaSemanaChange = (dia) => {
         setDiasDaSemana(prevState => ({
@@ -85,16 +117,12 @@ function CreateCronograma() {
         setCronograma({ ...cronograma, [name]: value });
     };
     console.log("cronograma:", cronograma);
-
-    const { especialidades } = EspecialidadeList();
-    const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
+    
     const handleEspecialidadeSelection = (event) => {
         const selectedEspecialidadeId = event.target.value;
         setSelectedEspecialidade(selectedEspecialidadeId);
     };
-
-    const { medicos } = MedicoList();
-    const [selectedMedico, setSelectedMedico] = useState(id);
+    
     const handleMedicoSelection = (event) => {
         const selectedMedicoId = event.target.value;
         setSelectedMedico(selectedMedicoId);
@@ -165,7 +193,7 @@ function CreateCronograma() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Criar agenda</h1>
+            <h1>Editar agenda</h1>
             <form className={styles.inputs_container}>
                 <div className={styles.inputs_box}>
                     <div className="row">

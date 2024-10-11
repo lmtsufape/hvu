@@ -23,6 +23,37 @@ function GetAllAgendamentosDiaForm() {
   const [tutor, setTutor] = useState("");
   const [descricaoCancelamento, setDescricaoCancelamento] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const [roles, setRoles] = useState([]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setRoles(storedRoles || []);
+    }
+  }, []);
+
+  const fetchData = async () => {
+    const dataFormatada = dataSelecionada.toISOString().slice(0, 10); // Obtém 'yyyy-mm-dd'
+    try {
+      const VagasData = await getVagaByDate(dataFormatada);
+      setVagas(VagasData);
+    } catch (error) {
+      console.error("Erro ao buscar vagas:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [dataSelecionada]);
+
+  // Verifica se o usuário tem permissão
+  if (!roles.includes("secretario")) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
 
   const handleDataSelecionada = (novaData) => {
     setDataSelecionada(novaData);
@@ -68,21 +99,7 @@ function GetAllAgendamentosDiaForm() {
     console.log("Modal closed");
   };
 
-  const fetchData = async () => {
-    const dataFormatada = dataSelecionada.toISOString().slice(0, 10); // Obtém 'yyyy-mm-dd'
-    try {
-      const VagasData = await getVagaByDate(dataFormatada);
-      setVagas(VagasData);
-    } catch (error) {
-      console.error("Erro ao buscar vagas:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [dataSelecionada]);
-
-  console.log("vagas:: ", vagas);
+  console.log("vagas: ", vagas);
 
   const horarios = [
     "08:00",

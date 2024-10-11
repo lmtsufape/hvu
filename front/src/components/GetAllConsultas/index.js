@@ -12,8 +12,17 @@ function GetAllConsultas() {
 
     const [consultas, setConsultas] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     console.log("consultas:", consultas);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,12 +31,28 @@ function GetAllConsultas() {
                 setConsultas(consultasData);
             } catch (error) {
                 console.error('Erro ao buscar consultas:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         if (id) {
             fetchData();
         }
     }, [id]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("medico")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);

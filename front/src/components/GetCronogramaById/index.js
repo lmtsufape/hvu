@@ -9,6 +9,8 @@ function GetCronogramaById() {
     const router = useRouter();
     const { id } = router.query;
     const [cronograma, setCronograma] = useState({});
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
     const diasDaSemana = {
         MONDAY: "Segunda-feira",
         TUESDAY: "Terça-feira",
@@ -16,6 +18,13 @@ function GetCronogramaById() {
         THURSDAY: "Quinta-feira",
         FRIDAY: "Sexta-feira"
     };
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         if (id) {
@@ -27,11 +36,27 @@ function GetCronogramaById() {
                     console.log("jsão crono", cronogramaData.horariosJson);
                 } catch (error) {
                     console.error('Erro ao buscar agenda:', error);
+                } finally {
+                    setLoading(false); // Marcar como carregado após buscar os dados
                 }
             };
             fetchData();
         }
     }, [id]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const traduzir = (horariosJson) => {
         const dias = JSON.parse(horariosJson);
@@ -80,7 +105,7 @@ function GetCronogramaById() {
                                 <div className={styles.lista}>
                                     <div className={styles.infos}>
                                         <h6>Tempo de atendimento</h6>
-                                        <p>{cronograma.tempoAtendimento}</p>
+                                        <p>{cronograma.tempoAtendimento} minutos</p>
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Especialidade</h6>
