@@ -9,6 +9,15 @@ function GetConsultaById() {
     const router = useRouter();
     const { id } = router.query;
     const [consulta, setConsulta] = useState({});
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         if (id) {
@@ -18,11 +27,27 @@ function GetConsultaById() {
                     setConsulta(consultaData);
                 } catch (error) {
                     console.error('Erro ao buscar consulta:', error);
+                } finally {
+                    setLoading(false); // Marcar como carregado após buscar os dados
                 }
             };
             fetchData();
         }
     }, [id]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("medico")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };

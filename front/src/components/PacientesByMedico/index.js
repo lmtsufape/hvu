@@ -9,10 +9,19 @@ function PacientesByMedico() {
     const [agendamentos, setAgendamentos] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [animalIds, setAnimalIds] = useState(new Set()); // Conjunto para armazenar IDs de animais já listados
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const router = useRouter();
 
     const { id } = router.query;
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,10 +30,26 @@ function PacientesByMedico() {
                 setAgendamentos(agendamentosData);
             } catch (error) {
                 console.error('Erro ao buscar agendamentos do médico:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
     }, [id]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("medico")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.mensagem}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);

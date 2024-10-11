@@ -27,6 +27,16 @@ function UpdateRaca() {
     });
     const [selectedEspecie, setSelectedEspecie] = useState(null);
 
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
+
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
@@ -44,11 +54,27 @@ function UpdateRaca() {
                     console.log("racaData:", racaData)
                 } catch (error) {
                     console.error('Erro ao buscar raça:', error);
+                } finally {
+                    setLoading(false); // Marcar como carregado após buscar os dados
                 }
             };
             fetchData();
         }
     }, [id]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleEspecieSelection = (event) => {
         const selectedEspecieId = event.target.value;

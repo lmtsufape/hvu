@@ -19,11 +19,20 @@ function ReagendarConsulta() {
 	const [vagasFiltradas, setVagasFiltradas] = useState([]);
 	const [novaData, setNovaData] = useState("");
 	const [selectedVaga, setSelectedVaga] = useState(null); // Alterado para null inicialmente
+	const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
 
 	console.log("vagas:", vagas);
 	console.log("novaData:", novaData);
 	console.log("vagasFiltradas:", vagasFiltradas);
 	console.log("selectedVaga:", selectedVaga); // Log da vaga selecionada
+
+	useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -46,6 +55,8 @@ function ReagendarConsulta() {
 				);
 			} catch (error) {
 				console.error("Erro ao buscar vagas:", error);
+			} finally {
+				setLoading(false); // Marcar como carregado após buscar os dados
 			}
 		};
 
@@ -53,6 +64,21 @@ function ReagendarConsulta() {
 			fetchData();
 		}
 	}, [id]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message_message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
 
 	const handleNovaDataChange = (event) => {
 		const novaDataSelecionada = event.target.value;

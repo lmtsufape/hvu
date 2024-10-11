@@ -25,6 +25,8 @@ function CreateAnimalForm() {
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
+  const [roles, setRoles] = useState([]);
+
   const [animalData, setAnimalData] = useState({
     nome: '',
     sexo: '',
@@ -43,6 +45,13 @@ function CreateAnimalForm() {
   });
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setRoles(storedRoles || []);
+    }
+  }, []);
+
+  useEffect(() => {
     if (especies.length > 0 && selectedEspecie === null) {
       setSelectedEspecie(null);
       setSelectedRaca(null); 
@@ -51,6 +60,15 @@ function CreateAnimalForm() {
       setSelectedRaca(null);
     }
   }, [especies, racas, selectedEspecie, selectedRaca]);
+
+  // Verifica se o usuário tem permissão
+  if (!roles.includes("tutor")) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
 
   const formatDate = (data) => {
     if (!data) return ""; // Retorna vazio se não houver data

@@ -15,7 +15,17 @@ function GerenciarRacasList() {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [deletedRacaId, setDeletedRacaId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true); 
+    
     const router = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,10 +34,26 @@ function GerenciarRacasList() {
                 setRacas(racasData);
             } catch (error) {
                 console.error('Erro ao buscar racas:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
     }, [deletedRacaId]); // Adicione deletedRacaId como uma dependência
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleDeleteRaca = async (racaId) => {
         try {

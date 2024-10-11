@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
@@ -19,6 +19,11 @@ function CreateCronograma() {
 
     const [errors, setErrors] = useState({});
 
+    const [roles, setRoles] = useState([]);
+
+    const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
+    const [selectedMedico, setSelectedMedico] = useState(id);
+
     const [cronograma, setCronograma] = useState({
         nome: "",
         tempoAtendimento: null,
@@ -34,6 +39,25 @@ function CreateCronograma() {
         Thursday: false,
         Friday: false
     });
+
+    const { especialidades } = EspecialidadeList();
+    const { medicos } = MedicoList();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleDiasDaSemanaChange = (dia) => {
         setDiasDaSemana(prevState => ({
@@ -62,15 +86,11 @@ function CreateCronograma() {
     };
     console.log("cronograma:", cronograma);
 
-    const { especialidades } = EspecialidadeList();
-    const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
     const handleEspecialidadeSelection = (event) => {
         const selectedEspecialidadeId = event.target.value;
         setSelectedEspecialidade(selectedEspecialidadeId);
     };
-
-    const { medicos } = MedicoList();
-    const [selectedMedico, setSelectedMedico] = useState(id);
+    
     const handleMedicoSelection = (event) => {
         const selectedMedicoId = event.target.value;
         setSelectedMedico(selectedMedicoId);

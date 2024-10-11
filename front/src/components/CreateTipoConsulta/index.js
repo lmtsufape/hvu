@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { React, useState, useEffect } from 'react';
 import { useRouter } from "next/router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
@@ -16,9 +16,27 @@ function CreateTipoConsulta() {
 
     const [errors, setErrors] = useState({});
 
+    const [roles, setRoles] = useState([]);
+
     const [tipoConsulta, setTipoConsulta] = useState({
         tipo: ""
     });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleTipoConsultaChange = (event) => {
         const { name, value } = event.target;

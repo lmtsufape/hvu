@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { React, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
@@ -15,23 +15,14 @@ function GerenciarVagas() {
     const router = useRouter();
 
     const [showAlert, setShowAlert] = useState(false);
+
     const [showErrorAlert, setShowErrorAlert] = useState(false);
-
     const [errors, setErrors] = useState({});
-
-    const { especialidades } = EspecialidadeList();
-    const { tiposConsulta } = TipoConsultaList();
-    const { medicos } = MedicoList();
 
     const [data, setData] = useState("");
     const [dataFim, setDataFim] = useState("");
 
-    const handleVagasChange = (numVaga) => {
-        setVagas(prevState => ({
-            ...prevState,
-            [numVaga]: !prevState[numVaga]
-        }));
-    };
+    const [roles, setRoles] = useState([]);
 
     const [vagas, setVagas] = useState({
         vaga1: false,
@@ -44,6 +35,37 @@ function GerenciarVagas() {
         vaga8: false
     });
 
+    const [selectedEspecialidade, setSelectedEspecialidade] = useState(new Array(8).fill(''));
+    const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(new Array(8).fill(''));
+    const [selectedMedico, setSelectedMedico] = useState(new Array(8).fill(''));
+
+    const { especialidades } = EspecialidadeList();
+    const { tiposConsulta } = TipoConsultaList();
+    const { medicos } = MedicoList();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    const handleVagasChange = (numVaga) => {
+        setVagas(prevState => ({
+            ...prevState,
+            [numVaga]: !prevState[numVaga]
+        }));
+    };
+
     const handleDataChange = (event) => {
         setData(event.target.value);
     };
@@ -51,7 +73,6 @@ function GerenciarVagas() {
         setDataFim(event.target.value);
     };
 
-    const [selectedEspecialidade, setSelectedEspecialidade] = useState(new Array(8).fill(''));
     const handleEspecialidadeSelection = (event, position) => {
         const selectedEspecialidadeId = event.target.value;
         setSelectedEspecialidade(prevSelectedEspecialidade => {
@@ -61,7 +82,6 @@ function GerenciarVagas() {
         });
     };
 
-    const [selectedTipoConsulta, setSelectedTipoConsulta] = useState(new Array(8).fill(''));
     const handleTipoConsultaSelection = (event, position) => {
         const selectedTipoConsultaId = event.target.value;
         setSelectedTipoConsulta(prevSelectedTipoConsulta => {
@@ -71,7 +91,6 @@ function GerenciarVagas() {
         });
     };
 
-    const [selectedMedico, setSelectedMedico] = useState(new Array(8).fill(''));
     const handleMedicoSelection = (event, position) => {
         const selectedMedicoId = event.target.value;
         setSelectedMedico(prevSelectedMedico => {

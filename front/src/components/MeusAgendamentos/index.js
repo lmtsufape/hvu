@@ -18,6 +18,15 @@ export default function MeusAgendamentos() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [canceledAgendamentoId, setCanceledAgendamentoId] = useState(null); // Estado para controlar o ID do agendamento cancelado recentemente
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,6 +35,8 @@ export default function MeusAgendamentos() {
                 setAgendamentos(agendamentosData);
             } catch (error) {
                 console.error('Erro ao buscar agendamentos:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
@@ -66,6 +77,20 @@ export default function MeusAgendamentos() {
     );
 
     const sortedAgendamentos = filteredAgendamentos.sort(compareDates);
+
+        // Verifica se os dados estão carregando
+        if (loading) {
+            return <div>Carregando dados do usuário...</div>;
+        }
+    
+        // Verifica se o usuário tem permissão
+        if (!roles.includes("tutor")) {
+            return (
+                <div className={styles.container}>
+                    <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+                </div>
+            );
+        }
 
     return (
         <div>

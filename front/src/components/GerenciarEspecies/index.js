@@ -13,7 +13,17 @@ function GerenciarEspecies() {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [deletedEspecieId, setDeletedEspecieId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true); 
+    
     const router = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,10 +32,26 @@ function GerenciarEspecies() {
                 setEspecies(especiesData);
             } catch (error) {
                 console.error('Erro ao buscar espécies:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
     }, [deletedEspecieId]); // Adicione deletedEspecieId como uma dependência
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleDeleteEspecie = async (especieId) => {
         try {
