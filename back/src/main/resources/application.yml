@@ -2,9 +2,9 @@ files.storage: ./var/hvu/files/
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5437/banco
+    url: jdbc:postgresql://localhost:5432/banco
     username: postgres
-    password: 098098
+    password: 1234
     auto-commit: false
 
   jpa:
@@ -48,7 +48,7 @@ common:
   seeders: true
   front: http://localhost:3000/,https://lmtsteste06.ufape.edu.br/
   back: http://localhost:8081/,https://lmtsteste03.ufape.edu.br/
-  docker: http://localhost:8080/  # Mudar para http://keycloak:8080/ se for rodar com docker
+  docker: http://keycloak:8080/  # Mudar para http://keycloak:8080/ se for rodar com docker
 
 ---
 spring:
