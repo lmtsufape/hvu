@@ -33,7 +33,7 @@ export async function getTutorById(tutorId) {
 // Função para atualizar um tutor
 export async function updateTutor(tutorId, tutorData) {
   try {
-    const response = await api.patch(`/usuario/${tutorId}`, tutorData);
+    const response = await api.patch(`/tutor/${tutorId}`, tutorData);
     return response.data;
   } catch (error) {
     throw error;
@@ -43,7 +43,7 @@ export async function updateTutor(tutorId, tutorData) {
 // Função para excluir um tutor por ID
 export async function deleteTutor(usuarioId) {
   try {
-    const response = await api.delete(`/usuario/${usuarioId}`);
+    const response = await api.delete(`/tutor/${usuarioId}`);
     return response.data;
   } catch (error) {
     throw error;
