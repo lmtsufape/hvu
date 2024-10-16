@@ -20,6 +20,7 @@ function ReagendarConsulta() {
 	const [novaData, setNovaData] = useState("");
 	const [selectedVaga, setSelectedVaga] = useState(null); // Alterado para null inicialmente
 	const [roles, setRoles] = useState([]);
+	const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
 
 	console.log("vagas:", vagas);
@@ -27,12 +28,14 @@ function ReagendarConsulta() {
 	console.log("vagasFiltradas:", vagasFiltradas);
 	console.log("selectedVaga:", selectedVaga); // Log da vaga selecionada
 
-	useEffect(() => {
+    useEffect(() => {
         if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-    }, []);
+      }, []);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -79,6 +82,13 @@ function ReagendarConsulta() {
         );
     }
 
+	if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
 	const handleNovaDataChange = (event) => {
 		const novaDataSelecionada = event.target.value;

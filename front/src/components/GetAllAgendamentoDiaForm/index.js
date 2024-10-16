@@ -24,10 +24,13 @@ function GetAllAgendamentosDiaForm() {
   const [descricaoCancelamento, setDescricaoCancelamento] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem('token');
         const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setToken(storedToken || "");
         setRoles(storedRoles || []);
     }
   }, []);
@@ -51,6 +54,14 @@ function GetAllAgendamentosDiaForm() {
     return (
       <div className={styles.container}>
         <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
       </div>
     );
   }

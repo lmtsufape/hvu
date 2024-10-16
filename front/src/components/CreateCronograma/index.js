@@ -20,6 +20,7 @@ function CreateCronograma() {
     const [errors, setErrors] = useState({});
 
     const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
 
     const [selectedEspecialidade, setSelectedEspecialidade] = useState(null);
     const [selectedMedico, setSelectedMedico] = useState(id);
@@ -45,10 +46,12 @@ function CreateCronograma() {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-    }, []);
+      }, []);
 
     // Verifica se o usuário tem permissão
     if (!roles.includes("secretario")) {
@@ -58,6 +61,14 @@ function CreateCronograma() {
             </div>
         );
     }
+
+    if (!token) {
+        return (
+          <div className={styles.container}>
+            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+          </div>
+        );
+      }
 
     const handleDiasDaSemanaChange = (dia) => {
         setDiasDaSemana(prevState => ({

@@ -23,6 +23,7 @@ function GetAllAgendamentosSemanaForm() {
   const [descricaoCancelamento, setDescricaoCancelamento] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [token, setToken] = useState("");
 
   const horarios = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
   const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
@@ -36,8 +37,10 @@ function GetAllAgendamentosSemanaForm() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedRoles = JSON.parse(localStorage.getItem('roles'));
-      setRoles(storedRoles || []);
+        const storedToken = localStorage.getItem('token');
+        const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setToken(storedToken || "");
+        setRoles(storedRoles || []);
     }
   }, []);
 
@@ -61,6 +64,14 @@ function GetAllAgendamentosSemanaForm() {
     return (
       <div className={styles.container}>
         <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
       </div>
     );
   }

@@ -50,13 +50,16 @@ function CreateMedico() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-    }, []);
+      }, []);
 
     // Verifica se o usuário tem permissão
     if (!roles.includes("secretario")) {
@@ -66,6 +69,14 @@ function CreateMedico() {
             </div>
         );
     }
+
+    if (!token) {
+        return (
+          <div className={styles.container}>
+            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+          </div>
+        );
+      }
 
     const handleEspecialidadeSelection = (event) => {
         const especialidadeId = parseInt(event.target.value);

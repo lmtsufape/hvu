@@ -10,18 +10,20 @@ function PacientesByMedico() {
     const [searchTerm, setSearchTerm] = useState('');
     const [animalIds, setAnimalIds] = useState(new Set()); // Conjunto para armazenar IDs de animais já listados
     const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
 
     const router = useRouter();
 
     const { id } = router.query;
-
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-    }, []);
+      }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,6 +49,14 @@ function PacientesByMedico() {
         return (
             <div className={styles.container}>
                 <h3 className={styles.mensagem}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
             </div>
         );
     }

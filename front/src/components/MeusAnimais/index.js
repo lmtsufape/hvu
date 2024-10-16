@@ -15,16 +15,19 @@ function MeusAnimaisList() {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [deletedAnimalId, setDeletedAnimalId] = useState(null);
     const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true); // Adicionando um estado de carregamento
 
     const router = useRouter();
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-    }, []);
+      }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,6 +53,14 @@ function MeusAnimaisList() {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
             </div>
         );
     }

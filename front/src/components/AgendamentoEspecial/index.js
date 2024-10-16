@@ -39,6 +39,7 @@ function AgendamentoEspecial() {
   const [escolherData, setEscolherData] = useState(null);
   const [escolherHorario, setEscolherHorario] = useState(null);
   const [roles, setRoles] = useState([]);
+  const [token, setToken] = useState("");
 
   const { animais } = AnimalList();
   const { tiposConsulta } = TipoConsultaList();
@@ -47,8 +48,10 @@ function AgendamentoEspecial() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedRoles = JSON.parse(localStorage.getItem('roles'));
-      setRoles(storedRoles || []);
+        const storedToken = localStorage.getItem('token');
+        const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setToken(storedToken || "");
+        setRoles(storedRoles || []);
     }
   }, []);
 
@@ -57,6 +60,14 @@ function AgendamentoEspecial() {
     return (
       <div className={styles.container}>
         <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
       </div>
     );
   }
