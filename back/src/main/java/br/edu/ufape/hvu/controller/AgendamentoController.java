@@ -51,7 +51,8 @@ public class AgendamentoController {
 	public AgendamentoResponse createAgendamentoEspecial(@Valid @RequestBody AgendamentoEspecialRequest newObj) {
 		return new AgendamentoResponse(facade.createAgendamentoEspecial(newObj));
 	}
-	
+
+
 	@GetMapping("agendamento/{id}")
 	public AgendamentoResponse getAgendamentoById(@PathVariable Long id) {
 		try {
@@ -63,8 +64,10 @@ public class AgendamentoController {
 	
 	@GetMapping("agendamento/medico/{id}")
 	public List<AgendamentoResponse> getAgendamentosByMedicoId(@PathVariable Long id) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
-			return facade.findAgendamentosByMedicoId(id)
+			return facade.findAgendamentosByMedicoId(id,principal.getSubject())
 					.stream()
 					.map(AgendamentoResponse::new)
 					.toList();
