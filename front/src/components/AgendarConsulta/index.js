@@ -37,6 +37,7 @@ const HorariosSemana = () => {
 
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState("");
 
   console.log("retorno:", retorno);
   console.log("selectedAnimal:", selectedAnimal);
@@ -44,10 +45,12 @@ const HorariosSemana = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem('token');
         const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setToken(storedToken || "");
         setRoles(storedRoles || []);
     }
-}, []);
+  }, []);
 
   const openModal = () => {
     setShowModal(true);
@@ -169,6 +172,14 @@ const HorariosSemana = () => {
     return (
       <div className={styles.container}>
         <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
       </div>
     );
   }

@@ -14,11 +14,14 @@ function GetAllCronogramaByMedico() {
     const [cronogramas, setCronogramas] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
     }, []);
@@ -53,6 +56,14 @@ function GetAllCronogramaByMedico() {
             </div>
         );
     }
+
+    if (!token) {
+        return (
+          <div className={styles.container}>
+            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+          </div>
+        );
+      }
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);

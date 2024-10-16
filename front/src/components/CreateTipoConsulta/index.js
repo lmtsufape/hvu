@@ -17,6 +17,7 @@ function CreateTipoConsulta() {
     const [errors, setErrors] = useState({});
 
     const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
 
     const [tipoConsulta, setTipoConsulta] = useState({
         tipo: ""
@@ -24,10 +25,12 @@ function CreateTipoConsulta() {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-    }, []);
+      }, []);
 
     // Verifica se o usuário tem permissão
     if (!roles.includes("secretario")) {
@@ -37,6 +40,14 @@ function CreateTipoConsulta() {
             </div>
         );
     }
+
+    if (!token) {
+        return (
+          <div className={styles.container}>
+            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+          </div>
+        );
+      }
 
     const handleTipoConsultaChange = (event) => {
         const { name, value } = event.target;

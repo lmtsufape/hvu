@@ -23,6 +23,7 @@ function CreateCronograma() {
     const [selectedMedico, setSelectedMedico] = useState(id);
 
     const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
 
     const [cronograma, setCronograma] = useState({
@@ -46,7 +47,9 @@ function CreateCronograma() {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
     }, []);
@@ -87,6 +90,14 @@ function CreateCronograma() {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
             </div>
         );
     }

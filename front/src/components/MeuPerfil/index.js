@@ -8,6 +8,18 @@ function MeuPerfilList() {
     const router = useRouter();
     const { id } = router.query;
     const [usuario, setUsuario] = useState({});
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+      }, []);
 
     useEffect(() => {
         if (id) {
@@ -17,11 +29,33 @@ function MeuPerfilList() {
                     setUsuario(usuarioData);
                 } catch (error) {
                     console.error('Erro ao buscar usuário:', error);
+                } finally {
+                    setLoading(false); // Marcar como carregado após buscar os dados
                 }
             };
             fetchData();
         }
     }, [id]);
+
+    if (!roles.length) {
+        <div>Carregando dados do usuário...</div>; 
+    }
+
+    if (!roles.includes("secretario") || !token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleEditarClick = (UsuarioId) => {
         router.push(`/updateMeuPerfil/${UsuarioId}`);

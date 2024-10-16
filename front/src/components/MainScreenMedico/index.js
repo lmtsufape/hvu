@@ -11,14 +11,17 @@ function MainScreenMedico() {
     console.log("userId:", userId);
 
     const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-    }, []);
+      }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,6 +50,14 @@ function MainScreenMedico() {
             </div>
         );
     }    
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.container}>

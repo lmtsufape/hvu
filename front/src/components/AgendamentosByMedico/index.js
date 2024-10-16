@@ -16,6 +16,7 @@ export default function AgendamentosByMedico() {
 
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [token, setToken] = useState("");
 
     const formatDate = (data) => {
         const year = data.getFullYear();
@@ -40,12 +41,14 @@ export default function AgendamentosByMedico() {
     return filteredAgendamentos;
 };
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const storedRoles = JSON.parse(localStorage.getItem('roles'));
-            setRoles(storedRoles || []);
-        }
-    }, []);
+useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem('token');
+        const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setToken(storedToken || "");
+        setRoles(storedRoles || []);
+    }
+  }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,6 +80,14 @@ export default function AgendamentosByMedico() {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
             </div>
         );
     }
