@@ -18,6 +18,19 @@ function GetAllCronograma() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+    }, []);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -26,6 +39,8 @@ function GetAllCronograma() {
                 setCronogramas(cronogramasMedico);
             } catch (error) {
                 console.error('Erro ao buscar agendas:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         if (id) {
@@ -36,6 +51,28 @@ function GetAllCronograma() {
     const handleSearchChange = (term) => {
         setSearchTerm(term);
     };
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+          <div className={styles.container}>
+            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+          </div>
+        );
+      }
 
     const filteredCronogramas = cronogramas.filter(cronograma =>
         cronograma.nome.toLowerCase().includes(searchTerm.toLowerCase())

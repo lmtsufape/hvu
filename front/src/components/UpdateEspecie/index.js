@@ -18,6 +18,19 @@ function UpdateEspecie() {
 
     const [especie, setEspecie] = useState({});
 
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+    }, []);
+
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
@@ -28,11 +41,35 @@ function UpdateEspecie() {
                     console.log("especieData:", especieData)
                 } catch (error) {
                     console.error('Erro ao buscar espécie:', error);
+                } finally {
+                    setLoading(false); // Marcar como carregado após buscar os dados
                 }
             };
             fetchData();
         }
     }, [id]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleEspecieChange = (event) => {
         const { name, value } = event.target;

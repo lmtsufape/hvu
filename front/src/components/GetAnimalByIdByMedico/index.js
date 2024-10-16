@@ -9,6 +9,18 @@ function GetAnimalByIdByMedico() {
     const router = useRouter();
     const { id } = router.query;
     const [animal, setAnimal] = useState({});
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         if (id) {
@@ -18,11 +30,35 @@ function GetAnimalByIdByMedico() {
                     setAnimal(animalData);
                 } catch (error) {
                     console.error('Erro ao buscar animal:', error);
+                } finally {
+                    setLoading(false); // Marcar como carregado após buscar os dados
                 }
             };
             fetchData();
         }
     }, [id]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("medico")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };

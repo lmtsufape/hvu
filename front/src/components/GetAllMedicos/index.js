@@ -14,8 +14,20 @@ function GetAllMedicos() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [deletedMedicoId, setDeletedMedicoId] = useState(null); // Estado para controlar o ID do médico excluído recentemente
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true); 
 
     const router = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,10 +36,34 @@ function GetAllMedicos() {
                 setMedicos(medicosData);
             } catch (error) {
                 console.error('Erro ao buscar médicos:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
     }, [deletedMedicoId]); // Adicione deletedMedicoId como uma dependência
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+          <div className={styles.container}>
+            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+          </div>
+        );
+      }
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);

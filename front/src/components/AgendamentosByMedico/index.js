@@ -14,6 +14,10 @@ export default function AgendamentosByMedico() {
     const [agendamentos, setAgendamentos] = useState([]);
     console.log("agendamentos:", agendamentos);
 
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [token, setToken] = useState("");
+
     const formatDate = (data) => {
         const year = data.getFullYear();
         const month = String(data.getMonth() + 1).padStart(2, '0');
@@ -37,6 +41,15 @@ export default function AgendamentosByMedico() {
     return filteredAgendamentos;
 };
 
+useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem('token');
+        const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setToken(storedToken || "");
+        setRoles(storedRoles || []);
+    }
+  }, []);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -50,10 +63,34 @@ export default function AgendamentosByMedico() {
                 }
             } catch (error) {
                 console.error('Erro ao buscar agendamentos do médico:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };        
         fetchData();
     }, [id, data]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("medico")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     // Função para filtrar os agendamentos com base no nome do animal
     const filteredAgendamentos = agendamentos.filter(agendamento =>

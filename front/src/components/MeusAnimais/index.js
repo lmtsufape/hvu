@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { React, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
@@ -14,8 +14,20 @@ function MeusAnimaisList() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [deletedAnimalId, setDeletedAnimalId] = useState(null);
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true); // Adicionando um estado de carregamento
 
     const router = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+      }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,10 +36,34 @@ function MeusAnimaisList() {
                 setAnimais(animaisData);
             } catch (error) {
                 console.error('Erro ao buscar animais:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
-    }, [deletedAnimalId]); // Adicione deletedAnimalId como uma dependência
+    }, [deletedAnimalId]); // Adiciona deletedAnimalId como uma dependência
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("tutor")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);
@@ -40,17 +76,17 @@ function MeusAnimaisList() {
     const handleDeleteAnimal = async (animalId) => {
         try {
             await deleteAnimal(animalId);
-            setShowAlert(true); 
+            setShowAlert(true);
             setDeletedAnimalId(animalId); // Atualiza o estado para acionar a recuperação da lista
         } catch (error) {
             console.error('Erro ao excluir o animal: ', error);
             setShowErrorAlert(true);
         }
-    }
+    };
 
     return (
         <div className={styles.container}>
-            < VoltarButton />
+            <VoltarButton />
 
             <h1>Meus animais</h1>
 
@@ -83,7 +119,7 @@ function MeusAnimaisList() {
                                 >
                                     Visualizar
                                 </button>
-                                < ExcluirButton itemId={animal.id} onDelete={handleDeleteAnimal} />
+                                <ExcluirButton itemId={animal.id} onDelete={handleDeleteAnimal} />
                             </div>
                         </li>
                     ))}

@@ -9,6 +9,18 @@ function GetAnimalByIdForm() {
     const router = useRouter();
     const { id } = router.query;
     const [animal, setAnimal] = useState({});
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true); 
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         if (id) {
@@ -18,6 +30,8 @@ function GetAnimalByIdForm() {
                     setAnimal(animalData);
                 } catch (error) {
                     console.error('Erro ao buscar animal:', error);
+                } finally {
+                    setLoading(false); 
                 }
             };
             fetchData();
@@ -30,6 +44,28 @@ function GetAnimalByIdForm() {
         date.setDate(date.getDate() + 1); // Adicionando um dia para corrigir a subtração incorreta
         return date.toLocaleDateString('pt-BR', options);
     };
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("tutor")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
     
 
     return (

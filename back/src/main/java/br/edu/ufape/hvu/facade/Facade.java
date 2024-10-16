@@ -1084,13 +1084,11 @@ public class Facade {
 		return agendamentoServiceInterface.getAllAgendamento();
 	}
 	
-	public List<Agendamento> findAgendamentosByMedicoId(Long medicoId){
+	public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String token){
 		Medico medico = findMedicoById(medicoId);
-		return agendamentoServiceInterface.findAgendamentosByMedicoId(medico.getId());
+		return agendamentoServiceInterface.findAgendamentosByMedicoId(medico, token);
 	}
-	
-	
-	
+
 	public List<Agendamento> findAgendamentosByTutorId(String userId) {
 		Tutor tutor = findTutorByuserId(userId);
 

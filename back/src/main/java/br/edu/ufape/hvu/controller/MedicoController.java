@@ -102,7 +102,6 @@ public class MedicoController {
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
-		
 	}
 
 	@GetMapping("medico/instituicao/{InstituicaoId}")

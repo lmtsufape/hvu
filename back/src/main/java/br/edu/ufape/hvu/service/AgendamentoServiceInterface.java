@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.edu.ufape.hvu.model.Agendamento;
 import br.edu.ufape.hvu.model.Animal;
+import br.edu.ufape.hvu.model.Medico;
 
 public interface AgendamentoServiceInterface {
 	Agendamento saveAgendamento(Agendamento o);
@@ -12,10 +13,9 @@ public interface AgendamentoServiceInterface {
 	void deleteAgendamento(Agendamento u);
 	void deleteAgendamento(long id);
 	List<Agendamento> getAllAgendamento();
-	List<Agendamento> findAgendamentosByMedicoId(Long medicoId);
+	List<Agendamento> findAgendamentosByMedicoId(Medico medico, String token);
 	List<Agendamento> findAgendamentosByAnimal(Animal animal);
-    
-    
+
 
     
 }

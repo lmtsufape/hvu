@@ -1,10 +1,43 @@
-import React from 'react';
+import {React, useState, useEffect} from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from "./index.module.css";
 
 function MainScreenTutor() {
     const router = useRouter();
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+
+    console.log("Roles:", roles);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+      }, []);
+
+    if (!roles.length) {
+        <div>Carregando dados do usuário...</div>; 
+    }
+
+    if (!roles.includes("tutor")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.container}>

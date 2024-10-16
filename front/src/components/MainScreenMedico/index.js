@@ -10,6 +10,19 @@ function MainScreenMedico() {
     const [userId, setUserId] = useState(null);
     console.log("userId:", userId);
 
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+      }, []);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -17,10 +30,34 @@ function MainScreenMedico() {
                 setUserId(userData.usuario.id);
             } catch (error) {
                 console.error('Erro ao buscar usuário:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
     }, []);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("medico")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }    
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.container}>

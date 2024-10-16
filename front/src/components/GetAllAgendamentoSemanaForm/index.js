@@ -22,6 +22,8 @@ function GetAllAgendamentosSemanaForm() {
   const [tutor, setTutor] = useState('');
   const [descricaoCancelamento, setDescricaoCancelamento] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const [roles, setRoles] = useState([]);
+  const [token, setToken] = useState("");
 
   const horarios = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
   const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
@@ -32,6 +34,15 @@ function GetAllAgendamentosSemanaForm() {
     dia.setDate(dataSelecionada.getDate() - dataSelecionada.getDay() + i);
     dias.push(dia);
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem('token');
+        const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setToken(storedToken || "");
+        setRoles(storedRoles || []);
+    }
+  }, []);
 
   const fetchData = async () => {
     const dataInicio = dias[0].toISOString().slice(0, 10);
@@ -47,6 +58,23 @@ function GetAllAgendamentosSemanaForm() {
   useEffect(() => {
     fetchData();
   }, [dataSelecionada]);
+
+  // Verifica se o usuário tem permissão
+  if (!roles.includes("secretario")) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+      </div>
+    );
+  }
 
   const getStatusColor = status => {
     switch (status) {
