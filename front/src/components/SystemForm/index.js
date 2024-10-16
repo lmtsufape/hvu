@@ -5,7 +5,9 @@ import VoltarButton from "../VoltarButton";
 function SystemForm() {
     return(
         <div className={styles.page}>
-            < VoltarButton />
+            <div className={styles.voltar}>
+                < VoltarButton />
+            </div>
             
             <div className={styles.container}>
                 <div className={styles.titulo}>
