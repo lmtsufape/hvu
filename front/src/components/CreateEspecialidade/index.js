@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { React, useState, useEffect } from 'react';
 import { useRouter } from "next/router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
@@ -16,9 +16,38 @@ function CreateEspecialidade() {
 
     const [errors, setErrors] = useState({});
 
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+
     const [especialidade, setEspecialidade] = useState({
         nome: ""
     });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+      }, []);
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+          <div className={styles.container}>
+            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+          </div>
+        );
+      }
 
     const handleEspecialidadeChange = (event) => {
         const { name, value } = event.target;

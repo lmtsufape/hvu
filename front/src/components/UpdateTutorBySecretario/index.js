@@ -21,10 +21,21 @@ function UpdateTutorBySecretario() {
     const [confirmarSenhaErro, setConfirmarSenhaErro] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
-
     const [tutor, setTutor] = useState({});
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true); 
 
     console.log("tutor: ", tutor);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         if (id) {
@@ -34,11 +45,35 @@ function UpdateTutorBySecretario() {
                     setTutor(TutorData);
                 } catch (error) {
                     console.error('Erro ao buscar informações de tutor:', error);
+                } finally {
+                    setLoading(false); // Marcar como carregado após buscar os dados
                 }
             };
             fetchData();
         }
     }, [id]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleTutorChange = (event) => {
         const { name, value } = event.target;

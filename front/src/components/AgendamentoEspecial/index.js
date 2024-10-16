@@ -23,9 +23,7 @@ function AgendamentoEspecial() {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
-
   const [errors, setErrors] = useState({});
-
   const [agendamento, setAgendamento] = useState({
     animal: { id: null },
     tipoEspecial: true,
@@ -34,30 +32,61 @@ function AgendamentoEspecial() {
     tipoConsulta: { id: null },
     medico: { id: null }
   });
+  const [selectedAnimal, setSelectedAnimal] = useState(null);
+  const [selectedTiposConsulta, setSelectedTiposConsulta] = useState(null);
+  const [selectedEspecialidade, setSelectedEspecialidade] = useState();
+  const [selectedMedico, setSelectedMedico] = useState(null);
+  const [escolherData, setEscolherData] = useState(null);
+  const [escolherHorario, setEscolherHorario] = useState(null);
+  const [roles, setRoles] = useState([]);
+  const [token, setToken] = useState("");
 
   const { animais } = AnimalList();
-  const [selectedAnimal, setSelectedAnimal] = useState(null);
+  const { tiposConsulta } = TipoConsultaList();
+  const { especialidades } = EspecialidadeList();
+  const { medicos } = MedicoList();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem('token');
+        const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setToken(storedToken || "");
+        setRoles(storedRoles || []);
+    }
+  }, []);
+
+  // Verifica se o usuário tem permissão
+  if (!roles.includes("secretario")) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+      </div>
+    );
+  }
+
   const handleAnimalSelection = (selectedOption) => {
     setSelectedAnimal(selectedOption ? selectedOption.value : null);
   };
 
-  const { tiposConsulta } = TipoConsultaList();
-  const [selectedTiposConsulta, setSelectedTiposConsulta] = useState(null);
   const handleTiposConsultaSelection = (event) => {
     const selectedTipo = JSON.parse(event.target.value);
     setSelectedTiposConsulta(selectedTipo);
     console.log("selectedTipo:", selectedTipo);
   };
-
-  const { especialidades } = EspecialidadeList();
-  const [selectedEspecialidade, setSelectedEspecialidade] = useState();
+  
   const handleEspecialidadeSelection = (event) => {
     const selectedId = event.target.value;
     setSelectedEspecialidade(selectedId);
   };
-
-  const { medicos } = MedicoList();
-  const [selectedMedico, setSelectedMedico] = useState(null);
+  
   const handleMedicoSelection = (event) => {
     const selectedId = event.target.value;
     setSelectedMedico(selectedId);
@@ -67,9 +96,6 @@ function AgendamentoEspecial() {
     const { name, value } = event.target;
     setAgendamento({ ...agendamento, [name]: value === "true" });
   }
-
-  const [escolherData, setEscolherData] = useState(null);
-  const [escolherHorario, setEscolherHorario] = useState(null);
 
   const handleDateChange = (date) => {
     setEscolherData(date);

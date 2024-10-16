@@ -152,12 +152,26 @@
     color: #C7122F;
   }
   
-  .error_message {
+.error_message {
     margin-top: -0.2em;
     font-family: 'Poppins', sans-serif;
     font-size: 12px;
     font-weight: 300;
     line-height: 24px;
     color: #C7122F;
-  }
+}
+
+.message {
+    min-height: 300px;
+    margin-top: 56px; 
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: center;
+}
   

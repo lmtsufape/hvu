@@ -103,3 +103,17 @@
 .acessar_button:hover {
     background-color: #5b977b;
 }
+
+.message {
+    min-height: 300px;
+    margin-top: 56px; 
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: center;
+}

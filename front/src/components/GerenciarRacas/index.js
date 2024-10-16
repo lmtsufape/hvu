@@ -15,7 +15,21 @@ function GerenciarRacasList() {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [deletedRacaId, setDeletedRacaId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true); 
+    const [accessDenied, setAccessDenied] = useState(false);
+    
     const router = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+      }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,10 +38,37 @@ function GerenciarRacasList() {
                 setRacas(racasData);
             } catch (error) {
                 console.error('Erro ao buscar racas:', error);
+                if (error.response && error.response.status === 403) {
+                    setAccessDenied(true); // Define o estado de acesso negado
+                }
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
     }, [deletedRacaId]); // Adicione deletedRacaId como uma dependência
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão ou se o acesso for negado 
+    if (!roles.includes("secretario") || accessDenied) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleDeleteRaca = async (racaId) => {
         try {

@@ -10,6 +10,18 @@ function GetPacienteById() {
     const { id: tutorId, index: animalId } = router.query;
     const [tutor, setTutor] = useState({});
     const [animal, setAnimal] = useState({});
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -20,6 +32,8 @@ function GetPacienteById() {
                 }
             } catch (error) {
                 console.error('Erro ao buscar dados do tutor:', error);
+            } finally {
+                setLoading(false); // Marcar como carregado após buscar os dados
             }
         };
         fetchData();
@@ -38,6 +52,28 @@ function GetPacienteById() {
         };
         fetchData();
     }, [animalId]);
+
+    // Verifica se os dados estão carregando
+    if (loading) {
+        return <div>Carregando dados do usuário...</div>;
+    }
+
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("secretario")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
