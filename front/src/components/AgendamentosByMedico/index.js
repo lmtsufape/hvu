@@ -17,6 +17,7 @@ export default function AgendamentosByMedico() {
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState("");
+    const [erro, setErro] = useState("");
 
     const formatDate = (data) => {
         const year = data.getFullYear();
@@ -41,14 +42,14 @@ export default function AgendamentosByMedico() {
     return filteredAgendamentos;
 };
 
-useEffect(() => {
-    if (typeof window !== 'undefined') {
-        const storedToken = localStorage.getItem('token');
-        const storedRoles = JSON.parse(localStorage.getItem('roles'));
-        setToken(storedToken || "");
-        setRoles(storedRoles || []);
-    }
-  }, []);
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,11 +58,19 @@ useEffect(() => {
                     const agendamentosData = await getVagaMedico(id, data);
                     const filteredAgendamentos = filterAgendamentosByDate(agendamentosData, data);
                     setAgendamentos(filteredAgendamentos);
+                    setErro("");
                 } else {
                     setAgendamentos([]);
                     console.log("O id ou a data estão indefinidos.");
                 }
             } catch (error) {
+                if (error.response.status === 404) {
+                    setErro("Página não encontrada (Erro 404)");
+                } else if (error.response.status === 403) {
+                    setErro("Acesso negado (Erro 403)");
+                } else {
+                    setErro("Erro ao buscar agendamentos do médico");
+                }
                 console.error('Erro ao buscar agendamentos do médico:', error);
             } finally {
                 setLoading(false); // Marcar como carregado após buscar os dados
@@ -76,7 +85,7 @@ useEffect(() => {
     }
 
     // Verifica se o usuário tem permissão
-    if (!roles.includes("medico")) {
+    if (!roles.includes("medico") || erro) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
