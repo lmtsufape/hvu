@@ -12,28 +12,43 @@ function PacientesByMedico() {
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
+    const [erro, setErro] = useState("");
 
     const router = useRouter();
 
     const { id } = router.query;
+
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const storedToken = localStorage.getItem('token');
             const storedRoles = JSON.parse(localStorage.getItem('roles'));
-            setToken(storedToken || "");
-            setRoles(storedRoles || []);
+            if (!storedToken || !storedRoles) {
+                throw new Error("Erro ao carregar token ou roles do usuário");
+            }
+            setToken(storedToken);
+            setRoles(storedRoles);
         }
-      }, []);
+    }, []);
+
+    console.log("erro:", erro);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const agendamentosData = await getAgendamentoMedico(id);
                 setAgendamentos(agendamentosData);
+                setErro("");
             } catch (error) {
-                console.error('Erro ao buscar agendamentos do médico:', error);
+                if (error.response.status === 404) {
+                    setErro("Página não encontrada (Erro 404)");
+                } else if (error.response.status === 403) {
+                    setErro("Acesso negado (Erro 403)");
+                } else {
+                    setErro("Erro ao buscar pacientes do médico");
+                }
+                console.error('Erro:', error);
             } finally {
-                setLoading(false); // Marcar como carregado após buscar os dados
+                setLoading(false);
             }
         };
         fetchData();
@@ -45,7 +60,7 @@ function PacientesByMedico() {
     }
 
     // Verifica se o usuário tem permissão
-    if (!roles.includes("medico")) {
+    if (!roles.includes("medico") || erro) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.mensagem}>Acesso negado: Você não tem permissão para acessar esta página.</h3>

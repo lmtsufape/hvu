@@ -8,16 +8,13 @@ function MeuPerfilList() {
     const router = useRouter();
     const { id } = router.query;
     const [usuario, setUsuario] = useState({});
-    const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [erro, setErro] = useState("");
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const storedToken = localStorage.getItem('token');
-            const storedRoles = JSON.parse(localStorage.getItem('roles'));
             setToken(storedToken || "");
-            setRoles(storedRoles || []);
         }
       }, []);
 
@@ -27,21 +24,23 @@ function MeuPerfilList() {
                 try {
                     const usuarioData = await getUsuarioById(id);
                     setUsuario(usuarioData);
+                    setErro("");
                 } catch (error) {
+                    if (error.response.status === 404) {
+                        setErro("Página não encontrada (Erro 404)");
+                    } else if (error.response.status === 403) {
+                        setErro("Acesso negado (Erro 403)");
+                    } else {
+                        setErro("Erro ao buscar perfil");
+                    }
                     console.error('Erro ao buscar usuário:', error);
-                } finally {
-                    setLoading(false); // Marcar como carregado após buscar os dados
                 }
             };
             fetchData();
         }
     }, [id]);
 
-    if (!roles.length) {
-        <div>Carregando dados do usuário...</div>; 
-    }
-
-    if (!roles.includes("secretario") || !token) {
+    if (erro) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
@@ -49,7 +48,7 @@ function MeuPerfilList() {
         );
     }
 
-    if (!token) {
+    if (!token || erro) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>

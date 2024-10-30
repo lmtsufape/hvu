@@ -11,7 +11,8 @@ function GetAnimalByIdForm() {
     const [animal, setAnimal] = useState({});
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
+    const [erro, setErro] = useState(""); 
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -28,8 +29,16 @@ function GetAnimalByIdForm() {
                 try {
                     const animalData = await getAnimalById(id);
                     setAnimal(animalData);
+                    setErro("");
                 } catch (error) {
-                    console.error('Erro ao buscar animal:', error);
+                    if (error.response.status === 404) {
+                        setErro("Página não encontrada (Erro 404)");
+                    } else if (error.response.status === 403) {
+                        setErro("Acesso negado (Erro 403)");
+                    } else {
+                        setErro("Erro ao buscar animais");
+                    }
+                    console.error('Erro:', error);
                 } finally {
                     setLoading(false); 
                 }
@@ -51,7 +60,7 @@ function GetAnimalByIdForm() {
     }
 
     // Verifica se o usuário tem permissão
-    if (!roles.includes("tutor")) {
+    if (!roles.includes("tutor") || erro) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
