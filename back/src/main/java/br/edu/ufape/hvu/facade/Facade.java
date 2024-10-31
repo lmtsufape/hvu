@@ -1359,11 +1359,15 @@ public class Facade {
 	public Animal findAnimalById(long id, String idSession) {
 		Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
 
+		Medico medico = findMedicoByuserId(idSession);
+
+		Animal animal = animalServiceInterface.findAnimalById(id);
+
 		if (!tutor.getUserId().equals(idSession)) {
 			throw new AccessDeniedException("This is not your animal");
 		}
 
-		return animalServiceInterface.findAnimalById(id);
+		return animal;
 	}
 
 	public List<Animal> getAllAnimal() {

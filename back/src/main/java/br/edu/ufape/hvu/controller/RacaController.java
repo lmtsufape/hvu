@@ -27,7 +27,7 @@ public class RacaController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@GetMapping("raca")
 	public List<RacaResponse> getAllRaca() {
 		return facade.getAllRaca()
@@ -41,7 +41,8 @@ public class RacaController {
 	public RacaResponse createRaca(@Valid @RequestBody RacaRequest newObj) {
 		return new RacaResponse(facade.saveRaca(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@GetMapping("raca/{id}")
 	public RacaResponse getRacaById(@PathVariable Long id) {
 		try {
