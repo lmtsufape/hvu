@@ -81,7 +81,7 @@ export default function AgendamentosByMedico() {
 
     // Verifica se os dados estão carregando
     if (loading) {
-        return <div>Carregando dados do usuário...</div>;
+        return <div className={styles.message}>Carregando dados do usuário...</div>;
     }
 
     // Verifica se o usuário tem permissão
