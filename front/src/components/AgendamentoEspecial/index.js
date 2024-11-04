@@ -121,7 +121,7 @@ function AgendamentoEspecial() {
       tipoEspecial: agendamento.tipoEspecial,
       horario: formattedDateTime,
       especialidade: { id: selectedEspecialidade },
-      tipoConsulta: { id: selectedTiposConsulta.id },
+      tipoConsulta: { id: selectedTiposConsulta },
       medico: { id: selectedMedico }
     };
 
@@ -278,7 +278,7 @@ function AgendamentoEspecial() {
                 >
                   <option value="">Selecione o tipo de consulta</option>
                   {tiposConsulta.map((tipoConsulta) => (
-                    <option key={tipoConsulta.tipo} value={JSON.stringify(tipoConsulta)}>
+                    <option key={tipoConsulta.tipo} value={tipoConsulta.id}>
                       {tipoConsulta.tipo}
                     </option>
                   ))}

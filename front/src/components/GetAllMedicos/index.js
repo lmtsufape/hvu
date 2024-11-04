@@ -45,7 +45,7 @@ function GetAllMedicos() {
 
     // Verifica se os dados estão carregando
     if (loading) {
-        return <div>Carregando dados do usuário...</div>;
+        return <div className={styles.message}>Carregando dados do usuário...</div>;
     }
 
     // Verifica se o usuário tem permissão
@@ -101,7 +101,7 @@ function GetAllMedicos() {
             </div>
 
             {filteredMedicos.length === 0 ? (
-                <p className={styles.paragrafo}>Não há veterinários&#40;as&#41; cadastrados.</p>
+                <p className={styles.message}>Não há veterinários&#40;as&#41; cadastrados.</p>
             ) : (
                 <ul className={styles.lista}>
                     {filteredMedicos.map(medico => (

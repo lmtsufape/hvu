@@ -73,11 +73,11 @@ function UpdateMeuPerfil() {
 
     // Verifica se os dados estão carregando
     if (loading) {
-        return <div>Carregando dados do usuário...</div>;
+        return <div className={styles.message}>Carregando dados do usuário...</div>;
     }
 
     // Verifica se o usuário tem permissão
-    if (!roles.includes("secretario")) {
+    if (roles.includes("secretario")) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>

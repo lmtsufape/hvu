@@ -20,7 +20,7 @@ function MainScreenSecretario() {
       }, []);
 
     if (!roles.length) {
-        <div>Carregando dados do usuário...</div>; 
+        <div className={styles.message}>Carregando dados do usuário...</div>; 
     }
 
     if (!roles.includes("secretario") || !token) {
