@@ -23,6 +23,12 @@ function CreateConsulta() {
 
   const [errors, setErrors] = useState({});
 
+  const [animalId, setAnimalId] = useState(null);
+  const [medicoId, setMedicoId] = useState(null);
+
+  console.log("medicoId:", medicoId);
+  console.log("animalId:", animalId);
+
   const [consulta, setConsulta] = useState({
     pesoAtual: null,
     idadeAtual: null,
@@ -62,6 +68,8 @@ function CreateConsulta() {
         try {
           const vagaJson = await getVagaById(id);
           setVagaData(vagaJson);
+          setAnimalId(vagaJson.agendamento.animal.id);
+          setMedicoId(vagaJson.medico.id);
         } catch (error) {
           console.error('Erro ao buscar vaga:', error);
         } finally {
@@ -132,6 +140,22 @@ function CreateConsulta() {
   console.log("vagaData:", vagaData);
   console.log("medicoEncaminhamento:", medicoEncaminhamento);
 
+  const consultaToCreate = {
+    pesoAtual: parseFloat(consulta.pesoAtual),
+    idadeAtual: parseFloat(consulta.idadeAtual),
+    queixaPrincipal: consulta.queixaPrincipal,
+    alteracoesClinicasDiversas: consulta.alteracoesClinicasDiversas,
+    suspeitasClinicas: consulta.suspeitasClinicas,
+    alimentacao: consulta.alimentacao,
+    medico: {id: medicoId},
+    proximaConsulta: consulta.proximaConsulta,
+    encaminhamento: {id: (parseInt(medicoEncaminhamento) || null)},
+    animal: {id: animalId},
+    dataVaga: vagaData.dataHora
+  };
+
+  console.log("consultaToCreate:", consultaToCreate);
+
   const handleSubmit = async () => {
     const validationErrors = validateFields(consulta);
     if (Object.keys(validationErrors).length > 0) {
@@ -139,21 +163,7 @@ function CreateConsulta() {
       return;
     }
 
-    const consultaToCreate = {
-      pesoAtual: parseFloat(consulta.pesoAtual),
-      idadeAtual: parseFloat(consulta.idadeAtual),
-      queixaPrincipal: consulta.queixaPrincipal,
-      alteracoesClinicasDiversas: consulta.alteracoesClinicasDiversas,
-      suspeitasClinicas: consulta.suspeitasClinicas,
-      alimentacao: consulta.alimentacao,
-      medico: {id: vagaData.medico.id},
-      proximaConsulta: consulta.proximaConsulta,
-      encaminhamento: {id: parseInt(medicoEncaminhamento)},
-      animal: {id: vagaData.agendamento.animal.id},
-      dataVaga: vagaData.dataHora
-    };
 
-    console.log("consultaToCreate:", consultaToCreate);
 
     try {
       await createConsulta(consultaToCreate, id);
@@ -231,7 +241,7 @@ function CreateConsulta() {
                   className={`form-select ${styles.input}`}
                   name="encaminhamento"
                   aria-label="Selecione um(a) veterinário(a)"
-                  value={medicoEncaminhamento || null}
+                  value={medicoEncaminhamento || ""}
                   onChange={handleMedicoEncaminhamentoSelection}
                 >
                   <option value="">Selecione um&#40;a&#41; veterinário&#40;a&#41;</option>

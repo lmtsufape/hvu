@@ -77,7 +77,7 @@ function UpdateMeuPerfil() {
     }
 
     // Verifica se o usuário tem permissão
-    if (!roles.includes("secretario")) {
+    if (roles.includes("secretario")) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
