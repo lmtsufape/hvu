@@ -48,7 +48,7 @@ public class UsuarioService implements UsuarioServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteUsuario(Usuario persistentObject){
+	public void deleteUsuario( Usuario persistentObject){
 		this.deleteUsuario(persistentObject.getId());
 		
 	}
