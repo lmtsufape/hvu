@@ -16,6 +16,7 @@ import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -1338,6 +1339,8 @@ public class Facade {
     @Autowired
     private AnimalServiceInterface animalServiceInterface;
 
+
+
     public Animal saveAnimal(Animal newInstance, String tutor_id) {
         Tutor tutor = findTutorByuserId(tutor_id);
         Animal animal = animalServiceInterface.saveAnimal(newInstance);
@@ -1357,13 +1360,14 @@ public class Facade {
     }
 
     public Animal findAnimalById(long id, String idSession) {
-        Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
-
-        Medico medico = findMedicoByuserId(idSession);
-
         Animal animal = animalServiceInterface.findAnimalById(id);
+        Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
 
-        if (!tutor.getUserId().equals(idSession)) {
+        if (tutor == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tutor found for the animal with ID: " + animal.getId());
+        }
+
+        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)){
             throw new AccessDeniedException("This is not your animal");
         }
 

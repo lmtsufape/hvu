@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service @RequiredArgsConstructor
-public class KeycloakService {
+public class KeycloakService implements KeycloakServiceInterface {
     private Keycloak keycloak;
 
 
@@ -41,6 +41,7 @@ public class KeycloakService {
 
 
     @PostConstruct
+    @Override
     public void init() {
         System.out.println(keycloakServerUrl);
         // Inicialize o cliente Keycloak
@@ -53,6 +54,7 @@ public class KeycloakService {
                 .build();
     }
 
+    @Override
     public TokenResponse login(String email, String password) throws KeycloakAuthenticationException {
         String tokenUrl = keycloakServerUrl + "/realms/" + realm + "/protocol/openid-connect/token";
 
@@ -102,6 +104,7 @@ public class KeycloakService {
         }
     }
 
+    @Override
     public TokenResponse refreshToken(String refreshToken) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -128,6 +131,7 @@ public class KeycloakService {
     }
 
 
+    @Override
     public void createUser(String username, String email, String password, String role) throws  KeycloakAuthenticationException {
         try {
             // Configurar as credenciais do usuário
@@ -161,6 +165,7 @@ public class KeycloakService {
         }
     }
 
+    @Override
     public void updateUser(String userId, String email) {
         UserRepresentation user = keycloak.realm(realm).users().get(userId).toRepresentation();
         user.setFirstName(email);
@@ -190,12 +195,14 @@ public class KeycloakService {
         return user;
     }
 
+    @Override
     public void deleteUser(String userId) {
         keycloak.realm(realm).users().get(userId).remove();
     }
 
 
 
+    @Override
     public String getUserId(String username) {
         List<UserRepresentation> user = keycloak.realm(realm).users().search(username, true);
         if (user.isEmpty()) {
@@ -207,5 +214,23 @@ public class KeycloakService {
             return user.get(0).getId();
         }
         throw new IndexOutOfBoundsException("User not found");
+    }
+
+    @Override
+    public boolean hasRoleSecretario(String accessToken) {
+        try {
+            return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("secretario"));
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de secretario.", e);
+        }
+    }
+
+    @Override
+    public boolean hasRoleMedico(String accessToken) {
+        try {
+            return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("medico"));
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de medico.", e);
+        }
     }
 }
