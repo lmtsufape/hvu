@@ -115,11 +115,7 @@ public class AnimalController {
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
-			return new AnimalResponse(facade.findAnimalById(id, principal.getSubject()));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return new AnimalResponse(facade.findAnimalById(id, principal.getSubject()));
 	}
 
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")

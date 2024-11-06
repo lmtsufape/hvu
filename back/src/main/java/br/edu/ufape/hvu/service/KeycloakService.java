@@ -208,4 +208,20 @@ public class KeycloakService {
         }
         throw new IndexOutOfBoundsException("User not found");
     }
+
+    public boolean hasRoleSecretario(String accessToken) {
+        try {
+            return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("secretario"));
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de secretario.", e);
+        }
+    }
+
+    public boolean hasRoleMedico(String accessToken) {
+        try {
+            return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("medico"));
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de medico.", e);
+        }
+    }
 }
