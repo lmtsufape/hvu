@@ -1352,7 +1352,11 @@ public class Facade {
     public Animal updateAnimal(Animal transientObject, String idSession) {
         Tutor tutor = tutorServiceInterface.findTutorByanimalId(transientObject.getId());
 
-        if(!tutor.getUserId().equals(idSession)) {
+        if (tutor == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tutor found");
+        }
+
+        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)) {
             throw new AccessDeniedException("This is not your animal");
         }
 

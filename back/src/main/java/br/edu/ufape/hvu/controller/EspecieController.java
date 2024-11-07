@@ -27,7 +27,6 @@ public class EspecieController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@GetMapping("especie")
 	public List<EspecieResponse> getAllEspecie() {
 		return facade.getAllEspecie()
@@ -42,7 +41,6 @@ public class EspecieController {
 		return new EspecieResponse(facade.saveEspecie(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@GetMapping("especie/{id}")
 	public EspecieResponse getEspecieById(@PathVariable Long id) {
 		try {
