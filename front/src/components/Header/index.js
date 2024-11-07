@@ -17,17 +17,6 @@ export function Header01() {
 	return (
 		<div>
 			<BarraBrasil /> {/* Componente BarraBrasil adicionado */}
-			<header className={styles.govBrHeader}>
-				<div className={styles.logoSection}>
-					<Image
-						src="/hvu_black_logo.svg" // Caminho da logo do gov.br
-						alt="Logo HVU"
-						width={50}
-						height={50}
-					/>
-					<h1 className={styles.title}>gov.br</h1>
-				</div>
-			</header>
 
 			<header className={styles.header}>
 				<div className={styles.boxlogo}>
