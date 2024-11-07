@@ -7,28 +7,33 @@ import { LoginGreenButton } from "../GreenButton";
 import { LoginWhiteButton } from "../WhiteButton";
 import { getCurrentUsuario } from "../../../services/userService";
 import { logout } from "../../../common/logout";
+import BarraBrasil from "../BarraBrasil/BarraBrasil";
+
 
 //Header com botão de login e cadastro
 export function Header01() {
 	const router = useRouter();
 
 	return (
-		<header className={styles.header}>
-			<div className={styles.boxlogo}>
-				<div>
-					<Image
-						src="/hvu_black_logo.svg"
-						alt="Logo HVU"
-						width={116.94}
-						height={72.54}
-					/>
+		<div>
+			<BarraBrasil /> {/* Componente BarraBrasil adicionado */}
+
+			<header className={styles.header}>
+				<div className={styles.boxlogo}>
+					<div>
+						<Image
+							src="/hvu_black_logo.svg"
+							alt="Logo HVU"
+							width={116.94}
+							height={72.54}
+						/>
+					</div>
+					<div>
+						<h2 className={styles.hvu}>
+							Hospital Veterinário Universitário da UFAPE
+						</h2>
+					</div>
 				</div>
-				<div>
-					<h2 className={styles.hvu}>
-						Hospital Veterinário Universitário da UFAPE
-					</h2>
-				</div>
-			</div>
 
 			<div className={styles.box_buttons}>
 				<button
@@ -41,6 +46,7 @@ export function Header01() {
 				<LoginGreenButton />
 			</div>
 		</header>
+		</div>
 	);
 }
 
@@ -49,6 +55,8 @@ export function Header02() {
 	const router = useRouter();
 
 	return (
+		<div>
+			<BarraBrasil /> {/* Adiciona a barra do GovBR no topo do Header02 */}
 		<header className={styles.header}>
 			<Link
 				href={"/"}
@@ -89,6 +97,7 @@ export function Header02() {
 				</button>
 			</div>
 		</header>
+		</div>
 	);
 }
 

@@ -1,0 +1,84 @@
+.barraBrasil {
+    background-color: #051538;
+    color: #ffffff;
+    padding: -5px 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+  
+  .conteudoEscondido {
+    display: none;
+  }
+  
+  .conteudoBarraBrasil {
+    font-weight: bold;
+    margin-top: 2px;
+    margin-left: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alinha o conteúdo à esquerda */
+    gap: 100px; /* Espaço entre os itens, ajuste conforme necessário */
+    font-weight: 700;
+  }
+  
+  .listaBarraBrasil {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+  }
+  .linkBarra {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 11px;
+    margin-top: 5px;
+  }
+  .linkExternoBarra {
+    position: relative;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.3s ease, color 0.3s ease; /* Suaviza a mudança de cor */
+  }
+  
+  .linkExternoBarra:hover {
+    color: #ffffff; /* Muda a cor do texto no hover */
+    
+  }
+  .linkExternoBarra::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 1px; /* Espessura do sublinhado */
+    background-color: currentColor; /* Usa a mesma cor do texto */
+    left: 0;
+    bottom: -2px; /* Espaçamento abaixo do texto */
+    transition: width 0.3s ease; /* Suaviza a animação do sublinhado */
+  }
+  .linkExternoBarra:hover::after {
+    width: 100%; /* Expande o sublinhado para toda a largura */
+  }
+  .espacador {
+    border-left: 1px solid #ffffff3f; /* Cor e espessura da barra vertical */
+    height: 20px; /* Altura da barra vertical */
+    margin: 0 10px; /* Espaçamento horizontal em ambos os lados */
+    margin-top: 5px;
+  }
+  .picGov {
+    color: #ffffff;
+    position: relative; /* Permite ajustes de posicionamento */
+    font-size: 1.2rem; /* Aumenta o tamanho do texto se for um link de texto */
+    left: center; /* Ajuste para mover mais para a esquerda */
+    top: center; /* Move o logotipo verticalmente */
+    left: -300px;
+    transform: translateY(-20%); /* Centraliza verticalmente */
+    font-weight: bold; /* Deixa o texto mais visível */
+    text-decoration: none;
+    font-weight: 700;
+    
+  }
+  .linkBarra, .linkExternoBarra, .espacador {
+    position: relative;
+    top: 6px; /* Ajuste para descer o texto sem afetar a linha */
+}
+  
