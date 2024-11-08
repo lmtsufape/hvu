@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import "react-datepicker/dist/react-datepicker.css";
 import VoltarButton from "../VoltarButton";
-import useMedicoList from "@/hooks/useMedicoList";
+import EspecialidadeList from "@/hooks/useEspecialidadeList"
 import { createConsulta } from "../../../services/consultaService";
 import { getVagaById } from "../../../services/vagaService";
 import Alert from "../Alert";
@@ -46,11 +46,11 @@ function CreateConsulta() {
 
   const [vagaData, setVagaData] = useState({});
 
-  const { medicos, error: medicosError } = useMedicoList();
-  const [medicoEncaminhamento, setMedicoEncaminhamento] = useState(null);
-  const handleMedicoEncaminhamentoSelection = (event) => {
-    const selectedMedicoId = event.target.value;
-    setMedicoEncaminhamento(selectedMedicoId);
+  const { especialidades, error: especialidadesError } = EspecialidadeList();
+  const [especialidade, setEspecialidade] = useState(null);
+  const handleEspecialidadeSelection = (event) => {
+    const selectedEspecialidadeId = event.target.value;
+    setEspecialidade(selectedEspecialidadeId);
   };
 
   useEffect(() => {
@@ -138,7 +138,7 @@ function CreateConsulta() {
 
   console.log("consulta:", consulta);
   console.log("vagaData:", vagaData);
-  console.log("medicoEncaminhamento:", medicoEncaminhamento);
+  console.log("especialidade:", especialidade);
 
   const consultaToCreate = {
     pesoAtual: parseFloat(consulta.pesoAtual),
@@ -149,7 +149,7 @@ function CreateConsulta() {
     alimentacao: consulta.alimentacao,
     medico: {id: medicoId},
     proximaConsulta: consulta.proximaConsulta,
-    encaminhamento: {id: (parseInt(medicoEncaminhamento) || null)},
+    encaminhamento: {id: especialidade},
     animal: {id: animalId},
     dataVaga: vagaData.dataHora
   };
@@ -236,18 +236,18 @@ function CreateConsulta() {
               </div>
 
               <div className={`col ${styles.col}`}>
-                <label htmlFor="medico" className="form-label">Encaminhado por:</label>
+                <label htmlFor="medico" className="form-label">Especialidade</label>
                 <select 
                   className={`form-select ${styles.input}`}
                   name="encaminhamento"
-                  aria-label="Selecione um(a) veterinário(a)"
-                  value={medicoEncaminhamento || ""}
-                  onChange={handleMedicoEncaminhamentoSelection}
+                  aria-label="Selecione uma especialidade"
+                  value={especialidade || ""}
+                  onChange={handleEspecialidadeSelection}
                 >
-                  <option value="">Selecione um&#40;a&#41; veterinário&#40;a&#41;</option>
-                  {medicos.map((medico) => (
-                    <option key={medico.id} value={medico.id}>
-                      {medico.nome}
+                  <option value="">Selecione uma especialidade</option>
+                  {especialidades.map((especialidade) => (
+                    <option key={especialidade.id} value={especialidade.id}>
+                      {especialidade.nome}
                     </option>
                   ))}
                 </select>

@@ -27,7 +27,7 @@ public class EspecialidadeController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
 	@GetMapping("especialidade")
 	public List<EspecialidadeResponse> getAllEspecialidade() {
 		return facade.getAllEspecialidade()
@@ -42,7 +42,7 @@ public class EspecialidadeController {
 		return new EspecialidadeResponse(facade.saveEspecialidade(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO','MEDICO' )")
 	@GetMapping("especialidade/{id}")
 	public EspecialidadeResponse getEspecialidadeById(@PathVariable Long id) {
 		try {

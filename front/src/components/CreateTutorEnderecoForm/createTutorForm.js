@@ -68,15 +68,27 @@ function renderInput(
 					onChange={onChange}
 				/>
 				{type === "password" && (
-					<div className="input-group-append">
-						<button
-							className="btn btn-outline-secondary"
-							type="button"
-							onClick={() => setShow(!show)}
-						>
-							{<FontAwesomeIcon icon={show ? faEyeSlash : faEye} />}
-						</button>
-					</div>
+					<span
+						className={`input-group-text ${styles.eyeIcon}`}
+						onClick={() => setShow(!show)}
+						style={{
+							cursor: "pointer",
+							backgroundColor: "#f5f5f5",
+							border: "1px solid #ccc",  
+							borderRadius: "4px",       
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							padding: "0 8px",           
+							color: "#000",             
+						}}
+					>
+						<FontAwesomeIcon
+							icon={show ? faEyeSlash : faEye}
+							color="#333333"
+							style={{ fontSize: '17px' }}  
+						/>
+					</span>
 				)}
 				{error && (
 					<div className={`invalid-feedback ${styles.error_message}`}>

@@ -12,6 +12,13 @@
     position: relative;
 }
 
+.additionalLogo {
+    margin-left: -1020px; /* Ajuste para controlar o espaço entre o nome e a nova logo */
+    display: flex;
+    align-items: center;
+  }
+  
+
 .box_buttons {
     display: flex;
     align-items: center;
@@ -152,6 +159,44 @@
     font-weight: 700;
     line-height: 22.5px;
     color: #272727;
+}
+
+/* Estilos da barra gov.br */
+.govBrHeader {
+    background-color: #1a2b4d; /* Azul escuro do gov.br */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.logoSection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.navigation {
+    display: flex;
+    gap: 20px;
+}
+
+.navigation a {
+    color: white;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.navigation a:hover {
+    text-decoration: underline;
 }
 
 
