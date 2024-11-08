@@ -78,6 +78,22 @@ export function Header02() {
 				</div>
 			</Link>
 
+
+			<Link href="/lapa" legacyBehavior>
+							<a target="_blank" rel="noopener noreferrer">
+								<div className={styles.additionalLogo}>
+									<Image
+										src="/images/logoLAPA.svg" // Caminho da nova logo
+										alt="Logo da Patologia"
+										width={1000} // Defina a largura conforme necessário
+										height={60} // Defina a altura conforme necessário
+									/>
+								</div>
+							</a>
+			</Link>
+
+
+
 			<div className={styles.box_buttons}>
 				<button
 					type="button"
