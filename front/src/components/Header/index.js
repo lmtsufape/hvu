@@ -153,6 +153,8 @@ export function Header03() {
 	};
 
 	return (
+		<div>
+			<BarraBrasil /> {/* Adiciona a barra do GovBR no topo do Header */}
 		<header className={styles.header}>
 			<div className={styles.boxlogo}>
 				<div onClick={handleGoHome} style={{ cursor: "pointer" }}>
@@ -213,6 +215,7 @@ export function Header03() {
 				)}
 			</div>
 		</header>
+		</div>
 	);
 }
 
@@ -220,6 +223,8 @@ export function Header03() {
 export function Header04() {
 	const router = useRouter();
 	return (
+		<div>
+			<BarraBrasil/>
 		<header className={styles.header}>
 			<div className={styles.boxlogo}>
 				<div>
@@ -241,5 +246,6 @@ export function Header04() {
 				<LoginWhiteButton />
 			</div>
 		</header>
+		</div>
 	);
 }
