@@ -54,12 +54,9 @@ public class TutorController {
 	
 	@GetMapping("tutor/{id}")
 	public TutorResponse getTutorById(@PathVariable Long id) {
-		try {
-			return new TutorResponse(facade.findTutorById(id));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
-		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return new TutorResponse(facade.findTutorById(id, principal.getSubject()));
 	}
 	
 	@GetMapping("tutor/animal/{id}")
@@ -72,7 +69,6 @@ public class TutorController {
 		
 	}
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@PatchMapping("tutor/{id}")
 	public TutorResponse updateTutor(@PathVariable Long id, @Valid @RequestBody TutorRequest obj) {
 		try {
@@ -80,13 +76,8 @@ public class TutorController {
 			Jwt principal = (Jwt) authentication.getPrincipal();
 
 			Tutor o = obj.convertToEntity();
-			Tutor oldObject = facade.findTutorById(id);
+			Tutor oldObject = facade.findTutorById(id, principal.getSubject());
 
-			System.out.println("AQUI VAI O PRINT COM OS IDS"+oldObject.getUserId() + principal.getSubject());
-
-			if(!oldObject.getUserId().equals(principal.getSubject())) {
-				throw new AccessDeniedException("This is not your account");
-			}
 		
 			TypeMap<Tutor, Tutor> typeMapper = modelMapper
 													.typeMap(Tutor.class, Tutor.class)
@@ -96,10 +87,13 @@ public class TutorController {
 			typeMapper.map(o, oldObject);	
 			return new TutorResponse(facade.updateTutor(oldObject));
 		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+			if (ex instanceof AccessDeniedException) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, ex.getMessage());
+			}
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 		}
-		
-	}
+
+    }
 	
 	@DeleteMapping("tutor/{id}")
 	public String deleteTutor(@PathVariable Long id) {
@@ -107,7 +101,7 @@ public class TutorController {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			Jwt principal = (Jwt) authentication.getPrincipal();
 			
-			Tutor oldObject = facade.findTutorById(id);
+			Tutor oldObject = facade.findTutorById(id, principal.getSubject());
 			
 			if(!principal.getSubject().equals(oldObject.getUserId())) {
 				throw new AccessDeniedException("This is not your account");

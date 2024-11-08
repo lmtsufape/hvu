@@ -79,8 +79,14 @@ public class Facade {
         }
     }
 
-    public Tutor findTutorById(long id) {
-        return tutorServiceInterface.findTutorById(id);
+    public Tutor findTutorById(long id, String idSession) {
+        Tutor tutor = tutorServiceInterface.findTutorById(id);
+
+        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)){
+            throw new AccessDeniedException("You do not have permission to get this tutor");
+        }
+
+        return tutor;
     }
 
     public Tutor findTutorByuserId(String userId) {
@@ -176,7 +182,7 @@ public class Facade {
     }
 
     public List<Cancelamento> findCancelamentoByTutorId(long id) {
-        Tutor tutor = findTutorById(id);
+        Tutor tutor = tutorServiceInterface.findTutorById(id);
         return cancelamentoServiceInterface.findCancelamentosByTutorId(tutor.getId());
     }
 
@@ -1105,7 +1111,7 @@ public class Facade {
     }
 
     public List<LocalDateTime> retornaVagaQueTutorNaoPodeAgendar(String id){
-        Tutor tutor = findTutorById(Long.parseLong(id));
+        Tutor tutor = tutorServiceInterface.findTutorById(Long.parseLong(id));
 
         List<Agendamento> agendamentosTutor = new ArrayList<>();
         for (Animal animal : tutor.getAnimal()) {
