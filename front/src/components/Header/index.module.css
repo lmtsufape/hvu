@@ -13,7 +13,7 @@
 }
 
 .additionalLogo {
-    margin-left: -1020px; /* Ajuste para controlar o espaço entre o nome e a nova logo */
+    margin-left: -50rem; /* Ajuste para controlar o espaço entre o nome e a nova logo */
     display: flex;
     align-items: center;
   }

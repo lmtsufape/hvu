@@ -111,6 +111,15 @@ export function Header02() {
 				>
 					Sistema
 				</button>
+
+				<button
+					type="button"
+					className="btn btn-link"
+					id={styles.black_button_decoration}
+					onClick={(e) => router.push("/contato")}
+				>
+					Contato
+				</button>
 			</div>
 		</header>
 		</div>
