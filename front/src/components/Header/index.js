@@ -85,7 +85,7 @@ export function Header02() {
 									<Image
 										src="/images/logoLAPA.svg" // Caminho da nova logo
 										alt="Logo da Patologia"
-										width={170}
+										width={200}
 										height={70}
 									/>
 								</div>
