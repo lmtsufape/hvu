@@ -10,15 +10,20 @@
     justify-content: space-between;
     border-bottom: 2px solid#ECECEC;
     position: relative;
+    gap: 10px;
 }
 
 .additionalLogo {
+    position: absolute;
+    left: 30em;
+    top: 0.5rem;
+    max-width: 100%;
     display: flex;
+    justify-content: flex-start;
     align-items: center;
-    gap: 1px;
-    margin-left: -35rem;
-    width: 0em;
     height: auto;
+    padding: 0;
+    margin: 0;
   }
   
 
