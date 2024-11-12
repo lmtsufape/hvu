@@ -6,6 +6,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -638,6 +639,26 @@ public class Facade {
         return animalNoReturn;
     }
 
+    public boolean isRetornoExpirado(Long id) {
+        List<Vaga> vagas = vagaServiceInterface.findLatestVagaForEachAnimal();
+        Animal animal = animalServiceInterface.findAnimalById(id);
+        Vaga ultimaVaga = vagas.stream()
+                        .filter(vaga -> vaga.getAgendamento().getAnimal().equals(animal))
+                        .reduce((first, second) -> second)
+                        .orElse(null);
+
+        if (ultimaVaga != null) {
+            throw new RuntimeException("Vaga não encontrada no momento da procura pelo retorno expirado.");
+        }
+
+        LocalDate dataUltimaVaga = ultimaVaga.getDataHora().toLocalDate();
+        LocalDate dataAtual = LocalDate.now();
+
+        long diasDesdeUltimaConsulta = ChronoUnit.DAYS.between(dataUltimaVaga, dataAtual);
+
+        return diasDesdeUltimaConsulta > 2; // Retorna verdadeiro se expirou
+    }
+
     public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(Long id){
         // verifica se animal já tem uma consulta em aberto -> "Bloqueado"
         List<Agendamento> allAgendamentos = getAllAgendamento();
@@ -650,7 +671,7 @@ public class Facade {
 
         if(consultaEmAberto){
             return "Bloqueado";
-        }else if(isAnimalWithRetorno(id)){
+        }else if(isAnimalWithRetorno(id) || !isRetornoExpirado(id)){
             return "Retorno";
         }else{
             return "Primeira Consulta";
