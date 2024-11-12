@@ -656,7 +656,7 @@ public class Facade {
 
         long diasDesdeUltimaConsulta = ChronoUnit.DAYS.between(dataUltimaVaga, dataAtual);
 
-        return diasDesdeUltimaConsulta > 2; // Retorna verdadeiro se expirou
+        return diasDesdeUltimaConsulta > 30; // Retorna verdadeiro se expirou
     }
 
     public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(Long id){
