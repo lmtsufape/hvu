@@ -72,8 +72,9 @@ function AgendamentoEspecial() {
     );
   }
 
-  const handleAnimalSelection = (selectedOption) => {
-    setSelectedAnimal(selectedOption ? selectedOption.value : null);
+  const handleAnimalSelection = (event) => {
+    const selectAnimalId = event.target.value; 
+    setSelectedAnimal(selectAnimalId); 
   };
 
   const handleTiposConsultaSelection = (event) => {
@@ -290,17 +291,20 @@ function AgendamentoEspecial() {
                 <label htmlFor="animal" className="form-label">
                   Paciente <span className={styles.obrigatorio}>*</span>
                 </label>
-                <Select
+                <select
                   className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`}
                   name="animal"
                   aria-label="Selecione o paciente"
                   value={selectedAnimal || ""}
                   onChange={handleAnimalSelection}
-                  options={animais.map((animal) => ({
-                    value: animal.id,
-                    label: animal.nome
-                  }))}
-                />
+                >
+                  <option value="">Selecione o paciente</option>
+                  {animais.map((animal) => (
+                    <option key={animal.id} value={animal.id}>
+                      {animal.nome}
+                    </option>
+                  ))}
+                </select>
                 {errors.selectedAnimal && (<div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedAnimal}</div>)}
               </div>
             </div>
