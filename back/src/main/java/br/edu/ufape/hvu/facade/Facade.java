@@ -1197,34 +1197,6 @@ public class Facade {
         enderecoServiceInterface.deleteEndereco(id);
     }
 
-    // AvaliacaoFisicoEspecial--------------------------------------------------------------
-    @Autowired
-    private AvaliacaoFisicoEspecialServiceInterface avaliacaoFisicoEspecialServiceInterface;
-
-    public AvaliacaoFisicoEspecial saveAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial newInstance) {
-        return avaliacaoFisicoEspecialServiceInterface.saveAvaliacaoFisicoEspecial(newInstance);
-    }
-
-    public AvaliacaoFisicoEspecial updateAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial transientObject) {
-        return avaliacaoFisicoEspecialServiceInterface.updateAvaliacaoFisicoEspecial(transientObject);
-    }
-
-    public AvaliacaoFisicoEspecial findAvaliacaoFisicoEspecialById(long id) {
-        return avaliacaoFisicoEspecialServiceInterface.findAvaliacaoFisicoEspecialById(id);
-    }
-
-    public List<AvaliacaoFisicoEspecial> getAllAvaliacaoFisicoEspecial() {
-        return avaliacaoFisicoEspecialServiceInterface.getAllAvaliacaoFisicoEspecial();
-    }
-
-    public void deleteAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial persistentObject) {
-        avaliacaoFisicoEspecialServiceInterface.deleteAvaliacaoFisicoEspecial(persistentObject);
-    }
-
-    public void deleteAvaliacaoFisicoEspecial(long id) {
-        avaliacaoFisicoEspecialServiceInterface.deleteAvaliacaoFisicoEspecial(id);
-    }
-
     // NivelConsciencia--------------------------------------------------------------
     @Autowired
     private NivelConscienciaServiceInterface nivelConscienciaServiceInterface;

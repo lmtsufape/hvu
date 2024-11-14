@@ -46,10 +46,7 @@ public  class Consulta  {
 	private Medico medico; 
 	@ManyToOne
 	@ToString.Exclude
-	private Especialidade encaminhamento; 
-	@OneToOne
-	@ToString.Exclude
-	private AvaliacaoFisicoEspecial avaliacaoFisicoEspecial; 
+	private Especialidade encaminhamento;
 	@OneToOne
 	@ToString.Exclude
 	private Parecer parecer; 
