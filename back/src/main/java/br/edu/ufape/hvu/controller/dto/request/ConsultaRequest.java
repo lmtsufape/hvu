@@ -24,8 +24,7 @@ public  class ConsultaRequest  {
 	private String alimentacao;
 	private MedicoRequest medico;
 	private EspecialidadeRequest encaminhamento;
-	private ParecerRequest parecer; 
-	private AvaliacaoFisicoGeralRequest avaliacaoFisicoGeral; 
+	private ParecerRequest parecer;
 	private List<PrescricaoRequest> prescricao; 
 	private List<EstagiarioRequest> estagiario; 
 	private List<ExameComplementarRequest> exameComplementar;

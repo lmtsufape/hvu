@@ -49,10 +49,7 @@ public  class Consulta  {
 	private Especialidade encaminhamento;
 	@OneToOne
 	@ToString.Exclude
-	private Parecer parecer; 
-	@OneToOne
-	@ToString.Exclude
-	private AvaliacaoFisicoGeral avaliacaoFisicoGeral; 
+	private Parecer parecer;
 	@OneToMany
 	@JoinColumn(name = "consulta_id")
 	@ToString.Exclude

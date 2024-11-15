@@ -306,34 +306,6 @@ public class Facade {
         medicacaoPeriodicaServiceInterface.deleteMedicacaoPeriodica(id);
     }
 
-    // AvaliacaoFisicoGeral--------------------------------------------------------------
-    @Autowired
-    private AvaliacaoFisicoGeralServiceInterface avaliacaoFisicoGeralServiceInterface;
-
-    public AvaliacaoFisicoGeral saveAvaliacaoFisicoGeral(AvaliacaoFisicoGeral newInstance) {
-        return avaliacaoFisicoGeralServiceInterface.saveAvaliacaoFisicoGeral(newInstance);
-    }
-
-    public AvaliacaoFisicoGeral updateAvaliacaoFisicoGeral(AvaliacaoFisicoGeral transientObject) {
-        return avaliacaoFisicoGeralServiceInterface.updateAvaliacaoFisicoGeral(transientObject);
-    }
-
-    public AvaliacaoFisicoGeral findAvaliacaoFisicoGeralById(long id) {
-        return avaliacaoFisicoGeralServiceInterface.findAvaliacaoFisicoGeralById(id);
-    }
-
-    public List<AvaliacaoFisicoGeral> getAllAvaliacaoFisicoGeral() {
-        return avaliacaoFisicoGeralServiceInterface.getAllAvaliacaoFisicoGeral();
-    }
-
-    public void deleteAvaliacaoFisicoGeral(AvaliacaoFisicoGeral persistentObject) {
-        avaliacaoFisicoGeralServiceInterface.deleteAvaliacaoFisicoGeral(persistentObject);
-    }
-
-    public void deleteAvaliacaoFisicoGeral(long id) {
-        avaliacaoFisicoGeralServiceInterface.deleteAvaliacaoFisicoGeral(id);
-    }
-
     // Cronograma--------------------------------------------------------------
     @Autowired
     private CronogramaServiceInterface cronogramaServiceInterface;
