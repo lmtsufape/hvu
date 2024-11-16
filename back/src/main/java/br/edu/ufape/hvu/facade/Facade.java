@@ -389,34 +389,6 @@ public class Facade {
         cronogramaServiceInterface.deleteCronograma(cronograma.getId());
     }
 
-    // TipoPrognostico--------------------------------------------------------------
-    @Autowired
-    private TipoPrognosticoServiceInterface tipoPrognosticoServiceInterface;
-
-    public TipoPrognostico saveTipoPrognostico(TipoPrognostico newInstance) {
-        return tipoPrognosticoServiceInterface.saveTipoPrognostico(newInstance);
-    }
-
-    public TipoPrognostico updateTipoPrognostico(TipoPrognostico transientObject) {
-        return tipoPrognosticoServiceInterface.updateTipoPrognostico(transientObject);
-    }
-
-    public TipoPrognostico findTipoPrognosticoById(long id) {
-        return tipoPrognosticoServiceInterface.findTipoPrognosticoById(id);
-    }
-
-    public List<TipoPrognostico> getAllTipoPrognostico() {
-        return tipoPrognosticoServiceInterface.getAllTipoPrognostico();
-    }
-
-    public void deleteTipoPrognostico(TipoPrognostico persistentObject) {
-        tipoPrognosticoServiceInterface.deleteTipoPrognostico(persistentObject);
-    }
-
-    public void deleteTipoPrognostico(long id) {
-        tipoPrognosticoServiceInterface.deleteTipoPrognostico(id);
-    }
-
     // Medico--------------------------------------------------------------
     private final MedicoServiceInterface medicoService;
 

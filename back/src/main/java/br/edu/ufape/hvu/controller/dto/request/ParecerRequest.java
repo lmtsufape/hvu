@@ -13,7 +13,6 @@ import lombok.Setter;
 public  class ParecerRequest  {
 	private String observacoes;
 	private String diagnostico;
-	private TipoPrognosticoRequest tipoPrognostico;
 	private long id;
 
 

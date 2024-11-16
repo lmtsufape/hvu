@@ -28,8 +28,4 @@ public  class Parecer  {
 	private long id;
 	private String observacoes;
 	private String diagnostico;
-	@OneToOne
-	@ToString.Exclude
-	private TipoPrognostico tipoPrognostico; 
-
 }

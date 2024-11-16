@@ -15,7 +15,6 @@ public  class ParecerResponse  {
 	private Long id;
 	private String observacoes;
 	private String diagnostico;
-	private TipoPrognosticoResponse tipoPrognostico; 
 
 
 
