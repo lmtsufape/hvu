@@ -815,33 +815,7 @@ public class Facade {
         prescricaoServiceInterface.deletePrescricao(id);
     }
 
-    // TipoMucosa--------------------------------------------------------------
-    @Autowired
-    private TipoMucosaServiceInterface tipoMucosaServiceInterface;
 
-    public TipoMucosa saveTipoMucosa(TipoMucosa newInstance) {
-        return tipoMucosaServiceInterface.saveTipoMucosa(newInstance);
-    }
-
-    public TipoMucosa updateTipoMucosa(TipoMucosa transientObject) {
-        return tipoMucosaServiceInterface.updateTipoMucosa(transientObject);
-    }
-
-    public TipoMucosa findTipoMucosaById(long id) {
-        return tipoMucosaServiceInterface.findTipoMucosaById(id);
-    }
-
-    public List<TipoMucosa> getAllTipoMucosa() {
-        return tipoMucosaServiceInterface.getAllTipoMucosa();
-    }
-
-    public void deleteTipoMucosa(TipoMucosa persistentObject) {
-        tipoMucosaServiceInterface.deleteTipoMucosa(persistentObject);
-    }
-
-    public void deleteTipoMucosa(long id) {
-        tipoMucosaServiceInterface.deleteTipoMucosa(id);
-    }
 
     // Consulta--------------------------------------------------------------
     @Autowired
