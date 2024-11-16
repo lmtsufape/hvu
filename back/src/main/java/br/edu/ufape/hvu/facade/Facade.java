@@ -1192,34 +1192,6 @@ public class Facade {
         estagiarioServiceInterface.deleteEstagiario(id);
     }
 
-    // TipoPostura--------------------------------------------------------------
-    @Autowired
-    private TipoPosturaServiceInterface tipoPosturaServiceInterface;
-
-    public TipoPostura saveTipoPostura(TipoPostura newInstance) {
-        return tipoPosturaServiceInterface.saveTipoPostura(newInstance);
-    }
-
-    public TipoPostura updateTipoPostura(TipoPostura transientObject) {
-        return tipoPosturaServiceInterface.updateTipoPostura(transientObject);
-    }
-
-    public TipoPostura findTipoPosturaById(long id) {
-        return tipoPosturaServiceInterface.findTipoPosturaById(id);
-    }
-
-    public List<TipoPostura> getAllTipoPostura() {
-        return tipoPosturaServiceInterface.getAllTipoPostura();
-    }
-
-    public void deleteTipoPostura(TipoPostura persistentObject) {
-        tipoPosturaServiceInterface.deleteTipoPostura(persistentObject);
-    }
-
-    public void deleteTipoPostura(long id) {
-        tipoPosturaServiceInterface.deleteTipoPostura(id);
-    }
-
     // Diretor--------------------------------------------------------------
     @Autowired
     private DiretorServiceInterface diretorServiceInterface;
