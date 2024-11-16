@@ -53,11 +53,7 @@ public class ExameComplementarController {
 		try {
 			//ExameComplementar o = obj.convertToEntity();
 			ExameComplementar oldObject = facade.findExameComplementarById(id);
-
-			if(obj.getTipoExame() != null){
-				oldObject.setTipoExame(facade.findTipoExameById(obj.getTipoExame().getId()));
-				obj.setTipoExame(null);
-			}
+			
 
 			TypeMap<ExameComplementarRequest, ExameComplementar> typeMapper = modelMapper
 													.typeMap(ExameComplementarRequest.class, ExameComplementar.class)

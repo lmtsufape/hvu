@@ -33,8 +33,5 @@ public  class ExameComplementar  {
 	private Medico responsavel;
 	private String arquivo;
 	private String requisicao;
-	@ManyToOne
-	@ToString.Exclude
-	private TipoExame tipoExame; 
 
 }

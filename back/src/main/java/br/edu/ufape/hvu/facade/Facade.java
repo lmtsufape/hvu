@@ -457,34 +457,6 @@ public class Facade {
         return medicoService.findByEspecialidade(especialidade);
     }
 
-    // TipoExame--------------------------------------------------------------
-    @Autowired
-    private TipoExameServiceInterface tipoExameServiceInterface;
-
-    public TipoExame saveTipoExame(TipoExame newInstance) {
-        return tipoExameServiceInterface.saveTipoExame(newInstance);
-    }
-
-    public TipoExame updateTipoExame(TipoExame transientObject) {
-        return tipoExameServiceInterface.updateTipoExame(transientObject);
-    }
-
-    public TipoExame findTipoExameById(long id) {
-        return tipoExameServiceInterface.findTipoExameById(id);
-    }
-
-    public List<TipoExame> getAllTipoExame() {
-        return tipoExameServiceInterface.getAllTipoExame();
-    }
-
-    public void deleteTipoExame(TipoExame persistentObject) {
-        tipoExameServiceInterface.deleteTipoExame(persistentObject);
-    }
-
-    public void deleteTipoExame(long id) {
-        tipoExameServiceInterface.deleteTipoExame(id);
-    }
-
     // Raca--------------------------------------------------------------
     @Autowired
     private RacaServiceInterface racaServiceInterface;

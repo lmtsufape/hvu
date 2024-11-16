@@ -21,7 +21,6 @@ public  class ExameComplementarResponse  {
 	private Medico responsavel;
 	private String arquivo;
 	private String requisicao;
-	private TipoExameResponse tipoExame; 
 
 
 
