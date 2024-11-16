@@ -1080,34 +1080,6 @@ public class Facade {
         agendamentoServiceInterface.deleteAgendamento(id);
     }
 
-    // TipoLinfonodos--------------------------------------------------------------
-    @Autowired
-    private TipoLinfonodosServiceInterface tipoLinfonodosServiceInterface;
-
-    public TipoLinfonodos saveTipoLinfonodos(TipoLinfonodos newInstance) {
-        return tipoLinfonodosServiceInterface.saveTipoLinfonodos(newInstance);
-    }
-
-    public TipoLinfonodos updateTipoLinfonodos(TipoLinfonodos transientObject) {
-        return tipoLinfonodosServiceInterface.updateTipoLinfonodos(transientObject);
-    }
-
-    public TipoLinfonodos findTipoLinfonodosById(long id) {
-        return tipoLinfonodosServiceInterface.findTipoLinfonodosById(id);
-    }
-
-    public List<TipoLinfonodos> getAllTipoLinfonodos() {
-        return tipoLinfonodosServiceInterface.getAllTipoLinfonodos();
-    }
-
-    public void deleteTipoLinfonodos(TipoLinfonodos persistentObject) {
-        tipoLinfonodosServiceInterface.deleteTipoLinfonodos(persistentObject);
-    }
-
-    public void deleteTipoLinfonodos(long id) {
-        tipoLinfonodosServiceInterface.deleteTipoLinfonodos(id);
-    }
-
     // Endereco--------------------------------------------------------------
     @Autowired
     private EnderecoServiceInterface enderecoServiceInterface;
@@ -1227,8 +1199,6 @@ public class Facade {
     // Animal--------------------------------------------------------------
     @Autowired
     private AnimalServiceInterface animalServiceInterface;
-
-
 
     public Animal saveAnimal(Animal newInstance, String tutor_id) {
         Tutor tutor = findTutorByuserId(tutor_id);
