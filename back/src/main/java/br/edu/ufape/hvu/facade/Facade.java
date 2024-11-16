@@ -1375,34 +1375,6 @@ public class Facade {
         especieServiceInterface.deleteEspecie(id);
     }
 
-    // TipoTurgorCutaneo--------------------------------------------------------------
-    @Autowired
-    private TipoTurgorCutaneoServiceInterface tipoTurgorCutaneoServiceInterface;
-
-    public TipoTurgorCutaneo saveTipoTurgorCutaneo(TipoTurgorCutaneo newInstance) {
-        return tipoTurgorCutaneoServiceInterface.saveTipoTurgorCutaneo(newInstance);
-    }
-
-    public TipoTurgorCutaneo updateTipoTurgorCutaneo(TipoTurgorCutaneo transientObject) {
-        return tipoTurgorCutaneoServiceInterface.updateTipoTurgorCutaneo(transientObject);
-    }
-
-    public TipoTurgorCutaneo findTipoTurgorCutaneoById(long id) {
-        return tipoTurgorCutaneoServiceInterface.findTipoTurgorCutaneoById(id);
-    }
-
-    public List<TipoTurgorCutaneo> getAllTipoTurgorCutaneo() {
-        return tipoTurgorCutaneoServiceInterface.getAllTipoTurgorCutaneo();
-    }
-
-    public void deleteTipoTurgorCutaneo(TipoTurgorCutaneo persistentObject) {
-        tipoTurgorCutaneoServiceInterface.deleteTipoTurgorCutaneo(persistentObject);
-    }
-
-    public void deleteTipoTurgorCutaneo(long id) {
-        tipoTurgorCutaneoServiceInterface.deleteTipoTurgorCutaneo(id);
-    }
-
     // ScoreCorporal--------------------------------------------------------------
     @Autowired
     private ScoreCorporalServiceInterface scoreCorporalServiceInterface;
