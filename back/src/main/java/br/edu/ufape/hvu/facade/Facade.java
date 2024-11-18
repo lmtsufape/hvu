@@ -837,34 +837,6 @@ public class Facade {
         historicoMedicoPregressoServiceInterface.deleteHistoricoMedicoPregresso(id);
     }
 
-    // ExameComplementar--------------------------------------------------------------
-    @Autowired
-    private ExameComplementarServiceInterface exameComplementarServiceInterface;
-
-    public ExameComplementar saveExameComplementar(ExameComplementar newInstance) {
-        return exameComplementarServiceInterface.saveExameComplementar(newInstance);
-    }
-
-    public ExameComplementar updateExameComplementar(ExameComplementar transientObject) {
-        return exameComplementarServiceInterface.updateExameComplementar(transientObject);
-    }
-
-    public ExameComplementar findExameComplementarById(long id) {
-        return exameComplementarServiceInterface.findExameComplementarById(id);
-    }
-
-    public List<ExameComplementar> getAllExameComplementar() {
-        return exameComplementarServiceInterface.getAllExameComplementar();
-    }
-
-    public void deleteExameComplementar(ExameComplementar persistentObject) {
-        exameComplementarServiceInterface.deleteExameComplementar(persistentObject);
-    }
-
-    public void deleteExameComplementar(long id) {
-        exameComplementarServiceInterface.deleteExameComplementar(id);
-    }
-
     // Parecer--------------------------------------------------------------
     @Autowired
     private ParecerServiceInterface parecerServiceInterface;

@@ -26,8 +26,7 @@ public  class ConsultaResponse  {
 	private MedicoResponse medico;
 	private ParecerResponse parecer;
 	private List<PrescricaoResponse> prescricao; 
-	private List<EstagiarioResponse> estagiario; 
-	private List<ExameComplementarResponse> exameComplementar; 
+	private List<EstagiarioResponse> estagiario;
 	private boolean proximaConsulta;
 	private EspecialidadeResponse encaminhamento;
 	private AnimalResponse animal;

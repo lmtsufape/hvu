@@ -57,11 +57,7 @@ public  class Consulta  {
 	@ManyToMany
 	@JoinColumn(name = "consulta_id")
 	@ToString.Exclude
-	private List<Estagiario> estagiario; 
-	@OneToMany
-	@JoinColumn(name = "consulta_id")
-	@ToString.Exclude
-	private List<ExameComplementar> exameComplementar;
+	private List<Estagiario> estagiario;
 	@ManyToOne
 	@ToString.Exclude
 	private Animal animal;
