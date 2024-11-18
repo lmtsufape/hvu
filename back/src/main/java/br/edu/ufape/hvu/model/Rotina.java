@@ -32,10 +32,6 @@ public  class Rotina  {
 	private Processamento processamento;
 	private String observacao;
     	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "exameMicroscopico_id")
-	@ToString.Exclude
-	private ExameMicroscopico exameMicroscopico; 
-    	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "etapa_id")
 	@ToString.Exclude
 	private Etapa etapa; 

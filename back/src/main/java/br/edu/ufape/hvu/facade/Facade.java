@@ -1345,34 +1345,6 @@ public class Facade {
         etapaServiceInterface.deleteEtapa(id);
     }
 
-    // ExameMicroscopia--------------------------------------------------------------
-    @Autowired
-    private ExameMicroscopicoServiceInterface exameMicroscopicoServiceInterface;
-
-    public ExameMicroscopico saveExameMicroscopico(ExameMicroscopico newInstance) {
-        return exameMicroscopicoServiceInterface.saveExameMicroscopico(newInstance);
-    }
-
-    public List<ExameMicroscopico> getAllExameMicroscopico() {
-        return exameMicroscopicoServiceInterface.getAllExameMicroscopico();
-    }
-
-    public ExameMicroscopico updateExameMicroscopico(ExameMicroscopico transientObject) {
-        return exameMicroscopicoServiceInterface.updateExameMicroscopico(transientObject);
-    }
-
-    public ExameMicroscopico findExameMicroscopicoById(long id) {
-        return exameMicroscopicoServiceInterface.findExameMicroscopicoById(id);
-    }
-
-    public void deleteExameMicroscopico(long id) {
-        exameMicroscopicoServiceInterface.deleteExameMicroscopico(id);
-    }
-
-    public void deleteExameMicroscopico(ExameMicroscopico persistentObject) {
-        exameMicroscopicoServiceInterface.deleteExameMicroscopico(persistentObject);
-    }
-
     // FichaSolicitacaoServico--------------------------------------------------------------
 
     @Autowired

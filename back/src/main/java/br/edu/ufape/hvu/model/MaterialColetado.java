@@ -31,9 +31,6 @@ public  class MaterialColetado  {
 	private long id;
 	private String codigo;
 	private String nome;
-	@OneToOne
-	@ToString.Exclude
-	private ExameMicroscopico exameMicroscopico; 
     	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orgao_id")
 	@ToString.Exclude

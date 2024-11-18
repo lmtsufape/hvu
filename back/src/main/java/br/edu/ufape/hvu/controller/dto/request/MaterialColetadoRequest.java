@@ -13,7 +13,6 @@ import lombok.Setter;
 public  class MaterialColetadoRequest  {
 	private String codigo;
 	private String nome;
-	private ExameMicroscopicoRequest exameMicroscopico; 
 	private OrgaoRequest orgao; 
 	private long id;
 

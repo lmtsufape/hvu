@@ -61,12 +61,6 @@ public class RotinaController {
 				obj.setEtapa(null);
 			}
 
-			//exameMicroscopico
-			if (obj.getExameMicroscopico() != null) {
-				oldObject.setExameMicroscopico(facade.findExameMicroscopicoById(obj.getExameMicroscopico().getId()));
-				obj.setExameMicroscopico(null);
-			}
-
 
 			TypeMap<RotinaRequest, Rotina> typeMapper = modelMapper
 													.typeMap(RotinaRequest.class, Rotina.class)
