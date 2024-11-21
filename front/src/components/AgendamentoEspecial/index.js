@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 import Select from 'react-select';
+import { getTutorByAnimal } from "../../../services/tutorService";
 
 function AgendamentoEspecial() {
   const router = useRouter();
@@ -40,6 +41,7 @@ function AgendamentoEspecial() {
   const [escolherHorario, setEscolherHorario] = useState(null);
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
+  const [tutores, setTutores] = useState({});
 
   const { animais } = AnimalList();
   const { tiposConsulta } = TipoConsultaList();
@@ -54,6 +56,25 @@ function AgendamentoEspecial() {
         setRoles(storedRoles || []);
     }
   }, []);
+
+  useEffect(() => {
+    const fetchTutores = async () => {
+      const tutoresTemp = {};
+      for (const animal of animais) {
+        try {
+          const tutor = await getTutorByAnimal(animal.id, token);
+          tutoresTemp[animal.id] = { nome: tutor.nome, cpf: tutor.cpf };
+        } catch (error) {
+          console.error(`Erro ao buscar tutor para o animal ${animal.id}:`, error);
+        }
+      }
+      setTutores(tutoresTemp);
+    };
+
+    if (animais.length > 0) {
+      fetchTutores();
+    }
+  }, [animais, token]);
 
   // Verifica se o usuário tem permissão
   if (!roles.includes("secretario")) {
@@ -158,6 +179,12 @@ function AgendamentoEspecial() {
       errors.escolherData = "Campo obrigatório";
     }
     return errors;
+  };
+
+  const maskCPF = (cpf) => {
+    if(!cpf) return "";
+
+    return `***.${cpf.slice(4,11)}-**`;
   };
 
   return (
@@ -301,7 +328,7 @@ function AgendamentoEspecial() {
                   <option value="">Selecione o paciente</option>
                   {animais.map((animal) => (
                     <option key={animal.id} value={animal.id}>
-                      {animal.nome}
+                      {animal.nome} - {tutores[animal.id]?.nome} - {maskCPF(tutores[animal.id]?.cpf)}
                     </option>
                   ))}
                 </select>
