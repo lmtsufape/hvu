@@ -231,6 +231,19 @@ const HorariosSemana = () => {
     }
   };
 
+const getNomeSobrenome = (nomeCompleto) => {
+  if (!nomeCompleto) return '';
+  const partes = nomeCompleto.split(' ');
+  if (partes.length < 2) return nomeCompleto; // Se não houver sobrenome, retorna o nome completo
+
+  // Inclui o artigo se ele fizer parte do segundo nome
+  const segundoNome = ['da', 'de', 'do', 'dos', 'das'].includes(partes[1].toLowerCase()) && partes.length > 2
+    ? `${partes[1]} ${partes[2]}`
+    : partes[1];
+
+  return `${partes[0]} ${segundoNome}`; // Retorna o primeiro e o segundo nome (incluindo o artigo, se houver)
+};
+
   return (
     <div className={styles.container}>
       <div className={styles.voltar_button}>
@@ -345,6 +358,11 @@ const HorariosSemana = () => {
                       >
                         {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
                         <br />{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}
+                        {vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && (
+                          <>
+                            <br />{vaga.medico ? getNomeSobrenome(vaga.medico.nome) : ''}
+                          </>
+                        )}
                       </button>
                     );
                   })}
