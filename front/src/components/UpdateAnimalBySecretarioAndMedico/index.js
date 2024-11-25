@@ -232,7 +232,7 @@ function UpdateAnimalBySecretarioAndMedico() {
                   name="nome"
                   value={animalData.nome}
                   onChange={handleAnimalChange}
-                  disabled
+                 
                 />
                 {errors.nome && <div className={`invalid-feedback ${styles.error_message}`}>{errors.nome}</div>}
               </div>
