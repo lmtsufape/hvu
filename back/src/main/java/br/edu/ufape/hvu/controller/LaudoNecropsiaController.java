@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.edu.ufape.hvu.model.CampoLaudo;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class LaudoNecropsiaController {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("laudoNecropsia")
 	public List<LaudoNecropsiaResponse> getAllLaudoNecropsia() {
 		return facade.getAllLaudoNecropsia()
@@ -36,11 +38,13 @@ public class LaudoNecropsiaController {
 				.toList();
 	}
 
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("laudoNecropsia")
 	public LaudoNecropsiaResponse createLaudoNecropsia(@Valid @RequestBody LaudoNecropsiaRequest newObj) {
 		return new LaudoNecropsiaResponse(facade.saveLaudoNecropsia(newObj.convertToEntity()));
 	}
 
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("laudoNecropsia/{id}")
 	public LaudoNecropsiaResponse getLaudoNecropsiaById(@PathVariable Long id) {
 		try {
@@ -50,6 +54,7 @@ public class LaudoNecropsiaController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("laudoNecropsia/{id}")
 	public LaudoNecropsiaResponse updateLaudoNecropsia(@PathVariable Long id, @Valid @RequestBody LaudoNecropsiaRequest obj) {
 		try {
@@ -75,6 +80,7 @@ public class LaudoNecropsiaController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("laudoNecropsia/{id}")
 	public String deleteLaudoNecropsia(@PathVariable Long id) {
 		try {

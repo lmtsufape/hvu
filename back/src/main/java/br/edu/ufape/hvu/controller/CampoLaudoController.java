@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class CampoLaudoController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("campoLaudo")
 	public List<CampoLaudoResponse> getAllCampoLaudo() {
 		return facade.getAllCampoLaudo()
@@ -33,12 +35,14 @@ public class CampoLaudoController {
 			.map(CampoLaudoResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("campoLaudo")
 	public CampoLaudoResponse createCampoLaudo(@Valid @RequestBody CampoLaudoRequest newObj) {
 		return new CampoLaudoResponse(facade.saveCampoLaudo(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("campoLaudo/{id}")
 	public CampoLaudoResponse getCampoLaudoById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class CampoLaudoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("campoLaudo/{id}")
 	public CampoLaudoResponse updateCampoLaudo(@PathVariable Long id, @Valid @RequestBody CampoLaudoRequest obj) {
 		try {
@@ -66,7 +71,8 @@ public class CampoLaudoController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("campoLaudo/{id}")
 	public String deleteCampoLaudo(@PathVariable Long id) {
 		try {

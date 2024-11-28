@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class ExameMicroscopicoController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("exameMicroscopico")
 	public List<ExameMicroscopicoResponse> getAllExameMicroscopico() {
 		return facade.getAllExameMicroscopico()
@@ -33,12 +35,14 @@ public class ExameMicroscopicoController {
 			.map(ExameMicroscopicoResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("exameMicroscopico")
 	public ExameMicroscopicoResponse createExameMicroscopico(@Valid @RequestBody ExameMicroscopicoRequest newObj) {
 		return new ExameMicroscopicoResponse(facade.saveExameMicroscopico(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("exameMicroscopico/{id}")
 	public ExameMicroscopicoResponse getExameMicroscopicoById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class ExameMicroscopicoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("exameMicroscopico/{id}")
 	public ExameMicroscopicoResponse updateExameMicroscopico(@PathVariable Long id, @Valid @RequestBody ExameMicroscopicoRequest obj) {
 		try {
@@ -82,7 +87,8 @@ public class ExameMicroscopicoController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("exameMicroscopico/{id}")
 	public String deleteExameMicroscopico(@PathVariable Long id) {
 		try {
