@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class AreaController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("area")
 	public List<AreaResponse> getAllArea() {
 		return facade.getAllArea()
@@ -33,12 +35,14 @@ public class AreaController {
 			.map(AreaResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("area")
 	public AreaResponse createArea(@Valid @RequestBody AreaRequest newObj) {
 		return new AreaResponse(facade.saveArea(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("area/{id}")
 	public AreaResponse getAreaById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class AreaController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("area/{id}")
 	public AreaResponse updateArea(@PathVariable Long id, @Valid @RequestBody AreaRequest obj) {
 		try {
@@ -66,7 +71,8 @@ public class AreaController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("area/{id}")
 	public String deleteArea(@PathVariable Long id) {
 		try {

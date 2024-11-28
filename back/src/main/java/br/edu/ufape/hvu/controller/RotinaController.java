@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class RotinaController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("rotina")
 	public List<RotinaResponse> getAllRotina() {
 		return facade.getAllRotina()
@@ -33,12 +35,14 @@ public class RotinaController {
 			.map(RotinaResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("rotina")
 	public RotinaResponse createRotina(@Valid @RequestBody RotinaRequest newObj) {
 		return new RotinaResponse(facade.saveRotina(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("rotina/{id}")
 	public RotinaResponse getRotinaById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class RotinaController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("rotina/{id}")
 	public RotinaResponse updateRotina(@PathVariable Long id, @Valid @RequestBody RotinaRequest obj) {
 		try {
@@ -80,7 +85,8 @@ public class RotinaController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("rotina/{id}")
 	public String deleteRotina(@PathVariable Long id) {
 		try {

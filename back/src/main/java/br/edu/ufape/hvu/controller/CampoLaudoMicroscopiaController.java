@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,6 +26,7 @@ public class CampoLaudoMicroscopiaController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
     @GetMapping("campoLaudoMicroscopia")
     public List<CampoLaudoMicroscopiaResponse> getAllCampoLaudoMicroscopia() {
         return facade.getAllCampoLaudoMicroscopia()
@@ -33,11 +35,13 @@ public class CampoLaudoMicroscopiaController {
                 .toList();
     }
 
+    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
     @PostMapping("campoLaudoMicroscopia")
     public CampoLaudoMicroscopiaResponse createCampoLaudoMicroscopia(@Valid @RequestBody CampoLaudoMicroscopiaRequest newObj) {
         return new CampoLaudoMicroscopiaResponse(facade.saveCampoLaudoMicroscopia(newObj.convertToEntity()));
     }
 
+    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
     @GetMapping("campoLaudoMicroscopia/{id}")
     public CampoLaudoMicroscopiaResponse getCampoLaudoMicroscopiaById(@PathVariable Long id) {
         try {
@@ -47,6 +51,7 @@ public class CampoLaudoMicroscopiaController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
     @PatchMapping("campoLaudoMicroscopia/{id}")
     public CampoLaudoMicroscopiaResponse updateCampoLaudoMicroscopia(@PathVariable Long id, @Valid @RequestBody CampoLaudoMicroscopiaRequest obj) {
         try {
@@ -63,6 +68,7 @@ public class CampoLaudoMicroscopiaController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
     @DeleteMapping("campoLaudoMicroscopia/{id}")
     public String deleteCampoLaudoMicroscopia(@PathVariable Long id) {
         try {

@@ -1742,34 +1742,6 @@ public class Facade {
         laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(id);
     }
 
-    // LivroRegistro--------------------------------------------------------------
-    @Autowired
-    private LivroRegistroServiceInterface livroRegistroServiceInterface;
-
-    public LivroRegistro saveLivroRegistro(LivroRegistro newInstance) {
-        return livroRegistroServiceInterface.saveLivroRegistro(newInstance);
-    }
-
-    public LivroRegistro updateLivroRegistro(LivroRegistro transientObject) {
-        return livroRegistroServiceInterface.updateLivroRegistro(transientObject);
-    }
-
-    public LivroRegistro findLivroRegistroById(long id) {
-        return livroRegistroServiceInterface.findLivroRegistroById(id);
-    }
-
-    public List<LivroRegistro> getAllLivroRegistro() {
-        return livroRegistroServiceInterface.getAllLivroRegistro();
-    }
-
-    public void deleteLivroRegistro(LivroRegistro persistentObject) {
-        livroRegistroServiceInterface.deleteLivroRegistro(persistentObject);
-    }
-
-    public void deleteLivroRegistro(long id) {
-        livroRegistroServiceInterface.deleteLivroRegistro(id);
-    }
-
     // MaterialColetado--------------------------------------------------------------
     @Autowired
 
