@@ -809,34 +809,6 @@ public class Facade {
         consultaServiceInterface.deleteConsulta(id);
     }
 
-    // HistoricoMedicoPregresso--------------------------------------------------------------
-    @Autowired
-    private HistoricoMedicoPregressoServiceInterface historicoMedicoPregressoServiceInterface;
-
-    public HistoricoMedicoPregresso saveHistoricoMedicoPregresso(HistoricoMedicoPregresso newInstance) {
-        return historicoMedicoPregressoServiceInterface.saveHistoricoMedicoPregresso(newInstance);
-    }
-
-    public HistoricoMedicoPregresso updateHistoricoMedicoPregresso(HistoricoMedicoPregresso transientObject) {
-        return historicoMedicoPregressoServiceInterface.updateHistoricoMedicoPregresso(transientObject);
-    }
-
-    public HistoricoMedicoPregresso findHistoricoMedicoPregressoById(long id) {
-        return historicoMedicoPregressoServiceInterface.findHistoricoMedicoPregressoById(id);
-    }
-
-    public List<HistoricoMedicoPregresso> getAllHistoricoMedicoPregresso() {
-        return historicoMedicoPregressoServiceInterface.getAllHistoricoMedicoPregresso();
-    }
-
-    public void deleteHistoricoMedicoPregresso(HistoricoMedicoPregresso persistentObject) {
-        historicoMedicoPregressoServiceInterface.deleteHistoricoMedicoPregresso(persistentObject);
-    }
-
-    public void deleteHistoricoMedicoPregresso(long id) {
-        historicoMedicoPregressoServiceInterface.deleteHistoricoMedicoPregresso(id);
-    }
-
     // Parecer--------------------------------------------------------------
     @Autowired
     private ParecerServiceInterface parecerServiceInterface;
