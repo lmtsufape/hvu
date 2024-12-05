@@ -1000,34 +1000,6 @@ public class Facade {
         especieServiceInterface.deleteEspecie(id);
     }
 
-    // ScoreCorporal--------------------------------------------------------------
-    @Autowired
-    private ScoreCorporalServiceInterface scoreCorporalServiceInterface;
-
-    public ScoreCorporal saveScoreCorporal(ScoreCorporal newInstance) {
-        return scoreCorporalServiceInterface.saveScoreCorporal(newInstance);
-    }
-
-    public ScoreCorporal updateScoreCorporal(ScoreCorporal transientObject) {
-        return scoreCorporalServiceInterface.updateScoreCorporal(transientObject);
-    }
-
-    public ScoreCorporal findScoreCorporalById(long id) {
-        return scoreCorporalServiceInterface.findScoreCorporalById(id);
-    }
-
-    public List<ScoreCorporal> getAllScoreCorporal() {
-        return scoreCorporalServiceInterface.getAllScoreCorporal();
-    }
-
-    public void deleteScoreCorporal(ScoreCorporal persistentObject) {
-        scoreCorporalServiceInterface.deleteScoreCorporal(persistentObject);
-    }
-
-    public void deleteScoreCorporal(long id) {
-        scoreCorporalServiceInterface.deleteScoreCorporal(id);
-    }
-
     // Area--------------------------------------------------------------
     @Autowired
     private AreaServiceInterface areaServiceInterface;
