@@ -12,7 +12,6 @@ function CreateTutorForm({ tutorFormData, handleTutorChange, errors }) {
     return (
         <div className={styles.boxcadastrotutor}>
             <div className={styles.cadastrotutor}>
-            <div className={styles.titulo}>Tutor</div>
                 
                 {renderInput("Nome Completo", "Insira seu nome completo", "nome", tutorFormData.nome, handleTutorChange, errors.nome, "text")}
                 <div className="row">

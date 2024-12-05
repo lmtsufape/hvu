@@ -45,6 +45,29 @@ public class Facade {
     public TokenResponse refresh(String refreshToken) {
         return keycloakService.refreshToken(refreshToken);
     }
+
+    // Ficha--------------------------------------------------------------
+    @Autowired
+    private FichaServiceInterface fichaServiceInterface;
+    public Ficha saveFicha(Ficha newInstance) {
+        return fichaServiceInterface.saveFicha(newInstance);
+    }
+    public Ficha updateFicha(Ficha transientObject) {
+        return fichaServiceInterface.updateFicha(transientObject);
+    }
+    public Ficha findFichaById(long id) {
+        return fichaServiceInterface.findFichaById(id);
+    }
+    public List<Ficha> getAllFicha() {
+        return fichaServiceInterface.getAllFicha();
+    }
+    public void deleteFicha(Ficha persistentObject) {
+        fichaServiceInterface.deleteFicha(persistentObject);
+    }
+    public void deleteFicha(long id) {
+        fichaServiceInterface.deleteFicha(id);
+    }
+
     // Tutor--------------------------------------------------------------
 
     private final TutorServiceInterface tutorServiceInterface;
@@ -115,6 +138,7 @@ public class Facade {
             throw new RuntimeException("Error deleting user");
         }
     }
+
 
     // Cancelamento--------------------------------------------------------------
     @Autowired

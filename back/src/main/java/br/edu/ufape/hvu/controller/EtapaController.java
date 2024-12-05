@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class EtapaController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("etapa")
 	public List<EtapaResponse> getAllEtapa() {
 		return facade.getAllEtapa()
@@ -33,12 +35,14 @@ public class EtapaController {
 			.map(EtapaResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("etapa")
 	public EtapaResponse createEtapa(@Valid @RequestBody EtapaRequest newObj) {
 		return new EtapaResponse(facade.saveEtapa(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("etapa/{id}")
 	public EtapaResponse getEtapaById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class EtapaController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("etapa/{id}")
 	public EtapaResponse updateEtapa(@PathVariable Long id, @Valid @RequestBody EtapaRequest obj) {
 		try {
@@ -66,7 +71,8 @@ public class EtapaController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("etapa/{id}")
 	public String deleteEtapa(@PathVariable Long id) {
 		try {

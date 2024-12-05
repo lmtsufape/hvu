@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,8 @@ public class FichaSolicitacaoServicoController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("fichaSolicitacaoServico")
 	public List<FichaSolicitacaoServicoResponse> getAllFichaSolicitacaoServico() {
 		return facade.getAllFichaSolicitacaoServico()
@@ -37,6 +39,7 @@ public class FichaSolicitacaoServicoController {
 			.toList();
 	}
 
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("fichaSolicitacaoServico")
 	public FichaSolicitacaoServicoResponse createFichaSolicitacaoServico(@Valid @RequestBody FichaSolicitacaoServicoRequest newObj) {
 		FichaSolicitacaoServico fichaSolicitacaoServico = newObj.convertToEntity();
@@ -45,6 +48,7 @@ public class FichaSolicitacaoServicoController {
 		return new FichaSolicitacaoServicoResponse(savedFicha);
 	}
 
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("fichaSolicitacaoServico/{id}")
 	public FichaSolicitacaoServicoResponse getFichaSolicitacaoServicoById(@PathVariable Long id) {
 		try {
@@ -53,7 +57,8 @@ public class FichaSolicitacaoServicoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("fichaSolicitacaoServico/{id}")
 	public FichaSolicitacaoServicoResponse updateFichaSolicitacaoServico(@PathVariable Long id, @Valid @RequestBody FichaSolicitacaoServicoRequest obj) {
 		try {
@@ -78,7 +83,8 @@ public class FichaSolicitacaoServicoController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("fichaSolicitacaoServico/{id}")
 	public String deleteFichaSolicitacaoServico(@PathVariable Long id) {
 		try {

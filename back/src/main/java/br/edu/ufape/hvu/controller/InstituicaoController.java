@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class InstituicaoController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("instituicao")
 	public List<InstituicaoResponse> getAllInstituicao() {
 		return facade.getAllInstituicao()
@@ -33,12 +35,14 @@ public class InstituicaoController {
 			.map(InstituicaoResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("instituicao")
 	public InstituicaoResponse createInstituicao(@Valid @RequestBody InstituicaoRequest newObj) {
 		return new InstituicaoResponse(facade.saveInstituicao(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("instituicao/{id}")
 	public InstituicaoResponse getInstituicaoById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class InstituicaoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("instituicao/{id}")
 	public InstituicaoResponse updateInstituicao(@PathVariable Long id, @Valid @RequestBody InstituicaoRequest obj) {
 		try {
@@ -66,7 +71,8 @@ public class InstituicaoController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("instituicao/{id}")
 	public String deleteInstituicao(@PathVariable Long id) {
 		try {

@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class MaterialColetadoController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("materialColetado")
 	public List<MaterialColetadoResponse> getAllMaterialColetado() {
 		return facade.getAllMaterialColetado()
@@ -33,12 +35,14 @@ public class MaterialColetadoController {
 			.map(MaterialColetadoResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("materialColetado")
 	public MaterialColetadoResponse createMaterialColetado(@Valid @RequestBody MaterialColetadoRequest newObj) {
 		return new MaterialColetadoResponse(facade.saveMaterialColetado(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("materialColetado/{id}")
 	public MaterialColetadoResponse getMaterialColetadoById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class MaterialColetadoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("materialColetado/{id}")
 	public MaterialColetadoResponse updateMaterialColetado(@PathVariable Long id, @Valid @RequestBody MaterialColetadoRequest obj) {
 		try {
@@ -66,7 +71,8 @@ public class MaterialColetadoController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("materialColetado/{id}")
 	public String deleteMaterialColetado(@PathVariable Long id) {
 		try {

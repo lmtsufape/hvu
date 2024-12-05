@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class OrgaoController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("orgao")
 	public List<OrgaoResponse> getAllOrgao() {
 		return facade.getAllOrgao()
@@ -33,12 +35,14 @@ public class OrgaoController {
 			.map(OrgaoResponse::new)
 			.toList();
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PostMapping("orgao")
 	public OrgaoResponse createOrgao(@Valid @RequestBody OrgaoRequest newObj) {
 		return new OrgaoResponse(facade.saveOrgao(newObj.convertToEntity()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("orgao/{id}")
 	public OrgaoResponse getOrgaoById(@PathVariable Long id) {
 		try {
@@ -47,7 +51,8 @@ public class OrgaoController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("orgao/{id}")
 	public OrgaoResponse updateOrgao(@PathVariable Long id, @Valid @RequestBody OrgaoRequest obj) {
 		try {
@@ -67,7 +72,8 @@ public class OrgaoController {
 		}
 		
 	}
-	
+
+	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@DeleteMapping("orgao/{id}")
 	public String deleteOrgao(@PathVariable Long id) {
 		try {
