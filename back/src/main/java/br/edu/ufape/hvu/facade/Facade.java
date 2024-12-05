@@ -253,9 +253,7 @@ public class Facade {
             if (usuario instanceof Tutor) {
                 throw new DuplicateAccountException("tutor");
             }
-            if (usuario instanceof Diretor) {
-                throw new DuplicateAccountException("diretor");
-            }
+
             if (usuario instanceof Medico) {
                 throw new DuplicateAccountException("medico");
             }
@@ -1078,38 +1076,6 @@ public class Facade {
 
     public void deleteEstagiario(long id) {
         estagiarioServiceInterface.deleteEstagiario(id);
-    }
-
-    // Diretor--------------------------------------------------------------
-    @Autowired
-    private DiretorServiceInterface diretorServiceInterface;
-
-    public Diretor saveDiretor(Diretor newInstance) {
-        return diretorServiceInterface.saveDiretor(newInstance);
-    }
-
-    public Diretor updateDiretor(Diretor transientObject) {
-        return diretorServiceInterface.updateDiretor(transientObject);
-    }
-
-    public Diretor findDiretorById(long id) {
-        return diretorServiceInterface.findDiretorById(id);
-    }
-
-    public Diretor findDiretorByuserId(String userId) {
-        return diretorServiceInterface.findDiretorByuserId(userId);
-    }
-
-    public List<Diretor> getAllDiretor() {
-        return diretorServiceInterface.getAllDiretor();
-    }
-
-    public void deleteDiretor(Diretor persistentObject) {
-        diretorServiceInterface.deleteDiretor(persistentObject);
-    }
-
-    public void deleteDiretor(long id) {
-        diretorServiceInterface.deleteDiretor(id);
     }
 
     // Animal--------------------------------------------------------------
