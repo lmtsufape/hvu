@@ -276,34 +276,6 @@ public class Facade {
         usuarioServiceInterface.deleteUsuario(id);
     }
 
-    // MedicacaoPeriodica--------------------------------------------------------------
-    @Autowired
-    private MedicacaoPeriodicaServiceInterface medicacaoPeriodicaServiceInterface;
-
-    public MedicacaoPeriodica saveMedicacaoPeriodica(MedicacaoPeriodica newInstance) {
-        return medicacaoPeriodicaServiceInterface.saveMedicacaoPeriodica(newInstance);
-    }
-
-    public MedicacaoPeriodica updateMedicacaoPeriodica(MedicacaoPeriodica transientObject) {
-        return medicacaoPeriodicaServiceInterface.updateMedicacaoPeriodica(transientObject);
-    }
-
-    public MedicacaoPeriodica findMedicacaoPeriodicaById(long id) {
-        return medicacaoPeriodicaServiceInterface.findMedicacaoPeriodicaById(id);
-    }
-
-    public List<MedicacaoPeriodica> getAllMedicacaoPeriodica() {
-        return medicacaoPeriodicaServiceInterface.getAllMedicacaoPeriodica();
-    }
-
-    public void deleteMedicacaoPeriodica(MedicacaoPeriodica persistentObject) {
-        medicacaoPeriodicaServiceInterface.deleteMedicacaoPeriodica(persistentObject);
-    }
-
-    public void deleteMedicacaoPeriodica(long id) {
-        medicacaoPeriodicaServiceInterface.deleteMedicacaoPeriodica(id);
-    }
-
     // Cronograma--------------------------------------------------------------
     @Autowired
     private CronogramaServiceInterface cronogramaServiceInterface;
