@@ -45,6 +45,29 @@ public class Facade {
     public TokenResponse refresh(String refreshToken) {
         return keycloakService.refreshToken(refreshToken);
     }
+
+    // Ficha--------------------------------------------------------------
+    @Autowired
+    private FichaServiceInterface fichaServiceInterface;
+    public Ficha saveFicha(Ficha newInstance) {
+        return fichaServiceInterface.saveFicha(newInstance);
+    }
+    public Ficha updateFicha(Ficha transientObject) {
+        return fichaServiceInterface.updateFicha(transientObject);
+    }
+    public Ficha findFichaById(long id) {
+        return fichaServiceInterface.findFichaById(id);
+    }
+    public List<Ficha> getAllFicha() {
+        return fichaServiceInterface.getAllFicha();
+    }
+    public void deleteFicha(Ficha persistentObject) {
+        fichaServiceInterface.deleteFicha(persistentObject);
+    }
+    public void deleteFicha(long id) {
+        fichaServiceInterface.deleteFicha(id);
+    }
+
     // Tutor--------------------------------------------------------------
 
     private final TutorServiceInterface tutorServiceInterface;
@@ -116,33 +139,6 @@ public class Facade {
         }
     }
 
-    // NivelHidratacao--------------------------------------------------------------
-    @Autowired
-    private NivelHidratacaoServiceInterface nivelHidratacaoServiceInterface;
-
-    public NivelHidratacao saveNivelHidratacao(NivelHidratacao newInstance) {
-        return nivelHidratacaoServiceInterface.saveNivelHidratacao(newInstance);
-    }
-
-    public NivelHidratacao updateNivelHidratacao(NivelHidratacao transientObject) {
-        return nivelHidratacaoServiceInterface.updateNivelHidratacao(transientObject);
-    }
-
-    public NivelHidratacao findNivelHidratacaoById(long id) {
-        return nivelHidratacaoServiceInterface.findNivelHidratacaoById(id);
-    }
-
-    public List<NivelHidratacao> getAllNivelHidratacao() {
-        return nivelHidratacaoServiceInterface.getAllNivelHidratacao();
-    }
-
-    public void deleteNivelHidratacao(NivelHidratacao persistentObject) {
-        nivelHidratacaoServiceInterface.deleteNivelHidratacao(persistentObject);
-    }
-
-    public void deleteNivelHidratacao(long id) {
-        nivelHidratacaoServiceInterface.deleteNivelHidratacao(id);
-    }
 
     // Cancelamento--------------------------------------------------------------
     @Autowired
@@ -253,9 +249,7 @@ public class Facade {
             if (usuario instanceof Tutor) {
                 throw new DuplicateAccountException("tutor");
             }
-            if (usuario instanceof Diretor) {
-                throw new DuplicateAccountException("diretor");
-            }
+
             if (usuario instanceof Medico) {
                 throw new DuplicateAccountException("medico");
             }
@@ -276,62 +270,6 @@ public class Facade {
 
     public void deleteUsuario(long id) {
         usuarioServiceInterface.deleteUsuario(id);
-    }
-
-    // MedicacaoPeriodica--------------------------------------------------------------
-    @Autowired
-    private MedicacaoPeriodicaServiceInterface medicacaoPeriodicaServiceInterface;
-
-    public MedicacaoPeriodica saveMedicacaoPeriodica(MedicacaoPeriodica newInstance) {
-        return medicacaoPeriodicaServiceInterface.saveMedicacaoPeriodica(newInstance);
-    }
-
-    public MedicacaoPeriodica updateMedicacaoPeriodica(MedicacaoPeriodica transientObject) {
-        return medicacaoPeriodicaServiceInterface.updateMedicacaoPeriodica(transientObject);
-    }
-
-    public MedicacaoPeriodica findMedicacaoPeriodicaById(long id) {
-        return medicacaoPeriodicaServiceInterface.findMedicacaoPeriodicaById(id);
-    }
-
-    public List<MedicacaoPeriodica> getAllMedicacaoPeriodica() {
-        return medicacaoPeriodicaServiceInterface.getAllMedicacaoPeriodica();
-    }
-
-    public void deleteMedicacaoPeriodica(MedicacaoPeriodica persistentObject) {
-        medicacaoPeriodicaServiceInterface.deleteMedicacaoPeriodica(persistentObject);
-    }
-
-    public void deleteMedicacaoPeriodica(long id) {
-        medicacaoPeriodicaServiceInterface.deleteMedicacaoPeriodica(id);
-    }
-
-    // AvaliacaoFisicoGeral--------------------------------------------------------------
-    @Autowired
-    private AvaliacaoFisicoGeralServiceInterface avaliacaoFisicoGeralServiceInterface;
-
-    public AvaliacaoFisicoGeral saveAvaliacaoFisicoGeral(AvaliacaoFisicoGeral newInstance) {
-        return avaliacaoFisicoGeralServiceInterface.saveAvaliacaoFisicoGeral(newInstance);
-    }
-
-    public AvaliacaoFisicoGeral updateAvaliacaoFisicoGeral(AvaliacaoFisicoGeral transientObject) {
-        return avaliacaoFisicoGeralServiceInterface.updateAvaliacaoFisicoGeral(transientObject);
-    }
-
-    public AvaliacaoFisicoGeral findAvaliacaoFisicoGeralById(long id) {
-        return avaliacaoFisicoGeralServiceInterface.findAvaliacaoFisicoGeralById(id);
-    }
-
-    public List<AvaliacaoFisicoGeral> getAllAvaliacaoFisicoGeral() {
-        return avaliacaoFisicoGeralServiceInterface.getAllAvaliacaoFisicoGeral();
-    }
-
-    public void deleteAvaliacaoFisicoGeral(AvaliacaoFisicoGeral persistentObject) {
-        avaliacaoFisicoGeralServiceInterface.deleteAvaliacaoFisicoGeral(persistentObject);
-    }
-
-    public void deleteAvaliacaoFisicoGeral(long id) {
-        avaliacaoFisicoGeralServiceInterface.deleteAvaliacaoFisicoGeral(id);
     }
 
     // Cronograma--------------------------------------------------------------
@@ -417,34 +355,6 @@ public class Facade {
         cronogramaServiceInterface.deleteCronograma(cronograma.getId());
     }
 
-    // TipoPrognostico--------------------------------------------------------------
-    @Autowired
-    private TipoPrognosticoServiceInterface tipoPrognosticoServiceInterface;
-
-    public TipoPrognostico saveTipoPrognostico(TipoPrognostico newInstance) {
-        return tipoPrognosticoServiceInterface.saveTipoPrognostico(newInstance);
-    }
-
-    public TipoPrognostico updateTipoPrognostico(TipoPrognostico transientObject) {
-        return tipoPrognosticoServiceInterface.updateTipoPrognostico(transientObject);
-    }
-
-    public TipoPrognostico findTipoPrognosticoById(long id) {
-        return tipoPrognosticoServiceInterface.findTipoPrognosticoById(id);
-    }
-
-    public List<TipoPrognostico> getAllTipoPrognostico() {
-        return tipoPrognosticoServiceInterface.getAllTipoPrognostico();
-    }
-
-    public void deleteTipoPrognostico(TipoPrognostico persistentObject) {
-        tipoPrognosticoServiceInterface.deleteTipoPrognostico(persistentObject);
-    }
-
-    public void deleteTipoPrognostico(long id) {
-        tipoPrognosticoServiceInterface.deleteTipoPrognostico(id);
-    }
-
     // Medico--------------------------------------------------------------
     private final MedicoServiceInterface medicoService;
 
@@ -511,34 +421,6 @@ public class Facade {
     public List<Medico> findByEspeciallidade(long EspecialidadeId) {
         Especialidade especialidade = findEspecialidadeById(EspecialidadeId);
         return medicoService.findByEspecialidade(especialidade);
-    }
-
-    // TipoExame--------------------------------------------------------------
-    @Autowired
-    private TipoExameServiceInterface tipoExameServiceInterface;
-
-    public TipoExame saveTipoExame(TipoExame newInstance) {
-        return tipoExameServiceInterface.saveTipoExame(newInstance);
-    }
-
-    public TipoExame updateTipoExame(TipoExame transientObject) {
-        return tipoExameServiceInterface.updateTipoExame(transientObject);
-    }
-
-    public TipoExame findTipoExameById(long id) {
-        return tipoExameServiceInterface.findTipoExameById(id);
-    }
-
-    public List<TipoExame> getAllTipoExame() {
-        return tipoExameServiceInterface.getAllTipoExame();
-    }
-
-    public void deleteTipoExame(TipoExame persistentObject) {
-        tipoExameServiceInterface.deleteTipoExame(persistentObject);
-    }
-
-    public void deleteTipoExame(long id) {
-        tipoExameServiceInterface.deleteTipoExame(id);
     }
 
     // Raca--------------------------------------------------------------
@@ -785,92 +667,6 @@ public class Facade {
     }
 
 
-
-
-    // Medicamento--------------------------------------------------------------
-    @Autowired
-    private MedicamentoServiceInterface medicamentoServiceInterface;
-
-    public Medicamento saveMedicamento(Medicamento newInstance) {
-        return medicamentoServiceInterface.saveMedicamento(newInstance);
-    }
-
-    public Medicamento updateMedicamento(Medicamento transientObject) {
-        return medicamentoServiceInterface.updateMedicamento(transientObject);
-    }
-
-    public Medicamento findMedicamentoById(long id) {
-        return medicamentoServiceInterface.findMedicamentoById(id);
-    }
-
-    public List<Medicamento> getAllMedicamento() {
-        return medicamentoServiceInterface.getAllMedicamento();
-    }
-
-    public void deleteMedicamento(Medicamento persistentObject) {
-        medicamentoServiceInterface.deleteMedicamento(persistentObject);
-    }
-
-    public void deleteMedicamento(long id) {
-        medicamentoServiceInterface.deleteMedicamento(id);
-    }
-
-    // Prescricao--------------------------------------------------------------
-    @Autowired
-    private PrescricaoServiceInterface prescricaoServiceInterface;
-
-    public Prescricao savePrescricao(Prescricao newInstance) {
-        return prescricaoServiceInterface.savePrescricao(newInstance);
-    }
-
-    public Prescricao updatePrescricao(Prescricao transientObject) {
-        return prescricaoServiceInterface.updatePrescricao(transientObject);
-    }
-
-    public Prescricao findPrescricaoById(long id) {
-        return prescricaoServiceInterface.findPrescricaoById(id);
-    }
-
-    public List<Prescricao> getAllPrescricao() {
-        return prescricaoServiceInterface.getAllPrescricao();
-    }
-
-    public void deletePrescricao(Prescricao persistentObject) {
-        prescricaoServiceInterface.deletePrescricao(persistentObject);
-    }
-
-    public void deletePrescricao(long id) {
-        prescricaoServiceInterface.deletePrescricao(id);
-    }
-
-    // TipoMucosa--------------------------------------------------------------
-    @Autowired
-    private TipoMucosaServiceInterface tipoMucosaServiceInterface;
-
-    public TipoMucosa saveTipoMucosa(TipoMucosa newInstance) {
-        return tipoMucosaServiceInterface.saveTipoMucosa(newInstance);
-    }
-
-    public TipoMucosa updateTipoMucosa(TipoMucosa transientObject) {
-        return tipoMucosaServiceInterface.updateTipoMucosa(transientObject);
-    }
-
-    public TipoMucosa findTipoMucosaById(long id) {
-        return tipoMucosaServiceInterface.findTipoMucosaById(id);
-    }
-
-    public List<TipoMucosa> getAllTipoMucosa() {
-        return tipoMucosaServiceInterface.getAllTipoMucosa();
-    }
-
-    public void deleteTipoMucosa(TipoMucosa persistentObject) {
-        tipoMucosaServiceInterface.deleteTipoMucosa(persistentObject);
-    }
-
-    public void deleteTipoMucosa(long id) {
-        tipoMucosaServiceInterface.deleteTipoMucosa(id);
-    }
-
     // Consulta--------------------------------------------------------------
     @Autowired
     private ConsultaServiceInterface consultaServiceInterface;
@@ -919,89 +715,6 @@ public class Facade {
         consultaServiceInterface.deleteConsulta(id);
     }
 
-    // HistoricoMedicoPregresso--------------------------------------------------------------
-    @Autowired
-    private HistoricoMedicoPregressoServiceInterface historicoMedicoPregressoServiceInterface;
-
-    public HistoricoMedicoPregresso saveHistoricoMedicoPregresso(HistoricoMedicoPregresso newInstance) {
-        return historicoMedicoPregressoServiceInterface.saveHistoricoMedicoPregresso(newInstance);
-    }
-
-    public HistoricoMedicoPregresso updateHistoricoMedicoPregresso(HistoricoMedicoPregresso transientObject) {
-        return historicoMedicoPregressoServiceInterface.updateHistoricoMedicoPregresso(transientObject);
-    }
-
-    public HistoricoMedicoPregresso findHistoricoMedicoPregressoById(long id) {
-        return historicoMedicoPregressoServiceInterface.findHistoricoMedicoPregressoById(id);
-    }
-
-    public List<HistoricoMedicoPregresso> getAllHistoricoMedicoPregresso() {
-        return historicoMedicoPregressoServiceInterface.getAllHistoricoMedicoPregresso();
-    }
-
-    public void deleteHistoricoMedicoPregresso(HistoricoMedicoPregresso persistentObject) {
-        historicoMedicoPregressoServiceInterface.deleteHistoricoMedicoPregresso(persistentObject);
-    }
-
-    public void deleteHistoricoMedicoPregresso(long id) {
-        historicoMedicoPregressoServiceInterface.deleteHistoricoMedicoPregresso(id);
-    }
-
-    // ExameComplementar--------------------------------------------------------------
-    @Autowired
-    private ExameComplementarServiceInterface exameComplementarServiceInterface;
-
-    public ExameComplementar saveExameComplementar(ExameComplementar newInstance) {
-        return exameComplementarServiceInterface.saveExameComplementar(newInstance);
-    }
-
-    public ExameComplementar updateExameComplementar(ExameComplementar transientObject) {
-        return exameComplementarServiceInterface.updateExameComplementar(transientObject);
-    }
-
-    public ExameComplementar findExameComplementarById(long id) {
-        return exameComplementarServiceInterface.findExameComplementarById(id);
-    }
-
-    public List<ExameComplementar> getAllExameComplementar() {
-        return exameComplementarServiceInterface.getAllExameComplementar();
-    }
-
-    public void deleteExameComplementar(ExameComplementar persistentObject) {
-        exameComplementarServiceInterface.deleteExameComplementar(persistentObject);
-    }
-
-    public void deleteExameComplementar(long id) {
-        exameComplementarServiceInterface.deleteExameComplementar(id);
-    }
-
-    // Parecer--------------------------------------------------------------
-    @Autowired
-    private ParecerServiceInterface parecerServiceInterface;
-
-    public Parecer saveParecer(Parecer newInstance) {
-        return parecerServiceInterface.saveParecer(newInstance);
-    }
-
-    public Parecer updateParecer(Parecer transientObject) {
-        return parecerServiceInterface.updateParecer(transientObject);
-    }
-
-    public Parecer findParecerById(long id) {
-        return parecerServiceInterface.findParecerById(id);
-    }
-
-    public List<Parecer> getAllParecer() {
-        return parecerServiceInterface.getAllParecer();
-    }
-
-    public void deleteParecer(Parecer persistentObject) {
-        parecerServiceInterface.deleteParecer(persistentObject);
-    }
-
-    public void deleteParecer(long id) {
-        parecerServiceInterface.deleteParecer(id);
-    }
 
     // Especialidade--------------------------------------------------------------
     @Autowired
@@ -1162,34 +875,6 @@ public class Facade {
         agendamentoServiceInterface.deleteAgendamento(id);
     }
 
-    // TipoLinfonodos--------------------------------------------------------------
-    @Autowired
-    private TipoLinfonodosServiceInterface tipoLinfonodosServiceInterface;
-
-    public TipoLinfonodos saveTipoLinfonodos(TipoLinfonodos newInstance) {
-        return tipoLinfonodosServiceInterface.saveTipoLinfonodos(newInstance);
-    }
-
-    public TipoLinfonodos updateTipoLinfonodos(TipoLinfonodos transientObject) {
-        return tipoLinfonodosServiceInterface.updateTipoLinfonodos(transientObject);
-    }
-
-    public TipoLinfonodos findTipoLinfonodosById(long id) {
-        return tipoLinfonodosServiceInterface.findTipoLinfonodosById(id);
-    }
-
-    public List<TipoLinfonodos> getAllTipoLinfonodos() {
-        return tipoLinfonodosServiceInterface.getAllTipoLinfonodos();
-    }
-
-    public void deleteTipoLinfonodos(TipoLinfonodos persistentObject) {
-        tipoLinfonodosServiceInterface.deleteTipoLinfonodos(persistentObject);
-    }
-
-    public void deleteTipoLinfonodos(long id) {
-        tipoLinfonodosServiceInterface.deleteTipoLinfonodos(id);
-    }
-
     // Endereco--------------------------------------------------------------
     @Autowired
     private EnderecoServiceInterface enderecoServiceInterface;
@@ -1216,62 +901,6 @@ public class Facade {
 
     public void deleteEndereco(long id) {
         enderecoServiceInterface.deleteEndereco(id);
-    }
-
-    // AvaliacaoFisicoEspecial--------------------------------------------------------------
-    @Autowired
-    private AvaliacaoFisicoEspecialServiceInterface avaliacaoFisicoEspecialServiceInterface;
-
-    public AvaliacaoFisicoEspecial saveAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial newInstance) {
-        return avaliacaoFisicoEspecialServiceInterface.saveAvaliacaoFisicoEspecial(newInstance);
-    }
-
-    public AvaliacaoFisicoEspecial updateAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial transientObject) {
-        return avaliacaoFisicoEspecialServiceInterface.updateAvaliacaoFisicoEspecial(transientObject);
-    }
-
-    public AvaliacaoFisicoEspecial findAvaliacaoFisicoEspecialById(long id) {
-        return avaliacaoFisicoEspecialServiceInterface.findAvaliacaoFisicoEspecialById(id);
-    }
-
-    public List<AvaliacaoFisicoEspecial> getAllAvaliacaoFisicoEspecial() {
-        return avaliacaoFisicoEspecialServiceInterface.getAllAvaliacaoFisicoEspecial();
-    }
-
-    public void deleteAvaliacaoFisicoEspecial(AvaliacaoFisicoEspecial persistentObject) {
-        avaliacaoFisicoEspecialServiceInterface.deleteAvaliacaoFisicoEspecial(persistentObject);
-    }
-
-    public void deleteAvaliacaoFisicoEspecial(long id) {
-        avaliacaoFisicoEspecialServiceInterface.deleteAvaliacaoFisicoEspecial(id);
-    }
-
-    // NivelConsciencia--------------------------------------------------------------
-    @Autowired
-    private NivelConscienciaServiceInterface nivelConscienciaServiceInterface;
-
-    public NivelConsciencia saveNivelConsciencia(NivelConsciencia newInstance) {
-        return nivelConscienciaServiceInterface.saveNivelConsciencia(newInstance);
-    }
-
-    public NivelConsciencia updateNivelConsciencia(NivelConsciencia transientObject) {
-        return nivelConscienciaServiceInterface.updateNivelConsciencia(transientObject);
-    }
-
-    public NivelConsciencia findNivelConscienciaById(long id) {
-        return nivelConscienciaServiceInterface.findNivelConscienciaById(id);
-    }
-
-    public List<NivelConsciencia> getAllNivelConsciencia() {
-        return nivelConscienciaServiceInterface.getAllNivelConsciencia();
-    }
-
-    public void deleteNivelConsciencia(NivelConsciencia persistentObject) {
-        nivelConscienciaServiceInterface.deleteNivelConsciencia(persistentObject);
-    }
-
-    public void deleteNivelConsciencia(long id) {
-        nivelConscienciaServiceInterface.deleteNivelConsciencia(id);
     }
 
     // Estagiario--------------------------------------------------------------
@@ -1302,71 +931,9 @@ public class Facade {
         estagiarioServiceInterface.deleteEstagiario(id);
     }
 
-    // TipoPostura--------------------------------------------------------------
-    @Autowired
-    private TipoPosturaServiceInterface tipoPosturaServiceInterface;
-
-    public TipoPostura saveTipoPostura(TipoPostura newInstance) {
-        return tipoPosturaServiceInterface.saveTipoPostura(newInstance);
-    }
-
-    public TipoPostura updateTipoPostura(TipoPostura transientObject) {
-        return tipoPosturaServiceInterface.updateTipoPostura(transientObject);
-    }
-
-    public TipoPostura findTipoPosturaById(long id) {
-        return tipoPosturaServiceInterface.findTipoPosturaById(id);
-    }
-
-    public List<TipoPostura> getAllTipoPostura() {
-        return tipoPosturaServiceInterface.getAllTipoPostura();
-    }
-
-    public void deleteTipoPostura(TipoPostura persistentObject) {
-        tipoPosturaServiceInterface.deleteTipoPostura(persistentObject);
-    }
-
-    public void deleteTipoPostura(long id) {
-        tipoPosturaServiceInterface.deleteTipoPostura(id);
-    }
-
-    // Diretor--------------------------------------------------------------
-    @Autowired
-    private DiretorServiceInterface diretorServiceInterface;
-
-    public Diretor saveDiretor(Diretor newInstance) {
-        return diretorServiceInterface.saveDiretor(newInstance);
-    }
-
-    public Diretor updateDiretor(Diretor transientObject) {
-        return diretorServiceInterface.updateDiretor(transientObject);
-    }
-
-    public Diretor findDiretorById(long id) {
-        return diretorServiceInterface.findDiretorById(id);
-    }
-
-    public Diretor findDiretorByuserId(String userId) {
-        return diretorServiceInterface.findDiretorByuserId(userId);
-    }
-
-    public List<Diretor> getAllDiretor() {
-        return diretorServiceInterface.getAllDiretor();
-    }
-
-    public void deleteDiretor(Diretor persistentObject) {
-        diretorServiceInterface.deleteDiretor(persistentObject);
-    }
-
-    public void deleteDiretor(long id) {
-        diretorServiceInterface.deleteDiretor(id);
-    }
-
     // Animal--------------------------------------------------------------
     @Autowired
     private AnimalServiceInterface animalServiceInterface;
-
-
 
     public Animal saveAnimal(Animal newInstance, String tutor_id) {
         Tutor tutor = findTutorByuserId(tutor_id);
@@ -1457,62 +1024,6 @@ public class Facade {
         especieServiceInterface.deleteEspecie(id);
     }
 
-    // TipoTurgorCutaneo--------------------------------------------------------------
-    @Autowired
-    private TipoTurgorCutaneoServiceInterface tipoTurgorCutaneoServiceInterface;
-
-    public TipoTurgorCutaneo saveTipoTurgorCutaneo(TipoTurgorCutaneo newInstance) {
-        return tipoTurgorCutaneoServiceInterface.saveTipoTurgorCutaneo(newInstance);
-    }
-
-    public TipoTurgorCutaneo updateTipoTurgorCutaneo(TipoTurgorCutaneo transientObject) {
-        return tipoTurgorCutaneoServiceInterface.updateTipoTurgorCutaneo(transientObject);
-    }
-
-    public TipoTurgorCutaneo findTipoTurgorCutaneoById(long id) {
-        return tipoTurgorCutaneoServiceInterface.findTipoTurgorCutaneoById(id);
-    }
-
-    public List<TipoTurgorCutaneo> getAllTipoTurgorCutaneo() {
-        return tipoTurgorCutaneoServiceInterface.getAllTipoTurgorCutaneo();
-    }
-
-    public void deleteTipoTurgorCutaneo(TipoTurgorCutaneo persistentObject) {
-        tipoTurgorCutaneoServiceInterface.deleteTipoTurgorCutaneo(persistentObject);
-    }
-
-    public void deleteTipoTurgorCutaneo(long id) {
-        tipoTurgorCutaneoServiceInterface.deleteTipoTurgorCutaneo(id);
-    }
-
-    // ScoreCorporal--------------------------------------------------------------
-    @Autowired
-    private ScoreCorporalServiceInterface scoreCorporalServiceInterface;
-
-    public ScoreCorporal saveScoreCorporal(ScoreCorporal newInstance) {
-        return scoreCorporalServiceInterface.saveScoreCorporal(newInstance);
-    }
-
-    public ScoreCorporal updateScoreCorporal(ScoreCorporal transientObject) {
-        return scoreCorporalServiceInterface.updateScoreCorporal(transientObject);
-    }
-
-    public ScoreCorporal findScoreCorporalById(long id) {
-        return scoreCorporalServiceInterface.findScoreCorporalById(id);
-    }
-
-    public List<ScoreCorporal> getAllScoreCorporal() {
-        return scoreCorporalServiceInterface.getAllScoreCorporal();
-    }
-
-    public void deleteScoreCorporal(ScoreCorporal persistentObject) {
-        scoreCorporalServiceInterface.deleteScoreCorporal(persistentObject);
-    }
-
-    public void deleteScoreCorporal(long id) {
-        scoreCorporalServiceInterface.deleteScoreCorporal(id);
-    }
-
     // Area--------------------------------------------------------------
     @Autowired
     private AreaServiceInterface areaServiceInterface;
@@ -1595,62 +1106,6 @@ public class Facade {
 
     public void deleteEtapa(long id) {
         etapaServiceInterface.deleteEtapa(id);
-    }
-
-    // ExameMicroscopia--------------------------------------------------------------
-    @Autowired
-    private ExameMicroscopicoServiceInterface exameMicroscopicoServiceInterface;
-
-    public ExameMicroscopico saveExameMicroscopico(ExameMicroscopico newInstance) {
-        return exameMicroscopicoServiceInterface.saveExameMicroscopico(newInstance);
-    }
-
-    public List<ExameMicroscopico> getAllExameMicroscopico() {
-        return exameMicroscopicoServiceInterface.getAllExameMicroscopico();
-    }
-
-    public ExameMicroscopico updateExameMicroscopico(ExameMicroscopico transientObject) {
-        return exameMicroscopicoServiceInterface.updateExameMicroscopico(transientObject);
-    }
-
-    public ExameMicroscopico findExameMicroscopicoById(long id) {
-        return exameMicroscopicoServiceInterface.findExameMicroscopicoById(id);
-    }
-
-    public void deleteExameMicroscopico(long id) {
-        exameMicroscopicoServiceInterface.deleteExameMicroscopico(id);
-    }
-
-    public void deleteExameMicroscopico(ExameMicroscopico persistentObject) {
-        exameMicroscopicoServiceInterface.deleteExameMicroscopico(persistentObject);
-    }
-
-    // Ficha--------------------------------------------------------------
-    @Autowired
-    private FichaServiceInterface fichaServiceInterface;
-
-    public Ficha saveFicha(Ficha newInstance) {
-        return fichaServiceInterface.saveFicha(newInstance);
-    }
-
-    public Ficha updateFicha(Ficha transientObject) {
-        return fichaServiceInterface.updateFicha(transientObject);
-    }
-
-    public Ficha findFichaById(long id) {
-        return fichaServiceInterface.findFichaById(id);
-    }
-
-    public List<Ficha> getAllFicha() {
-        return fichaServiceInterface.getAllFicha();
-    }
-
-    public void deleteFicha(Ficha persistentObject) {
-        fichaServiceInterface.deleteFicha(persistentObject);
-    }
-
-    public void deleteFicha(long id) {
-       fichaServiceInterface.deleteFicha(id);
     }
 
     // FichaSolicitacaoServico--------------------------------------------------------------
@@ -1828,34 +1283,6 @@ public class Facade {
         OrgaoServiceInterface.deleteOrgao(id);
     }
 
-    // Rotina--------------------------------------------------------------
-    @Autowired
-
-    private RotinaServiceInterface RotinaServiceInterface;
-
-    public Rotina saveRotina(Rotina newInstance) {
-        return RotinaServiceInterface.saveRotina(newInstance);
-    }
-
-    public Rotina updateRotina(Rotina transientObject) {
-        return RotinaServiceInterface.updateRotina(transientObject);
-    }
-
-    public Rotina findRotinaById(long id) {
-        return RotinaServiceInterface.findRotinaById(id);
-    }
-
-    public List<Rotina> getAllRotina() {
-        return RotinaServiceInterface.getAllRotina();
-    }
-
-    public void deleteRotina(Rotina persistentObject) {
-        RotinaServiceInterface.deleteRotina(persistentObject);
-    }
-
-    public void deleteRotina(long id) {
-        RotinaServiceInterface.deleteRotina(id);
-    }
 
     // Arquivo --------------------------------------------------------------
 

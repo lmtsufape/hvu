@@ -23,13 +23,8 @@ public  class ConsultaResponse  {
 	private String alteracoesClinicasDiversas;
 	private String suspeitasClinicas;
 	private String alimentacao;
-	private MedicoResponse medico; 
-	private AvaliacaoFisicoEspecialResponse avaliacaoFisicoEspecial; 
-	private ParecerResponse parecer; 
-	private AvaliacaoFisicoGeralResponse avaliacaoFisicoGeral; 
-	private List<PrescricaoResponse> prescricao; 
-	private List<EstagiarioResponse> estagiario; 
-	private List<ExameComplementarResponse> exameComplementar; 
+	private MedicoResponse medico;
+	private List<EstagiarioResponse> estagiario;
 	private boolean proximaConsulta;
 	private EspecialidadeResponse encaminhamento;
 	private AnimalResponse animal;

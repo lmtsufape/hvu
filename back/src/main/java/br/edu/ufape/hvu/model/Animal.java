@@ -39,8 +39,5 @@ public  class Animal  {
 	private String numeroFicha;
 	@ManyToOne
 	@ToString.Exclude
-	private Raca raca; 
-	@OneToOne
-	@ToString.Exclude
-	private HistoricoMedicoPregresso historicoMedicoPregresso;
+	private Raca raca;
 }

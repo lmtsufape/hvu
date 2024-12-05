@@ -46,28 +46,11 @@ public  class Consulta  {
 	private Medico medico; 
 	@ManyToOne
 	@ToString.Exclude
-	private Especialidade encaminhamento; 
-	@OneToOne
-	@ToString.Exclude
-	private AvaliacaoFisicoEspecial avaliacaoFisicoEspecial; 
-	@OneToOne
-	@ToString.Exclude
-	private Parecer parecer; 
-	@OneToOne
-	@ToString.Exclude
-	private AvaliacaoFisicoGeral avaliacaoFisicoGeral; 
-	@OneToMany
-	@JoinColumn(name = "consulta_id")
-	@ToString.Exclude
-	private List<Prescricao> prescricao; 
+	private Especialidade encaminhamento;
 	@ManyToMany
 	@JoinColumn(name = "consulta_id")
 	@ToString.Exclude
-	private List<Estagiario> estagiario; 
-	@OneToMany
-	@JoinColumn(name = "consulta_id")
-	@ToString.Exclude
-	private List<ExameComplementar> exameComplementar;
+	private List<Estagiario> estagiario;
 	@ManyToOne
 	@ToString.Exclude
 	private Animal animal;

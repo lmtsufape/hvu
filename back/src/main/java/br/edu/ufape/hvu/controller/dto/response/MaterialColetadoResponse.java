@@ -15,7 +15,6 @@ public  class MaterialColetadoResponse  {
 	private Long id;
 	private String codigo;
 	private String nome;
-	private ExameMicroscopicoResponse exameMicroscopico; 
 	private OrgaoResponse orgao; 
 
 

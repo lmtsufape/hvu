@@ -20,8 +20,7 @@ public  class AnimalRequest  {
 	private String imagem;
 	private boolean castrado;
 	private double peso;
-	private RacaRequest raca; 
-	private HistoricoMedicoPregressoRequest historicoMedicoPregresso;
+	private RacaRequest raca;
 	private long id;
 	private String numeroFicha;
 

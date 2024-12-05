@@ -23,8 +23,7 @@ public  class AnimalResponse  {
 	private boolean castrado;
 	private double peso;
 	private String numeroFicha;
-	private RacaResponse raca; 
-	private HistoricoMedicoPregressoResponse historicoMedicoPregresso; 
+	private RacaResponse raca;
 
 
 
