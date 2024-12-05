@@ -963,34 +963,6 @@ public class Facade {
         enderecoServiceInterface.deleteEndereco(id);
     }
 
-    // NivelConsciencia--------------------------------------------------------------
-    @Autowired
-    private NivelConscienciaServiceInterface nivelConscienciaServiceInterface;
-
-    public NivelConsciencia saveNivelConsciencia(NivelConsciencia newInstance) {
-        return nivelConscienciaServiceInterface.saveNivelConsciencia(newInstance);
-    }
-
-    public NivelConsciencia updateNivelConsciencia(NivelConsciencia transientObject) {
-        return nivelConscienciaServiceInterface.updateNivelConsciencia(transientObject);
-    }
-
-    public NivelConsciencia findNivelConscienciaById(long id) {
-        return nivelConscienciaServiceInterface.findNivelConscienciaById(id);
-    }
-
-    public List<NivelConsciencia> getAllNivelConsciencia() {
-        return nivelConscienciaServiceInterface.getAllNivelConsciencia();
-    }
-
-    public void deleteNivelConsciencia(NivelConsciencia persistentObject) {
-        nivelConscienciaServiceInterface.deleteNivelConsciencia(persistentObject);
-    }
-
-    public void deleteNivelConsciencia(long id) {
-        nivelConscienciaServiceInterface.deleteNivelConsciencia(id);
-    }
-
     // Estagiario--------------------------------------------------------------
     @Autowired
     private EstagiarioServiceInterface estagiarioServiceInterface;
