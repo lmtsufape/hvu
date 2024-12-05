@@ -720,33 +720,6 @@ public class Facade {
         consultaServiceInterface.deleteConsulta(id);
     }
 
-    // Parecer--------------------------------------------------------------
-    @Autowired
-    private ParecerServiceInterface parecerServiceInterface;
-
-    public Parecer saveParecer(Parecer newInstance) {
-        return parecerServiceInterface.saveParecer(newInstance);
-    }
-
-    public Parecer updateParecer(Parecer transientObject) {
-        return parecerServiceInterface.updateParecer(transientObject);
-    }
-
-    public Parecer findParecerById(long id) {
-        return parecerServiceInterface.findParecerById(id);
-    }
-
-    public List<Parecer> getAllParecer() {
-        return parecerServiceInterface.getAllParecer();
-    }
-
-    public void deleteParecer(Parecer persistentObject) {
-        parecerServiceInterface.deleteParecer(persistentObject);
-    }
-
-    public void deleteParecer(long id) {
-        parecerServiceInterface.deleteParecer(id);
-    }
 
     // Especialidade--------------------------------------------------------------
     @Autowired

@@ -47,9 +47,6 @@ public  class Consulta  {
 	@ManyToOne
 	@ToString.Exclude
 	private Especialidade encaminhamento;
-	@OneToOne
-	@ToString.Exclude
-	private Parecer parecer;
 	@OneToMany
 	@JoinColumn(name = "consulta_id")
 	@ToString.Exclude
