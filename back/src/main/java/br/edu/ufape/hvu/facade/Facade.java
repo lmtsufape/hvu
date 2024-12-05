@@ -116,34 +116,6 @@ public class Facade {
         }
     }
 
-    // NivelHidratacao--------------------------------------------------------------
-    @Autowired
-    private NivelHidratacaoServiceInterface nivelHidratacaoServiceInterface;
-
-    public NivelHidratacao saveNivelHidratacao(NivelHidratacao newInstance) {
-        return nivelHidratacaoServiceInterface.saveNivelHidratacao(newInstance);
-    }
-
-    public NivelHidratacao updateNivelHidratacao(NivelHidratacao transientObject) {
-        return nivelHidratacaoServiceInterface.updateNivelHidratacao(transientObject);
-    }
-
-    public NivelHidratacao findNivelHidratacaoById(long id) {
-        return nivelHidratacaoServiceInterface.findNivelHidratacaoById(id);
-    }
-
-    public List<NivelHidratacao> getAllNivelHidratacao() {
-        return nivelHidratacaoServiceInterface.getAllNivelHidratacao();
-    }
-
-    public void deleteNivelHidratacao(NivelHidratacao persistentObject) {
-        nivelHidratacaoServiceInterface.deleteNivelHidratacao(persistentObject);
-    }
-
-    public void deleteNivelHidratacao(long id) {
-        nivelHidratacaoServiceInterface.deleteNivelHidratacao(id);
-    }
-
     // Cancelamento--------------------------------------------------------------
     @Autowired
     private CancelamentoServiceInterface cancelamentoServiceInterface;
