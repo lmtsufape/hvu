@@ -641,7 +641,7 @@ public class Facade {
         }
         return detalheBuilder.toString().trim();
     }
-    
+
 
     // Consulta--------------------------------------------------------------
     @Autowired
@@ -1287,34 +1287,6 @@ public class Facade {
         OrgaoServiceInterface.deleteOrgao(id);
     }
 
-    // Rotina--------------------------------------------------------------
-    @Autowired
-
-    private RotinaServiceInterface RotinaServiceInterface;
-
-    public Rotina saveRotina(Rotina newInstance) {
-        return RotinaServiceInterface.saveRotina(newInstance);
-    }
-
-    public Rotina updateRotina(Rotina transientObject) {
-        return RotinaServiceInterface.updateRotina(transientObject);
-    }
-
-    public Rotina findRotinaById(long id) {
-        return RotinaServiceInterface.findRotinaById(id);
-    }
-
-    public List<Rotina> getAllRotina() {
-        return RotinaServiceInterface.getAllRotina();
-    }
-
-    public void deleteRotina(Rotina persistentObject) {
-        RotinaServiceInterface.deleteRotina(persistentObject);
-    }
-
-    public void deleteRotina(long id) {
-        RotinaServiceInterface.deleteRotina(id);
-    }
 
     // Arquivo --------------------------------------------------------------
 
