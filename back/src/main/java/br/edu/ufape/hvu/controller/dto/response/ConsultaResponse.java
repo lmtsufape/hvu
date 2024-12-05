@@ -24,7 +24,6 @@ public  class ConsultaResponse  {
 	private String suspeitasClinicas;
 	private String alimentacao;
 	private MedicoResponse medico;
-	private List<PrescricaoResponse> prescricao; 
 	private List<EstagiarioResponse> estagiario;
 	private boolean proximaConsulta;
 	private EspecialidadeResponse encaminhamento;

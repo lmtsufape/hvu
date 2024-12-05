@@ -24,7 +24,6 @@ public  class ConsultaRequest  {
 	private String alimentacao;
 	private MedicoRequest medico;
 	private EspecialidadeRequest encaminhamento;
-	private List<PrescricaoRequest> prescricao; 
 	private List<EstagiarioRequest> estagiario;
 	private long id;
 	private boolean proximaConsulta;

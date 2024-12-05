@@ -47,10 +47,6 @@ public  class Consulta  {
 	@ManyToOne
 	@ToString.Exclude
 	private Especialidade encaminhamento;
-	@OneToMany
-	@JoinColumn(name = "consulta_id")
-	@ToString.Exclude
-	private List<Prescricao> prescricao; 
 	@ManyToMany
 	@JoinColumn(name = "consulta_id")
 	@ToString.Exclude

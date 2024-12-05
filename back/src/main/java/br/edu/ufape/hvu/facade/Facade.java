@@ -641,36 +641,7 @@ public class Facade {
         }
         return detalheBuilder.toString().trim();
     }
-
-    // Prescricao--------------------------------------------------------------
-    @Autowired
-    private PrescricaoServiceInterface prescricaoServiceInterface;
-
-    public Prescricao savePrescricao(Prescricao newInstance) {
-        return prescricaoServiceInterface.savePrescricao(newInstance);
-    }
-
-    public Prescricao updatePrescricao(Prescricao transientObject) {
-        return prescricaoServiceInterface.updatePrescricao(transientObject);
-    }
-
-    public Prescricao findPrescricaoById(long id) {
-        return prescricaoServiceInterface.findPrescricaoById(id);
-    }
-
-    public List<Prescricao> getAllPrescricao() {
-        return prescricaoServiceInterface.getAllPrescricao();
-    }
-
-    public void deletePrescricao(Prescricao persistentObject) {
-        prescricaoServiceInterface.deletePrescricao(persistentObject);
-    }
-
-    public void deletePrescricao(long id) {
-        prescricaoServiceInterface.deletePrescricao(id);
-    }
-
-
+    
 
     // Consulta--------------------------------------------------------------
     @Autowired
