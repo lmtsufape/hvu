@@ -17,7 +17,6 @@ public  class PrescricaoResponse  {
 	private String frequencia;
 	private String periodo;
 	private String observacoes;
-	private MedicamentoResponse medicamento; 
 
 
 

@@ -670,37 +670,6 @@ public class Facade {
         return detalheBuilder.toString().trim();
     }
 
-
-
-
-    // Medicamento--------------------------------------------------------------
-    @Autowired
-    private MedicamentoServiceInterface medicamentoServiceInterface;
-
-    public Medicamento saveMedicamento(Medicamento newInstance) {
-        return medicamentoServiceInterface.saveMedicamento(newInstance);
-    }
-
-    public Medicamento updateMedicamento(Medicamento transientObject) {
-        return medicamentoServiceInterface.updateMedicamento(transientObject);
-    }
-
-    public Medicamento findMedicamentoById(long id) {
-        return medicamentoServiceInterface.findMedicamentoById(id);
-    }
-
-    public List<Medicamento> getAllMedicamento() {
-        return medicamentoServiceInterface.getAllMedicamento();
-    }
-
-    public void deleteMedicamento(Medicamento persistentObject) {
-        medicamentoServiceInterface.deleteMedicamento(persistentObject);
-    }
-
-    public void deleteMedicamento(long id) {
-        medicamentoServiceInterface.deleteMedicamento(id);
-    }
-
     // Prescricao--------------------------------------------------------------
     @Autowired
     private PrescricaoServiceInterface prescricaoServiceInterface;

@@ -15,7 +15,6 @@ public  class PrescricaoRequest  {
 	private String frequencia;
 	private String periodo;
 	private String observacoes;
-	private MedicamentoRequest medicamento;
 	private long id;
 
 

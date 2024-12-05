@@ -30,8 +30,5 @@ public  class Prescricao  {
 	private String frequencia;
 	private String periodo;
 	private String observacoes;
-	@ManyToOne
-	@ToString.Exclude
-	private Medicamento medicamento; 
 
 }

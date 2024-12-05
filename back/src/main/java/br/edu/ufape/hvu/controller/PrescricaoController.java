@@ -54,11 +54,6 @@ public class PrescricaoController {
 			//Prescricao o = obj.convertToEntity();
 			Prescricao oldObject = facade.findPrescricaoById(id);
 
-			if (obj.getMedicamento() != null) {
-				oldObject.setMedicamento(facade.findMedicamentoById(obj.getMedicamento().getId()));
-				obj.setMedicamento(null);
-			}
-
 			TypeMap<PrescricaoRequest, Prescricao> typeMapper = modelMapper
 													.typeMap(PrescricaoRequest.class, Prescricao.class)
 													.addMappings(mapper -> mapper.skip(Prescricao::setId));			

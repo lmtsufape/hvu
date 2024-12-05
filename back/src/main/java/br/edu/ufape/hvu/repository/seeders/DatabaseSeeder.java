@@ -11,7 +11,6 @@ public class DatabaseSeeder {
     final private AgendamentoSeeder agendamentoSeeder;
     final private AnimalSeeder animalSeeder;
     final private EspecialidadeSeeder especialidadeSeeder;
-    final private MedicamentoSeeder medicamentoSeeder;
     final private VagaSeeder vagaSeeder;
     private final UsuarioSeeder usuarioSeeder;
     private final InstituicaoSeeder instituicaoSeeder;
@@ -47,7 +46,6 @@ public class DatabaseSeeder {
         tutorSeeder.init();
         agendamentoSeeder.init();
         vagaSeeder.init();
-        medicamentoSeeder.init();
         areaSeeder.init();
         consultaSeeder.init();
         cronogramaSeeder.init();
