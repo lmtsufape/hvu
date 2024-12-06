@@ -17,19 +17,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 public  class ConsultaRequest  {
 	private Double pesoAtual;
 	private Double idadeAtual;
-	private String queixaPrincipal;
-	private boolean tipoConsulta;
-	private String alteracoesClinicasDiversas;
-	private String suspeitasClinicas;
-	private String alimentacao;
 	private MedicoRequest medico;
-	private EspecialidadeRequest encaminhamento;
 	private List<EstagiarioRequest> estagiario;
 	private long id;
 	private boolean proximaConsulta;
+	private boolean tipo;
 	private AnimalRequest animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
+	private FichaRequest ficha;
 
 
 	public Consulta convertToEntity() {
