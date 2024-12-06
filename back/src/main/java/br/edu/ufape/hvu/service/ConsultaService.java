@@ -12,7 +12,6 @@ public class ConsultaService implements ConsultaServiceInterface {
 	@Autowired
 	private ConsultaRepository repository;
 
-
 	public Consulta saveConsulta(Consulta newInstance) {
 		return repository.save(newInstance);
 	}
