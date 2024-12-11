@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.edu.ufape.hvu.model.enums.TipoFicha;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -20,6 +21,7 @@ public  class ConsultaResponse  {
 	private Double idadeAtual;
 	private boolean tipoConsulta;
 	private MedicoResponse medico;
+	private TipoFicha tipoFicha;
 	private List<EstagiarioResponse> estagiario;
 	private boolean proximaConsulta;
 	private AnimalResponse animal;

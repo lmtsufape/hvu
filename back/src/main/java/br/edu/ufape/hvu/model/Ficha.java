@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import br.edu.ufape.hvu.model.enums.TipoFicha;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +29,5 @@ public class Ficha {
     private String nome;
     private String conteudo;
     private LocalDateTime dataHora;
-    private TipoFicha tipoFicha;
 
 }

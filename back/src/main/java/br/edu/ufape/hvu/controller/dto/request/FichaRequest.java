@@ -18,7 +18,6 @@ public  class FichaRequest  {
     private String nome;
     private String conteudo;
     private LocalDateTime dataHora;
-    private TipoFicha tipoFicha;
 
 
     public Ficha convertToEntity() {

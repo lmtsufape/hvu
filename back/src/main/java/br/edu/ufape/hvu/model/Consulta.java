@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
+import br.edu.ufape.hvu.model.enums.TipoFicha;
 
 
 @Entity
@@ -37,6 +38,7 @@ public  class Consulta  {
 	private Double idadeAtual;
 	private boolean tipo;
 	private boolean proximaConsulta;
+	private TipoFicha tipoFicha;
 	@ManyToOne
 	@ToString.Exclude
 	private Medico medico;
