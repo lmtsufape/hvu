@@ -23,7 +23,6 @@ public  class ConsultaRequest  {
 	private List<EstagiarioRequest> estagiario;
 	private long id;
 	private boolean proximaConsulta;
-	private boolean tipo;
 	private AnimalRequest animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;

@@ -36,7 +36,6 @@ public  class Consulta  {
 	private long id;
 	private Double pesoAtual;
 	private Double idadeAtual;
-	private boolean tipo;
 	private boolean proximaConsulta;
 	private TipoFicha tipoFicha;
 	@ManyToOne

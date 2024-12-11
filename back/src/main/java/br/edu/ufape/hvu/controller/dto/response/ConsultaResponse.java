@@ -19,7 +19,6 @@ public  class ConsultaResponse  {
 	private Long id;
 	private Double pesoAtual;
 	private Double idadeAtual;
-	private boolean tipoConsulta;
 	private MedicoResponse medico;
 	private TipoFicha tipoFicha;
 	private List<EstagiarioResponse> estagiario;
