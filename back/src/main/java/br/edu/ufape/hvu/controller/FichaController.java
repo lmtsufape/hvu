@@ -20,14 +20,14 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 public class FichaController {
     @Autowired
     private Facade facade;
     @Autowired
     private ModelMapper modelMapper;
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
+
     @GetMapping("ficha")
     public List<FichaResponse> getAllFicha() {
         return facade.getAllFicha()
@@ -36,14 +36,14 @@ public class FichaController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
-    @PostMapping("Ficha")
+
+    @PostMapping("ficha")
     public FichaResponse createFicha(@Valid @RequestBody FichaRequest newObj) {
         return new FichaResponse(facade.saveFicha(newObj.convertToEntity()));
     }
 
-    @PreAuthorize("hasAnyRole('TUTOR','SECRETARIO','MEDICO' )")
-    @GetMapping("Ficha/{id}")
+
+    @GetMapping("ficha/{id}")
     public FichaResponse getFichaById(@PathVariable Long id) {
         try {
             return new FichaResponse(facade.findFichaById(id));
@@ -52,8 +52,8 @@ public class FichaController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
-    @PatchMapping("Ficha/{id}")
+
+    @PatchMapping("ficha/{id}")
     public FichaResponse updateFicha(@PathVariable Long id, @Valid @RequestBody FichaRequest obj) {
         try {
             //Ficha o = obj.convertToEntity();
@@ -72,8 +72,8 @@ public class FichaController {
 
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
-    @DeleteMapping("Ficha/{id}")
+
+    @DeleteMapping("ficha/{id}")
     public String deleteFicha(@PathVariable Long id) {
         try {
             facade.deleteFicha(id);

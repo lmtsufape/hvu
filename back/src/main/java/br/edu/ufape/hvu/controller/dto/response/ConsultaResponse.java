@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.edu.ufape.hvu.model.enums.TipoFicha;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -18,16 +19,12 @@ public  class ConsultaResponse  {
 	private Long id;
 	private Double pesoAtual;
 	private Double idadeAtual;
-	private String queixaPrincipal;
-	private boolean tipoConsulta;
-	private String alteracoesClinicasDiversas;
-	private String suspeitasClinicas;
-	private String alimentacao;
 	private MedicoResponse medico;
+	private TipoFicha tipoFicha;
 	private List<EstagiarioResponse> estagiario;
 	private boolean proximaConsulta;
-	private EspecialidadeResponse encaminhamento;
 	private AnimalResponse animal;
+	private FichaResponse ficha;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
 
