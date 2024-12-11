@@ -200,8 +200,6 @@ public class KeycloakService implements KeycloakServiceInterface {
         keycloak.realm(realm).users().get(userId).remove();
     }
 
-
-
     @Override
     public String getUserId(String username) {
         List<UserRepresentation> user = keycloak.realm(realm).users().search(username, true);
@@ -231,6 +229,34 @@ public class KeycloakService implements KeycloakServiceInterface {
             return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("medico"));
         } catch (Exception e) {
             throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de medico.", e);
+        }
+    }
+
+
+    //Esquecer senha
+    public void sendResetPasswordEmail(String email) throws KeycloakAuthenticationException {
+        try {
+            // Busca o usuário pelo email
+            List<UserRepresentation> users = keycloak.realm(realm).users().search(null, null, null, email, null, null);
+
+            if (users == null || users.isEmpty()) {
+                throw new KeycloakAuthenticationException("Usuário com email " + email + " não encontrado.");
+            }
+
+            UserRepresentation user = users.get(0);
+            String userId = user.getId();
+
+            // Configura a ação de redefinição de senha
+            List<String> actions = Collections.singletonList("UPDATE_PASSWORD");
+            keycloak.realm(realm).users().get(userId).executeActionsEmail(actions);
+
+            // Log de sucesso
+            System.out.println("E-mail de redefinição de senha enviado com sucesso para o usuário: " + email);
+
+        } catch (KeycloakAuthenticationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao processar a solicitação de redefinição de senha.", e);
         }
     }
 }

@@ -46,6 +46,9 @@ public class Facade {
         return keycloakService.refreshToken(refreshToken);
     }
 
+    public void forgetPassword(String email) {keycloakService.sendResetPasswordEmail(email);}
+
+
     // Ficha--------------------------------------------------------------
     @Autowired
     private FichaServiceInterface fichaServiceInterface;
