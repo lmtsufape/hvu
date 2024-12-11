@@ -20,7 +20,7 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 public class FichaController {
     @Autowired
     private Facade facade;
@@ -28,7 +28,9 @@ public class FichaController {
     private ModelMapper modelMapper;
 
     @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
-    @GetMapping("ficha")
+    @GetMapping("" +
+            "" +
+            "")
     public List<FichaResponse> getAllFicha() {
         return facade.getAllFicha()
                 .stream()
@@ -37,7 +39,7 @@ public class FichaController {
     }
 
     @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
-    @PostMapping("Ficha")
+    @PostMapping("ficha")
     public FichaResponse createFicha(@Valid @RequestBody FichaRequest newObj) {
         return new FichaResponse(facade.saveFicha(newObj.convertToEntity()));
     }

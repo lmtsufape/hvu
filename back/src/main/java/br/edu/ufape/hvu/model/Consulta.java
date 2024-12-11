@@ -49,7 +49,7 @@ public  class Consulta  {
 	@ManyToOne
 	@ToString.Exclude
 	private Animal animal;
-	@ManyToOne
+	@OneToOne
 	@ToString.Exclude
 	private Ficha ficha;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
