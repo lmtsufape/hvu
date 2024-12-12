@@ -24,7 +24,6 @@ public class ConsultaSeeder {
         Consulta consulta = new Consulta();
         consulta.setPesoAtual(faker.number().randomDouble(2, 1, 100));
         consulta.setIdadeAtual((double) faker.number().numberBetween(1, 20));
-        consulta.setTipo(faker.bool().bool());
         consulta.setMedico(medicos.get(0));
 
         consultaRepository.save(consulta);

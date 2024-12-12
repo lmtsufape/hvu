@@ -27,7 +27,7 @@ public class FichaController {
     @Autowired
     private ModelMapper modelMapper;
 
-
+    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
     @GetMapping("ficha")
     public List<FichaResponse> getAllFicha() {
         return facade.getAllFicha()
@@ -36,13 +36,13 @@ public class FichaController {
                 .toList();
     }
 
-
+    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
     @PostMapping("ficha")
     public FichaResponse createFicha(@Valid @RequestBody FichaRequest newObj) {
         return new FichaResponse(facade.saveFicha(newObj.convertToEntity()));
     }
 
-
+    @PreAuthorize("hasAnyRole('TUTOR','SECRETARIO','MEDICO' )")
     @GetMapping("ficha/{id}")
     public FichaResponse getFichaById(@PathVariable Long id) {
         try {
@@ -52,7 +52,7 @@ public class FichaController {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
     @PatchMapping("ficha/{id}")
     public FichaResponse updateFicha(@PathVariable Long id, @Valid @RequestBody FichaRequest obj) {
         try {
@@ -72,7 +72,7 @@ public class FichaController {
 
     }
 
-
+    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
     @DeleteMapping("ficha/{id}")
     public String deleteFicha(@PathVariable Long id) {
         try {
