@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
+import br.edu.ufape.hvu.model.enums.TipoFicha;
 
 
 @Entity
@@ -35,18 +36,11 @@ public  class Consulta  {
 	private long id;
 	private Double pesoAtual;
 	private Double idadeAtual;
-	private String queixaPrincipal;
-	private boolean tipo;
-	private String alteracoesClinicasDiversas;
-	private String suspeitasClinicas;
-	private String alimentacao;
 	private boolean proximaConsulta;
+	private TipoFicha tipoFicha;
 	@ManyToOne
 	@ToString.Exclude
-	private Medico medico; 
-	@ManyToOne
-	@ToString.Exclude
-	private Especialidade encaminhamento;
+	private Medico medico;
 	@ManyToMany
 	@JoinColumn(name = "consulta_id")
 	@ToString.Exclude
@@ -54,6 +48,9 @@ public  class Consulta  {
 	@ManyToOne
 	@ToString.Exclude
 	private Animal animal;
+	@OneToOne
+	@ToString.Exclude
+	private Ficha ficha;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
 }

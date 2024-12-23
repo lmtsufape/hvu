@@ -18,7 +18,6 @@ public  class FichaResponse  {
     private String nome;
     private String conteudo;
     private LocalDateTime dataHora;
-    private TipoFicha tipoFicha;
 
 
     public FichaResponse(Ficha obj) {
