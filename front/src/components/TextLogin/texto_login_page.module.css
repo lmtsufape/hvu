@@ -37,24 +37,27 @@
 @media only screen and (max-width: 700px) {
     
     .texto_box {
-        width: 90%; /* Ajusta a largura para 90% da tela */
-        height: auto; /* Ajusta a altura automaticamente */
-        padding: 0 10px; /* Adiciona padding para espaçamento */
+        width: 100%; 
+        height: auto; 
+        padding: 10px; 
+        margin: 0 auto;
     }
 
     .titulo {
-        width: 100%; /* Ajusta a largura para 100% da div pai */
-        font-size: 24px; /* Ajusta o tamanho da fonte */
-        line-height: 36px; /* Ajusta a altura da linha */
-        margin-left: 0; /* Remove a margem esquerda */
-        margin-right: 0;
+        width: 100%;
+        font-size: 25px;
+        line-height: 32px; 
+        text-align: center;
+        margin: 1em auto; 
+        height: auto;
     }
 
     .paragrafo {
-        width: 100%; /* Ajusta a largura para 100% da div pai*/
-        font-size: 15px; /* Ajusta o tamanho da fonte */
-        line-height: 22px; /* Ajusta a altura da linha */
-        margin-left: 0; /* Remove a margem esquerda */
-        margin-right: 0;
+        width: 90%; 
+        font-size: 14px; 
+        line-height: 22px; 
+        text-align: center; 
+        margin: auto; 
     }
+    
 }
