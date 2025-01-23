@@ -17,3 +17,34 @@
   display: flex;
   flex-direction: column;
 }
+
+
+@media (max-width: 700px) {
+
+  .flexStyles {
+    width: 100%;
+    max-width: 600px;  
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+
+.divPai {
+  display: block;  
+  width: 100%;
+  max-width: 100vw;
+  padding: 0;
+  margin: 0 auto; 
+  box-sizing: border-box;
+  overflow-x: hidden; 
+}
+
+
+  .container {
+    max-width: 390px; 
+    margin: 0 auto;
+}
+
+}
