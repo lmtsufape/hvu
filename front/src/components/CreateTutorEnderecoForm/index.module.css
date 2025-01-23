@@ -55,3 +55,45 @@
 .criar_button:hover {
   background-color: #39805fe6;
 }
+
+@media (max-width: 700px) {
+  
+  .container {
+    width: 100%; /* Ajusta a largura para ocupar mais espaço em dispositivos menores */
+    margin: 10px auto; /* Reduz as margens */
+    min-height: 100vh;
+    margin-top: -3rem;
+    
+  }
+
+  .container h1 {
+    font-size: 20px; /* Reduz o tamanho da fonte */
+    line-height: 10rem; /* Ajusta a altura da linha */
+    margin-top: -6rem; /* Reduz o espaço superior */
+  }
+
+  .form_box {
+    border-radius: 15px; /* Diminui os cantos arredondados */
+    min-height: auto; /* Ajusta a altura automaticamente */
+    padding: 2px; /* Adiciona espaçamento interno */
+    margin-top: -3rem;
+    
+  }
+
+  .box_button {
+    flex-direction: column; /* Empilha os botões verticalmente */
+    justify-content: center; /* Centraliza os botões */
+    align-items: center; /* Alinha os botões ao centro */
+    gap: 16px; /* Reduz o espaço entre os botões */
+    margin: 20px auto; /* Centraliza os botões e ajusta as margens */
+    float: none; /* Remove o float */
+  }
+
+  .criar_button {
+    width: 100%; /* Faz o botão ocupar toda a largura */
+    max-width: 180px; /* Define um limite de largura */
+    height: 50px; /* Reduz a altura */
+    font-size: 14px; /* Reduz o tamanho da fonte */
+  }
+  
+}
