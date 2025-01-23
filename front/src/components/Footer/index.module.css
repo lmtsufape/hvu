@@ -14,15 +14,16 @@
     position: relative;
 
     @media screen and (max-width: 700px) {
-        justify-content:center;
-        width: 135%;
-        height: 15em;
+        margin-top: auto;
+        width: 100%;
+        height: 10em;
         display: flex;
         align-items: center;
         flex-direction: 1;
-    
+        transform: scale(1.0);
+        
         bottom: 0;
-        position: relative;
+        position: auto;
 
     
         .logohvu{
@@ -39,9 +40,6 @@
 }
 .logohvu{
     align-items: center;
-}
-.logosufapelmts{
-
 }
 .redessociais{
     gap: 1em;
