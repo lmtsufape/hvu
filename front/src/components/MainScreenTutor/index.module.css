@@ -58,3 +58,31 @@
     letter-spacing: 0em;
     text-align: center;
 }
+
+@media only screen and (max-width: 700px) {
+    .box_button{
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .button{
+        width: 90%;
+        height: 180px;
+        transform: scale(0.9);
+    }
+
+    .button h6{
+        font-size: 18px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .message{
+        font-size: 18px;
+        line-height: 28px;
+        margin-top: 40px;
+        padding: 0 20px;
+    }
+    
+}
