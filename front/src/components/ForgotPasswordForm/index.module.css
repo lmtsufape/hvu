@@ -72,3 +72,11 @@
 .button:hover {
 	background-color: #5b977b;
 }
+
+.message {
+	margin-top: 10px; 
+	color: #333; 
+	font-size: 16px; 
+	position: absolute;
+  }
+  
