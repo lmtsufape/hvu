@@ -3,7 +3,6 @@ package br.edu.ufape.hvu.controller.dto.request;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import br.edu.ufape.hvu.model.enums.TipoFicha;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -18,7 +17,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 public  class ConsultaRequest  {
 	private Double pesoAtual;
 	private Double idadeAtual;
-	private TipoFicha tipoFicha;
 	private MedicoRequest medico;
 	private List<EstagiarioRequest> estagiario;
 	private long id;
@@ -26,7 +24,12 @@ public  class ConsultaRequest  {
 	private AnimalRequest animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	private FichaRequest ficha;
+	private String queixaPrincipal;
+	private boolean tipoConsulta;
+	private String alteracoesClinicasDiversas;
+	private String suspeitasClinicas;
+	private String alimentacao;
+	private EspecialidadeRequest encaminhamento;
 
 
 	public Consulta convertToEntity() {

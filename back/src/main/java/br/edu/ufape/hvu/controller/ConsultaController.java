@@ -88,10 +88,10 @@ public class ConsultaController {
 				obj.setAnimal(null);
 			}
 
-			// ficha
-			if (obj.getFicha() != null) {
-				oldObject.setFicha(facade.findFichaById(obj.getFicha().getId()));
-				obj.setAnimal(null);
+			// Especialidade
+			if (obj.getEncaminhamento() != null) {
+				oldObject.setEncaminhamento(facade.findEspecialidadeById( obj.getEncaminhamento().getId()));
+				obj.setEncaminhamento(null);
 			}
 
 			TypeMap<ConsultaRequest, Consulta> typeMapper = modelMapper
