@@ -1,6 +1,7 @@
 import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import React, { useState, useEffect } from "react";
+import { ForgotPassword } from "../../../services/forgotPasswordService";
 
 function ForgotPasswordForm() {
 
@@ -21,25 +22,13 @@ function ForgotPasswordForm() {
 		}
 
 		try {
-			const response = await fetch("https://gestaohvuback.ufape.edu.br/api/v1/auth/forgot-password", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ email }),
-			});
-
-			if (response.ok) {
-				setMessage("Link de recuperação enviado para o seu email.");
-			} else {
-				const errorData = await response.json();
-				setMessage(errorData.message || "Erro ao enviar o link. Tente novamente.");
-			}
-		} catch (error) {
-			setMessage("Erro ao conectar ao servidor. Tente novamente mais tarde.");
+			await ForgotPassword(email);
+			setMessage("Link de recuperação enviado para o seu email.");
+		}catch (error) {
+			setMessage(error.message || "Erro ao enviar o link. Tente novamente.");
 		}finally {
-		setLoading(false);
-	  }
+			setLoading(false);
+		}
 	};
 
 
