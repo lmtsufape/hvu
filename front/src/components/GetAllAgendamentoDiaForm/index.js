@@ -36,10 +36,27 @@ function GetAllAgendamentosDiaForm() {
   }, []);
 
   const fetchData = async () => {
-    const dataFormatada = dataSelecionada.toISOString().slice(0, 10); // Obtém 'yyyy-mm-dd'
+    const dataFormatada = dataSelecionada.toISOString().slice(0, 10);
     try {
       const VagasData = await getVagaByDate(dataFormatada);
       setVagas(VagasData);
+      // Para cada vaga, buscar o tutor do animal associado
+      const vagasComTutor = await Promise.all(
+        VagasData.map(async (vaga) => {
+          if (vaga.agendamento?.animal?.id) {
+            try {
+              const tutorData = await getTutorByAnimal(vaga.agendamento.animal.id);
+              return { ...vaga, tutorCPF: tutorData?.cpf || "N/A" }; // Adiciona CPF ao objeto da vaga
+            } catch (error) {
+              console.error("Erro ao obter tutor:", error);
+              return { ...vaga, tutorCPF: "N/A" }; // Evita erros caso a API falhe
+            }
+          }
+          return { ...vaga, tutorCPF: "N/A" };
+        })
+      );
+  
+      setVagas(vagasComTutor);
     } catch (error) {
       console.error("Erro ao buscar vagas:", error);
     }
@@ -204,8 +221,10 @@ function GetAllAgendamentosDiaForm() {
                                     <div className={styles.info1}>
                                       {vaga.agendamento?.animal ? (
                                         <>
-                                          {vaga.agendamento?.animal.nome} &bull;{" "}
-                                          {vaga.tipoConsulta?.tipo}
+                                          {vaga.agendamento?.animal.nome} &bull; {vaga.tipoConsulta?.tipo}
+                                          <span className={styles.cpfTutor}>
+                                            • CPF: {vaga.tutorCPF}
+                                          </span>
                                         </>
                                       ) : (
                                         <>{vaga.medico?.nome}</>
