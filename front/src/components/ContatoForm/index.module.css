@@ -76,8 +76,8 @@
         font-size: 14px;
         line-height: 24px;
         text-align: justify;
-        width: 95%;
-        padding: 0;
+        width: 80%;
+        margin-left: 30px;
     }
     .container div h5{
         text-align: center;
