@@ -241,6 +241,20 @@
     .voltar {
         margin-left: 1em;
     }
+
+    .modal{
+        width: 70vw;
+        margin-left: 4em;
+        transform: translate(-10%, 50%);
+    }
+
+    .box1 {
+        width: 90%; 
+    }
+
+    .box2{
+        width: 90%; 
+    }
   
     .navbar {
         flex-direction: column;
