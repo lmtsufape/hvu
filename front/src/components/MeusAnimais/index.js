@@ -84,9 +84,12 @@ function MeusAnimaisList() {
         }
     };
 
-    return (
+    return (    
         <div className={styles.container}>
-            <VoltarButton />
+
+            <div className={styles.voltar}>
+                <VoltarButton />
+            </div>
 
             <h1>Meus animais</h1>
 

@@ -1,8 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
+.voltar{
+    display: flex;
+    width: 95%;
+}
+
 .container {
-    min-height: 600px;
-    margin-top: 30px;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     gap: 40px;
@@ -106,3 +110,69 @@
     letter-spacing: 0em;
     text-align: center;
 }
+
+@media (max-width: 700px) {
+    .container {
+        padding-right: 2em;
+        padding-left: 2em;
+        gap: 1em;
+        height: 100%;
+
+    } 
+
+    .container h1 {
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .navbar {
+        width: 100%;
+        gap: 1em;
+    }
+
+    .lista {
+        gap: 1em;
+        padding: 1em;
+    }
+
+    .info_box {
+        width: 75vw;
+        height: 100%;
+        flex-direction: column;
+        gap: 1em;
+        padding: 1em;
+        margin: 1em;
+    }
+
+    .info {
+        width: 90%;
+        height: auto;
+        gap: 1px;
+        
+    }
+
+    .button_box {
+        width: 100%;
+        justify-content: right;
+        gap: 12px;
+    }
+
+
+    .message {
+        font-size: 18px;
+        line-height: 28px;
+    }
+}
+
+@media (max-width: 500px) {
+    .button_box {
+        gap: 12px; /* Reduz o espaço entre os elementos */
+    }
+
+    .acessar_button {
+        width: 5.5em; /* Reduz o tamanho do botão */
+        padding: 0px; /* Ajusta o padding */
+    }
+}
+
+
