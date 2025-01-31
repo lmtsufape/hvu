@@ -124,3 +124,24 @@
   letter-spacing: 0em;
   text-align: center;
 }
+
+@media (max-width: 768px) {
+  .boxcadastrotutor {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .titulocadastro {
+    font-size: 20px;
+    margin-bottom: 5%;
+  }
+
+  .input {
+    font-size: 12px;
+  }
+
+  .voltar{
+    display: flex;
+    width: 95%;
+}
+}
