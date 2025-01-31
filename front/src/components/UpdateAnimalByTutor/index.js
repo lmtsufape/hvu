@@ -188,7 +188,9 @@ function UpdateAnimalByTutor() {
 
   return (
     <div className={styles.page}>
-    < VoltarButton />
+    <div className={styles.voltar}>
+      <VoltarButton />
+    </div>
     <div>
       <h1 className={styles.titulocadastro}>Editar informações do animal</h1>
     </div>
@@ -199,7 +201,7 @@ function UpdateAnimalByTutor() {
         {animalData && (
           <li key={animalData.id} className={styles.list}>
             <div className="row">
-              <div className={`col ${styles.col}`}>
+              <div className={`col-12 col-md-6 ${styles.col}`}>
                 <label htmlFor="nome" className="form-label">Nome</label>
                 <input
                   type="text"
@@ -223,7 +225,7 @@ function UpdateAnimalByTutor() {
             </div>
 
             <div className="row">
-              <div className={`col ${styles.col}`}>
+              <div className={`col-12 col-md-6 ${styles.col}`}>
                 <label htmlFor="especie" className="form-label">Espécie</label>
                 <select
                   className={`form-select ${styles.input}  ${errors.selectedEspecie ? "is-invalid" : ""}`}
@@ -260,7 +262,7 @@ function UpdateAnimalByTutor() {
             </div>
 
             <div className="row">
-              <div className={`col ${styles.col}`}>
+              <div className={`col-12 col-md-6 ${styles.col}`}>
                 <label htmlFor="alergias" className="form-label">Alergias</label>
                 <input 
                   type="text"
