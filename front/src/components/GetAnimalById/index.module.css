@@ -109,3 +109,56 @@
     letter-spacing: 0em;
     text-align: center;
 }
+
+
+@media screen and (max-width: 768px) {
+    
+    .infos_box {
+        width: 90vw;
+        padding: 16px;
+        gap: 20px;
+        height: 55vh;
+        margin-right: 2em;
+    }
+
+    .voltar{
+        display: flex;
+        width: 95%;
+    }
+
+    .message {
+        font-size: 18px;
+    }
+
+    .box{
+        gap: 2em;
+    }
+
+    .botao{
+        transform: translate(0, 3.5em);
+        width: 90%;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container h1 {
+        font-size: 20px;
+    }
+
+    .infos_box {
+        width: 90vw;
+        padding: 16px;
+        gap: 20px;
+        height: 107%;
+    }
+
+    .infos p, .infos h6 {
+        font-size: 14px;
+    }
+
+    .box{
+        gap: 1.5em;
+    }
+
+}

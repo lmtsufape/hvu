@@ -79,7 +79,9 @@ function GetAnimalByIdForm() {
 
     return (
         <div className={styles.container}>
-            < VoltarButton />
+            <div className={styles.voltar}>
+                <VoltarButton />
+            </div>
             <h1>Informações do animal</h1>
             <ul>
                 {animal && ( 
