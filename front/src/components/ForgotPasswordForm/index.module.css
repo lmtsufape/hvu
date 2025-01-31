@@ -13,6 +13,7 @@
 	font-weight: 500;
 	line-height: 1.5;
 	letter-spacing: 0;
+	margin-bottom: 10%;
 }
 
 .text_box {
@@ -80,3 +81,60 @@
 	position: absolute;
   }
   
+  @media (max-width: 700px) {
+	.container {
+	  width: 60%; 
+	  padding: 10px; 
+	  font-size: 0.9rem; 
+	}
+  
+	.text_box h1 {
+	  font-size: 1.0rem; 
+	  text-align: center; 
+	}
+  
+	.text_box h6 {
+	  font-size: 0.9rem; 
+	  text-align: center; 
+	}
+  
+	.button {
+	  width: 100%; 
+	  height: 45px; 
+	  font-size: 1rem; 
+	}
+  
+	.input {
+	  font-size: 0.9rem; 
+	  padding: 10px; 
+	}
+  }
+  
+
+  @media (max-width: 500px) {
+	.container {
+		width: 50%; 
+		font-size: 0.85rem; 
+		padding: 15px;
+		min-height: 60vh;
+	  }
+	
+	  .text_box h1 {
+		font-size: 0.95rem; 
+	  }
+	
+	  .text_box h6 {
+		font-size: 0.85rem; 
+	  }
+	
+	  .button {
+		height: 40px; 
+		font-size: 0.9rem; 
+	  }
+	  .input{
+		font-size: 13px;
+		height: 2.5em;
+	  }
+  }
+
+
