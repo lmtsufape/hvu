@@ -509,8 +509,8 @@ public class Facade {
                         .reduce((first, second) -> second)
                         .orElse(null);
 
-        if (ultimaVaga != null) {
-            throw new RuntimeException("Vaga não encontrada no momento da procura pelo retorno expirado.");
+        if (ultimaVaga == null) {
+            return true;
         }
 
         LocalDate dataUltimaVaga = ultimaVaga.getDataHora().toLocalDate();
