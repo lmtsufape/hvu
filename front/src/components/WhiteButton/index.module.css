@@ -18,3 +18,11 @@
 .white_button:hover {
     background-color: #f3f3f37b;
 }
+
+@media (max-width: 700px) {
+    .white_button {
+        font-size: 14px;
+        line-height: 1em;
+        height: 3.55em;
+    }
+}
