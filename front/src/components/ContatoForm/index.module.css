@@ -45,3 +45,43 @@
 .voltar{
     margin-top: -1.3em;
 }
+
+@media (max-width: 700px) {
+    .page {
+        gap: 30px;
+        padding: 0 15px; 
+    }
+
+    .titulo {
+        margin-top: -90px;
+        font-size: 22px; 
+        text-align: center;
+    }
+    .container {
+        width: 30%; 
+        padding: 0; 
+        margin: 0 auto; 
+        gap: px; 
+        margin-bottom: 12rem;
+
+    }
+
+    .container h1 {
+        font-size: 20px;
+        line-height: 30px;
+        text-align: center;
+    }
+
+    .container div h6 {
+        font-size: 14px;
+        line-height: 24px;
+        text-align: justify;
+        width: 95%;
+        padding: 0;
+    }
+    .container div h5{
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+}

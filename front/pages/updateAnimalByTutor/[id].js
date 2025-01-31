@@ -7,7 +7,7 @@ import Footer from "../../src/components/Footer";
 
 function UpdateAnimalPage(){
     return(
-        <div>
+        <div className="divPai">
             <Header03/> 
             <SubHeader/>
             <UpdateAnimalByTutor/>

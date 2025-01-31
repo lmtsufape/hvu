@@ -13,13 +13,22 @@ function ContatoForm() {
                 
                 <div>
                     <h5>
-                    Laboratório Multidisciplinar de Tecnologias Sociais (LMTS)
+                    HOSPITAL VETERINÁRIO UNIVERSITÁRIO (HVU)
                     </h5>
                     <h6>
                         <span>Universidade Federal do Agreste de Pernambuco - UFAPE</span><br />
                         <span>Avenida Bom Pastor, s/n.º, Bairro Boa Vista - CEP: 55292-270 - Garanhuns - PE</span><br />
-                        <span>Laboratório 16 B</span><br />
-                        <span>E-mail: lmts@ufape.edu.br</span>
+                        <span>E-mail: direcao.hospveterinario@ufape.edu.br</span>
+                        <div className={styles.whatsapp_link}>
+                        <a 
+                            href="https://chat.whatsapp.com/KX4qqcuMXVuFEMiDxTbklJ" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className={styles.whatsapp_button}
+                        >
+                            Acesse nosso grupo de suporte no WhatsApp
+                        </a>
+                    </div>
                     </h6>
 
                 </div>
