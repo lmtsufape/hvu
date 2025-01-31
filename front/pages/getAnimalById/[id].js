@@ -6,7 +6,7 @@ import Footer from "../../src/components/Footer";
 
 function GetAnimalByIdPage() {
     return (
-        <div>
+        <div className='divPai'>
             < Header03 />
             < SubHeader />
             < GetAnimalByIdForm />
