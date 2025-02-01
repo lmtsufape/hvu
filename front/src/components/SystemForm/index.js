@@ -24,6 +24,26 @@ function SystemForm() {
                     uma nova consulta e novos exames. Assim, a plataforma de gestão do HVU oferece uma interface clara e transparente ao usuário, a fim de contribuir para 
                     uma maior rapidez e eficiência no atendimento.
                     </h6>
+                    <div className={styles.equipeContainer}>
+                    <h4>Equipe de Desenvolvimento</h4>
+                    <ul className={styles.equipeLista}>
+                        <li>Caio Vinícius dos Santos Gama</li>
+                        <li>Douglas Ranyery Silva Leite Morais</li>
+                        <li>Genildo Burgos Barros</li>
+                        <li>Gustavo Ferreira Wanderley</li>
+                        <li>Igor Daniel da Costa Silva</li>
+                        <li>Inês Alessandra Alves de Melo</li>
+                        <li>João Victor Cordeiro da Silva</li>
+                        <li>Luann Bento Ferreira</li>
+                        <li>Luis Felipe de Oliveira Andrade</li>
+                        <li>Magno Sillas Nunes Ramos Gomes</li>
+                        <li>Marcos Venício Silva do Nascimento</li>
+                        <li>Rafaela Foerster de Menezes</li>
+                        <li>Ricaelle Nascimento Teixeira Pontes</li>
+                        <li>Rogério Lacerda dos Santos</li>
+                        <li>Thiago Araujo Barbosa</li>
+                    </ul>
+                </div>
 
                 </div>
             </div>

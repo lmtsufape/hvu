@@ -18,7 +18,9 @@ function ContatoForm() {
                     <h6>
                         <span>Universidade Federal do Agreste de Pernambuco - UFAPE</span><br />
                         <span>Avenida Bom Pastor, s/n.º, Bairro Boa Vista - CEP: 55292-270 - Garanhuns - PE</span><br />
-                        <span>E-mail: direcao.hospveterinario@ufape.edu.br</span>
+                        <span>E-mail: direcao.hospveterinario@ufape.edu.br</span><br />
+                        <span>Contato: (087) 3764-5585</span><br/>
+                        <span>WhatsApp: (87) 99146-5277</span><br/>
                         <div className={styles.whatsapp_link}>
                         <a 
                             href="https://chat.whatsapp.com/KX4qqcuMXVuFEMiDxTbklJ" 
