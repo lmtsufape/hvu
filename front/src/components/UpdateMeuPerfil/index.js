@@ -236,7 +236,7 @@ function UpdateMeuPerfil() {
                         {renderUsuarioInput("Nome Completo", usuario.nome, "nome", usuario.nome, handleUsuarioChange, "text", errors.nome)}
                         <div className="row">
                             <div className={`col ${styles.col}`}>
-                                {renderUsuarioInput("E-mail", usuario.email, "email", usuario.email, handleUsuarioChange, "email", errors.email)}
+                                {/* {renderUsuarioInput("E-mail", usuario.email, "email", usuario.email, handleUsuarioChange, "email", errors.email)} */}
                                 {renderUsuarioInput("CPF", usuario.cpf, "cpf", usuario.cpf, handleUsuarioChange, "text", errors.cepf, "999.999.999-99")}
                             </div>
                             <div className={`col ${styles.col}`}>
@@ -246,7 +246,9 @@ function UpdateMeuPerfil() {
                     </div>
                 </div>
 
-                <div className={styles.boxcadastro}>
+                {/* opção de alterar senha */}
+                
+                {/* <div className={styles.boxcadastro}>
                     <div className={styles.input_space}>
                         <div className="form-label">Deseja alterar sua senha?</div>
                         <input
@@ -266,7 +268,7 @@ function UpdateMeuPerfil() {
                             </div>
                         </div>
                     )}
-                </div>
+                </div> */}
 
                 {usuario.endereco && (
                     <div className={styles.boxcadastro}>
