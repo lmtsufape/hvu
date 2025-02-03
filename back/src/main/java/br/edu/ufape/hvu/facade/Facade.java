@@ -436,6 +436,34 @@ public class Facade {
         racaServiceInterface.deleteRaca(id);
     }
 
+    // Aviso--------------------------------------------------------------
+    @Autowired
+    private AvisoServiceInterface avisoServiceInterface;
+
+    public Aviso saveAviso(Aviso newInstance) {
+        return avisoServiceInterface.saveAviso(newInstance);
+    }
+
+    public Aviso updateAviso(Aviso transientObject) {
+        return avisoServiceInterface.updateAviso(transientObject);
+    }
+
+    public Aviso findAvisoById(long id) {
+        return avisoServiceInterface.findAvisoById(id);
+    }
+
+    public List<Aviso> getAllAviso() {
+        return avisoServiceInterface.getAllAviso();
+    }
+
+    public void deleteAviso(Aviso persistentObject) {
+        avisoServiceInterface.deleteAviso(persistentObject);
+    }
+
+    public void deleteAviso(long id) {
+        avisoServiceInterface.deleteAviso(id);
+    }
+
     // Vaga--------------------------------------------------------------
     @Autowired
     private VagaServiceInterface vagaServiceInterface;
