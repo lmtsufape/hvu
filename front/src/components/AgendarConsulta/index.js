@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Select from 'react-select';
+import Select from "react-select";
 import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
-import { CancelarWhiteButton } from '../WhiteButton';
-import { getAllAnimalTutor, getRetornoByAnimalId } from '../../../services/animalService';
-import { getAllVaga } from '../../../services/vagaService';
-import { createAgendamento, getDatasNaoPodeAgendar } from '../../../services/agendamentoService';
-import { getCurrentUsuario } from '../../../services/userService';
+import { CancelarWhiteButton } from "../WhiteButton";
+import {
+  getAllAnimalTutor,
+  getRetornoByAnimalId,
+} from "../../../services/animalService";
+import { getAllVaga } from "../../../services/vagaService";
+import {
+  createAgendamento,
+  getDatasNaoPodeAgendar,
+} from "../../../services/agendamentoService";
+import { getCurrentUsuario } from "../../../services/userService";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 import Image from "next/image";
@@ -16,7 +22,7 @@ const HorariosSemana = () => {
   const router = useRouter();
 
   const [selecionarData, setSelecionarData] = useState(new Date());
-  const [selecionarHorario, setSelecionarHorario] = useState('');
+  const [selecionarHorario, setSelecionarHorario] = useState("");
   const [showModal, setShowModal] = useState(false);
 
   const [animais, setAnimais] = useState(null);
@@ -44,11 +50,11 @@ const HorariosSemana = () => {
   console.log("datasProibidas:", datasProibidas);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-        const storedToken = localStorage.getItem('token');
-        const storedRoles = JSON.parse(localStorage.getItem('roles'));
-        setToken(storedToken || "");
-        setRoles(storedRoles || []);
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("token");
+      const storedRoles = JSON.parse(localStorage.getItem("roles"));
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
     }
   }, []);
 
@@ -61,13 +67,13 @@ const HorariosSemana = () => {
   };
 
   const diasSemana = {
-    0: 'Domingo',
-    1: 'Segunda',
-    2: 'Terça',
-    3: 'Quarta',
-    4: 'Quinta',
-    5: 'Sexta',
-    6: 'Sábado'
+    0: "Domingo",
+    1: "Segunda",
+    2: "Terça",
+    3: "Quarta",
+    4: "Quinta",
+    5: "Sexta",
+    6: "Sábado",
   };
 
   const handleDateChange = (date) => {
@@ -94,7 +100,7 @@ const HorariosSemana = () => {
         const AnimaisData = await getAllAnimalTutor();
         setAnimais(AnimaisData);
       } catch (error) {
-        console.error('Erro ao buscar animais:', error);
+        console.error("Erro ao buscar animais:", error);
       }
     };
     fetchData();
@@ -107,7 +113,7 @@ const HorariosSemana = () => {
         setVagas(VagasData);
         console.log("VagasData:", VagasData);
       } catch (error) {
-        console.error('Erro ao buscar vagas:', error);
+        console.error("Erro ao buscar vagas:", error);
       } finally {
         setLoading(false); // Marcar como carregado após buscar os dados
       }
@@ -122,7 +128,7 @@ const HorariosSemana = () => {
         const datas = await getDatasNaoPodeAgendar(user.usuario.id);
         setDatasProibidas(datas);
       } catch (error) {
-        console.error('Erro ao buscar dados do usuário:', error);
+        console.error("Erro ao buscar dados do usuário:", error);
       }
     };
     fetchData();
@@ -138,7 +144,7 @@ const HorariosSemana = () => {
           setRetorno(data);
         }
       } catch (error) {
-        console.error('Erro ao buscar status de retorno do animal:', error);
+        console.error("Erro ao buscar status de retorno do animal:", error);
       }
     };
 
@@ -151,14 +157,20 @@ const HorariosSemana = () => {
 
   const handleAnimalSelection = (event) => {
     const animalId = event.target.value;
-    const selectedAnimalInfo = animais.find(animal => animal.id === parseInt(animalId));
+    const selectedAnimalInfo = animais.find(
+      (animal) => animal.id === parseInt(animalId)
+    );
     setSelectedAnimal(selectedAnimalInfo);
   };
 
   const formatDate = (dateString, selectedTime) => {
     const date = new Date(dateString);
-    const formattedDate = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const formattedTime = selectedTime ? ` às ${selectedTime}` : '';
+    const formattedDate = date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    const formattedTime = selectedTime ? ` às ${selectedTime}` : "";
     return formattedDate + formattedTime;
   };
 
@@ -171,7 +183,9 @@ const HorariosSemana = () => {
   if (!roles.includes("tutor")) {
     return (
       <div className={styles.container}>
-        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+        <h3 className={styles.message}>
+          Acesso negado: Você não tem permissão para acessar esta página.
+        </h3>
       </div>
     );
   }
@@ -179,7 +193,9 @@ const HorariosSemana = () => {
   if (!token) {
     return (
       <div className={styles.container}>
-        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+        <h3 className={styles.message}>
+          Acesso negado: Faça login para acessar esta página.
+        </h3>
       </div>
     );
   }
@@ -214,16 +230,21 @@ const HorariosSemana = () => {
       return;
     }
 
-    const agendamentoDate = new Date(selecionarHorario).toISOString().split('T')[0];
+    const agendamentoDate = new Date(selecionarHorario)
+      .toISOString()
+      .split("T")[0];
 
     const agendamentoToCreate = {
       animal: { id: selectedAnimal.id },
       dataVaga: selecionarHorario,
-      status: 'Agendado'
+      status: "Agendado",
     };
 
     try {
-      const newAgendamento = await createAgendamento(agendamentoToCreate, selectedVaga.id);
+      const newAgendamento = await createAgendamento(
+        agendamentoToCreate,
+        selectedVaga.id
+      );
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao agendar consulta:", error);
@@ -231,18 +252,20 @@ const HorariosSemana = () => {
     }
   };
 
-const getNomeSobrenome = (nomeCompleto) => {
-  if (!nomeCompleto) return '';
-  const partes = nomeCompleto.split(' ');
-  if (partes.length < 2) return nomeCompleto; // Se não houver sobrenome, retorna o nome completo
+  const getNomeSobrenome = (nomeCompleto) => {
+    if (!nomeCompleto) return "";
+    const partes = nomeCompleto.split(" ");
+    if (partes.length < 2) return nomeCompleto; // Se não houver sobrenome, retorna o nome completo
 
-  // Inclui o artigo se ele fizer parte do segundo nome
-  const segundoNome = ['da', 'de', 'do', 'dos', 'das'].includes(partes[1].toLowerCase()) && partes.length > 2
-    ? `${partes[1]} ${partes[2]}`
-    : partes[1];
+    // Inclui o artigo se ele fizer parte do segundo nome
+    const segundoNome =
+      ["da", "de", "do", "dos", "das"].includes(partes[1].toLowerCase()) &&
+      partes.length > 2
+        ? `${partes[1]} ${partes[2]}`
+        : partes[1];
 
-  return `${partes[0]} ${segundoNome}`; // Retorna o primeiro e o segundo nome (incluindo o artigo, se houver)
-};
+    return `${partes[0]} ${segundoNome}`; // Retorna o primeiro e o segundo nome (incluindo o artigo, se houver)
+  };
 
   return (
     <div className={styles.container}>
@@ -257,174 +280,291 @@ const getNomeSobrenome = (nomeCompleto) => {
       <div className={styles.boxprincipal}>
         <div className={styles.select_container}>
           <div className={styles.select_box}>
-            <h1>Paciente  <span className={styles.obrigatorio}>*</span></h1>
+            <h1>
+              Paciente <span className={styles.obrigatorio}>*</span>
+            </h1>
             <select
-              className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`}
+              className={`form-select ${styles.input} ${
+                errors.selectedAnimal ? "is-invalid" : ""
+              }`}
               aria-label="Default select example"
               name="animal"
-              value={selectedAnimal ? selectedAnimal.id : ''}
+              value={selectedAnimal ? selectedAnimal.id : ""}
               onChange={handleAnimalSelection}
             >
               <option value="">Selecione um paciente</option>
-              {animais && animais.map((animal) => (
-                <option key={animal.id} value={animal.id}>
-                  {animal.nome}
-                </option>
-              ))}
+              {animais &&
+                animais.map((animal) => (
+                  <option key={animal.id} value={animal.id}>
+                    {animal.nome}
+                  </option>
+                ))}
             </select>
-            {errors.selectedAnimal && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedAnimal}</div>}
+            {errors.selectedAnimal && (
+              <div className={`invalid-feedback ${styles.error_message}`}>
+                {errors.selectedAnimal}
+              </div>
+            )}
           </div>
         </div>
 
         <h1 className={styles.titulodataconsulta}>Data da Consulta</h1>
-        <h2 className={`${styles.descricaotitulodataconsulta} ${errors.selectedVaga ? "is-invalid" : ""}`}>Selecione o dia e o horário disponível de sua preferência para o atendimento</h2>
-        {errors.selectedVaga && <div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedVaga}</div>}
+        <h2
+          className={`${styles.descricaotitulodataconsulta} ${
+            errors.selectedVaga ? "is-invalid" : ""
+          }`}
+        >
+          Selecione o dia e o horário disponível de sua preferência para o
+          atendimento
+        </h2>
+        {errors.selectedVaga && (
+          <div className={`invalid-feedback ${styles.error_message}`}>
+            {errors.selectedVaga}
+          </div>
+        )}
 
         <div className={styles.legenda_box}>
           <div className={styles.legenda}>
-            <h3><Image src='/blue_rectangle.svg' width={15.73} height={15.73}/></h3>
+            <h3>
+              <Image src="/blue_rectangle.svg" width={15.73} height={15.73} />
+            </h3>
             <h3>Primeira consulta</h3>
           </div>
 
           <div className={styles.legenda}>
-            <h3><Image src='/pink_rectangle.svg' width={15.73} height={15.73}/></h3>
+            <h3>
+              <Image src="/pink_rectangle.svg" width={15.73} height={15.73} />
+            </h3>
             <h3>Consulta de retorno</h3>
           </div>
         </div>
 
         <div className={styles.button_voltar_avancar}>
-          <button className={styles.button_voltar} onClick={retrocederSemana}>⭠</button>
-          <button className={styles.button_avancar} onClick={avancarSemana}>⭢</button>
+          <button className={styles.button_voltar} onClick={retrocederSemana}>
+            ⭠
+          </button>
+          <button className={styles.button_avancar} onClick={avancarSemana}>
+            ⭢
+          </button>
         </div>
         <div className={styles.containersemana}>
-        {Array.from({ length: 7 }, (_, index) => {
-          const currentDate = new Date(selecionarData);
-          currentDate.setDate(currentDate.getDate() - currentDate.getDay() + index);
-          if (currentDate.getDay() !== 6 && currentDate.getDay() !== 0) {
-            const currentDateFormatted = currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            const vagasForCurrentDay = vagas && vagas.filter(vaga => {
-              const vagaDate = new Date(vaga.dataHora);
-              const vagaDateFormatted = vagaDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-              return vagaDateFormatted === currentDateFormatted;
-            });
-            
-            // Verifica se a data atual está na lista de datas proibidas
-            const isDateProhibited = datasProibidas.some(dataProibida => {
-              const dataProibidaDate = new Date(dataProibida).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-              return dataProibidaDate === currentDateFormatted;
-            });
+          {Array.from({ length: 7 }, (_, index) => {
+            const currentDate = new Date(selecionarData);
+            currentDate.setDate(
+              currentDate.getDate() - currentDate.getDay() + index
+            );
+            if (currentDate.getDay() !== 6 && currentDate.getDay() !== 0) {
+              const currentDateFormatted = currentDate.toLocaleDateString(
+                "pt-BR",
+                { day: "2-digit", month: "2-digit", year: "numeric" }
+              );
+              const vagasForCurrentDay =
+                vagas &&
+                vagas.filter((vaga) => {
+                  const vagaDate = new Date(vaga.dataHora);
+                  const vagaDateFormatted = vagaDate.toLocaleDateString(
+                    "pt-BR",
+                    { day: "2-digit", month: "2-digit", year: "numeric" }
+                  );
+                  return vagaDateFormatted === currentDateFormatted;
+                });
 
-            if (!vagasForCurrentDay || vagasForCurrentDay.length === 0) {
+              // Verifica se a data atual está na lista de datas proibidas
+              const isDateProhibited = datasProibidas.some((dataProibida) => {
+                const dataProibidaDate = new Date(
+                  dataProibida
+                ).toLocaleDateString("pt-BR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                });
+                return dataProibidaDate === currentDateFormatted;
+              });
+
+              if (!vagasForCurrentDay || vagasForCurrentDay.length === 0) {
+                return (
+                  <div key={currentDate} className={styles.containerdia}>
+                    <h2 className={styles.diasdasemana}>
+                      {diasSemana[currentDate.getDay()]}
+                    </h2>
+                    <p className={styles.data}>{currentDateFormatted}</p>
+                    <div className={styles.no_vagas}>Não há vagas</div>
+                  </div>
+                );
+              }
+
               return (
                 <div key={currentDate} className={styles.containerdia}>
-                  <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
+                  <h2 className={styles.diasdasemana}>
+                    {diasSemana[currentDate.getDay()]}
+                  </h2>
                   <p className={styles.data}>{currentDateFormatted}</p>
-                  <div className={styles.no_vagas}>
-                    Não há vagas
+                  <div className="time-buttons">
+                    {vagasForCurrentDay.map((vaga) => {
+                      const vagaDate = new Date(vaga.dataHora);
+                      const isPast = vagaDate < new Date();
+                      const isProhibited =
+                        isDateProhibited ||
+                        vaga.status === "Agendado" ||
+                        vaga.status === "Finalizado" ||
+                        vaga.status === "Cancelado";
+
+                      return (
+                        <button
+                          key={vaga.id}
+                          className={
+                            isPast || isProhibited
+                              ? `${styles.botaohoraIndisponivel}`
+                              : vaga.tipoConsulta &&
+                                vaga.tipoConsulta.tipo === "Retorno"
+                              ? `${styles.botaoRetorno} ${
+                                  selectedVaga === vaga ? styles.selected : ""
+                                }`
+                              : `${styles.botaoPrimeiraConsulta} ${
+                                  selectedVaga === vaga ? styles.selected : ""
+                                }`
+                          }
+                          onClick={() => {
+                            if (!isProhibited && !isPast) {
+                              handleDateChange(currentDate);
+                              setSelecionarHorario(vaga.dataHora);
+                              setSelectedVaga(vaga);
+                            }
+                          }}
+                          disabled={
+                            isProhibited ||
+                            !selectedAnimal ||
+                            retorno.toLowerCase() !==
+                              vaga.tipoConsulta.tipo.toLowerCase() ||
+                            isPast
+                          }
+                        >
+                          {vaga.dataHora
+                            .split("T")[1]
+                            .split(":")
+                            .slice(0, 2)
+                            .join(":")}
+                          <br />
+                          {vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ""}
+                          {vaga.tipoConsulta &&
+                            vaga.tipoConsulta.tipo === "Retorno" && (
+                              <>
+                                <br />
+                                {vaga.medico
+                                  ? getNomeSobrenome(vaga.medico.nome)
+                                  : ""}
+                              </>
+                            )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               );
             }
-            
-            return (
-              <div key={currentDate} className={styles.containerdia}>
-                <h2 className={styles.diasdasemana}>{diasSemana[currentDate.getDay()]}</h2>
-                <p className={styles.data}>{currentDateFormatted}</p>
-                <div className="time-buttons">
-                  {vagasForCurrentDay.map((vaga) => {
-                    const vagaDate = new Date(vaga.dataHora);
-                    const isPast = vagaDate < new Date();
-                    const isProhibited = isDateProhibited || vaga.status === 'Agendado' || vaga.status === 'Finalizado' || vaga.status === 'Cancelado';
+            return null;
+          })}
+        </div>
 
-                    return (
-                      <button
-                        key={vaga.id}
-                        className={
-                          isPast || isProhibited
-                            ? `${styles.botaohoraIndisponivel}`
-                            : (vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' 
-                                ? `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ''}`
-                                : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ''}`
-                              )
-                        }
-                        onClick={() => {
-                          if (!isProhibited && !isPast) {
-                            handleDateChange(currentDate);
-                            setSelecionarHorario(vaga.dataHora);
-                            setSelectedVaga(vaga);
-                          }
-                        }}
-                        disabled={isProhibited || !selectedAnimal || (retorno.toLowerCase() !== vaga.tipoConsulta.tipo.toLowerCase()) || isPast}
-                      >
-                        {vaga.dataHora.split('T')[1].split(':').slice(0, 2).join(':')}
-                        <br />{vaga.tipoConsulta ? vaga.tipoConsulta.tipo : ''}
-                        {vaga.tipoConsulta && vaga.tipoConsulta.tipo === 'Retorno' && (
-                          <>
-                            <br />{vaga.medico ? getNomeSobrenome(vaga.medico.nome) : ''}
-                          </>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          }
-          return null;
-        })}
-      </div>
-
-      <div className={styles.aviso}>
-        <div><span className={styles.obrigatorio}>*</span> Permitido apenas um agendamento por dia;</div>
-        <div><span className={styles.obrigatorio}>*</span> Um animal não pode agendar uma nova consulta se possuir agendamento em aberto.</div>
-      </div>
+        <div className={styles.aviso}>
+          <div>
+            <span className={styles.obrigatorio}>*</span> Permitido apenas um
+            agendamento por dia;
+          </div>
+          <div>
+            <span className={styles.obrigatorio}>*</span> Um animal não pode
+            agendar uma nova consulta se possuir agendamento em aberto.
+          </div>
+        </div>
 
         <div className={styles.button_container}>
           <CancelarWhiteButton />
-          <button className={styles.agendar_button} onClick={handleAgendar}>Agendar</button>
+          <button className={styles.agendar_button} onClick={handleAgendar}>
+            Agendar
+          </button>
         </div>
       </div>
       {showModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <div className={styles.modalContent}>
-
               <div className={styles.container1}>
-                <div className={styles.box}>
-                  <div className={styles.title}>Tem certeza que deseja realizar o agendamento?</div>
+                <div>
+                  <div className={styles.title}>Realizar agendamento</div>
+                  <div className={styles.description}>
+                    Verifique as informações do agendamento antes de confirmar.
+                  </div>
                 </div>
-
               </div>
 
               <div className={styles.container2}>
+                <h6>Verifique as informações</h6>
                 <div className={styles.box}>
                   <div className={styles.item}>Paciente</div>
-                  <div className={styles.subtitle}>{selectedAnimal ? selectedAnimal.nome : ''}</div> {/* Alterado */}
+                  <div className={styles.subtitle}>
+                    {selectedAnimal ? selectedAnimal.nome : ""}
+                  </div>{" "}
+                  {/* Alterado */}
                 </div>
 
                 <div className={styles.box}>
                   <div className={styles.item}>Horário</div>
-                  <div className={styles.subtitle}>{formatDate(selecionarData,
-                    selecionarHorario ? selecionarHorario.split('T')[1].split(':').slice(0, 2).join(':') : '')}
+                  <div className={styles.subtitle}>
+                    {formatDate(
+                      selecionarData,
+                      selecionarHorario
+                        ? selecionarHorario
+                            .split("T")[1]
+                            .split(":")
+                            .slice(0, 2)
+                            .join(":")
+                        : ""
+                    )}
                   </div>
                 </div>
 
                 <div className={styles.box}>
                   <div className={styles.item}>Consulta</div>
-                  <div className={styles.subtitle}>{selectedVaga && selectedVaga.tipoConsulta ? selectedVaga.tipoConsulta.tipo : ''}</div>
+                  <div className={styles.subtitle}>
+                    {selectedVaga && selectedVaga.tipoConsulta
+                      ? selectedVaga.tipoConsulta.tipo
+                      : ""}
+                  </div>
                 </div>
               </div>
 
               <div className={styles.div_button2}>
-                <div><button className={styles.button_cancelar_consulta} onClick={closeModal}>Cancelar</button></div>
-                <div><button className={styles.button_agendar_consulta} type='button' onClick={handleCreateAgendamento}>Agendar</button></div>
+                <button
+                  className={styles.button_cancelar_consulta}
+                  onClick={closeModal}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className={styles.button_agendar_consulta}
+                  type="button"
+                  onClick={handleCreateAgendamento}
+                >
+                  Agendar
+                </button>
               </div>
             </div>
           </div>
         </div>
       )}
-      {<Alert message="Agendamento realizado com sucesso!" show={showAlert} url='/meusAgendamentos' />}
-      {showErrorAlert && <ErrorAlert message="Erro ao realizar agendamento, tente novamente." show={showErrorAlert} />}
+      {
+        <Alert
+          message="Agendamento realizado com sucesso!"
+          show={showAlert}
+          url="/meusAgendamentos"
+        />
+      }
+      {showErrorAlert && (
+        <ErrorAlert
+          message="Erro ao realizar agendamento, tente novamente."
+          show={showErrorAlert}
+        />
+      )}
     </div>
   );
 };

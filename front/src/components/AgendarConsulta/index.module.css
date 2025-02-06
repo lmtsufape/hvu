@@ -1,29 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap");
 
-.voltar_button{
-display: flex;
-align-items: center;
-font-size: 1em;
-margin-left: 7%;
-
+.voltar_button {
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  margin-left: 7%;
 }
 .no_vagas {
   display: block;
   margin-bottom: 0.8em;
   margin-left: 8%;
   padding: 5px;
-  background-color: #EEF8F3;
+  background-color: #eef8f3;
   border: none;
   cursor: pointer;
   color: #272727;
   border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
   width: 80%;
   height: 10vh;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding-bottom: 1.5em;
   padding-top: 1.5em;
 }
@@ -37,7 +36,7 @@ margin-left: 7%;
 }
 
 .title_box h1 {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 24px;
   font-weight: 700;
   line-height: 36px;
@@ -50,50 +49,48 @@ margin-left: 7%;
   width: 85%;
   max-width: 1500px;
   min-width: 300px;
-  height: auto; 
+  height: auto;
   background-color: white;
   padding: 30px;
   border-radius: 10px;
-  border: 0.5px solid #B1B1B1;
+  border: 0.5px solid #b1b1b1;
   margin: auto;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-style: normal;
   margin-bottom: 4em;
 
-.input {
-  font-family: 'Poppins', sans-serif;;
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 20px;
-  color: #000000;
-}
-
-.input:focus {
-    outline: none;
-    box-shadow: 0 0 5px 2px #3d856371;
-    border: 1px solid #ccc;
-}
-
-.input::placeholder {
-    font-family: 'Poppins', sans-serif;;
+  .input {
+    font-family: "Poppins", sans-serif;
     font-size: 14px;
     font-weight: 300;
     line-height: 20px;
     color: #000000;
-}
+  }
 
-  
+  .input:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px #3d856371;
+    border: 1px solid #ccc;
+  }
+
+  .input::placeholder {
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+    color: #000000;
+  }
 }
 
 .select_container {
   display: flex;
   justify-content: space-between;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   gap: 0.4em;
   margin-bottom: 2em;
 }
 
-.select_container h1{
+.select_container h1 {
   font-size: 1.3em;
 }
 
@@ -102,7 +99,7 @@ margin-left: 7%;
 }
 
 .select_box {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
@@ -110,23 +107,23 @@ margin-left: 7%;
 }
 
 .select_box select option {
-  font-family: 'Poppins', sans-serif;;
+  font-family: "Poppins", sans-serif;
   font-size: 14px;
   font-weight: 300;
   line-height: 20px;
   color: #000000;
 }
 
-.containersemana{
+.containersemana {
   display: flex;
-  justify-content: center;  
+  justify-content: center;
 }
 
 .containerdia {
   margin-right: 1px;
   padding: 10px;
   display: flexbox;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   margin-left: 0.5%;
   margin-right: 0.5%;
   width: 20%;
@@ -137,18 +134,18 @@ margin-left: 7%;
   margin-bottom: 0.8em;
   margin-left: 8%;
   padding: 5px;
-  background-color: #3273C8;
+  background-color: #3273c8;
   border: none;
   cursor: pointer;
-  color: #EEF8F3;
+  color: #eef8f3;
   border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
   width: 80%;
   height: 10vh;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding-bottom: 1.5em;
   padding-top: 1.5em;
 }
@@ -156,19 +153,19 @@ margin-left: 7%;
 .botaoPrimeiraConsulta:disabled {
   background-color: white;
   border: none;
-  color: #B1B1B1;
+  color: #b1b1b1;
   border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
   width: 80%;
   height: 10vh;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding-bottom: 1.5em;
   padding-top: 1.5em;
   line-height: 1.2;
-  border: 0.5px solid #B1B1B1;
+  border: 0.5px solid #b1b1b1;
 }
 
 .botaoRetorno {
@@ -176,19 +173,19 @@ margin-left: 7%;
   margin-bottom: 0.8em;
   margin-left: 8%;
   padding: 5px;
-  background-color: #E44771;
+  background-color: #e44771;
   border: none;
   cursor: pointer;
-  color: #EEF8F3;
+  color: #eef8f3;
   border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
   width: 80%;
   height: 10vh;
   line-height: 1.2;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding-bottom: 1.5em;
   padding-top: 1.5em;
 }
@@ -196,20 +193,20 @@ margin-left: 7%;
 .botaoRetorno:disabled {
   background-color: white;
   border: none;
-  color: #B1B1B1;
+  color: #b1b1b1;
   border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
   width: 80%;
   height: 10vh;
   line-height: 1.2;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding-bottom: 1.5em;
   padding-top: 1.5em;
-  border: 0.5px solid #B1B1B1;
-} 
+  border: 0.5px solid #b1b1b1;
+}
 
 /* //botão com a hora em verde/ */
 .botaohora {
@@ -217,18 +214,18 @@ margin-left: 7%;
   margin-bottom: 0.8em;
   margin-left: 8%;
   padding: 5px;
-  background-color: #EEF8F3;
+  background-color: #eef8f3;
   border: none;
   cursor: pointer;
   color: #404040;
   border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
   width: 90%;
   height: 5vh;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding-bottom: 1.5em;
   padding-top: 1.5em;
 }
@@ -246,49 +243,47 @@ margin-left: 7%;
   background-color: white;
   border: none;
   cursor: pointer;
-  color: #B1B1B1;
+  color: #b1b1b1;
   border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
   width: 90%;
   height: 10vh;
   line-height: 1.2;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding-bottom: 1.5em;
   padding-top: 1.5em;
-  border: 0.5px solid #B1B1B1;
+  border: 0.5px solid #b1b1b1;
   text-decoration: line-through;
 }
 
-
-
 .diasdasemana {
   font-size: 20px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-transform: capitalize;
   text-align: center;
   color: #000000;
 }
 
-.data{
+.data {
   text-align: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   color: #909090;
 }
 
-.titulodataconsulta{
+.titulodataconsulta {
   text-align: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1.7em;
   font-weight: 600;
   font-weight: bold;
 }
 
-.descricaotitulodataconsulta{
+.descricaotitulodataconsulta {
   text-align: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1em;
   color: #404040;
   margin-top: 3vh;
@@ -308,17 +303,17 @@ margin-left: 7%;
 
 .agendar_button {
   width: 180px;
-  height: 48px; 
+  height: 48px;
   border-radius: 10px;
-  background-color: #39805F;
-  border: 1px solid #39805F;
+  background-color: #39805f;
+  border: 1px solid #39805f;
 
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
-  color: #FFF5F6;
+  color: #fff5f6;
 }
 
 .agendar_button:hover {
@@ -331,20 +326,19 @@ margin-left: 7%;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(131, 126, 126, 0.2); 
+  background-color: rgba(131, 126, 126, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .modal {
-  width: 620px;
-  height: 293px;
+  width: 95%;
+  max-width: 35rem;
   border-radius: 12px;
   border: 2px;
   box-shadow: 4px 5px 15px 0px #00000014;
   background-color: white;
-  padding: 20px;
   z-index: 1000;
   display: flex;
   justify-content: center;
@@ -352,49 +346,49 @@ margin-left: 7%;
 }
 
 .modalContent {
-  width: 580px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 40px;
+  gap: 1rem;
 }
 
 .container1 {
+  width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
   gap: 15px;
+  border-bottom: 2px solid #ececec;
+  padding: 2rem 1rem 1.5rem 1rem;
 }
 
 .container2 {
-  width: 580px;
-  height: 56px;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 40px;
+  width: 100%;
+  flex-wrap: wrap;
+  flex-direction: column;
+  padding: 0rem 1rem 1.5rem 1rem;
 }
 
 .box {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  padding-left: 0.25rem;
   align-items: center;
   gap: 8px;
 }
 
 .title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 20px;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.25rem;
   font-weight: 600;
   line-height: 30px;
   letter-spacing: 0em;
   color: #272727;
+  text-align: left;
 }
 
 .item {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 700;
   line-height: 24px;
@@ -403,12 +397,12 @@ margin-left: 7%;
 }
 
 .subtitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
   letter-spacing: 0em;
-  color: #39805F;
+  color: #39805f;
 }
 
 .div_button1 {
@@ -418,10 +412,12 @@ margin-left: 7%;
 }
 
 .div_button2 {
-  width: 580px;
+  width: 100%;
   display: flex;
   justify-content: right;
   gap: 32px;
+  padding: 1rem 1rem 1.5rem 1rem;
+  border-top: 2px solid #ececec;
 }
 
 .button_close_modal {
@@ -432,18 +428,21 @@ margin-left: 7%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ECECEC;
-  border: 1px solid #ECECEC;
+  background-color: #ececec;
+  border: 1px solid #ececec;
   color: #909090;
 }
 
+.div_button2 button {
+  width: 100%;
+  max-width: 8rem;
+}
+
 .button_cancelar_consulta {
-  width: 95px;
-  height: 448x;
   padding: 10px;
   border-radius: 10px;
   border: 1px solid #606060;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 15px;
   font-weight: 600;
   line-height: 24px;
@@ -462,23 +461,22 @@ margin-left: 7%;
   height: 448x;
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid #39805F;
-  font-family: 'Poppins', sans-serif;
+  border: 1px solid #39805f;
+  font-family: "Poppins", sans-serif;
   font-size: 15px;
   font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
   text-align: center;
-  color: #FFF5F6;
-  background-color: #39805F;
-
+  color: #fff5f6;
+  background-color: #39805f;
 }
 
 .button_agendar_consulta:hover {
   background-color: #5b977b;
 }
 
-.button_voltar_avancar{
+.button_voltar_avancar {
   display: flex;
   justify-content: right;
   gap: 0.8em;
@@ -487,63 +485,63 @@ margin-left: 7%;
   margin-top: -4%;
 }
 
-.button_voltar{
+.button_voltar {
   width: 2.6em;
   height: 2.5em;
   border-radius: 8px 0px 0px 8px;
   border: 1px solid #5b977b;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 0.9em;
   font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
   text-align: center;
   color: white;
-  background-color: #39805F;
+  background-color: #39805f;
   box-sizing: border-box;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.button_voltar:hover{
+.button_voltar:hover {
   background-color: #5b977b;
 }
 
-.button_avancar{
+.button_avancar {
   width: 2.6em;
   height: 2.5em;
   border-radius: 0px 8px 8px 0px;
   border: none;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 0.9em;
   font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
   text-align: center;
   color: white;
-  background-color: #39805F;
+  background-color: #39805f;
   box-sizing: border-box;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.button_avancar:hover{
+.button_avancar:hover {
   background-color: #5b977b;
 }
-.button_cancelar_consulta{
+.button_cancelar_consulta {
   justify-content: center;
   align-items: center;
 }
 
 .obrigatorio {
-  color: #C7122F;
+  color: #c7122f;
 }
 
 .error_message {
   margin-top: -0.2em;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 12px;
   font-weight: 300;
   line-height: 24px;
-  color: #C7122F;
+  color: #c7122f;
 }
 
 .legenda_box {
@@ -559,16 +557,15 @@ margin-left: 7%;
 }
 
 .legenda h3 {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 12.95px;
   font-weight: 600;
   line-height: 19.43px;
-
 }
 
 .aviso {
   margin-top: 2em;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 30px;
@@ -576,11 +573,11 @@ margin-left: 7%;
 
 .message {
   min-height: 300px;
-  margin-top: 56px; 
-  display: flex; 
+  margin-top: 56px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 20px;
   font-weight: 400;
   line-height: 30px;
@@ -588,56 +585,51 @@ margin-left: 7%;
   text-align: center;
 }
 
-
 @media only screen and (max-width: 700px) {
   .page {
-      gap: 20px;
-      padding: 15px;
-      
+    gap: 20px;
+    padding: 15px;
   }
-  .agendar_button:hover{
+  .agendar_button:hover {
     gap: 20px;
     padding: 15px;
   }
   .titulo {
-      font-size: 24px;
+    font-size: 24px;
   }
 
   .container {
-      width: 100%;
-      padding: 0 0px;
-      min-height: 300px;
-
+    width: 100%;
+    padding: 0 0px;
+    min-height: 300px;
   }
 
   .container h1 {
-      font-size: 20px;
+    font-size: 20px;
   }
 
   .container div h6 {
-      font-size: 14px;
-      line-height: 22px;
-      width: 100%;
-      
+    font-size: 14px;
+    line-height: 22px;
+    width: 100%;
   }
 
   .aviso {
-      font-size: 16px;
-      padding: 8px;
-      width: 95%;
+    font-size: 16px;
+    padding: 8px;
+    width: 95%;
   }
   .containersemana {
     flex-direction: column;
     align-items: center;
-}
+  }
 
-.containerdia {
+  .containerdia {
     width: 80%;
-}
+  }
 
-.navegacao {
+  .navegacao {
     flex-direction: row;
     justify-content: space-around;
-}
-
+  }
 }

@@ -1,246 +1,261 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
-.header {
-    width: 1,440px;
-    height: 90px;
-    padding: 0px 120px 0px 120px;
-    border: 0px 0px 2px 0px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid#ECECEC;
-    position: relative;
-    gap: 10px;
+.headerWrapper {
+  width: 100%;
+  height: auto;
+  border-bottom: 2px solid#ECECEC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0.25rem;
+}
+
+.header,
+.headerLogin {
+  width: 100%;
+  max-width: 85vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerLogin {
+  flex-wrap: wrap;
 }
 
 .additionalLogo {
-    position: absolute;
-    left: 30em;
-    top: 0.5rem;
-    max-width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    height: auto;
-    padding: 0;
-    margin: 0;
-  }
-  
+  position: absolute;
+  left: 30em;
+  top: 0.5rem;
+  max-width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: auto;
+  padding: 0;
+  margin: 0;
+}
 
-.box_buttons {
-    display: flex;
-    align-items: center;
-    justify-items: space-evenly;
-    gap: 32px;
+.box_buttons,
+.box_buttonsPerfil {
+  display: flex;
+  align-items: center;
+  justify-items: space-evenly;
+  gap: 32px;
+}
+
+.box_buttonsPerfil {
+  position: relative;
 }
 
 #black_button_decoration {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0em;
-    text-align: left;
-    text-decoration: none;
-    color: black;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+  text-decoration: none;
+  color: black;
 }
 
 #black_button_decoration:hover {
-    color: black;
-    text-decoration: underline;
+  color: black;
+  text-decoration: underline;
 }
 
 #white_button {
-    width: 180px;
-    height: 48px;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #327053;
-    gap: 1px;
-    color: #327053;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0em;
-    text-decoration: none;
+  width: 180px;
+  height: 48px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #327053;
+  gap: 1px;
+  color: #327053;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-decoration: none;
 }
 
 #white_button:hover {
-    background-color: #e5faf0;
+  background-color: #e5faf0;
 }
 
 #green_button {
-    width: 180px;
-    height: 48px;
-    padding: 10px;
-    border-radius: 10px;
-    gap: 1px;
-    color: white;
-    background-color: #327053;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0em;
-    text-decoration: none;
+  width: 180px;
+  height: 48px;
+  padding: 10px;
+  border-radius: 10px;
+  gap: 1px;
+  color: white;
+  background-color: #327053;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-decoration: none;
 }
 
 #green_button:hover {
-    background-color: #5b977b;
+  background-color: #5b977b;
 }
 
 .dropdown_container {
-    position: absolute;
-    top: calc(100% + 5px); /* Ajusta a posição para que o dropdown fique abaixo do botão */
-    z-index: 1000; /* Ajusta a camada z para garantir que o dropdown apareça acima do conteúdo abaixo */
-
-    width: 228.65px;
-    height: 101.01px;
-    margin-top: -15px;
-    margin-left: -150px;
-    
-    border-radius: 8.88px;
-    border: 1.11px solid #E6E6E6;
-    box-shadow: 4.439828872680664px 3.329871654510498px 7.769700527191162px 0px #00000012;
-    background-color:white;
-
-    display: flex;
-
+  position: absolute;
+  top: calc(100% + 5px);
+  z-index: 1000;
+  width: 228.65px;
+  height: 101.01px;
+  margin-top: -15px;
+  margin-left: -150px;
+  border-radius: 8.88px;
+  border: 1.11px solid #e6e6e6;
+  box-shadow: 4.439828872680664px 3.329871654510498px 7.769700527191162px 0
+    #00000012;
+  background-color: #fff;
+  display: flex;
 }
 
 .dropdown {
-    margin-left: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: left;
-    gap: 17.76px;
+  margin-left: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  gap: 17.76px;
 }
 
 .button1 {
-    display: flex;
-    gap: 11.1px;
-    text-decoration: none;
-    background: none;
-    border: none;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-    letter-spacing: 0em;
-    color: #606060;
+  display: flex;
+  gap: 11.1px;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0em;
+  color: #606060;
 }
 
 .button1:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .button2 {
-    display: flex;
-    gap: 11.1px;
-    text-decoration: none;
-    background: none;
-    border: none;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-    letter-spacing: 0em;
-    color: #C7122F;
+  display: flex;
+  gap: 11.1px;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0em;
+  color: #c7122f;
 }
 
 .button2:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .boxlogo {
-    display: flex;
-    align-items: center;
-    gap: 18px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
 
 .hvu {
-    width: 174px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 22.5px;
-    color: #272727;
+  width: 174px;
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 22.5px;
+  color: #272727;
 }
 
 /* Estilos da barra gov.br */
 .govBrHeader {
-    background-color: #1a2b4d; /* Azul escuro do gov.br */
-    color: white;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: 'Poppins', sans-serif;
+  background-color: #1a2b4d; /* Azul escuro do gov.br */
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
 }
 
 .logoSection {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .title {
-    font-size: 1.5em;
-    font-weight: bold;
+  font-size: 1.5em;
+  font-weight: bold;
 }
 
 .navigation {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .navigation a {
-    color: white;
-    text-decoration: none;
-    font-size: 1em;
-    font-weight: 500;
+  color: white;
+  text-decoration: none;
+  font-size: 1em;
+  font-weight: 500;
 }
 
 .navigation a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
+.logosWrapper {
+  display: flex;
+  gap: 1.25rem;
+}
 
-@media only screen and (max-width: 700px) {
-    .header {
-        width: 100%; /* Ajusta a largura para 100% da tela */
-        height: auto; /* Ajusta a altura automaticamente */
-        padding: 0 20px; /* Ajusta o padding para telas menores */
-        align-items: center; /* Centraliza os itens */
-        gap: 130px;
-    }
+@media only screen and (max-width: 1024px) {
+  .header {
+    width: 100%; /* Ajusta a largura para 100% da tela */
+    height: auto; /* Ajusta a altura automaticamente */
+    padding: 0 20px; /* Ajusta o padding para telas menores */
+    align-items: center; /* Centraliza os itens */
+  }
 
-    .box_buttons {
-        width: 100%; /* Ajusta a largura para 100% */
-        justify-content: center; /* Centraliza horizontalmente */
-        gap: 10px; /* Reduz o espaço entre os botões */
-        margin-top: 10px; /* Adiciona um espaço acima */
-    }
+  .logosWrapper {
+    width: 100%;
+    justify-content: center;
+  }
 
-    #black_button_decoration,
-    #white_button,
-    #green_button {
-        width: 100%; /* Ajusta a largura para 100% */
-        text-align: center; /* Centraliza o texto */
-    }
+  .box_buttons {
+    justify-content: center; /* Centraliza horizontalmente */
+    gap: 10px; /* Reduz o espaço entre os botões */
+    margin-top: 10px; /* Adiciona um espaço acima */
+  }
 
-    .dropdown_container {
-        width: 90%; /* Ajusta a largura do dropdown */
-        margin-left: 0; /* Remove a margem à esquerda */
-    }
+  .headerLogin > .box_buttons {
+    width: 100%; /* Ajusta a largura para 100% */
+  }
 
-    .dropdown {
-        align-items: center; /* Centraliza os itens no dropdown */
-    }
+  #black_button_decoration,
+  #white_button,
+  #green_button {
+    width: 100%; /* Ajusta a largura para 100% */
+    text-align: center; /* Centraliza o texto */
+  }
+}
 
-    .boxlogo {
-        margin-bottom: 10px; /* Adiciona um espaço abaixo */
-    }
+@media only screen and (max-width: 600px) {
+  .hvu {
+    display: none;
+  }
 }

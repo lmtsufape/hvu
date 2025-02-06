@@ -6,15 +6,15 @@ import CreateTutorEnderecoForm from "../../src/components/CreateTutorEnderecoFor
 import "@/styles/styles.css";
 
 function PageCadastroTutor() {
-	return (
-		<div className="divPai">
-			<Header04 />
-			<div className="flexStyles">
-				<CreateTutorEnderecoForm />
-			</div>
-			<Footer />
-		</div>
-	);
+  return (
+    <div className="divPai">
+      <Header04 />
+      <div className="flexStyle">
+        <CreateTutorEnderecoForm />
+      </div>
+      <Footer />
+    </div>
+  );
 }
 
 export default PageCadastroTutor;

@@ -1,23 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
-  
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
+
 .boxcadastrotutor {
   display: block;
   justify-content: center;
   align-items: center;
-  width: 80%;
+  width: 100%;
   max-width: 1500px;
   min-width: 300px;
-  height: auto; 
+  height: auto;
   background-color: white;
   padding: 30px;
   margin: auto;
   margin-top: -40px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-style: normal;
 }
 
 .titulo {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 22px;
   font-weight: 600;
   line-height: 36px;
@@ -27,7 +27,7 @@
 }
 
 .input {
-  font-family: 'Poppins', sans-serif;;
+  font-family: "Poppins", sans-serif;
   font-size: 14px;
   font-weight: 300;
   line-height: 20px;
@@ -41,14 +41,14 @@
 }
 
 .input::placeholder {
-  font-family: 'Poppins', sans-serif;;
+  font-family: "Poppins", sans-serif;
   font-size: 14px;
   font-weight: 300;
   line-height: 20px;
   color: #000000;
 }
 .informacaoLAI {
-  background-color: #f9f9f9;  /* Cor de fundo suave */
+  background-color: #f9f9f9; /* Cor de fundo suave */
   border-left: 5px solid #3c8b66ce; /* Borda esquerda para destaque */
   padding: 15px; /* Espaçamento interno */
   margin-top: 15px; /* Margem acima do elemento */
@@ -76,16 +76,16 @@
 }
 
 .obrigatorio {
-  color: #C7122F;
+  color: #c7122f;
 }
 
 .error_message {
   margin-top: -0.2em;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 12px;
   font-weight: 300;
   line-height: 24px;
-  color: #C7122F;
+  color: #c7122f;
 }
 
 .checkbox {
