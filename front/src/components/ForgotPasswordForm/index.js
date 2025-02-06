@@ -22,10 +22,8 @@ function ForgotPasswordForm() {
 		}
 
 		try {
-			await ForgotPassword(email);
-			setMessage("Link de recuperação enviado para o seu email.");
-		}catch (error) {
-			setMessage(error.message || "Erro ao enviar o link. Tente novamente.");
+			const response = await ForgotPassword(email);
+			setMessage(response.message);
 		}finally {
 			setLoading(false);
 		}
