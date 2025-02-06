@@ -5,18 +5,17 @@ import SystemForm from "@/components/SystemForm";
 import Footer from "@/components/Footer";
 import "@/styles/styles.css";
 
-
 function SystemPage() {
-    return(
-        <div className="divPai">
-            < Header02 />
-            < SubHeader />
-            <div className="flexStyle">
-                <SystemForm />
-            </div>
-            < Footer />
-        </div>
-    );
+  return (
+    <div className="divPai">
+      <Header02 />
+      <SubHeader />
+      <div className="flexStyle">
+        <SystemForm />
+      </div>
+      <Footer />
+    </div>
+  );
 }
 
 export default SystemPage;
