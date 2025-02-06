@@ -82,7 +82,7 @@ function FormularioLogin() {
       <div className={styles.form}>
         <div className="form-group">
           <label htmlFor="exampleInputEmail1">
-            E-mail<span className={styles.obrigatorio}>*</span>
+          CPF ou E-mail<span className={styles.obrigatorio}>*</span>
           </label>
           <input
             type="email"
@@ -91,7 +91,7 @@ function FormularioLogin() {
             }`}
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
-            placeholder="Digite seu email"
+            placeholder="Digite seu CPF ou email"
             name="email"
             value={login}
             onChange={(e) => setLogin(e.target.value)}
