@@ -61,6 +61,29 @@ function CreateTutorEnderecoForm() {
     localStorage.setItem(name, value);
   }
 
+  const validarEmail = (email) => {
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  };
+
+  function validarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, "");
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+
+    let soma = 0,
+      resto;
+    for (let i = 1; i <= 9; i++) soma += parseInt(cpf[i - 1]) * (11 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf[9])) return false;
+
+    soma = 0;
+    for (let i = 1; i <= 10; i++) soma += parseInt(cpf[i - 1]) * (12 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+
+    return resto === parseInt(cpf[10]);
+  }
+
   const validateForm = () => {
     const newErrors = {};
     if (!tutorFormData.nome) {
@@ -70,7 +93,7 @@ function CreateTutorEnderecoForm() {
     }
     if (!tutorFormData.email) {
       newErrors.email = "E-mail é obrigatório";
-    } else if (!/\S+@\S+\.\S+/.test(tutorFormData.email)) {
+    } else if (!validarEmail(tutorFormData.email)) {
       newErrors.email = "E-mail inválido";
     }
     if (!tutorFormData.senha) {
@@ -81,9 +104,7 @@ function CreateTutorEnderecoForm() {
     } else if (tutorFormData.senha !== tutorFormData.confirmarSenha) {
       newErrors.confirmarSenha = "As senhas não coincidem";
     }
-    if (!tutorFormData.cpf) {
-      newErrors.cpf = "CPF é obrigatório";
-    } else if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(tutorFormData.cpf)) {
+    if (!validarCPF(tutorFormData.cpf)) {
       newErrors.cpf = "CPF inválido";
     }
     if (!tutorFormData.telefone) {
