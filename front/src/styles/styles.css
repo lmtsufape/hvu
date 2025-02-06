@@ -10,7 +10,7 @@
   flex-direction: column;
 }
 
-.flexStyle{
+.flexStyle {
   flex: 1;
   align-items: center;
   justify-content: center;
@@ -18,33 +18,33 @@
   flex-direction: column;
 }
 
+@media (max-width: 128px) {
+  .flexStyle > div {
+    justify-content: center;
+    align-items: center;
+  }
+}
 
-@media (max-width: 700px) {
-
-  .flexStyles {
+@media (max-width: 979px) {
+  .flexStyle {
     width: 100%;
-    max-width: 600px;  
+    max-width: 600px;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
-}
+  }
 
-
-
-.divPai {
-  display: block;  
-  width: 100%;
-  max-width: 100vw;
-  padding: 0;
-  margin: 0 auto; 
-  box-sizing: border-box;
-  overflow-x: hidden; 
-}
-
+  .divPai {
+    width: 100%;
+    max-width: 100vw;
+    padding: 0;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
 
   .container {
-    max-width: 390px; 
+    max-width: 390px;
     margin: 0 auto;
-}
-
+  }
 }

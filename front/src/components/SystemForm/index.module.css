@@ -1,154 +1,164 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .page {
-    min-height: 500px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 50px;
-    margin-top: 0em;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  margin-top: 0em;
 }
 
-.titulo{
-    margin-bottom: 20px;
+.titulo {
+  margin-bottom: 20px;
 }
 
 .container {
-    width: 1200px;
-    margin-bottom: 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: -60px;
+  width: 100%;
+  max-width: 65rem;
+  margin-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: -60px;
 }
 
 .container h1 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 36px;
-    letter-spacing: 0em;
-    color: #000000;
+  font-family: "Poppins", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+  color: #000000;
 }
 
 .container div h6 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 30px;
-    letter-spacing: 0em;
-    text-align: justify;
-    color: #404040;
-    /*text-indent: 50px;*/
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: justify;
+  color: #404040;
+  /*text-indent: 50px;*/
 }
 
-.voltar{
-    margin-top: -1.3em;
+.voltar {
+  margin-top: -1.3em;
 }
 
 .equipeContainer {
-    text-align: center; /* Centraliza o texto */
-    margin-top: 20px; /* Adiciona um espaço superior */
-  }
-  
-  .equipeContainer h4 {
-    margin-top: 30px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 36px;
-    letter-spacing: 0em;
-    color: #000000;
-  }
-  
-  .equipeLista {
-    list-style-type: none; 
-    padding: 0;
-    margin: 0;
-  }
-  
-  .equipeLista li {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 30px;
-    letter-spacing: 0em;
-    text-align: justify;
-    color: #404040;
-  }
+  text-align: center; /* Centraliza o texto */
+  margin-top: 20px; /* Adiciona um espaço superior */
+}
+
+.equipeContainer h4 {
+  margin-top: 30px;
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+  color: #000000;
+}
+
+.equipeLista {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.equipeLista li {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: justify;
+  color: #404040;
+}
 
 @media only screen and (max-width: 700px) {
-    .equipeContainer {
-        text-align: center; /* Mantém centralizado */
-        margin-top: 15px; 
-      }
-    
-      .equipeContainer h4 {
-        font-size: 18px; /* Reduz o tamanho do título */
-        line-height: 28px;
-        margin-top: 20px;
-      }
-    
-      .equipeLista {
-        padding: 0;
-        margin: 10px auto; /* Centraliza a lista */
-        max-width: 90%; /* Evita que o texto fique muito espalhado */
-      }
-    
-      .equipeLista li {
-        font-size: 14px; /* Reduz tamanho da fonte */
-        line-height: 24px; /* Diminui o espaçamento entre os nomes */
-        text-align: center; /* Alinha os nomes no centro */
-      }
-    .page {
-        gap: 1px; /* Espaçamento entre elementos */
-    }
-    .titulo{
-        margin-top: -90px;
-    }
+  .equipeContainer {
+    text-align: center; /* Mantém centralizado */
+    margin-top: 15px;
+  }
 
+  .equipeContainer h4 {
+    font-size: 18px; /* Reduz o tamanho do título */
+    line-height: 28px;
+    margin-top: 20px;
+  }
 
-    .container {
-        width: 38%; /* Ocupa toda a largura disponível */
-        padding: 0; /* Remove qualquer padding desnecessário */
-        margin: 0 auto; /* Centraliza o container */
-        gap: 20px; /* Espaçamento entre os elementos */
+  .equipeLista {
+    padding: 0;
+    margin: 10px auto; /* Centraliza a lista */
+    max-width: 90%; /* Evita que o texto fique muito espalhado */
+  }
 
-    }
+  .equipeLista li {
+    font-size: 14px; /* Reduz tamanho da fonte */
+    line-height: 24px; /* Diminui o espaçamento entre os nomes */
+    text-align: center; /* Alinha os nomes no centro */
+  }
+  .titulo {
+    margin-top: -90px;
+  }
 
-    .container h1 {
-        font-size: 20px; /* Reduz o tamanho do título */
-        font-weight: 700; /* Mantém o peso da fonte */
-        line-height: 1.5; /* Ajusta o espaçamento entre linhas */
-        text-align: center; /* Centraliza o título */
-        margin: 20px 0; /* Espaçamento acima e abaixo */
-        padding: auto;
-        margin-bottom: auto;
-    }
+  .container {
+    width: 100%; /* Ocupa toda a largura disponível */
+    padding: 0; /* Remove qualquer padding desnecessário */
+    margin: 0 auto; /* Centraliza o container */
+    gap: 20px; /* Espaçamento entre os elementos */
+  }
 
-    .container div h6 {
-        width: 80%; /* Ocupa mais largura em relação ao container */
-        font-size: 14px; /* Mantém a fonte legível */
-        line-height: 24px; /* Ajusta o espaçamento entre linhas */
-        text-align: justify; /* Justifica o texto para melhor organização */
-        margin: 0 auto; /* Centraliza o texto dentro do container */
-        padding-left: 20px; /* Espaço adicional à esquerda */
-        padding-right: 20px; /* Espaço adicional à direita */
-        margin-bottom: 25px;
-       
-    }
-    .voltar {
-        display: flex;
-        justify-content: flex-start; /* Alinha o botão à esquerda */
-        margin-left: 10px; /* Ajusta a posição do botão */
-        padding: 5px; /* Ajusta o espaçamento */
-    }
-    
-    .voltar button {
-        font-size: 14px; /* Reduz tamanho do texto */
-        padding: 6px 10px; /* Reduz tamanho do botão */
-        width: auto; /* Ajusta a largura do botão dinamicamente */
-    }
-    
+  .container h1 {
+    font-size: 20px; /* Reduz o tamanho do título */
+    font-weight: 700; /* Mantém o peso da fonte */
+    line-height: 1.5; /* Ajusta o espaçamento entre linhas */
+    text-align: center; /* Centraliza o título */
+    margin: 20px 0; /* Espaçamento acima e abaixo */
+    padding: auto;
+    margin-bottom: auto;
+  }
 
+  .container div h6 {
+    width: 100%; /* Ocupa mais largura em relação ao container */
+    font-size: 14px; /* Mantém a fonte legível */
+    line-height: 24px; /* Ajusta o espaçamento entre linhas */
+    text-align: justify; /* Justifica o texto para melhor organização */
+    margin: 0 auto; /* Centraliza o texto dentro do container */
+    padding-left: 20px; /* Espaço adicional à esquerda */
+    padding-right: 20px; /* Espaço adicional à direita */
+    margin-bottom: 25px;
+  }
+  .voltar {
+    display: flex;
+    justify-content: flex-start; /* Alinha o botão à esquerda */
+    margin-left: 10px; /* Ajusta a posição do botão */
+    padding: 5px; /* Ajusta o espaçamento */
+  }
+
+  .voltar button {
+    font-size: 14px; /* Reduz tamanho do texto */
+    padding: 6px 10px; /* Reduz tamanho do botão */
+    width: auto; /* Ajusta a largura do botão dinamicamente */
+  }
+}
+
+.equipeContainer {
+  background: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.equipeLista {
+  max-width: 500px;
+  margin: auto;
+}
+
+.list-group-item {
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
 }

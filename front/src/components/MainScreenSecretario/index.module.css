@@ -1,65 +1,75 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .container {
-    margin-top: 5em;
-    margin-bottom: 5em;
-    min-height: 500px;
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    flex-direction: column;
-    gap: 32px;
+  margin-top: 5em;
+  margin-bottom: 5em;
+  min-height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 32px;
 }
 
 .box_button {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
 }
 
 .button {
-    width: 260px;
-    height: 210px;
-    border: none;
-    border-radius: 24px;
-    box-shadow: 0px 0px 10px 0px #0000001A;
-    text-decoration: none;
-    background-color: #FFFFFF;
-    padding-top: 3em;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    justify-content: center; 
-    align-items: center;
+  width: 15rem;
+  height: 210px;
+  border: none;
+  border-radius: 24px;
+  box-shadow: 0px 0px 10px 0px #0000001a;
+  text-decoration: none;
+  background-color: #ffffff;
+  padding-top: 3em;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
 }
 
 .button:hover {
-    box-shadow: 0 0 5px 2px #3d856371;
+  box-shadow: 0 0 5px 2px #3d856371;
 }
 
 .button h6 {
-    width: 212px;
-    height: 72px;
-    color: #327053;
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 30px;
-    letter-spacing: 0em; 
-    
+  color: #327053;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  letter-spacing: 0em;
 }
 
 .message {
-    min-height: 300px;
-    margin-top: 56px; 
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 30px;
-    letter-spacing: 0em;
-    text-align: center;
+  min-height: 300px;
+  margin-top: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
 }
 
+@media screen and (max-width: 480px) {
+  .button {
+    width: 9rem;
+  }
+
+  .button > h6 {
+    font-size: 0.85rem;
+    font-family: "Poppins", sans-serif;
+    line-height: 1rem;
+    letter-spacing: 0em;
+  }
+}
