@@ -126,6 +126,7 @@
   .navbar {
     width: 100%;
     gap: 1em;
+    flex-wrap: wrap;
   }
 
   .lista {
