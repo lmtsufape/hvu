@@ -7,7 +7,6 @@ export async function ForgotPassword(email) {
         // Retorna a mensagem de sucesso diretamente
         return { success: true, message: response.data };
     } catch (error) {
-        console.error("Erro na requisição:", error.response);
 
         const errorMessage = error.response?.data;
         return { success: false, message: errorMessage };
