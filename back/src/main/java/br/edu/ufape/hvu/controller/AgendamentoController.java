@@ -1,7 +1,9 @@
 package br.edu.ufape.hvu.controller;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +43,15 @@ public class AgendamentoController {
 			.map(AgendamentoResponse::new)
 			.toList();
 	}
-	
+
+	// Listar agendamentos por ordem de horário
+	@GetMapping("agendamento/ordemdehorario")
+	public List<AgendamentoResponse> getAllAgendamentosOrdemDehorario() {
+		return facade.getAllAgendamento().stream()
+				.map(AgendamentoResponse::new)
+				.sorted(Comparator.comparing(AgendamentoResponse::getDataVaga).reversed()).toList();
+	}
+
 	@PostMapping("agendamento/vaga/{idVaga}")
 	public AgendamentoResponse createAgendamento(@Valid @RequestBody AgendamentoRequest newObj, @PathVariable Long idVaga) {
 		return new AgendamentoResponse(facade.saveAgendamento(newObj.convertToEntity(),idVaga));
