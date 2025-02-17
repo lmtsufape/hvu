@@ -122,7 +122,9 @@ export default function AgendamentosByMedico() {
   };
 
   // Ordena os agendamentos com base nas datas
-  const sortedAgendamentos = agendamentos.sort(compareDates);
+  const sortedAgendamentos = [...agendamentos].sort((a, b) => {
+    return new Date(a.dataHora) - new Date(b.dataHora);
+  });
 
   return (
     <div>
@@ -153,7 +155,7 @@ export default function AgendamentosByMedico() {
           </div>
         ) : (
           <ul className={styles.list}>
-            {agendamentos.map((agendamento) => (
+            {sortedAgendamentos.map((agendamento) => (
               <li key={agendamento.id} className={styles.info_container}>
                 <div className={styles.agendamentos}>
                   <div className={styles.agendamentoBox}>
