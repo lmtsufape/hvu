@@ -69,3 +69,26 @@
 .button_cancelar_consulta:hover {
   background-color: #5b977b;
 }
+
+@media(max-width: 700px) {
+
+  .modal{
+    width: 21em;
+    height: 14em;
+  }
+
+  .modalContent h1{
+    line-height: 35px;
+    transform: translate(0, 100%);
+    width: 300px;
+  } 
+
+  .modalContent{
+    width:30em;
+  }
+
+  .div_button2 {
+    transform: translate(0, 100%);
+    width: 300px;
+  }
+}
