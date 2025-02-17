@@ -5,6 +5,7 @@ import styles from "./index.module.css";
 const ModalAgendamento = ({
 	tutor,
 	selectedVaga,
+	medico,
 	isOpen,
 	closeModal,
 	descricaoCancelamento,
@@ -50,6 +51,11 @@ const ModalAgendamento = ({
 								<div className={styles.subtitle}>
 									{selectedVaga?.especialidade?.nome}
 								</div>
+							</div>
+							{/* Adicionando o campo Médico */}
+							<div className={styles.box}>
+								<div className={styles.title}>Médico</div>
+								<div className={styles.subtitle}>{medico || "Não informado"}</div>
 							</div>
 						</div>
 						<div className={styles.box}>
