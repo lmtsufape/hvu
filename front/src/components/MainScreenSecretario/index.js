@@ -78,6 +78,13 @@ function MainScreenSecretario() {
                     <h6>Gerenciar tipos de consulta</h6>
                 </button>
             </div>
+
+            <div className={styles.box_button}>
+                <button className={styles.button} onClick={() => router.push('/gerenciarAvisos')}>
+                    <Image src="/pets.svg" alt="Gerenciar avisos" width={62} height={62} />
+                    <h6>Gerenciar avisos</h6>
+                </button>
+            </div>
         </div>
     );
 }
