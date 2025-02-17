@@ -126,8 +126,8 @@ function GerenciarVagas() {
         const turnoManha = [];
         const turnoTarde = [];
 
-        const horariosManha = ["08:00", "09:00", "10:00", "11:00"];
-        const horariosTarde = ["13:00", "14:00", "15:00", "16:00"];
+        const horariosManha = ["07:30", "08:30", "09:30", "10:30"];
+        const horariosTarde = ["12:30", "13:30", "14:30", "15:30"];
 
         for (let i = 0; i < selectedEspecialidade.length; i++) {
             const especialidadeId = selectedEspecialidade[i];
@@ -225,7 +225,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 1 | 08:00 às 09:00
+                                                Vaga 1 | 07:30 às 08:30
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -300,7 +300,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 2 | 09:00 às 10:00
+                                                Vaga 2 | 08:30 às 09:30
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -376,7 +376,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 3 | 10:00 às 11:00
+                                                Vaga 3 | 09:30 às 10:30
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -454,7 +454,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 4 | 11:00 às 12:00
+                                                Vaga 4 | 10:30 às 11:30
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -542,7 +542,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 5 | 13:00 às 14:00
+                                                Vaga 5 | 12:30 às 13:30
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -620,7 +620,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 6 | 14:00 às 15:00
+                                                Vaga 6 | 13:30 às 14:30
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -698,7 +698,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 7 | 15:00 às 16:00
+                                                Vaga 7 | 14:30 às 15:30
                                             </label>
                                             <input
                                                 type="checkbox"
@@ -776,7 +776,7 @@ function GerenciarVagas() {
                                     <div key={numVaga}>
                                         <div className={styles.input_space}>
                                             <label htmlFor={`${numVaga}-checkbox`} className="form-label">
-                                                Vaga 8 | 16:00 às 17:00
+                                                Vaga 8 | 15:30 às 16:30
                                             </label>
                                             <input
                                                 type="checkbox"
