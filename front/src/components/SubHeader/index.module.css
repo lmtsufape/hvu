@@ -27,3 +27,99 @@
     text-decoration: underline;
 }
 
+.menuButton {
+    display: none;
+}
+.closeButton {
+    display: none;
+}
+
+@media (max-width: 700px) {
+
+    .menuButtonBar{
+        width:100vw;
+        background: #39805F;
+    }
+    /* Botão para abrir o menu */
+    .menuButton {
+        justify-content: flex-start;
+        top: 15px;
+        left: 15px;
+        font-size: 24px;
+        background: #39805F;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        z-index: 1000; 
+        display: flex;
+    }
+
+    .menuButton:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Estilização do Menu Lateral */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -60vw;
+        width: 60vw;
+        height: 100%;
+        background: #39805F;
+        padding-top: 60px;
+        transition: 0.3s ease-in-out;
+        z-index: 999;
+        border-radius: 0 20px 20px 0;
+        transition: left 0.3s ease-in-out;
+    }
+
+    /* Quando o menu estiver aberto */
+    .sidebar.open {
+        left: 0;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Botão para fechar */
+    .closeButton {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+        background: none;
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: block;
+    }
+
+    .closeButton:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Estilo dos botões do menu */
+    .button_box {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+        padding-top: 5vh;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    .button_box button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: left;
+        width: 90%;
+        text-decoration: underline;
+    }
+    .button_box button span{
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+    }
+}

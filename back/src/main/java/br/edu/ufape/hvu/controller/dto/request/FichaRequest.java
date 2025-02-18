@@ -15,12 +15,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 
 @Getter @Setter @NoArgsConstructor
-public  class FichaRequest  {
+public  class FichaRequest {
     private long id;
     private String nome;
     private Map<String, Object> conteudo;
     private LocalDateTime dataHora;
-    private TipoFicha tipoFicha;
 
 
     public Ficha convertToEntity() {
@@ -36,5 +35,4 @@ public  class FichaRequest  {
 
         return obj;
     }
-
 }

@@ -36,10 +36,27 @@ function GetAllAgendamentosDiaForm() {
   }, []);
 
   const fetchData = async () => {
-    const dataFormatada = dataSelecionada.toISOString().slice(0, 10); // Obtém 'yyyy-mm-dd'
+    const dataFormatada = dataSelecionada.toISOString().slice(0, 10);
     try {
       const VagasData = await getVagaByDate(dataFormatada);
       setVagas(VagasData);
+      // Para cada vaga, buscar o tutor do animal associado
+      const vagasComTutor = await Promise.all(
+        VagasData.map(async (vaga) => {
+          if (vaga.agendamento?.animal?.id) {
+            try {
+              const tutorData = await getTutorByAnimal(vaga.agendamento.animal.id);
+              return { ...vaga, tutorCPF: tutorData?.cpf || "N/A" }; // Adiciona CPF ao objeto da vaga
+            } catch (error) {
+              console.error("Erro ao obter tutor:", error);
+              return { ...vaga, tutorCPF: "N/A" }; // Evita erros caso a API falhe
+            }
+          }
+          return { ...vaga, tutorCPF: "N/A" };
+        })
+      );
+  
+      setVagas(vagasComTutor);
     } catch (error) {
       console.error("Erro ao buscar vagas:", error);
     }
@@ -113,14 +130,14 @@ function GetAllAgendamentosDiaForm() {
   console.log("vagas: ", vagas);
 
   const horarios = [
-    "08:00",
-    "09:00",
-    "10:00",
-    "11:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
+    "07:30",
+    "08:30",
+    "09:30",
+    "10:30",
+    "12:30",
+    "13:30",
+    "14:30",
+    "15:30",
   ];
 
   return (
@@ -204,8 +221,10 @@ function GetAllAgendamentosDiaForm() {
                                     <div className={styles.info1}>
                                       {vaga.agendamento?.animal ? (
                                         <>
-                                          {vaga.agendamento?.animal.nome} &bull;{" "}
-                                          {vaga.tipoConsulta?.tipo}
+                                          {vaga.agendamento?.animal.nome} &bull; {vaga.tipoConsulta?.tipo}
+                                          <span className={styles.cpfTutor}>
+                                            • CPF: {vaga.tutorCPF}
+                                          </span>
                                         </>
                                       ) : (
                                         <>{vaga.medico?.nome}</>
@@ -234,7 +253,7 @@ function GetAllAgendamentosDiaForm() {
                                     <div className={styles.info2}>
                                       {horario} -{" "}
                                       {new Date(vaga.dataHora).getHours() + 1}
-                                      :00
+                                      :30
                                     </div>
                                   </div>
                                 </div>
@@ -245,7 +264,7 @@ function GetAllAgendamentosDiaForm() {
                     </div>
                   </th>
                 </tr>
-                {horario === "11:00" && (
+                {horario === "10:30" && (
                   <tr key="separator" className={styles.separator}>
                     <td colSpan={2} className={styles.separatorCell}></td>
                   </tr>
@@ -259,6 +278,7 @@ function GetAllAgendamentosDiaForm() {
       <ModalAgendamento
         tutor={tutor}
         selectedVaga={selectedVaga}
+        medico={selectedVaga?.medico?.nome}
         isOpen={modalOpen}
         closeModal={closeModal}
         descricaoCancelamento={descricaoCancelamento}

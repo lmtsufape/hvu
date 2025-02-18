@@ -48,29 +48,6 @@ public class Facade {
 
     public void forgetPassword(String email) {keycloakService.sendResetPasswordEmail(email);}
 
-
-    // Ficha--------------------------------------------------------------
-    @Autowired
-    private FichaServiceInterface fichaServiceInterface;
-    public Ficha saveFicha(Ficha newInstance) {
-        return fichaServiceInterface.saveFicha(newInstance);
-    }
-    public Ficha updateFicha(Ficha transientObject) {
-        return fichaServiceInterface.updateFicha(transientObject);
-    }
-    public Ficha findFichaById(long id) {
-        return fichaServiceInterface.findFichaById(id);
-    }
-    public List<Ficha> getAllFicha() {
-        return fichaServiceInterface.getAllFicha();
-    }
-    public void deleteFicha(Ficha persistentObject) {
-        fichaServiceInterface.deleteFicha(persistentObject);
-    }
-    public void deleteFicha(long id) {
-        fichaServiceInterface.deleteFicha(id);
-    }
-
     // Tutor--------------------------------------------------------------
 
     private final TutorServiceInterface tutorServiceInterface;
@@ -459,6 +436,34 @@ public class Facade {
         racaServiceInterface.deleteRaca(id);
     }
 
+    // Aviso--------------------------------------------------------------
+    @Autowired
+    private AvisoServiceInterface avisoServiceInterface;
+
+    public Aviso saveAviso(Aviso newInstance) {
+        return avisoServiceInterface.saveAviso(newInstance);
+    }
+
+    public Aviso updateAviso(Aviso transientObject) {
+        return avisoServiceInterface.updateAviso(transientObject);
+    }
+
+    public Aviso findAvisoById(long id) {
+        return avisoServiceInterface.findAvisoById(id);
+    }
+
+    public List<Aviso> getAllAviso() {
+        return avisoServiceInterface.getAllAviso();
+    }
+
+    public void deleteAviso(Aviso persistentObject) {
+        avisoServiceInterface.deleteAviso(persistentObject);
+    }
+
+    public void deleteAviso(long id) {
+        avisoServiceInterface.deleteAviso(id);
+    }
+
     // Vaga--------------------------------------------------------------
     @Autowired
     private VagaServiceInterface vagaServiceInterface;
@@ -532,8 +537,8 @@ public class Facade {
                         .reduce((first, second) -> second)
                         .orElse(null);
 
-        if (ultimaVaga != null) {
-            throw new RuntimeException("Vaga não encontrada no momento da procura pelo retorno expirado.");
+        if (ultimaVaga == null) {
+            return true;
         }
 
         LocalDate dataUltimaVaga = ultimaVaga.getDataHora().toLocalDate();
@@ -1109,6 +1114,35 @@ public class Facade {
 
     public void deleteEtapa(long id) {
         etapaServiceInterface.deleteEtapa(id);
+    }
+
+    // Ficha--------------------------------------------------------------
+
+    @Autowired
+    private FichaServiceInterface fichaServiceInterface;
+
+    public Ficha saveFicha(Ficha newInstance) {
+        return fichaServiceInterface.saveFicha(newInstance);
+    }
+
+    public Ficha updateFicha(Ficha transientObject) {
+        return fichaServiceInterface.updateFicha(transientObject);
+    }
+
+    public Ficha findFichaById(long id) {
+        return fichaServiceInterface.findFichaById(id);
+    }
+
+    public List<Ficha> getAllFicha() {
+        return fichaServiceInterface.getAllFicha();
+    }
+
+    public void deleteFicha(Ficha persistentObject) {
+        fichaServiceInterface.deleteFicha(persistentObject);
+    }
+
+    public void deleteFicha(long id) {
+        fichaServiceInterface.deleteFicha(id);
     }
 
     // FichaSolicitacaoServico--------------------------------------------------------------

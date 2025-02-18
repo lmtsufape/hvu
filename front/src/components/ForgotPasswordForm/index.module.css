@@ -1,82 +1,137 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .page {
-	display: flex;
-	justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .container {
-	width: 90%;
-	max-width: 670px;
-	font-family: "Poppins", sans-serif;
-	font-size: 1rem;
-	font-weight: 500;
-	line-height: 1.5;
-	letter-spacing: 0;
+  width: 90%;
+  max-width: 670px;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+  margin-bottom: 10%;
 }
 
 .text_box {
-	margin-top: 5vh;
-	margin-bottom: 3vh;
+  margin-top: 5vh;
+  margin-bottom: 3vh;
 }
 
 .text_box h1 {
-	font-size: 1.5rem;
-	font-weight: 700;
-	line-height: 1.5;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.5;
 }
 
 .text_box h6 {
-	font-size: 1rem;
-	font-weight: 400;
-	line-height: 1.875;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.875;
 }
 
 .input {
-	font-family: "Poppins", sans-serif;
-	font-size: 12px;
-	font-weight: 300;
-	line-height: 20px;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 20px;
 
-	color: #000000;
+  color: #000000;
 }
 
 .input:focus {
-	outline: none;
-	box-shadow: 0 0 5px 2px #3d856371;
-	border: 1px solid #ccc;
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
+  border: 1px solid #ccc;
 }
 
 .input::placeholder {
-	font-family: "Poppins", sans-serif;
-	font-size: 14px;
-	font-weight: 300;
-	line-height: 20px;
-	color: #000000;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 20px;
+  color: #000000;
 }
 
 .button {
-	margin-top: 3vh;
-	width: 180px;
-	height: 48px;
-	border-radius: 10px;
-	border: 1px solid #327053;
-	background-color: #327053;
-	font-size: 1rem;
-	font-weight: 600;
-	line-height: 1.5;
-	letter-spacing: 0;
-	color: #fff5f6;
+  margin-top: 3vh;
+  width: 180px;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid #327053;
+  background-color: #327053;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: #fff5f6;
 }
 
 .button:hover {
-	background-color: #5b977b;
+  background-color: #5b977b;
 }
 
 .message {
-	margin-top: 10px; 
-	color: #333; 
-	font-size: 16px; 
-	position: absolute;
+  margin-top: 10px;
+  color: #333;
+  font-size: 16px;
+  position: absolute;
+}
+
+@media (max-width: 700px) {
+  .container {
+    width: 60%;
+    padding: 10px;
+    font-size: 0.9rem;
   }
-  
+
+  .text_box h1 {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .text_box h6 {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .button {
+    width: 100%;
+    height: 45px;
+    font-size: 1rem;
+  }
+
+  .input {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 500px) {
+  .container {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 15px;
+    min-height: 60vh;
+  }
+
+  .text_box h1 {
+    font-size: 0.95rem;
+  }
+
+  .text_box h6 {
+    font-size: 0.85rem;
+  }
+
+  .button {
+    height: 40px;
+    font-size: 0.9rem;
+  }
+  .input {
+    font-size: 13px;
+    height: 2.5em;
+  }
+}

@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.service;
 
 import br.edu.ufape.hvu.model.Ficha;
-
 import java.util.List;
 
 public interface FichaServiceInterface {
@@ -11,5 +10,4 @@ public interface FichaServiceInterface {
     void deleteFicha(Ficha u);
     void deleteFicha(long id);
     List<Ficha> getAllFicha();
-
 }
