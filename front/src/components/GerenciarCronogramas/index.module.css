@@ -139,3 +139,48 @@
     text-align: center;
 }
 
+@media (max-width: 768px) {
+    .navbar_container {
+        flex-direction: column; 
+        gap: 16px;
+        align-items: start;
+    }
+
+    .search {
+        width: 90%;
+    }
+
+    .info_container {
+        flex-direction: column;
+        height: 400px;
+        padding: 40px;
+        gap: 10px;
+        width: 90%;
+    }
+
+    .info_box {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1; /* Faz a div crescer conforme necessário */
+        height: auto;
+        width: 100%;
+
+    }
+
+    .info_box p {
+        font-size: 17px;
+        line-height: 20px;
+        letter-spacing: 0em;
+    } 
+
+    .button_container {
+        justify-content: end;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container h1 {
+        font-size: 20px;
+    }
+}
