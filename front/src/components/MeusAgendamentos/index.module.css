@@ -147,7 +147,7 @@
 
 .modal {
     position: absolute;
-    margin: -20rem 0 0 50rem;
+    margin: -18rem 0 0 16rem;
     width: 620px;
     height: 181px;
     border-radius: 20px;
@@ -238,6 +238,11 @@
 }
 
 @media only screen and (max-width: 700px) {
+
+    .container {
+        width: 80vw;
+    }
+
     .voltar {
         margin-left: 1em;
     }
