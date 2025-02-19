@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.model.Animal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -39,7 +40,14 @@ public class ConsultaController {
 
 	@PostMapping("consulta/{id}")
 	public ConsultaResponse createConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest newObj) {
-		return new ConsultaResponse(facade.saveConsulta(id, newObj.convertToEntity()));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+
+		Animal animal = facade.findAnimalById(newObj.getAnimal().getId(), principal.getSubject());
+		Consulta consulta = newObj.convertToEntity();
+		consulta.setAnimal(animal);
+
+		return new ConsultaResponse(facade.saveConsulta(id, consulta));
 	}
 	
 	@GetMapping("consulta/{id}")

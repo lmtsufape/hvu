@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.edu.ufape.hvu.model.Animal;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -54,7 +55,13 @@ public class AgendamentoController {
 
 	@PostMapping("agendamento/vaga/{idVaga}")
 	public AgendamentoResponse createAgendamento(@Valid @RequestBody AgendamentoRequest newObj, @PathVariable Long idVaga) {
-		return new AgendamentoResponse(facade.saveAgendamento(newObj.convertToEntity(),idVaga));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+
+		Animal animal = facade.findAnimalById(newObj.getAnimal().getId(), principal.getSubject());
+		Agendamento agendamento = newObj.convertToEntity();
+		agendamento.setAnimal(animal);
+		return new AgendamentoResponse(facade.saveAgendamento(agendamento, idVaga));
 	}
 	
 	@PostMapping("agendamento/especial")
