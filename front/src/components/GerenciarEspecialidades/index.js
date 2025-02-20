@@ -104,11 +104,7 @@ function GerenciarEspecialidades() {
                             <div className={styles.info_box}>
                                 <h6>Especialidade</h6>
                                 <p>{especialidade.nome}</p>
-                            </div>
-                            <div className={styles.info_box}>
-                                <h6></h6>
-                                <p></p>
-                            </div>
+                            </div>    
                             <div  className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}
