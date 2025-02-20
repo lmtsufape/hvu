@@ -105,10 +105,6 @@ function GerenciarTiposConsulta() {
                                 <h6>Tipo de consulta</h6>
                                 <p>{tipoConsulta.tipo}</p>
                             </div>
-                            <div className={styles.info_box}>
-                                <h6></h6>
-                                <p></p>
-                            </div>
                             <div  className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}
