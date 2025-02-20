@@ -1,8 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
 .container {
-  width: 100%;
-  max-width: 1200px;
   min-height: 900px;
   display: flex;
   flex-direction: column;
@@ -12,8 +10,7 @@
 }
 
 .container_box {
-  width: 100%;
-  max-width: 1200px;
+  width: 1200px;
   min-height: 363.72px;
   margin-top: -30px;
   margin-bottom: 56px;
@@ -21,6 +18,7 @@
   border: 0.5px solid #b1b1b1;
   display: flex;
   flex-direction: column;
+  gap: 56px;
 }
 
 .container h1 {
@@ -45,7 +43,7 @@
 }
 
 .tutor {
-  width: 100%;
+  width: 1152px;
   margin-top: 56px;
   display: flex;
   flex-direction: column;
@@ -55,18 +53,22 @@
 .item_container {
   display: flex;
   align-items: center;
+  width: 90%;
+  display: flex;
   flex-wrap: wrap;
+  row-gap: 30px;
+
+  justify-content: space-between;
 }
 
 .item_box {
-  flex: 1;
-  width: auto;
+  width: 300px;
   display: flex;
   flex-direction: column;
 }
 
 .item_box h6 {
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 700;
   line-height: 24px;
@@ -75,21 +77,21 @@
 
 .item_box div {
   margin-top: -6px;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 18px;
   font-weight: 500;
   line-height: 24px;
-  color: #39805f;
+  color: #39805F;
 }
 
 .title_endereco {
-  width: 100%;
+  width: 1152px;
   margin-bottom: -80px;
   display: flex;
   justify-content: left;
   align-items: left;
 
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 20px;
   font-weight: 700;
   line-height: 30px;
@@ -98,13 +100,12 @@
 }
 
 .botao {
-  margin-top: 2.5rem;
-  margin-bottom: 1.5rem;
-  width: 100%;
+  width: 1152px;
   display: flex;
   justify-content: right;
   align-items: center;
-  padding-right: 1rem;
+  margin-top: -40px;
+  margin-bottom: 56px;
 }
 
 .editar_button {
@@ -117,7 +118,7 @@
   color: #327053;
   background-color: white;
   font-size: 16px;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .editar_button:hover {
@@ -126,11 +127,11 @@
 
 .message {
   min-height: 300px;
-  margin-top: -400px;
-  display: flex;
+  margin-top: -400px; 
+  display: flex; 
   align-items: center;
   justify-content: center;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 20px;
   font-weight: 400;
   line-height: 30px;
@@ -138,25 +139,52 @@
   text-align: center;
 }
 
-@media screen and (max-width: 979px) {
-  .item_container {
-    flex-wrap: wrap;
-    gap: 36px;
+@media (max-width: 768px) {
+  .container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
   }
+
+  .container_box {
+      width: 90%;
+      padding: 15px;
+      gap: 20px;
+  }
+
+  .tutor {
+      width: 95%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+  }
+
+  .item_container {
+      width: 100%;
+      gap: 20px;
+  }
+
   .item_box {
-    flex: 1;
-    width: auto;
+      max-width: 200px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
   }
 
   .botao {
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
+      width: 95%;
+      display: flex;
+      justify-content: right;
+      margin-top: 0px;
+      margin-bottom: 0px;
   }
+}
 
-  .botao > button {
-    width: 80%;
-    margin-bottom: 0.5rem;
-  }
+@media (max-width: 585px){
+
+  .item_box {
+    max-width: 100%;
+}
 }
