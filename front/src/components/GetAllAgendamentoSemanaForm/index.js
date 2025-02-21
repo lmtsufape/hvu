@@ -25,7 +25,7 @@ function GetAllAgendamentosSemanaForm() {
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
 
-  const horarios = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
+  const horarios = ["07:30", "08:30", "09:30", "10:30", "12:30", "13:30", "14:30", "15:30"];
   const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
   const dias = [];
 
@@ -178,7 +178,7 @@ function GetAllAgendamentosSemanaForm() {
                     );
                   })}
                 </tr>
-                {horario === "11:00" && (
+                {horario === "10:30" && (
                   <tr key="separator" className={styles.separator}>
                     <td colSpan={dias.length + 1} className={styles.separatorCell}></td>
                   </tr>
