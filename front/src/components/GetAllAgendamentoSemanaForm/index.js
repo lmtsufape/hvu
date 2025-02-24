@@ -191,6 +191,7 @@ function GetAllAgendamentosSemanaForm() {
       <ModalAgendamento
         tutor={tutor}
         selectedVaga={selectedVaga}
+        medico={selectedVaga?.medico?.nome}
         isOpen={modalOpen}
         closeModal={closeModal}
         descricaoCancelamento={descricaoCancelamento}
