@@ -105,10 +105,6 @@ function GerenciarEspecies() {
                                 <h6>Espécie</h6>
                                 <p>{especie.nome}</p>
                             </div>
-                            <div className={styles.info_box}>
-                                <h6></h6>
-                                <p></p>
-                            </div>
                             <div  className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}

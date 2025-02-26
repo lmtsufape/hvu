@@ -117,7 +117,7 @@ export default function MeusAgendamentos() {
   }
 
   return (
-    <div>
+    <div className={styles.container}>
       <VoltarButton />
       <div className={styles.titleMeusAgendamentos}>
         <h1>Meus Agendamentos</h1>
