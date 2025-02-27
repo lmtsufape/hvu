@@ -1116,6 +1116,35 @@ public class Facade {
         etapaServiceInterface.deleteEtapa(id);
     }
 
+    // Ficha--------------------------------------------------------------
+
+    @Autowired
+    private FichaServiceInterface fichaServiceInterface;
+
+    public Ficha saveFicha(Ficha newInstance) {
+        return fichaServiceInterface.saveFicha(newInstance);
+    }
+
+    public Ficha updateFicha(Ficha transientObject) {
+        return fichaServiceInterface.updateFicha(transientObject);
+    }
+
+    public Ficha findFichaById(long id) {
+        return fichaServiceInterface.findFichaById(id);
+    }
+
+    public List<Ficha> getAllFicha() {
+        return fichaServiceInterface.getAllFicha();
+    }
+
+    public void deleteFicha(Ficha persistentObject) {
+        fichaServiceInterface.deleteFicha(persistentObject);
+    }
+
+    public void deleteFicha(long id) {
+        fichaServiceInterface.deleteFicha(id);
+    }
+
     // FichaSolicitacaoServico--------------------------------------------------------------
 
     @Autowired
