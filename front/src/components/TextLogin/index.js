@@ -42,11 +42,13 @@ export default function Text() {
       <div className={styles.lista_box}>
         <h1 className={styles.titulo}>Quadro de avisos</h1>
         <ul className={styles.lista}>
-          {avisos
-            .filter(aviso => aviso.habilitado)
-            .map((aviso, index) => (
-              <li key={index}>{aviso.texto}</li>
-            ))}
+          {avisos.filter(aviso => aviso.habilitado).length > 0 ? (
+            avisos
+              .filter(aviso => aviso.habilitado)
+              .map((aviso, index) => <li key={index}>{aviso.texto}</li>)
+          ) : (
+            <li className={styles.semAviso}>Nenhum aviso disponível no momento.</li>
+          )}
         </ul>
       </div>
 

@@ -7,6 +7,7 @@
   flex-direction: column;
   align-items: center;
   margin-top: 4rem;
+  gap: 10px;
 }
 
 .titulo {
@@ -82,6 +83,7 @@
 }
 
 .lista {
+  width: 40rem;
   border-radius: 10px;
   border: 0.5px solid #C7122F;
   background-color: #FFDEDE;
@@ -96,6 +98,8 @@
   color: #C7122F;
   margin-top: 10px;
   margin-bottom: 10px;
+  margin-right: 10px;
+  text-align: justify;
 }
 
 @media only screen and (max-width: 979px) {
@@ -121,5 +125,13 @@
     line-height: 22px;
     text-align: center;
     margin: auto;
+  }
+
+  .lista {
+    width: 90%;
+  }
+
+  .lista li {
+    width: 90%;
   }
 }
