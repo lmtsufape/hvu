@@ -8,6 +8,7 @@ import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
+import { getAnimalByTutor } from "../../../services/animalService"; 
 
 function UpdateAnimalByTutor() {
   const router = useRouter();
@@ -28,6 +29,8 @@ function UpdateAnimalByTutor() {
 
   const [animalData, setAnimalData] = useState({});
 
+  const [animaisDoTutor, setAnimaisDoTutor] = useState([]);
+
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
@@ -39,6 +42,18 @@ function UpdateAnimalByTutor() {
       setToken(storedToken || "");
       setRoles(storedRoles || []);
     }
+  }, []);
+
+  useEffect(() => {
+    async function fetchAnimais() {
+      try {
+        const response = await getAnimalByTutor();
+        setAnimaisDoTutor(response);
+      } catch (error) {
+        console.error("Erro ao buscar animais do tutor:", error);
+      }
+    }
+    fetchAnimais();
   }, []);
 
   useEffect(() => {
@@ -139,6 +154,14 @@ function UpdateAnimalByTutor() {
 
     if (!animalData.nome) {
       newErrors.nome = "Campo obrigatório";
+    } else{
+      // Verifica se o nome do animal já existe
+      const nomeExiste = animaisDoTutor.some(animal => 
+        animal.id !== animalData.id &&
+        animal.nome.toLowerCase() === animalData.nome.toLowerCase());
+      if (nomeExiste) {
+        newErrors.nome = "Nome já existente";
+      }
     }
 
     if (!animalData.sexo) {
@@ -152,6 +175,18 @@ function UpdateAnimalByTutor() {
     }
     if (selectedEspecie && !selectedRaca) {
       newErrors.raca = "Campo obrigatório";
+    }
+      // Validação da data de nascimento
+    if (animalData.dataNascimento) {
+      const hoje = new Date();
+      const dataNascimento = new Date(animalData.dataNascimento);
+      
+      // Zerar horas para comparação exata de dias
+      hoje.setHours(0, 0, 0, 0);
+
+      if (dataNascimento > hoje) {
+        newErrors.dataNascimento = "A data de nascimento não pode estar no futuro";
+      }
     }
     setErrors(newErrors);
 
@@ -232,11 +267,12 @@ function UpdateAnimalByTutor() {
                   </label>
                   <input
                     type="date"
-                    className={`form-control ${styles.input}`}
+                    className={`form-control ${styles.input} ${errors.dataNascimento ? "is-invalid" : ""}`}
                     name="dataNascimento"
                     value={animalData.dataNascimento}
                     onChange={handleAnimalChange}
                   />
+                   {errors.dataNascimento && <div className="invalid-feedback">{errors.dataNascimento}</div>}
                 </div>
               </div>
 

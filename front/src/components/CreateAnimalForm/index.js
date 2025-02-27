@@ -8,6 +8,7 @@ import RacasList from "@/hooks/useRacaList";
 import VoltarButton from "../VoltarButton";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
+import { getAnimalByTutor } from "../../../services/animalService"; 
 
 function CreateAnimalForm() {
   const router = useRouter();
@@ -28,6 +29,8 @@ function CreateAnimalForm() {
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
 
+  const [animaisDoTutor, setAnimaisDoTutor] = useState([]);
+
   const [animalData, setAnimalData] = useState({
     nome: '',
     sexo: '',
@@ -45,6 +48,18 @@ function CreateAnimalForm() {
     raca: ""
   });
 
+  useEffect(() => {
+    async function fetchAnimais() {
+      try {
+        const response = await getAnimalByTutor();
+        setAnimaisDoTutor(response);
+      } catch (error) {
+        console.error("Erro ao buscar animais do tutor:", error);
+      }
+    }
+    fetchAnimais();
+  }, []);
+  
   useEffect(() => {
     if (typeof window !== 'undefined') {
         const storedToken = localStorage.getItem('token');
@@ -95,8 +110,6 @@ function CreateAnimalForm() {
     setAnimalData({ ...animalData, [name]: value });
   };
 
-  console.log("animalData:", animalData);
-
   const handleEspecieSelection = (event) => {
     const selectedEspecieId = event.target.value;
     setSelectedEspecie(selectedEspecieId);
@@ -119,6 +132,12 @@ function CreateAnimalForm() {
 
     if (!animalData.nome) {
       newErrors.nome = "Campo obrigatório";
+    } else{
+      // Verifica se o nome do animal já existe
+      const nomeExiste = animaisDoTutor.some(animal => animal.nome.toLowerCase() === animalData.nome.toLowerCase());
+      if (nomeExiste) {
+        newErrors.nome = "Nome já existente";
+      }
     }
     
     if (!animalData.sexo) {
@@ -133,6 +152,19 @@ function CreateAnimalForm() {
     if (selectedEspecie && !selectedRaca) {
       newErrors.raca = "Campo obrigatório";
     }
+      // Validação da data de nascimento
+    if (animalData.dataNascimento) {
+      const hoje = new Date();
+      const dataNascimento = new Date(animalData.dataNascimento);
+      
+      // Zerar horas para comparação exata de dias
+      hoje.setHours(0, 0, 0, 0);
+
+      if (dataNascimento > hoje) {
+        newErrors.dataNascimento = "A data de nascimento não pode estar no futuro";
+      }
+    }
+    
     setErrors(newErrors);
 
     return Object.values(newErrors).every((error) => error === "");
@@ -230,11 +262,12 @@ function CreateAnimalForm() {
             <label htmlFor="nascimento" className="form-label">Data de Nascimento</label>
             <input
               type="date"
-              className={`form-control ${styles.input}`}
+              className={`form-control ${styles.input} ${errors.dataNascimento ? "is-invalid" : ""}`}
               name="dataNascimento"
               value={animalData.dataNascimento || ""}
               onChange={handleAnimalChange}
             />
+            {errors.dataNascimento && <div className="invalid-feedback">{errors.dataNascimento}</div>}
           </div>
         </div>
   
