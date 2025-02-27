@@ -79,16 +79,35 @@ function CreateCronograma() {
 
     const handleHorarioChange = (dia, campo) => (event) => {
         const { value } = event.target;
-        setCronograma(prevCronograma => ({
-            ...prevCronograma,
-            horariosJson: {
+        setCronograma((prevCronograma) => {
+            let updatedHorarios = {
                 ...prevCronograma.horariosJson,
                 [dia]: {
                     ...prevCronograma.horariosJson[dia],
-                    [campo]: value
-                }
+                    [campo]: value,
+                },
+            };
+            
+            // Se o horário de fim for menor que o início, redefine o horário de fim
+            if (campo === "inicio" && updatedHorarios[dia]?.fim && updatedHorarios[dia].fim <= value) {
+                updatedHorarios[dia].fim = ""; // Reseta o horário de fim inválido
             }
-        }));
+            
+            if (campo === "fim" && updatedHorarios[dia]?.inicio && value <= updatedHorarios[dia].inicio) {
+                return prevCronograma; // Impede a seleção de um horário de fim inválido
+            }
+            
+            return { ...prevCronograma, horariosJson: updatedHorarios };
+        });
+    };
+    
+    const getHorariosFimDisponiveis = (dia) => {
+        const horarios = [
+            "07:30", "08:30", "09:30", "10:30", "11:30", "12:30",
+            "13:30", "14:30", "15:30", "16:30", "17:30"
+        ];
+        const horarioInicio = cronograma.horariosJson[dia]?.inicio;
+        return horarioInicio ? horarios.filter((hora) => hora > horarioInicio) : horarios;
     };
 
     const handleCronogramaChange = (event) => {
@@ -127,11 +146,42 @@ function CreateCronograma() {
         return errors;
     };
 
+    // Validação antes de criar a agenda
+    const validateHorarios = (cronograma) => {
+        const errors = {};
+        let hasValidHorario = false;
+        
+        Object.entries(cronograma.horariosJson).forEach(([dia, horarios]) => {
+            if (!horarios.inicio || horarios.inicio === "00:00") {
+                errors[dia] = "O horário de início é obrigatório.";
+            }
+            if (!horarios.fim || horarios.fim === "00:00") {
+                errors[dia] = "O horário de fim é obrigatório.";
+            }
+            if (horarios.inicio && horarios.fim && horarios.inicio !== "00:00" && horarios.fim !== "00:00") {
+                hasValidHorario = true;
+            }
+        });
+        
+        if (!hasValidHorario) {
+            errors.geral = "Pelo menos um dia com horários válidos deve ser preenchido.";
+        }
+        
+        return errors;
+    };
+
+  
 
     const handleCreateCronograma = async () => {
         const validationErrors = validateFields(cronograma);
+        const validationErroHorarios = validateHorarios(cronograma);
+
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
+            return;
+        }
+        if (Object.keys(validationErroHorarios).length > 0) {
+            setErrors(validationErroHorarios);
             return;
         }
 
@@ -299,17 +349,9 @@ function CreateCronograma() {
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
                                                     >
                                                         <option value="">Selecione o horário de fim</option>
-                                                        <option value="07:30">07:30</option>
-                                                        <option value="08:30">08:30</option>
-                                                        <option value="09:30">09:30</option>
-                                                        <option value="10:30">10:30</option>
-                                                        <option value="11:30">11:30</option>
-                                                        <option value="12:30">12:30</option>
-                                                        <option value="13:30">13:30</option>
-                                                        <option value="14:30">14:30</option>
-                                                        <option value="15:30">15:30</option>
-                                                        <option value="16:30">16:30</option>
-                                                        <option value="17:30">17:30</option>
+                                                        {getHorariosFimDisponiveis(dia.toUpperCase()).map((horario) => (
+                                                            <option key={horario} value={horario}>{horario}</option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -368,17 +410,9 @@ function CreateCronograma() {
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
                                                     >
                                                         <option value="">Selecione o horário de fim</option>
-                                                        <option value="07:30">07:30</option>
-                                                        <option value="08:30">08:30</option>
-                                                        <option value="09:30">09:30</option>
-                                                        <option value="10:30">10:30</option>
-                                                        <option value="11:30">11:30</option>
-                                                        <option value="12:30">12:30</option>
-                                                        <option value="13:30">13:30</option>
-                                                        <option value="14:30">14:30</option>
-                                                        <option value="15:30">15:30</option>
-                                                        <option value="16:30">16:30</option>
-                                                        <option value="17:30">17:30</option>
+                                                        {getHorariosFimDisponiveis(dia.toUpperCase()).map((horario) => (
+                                                            <option key={horario} value={horario}>{horario}</option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -437,17 +471,9 @@ function CreateCronograma() {
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
                                                     >
                                                         <option value="">Selecione o horário de fim</option>
-                                                        <option value="07:30">07:30</option>
-                                                        <option value="08:30">08:30</option>
-                                                        <option value="09:30">09:30</option>
-                                                        <option value="10:30">10:30</option>
-                                                        <option value="11:30">11:30</option>
-                                                        <option value="12:30">12:30</option>
-                                                        <option value="13:30">13:30</option>
-                                                        <option value="14:30">14:30</option>
-                                                        <option value="15:30">15:30</option>
-                                                        <option value="16:30">16:30</option>
-                                                        <option value="17:30">17:30</option>
+                                                        {getHorariosFimDisponiveis(dia.toUpperCase()).map((horario) => (
+                                                            <option key={horario} value={horario}>{horario}</option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -506,17 +532,9 @@ function CreateCronograma() {
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
                                                     >
                                                         <option value="">Selecione o horário de fim</option>
-                                                        <option value="07:30">07:30</option>
-                                                        <option value="08:30">08:30</option>
-                                                        <option value="09:30">09:30</option>
-                                                        <option value="10:30">10:30</option>
-                                                        <option value="11:30">11:30</option>
-                                                        <option value="12:30">12:30</option>
-                                                        <option value="13:30">13:30</option>
-                                                        <option value="14:30">14:30</option>
-                                                        <option value="15:30">15:30</option>
-                                                        <option value="16:30">16:30</option>
-                                                        <option value="17:30">17:30</option>
+                                                        {getHorariosFimDisponiveis(dia.toUpperCase()).map((horario) => (
+                                                            <option key={horario} value={horario}>{horario}</option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
@@ -575,17 +593,9 @@ function CreateCronograma() {
                                                         onChange={handleHorarioChange(dia.toUpperCase(), "fim")}
                                                     >
                                                         <option value="">Selecione o horário de fim</option>
-                                                        <option value="07:30">07:30</option>
-                                                        <option value="08:30">08:30</option>
-                                                        <option value="09:30">09:30</option>
-                                                        <option value="10:30">10:30</option>
-                                                        <option value="11:30">11:30</option>
-                                                        <option value="12:30">12:30</option>
-                                                        <option value="13:30">13:30</option>
-                                                        <option value="14:30">14:30</option>
-                                                        <option value="15:30">15:30</option>
-                                                        <option value="16:30">16:30</option>
-                                                        <option value="17:30">17:30</option>
+                                                        {getHorariosFimDisponiveis(dia.toUpperCase()).map((horario) => (
+                                                            <option key={horario} value={horario}>{horario}</option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
