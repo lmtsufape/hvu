@@ -84,6 +84,7 @@ public class KeycloakService implements KeycloakServiceInterface {
                 tokenResponse.setRoles(roles.stream().map(RoleRepresentation::getName).toList());
                 return tokenResponse;
             }
+
             // Retorno de status diferente de OK
             throw new KeycloakAuthenticationException("Erro ao autenticar no Keycloak: " + response.getStatusCode());
 
@@ -143,7 +144,15 @@ public class KeycloakService implements KeycloakServiceInterface {
             // Verificar se a criação foi bem-sucedida
             if (response.getStatus() != 201) {
                 if (response.getStatus() == 409) {
-                    throw new KeycloakAuthenticationException("Credenciais já existentes. Tente outro email.");
+                    String errorMessage = response.readEntity(String.class);
+
+                    if (errorMessage.contains("email")) {
+                        throw new KeycloakAuthenticationException("O e-mail informado já está cadastrado no sistema.");
+                    } else if (errorMessage.contains("cpf")) { // Supondo que o Keycloak retorne uma indicação de CPF duplicado
+                        throw new KeycloakAuthenticationException("O CPF informado já está cadastrado no sistema.");
+                    } else {
+                        throw new KeycloakAuthenticationException("As credenciais já estão cadastradas. Verifique os dados e tente novamente.");
+                    }
                 }
                 throw new KeycloakAuthenticationException("Erro ao criar o usuário no Keycloak. Status: " + response.getStatus());
             }
