@@ -2,11 +2,11 @@
 
 .texto_box {
   width: 100%;
-  max-width: 30rem;
-  height: 200px;
+  max-width: 40rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 4rem;
 }
 
 .titulo {
@@ -78,6 +78,23 @@
   color: red;
   font-size: 22px;
   font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.lista {
+  border-radius: 10px;
+  border: 0.5px solid #C7122F;
+  background-color: #FFDEDE;
+}
+
+.lista li {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+  color: #C7122F;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 

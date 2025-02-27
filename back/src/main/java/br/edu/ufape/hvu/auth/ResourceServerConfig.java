@@ -33,7 +33,7 @@ public class ResourceServerConfig  {
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(authz ->
 								authz
-										.requestMatchers("/security/**", "/api-doc/**","/api/v1/tutor", "/api/v1/auth/login", "/api/v1/auth/forgot-password" ).permitAll()
+										.requestMatchers("/security/**", "/api-doc/**","/api/v1/tutor", "/api/v1/auth/login", "/api/v1/auth/forgot-password", "/api/v1/aviso" ).permitAll()
 										.anyRequest().authenticated()
 				)
 				.oauth2ResourceServer(oauth2ResourceServer ->
