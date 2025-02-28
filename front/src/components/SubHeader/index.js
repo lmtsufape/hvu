@@ -133,10 +133,11 @@ export function SubheaderSecretario() {
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/pacientesBySecretario')}><span>Pacientes</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/getAllMedicos')}><span>Veterinários&#40;as&#41;</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarAgendas')}><span>Agendas</span></button>
-          {/*  <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarRacas')}>Raças</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarEspecies')}>Espécies</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarTiposConsulta')}>Tipos de consulta</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarEspecialidades')}>Especialidades</button> */}
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarRacas')}><span>Raças</span></button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarEspecies')}><span>Espécies</span></button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarTiposConsulta')}><span>Consultas</span></button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarEspecialidades')}><span>Especialidades</span></button>
+            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarAvisos')}><span>Avisos</span></button>
         </div>
     );
 }
