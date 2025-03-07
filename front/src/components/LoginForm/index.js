@@ -20,6 +20,37 @@ function FormularioLogin() {
 
   const [login, setLogin] = useState("");
   const [senha, setSenha] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Função para formatar CPF corretamente enquanto o usuário digita
+  const formatCPF = (value) => {
+    value = value.replace(/\D/g, ""); // Remove tudo que não for número
+
+    if (value.length > 3) {
+      value = value.replace(/(\d{3})(\d)/, "$1.$2"); // Primeiro ponto
+    }
+    if (value.length > 6) {
+      value = value.replace(/(\d{3})\.(\d{3})(\d)/, "$1.$2.$3"); // Segundo ponto
+    }
+    if (value.length > 9) {
+      value = value.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4"); // Traço
+    }
+
+    return value;
+  };
+
+  // Função para detectar e formatar CPF, mas permitir e-mails normalmente
+  const handleLoginChange = (e) => {
+    let value = e.target.value;
+
+    if (value.includes("@") || /[a-zA-Z]/.test(value)) {
+      // Se for um e-mail, não aplica formatação
+      setLogin(value);
+    } else {
+      // Se for apenas números, formata como CPF
+      setLogin(formatCPF(value));
+    }
+  };
 
   const logged = async (e) => {
     e.preventDefault();
@@ -68,8 +99,7 @@ function FormularioLogin() {
     return Object.keys(newErrors).length === 0;
   };
 
-  //estado para controlar a visibilidade da senha
-  const [showPassword, setShowPassword] = useState(false);
+
 
   //função para alternar a visibilidade da senha
   const togglePasswordVisibility = () => {
@@ -81,20 +111,20 @@ function FormularioLogin() {
     <>
       <div className={styles.form}>
         <div className="form-group">
-          <label htmlFor="exampleInputEmail1">
+          <label htmlFor="loginInput">
           CPF ou E-mail<span className={styles.obrigatorio}>*</span>
           </label>
           <input
-            type="email"
+            type="text"
             className={`form-control ${styles.input} ${
               errors.login ? "is-invalid" : ""
             }`}
-            id="exampleInputEmail1"
+            id="loginInput"
             aria-describedby="emailHelp"
             placeholder="Digite seu CPF ou email"
             name="email"
             value={login}
-            onChange={(e) => setLogin(e.target.value)}
+            onChange={handleLoginChange}
             required
           />
           {errors.login && (
