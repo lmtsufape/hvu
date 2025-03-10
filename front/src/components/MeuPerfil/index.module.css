@@ -48,15 +48,16 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  margin-left: 3rem;
 }
 
 .item_container {
   display: flex;
   align-items: center;
-  width: 90%;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
-  row-gap: 30px;
+  row-gap: 20px;
 
   justify-content: space-between;
 }
@@ -90,7 +91,7 @@
   display: flex;
   justify-content: left;
   align-items: left;
-
+  margin-left: 3rem;
   font-family: 'Poppins', sans-serif;
   font-size: 20px;
   font-weight: 700;
@@ -180,6 +181,15 @@
       margin-top: 0px;
       margin-bottom: 0px;
   }
+
+  .title_endereco {
+    margin-left: 0;
+  }
+
+  .tutor {
+    margin-left: 0;
+  }
+
 }
 
 @media (max-width: 585px){
