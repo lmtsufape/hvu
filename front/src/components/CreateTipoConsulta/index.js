@@ -64,6 +64,7 @@ function CreateTipoConsulta() {
       };
 
     const handleSubmit = async () => {
+        event.preventDefault();
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
           setErrors(errors);
@@ -82,7 +83,7 @@ function CreateTipoConsulta() {
         <div className={styles.container}>
             <VoltarButton />
             <h1>Adicionar tipo de consulta</h1>
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleSubmit}>
                 <div className={styles.inputs_box}>
                     <div className="row">
                         <div className={`col ${styles.col}`}>
@@ -101,7 +102,7 @@ function CreateTipoConsulta() {
                 </div>
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleSubmit}>
+                    <button type="submit" className={styles.criar_button} onClick={handleSubmit}>
                         Criar
                     </button>
                 </div>

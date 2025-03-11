@@ -231,6 +231,7 @@ function UpdateMedico() {
     };
 
     const handleMedicoUpdate = async () => {
+        event.preventDefault();
         if (!validateForm()) {
             return;
         }
@@ -270,7 +271,7 @@ function UpdateMedico() {
             <VoltarButton />
             <h1>Editar informações do&#40;a&#41; veterinário&#40;a&#41;</h1>
 
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleMedicoUpdate}>
 
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
@@ -365,7 +366,7 @@ function UpdateMedico() {
 
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleMedicoUpdate}>
+                    <button type="submit" className={styles.criar_button} onClick={handleMedicoUpdate}>
                         Salvar
                     </button>
                 </div>

@@ -39,6 +39,7 @@
     line-height: 24px;
     letter-spacing: 0em;
     color: #272727;
+    display: flex;
 }
 
 .button_box {
@@ -74,6 +75,7 @@
     font-weight: 300;
     line-height: 20px;
     color: #000000;
+    width: 96%;
 }
 
 .input:focus {
@@ -122,3 +124,29 @@
     text-align: center;
 }
 
+
+@media (max-width: 700px){
+    
+    .inputs_container{
+        width: 90%;
+    }
+
+    .inputs_box{
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+        gap: 10px;
+    }
+
+    .button_box{
+        width: 90%;
+    }
+
+    .inputs_container{
+        height: auto;
+    }
+
+    .container h1{
+        text-align: center;
+    }
+}

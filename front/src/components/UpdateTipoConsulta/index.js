@@ -85,6 +85,7 @@ function UpdateTipoConsulta() {
       };
 
     const handleTipoConsultaUpdate = async () => {
+        event.preventDefault();
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
           setErrors(errors);
@@ -104,7 +105,7 @@ function UpdateTipoConsulta() {
         <div className={styles.container}>
             <VoltarButton />
             <h1>Editar informações do tipo de consulta</h1>
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleTipoConsultaUpdate}>
                 <div className={styles.inputs_box}>
                     <div className="row">
                         <div className={`col ${styles.col}`}>
@@ -122,7 +123,7 @@ function UpdateTipoConsulta() {
                 </div>
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleTipoConsultaUpdate}>
+                    <button type="submit" className={styles.criar_button} onClick={handleTipoConsultaUpdate}>
                         Salvar
                     </button>
                 </div>

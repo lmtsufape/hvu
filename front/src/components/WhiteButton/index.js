@@ -96,7 +96,7 @@ export function CadastrolWhiteButton() {
 	);
 }
 
-export function CancelarWhiteButton() {
+export function CancelarWhiteButton({ type = "button" }) {
 	const router = useRouter();
 
 	const handlCancelarClick = (e) => {
@@ -105,7 +105,7 @@ export function CancelarWhiteButton() {
 	};
 
 	return (
-		<button className={styles.white_button} onClick={handlCancelarClick}>
+		<button type={type} className={styles.white_button} onClick={handlCancelarClick}>
 			{text_white_button.cancelar}
 		</button>
 	);
