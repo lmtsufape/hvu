@@ -85,6 +85,7 @@ function UpdateEspecie() {
       };
 
     const handleEspecieUpdate = async () => {
+        event.preventDefault();
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
           setErrors(errors);
@@ -104,7 +105,7 @@ function UpdateEspecie() {
         <div className={styles.container}>
             <VoltarButton />
             <h1>Editar informações da espécie</h1>
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleEspecieUpdate}>
                 <div className={styles.inputs_box}>
                     <div className="row">
                         <div className={`col ${styles.col}`}>

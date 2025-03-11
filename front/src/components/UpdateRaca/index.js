@@ -109,6 +109,7 @@ function UpdateRaca() {
       };
 
     const handleRacaUpdate = async () => {
+        event.preventDefault();
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
           setErrors(errors);
@@ -140,9 +141,8 @@ function UpdateRaca() {
         <div className={styles.container}>
             <VoltarButton />
             <h1>Editar informações da raça</h1>
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleRacaUpdate}>
                 <div className={styles.inputs_box}>
-                    <div className="row">
                         <div className={`col ${styles.col}`}>
                             <label htmlFor="especie" className="form-label">Espécie</label>
                             <select
@@ -183,11 +183,10 @@ function UpdateRaca() {
                                 onChange={handleRacaChange}
                             />
                         </div>
-                    </div>
                 </div>
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleRacaUpdate}>
+                    <button type="submit" className={styles.criar_button} onClick={handleRacaUpdate}>
                         Salvar
                     </button>
                 </div>

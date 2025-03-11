@@ -175,6 +175,7 @@ function UpdateTutorBySecretario() {
     };
 
     const handleTutorUpdate = async () => {
+        event.preventDefault();
         if (!validateForm()) {
             return;
         }
@@ -211,7 +212,7 @@ function UpdateTutorBySecretario() {
             <VoltarButton />
             <h1>Editar informações do&#40;a&#41; tutor&#40;a&#41;</h1>
 
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleTutorUpdate}>
 
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
@@ -276,7 +277,7 @@ function UpdateTutorBySecretario() {
 
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleTutorUpdate}>
+                    <button type="submit" className={styles.criar_button} onClick={handleTutorUpdate}>
                         Salvar
                     </button>
                 </div>

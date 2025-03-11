@@ -64,6 +64,7 @@ function CreateEspecialidade() {
       };
 
     const handleSubmit = async () => {
+        event.preventDefault();
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
           setErrors(errors);
@@ -79,7 +80,7 @@ function CreateEspecialidade() {
     };
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} onSubmit={handleSubmit}>
             <VoltarButton />
             <h1>Adicionar especialidade</h1>
             <form className={styles.inputs_container}>
@@ -101,7 +102,7 @@ function CreateEspecialidade() {
                 </div>
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleSubmit}>
+                    <button type="submit" className={styles.criar_button} onClick={handleSubmit}>
                         Criar
                     </button>
                 </div>
