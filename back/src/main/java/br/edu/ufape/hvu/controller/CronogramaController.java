@@ -54,7 +54,7 @@ public class CronogramaController {
 		}
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("cronograma/{id}")
 	public CronogramaResponse getCronogramaById(@PathVariable Long id) {
 		try {
