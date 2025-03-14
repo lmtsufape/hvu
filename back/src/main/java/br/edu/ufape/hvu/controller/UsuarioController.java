@@ -75,7 +75,8 @@ public class UsuarioController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@PatchMapping("usuario/{id}")
 	public UsuarioResponse updateUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
