@@ -17,6 +17,7 @@ function CreateTutorEnderecoForm() {
   const [errors, setErrors] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [tutorFormData, setTutorFormData] = useState({
     nome: "",
@@ -183,6 +184,13 @@ function CreateTutorEnderecoForm() {
         setShowAlert(true);
       } catch (error) {
         console.error("Erro ao cadastrar tutor:", error);
+
+        if (error.response && error.response.data && error.response.data.code) {
+          setErrorMessage(error.response.data.code);
+        } else {
+          setErrorMessage("Erro ao realizar cadastro, tente novamente.");
+        }
+
         setShowErrorAlert(true);
       }
     } else {
@@ -234,7 +242,7 @@ function CreateTutorEnderecoForm() {
       }
       {showErrorAlert && (
         <ErrorAlert
-          message="Erro ao realizar cadastro, tente novamente."
+          message={errorMessage}
           show={showErrorAlert}
         />
       )}

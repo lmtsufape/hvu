@@ -57,3 +57,64 @@
     letter-spacing: 0em;
     text-align: center;
 }
+
+@media (max-width: 1024px) {
+    .box_button {
+        gap: 20px;
+    }
+
+    .button {
+        width: 220px;
+        height: 180px;
+        padding-top: 2em;
+    }
+
+    .button h6 {
+        font-size: 18px;
+        line-height: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .box_button {
+        flex-direction: column; /* Empilha os botões */
+        align-items: center;
+        gap: 16px;
+    }
+
+    .button {
+        width: 90%; /* Ocupa quase toda a largura */
+        max-width: 280px;
+        height: 160px;
+        padding-top: 2em;
+    }
+
+    .button h6 {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .message {
+        font-size: 18px;
+        line-height: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .button {
+        width: 95%;
+        max-width: 250px;
+        height: 150px;
+        padding-top: 1.5em;
+    }
+
+    .button h6 {
+        font-size: 14px;
+        line-height: 22px;
+    }
+
+    .message {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}

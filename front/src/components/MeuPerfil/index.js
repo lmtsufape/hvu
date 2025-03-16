@@ -113,9 +113,6 @@ function MeuPerfilList() {
                         <h6>Número</h6>
                         <div>{usuario.endereco.numero}</div>
                       </div>
-                    </div>
-
-                    <div className={styles.item_container}>
                       <div className={styles.item_box}>
                         <h6>CEP</h6>
                         <div>{usuario.endereco.cep}</div>

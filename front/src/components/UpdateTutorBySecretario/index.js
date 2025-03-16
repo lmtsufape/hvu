@@ -175,6 +175,7 @@ function UpdateTutorBySecretario() {
     };
 
     const handleTutorUpdate = async () => {
+        event.preventDefault();
         if (!validateForm()) {
             return;
         }
@@ -211,7 +212,7 @@ function UpdateTutorBySecretario() {
             <VoltarButton />
             <h1>Editar informações do&#40;a&#41; tutor&#40;a&#41;</h1>
 
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleTutorUpdate}>
 
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
@@ -219,17 +220,20 @@ function UpdateTutorBySecretario() {
                         {renderTutorInput("Nome Completo", tutor.nome, "nome", tutor.nome, handleTutorChange, "text", errors.nome)}
                         <div className="row">
                             <div className={`col ${styles.col}`}>
-                                {renderTutorInput("E-mail", tutor.email, "email", tutor.email, handleTutorChange, "email", errors.email)}
                                 {renderTutorInput("CPF", tutor.cpf, "cpf", tutor.cpf, handleTutorChange, "text", errors.cpf, "999.999.999-99")}
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderTutorInput("Telefone", tutor.telefone, "telefone", tutor.telefone, handleTutorChange, "tel", errors.telefone, "(99) 99999-9999")}
-                            </div>
-                        </div>
+                            </div>                     
+                        </div> 
                     </div>
+                    <div className={`col-md-6 ${styles.customCol}`}>
+                            {renderTutorInput("E-mail", tutor.email, "email", tutor.email, handleTutorChange, "email", errors.email)}
+                        </div>
                 </div>
 
-                <div className={styles.boxcadastro}>
+                {/* opção de mudar senha */}
+                {/* <div className={styles.boxcadastro}>
                     <div className={styles.input_space}>
                         <div className="form-label">Deseja alterar sua senha?</div>
                         <input
@@ -249,22 +253,22 @@ function UpdateTutorBySecretario() {
                             </div>
                         </div>
                     )}
-                </div>
+                </div> */}
 
                 {tutor.endereco && (
                     <div className={styles.boxcadastro}>
                         <div className={styles.titulo}>Endereço</div>
                         <div className="mb-3">
                             <div className="row">
+                            {renderEnderecoInput("Rua", "rua", tutor.endereco.rua, handleEnderecoChange, errors.rua, tutor.endereco.rua,)}
                                 <div className={`col ${styles.col}`}>
                                     {renderEnderecoInput("CEP", "cep", tutor.endereco.cep, handleCepChange, errors.cep, tutor.endereco.cep, "text", "99999-999")}
-                                    {renderEnderecoInput("Rua", "rua", tutor.endereco.rua, handleEnderecoChange, errors.rua, tutor.endereco.rua,)}
                                     {renderEnderecoInput("Cidade", "cidade", tutor.endereco.cidade, handleEnderecoChange, errors.cidade, tutor.endereco.cidade)}
+                                    {renderEnderecoInput("Estado", "estado", tutor.endereco.estado, handleEnderecoChange, errors.estado, tutor.endereco.estado)}
                                 </div>
                                 <div className={`col ${styles.col}`}>
                                     {renderEnderecoInput("Número", "numero", tutor.endereco.numero, handleEnderecoChange, errors.numero, tutor.endereco.numero,)}
                                     {renderEnderecoInput("Bairro", "bairro", tutor.endereco.bairro, handleEnderecoChange, errors.bairro, tutor.endereco.bairro,)}
-                                    {renderEnderecoInput("Estado", "estado", tutor.endereco.estado, handleEnderecoChange, errors.estado, tutor.endereco.estado)}
                                 </div>
                             </div>
                         </div>
@@ -273,7 +277,7 @@ function UpdateTutorBySecretario() {
 
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleTutorUpdate}>
+                    <button type="submit" className={styles.criar_button} onClick={handleTutorUpdate}>
                         Salvar
                     </button>
                 </div>

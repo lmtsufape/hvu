@@ -80,25 +80,22 @@ function GetCronogramaById() {
     }
 
     const formatHorarios = (horariosJson) => {
-        if (!horariosJson) return ''; // Verificar se horariosJson é indefinido
+        if (!horariosJson) return []; // Retorna um array vazio se não houver horários
         const horarios = traduzir(horariosJson);
         const dias = Object.keys(horarios);
-
-        let formattedHorarios = '';
-        dias.forEach((dia, index) => {
+    
+        let horariosList = [];
+        dias.forEach((dia) => {
             const inicio = horarios[dia].inicio;
             const fim = horarios[dia].fim;
             const formattedDia = dia.charAt(0).toUpperCase() + dia.slice(1).toLowerCase();
             const formattedInicio = inicio.slice(0, 5);
             const formattedFim = fim.slice(0, 5);
-            formattedHorarios += `${formattedDia}: ${formattedInicio} às ${formattedFim}`;
-            if (index !== dias.length - 1) {
-                formattedHorarios += '; ';
-            }
+            horariosList.push(`${formattedDia}: ${formattedInicio} às ${formattedFim}`);
         });
-        console.log("hora: ", formattedHorarios);
-        return formattedHorarios;
+        return horariosList;
     };
+  
 
     return (
         <div className={styles.container}>
@@ -131,7 +128,11 @@ function GetCronogramaById() {
                                     </div>
                                     <div className={styles.infos}>
                                         <h6>Dias e horários de atendimento</h6>
-                                        <p>{formatHorarios(cronograma.horariosJson)}</p>
+                                        <ul>
+                                            {formatHorarios(cronograma.horariosJson).map((horario, index) => (
+                                                <li key={index}>{horario}</li>
+                                            ))}
+                                        </ul>
                                     </div>
                                 </div>
                             </div>

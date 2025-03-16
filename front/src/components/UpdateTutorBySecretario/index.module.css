@@ -182,3 +182,19 @@
     text-align: center;
 }
 
+@media(max-width: 700px){
+
+    .container h1 {
+        font-size: 20px;
+        text-align: center;
+        width: 90%;
+    }
+    
+    .inputs_container {
+        width: 90%;
+    }
+
+    .button_box {
+        width: 95%;
+    }
+}

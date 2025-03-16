@@ -127,3 +127,31 @@
     letter-spacing: 0em;
     text-align: center;
 }
+
+@media only screen and (max-width: 700px){
+    
+
+    .info_box{
+        width: 80vw;
+        margin-right: 2em;
+    }
+
+    .info p{
+        padding-bottom: 0px;
+    }
+
+    .info h6{
+        padding-bottom: 0px;
+    }
+
+    .info_container{
+        width: 74vw;
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 2em;
+        padding: 1em;
+        border-radius: 10px;
+        border: 0.5px solid #B1B1B1;
+        justify-content: end;
+    }
+}

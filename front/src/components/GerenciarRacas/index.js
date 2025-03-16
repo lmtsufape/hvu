@@ -104,10 +104,12 @@ function GerenciarRacasList() {
 
             <div className={styles.navbar_container}>
                 <SearchBar placeholder={`Buscar por ${filtro === 'especie' ? 'Espécie' : 'Raça'}`} onSearchChange={setSearchTerm} />
-                <FilterEspecieRaca onChange={handleFilterChange} />
-                <button className={styles.adicionar_raca_button} onClick={() => router.push(`/createRaca`)}>
-                    Adicionar raça
-                </button>
+                <div className={styles.navbar_sub}>
+                    <FilterEspecieRaca onChange={handleFilterChange} />
+                    <button className={styles.adicionar_raca_button} onClick={() => router.push(`/createRaca`)}>
+                        Adicionar raça
+                    </button>
+                </div>
             </div>
 
             {filteredRacas.length === 0 ? (

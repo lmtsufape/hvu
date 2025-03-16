@@ -131,3 +131,32 @@
     letter-spacing: 0em;
     text-align: center;
 }
+
+ @media(max-width: 700px){
+
+    .infos_box{
+        width: 90vw;
+        margin-bottom: 5em;
+        justify-content: center;
+    }
+
+    .box{
+        flex-wrap: wrap;
+    }
+
+    .tutor_dados {
+        margin-right: 2em;
+    }
+
+    .lista {
+        width: 100%;
+    }
+
+    .infos {
+        width: 100%;
+    }
+
+    .button_box button {
+        margin: 0;
+    }
+}

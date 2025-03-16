@@ -86,7 +86,7 @@
 }
 .continuarButton{
   width: 10em;
-  height: 3em; 
+  height: 3.5em; 
   border-radius: 10px;
   background-color: #39805F;
   border: none;
@@ -95,6 +95,7 @@
 
 .voltarButtonHeader{
   margin-left: 5%;
+  width: 90vw;
 }
   
 
@@ -184,3 +185,8 @@
   text-align: center;
 }
 
+@media(max-width: 700px){
+  .continuarButton{
+    height: 3.1em;
+  }
+}

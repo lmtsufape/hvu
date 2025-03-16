@@ -105,6 +105,8 @@ function CreateMedico() {
     };
 
     const handleCreateMedico = async () => {
+        event.preventDefault();
+
        {/*} const validationErrors = validateFields(medico);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -273,7 +275,7 @@ function CreateMedico() {
             <VoltarButton />
             <h1>Cadastro do(a) médico(a) veterinário(a)</h1>
 
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleCreateMedico}>
 
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
@@ -348,7 +350,7 @@ function CreateMedico() {
 
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleCreateMedico}>
+                    <button type="submit" className={styles.criar_button} onClick={handleCreateMedico}>
                         {cityStateLoading ? "Aguarde..." : "Cadastrar"}
                     </button>
                 </div>

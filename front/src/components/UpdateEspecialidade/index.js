@@ -85,6 +85,7 @@ function UpdateEspecialidade() {
       };
 
     const handleEspecialidadeUpdate = async () => {
+        event.preventDefault();
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
           setErrors(errors);
@@ -104,7 +105,7 @@ function UpdateEspecialidade() {
         <div className={styles.container}>
             <VoltarButton />
             <h1>Editar informações da especialidade</h1>
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleEspecialidadeUpdate}>
                 <div className={styles.inputs_box}>
                     <div className="row">
                         <div className={`col ${styles.col}`}>
@@ -122,7 +123,7 @@ function UpdateEspecialidade() {
                 </div>
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleEspecialidadeUpdate}>
+                    <button type="submit" className={styles.criar_button} onClick={handleEspecialidadeUpdate}>
                         Salvar
                     </button>
                 </div>

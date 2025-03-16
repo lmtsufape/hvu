@@ -18,6 +18,7 @@ import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 import Select from 'react-select';
 import { getTutorByAnimal } from "../../../services/tutorService";
+import { CancelarWhiteButton } from "../WhiteButton";
 
 function AgendamentoEspecial() {
   const router = useRouter();
@@ -376,7 +377,7 @@ function AgendamentoEspecial() {
           </div>
 
           <div className={styles.continuarbotao}>
-            <button className={styles.voltarButton}>Cancelar</button>
+            <CancelarWhiteButton />
             <button type="button" className={styles.continuarButton} onClick={handleSubmit}>
               Criar
             </button>

@@ -106,20 +106,22 @@ function GetAllMedicos() {
                 <ul className={styles.lista}>
                     {filteredMedicos.map(medico => (
                         <li key={medico.id} className={styles.info_box}>
-                            <div className={styles.info}>
-                                <h6>Nome</h6>
-                                <p>{medico.nome}</p>
-                            </div>
-                            <div className={styles.info}>
-                                <h6>Especialidade</h6>
-                                <p>
-                                    {medico.especialidade.map((especialidade, index) => (
-                                        <span key={especialidade.id}>
-                                            {especialidade.nome}
-                                            {index !== medico.especialidade.length - 1 ? ', ' : ''}
-                                        </span>
-                                    ))}
-                                </p>
+                            <div className={styles.box}>
+                                <div className={styles.info}>
+                                    <h6>Nome</h6>
+                                    <p>{medico.nome}</p>
+                                </div>
+                                <div className={styles.info}>
+                                    <h6>Especialidade</h6>
+                                    <p>
+                                        {medico.especialidade.map((especialidade, index) => (
+                                            <span key={especialidade.id}>
+                                                {especialidade.nome}
+                                                {index !== medico.especialidade.length - 1 ? ', ' : ''}
+                                            </span>
+                                        ))}
+                                    </p>
+                                </div>
                             </div>
                             <div className={styles.button_box}>
                                 <button

@@ -35,21 +35,30 @@
 
 .info_box {
     width: 1200px;
-    height: 139px;
+    min-height: 139px;
     border-radius: 10px;
     border: 0.5px solid #B1B1B1;
     display: flex;
     justify-content: center;
     align-items: center;
 
+    padding: 20px;
+
+}
+
+.box{
+    display: flex;
+
 }
 
 .info {
     width: 384px;
-    height: 59px;
+    min-height: 59px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+
+
 }
 
 .info h6 {
@@ -119,4 +128,56 @@
     line-height: 30px;
     letter-spacing: 0em;
     text-align: center;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; 
+        gap: 16px;
+    }
+
+    .pesquisa {
+        width: 90%;
+    }
+
+    .info_box {
+        flex-direction: column;
+        min-height: 300px;
+        padding: 40px;
+        gap: 10px;
+        width: 90%;
+    }
+
+    .box{
+        display: flex;
+        flex-direction: column;
+        /*flex-grow: 1;  Faz a div crescer conforme necessário */
+        min-height: 59px;
+        width: 100%;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        /* flex-grow: 1; Faz a div crescer conforme necessário */
+        min-height: 59px;
+        width: 100%;
+    }
+
+    .info p {
+        font-size: 17px;
+        line-height: 20px;
+        letter-spacing: 0em;
+    } 
+
+    .button_box {
+        justify-content: end;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container h1 {
+        font-size: 20px;
+    }
 }
