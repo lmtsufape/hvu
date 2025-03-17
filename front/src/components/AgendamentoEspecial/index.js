@@ -188,6 +188,11 @@ function AgendamentoEspecial() {
     return `***.${cpf.slice(4,11)}-**`;
   };
 
+  const animalOptions = animais.map((animal) => ({
+    value: animal.id,
+    label: `${animal.nome} - ${tutores[animal.id]?.nome || "Sem Tutor"} - ${maskCPF(tutores[animal.id]?.cpf) || "CPF Não Informado"}`,
+  }));
+
   return (
     <>
       <div className={styles.voltarButtonHeader}>
@@ -319,21 +324,21 @@ function AgendamentoEspecial() {
                 <label htmlFor="animal" className="form-label">
                   Paciente <span className={styles.obrigatorio}>*</span>
                 </label>
-                <select
-                  className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`}
+                <Select
+                  classNamePrefix="react-select"
+                  className={`${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""}`}
                   name="animal"
-                  aria-label="Selecione o paciente"
-                  value={selectedAnimal || ""}
-                  onChange={handleAnimalSelection}
-                >
-                  <option value="">Selecione o paciente</option>
-                  {animais.map((animal) => (
-                    <option key={animal.id} value={animal.id}>
-                      {animal.nome} - {tutores[animal.id]?.nome} - {maskCPF(tutores[animal.id]?.cpf)}
-                    </option>
-                  ))}
-                </select>
-                {errors.selectedAnimal && (<div className={`invalid-feedback ${styles.error_message}`}>{errors.selectedAnimal}</div>)}
+                  placeholder="Selecione o paciente"
+                  value={animalOptions.find((option) => option.value === selectedAnimal) || null}
+                  onChange={(selectedOption) => setSelectedAnimal(selectedOption?.value)}
+                  options={animalOptions.length > 0 ? animalOptions : [{ value: "", label: "Nenhum paciente disponível" }]}
+                  isSearchable
+                />
+                {errors.selectedAnimal && (
+                  <div className={`invalid-feedback ${styles.error_message}`}>
+                    {errors.selectedAnimal}
+                  </div>
+                )}
               </div>
             </div>
           </div>
