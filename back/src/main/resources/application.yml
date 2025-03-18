@@ -64,6 +64,3 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://keycloak:8080/realms/lmts/protocol/openid-connect/certs
-
-
-
