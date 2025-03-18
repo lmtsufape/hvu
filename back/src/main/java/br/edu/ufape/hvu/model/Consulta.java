@@ -3,15 +3,8 @@ package br.edu.ufape.hvu.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import br.edu.ufape.hvu.model.enums.TipoFicha;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,11 +30,6 @@ public  class Consulta  {
 	@ManyToOne
 	@ToString.Exclude
 	private Especialidade encaminhamento;
-	private String queixaPrincipal;
-	private boolean tipo;
-	private String alteracoesClinicasDiversas;
-	private String suspeitasClinicas;
-	private String alimentacao;
 	@ManyToOne
 	@ToString.Exclude
 	private Medico medico;
@@ -54,4 +42,8 @@ public  class Consulta  {
 	private Animal animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
+	@OneToOne
+	private Ficha ficha;
+	@Column(nullable = false)
+	private boolean tipo;
 }
