@@ -120,15 +120,9 @@ function UpdateAnimalBySecretarioAndMedico() {
   
       // Filtra as raças disponíveis para a nova espécie
       const racasFiltradas = racas.filter((r) => r.especie.id.toString() === selectedEspecieId);
-   
-
-      // Se houver apenas uma raça disponível, seleciona-a automaticamente
-      if (racasFiltradas.length >= 2) {
-        setSelectedRaca(racasFiltradas[0].id.toString()); // Seleciona automaticamente a única raça disponível
-      }
   
       // Se houver apenas uma raça disponível, seleciona-a automaticamente
-      if (racasFiltradas.length === 1) {
+      if (racasFiltradas.length > 0) {
         setSelectedRaca(racasFiltradas[0].id.toString()); // Seleciona automaticamente a única raça disponível
       }
   
