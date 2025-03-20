@@ -66,8 +66,10 @@ function UpdateAnimalBySecretarioAndMedico() {
 
   useEffect(() => {
     // Atualizar raças correspondentes à espécie inicial
-    const racasFiltradas = racas.filter((r) => r.especie.id.toString() === selectedEspecie);
+
+    if (selectedEspecie) {const racasFiltradas = racas.filter((r) => r.especie.id.toString() === selectedEspecie);
     setRacasByEspecie(racasFiltradas);
+    }
   }, [selectedEspecie, racas]);
 
   const loadUrl = async () => {
@@ -108,16 +110,35 @@ function UpdateAnimalBySecretarioAndMedico() {
   const handleEspecieSelection = (event) => {
     try {
       const selectedEspecieId = event.target.value;
-
+  
+      // Atualiza a espécie selecionada
       setSelectedEspecie(selectedEspecieId);
+  
+      // Limpa a seleção de raça quando a espécie for alterada
+      setSelectedRaca(""); // Deixa o campo de raça vazio após mudar a espécie
+  
+  
+      // Filtra as raças disponíveis para a nova espécie
+      const racasFiltradas = racas.filter((r) => r.especie.id.toString() === selectedEspecieId);
+   
 
-      // Reiniciar a raça selecionada quando a espécie é alterada
-      setSelectedRaca(""); // Você pode ajustar isso conforme necessário
+      // Se houver apenas uma raça disponível, seleciona-a automaticamente
+      if (racasFiltradas.length >= 2) {
+        setSelectedRaca(racasFiltradas[0].id.toString()); // Seleciona automaticamente a única raça disponível
+      }
+  
+      // Se houver apenas uma raça disponível, seleciona-a automaticamente
+      if (racasFiltradas.length === 1) {
+        setSelectedRaca(racasFiltradas[0].id.toString()); // Seleciona automaticamente a única raça disponível
+      }
+  
+      // Se houver mais de uma raça, o campo de raça permanecerá vazio
     } catch (error) {
       console.error('Erro ao selecionar espécie:', error);
     }
   };
-
+  
+  
   const handleRacaSelection = (event) => {
     try {
       const selectedRacaId = event.target.value;
@@ -191,6 +212,9 @@ function UpdateAnimalBySecretarioAndMedico() {
       imagem: animalData.imagem,
       numeroFicha: animalData.numeroFicha,
       peso: animalData.peso,
+      especie:{
+        id: parseInt(selectedEspecie)
+      },
       raca: {
         id: parseInt(selectedRaca)
       }
