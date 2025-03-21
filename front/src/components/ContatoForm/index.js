@@ -9,7 +9,7 @@ function ContatoForm() {
       <div className={styles.container}>
         <div className={styles.titulo}>
         <div class="alert alert-danger custom-alert" role="alert">
-              <strong>Atenção:</strong> Dúvidas ou dificuldades de uso devem ser relatadas diretamente na recepção do Hospital Veterinário. Falhas técnicas deverão ser reportadas pelo e-mail: lmts@ufape.edu.br.
+              <strong>Atenção:</strong> Dúvidas ou dificuldades de uso devem ser informadas diretamente na recepção do Hospital Veterinário. Falhas técnicas deverão ser informadas pelo e-mail: lmts@ufape.edu.br.
         </div>
             <h1> Contato</h1>
         </div>
