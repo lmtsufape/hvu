@@ -24,6 +24,12 @@ public  class ConsultaRequest  {
 	private EspecialidadeRequest encaminhamento;
 	private FichaRequest ficha;
 
+	private String queixaPrincipal;
+	private String alteracoesClinicasDiversas;
+	private String suspeitasClinicas;
+	private String alimentacao;
+
+
 	public Consulta convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
 		Consulta obj = modelMapper.map(this, Consulta.class);
