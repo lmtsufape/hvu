@@ -13,7 +13,6 @@ public  class FichaResponse  {
     private long id;
     private String nome;
     private String conteudo;
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
 
     public FichaResponse(Ficha obj) {

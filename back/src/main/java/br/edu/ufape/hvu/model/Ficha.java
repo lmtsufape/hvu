@@ -1,10 +1,5 @@
 package br.edu.ufape.hvu.model;
 
-import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +12,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import jakarta.peegunda-Entrega
+import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
