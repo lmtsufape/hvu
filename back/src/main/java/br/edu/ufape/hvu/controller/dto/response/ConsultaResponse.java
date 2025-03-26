@@ -12,29 +12,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-
 @Getter @Setter @NoArgsConstructor
-public  class ConsultaResponse  {
+public class ConsultaResponse {
 	private Long id;
-	private String alteracoesClinicasDiversas;
-	private String suspeitasClinicas;
-	private String alimentacao;
-	private String queixaPrincipal;
-	private EspecialidadeResponse encaminhamento;
-	private Boolean tipo;
 	private Double pesoAtual;
 	private Double idadeAtual;
 	private MedicoResponse medico;
-	private List<EstagiarioResponse> estagiario;
 	private boolean proximaConsulta;
 	private AnimalResponse animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-
+	private EspecialidadeResponse encaminhamento;
+	private FichaResponse ficha;
+	private List<EstagiarioResponse> estagiario;
+	private String queixaPrincipal;
+	private String alteracoesClinicasDiversas;
+	private String suspeitasClinicas;
+	private String alimentacao;
 
 	public ConsultaResponse(Consulta obj) {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-		modelMapper.map(obj, this);	
+		modelMapper.map(obj, this);
 	}
-
 }
