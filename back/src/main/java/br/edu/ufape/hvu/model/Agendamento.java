@@ -35,7 +35,5 @@ public  class Agendamento  {
 	private Animal animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	
-	
 
 }

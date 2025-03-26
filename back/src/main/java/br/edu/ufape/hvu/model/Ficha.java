@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
+import jakarta.peegunda-Entrega
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -30,7 +30,8 @@ public class Ficha {
     @EqualsAndHashCode.Include
     private long id;
     private String nome;
-    @Column(columnDefinition = "jsonb")
+    @Lob  // Indica que o campo pode armazenar grandes textos
+    @Column(columnDefinition = "TEXT")
     private String conteudo;
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
