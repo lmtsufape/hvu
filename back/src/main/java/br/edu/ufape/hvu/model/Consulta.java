@@ -30,6 +30,12 @@ public  class Consulta  {
 	@ManyToOne
 	@ToString.Exclude
 	private Especialidade encaminhamento;
+
+	private String queixaPrincipal;
+	private String alteracoesClinicasDiversas;
+	private String suspeitasClinicas;
+	private String alimentacao;
+
 	@ManyToOne
 	@ToString.Exclude
 	private Medico medico;
