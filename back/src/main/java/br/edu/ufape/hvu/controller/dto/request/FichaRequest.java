@@ -22,6 +22,7 @@ public  class FichaRequest {
     private String nome;
     private Map<String, Object> conteudo;
       @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
 
 
