@@ -12,6 +12,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Getter @Setter @NoArgsConstructor
@@ -19,6 +20,7 @@ public  class FichaRequest {
     private long id;
     private String nome;
     private Map<String, Object> conteudo;
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
 
 
