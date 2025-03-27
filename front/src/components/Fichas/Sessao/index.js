@@ -83,7 +83,7 @@ function FichaSessao() {
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Impede o envio padrão do formulário
-        const dataFormatada = moment().format("DD/MM/YYYY hh:mm"); // Gera a data atual no formato ISO 8601
+        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
         const fichaData = {
             nome: "Ficha de sessão",  
             conteudo:{
