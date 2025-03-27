@@ -2,6 +2,8 @@ package br.edu.ufape.hvu.controller.dto.request;
 
 import br.edu.ufape.hvu.model.enums.TipoFicha;
 import org.modelmapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Ficha;
@@ -12,6 +14,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Getter @Setter @NoArgsConstructor
@@ -19,6 +22,8 @@ public  class FichaRequest {
     private long id;
     private String nome;
     private Map<String, Object> conteudo;
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
 
 

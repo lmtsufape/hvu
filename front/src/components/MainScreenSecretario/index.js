@@ -81,7 +81,7 @@ function MainScreenSecretario() {
 
             <div className={styles.box_button}>
                 <button className={styles.button} onClick={() => router.push('/gerenciarAvisos')}>
-                    <Image src="/pets.svg" alt="Gerenciar avisos" width={62} height={62} />
+                    <Image src="/images/notifications.png" alt="Gerenciar avisos" width={62} height={62} />
                     <h6>Gerenciar avisos</h6>
                 </button>
             </div>
