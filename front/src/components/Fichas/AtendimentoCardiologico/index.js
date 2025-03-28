@@ -4,14 +4,28 @@ import { useRouter } from "next/router";
 import styles from "./index.module.css";
 import VoltarButton from "../../VoltarButton";
 import InputMask from 'react-input-mask';
+import { createFicha } from '../../../../services/fichaService';
+
+import { getCurrentUsuario } from '../../../../services/userService';
+import Alert from "../../Alert";
+import ErrorAlert from "../../ErrorAlert";
+import moment from 'moment';
 
 function AtendimentoCardiologico() {
     const router = useRouter();
 
-    // Estados para controle do formulário
-    const [errors, setErrors] = useState({});
-    const [showAlert, setShowAlert] = useState(false);
+    const [userId, setUserId] = useState(null);
+    console.log("userId:", userId);
+
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+    const [loading, setLoading] = useState(true);
+
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+
+    const [errors, setErrors] = useState({});
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [formData, setFormData] = useState({
         tutorNome: "",
@@ -49,36 +63,113 @@ function AtendimentoCardiologico() {
     });
 
     useEffect(() => {
-        const storedData = JSON.parse(localStorage.getItem("formData"));
-        if (storedData) {
-            setFormData(storedData);
+         if (typeof window !== 'undefined') {
+             const storedToken = localStorage.getItem('token');
+             const storedRoles = JSON.parse(localStorage.getItem('roles'));
+             setToken(storedToken || "");
+             setRoles(storedRoles || []);
+         }
+         }, []);
+
+         useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const userData = await getCurrentUsuario();
+                    setUserId(userData.usuario.id);
+                } catch (error) {
+                    console.error('Erro ao buscar usuário:', error);
+                } finally {
+                    setLoading(false); // Marcar como carregado após buscar os dados
+                }
+            };
+            fetchData();
+        }, []);
+
+        // Verifica se os dados estão carregando
+        if (loading) {
+            return <div className={styles.message}>Carregando dados do usuário...</div>;
         }
-    }, []);
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+        // Verifica se o usuário tem permissão
+        if (!roles.includes("medico")) {
+            return (
+                <div className={styles.container}>
+                    <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+                </div>
+            );
+        }    
 
-    const handleSubmit = (event) => {
+        if (!token) {
+            return (
+                <div className={styles.container}>
+                    <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+                </div>
+            );
+        }
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        if (validateForm()) {
-            localStorage.setItem("formData", JSON.stringify(formData));
-            setShowAlert(true);
-        } else {
-            setShowErrorAlert(true);
-        }
-    };
+        setShowErrorAlert(false);
+        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+         const fichaData = {
+             nome: "Ficha de Atendimento Cardiologico",  
+            Conteudo:{
+                tutor: {
+                    nome: formData.tutorNome,
+                    cpf: formData.tutorCpf,
+                    rg: formData.tutorRg,
+                    telefone: formData.tutorTelefone,
+                    email: formData.tutorEmail,
+                    endereco: formData.tutorEndereco,
+                    dataNascimento: formData.tutorData
+                },
+                animal: {
+                    nome: formData.animalNome,
+                    especie: formData.animalEspecie,
+                    raca: formData.animalRaca,
+                    idade: formData.animalIdade,
+                    sexo: formData.animalSexo,
+                    peso: formData.animalPeso
+                },
+                antecedentes: formData.antecedentesHistorico,
+                exameFisico: formData.exameFisico,
+                anamnese: formData.anamnese
+            },
+            dataHora: dataFormatada
+        };
+             
+            try {
+                console.log(fichaData)
+                await createFicha(fichaData);
+                setShowAlert(true);
+            } catch (error) {
+                console.error("Erro ao criar ficha:", error);
+                if (error.response && error.response.data && error.response.data.code) {
+                    setErrorMessage(error.response.data.message);
+                }
+                setShowErrorAlert(true);
+            }
+        };
 
-    const handleCheckboxChange = (event) => {
-        const { value, checked } = event.target;
-        setFormData((prev) => ({
-            ...prev,
-            anamnese: checked
-                ? [...prev.anamnese, value]
-                : prev.anamnese.filter((item) => item !== value)
-        }));
-    };
+        // Adicione a função handleChange
+        const handleChange = (event) => {
+            const { name, value } = event.target;
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        };
+
+        const handleCheckboxChange = (event) => {
+            const { value, checked } = event.target;
+            setFormData(prev => ({
+                ...prev,
+                anamnese: checked
+                    ? [...prev.anamnese, value]
+                    : prev.anamnese.filter(item => item !== value)
+            }));
+        };
+    
 
     const handleExameFisicoChange = (event) => {
         const { name, value } = event.target;
@@ -121,10 +212,6 @@ function AtendimentoCardiologico() {
             <h1>Ficha de Atendimento Cardiologico</h1>
             <div className={styles.form_box}>
             <div className={styles.column}>
-                        <label>RG:</label>
-                        <input type="text" name="tutorRg" value={formData.tutorRg} onChange={handleChange} />
-            </div>
-            <div className={styles.column}>
                         <label>Data:</label>
                         <input type="date" name="tutorData" value={formData.tutorData} onChange={handleChange} />
             </div>
@@ -144,16 +231,16 @@ function AtendimentoCardiologico() {
                         <input type="text" name="tutorRg" value={formData.tutorRg} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
-    <label>CPF:</label>
-    <InputMask
-        mask="999.999.999-99" // Máscara de CPF
-        name="tutorCpf"
-        value={formData.tutorCpf}
-        onChange={handleChange}
-    >
-        {(inputProps) => <input {...inputProps} />}
-    </InputMask>
-</div>
+                            <label>CPF:</label>
+                                <InputMask
+                                    mask="999.999.999-99"
+                                    name="tutorCpf"
+                                    value={formData.tutorCpf}
+                                    onChange={handleChange}
+                                >
+                                    {(inputProps) => <input {...inputProps} type="text" />}
+                                </InputMask>
+                        </div>
                 </div>
                 <div className={styles.row}>
                     <div className={styles.column}>
@@ -222,6 +309,7 @@ function AtendimentoCardiologico() {
                             <input
                                 type="checkbox"
                                 value={item}
+                                checked={formData.anamnese.includes(item)}
                                 onChange={handleCheckboxChange}
                             /> {item.replace(/([A-Z])/g, ' $1').trim()}
                         </label>
@@ -263,9 +351,11 @@ function AtendimentoCardiologico() {
                 </div>
                 <button type="submit" className={styles.submitButton}>Continuar</button>
             </form>
+            {<Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaSessao`} />}
+            {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
         </div>
         </div>
-    );
+    )
 }
 
 export default AtendimentoCardiologico;
