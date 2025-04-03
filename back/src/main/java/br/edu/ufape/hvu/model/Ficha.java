@@ -1,6 +1,7 @@
 package br.edu.ufape.hvu.model;
 
 import br.edu.ufape.hvu.model.enums.TipoFicha;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +30,6 @@ public class Ficha {
     @EqualsAndHashCode.Include
     private long id;
     private String nome;
-    @Lob
     @Column(columnDefinition = "jsonb")
     private String conteudo;
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
