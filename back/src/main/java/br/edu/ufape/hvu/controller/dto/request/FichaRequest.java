@@ -1,6 +1,5 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
-import br.edu.ufape.hvu.model.enums.TipoFicha;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,7 +13,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Getter @Setter @NoArgsConstructor

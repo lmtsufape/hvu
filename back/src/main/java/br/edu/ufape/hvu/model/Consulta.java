@@ -30,12 +30,10 @@ public  class Consulta  {
 	@ManyToOne
 	@ToString.Exclude
 	private Especialidade encaminhamento;
-
 	private String queixaPrincipal;
 	private String alteracoesClinicasDiversas;
 	private String suspeitasClinicas;
 	private String alimentacao;
-
 	@ManyToOne
 	@ToString.Exclude
 	private Medico medico;
@@ -50,6 +48,4 @@ public  class Consulta  {
 	private LocalDateTime dataVaga;
 	@OneToOne
 	private Ficha ficha;
-	@Column(nullable = false)
-	private boolean tipo;
 }
