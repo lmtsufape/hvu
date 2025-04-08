@@ -96,12 +96,6 @@ public class ConsultaController {
 				obj.setAnimal(null);
 			}
 
-			// Especialidade
-			if (obj.getEncaminhamento() != null) {
-				oldObject.setEncaminhamento(facade.findEspecialidadeById( obj.getEncaminhamento().getId()));
-				obj.setEncaminhamento(null);
-			}
-
 			TypeMap<ConsultaRequest, Consulta> typeMapper = modelMapper
 													.typeMap(ConsultaRequest.class, Consulta.class)
 													.addMappings(mapper -> mapper.skip(Consulta::setId));			
