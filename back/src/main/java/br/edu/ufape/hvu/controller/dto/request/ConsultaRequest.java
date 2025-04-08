@@ -1,6 +1,9 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import br.edu.ufape.hvu.controller.dto.response.EstagiarioResponse;
 import br.edu.ufape.hvu.model.enums.TipoFicha;
 import org.modelmapper.ModelMapper;
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -22,13 +25,8 @@ public  class ConsultaRequest  {
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
 	private EspecialidadeRequest encaminhamento;
-	private FichaRequest ficha;
-
-	private String queixaPrincipal;
-	private String alteracoesClinicasDiversas;
-	private String suspeitasClinicas;
-	private String alimentacao;
-
+	private List<FichaRequest> ficha;
+	private List<EstagiarioRequest> estagiario;
 
 	public Consulta convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
