@@ -47,7 +47,7 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("usuario")
-	public UsuarioResponse createUsuario(@Valid @RequestBody UsuarioRequest newObj) {
+	public UsuarioResponse createUsuario(@RequestBody @Valid UsuarioRequest newObj) {
 		return new UsuarioResponse(facade.saveUsuario(newObj.convertToEntity()));
 	}
 	
@@ -55,25 +55,18 @@ public class UsuarioController {
 	public UsuarioResponse getUsuarioById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
-			return new UsuarioResponse(facade.findUsuarioById(id, principal.getSubject()));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return new UsuarioResponse(facade.findUsuarioById(id, principal.getSubject()));
 	}
 	
 	@GetMapping("usuario/current")
 	public UsuarioCurrentResponse getCurrentUsuario() {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
-			LinkedTreeMap<String,ArrayList<String>> tree = principal.getClaim("realm_access");
-			ArrayList<String> roles = tree.get("roles");
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		LinkedTreeMap<String,ArrayList<String>> tree = principal.getClaim("realm_access");
+		ArrayList<String> roles = tree.get("roles");
 			
-			return new UsuarioCurrentResponse(new UsuarioResponse( facade.findUsuarioByuserId(principal.getSubject())),roles);
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return new UsuarioCurrentResponse(new UsuarioResponse( facade.findUsuarioByuserId(principal.getSubject())),roles);
 	}
 
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
@@ -81,33 +74,23 @@ public class UsuarioController {
 	public UsuarioResponse updateUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
-			//Usuario o = obj.convertToEntity();
-			Usuario oldObject = facade.findUsuarioById(id, principal.getSubject());
 
-			TypeMap<UsuarioRequest, Usuario> typeMapper = modelMapper
-													.typeMap(UsuarioRequest.class, Usuario.class)
-													.addMappings(mapper -> mapper.skip(Usuario::setId));			
+		//Usuario o = obj.convertToEntity();
+		Usuario oldObject = facade.findUsuarioById(id, principal.getSubject());
+
+		TypeMap<UsuarioRequest, Usuario> typeMapper = modelMapper
+				.typeMap(UsuarioRequest.class, Usuario.class)
+				.addMappings(mapper -> mapper.skip(Usuario::setId));
 			
 			
-			typeMapper.map(obj, oldObject);	
-			return new UsuarioResponse(facade.updateUsuario(oldObject, principal.getSubject()));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
+		typeMapper.map(obj, oldObject);
+		return new UsuarioResponse(facade.updateUsuario(oldObject, principal.getSubject()));
 	}
-	
+
 	@DeleteMapping("usuario/{id}")
 	public String deleteUsuario(@PathVariable Long id) {
-		try {
-			facade.deleteUsuario(id);
-			return "";
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
+		facade.deleteUsuario(id);
+		return "";
 	}
-	
 
 }

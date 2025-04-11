@@ -5,13 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter @NoArgsConstructor
 public class ErrorResponse {
     private String error;
     private String message;
-    //private List<StackTraceElement> stackTrace; Descomentar quando for preciso Stacktrace
+    //private List<StackTraceElement> stackTrace; //Descomentar quando for preciso Stacktrace
     private LocalDateTime timestamp;
 
     public ErrorResponse(String exceptionType, String message, /* List<StackTraceElement> stackTrace, */ LocalDateTime timestamp) {

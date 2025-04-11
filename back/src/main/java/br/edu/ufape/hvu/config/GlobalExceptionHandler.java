@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.config;
 
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.NotFoundException;
+import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import br.edu.ufape.hvu.exception.types.auth.KeycloakAuthenticationException;
 import br.edu.ufape.hvu.exception.types.global.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,6 +43,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 "Falha de autenticação",
                 ex.getMessage(),
+                //Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -64,12 +69,40 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 "Recurso não encontrado",
                 ex.getMessage(),
+                //Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        logger.warn("Acesso negado: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Acesso negado",
+                ex.getMessage(),
+                //Arrays.asList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ForbiddenOperationException.class)
+    public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenOperationException ex) {
+        logger.warn("Operação proibida: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Acesso negado",
+                ex.getMessage(),
+                //Arrays.asList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
@@ -96,7 +129,7 @@ public class GlobalExceptionHandler {
     }
 
     // mensagens mais pratricas para validações @Valid no DTO
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
@@ -110,8 +143,10 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 "Erro de validação",
                 errorMessage,
+                //Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

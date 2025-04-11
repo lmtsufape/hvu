@@ -208,47 +208,42 @@ public class Facade {
     private UsuarioServiceInterface usuarioServiceInterface;
 
     public Usuario saveUsuario(Usuario newInstance) {
+        if(newInstance == null) {
+            throw new IllegalArgumentException("Usuario não pode ser nulo");
+        }
+
         return usuarioServiceInterface.saveUsuario(newInstance);
     }
 
     public Usuario updateUsuario(Usuario transientObject, String idSession) {
+        if (transientObject == null || idSession == null || idSession.isBlank()) {
+            throw new IllegalArgumentException("Usuário ou ID da sessão inválidos.");
+        }
         return usuarioServiceInterface.updateUsuario(transientObject, idSession);
     }
 
     public Usuario findUsuarioById(long id, String idSession) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID do usuário inválido.");
+        }
         return usuarioServiceInterface.findUsuarioById(id, idSession);
     }
 
     public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
-        return usuarioServiceInterface.findUsuarioByuserId(userId);
-    }
-
-    public void findDuplicateAccountByuserId(String userId) throws DuplicateAccountException {
-        try {
-            Usuario usuario = findUsuarioByuserId(userId);
-            if (usuario instanceof Tutor) {
-                throw new DuplicateAccountException("tutor");
-            }
-
-            if (usuario instanceof Medico) {
-                throw new DuplicateAccountException("medico");
-            }
-
-        } catch (IdNotFoundException ex) {
-
+        if (userId == null || userId.isBlank()) {
+            throw new IllegalArgumentException("userId não pode ser vazio.");
         }
-
+        return usuarioServiceInterface.findUsuarioByuserId(userId);
     }
 
     public List<Usuario> getAllUsuario() {
         return usuarioServiceInterface.getAllUsuario();
     }
 
-    public void deleteUsuario(Usuario persistentObject) {
-        usuarioServiceInterface.deleteUsuario(persistentObject);
-    }
-
     public void deleteUsuario(long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID inválido para exclusão.");
+        }
         usuarioServiceInterface.deleteUsuario(id);
     }
 
