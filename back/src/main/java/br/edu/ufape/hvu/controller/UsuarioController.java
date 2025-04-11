@@ -6,12 +6,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -19,16 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
-
 import br.edu.ufape.hvu.model.Usuario;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.UsuarioRequest;
 import br.edu.ufape.hvu.controller.dto.response.UsuarioResponse;
 import br.edu.ufape.hvu.controller.dto.response.UsuarioCurrentResponse;
-
-import br.edu.ufape.hvu.exception.IdNotFoundException;
-
-
  
 @RestController
 @RequestMapping("/api/v1/")
