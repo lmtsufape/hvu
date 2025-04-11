@@ -27,7 +27,6 @@ public class UsuarioController {
 	private Facade facade;
 	@Autowired
 	private ModelMapper modelMapper;
-
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("usuario")
 	public List<UsuarioResponse> getAllUsuario() {

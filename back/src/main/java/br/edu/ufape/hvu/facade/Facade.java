@@ -9,8 +9,6 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import br.edu.ufape.hvu.controller.dto.request.ReagendamentoRequest;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
@@ -21,17 +19,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaTipoRequest;
-import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 import jakarta.transaction.Transactional;
-
-import javax.xml.crypto.Data;
 
 @Service @RequiredArgsConstructor
 public class Facade {
