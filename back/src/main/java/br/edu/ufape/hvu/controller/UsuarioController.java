@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -52,7 +53,7 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("usuario/{id}")
-	public UsuarioResponse getUsuarioById(@PathVariable Long id) {
+	public UsuarioResponse getUsuarioById(@PathVariable @NotNull Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		return new UsuarioResponse(facade.findUsuarioById(id, principal.getSubject()));

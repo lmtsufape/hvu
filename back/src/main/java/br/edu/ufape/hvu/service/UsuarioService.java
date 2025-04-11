@@ -51,7 +51,7 @@ public class UsuarioService implements UsuarioServiceInterface {
 	// Funcção auxiliar para validar usuario
 	public Usuario getUsuarioValidado ( long id, String idSession){
 		Usuario user = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Usuario"));
-		if(!user.getUserId().equals(idSession)){
+		if(user.getUserId() == null || !idSession.equals(user.getUserId())){
 			throw new ForbiddenOperationException("Está não é sua conta");
 		}
 		return user;
