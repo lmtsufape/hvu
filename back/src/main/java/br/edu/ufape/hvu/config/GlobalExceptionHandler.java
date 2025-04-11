@@ -22,20 +22,6 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
-        logger.error("Erro inesperado: ", ex); // log completo no servidor
-
-        ErrorResponse errorResponse = new ErrorResponse(
-                "Erro interno",
-                "Ocorreu um erro inesperado. Tente novamente mais tarde.",
-                //Arrays.asList(ex.getStackTrace()),
-                LocalDateTime.now()
-        );
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler(KeycloakAuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleKeycloakAuthenticationException(KeycloakAuthenticationException ex) {
         logger.warn("Falha de autenticação no Keycloak: {}", ex.getMessage());
@@ -116,20 +102,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
-        logger.error("Erro inesperado: ", ex); // stacktrace incluso
-        ErrorResponse error = new ErrorResponse(
-                ex.getClass().getSimpleName(),
-                "Erro inesperado: " + ex.getMessage(),
-                //Arrays.asList(ex.getStackTrace()),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     // mensagens mais pratricas para validações @Valid no DTO
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
