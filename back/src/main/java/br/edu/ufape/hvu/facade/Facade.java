@@ -46,10 +46,9 @@ public class Facade {
 
     private final TutorServiceInterface tutorServiceInterface;
 
-
-
     @Transactional
     public Tutor saveTutor(Tutor newInstance, String password) throws ResponseStatusException {
+        tutorServiceInterface.verificarDuplicidade(newInstance.getCpf(), newInstance.getEmail());
         String userKcId = null;
         keycloakService.createUser(newInstance.getCpf(), newInstance.getEmail(), password, "tutor");
         try {
@@ -99,10 +98,6 @@ public class Facade {
         return tutorServiceInterface.getAllTutor();
     }
 
-    public void deleteTutor(Tutor persistentObject) {
-        tutorServiceInterface.deleteTutor(persistentObject);
-    }
-
     @Transactional
     public void deleteTutor(long id, String idSession) {
         try {
@@ -112,7 +107,6 @@ public class Facade {
             throw new RuntimeException("Error deleting user");
         }
     }
-
 
     // Cancelamento--------------------------------------------------------------
     @Autowired
