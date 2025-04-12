@@ -1,5 +1,6 @@
 package br.edu.ufape.hvu.config;
 
+import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.NotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
@@ -122,5 +123,19 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateAccountException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateAccount(DuplicateAccountException ex) {
+        logger.warn("Recurso duplicado: {}", ex.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                "Conflito de dados",
+                ex.getMessage(),
+                //Arrays.asList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }
