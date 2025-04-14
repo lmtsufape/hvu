@@ -29,13 +29,6 @@ public  class Consulta  {
 	private boolean proximaConsulta;
 	@ManyToOne
 	@ToString.Exclude
-	private Especialidade encaminhamento;
-	private String queixaPrincipal;
-	private String alteracoesClinicasDiversas;
-	private String suspeitasClinicas;
-	private String alimentacao;
-	@ManyToOne
-	@ToString.Exclude
 	private Medico medico;
 	@ManyToMany
 	@JoinColumn(name = "consulta_id")
@@ -46,6 +39,6 @@ public  class Consulta  {
 	private Animal animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	@OneToOne
-	private Ficha ficha;
+	@OneToMany
+	private List<Ficha> ficha;
 }

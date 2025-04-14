@@ -23,12 +23,9 @@ public class ConsultaResponse {
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
 	private EspecialidadeResponse encaminhamento;
-	private FichaResponse ficha;
+	private List<FichaResponse> ficha;
 	private List<EstagiarioResponse> estagiario;
-	private String queixaPrincipal;
-	private String alteracoesClinicasDiversas;
-	private String suspeitasClinicas;
-	private String alimentacao;
+
 
 	public ConsultaResponse(Consulta obj) {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
