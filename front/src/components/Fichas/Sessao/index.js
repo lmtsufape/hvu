@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useRouter } from "next/router";
 import styles from "./index.module.css";
 import VoltarButton from "../../VoltarButton";
 import { CancelarWhiteButton } from "../../WhiteButton";
@@ -9,15 +8,13 @@ import { createFicha } from '../../../../services/fichaService';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
+import FinalizarFichaModal from "../FinalizarFichaModal";
 
 function FichaSessao() {
-    const router = useRouter();
 
     const [userId, setUserId] = useState(null);
-    const [errors, setErrors] = useState({});
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
 
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
@@ -82,7 +79,6 @@ function FichaSessao() {
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault(); // Impede o envio padrão do formulário
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
         const fichaData = {
             nome: "Ficha de sessão",  
@@ -94,14 +90,7 @@ function FichaSessao() {
                 estagiario: formData.estagiario
             },
             dataHora: dataFormatada // Gera a data atual no formato ISO 8601
-
         };
-    
-        const errors = validateForm();
-        if (Object.keys(errors).length > 0) {
-            setErrors(errors);
-            return;
-        }
 
         try {
             console.log(fichaData)
@@ -116,19 +105,6 @@ function FichaSessao() {
         }
     };
     
-    const validateForm = () => {
-        const errors = {};
-
-        if(!formData.numeroSessao){
-            errors.numeroSessao = "Campo obrigatório";
-        }
-        if(!formData.sessaoData){
-            errors.sessaoData = "Campo obrigatório";
-        }
-        setErrors(errors);
-        return errors;
-      };
-    
     return(
         <div className={styles.container}>
             <VoltarButton />
@@ -139,18 +115,13 @@ function FichaSessao() {
                         <label>Sessão nº:</label>
                         <input type="text" name="numeroSessao" 
                         value={formData.numeroSessao} 
-                        onChange={handleChange}
-                        className={`form-control ${errors.numeroSessao ? "is-invalid" : ""}`} />
-                        {errors.numeroSessao && <div className={`invalid-feedback ${styles.error_message}`}>{errors.numeroSessao}</div>}
-                    
+                        onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Data:</label>
                         <input type="date" name="sessaoData" 
                         value={formData.sessaoData} 
-                        onChange={handleChange}
-                        className={`form-control ${errors.numeroSessao ? "is-invalid" : ""}`} />
-                        {errors.numeroSessao && <div className={`invalid-feedback ${styles.error_message}`}>{errors.numeroSessao}</div>}
+                        onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Anotação: 
@@ -169,11 +140,8 @@ function FichaSessao() {
 
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
-                        <button type="submit" className={styles.criar_button}>
-                            Continuar
-                        </button>
+                        < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
-                    
                 </form>
                 {<Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaSessao`} />}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
