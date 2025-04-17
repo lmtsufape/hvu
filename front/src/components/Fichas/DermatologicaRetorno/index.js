@@ -5,27 +5,29 @@ import VoltarButton from "../../VoltarButton";
 import { CancelarWhiteButton } from "../../WhiteButton";
 import { getCurrentUsuario } from '../../../../services/userService';
 import { createFicha } from '../../../../services/fichaService';
+import FinalizarFichaModal from "../FinalizarFichaModal";
+import moment from 'moment';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
-import moment from 'moment';
-import FinalizarFichaModal from "../FinalizarFichaModal";
 
-function FichaSessao() {
+function FichaDermatologicaRetorno() {
 
     const [userId, setUserId] = useState(null);
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
+    console.log("userId:", userId);
 
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
+    const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [formData, setFormData] = useState({
-        numeroSessao: "",
-        sessaoData: "",
-        anotacao: "",
-        estagiario: "",
-        rg: ""
+        Anamnese: "",
+        tratamento: "",
+        resultados: "",
+        locaisAfetados: "",
+        condutaTerapeutica: "",
+        estagiarios: "",
     });
 
     useEffect(() => {
@@ -45,18 +47,16 @@ function FichaSessao() {
             } catch (error) {
                 console.error('Erro ao buscar usuário:', error);
             } finally {
-                setLoading(false); // Marcar como carregado após buscar os dados
+                setLoading(false);
             }
         };
         fetchData();
     }, []);
 
-    // Verifica se os dados estão carregando
     if (loading) {
         return <div className={styles.message}>Carregando dados do usuário...</div>;
     }
 
-    // Verifica se o usuário tem permissão
     if (!roles.includes("medico")) {
         return (
             <div className={styles.container}>
@@ -73,23 +73,19 @@ function FichaSessao() {
         );
     }
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
     const handleSubmit = async (event) => {
-        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
+        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
         const fichaData = {
-            nome: "Ficha de sessão",  
+            nome: "Ficha dermatológica de retorno",  
             conteudo:{
-                numeroSessao: formData.numeroSessao,
-                sessaoData: formData.sessaoData,
-                anotacao: formData.anotacao,
-                rg: formData.rg,
-                estagiario: formData.estagiario
+                anamnese: formData.Anamnese,
+                tratamento: formData.tratamentos,
+                resultados: formData.resultados,
+                locaisAfetados: formData.locaisAfetados,
+                condutaTerapeutica: formData.condutaTerapeutica,
+                estagiarios: formData.estagiarios,
             },
-            dataHora: dataFormatada // Gera a data atual no formato ISO 8601
+            dataHora: dataFormatada 
         };
 
         try {
@@ -104,38 +100,55 @@ function FichaSessao() {
             setShowErrorAlert(true);
         }
     };
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
     
     return(
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Ficha de sessão</h1>
+            <h1>Ficha clínica dermatológica de retorno </h1>
             <div className={styles.form_box}>
-                <form onSubmit = {handleSubmit}>
+                <form>
                     <div className={styles.column}>
-                        <label>Sessão nº:</label>
-                        <input type="text" name="numeroSessao" 
-                        value={formData.numeroSessao} 
-                        onChange={handleChange} />
-                    </div>
-                    <div className={styles.column}>
-                        <label>Data:</label>
-                        <input type="date" name="sessaoData" 
-                        value={formData.sessaoData} 
-                        onChange={handleChange}/>
-                    </div>
-                    <div className={styles.column}>
-                        <label>Anotação: 
-                            <textarea name="anotacao" value={formData.anotacao} onChange={handleChange} rows="10" cols="50" />
+                        <label>Anamnese/Histórico clínico: <br></br>
+                            <textarea name="Anamnese" value={formData.Anamnese} 
+                            onChange={handleChange} rows="4" cols="50" />
                         </label>
-                    </div>              
-
-                    <div className={styles.column}>
-                        <label>Estagiário: </label>
-                        <input type="text" name="estagiario" value={formData.estagiario} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
-                        <label>RG: </label>
-                        <input type="text" name="rg" value={formData.rg} onChange={handleChange} />
+                        <label>Tratamentos realizados (Início/Término/Resposta terapêutica): <br></br>
+                            <textarea name="tratamentos" value={formData.tratamentos} 
+                            onChange={handleChange} rows="4" cols="50" />
+                        </label>
+                    </div>
+                    <div className={styles.column}>
+                        <label>Resultados dos exames realizados: <br></br>
+                            <textarea name="resultados" value={formData.resultados} 
+                            onChange={handleChange} rows="4" cols="50" />
+                        </label>
+                    </div>
+
+                    <h1 className={styles.title}>Exame físico dermatológico/Descrição lesional</h1>
+                    <div className={styles.column}>
+                        <label>Locais afetados: <br></br>
+                            <textarea name="locaisAfetados" value={formData.locaisAfetados} 
+                            onChange={handleChange} rows="4" cols="50" />
+                        </label>
+                    </div>
+                    <div className={styles.column}>
+                        <label>Conduta terapêutica: <br></br>
+                            <textarea name="condutaTerapeutica" value={formData.condutaTerapeutica} 
+                            onChange={handleChange} rows="4" cols="50" />
+                        </label>
+                    </div>
+                    <div className={styles.column}>
+                        <label>Estagiários: <br></br>
+                            <textarea name="estagiarios" value={formData.estagiarios} 
+                            onChange={handleChange} rows="4" cols="50" />
+                        </label>
                     </div>
 
                     <div className={styles.button_box}>
@@ -143,11 +156,11 @@ function FichaSessao() {
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
-                {<Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaSessao`} />}
+                {<Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaDermatologicaRetorno`} />}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
             </div>
         </div>
     )
 }
 
-export default FichaSessao;
+export default FichaDermatologicaRetorno;
