@@ -76,7 +76,7 @@ function FichaDermatologicaRetorno() {
     const handleSubmit = async (event) => {
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
         const fichaData = {
-            nome: "Ficha de sessão",  
+            nome: "Ficha dermatológica de retorno",  
             conteudo:{
                 anamnese: formData.Anamnese,
                 tratamento: formData.tratamentos,
