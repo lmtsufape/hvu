@@ -9,6 +9,7 @@ import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
 import { createFicha } from '../../../../services/fichaService';
+import FinalizarFichaModal from "../FinalizarFichaModal";
 
 function FichaMedicaRetorno() {
     const router = useRouter();
@@ -30,7 +31,6 @@ function FichaMedicaRetorno() {
         tratamento: "",
         ExamesComplementares: [],
         plantonista: "",
-        medico: "",
     });
 
     useEffect(() => {
@@ -79,8 +79,6 @@ function FichaMedicaRetorno() {
     }
 
     const handleSubmit = async (event) => {
-        event.preventDefault(); // Impede o envio padrão do formulário
-        setShowErrorAlert(false);
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
         const fichaData = {
             nome: "Ficha clínico médica de retorno",  
@@ -90,17 +88,10 @@ function FichaMedicaRetorno() {
                 tratamento: formData.tratamento,
                 ExamesComplementares: formData.ExamesComplementares,
                 plantonista: formData.plantonista,
-                medico: formData.medico,
             },
             dataHora: dataFormatada // Gera a data atual no formato ISO 8601
 
         };
-    
-        // const errors = validateForm();
-        // if (Object.keys(errors).length > 0) {
-        //     setErrors(errors);
-        //     return;
-        // }
 
         try {
             console.log(fichaData)
@@ -180,14 +171,9 @@ function FichaMedicaRetorno() {
                         <input type="text" name="plantonista" value={formData.plantonista} onChange={handleChange} />
                     </div>
 
-                    <div className={styles.column}>
-                        <label>Médico(s) Veterinário(s) Responsável:</label>
-                        <input type="text" name="medico" value={formData.medico} onChange={handleChange} />
-                    </div>
-
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
-                        <button type="submit" className={styles.criar_button}>Continuar</button>
+                        < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                     
                 </form>
