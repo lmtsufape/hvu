@@ -35,9 +35,9 @@ export function ContinuarGreenButton() {
     );
 }
 
-export function ContinuarFichasGreenButton() {
+export function ContinuarFichasGreenButton({type = "submit"}) {
     return (
-        <button className={styles.green_buttonFichas}>
+        <button className={styles.green_buttonFichas} type={type}> 
             {text_green_button.continuarFichas}
         </button>
     );
