@@ -23,9 +23,8 @@
 .container h2 {
   font-size: 17px;
   font-weight: 700;
-
+  text-align: start;
   color: #333;
-  text-align: center;
 }
 
 .form_box {
@@ -62,7 +61,6 @@
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  resize: none;
 }
 
 .criar_button {
@@ -84,7 +82,7 @@
 }
 
 .button_box {
-  width: 100%; /* Alterado para usar uma porcentagem */
+  width: 100%; 
   max-width: 1152px;
   height: 10vh;
   display: flex;
@@ -105,13 +103,4 @@
   line-height: 30px;
   letter-spacing: 0em;
   text-align: center;
-}
-
-.error_message {
-  margin-top: -0.2em;
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 24px;
-  color: #C7122F;
 }

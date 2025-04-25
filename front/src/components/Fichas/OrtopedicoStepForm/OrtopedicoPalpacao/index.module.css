@@ -21,11 +21,10 @@
 }
 
 .container h2 {
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 700;
-
+  text-align: start;
   color: #333;
-  text-align: center;
 }
 
 .form_box {
@@ -34,6 +33,12 @@
   padding: 20px;
   background-color: #fff;
 }
+
+.box{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -41,14 +46,44 @@
   margin-bottom: 15px;
 }
 
+.checkbox_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+  margin: 10px;
+}
+
+.checkbox_container label {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.checkbox_container input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #39805f;
+}
+
+.checkbox_container label:hover {
+  background-color: #e3f1ea;
+}
+
 .column {
   flex: 1;
-  min-width: 250px;
+  min-width: 100px;
   margin: 10px;
 }
 
 .column label {
-  display: block;
+  display: flex;
+  flex-direction: column;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 5px;
@@ -65,9 +100,10 @@
   resize: none;
 }
 
+
 .criar_button {
   width: 180px;
-  height: 48px;
+  height: 56px;
   border-radius: 10px;
   border: 1px solid #39805F;
   color: #FFF5F6;
@@ -107,11 +143,24 @@
   text-align: center;
 }
 
-.error_message {
-  margin-top: -0.2em;
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 24px;
-  color: #C7122F;
+/* Adicione ao seu arquivo CSS module */
+.canvasContainer {
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.toolPanel {
+  margin: 10px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.colorOption {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  cursor: pointer;
+  margin: 0 5px;
+  border: 1px solid #000;
 }

@@ -13,4 +13,7 @@ public interface TutorRepository extends JpaRepository<Tutor, Long> {
 	
 	@Query("SELECT t FROM Tutor t JOIN t.animal a WHERE :animalId IN (SELECT a.id FROM t.animal a)")
     Tutor findByanimalId(@Param("animalId") Long animalId);
+
+    boolean existsByCpf(String cpf);
+    boolean existsByEmail(String email);
 }

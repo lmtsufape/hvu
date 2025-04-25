@@ -9,8 +9,6 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import br.edu.ufape.hvu.controller.dto.request.ReagendamentoRequest;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
@@ -21,17 +19,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaTipoRequest;
-import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 import jakarta.transaction.Transactional;
-
-import javax.xml.crypto.Data;
 
 @Service @RequiredArgsConstructor
 public class Facade {
@@ -52,10 +46,9 @@ public class Facade {
 
     private final TutorServiceInterface tutorServiceInterface;
 
-
-
     @Transactional
     public Tutor saveTutor(Tutor newInstance, String password) throws ResponseStatusException {
+        tutorServiceInterface.verificarDuplicidade(newInstance.getCpf(), newInstance.getEmail());
         String userKcId = null;
         keycloakService.createUser(newInstance.getCpf(), newInstance.getEmail(), password, "tutor");
         try {
@@ -105,10 +98,6 @@ public class Facade {
         return tutorServiceInterface.getAllTutor();
     }
 
-    public void deleteTutor(Tutor persistentObject) {
-        tutorServiceInterface.deleteTutor(persistentObject);
-    }
-
     @Transactional
     public void deleteTutor(long id, String idSession) {
         try {
@@ -118,7 +107,6 @@ public class Facade {
             throw new RuntimeException("Error deleting user");
         }
     }
-
 
     // Cancelamento--------------------------------------------------------------
     @Autowired
@@ -208,47 +196,42 @@ public class Facade {
     private UsuarioServiceInterface usuarioServiceInterface;
 
     public Usuario saveUsuario(Usuario newInstance) {
+        if(newInstance == null) {
+            throw new IllegalArgumentException("Usuario não pode ser nulo");
+        }
+
         return usuarioServiceInterface.saveUsuario(newInstance);
     }
 
     public Usuario updateUsuario(Usuario transientObject, String idSession) {
+        if (transientObject == null || idSession == null || idSession.isBlank()) {
+            throw new IllegalArgumentException("Usuário ou ID da sessão inválidos.");
+        }
         return usuarioServiceInterface.updateUsuario(transientObject, idSession);
     }
 
     public Usuario findUsuarioById(long id, String idSession) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID do usuário inválido.");
+        }
         return usuarioServiceInterface.findUsuarioById(id, idSession);
     }
 
     public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
-        return usuarioServiceInterface.findUsuarioByuserId(userId);
-    }
-
-    public void findDuplicateAccountByuserId(String userId) throws DuplicateAccountException {
-        try {
-            Usuario usuario = findUsuarioByuserId(userId);
-            if (usuario instanceof Tutor) {
-                throw new DuplicateAccountException("tutor");
-            }
-
-            if (usuario instanceof Medico) {
-                throw new DuplicateAccountException("medico");
-            }
-
-        } catch (IdNotFoundException ex) {
-
+        if (userId == null || userId.isBlank()) {
+            throw new IllegalArgumentException("userId não pode ser vazio.");
         }
-
+        return usuarioServiceInterface.findUsuarioByuserId(userId);
     }
 
     public List<Usuario> getAllUsuario() {
         return usuarioServiceInterface.getAllUsuario();
     }
 
-    public void deleteUsuario(Usuario persistentObject) {
-        usuarioServiceInterface.deleteUsuario(persistentObject);
-    }
-
     public void deleteUsuario(long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID inválido para exclusão.");
+        }
         usuarioServiceInterface.deleteUsuario(id);
     }
 
