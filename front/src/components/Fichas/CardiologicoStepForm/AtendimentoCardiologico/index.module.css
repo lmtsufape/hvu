@@ -83,6 +83,7 @@
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  resize: none;
 }
 
 .checkbox-group {
@@ -121,3 +122,12 @@
   background-color: #2c6649;
 }
 
+.button_box {
+  width: 100%; 
+  max-width: 1152px;
+  height: 10vh;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  gap: 3vh;
+}
