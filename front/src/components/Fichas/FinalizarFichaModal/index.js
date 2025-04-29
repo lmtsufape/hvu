@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './index.module.css';
-import { FinalizarFichasGreenButton } from "@/components/GreenButton";
 
-function ConfirmarEnvioButton({ onConfirm }) {
+function ConfirmarEnvioButton({ onConfirm, type="button", disabled }) {
     const [showModal, setShowModal] = useState(false);
     const modalRef = useRef(null);
 
@@ -27,7 +26,9 @@ function ConfirmarEnvioButton({ onConfirm }) {
     return (
         <div>
             <div onClick={() => setShowModal(true)}>
-                <FinalizarFichasGreenButton type="button" />
+                <button className={styles.green_buttonFichas} type={type} disabled={disabled}>
+                    Finalizar
+                </button>
             </div>
             {showModal && (
                 <div className={styles.modal} ref={modalRef}>
