@@ -1,6 +1,8 @@
 package br.edu.ufape.hvu.service;
 
 import br.edu.ufape.hvu.model.Ficha;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.util.List;
 
 public interface FichaServiceInterface {

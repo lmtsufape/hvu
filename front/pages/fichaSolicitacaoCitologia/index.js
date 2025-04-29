@@ -3,19 +3,19 @@ import { Header02 } from "@/components/Header";
 import { SubHeader } from "../../src/components/SubHeader";
 import Footer from "@/components/Footer";
 import "@/styles/styles.css";
-import AtendimentoCardiologico from "@/components/Fichas/AtendimentoCardiologico";
+import FichaSolicitacaoCitologia from "@/components/Fichas/FichaSolicitacaoCitologia";
 
-function CardiologicoPage() {
+function FichaSolicitacaoCitologiaPage() {
     return(
         <div className="divPai">
             < Header02 />
             < SubHeader />
             <div className="flexStyle">
-                <AtendimentoCardiologico />
+                <FichaSolicitacaoCitologia />
             </div>
             < Footer />
         </div>
     );
 }
 
-export default CardiologicoPage;
+export default FichaSolicitacaoCitologiaPage;

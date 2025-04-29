@@ -9,6 +9,7 @@ const text_white_button = {
 	adicionar_raca: "Adicionar raça",
 	cadastro: "Cadastre-se",
 	cancelar: "Cancelar",
+	voltar: "Voltar",
 	editar: "Editar",
 	criar_agendamento: "Criar agendamento",
 	visualizar_agendas: "Visualizar agenda",
@@ -107,6 +108,20 @@ export function CancelarWhiteButton({ type = "button" }) {
 	return (
 		<button type={type} className={styles.white_button} onClick={handlCancelarClick}>
 			{text_white_button.cancelar}
+		</button>
+	);
+}
+
+export function VoltarWhiteButton({ type = "button", onClick }) {
+
+	const handlVoltarClick = (e) => {
+		e.preventDefault();
+        onClick(); 
+	};
+
+	return (
+		<button type={type} className={styles.white_button} onClick={handlVoltarClick}>
+			{text_white_button.voltar}
 		</button>
 	);
 }

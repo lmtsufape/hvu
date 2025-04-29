@@ -5,7 +5,7 @@ import br.edu.ufape.hvu.exception.types.BusinessException;
 @SuppressWarnings("serial")
 public class DuplicateAccountException extends BusinessException{
 	
-	public DuplicateAccountException(String type) {
-		super("002", "Ja existe uma conta " + type + " com essas informacoes de cadastro");
+	public DuplicateAccountException(String tipo, String campo) {
+		super("002", "Já existe um(a) " + tipo + " cadastrado(a) com esse(a) " + campo + ".");
 	}
 }
