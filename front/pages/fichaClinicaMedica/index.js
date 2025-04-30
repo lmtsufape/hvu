@@ -6,7 +6,7 @@ import "@/styles/styles.css";
 import FichaClinicaMedica from "@/components/Fichas/FichaClinicaMedica";
 
 
-function SessaoPage() {
+function FichaClinicaMedicaPage() {
     return(
         <div className="divPai">
             < Header03 />
@@ -19,4 +19,4 @@ function SessaoPage() {
     );
 }
 
-export default FichaClinicaMedica;
+export default FichaClinicaMedicaPage;
