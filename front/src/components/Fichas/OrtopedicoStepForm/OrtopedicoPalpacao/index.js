@@ -4,7 +4,8 @@ import VoltarButton from "../../../VoltarButton";
 import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
 
-function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, handleSubmit, prevStep, setFormData}) {
+function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, handleSubmit, prevStep, setFormData, 
+  selecionados, ladosVisiveis, toggleItem, toggleLadoVisivel,}) {
 
   return (
     <div className={styles.container}>
@@ -24,6 +25,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="carpo"
@@ -38,6 +43,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                  />
                 <GrupoExame
                     titulo="radioUlna"
@@ -48,6 +57,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="musculosTendoes"
@@ -75,6 +88,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="umero"
@@ -85,6 +102,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="ombro"
@@ -104,6 +125,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="axilarSubescapular"
@@ -114,6 +139,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="escapula"
@@ -127,6 +156,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="articulacaoCubital"
@@ -144,6 +177,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <div className={styles.column}>
                     <label>Achados exames de imagem:
@@ -172,6 +209,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="tarso"
@@ -186,6 +227,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="tibiaFibula"
@@ -196,6 +241,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="articulacaoJoelho"
@@ -221,6 +270,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                   titulo="femur"
@@ -231,6 +284,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                   formData={formData}
                   setFormData={setFormData}
                   handleRadioAninhado={handleRadioAninhado}
+                  selecionados={selecionados}
+                  ladosVisiveis={ladosVisiveis}
+                  toggleItem={toggleItem}
+                  toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="articulacaoCoxal"
@@ -253,6 +310,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="articulacaoSacroiliaca"
@@ -263,6 +324,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="pelve"
@@ -276,6 +341,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <GrupoExame
                     titulo="cabecaEsqueletoAxial"
@@ -291,6 +360,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     formData={formData}
                     setFormData={setFormData}
                     handleRadioAninhado={handleRadioAninhado}
+                    selecionados={selecionados}
+                    ladosVisiveis={ladosVisiveis}
+                    toggleItem={toggleItem}
+                    toggleLadoVisivel={toggleLadoVisivel}
                 />
                 <div className={styles.column}>
                   <label>Diagnótico:
@@ -325,30 +398,16 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
   );
 }
 
-function GrupoExame({ titulo, label, itens, formData, handleRadioAninhado }) {
+function GrupoExame({ titulo, label, itens, formData, selecionados,
+                      ladosVisiveis, toggleItem, toggleLadoVisivel, handleRadioAninhado }) {
   const [aberto, setAberto] = useState(false);
-  const [selecionados, setSelecionados] = useState([]);
-  const [ladosVisiveis, setLadosVisiveis] = useState({});
 
-  const toggleItem = (key) => {
-    setSelecionados((prev) =>
-      prev.includes(key) ? prev.filter((i) => i !== key) : [...prev, key]
-    );
-    setLadosVisiveis((prev) => {
-      const novo = { ...prev };
-      if (novo[key]) delete novo[key];
-      return novo;
-    });
+  const handleToggleItem = (key) => {
+    toggleItem(titulo, key);
   };
 
-  const toggleLadoVisivel = (key, lado) => {
-    setLadosVisiveis((prev) => ({
-      ...prev,
-      [key]: {
-        ...(prev[key] || {}),
-        [lado]: !prev[key]?.[lado],
-      },
-    }));
+  const handleToggleLadoVisivel = (key, lado) => {
+    toggleLadoVisivel(titulo, key, lado);
   };
 
   return (
@@ -368,7 +427,7 @@ function GrupoExame({ titulo, label, itens, formData, handleRadioAninhado }) {
                 <input
                   type="checkbox"
                   checked={selecionados.includes(key)}
-                  onChange={() => toggleItem(key)}
+                  onChange={() => handleToggleItem(key)}
                 />
                 {label}
               </label>
@@ -381,7 +440,7 @@ function GrupoExame({ titulo, label, itens, formData, handleRadioAninhado }) {
                         <input
                           type="checkbox"
                           checked={ladosVisiveis[key]?.[lado] ?? false}
-                          onChange={() => toggleLadoVisivel(key, lado)}
+                          onChange={() => handleToggleLadoVisivel(key, lado)}
                         />
                         {lado}
                       </label>

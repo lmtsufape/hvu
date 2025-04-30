@@ -19,6 +19,8 @@ function OrtopedicaSteps() {
   const [showAlert, setShowAlert] = useState(false);
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
+  const [selecionadosGrupoExame, setSelecionadosGrupoExame] = useState([]);
+  const [ladosVisiveisGrupoExame, setLadosVisiveisGrupoExame] = useState({});
 
   const [formData, setFormData] = useState({
 
@@ -239,6 +241,69 @@ function OrtopedicaSteps() {
       );
   }
 
+  //função para alternar a seleção de um item e limpar os valores dos lados
+  const toggleItem = (titulo, key) => {
+    const wasSelected = selecionadosGrupoExame.includes(key);
+    
+    // Atualiza a lista de selecionados
+    setSelecionadosGrupoExame(prev =>
+      wasSelected ? prev.filter(i => i !== key) : [...prev, key]
+    );
+  
+    // Se estava selecionado e agora está desmarcando, limpa os valores mas mantém a estrutura
+    if (wasSelected) {
+      setFormData(prev => {
+        const newFormData = { ...prev };
+        
+        // Limpa os valores mas mantém a estrutura
+        if (newFormData[titulo] && newFormData[titulo][key]) {
+          newFormData[titulo][key] = {
+            Direito: "",
+            Esquerdo: ""
+          };
+        }
+        
+        return newFormData;
+      });
+  
+      // Limpa os lados visíveis para este item
+      setLadosVisiveisGrupoExame(prev => {
+        const novo = { ...prev };
+        if (novo[key]) delete novo[key];
+        return novo;
+      });
+    }
+  };
+  //função para alternar a visibilidade dos lados
+  const toggleLadoVisivel = (titulo, key, lado) => {
+    const wasVisible = ladosVisiveisGrupoExame[key]?.[lado];
+    
+    // Atualiza a visibilidade dos lados
+    setLadosVisiveisGrupoExame(prev => ({
+      ...prev,
+      [key]: {
+        ...(prev[key] || {}),
+        [lado]: !wasVisible,
+      },
+    }));
+  
+    // Se estava visível e agora está desativando, limpa o valor mas mantém a estrutura
+    if (wasVisible) {
+      setFormData(prev => {
+        const newFormData = { ...prev };
+        
+        if (newFormData[titulo]?.[key]) {
+          newFormData[titulo][key] = {
+            ...newFormData[titulo][key],
+            [lado]: ""
+          };
+        }
+        
+        return newFormData;
+      });
+    }
+  };
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -246,14 +311,14 @@ function OrtopedicaSteps() {
 
   const handleRadioAninhado = (e) => {
     const { name, value } = e.target;
-    const nameParts = name.split('.'); // Divida o nome para obter o caminho
+    const nameParts = name.split('.'); 
     const newFormData = { ...formData };
   
     let temp = newFormData;
     for (let i = 0; i < nameParts.length - 1; i++) {
-      temp = temp[nameParts[i]] = temp[nameParts[i]] || {}; // Navega na estrutura
+      temp = temp[nameParts[i]] = temp[nameParts[i]] || {}; 
     }
-    temp[nameParts[nameParts.length - 1]] = value; // Atualiza o valor no caminho final
+    temp[nameParts[nameParts.length - 1]] = value; 
   
     setFormData(newFormData);
   };
@@ -370,6 +435,10 @@ function OrtopedicaSteps() {
           handleRadioAninhado={handleRadioAninhado} 
           handleSubmit={handleSubmit}
           prevStep={prevStep}
+          selecionados={selecionadosGrupoExame}
+          ladosVisiveis={ladosVisiveisGrupoExame}
+          toggleItem={toggleItem}
+          toggleLadoVisivel={toggleLadoVisivel}
           />
         </>
       );
