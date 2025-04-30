@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useRouter } from "next/router";
 import styles from "./index.module.css";
 import VoltarButton from "../../VoltarButton";
 import { createFicha } from '../../../../services/fichaService';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
-
-
+import FinalizarFichaModal from "../FinalizarFichaModal";
+import { CancelarWhiteButton } from "../../WhiteButton";
 
 function FichaSolicitacaoCitologia() {
-    const router = useRouter();
 
     const [showAlert, setShowAlert] = useState(false);
     const [showOtherInput, setShowOtherInput] = useState(false);
     const [otherValue, setOtherValue] = useState("");
     const [showOtherInputLesao, setShowOtherInputLesao] = useState(false);
     const [otherValueLesao, setOtherValueLesao] = useState("");
-    const [errors, setErrors] = useState({});
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
-    
-  
 
     const [formData, setFormData] = useState({
         anamnese: [],
@@ -47,9 +42,8 @@ function FichaSolicitacaoCitologia() {
             conclusao: "",
             comentarios: ""
         }
-
-        
     });
+
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const storedToken = localStorage.getItem('token');
@@ -72,41 +66,46 @@ function FichaSolicitacaoCitologia() {
     }, []);
 
     if (loading) {
-            return <div className={styles.message}>Carregando dados do usuário...</div>;
-        }
+        return <div className={styles.message}>Carregando dados do usuário...</div>;
+    }
     
-        // Verifica se o usuário tem permissão
-        if (!roles.includes("medico")) {
-            return (
-                <div className={styles.container}>
-                    <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
-                </div>
-            );
-        }    
+    // Verifica se o usuário tem permissão
+    if (!roles.includes("medico")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }    
     
-        if (!token) {
-            return (
-                <div className={styles.container}>
-                    <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-                </div>
-            );
-        }
+    if (!token) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
+        );
+    }
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-    
-        setFormData((prev) => {
-            if (prev.caracteristicasLesao.hasOwnProperty(name)) {
-                return {...prev,caracteristicasLesao: {...prev.caracteristicasLesao,[name]: value}};
-            }return prev;
-        });
-        if (name.startsWith("citologia.")) {
-            const field = name.split(".")[1];
-            setFormData((prev) => ({
-                ...prev,
-                citologia: {...prev.citologia,[field]: value}}));return;
+        
+        // Verifica se o nome do campo contém pontos (caminho aninhado)
+        if (name.includes(".")) {
+            const nameParts = name.split(".");
+            setFormData((prev) => {
+                const updatedFormData = { ...prev };
+                let current = updatedFormData;
+                // Percorre o caminho e atualiza o valor no objeto aninhado
+                for (let i = 0; i < nameParts.length - 1; i++) {
+                    current = current[nameParts[i]];
+                }
+                current[nameParts[nameParts.length - 1]] = value;
+                return updatedFormData;
+            });
+        } else {
+            // Caso o campo não seja aninhado, trata diretamente
+            setFormData((prev) => ({ ...prev, [name]: value }));
         }
-        setFormData((prev) => ({...prev,[name]: value}));
     };
 
     const handleCheckboxChange = (event, field, setShowOtherInput, setOtherValue) => {
@@ -143,8 +142,7 @@ function FichaSolicitacaoCitologia() {
         });
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault(); 
+    const handleSubmit = async (event) => { 
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
     
         let anamneseFinal = [...formData.anamnese];
@@ -162,10 +160,13 @@ function FichaSolicitacaoCitologia() {
         }
     
         const fichaData = {
-            nome: "Ficha clínico médica de retorno",
+            nome: "Ficha de solicitação de citologia",
             conteudo: {
-                Anamnese: anamneseFinal, // Agora já corrigido
-                caracteristicasLesao: { selecionadas: caracteristicasFinal }, // Corrigido aqui
+                Anamnese: anamneseFinal, 
+                caracteristicasLesao: { 
+                    ...formData.caracteristicasLesao, // Mantém os outros campos
+                    selecionadas: caracteristicasFinal //sobrescreve o campo selecionados
+                }, 
                 citologia: formData.citologia
             },
             dataHora: dataFormatada 
@@ -180,10 +181,6 @@ function FichaSolicitacaoCitologia() {
             setShowErrorAlert(true);
         }
     };
-    
-    
-
-    
 
     return (
         <div className={styles.container}>
@@ -247,7 +244,7 @@ function FichaSolicitacaoCitologia() {
                             <label>Descrição:</label>
                             <input
                                 type="text"
-                                name="descricao"
+                                name="caracteristicasLesao.descricao"
                                 value={formData.caracteristicasLesao.descricao}
                                 onChange={handleChange}
                             />
@@ -257,7 +254,7 @@ function FichaSolicitacaoCitologia() {
                             <label>Cor:</label>
                             <input
                                 type="text"
-                                name="cor"
+                                name="caracteristicasLesao.cor"
                                 value={formData.caracteristicasLesao.cor}
                                 onChange={handleChange}
                             />
@@ -267,7 +264,7 @@ function FichaSolicitacaoCitologia() {
                             <label>Consistência:</label>
                             <input
                                 type="text"
-                                name="consistencia"
+                                name="caracteristicasLesao.consistencia"
                                 value={formData.caracteristicasLesao.consistencia}
                                 onChange={handleChange}
                             />
@@ -277,7 +274,7 @@ function FichaSolicitacaoCitologia() {
                             <label>Bordas:</label>
                             <input
                                 type="text"
-                                name="bordas"
+                                name="caracteristicasLesao.bordas"
                                 value={formData.caracteristicasLesao.bordas}
                                 onChange={handleChange}
                             />
@@ -289,7 +286,7 @@ function FichaSolicitacaoCitologia() {
                         <div className={styles.column}>
                             <label>Ulceração:</label>
                             <select
-                                name="ulceracao"
+                                name="caracteristicasLesao.ulceracao"
                                 value={formData.caracteristicasLesao.ulceracao}
                                 onChange={handleChange}
                             >
@@ -302,12 +299,12 @@ function FichaSolicitacaoCitologia() {
                         <div className={styles.column}>
                             <label>Dor à palpação:</label>
                             <select
-                                name="dorPalpacao"
+                                name="caracteristicasLesao.dorPalpacao"
                                 value={formData.caracteristicasLesao.dorPalpacao}
                                 onChange={handleChange}
                             >
                                 <option value="">Selecione</option>
-                                <option value="Si">Sim</option>
+                                <option value="Sim">Sim</option>
                                 <option value="Não">Não</option>
                             </select>
                         </div>
@@ -315,7 +312,7 @@ function FichaSolicitacaoCitologia() {
                         <div className={styles.column}>
                             <label>Temperatura local:</label>
                             <select
-                                name="temperaturaLocal"
+                                name="caracteristicasLesao.temperaturaLocal"
                                 value={formData.caracteristicasLesao.temperaturaLocal}
                                 onChange={handleChange}
                             >
@@ -328,7 +325,7 @@ function FichaSolicitacaoCitologia() {
                         <div className={styles.column}>
                             <label>Relação com os tecidos vizinhos:</label>
                             <select
-                                name="relacaoTecidosVizinhos"
+                                name="caracteristicasLesao.relacaoTecidosVizinhos"
                                 value={formData.caracteristicasLesao.relacaoTecidosVizinhos}
                                 onChange={handleChange}
                             >
@@ -337,65 +334,69 @@ function FichaSolicitacaoCitologia() {
                                 <option value="Fixo">Fixo</option>
                             </select>
                         </div>
+                        
                          {/* CAMPOS PARA CITOLGIA */}
-                    <h1 className={styles.title}>Citologia</h1>
-                    <div className={styles.fieldsContainer}>
-                        <div className={styles.column}>
-                            <label>Descrição:</label>
-                            <input
-                                type="text"
-                                name="citologia.descricao"
-                                value={formData.citologia.descricao}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className={styles.column}>
-                            <label>Método:</label>
-                            <input
-                                type="text"
-                                name="citologia.metodo"
-                                value={formData.citologia.metodo}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className={styles.column}>
-                            <label>Número de Lâminas:</label>
-                            <input
-                                type="number"
-                                name="citologia.numeroLaminas"
-                                value={formData.citologia.numeroLaminas}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className={styles.column}>
-                            <label>Resultado:</label>
-                            <input
-                                type="text"
-                                name="citologia.resultado"
-                                value={formData.citologia.resultado}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className={styles.column}>
-                            <label>Conclusão:</label>
-                            <input
-                                type="text"
-                                name="citologia.conclusao"
-                                value={formData.citologia.conclusao}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className={styles.column}>
-                            <label>Comentários:</label>
-                            <textarea
-                                name="citologia.comentarios"
-                                value={formData.citologia.comentarios}
-                                onChange={handleChange}
-                            />
+                        <h1 className={styles.title}>Citologia</h1>
+                        <div className={styles.fieldsContainer}>
+                            <div className={styles.column}>
+                                <label>Descrição:</label>
+                                <input
+                                    type="text"
+                                    name="citologia.descricao"
+                                    value={formData.citologia.descricao}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className={styles.column}>
+                                <label>Método:</label>
+                                <input
+                                    type="text"
+                                    name="citologia.metodo"
+                                    value={formData.citologia.metodo}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className={styles.column}>
+                                <label>Número de Lâminas:</label>
+                                <input
+                                    type="number"
+                                    name="citologia.numeroLaminas"
+                                    value={formData.citologia.numeroLaminas}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className={styles.column}>
+                                <label>Resultado:</label>
+                                <input
+                                    type="text"
+                                    name="citologia.resultado"
+                                    value={formData.citologia.resultado}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className={styles.column}>
+                                <label>Conclusão:</label>
+                                <input
+                                    type="text"
+                                    name="citologia.conclusao"
+                                    value={formData.citologia.conclusao}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className={styles.column}>
+                                <label>Comentários:</label>
+                                <textarea
+                                    name="citologia.comentarios"
+                                    value={formData.citologia.comentarios}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
                     </div>
+                    <div className={styles.button_box}>
+                        < CancelarWhiteButton />
+                        < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
-                    <button type="submit" className={styles.submitButton}>Continuar</button>
                 </form>
 
                 {<Alert message="Ficha criada com sucesso!" show={showAlert} url={'/fichaSolicitacaoCitologia'} />}
