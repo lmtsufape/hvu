@@ -68,13 +68,22 @@ public class Facade {
     }
 
     @Transactional
-    public Tutor updateTutor(Tutor transientObject) {
+    public Tutor updateTutor(Long id, TutorRequest request, String idSession) {
+        Tutor tutor = findTutorById(id, idSession); // já faz a verificação de acesso
+
+        // Mapeamento e atualização
+        Tutor updatedFields = request.convertToEntity();
+
+        modelMapper.typeMap(Tutor.class, Tutor.class)
+                .addMappings(mapper -> mapper.skip(Tutor::setId))
+                .map(updatedFields, tutor);
+
         try {
-            Tutor newTutor =  tutorServiceInterface.updateTutor(transientObject);
+            Tutor newTutor = tutorServiceInterface.updateTutor(tutor);
             keycloakService.updateUser(newTutor.getUserId(), newTutor.getEmail());
             return newTutor;
-        }catch (Exception e){
-            throw new RuntimeException("Error updating user: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar o usuário: " + e.getMessage());
         }
     }
 

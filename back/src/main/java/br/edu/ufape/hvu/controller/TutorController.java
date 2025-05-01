@@ -58,17 +58,7 @@ public class TutorController {
 	public TutorResponse updateTutor(@PathVariable Long id, @Valid @RequestBody TutorRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-
-		Tutor o = obj.convertToEntity();
-		Tutor oldObject = facade.findTutorById(id, principal.getSubject());
-
-		
-		TypeMap<Tutor, Tutor> typeMapper = modelMapper
-				.typeMap(Tutor.class, Tutor.class)
-				.addMappings(mapper -> mapper.skip(Tutor::setId));
-
-		typeMapper.map(o, oldObject);
-		return new TutorResponse(facade.updateTutor(oldObject));
+		return new TutorResponse(facade.updateTutor(id, obj, principal.getSubject()));
     }
 	
 	@DeleteMapping("tutor/{id}")
