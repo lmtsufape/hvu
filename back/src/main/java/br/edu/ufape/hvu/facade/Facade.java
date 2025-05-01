@@ -29,7 +29,7 @@ import jakarta.transaction.Transactional;
 @Service @RequiredArgsConstructor
 public class Facade {
     // ModelMapper
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     // Auth--------------------------------------------------------------
     private final KeycloakService keycloakService;
