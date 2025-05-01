@@ -10,12 +10,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
+import br.edu.ufape.hvu.exception.ResourceNotFoundException;
+import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -536,15 +536,17 @@ public class Facade {
         // verifica se animal já tem uma consulta em aberto -> "Bloqueado"
         List<Agendamento> allAgendamentos = getAllAgendamento();
         Animal animal = animalServiceInterface.findAnimalById(id);
-
+        if(animal == null){
+            throw new IdNotFoundException(id, "Animal");
+        }
         boolean consultaEmAberto = allAgendamentos.stream()
                 .anyMatch(agendamento -> agendamento.getAnimal() != null &&
-                        agendamento.getAnimal().getId() == id &&
+                        agendamento.getAnimal().getId() == animal.getId() &&
                         !agendamento.getStatus().equals("Finalizado") && !agendamento.getStatus().equals("Cancelado"));
 
         if(consultaEmAberto){
             return "Bloqueado";
-        }else if(isAnimalWithRetorno(id) || !isRetornoExpirado(id)){
+        }else if(isAnimalWithRetorno(animal.getId()) || !isRetornoExpirado(animal.getId())){
             return "Retorno";
         }else{
             return "Primeira Consulta";
@@ -926,41 +928,39 @@ public class Facade {
     @Autowired
     private AnimalServiceInterface animalServiceInterface;
 
-    public Animal saveAnimal(Animal newInstance, String tutor_id) {
-        Tutor tutor = findTutorByuserId(tutor_id);
+    public Animal saveAnimal(Animal newInstance, String idSession) {
+        Tutor tutor = findTutorByuserId(idSession);
+        if (tutor == null) {
+            throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
+        }
+        racaServiceInterface.findRacaById(newInstance.getRaca().getId());
         Animal animal = animalServiceInterface.saveAnimal(newInstance);
         tutor.getAnimal().add(animal);
-        updateTutor(tutor);
+        tutorServiceInterface.updateTutor(tutor);
         return animal;
     }
 
     public Animal updateAnimal(Animal transientObject, String idSession) {
-        Tutor tutor = tutorServiceInterface.findTutorByanimalId(transientObject.getId());
+        Animal animal = animalServiceInterface.findAnimalById(transientObject.getId());
+        Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
 
-        if (tutor == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tutor found");
-        }
-
-        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)) {
-            throw new AccessDeniedException("This is not your animal");
+        if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)) {
+            throw new ForbiddenOperationException("Este não é o seu animal");
         }
 
         return animalServiceInterface.updateAnimal(transientObject);
     }
 
     public Animal findAnimalById(long id, String idSession) {
-        Animal animal = animalServiceInterface.findAnimalById(id);
-        Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
+        // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
+        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession)){
+            Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
 
-        if (tutor == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tutor found for the animal with ID: " + animal.getId());
+            if(!tutor.getUserId().equals(idSession)) {
+                throw new ForbiddenOperationException("Este não é o seu animal");
+            }
         }
-
-        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)){
-            throw new AccessDeniedException("This is not your animal");
-        }
-
-        return animal;
+        return animalServiceInterface.findAnimalById(id);
     }
 
     public List<Animal> getAllAnimal() {
@@ -969,9 +969,6 @@ public class Facade {
 
     public List<Animal> getAllAnimalTutor(String userId) {
         Tutor tutor = findTutorByuserId(userId);
-        if(tutor.equals(null) ) {
-            throw new ServiceException("Erro ao buscar os Agendamentos");
-        }
         return tutor.getAnimal();
     }
 
@@ -979,11 +976,16 @@ public class Facade {
         return animalServiceInterface.findAnimalByFichaNumber(fichaNumero);
     }
 
-    public void deleteAnimal(Animal persistentObject) {
-        animalServiceInterface.deleteAnimal(persistentObject);
-    }
+    public void deleteAnimal(long id, String userId) {
+        // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
+        if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId)){
+            Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
 
-    public void deleteAnimal(long id) {
+            if(!tutor.getUserId().equals(userId)) {
+                throw new ForbiddenOperationException("Este não é o seu animal");
+            }
+        }
+
         animalServiceInterface.deleteAnimal(id);
     }
 

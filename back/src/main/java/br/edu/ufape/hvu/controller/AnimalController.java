@@ -68,11 +68,7 @@ public class AnimalController {
 
 	@GetMapping("animal/retorno/{id}")
 	public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(@PathVariable Long id) {
-		try {
-			return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id);
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id);
 	}
 
 	@PreAuthorize("hasRole('TUTOR')")
@@ -90,25 +86,15 @@ public class AnimalController {
 	@GetMapping("animal/numeroficha/{fichaNumero}")
 	public AnimalResponse getAnimaisByNumeroficha(@PathVariable String fichaNumero) {
 		Animal animals = facade.getAnimalByFichaNumber(fichaNumero);
-		if (animals == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrado animal com o número de ficha: " + fichaNumero);
-		}
 		return new AnimalResponse(animals);
 	}
 
 	@PreAuthorize("hasRole('TUTOR')")
 	@PostMapping("animal")
 	public AnimalResponse createAnimal(@Valid @RequestBody AnimalRequest newObj) {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
-			return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
-		} catch (IdNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        } catch (RuntimeException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }
-		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
 	}
 	
 	@GetMapping("animal/{id}")
@@ -123,47 +109,29 @@ public class AnimalController {
 	public AnimalResponse updateAnimal(@PathVariable Long id, @Valid @RequestBody AnimalRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
-			//Animal o = obj.convertToEntity();
-			Animal oldObject = facade.findAnimalById(id, principal.getSubject());
 
-			if(obj.getRaca() != null){
-				oldObject.setRaca(facade.findRacaById(obj.getRaca().getId()));
-				obj.setRaca(null);
-			}
+		//Animal o = obj.convertToEntity();
+		Animal oldObject = facade.findAnimalById(id, principal.getSubject());
+
+		if(obj.getRaca() != null){
+			oldObject.setRaca(facade.findRacaById(obj.getRaca().getId()));
+			obj.setRaca(null);
+		}
 			
-			TypeMap<AnimalRequest, Animal> typeMapper = modelMapper
-													.typeMap(AnimalRequest.class, Animal.class)
-													.addMappings(mapper -> mapper.skip(Animal::setId));			
+		TypeMap<AnimalRequest, Animal> typeMapper = modelMapper
+				.typeMap(AnimalRequest.class, Animal.class)
+				.addMappings(mapper -> mapper.skip(Animal::setId));
 			
 			
-			typeMapper.map(obj, oldObject);	
-			return new AnimalResponse(facade.updateAnimal(oldObject, principal.getSubject()));
-		} catch (IdNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        } catch (RuntimeException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }
-		
+		typeMapper.map(obj, oldObject);
+		return new AnimalResponse(facade.updateAnimal(oldObject, principal.getSubject()));
 	}
 
 	@DeleteMapping("animal/{id}")
 	public String deleteAnimal(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
-			Animal oldObject = facade.findAnimalById(id, principal.getSubject());
-			Tutor tutor = facade.findTutorByanimalId(oldObject.getId());
-			if(!principal.getSubject().equals(tutor.getUserId())) {
-				throw new AccessDeniedException("This is not your animal");
-			}
-			facade.deleteAnimal(id);
-			return "";
-		} catch (IdNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        } catch (RuntimeException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }
-		
+		facade.deleteAnimal(id, principal.getSubject());
+		return "";
 	}
 }
