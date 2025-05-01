@@ -2,7 +2,6 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
-import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
@@ -61,13 +60,6 @@ public class TutorController {
 	public String deleteTutor(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-			
-		Tutor oldObject = facade.findTutorById(id, principal.getSubject());
-			
-		if(!principal.getSubject().equals(oldObject.getUserId())) {
-			throw new ForbiddenOperationException("Está não é sua conta");
-		}
-
 		facade.deleteTutor(id, principal.getSubject());
 		return "";
 	}

@@ -111,10 +111,16 @@ public class Facade {
 
     @Transactional
     public void deleteTutor(long id, String idSession) {
+        Tutor oldObject = findTutorById(id, idSession);
+
+        if (!idSession.equals(oldObject.getUserId())) {
+            throw new ForbiddenOperationException("Está não é sua conta");
+        }
+
         try {
             tutorServiceInterface.deleteTutor(id);
             keycloakService.deleteUser(idSession);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Error deleting user");
         }
     }
