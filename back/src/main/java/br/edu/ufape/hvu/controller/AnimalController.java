@@ -109,22 +109,7 @@ public class AnimalController {
 	public AnimalResponse updateAnimal(@PathVariable Long id, @Valid @RequestBody AnimalRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-
-		//Animal o = obj.convertToEntity();
-		Animal oldObject = facade.findAnimalById(id, principal.getSubject());
-
-		if(obj.getRaca() != null){
-			oldObject.setRaca(facade.findRacaById(obj.getRaca().getId()));
-			obj.setRaca(null);
-		}
-			
-		TypeMap<AnimalRequest, Animal> typeMapper = modelMapper
-				.typeMap(AnimalRequest.class, Animal.class)
-				.addMappings(mapper -> mapper.skip(Animal::setId));
-			
-			
-		typeMapper.map(obj, oldObject);
-		return new AnimalResponse(facade.updateAnimal(oldObject, principal.getSubject()));
+		return new AnimalResponse(facade.updateAnimal(id, obj, principal.getSubject()));
 	}
 
 	@DeleteMapping("animal/{id}")

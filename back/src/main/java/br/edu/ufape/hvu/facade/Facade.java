@@ -10,10 +10,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
+import br.edu.ufape.hvu.controller.dto.request.AnimalRequest;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
@@ -927,6 +929,8 @@ public class Facade {
     // Animal--------------------------------------------------------------
     @Autowired
     private AnimalServiceInterface animalServiceInterface;
+    @Autowired
+    private ModelMapper modelMapper;
 
     public Animal saveAnimal(Animal newInstance, String idSession) {
         Tutor tutor = findTutorByuserId(idSession);
@@ -940,15 +944,28 @@ public class Facade {
         return animal;
     }
 
-    public Animal updateAnimal(Animal transientObject, String idSession) {
-        Animal animal = animalServiceInterface.findAnimalById(transientObject.getId());
+    public Animal updateAnimal(Long id, AnimalRequest request, String idSession) {
+        Animal animal = animalServiceInterface.findAnimalById(id);
         Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
 
-        if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)) {
+        if (!keycloakService.hasRoleSecretario(idSession) &&
+                !keycloakService.hasRoleMedico(idSession) &&
+                !tutor.getUserId().equals(idSession)) {
             throw new ForbiddenOperationException("Este não é o seu animal");
         }
 
-        return animalServiceInterface.updateAnimal(transientObject);
+        // Atualiza raça, se fornecida
+        if (request.getRaca() != null) {
+            animal.setRaca(racaServiceInterface.findRacaById(request.getRaca().getId()));
+            request.setRaca(null);
+        }
+
+        // Mapeia os campos restantes
+        modelMapper.typeMap(AnimalRequest.class, Animal.class)
+                .addMappings(mapper -> mapper.skip(Animal::setId))
+                .map(request, animal);
+
+        return animalServiceInterface.updateAnimal(animal);
     }
 
     public Animal findAnimalById(long id, String idSession) {
