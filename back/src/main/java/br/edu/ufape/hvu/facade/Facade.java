@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
-import br.edu.ufape.hvu.controller.dto.request.AnimalRequest;
+import br.edu.ufape.hvu.controller.dto.request.*;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +21,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
-import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
-import br.edu.ufape.hvu.controller.dto.request.VagaTipoRequest;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
@@ -31,6 +28,9 @@ import jakarta.transaction.Transactional;
 
 @Service @RequiredArgsConstructor
 public class Facade {
+    // ModelMapper
+    private ModelMapper modelMapper;
+
     // Auth--------------------------------------------------------------
     private final KeycloakService keycloakService;
 
@@ -929,8 +929,6 @@ public class Facade {
     // Animal--------------------------------------------------------------
     @Autowired
     private AnimalServiceInterface animalServiceInterface;
-    @Autowired
-    private ModelMapper modelMapper;
 
     public Animal saveAnimal(Animal newInstance, String idSession) {
         Tutor tutor = findTutorByuserId(idSession);
