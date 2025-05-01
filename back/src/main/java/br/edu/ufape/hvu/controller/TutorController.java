@@ -2,6 +2,8 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
@@ -17,11 +19,11 @@ import br.edu.ufape.hvu.controller.dto.response.TutorResponse;
  
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class TutorController {
-	@Autowired
-	private Facade facade;
+	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("tutor")
 	public List<TutorResponse> getAllTutor() {
 		return facade.getAllTutor()
