@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
