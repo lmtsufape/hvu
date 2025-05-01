@@ -4,28 +4,26 @@ import styles from "./index.module.css";
 import VoltarButton from "../../VoltarButton";
 import { CancelarWhiteButton } from "../../WhiteButton";
 import { getCurrentUsuario } from '../../../../services/userService';
+import moment from 'moment';
 import { createFicha } from '../../../../services/fichaService';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
-import moment from 'moment';
 import FinalizarFichaModal from "../FinalizarFichaModal";
 
-function FichaSessao() {
-
-    const [userId, setUserId] = useState(null);
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
+function FichaAtoCirurgico() {
     const [showAlert, setShowAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
 
     const [formData, setFormData] = useState({
-        numeroSessao: "",
-        sessaoData: "",
-        anotacao: "",
-        estagiario: "",
-        rg: ""
+        descricaoAtoCirurgico: "",
+        prognostico: "",
+        protocolos: "",
+        reavaliacao: "",
+        equipeResponsavel: ""
     });
 
     useEffect(() => {
@@ -41,22 +39,20 @@ function FichaSessao() {
         const fetchData = async () => {
             try {
                 const userData = await getCurrentUsuario();
-                setUserId(userData.usuario.id);
+                console.log("userData:", userData);
             } catch (error) {
                 console.error('Erro ao buscar usuário:', error);
             } finally {
-                setLoading(false); // Marcar como carregado após buscar os dados
+                setLoading(false); 
             }
         };
         fetchData();
     }, []);
 
-    // Verifica se os dados estão carregando
     if (loading) {
         return <div className={styles.message}>Carregando dados do usuário...</div>;
     }
 
-    // Verifica se o usuário tem permissão
     if (!roles.includes("medico")) {
         return (
             <div className={styles.container}>
@@ -79,21 +75,20 @@ function FichaSessao() {
     };
 
     const handleSubmit = async (event) => {
-        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
+        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
         const fichaData = {
-            nome: "Ficha de sessão",  
+            nome: "Ficha de ato cirúrgico",  
             conteudo:{
-                numeroSessao: formData.numeroSessao,
-                sessaoData: formData.sessaoData,
-                anotacao: formData.anotacao,
-                rg: formData.rg,
-                estagiario: formData.estagiario
+                descricaoAtoCirurgico: formData.descricaoAtoCirurgico,
+                prognostico: formData.prognostico,
+                protocolos: formData.protocolos,
+                reavaliacao: formData.reavaliacao,
+                equipeResponsavel: formData.equipeResponsavel,
             },
-            dataHora: dataFormatada // Gera a data atual no formato ISO 8601
+            dataHora: dataFormatada 
         };
 
         try {
-            console.log(fichaData)
             await createFicha(fichaData);
             setShowAlert(true);
         } catch (error) {
@@ -108,34 +103,41 @@ function FichaSessao() {
     return(
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Ficha de sessão</h1>
+            <h1>Ficha de ato cirúrgico </h1>
             <div className={styles.form_box}>
-                <form onSubmit = {handleSubmit}>
+                <form onSubmit={handleSubmit}>
+                    
                     <div className={styles.column}>
-                        <label>Sessão nº:</label>
-                        <input type="text" name="numeroSessao" 
-                        value={formData.numeroSessao} 
-                        onChange={handleChange} />
-                    </div>
-                    <div className={styles.column}>
-                        <label>Data:</label>
-                        <input type="date" name="sessaoData" 
-                        value={formData.sessaoData} 
-                        onChange={handleChange}/>
-                    </div>
-                    <div className={styles.column}>
-                        <label>Anotação: 
-                            <textarea name="anotacao" value={formData.anotacao} onChange={handleChange} rows="10" cols="50" />
+                        <label>Descrição do ato cirúrgico: <br></br>
+                            <textarea name="descricaoAtoCirurgico" 
+                            value={formData.descricaoAtoCirurgico} 
+                            onChange={handleChange} rows="4" cols="50"/>
                         </label>
-                    </div>              
-
-                    <div className={styles.column}>
-                        <label>Estagiário: </label>
-                        <input type="text" name="estagiario" value={formData.estagiario} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
-                        <label>RG: </label>
-                        <input type="text" name="rg" value={formData.rg} onChange={handleChange} />
+                        <label>Prognóstico pós cirúrgico: 
+                            <select name="prognostico" value={formData.prognostico} onChange={handleChange}>
+                                <option value="">Selecione</option>
+                                <option value="FAVORAVEL">Favorável</option>
+                                <option value="RESERVADO">Reservado</option>
+                                <option value="DESFAVORAVEL">Desfavorável</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div className={styles.column}>
+                        <label>Protocolos terapêuticos a serem instituidos: 
+                            <textarea name="protocolos" value={formData.protocolos} onChange={handleChange} rows="4" cols="50" />
+                        </label>
+                    </div>
+                    <div className={styles.column}>
+                        <label>Retorno para reavaliações:
+                            <textarea name="reavaliacao" value={formData.reavaliacao} onChange={handleChange} rows="4" cols="50" />
+                        </label>
+                    </div>
+                    <div className={styles.column}>
+                        <label>Plantonista(s) discente(s): 
+                            <textarea name="equipeResponsavel" value={formData.equipeResponsavel} onChange={handleChange} rows="4" cols="50"/>
+                        </label>
                     </div>
 
                     <div className={styles.button_box}>
@@ -143,11 +145,11 @@ function FichaSessao() {
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
-                {<Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaSessao`} />}
+                {<Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaAtoCirurgico`} />}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
             </div>
         </div>
     )
 }
 
-export default FichaSessao;
+export default FichaAtoCirurgico;

@@ -6,6 +6,9 @@ import { getCurrentUsuario } from '../../../../services/userService';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
+import { createFicha } from '../../../../services/fichaService';
+import FinalizarFichaModal from "../FinalizarFichaModal";
+import { CancelarWhiteButton } from "../../WhiteButton";
 
 function TermoDeConcientizacao() {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -16,11 +19,6 @@ function TermoDeConcientizacao() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState(""); 
   const [userId, setUserId] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-  };
     
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -65,43 +63,40 @@ function TermoDeConcientizacao() {
     );
   }
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
+
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    
-    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+
+  const reader = new FileReader();
+  reader.onloadend = async () => {
+
+    const termoConscientizacaoBase64 = reader.result; 
+    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
     const fichaData = {
-      nome: "Ficha de sessão",
-      
-      dataHora: dataFormatada
+      nome: "Termo de Conscientização",  
+      conteudo: {
+        termoDeConscientizacao: termoConscientizacaoBase64
+      },
+      dataHora: dataFormatada 
     };
 
-    // Cria o FormData e adiciona o JSON e o arquivo
-    const formDataToSend = new FormData();
-    formDataToSend.append("ficha", JSON.stringify(fichaData));
-    formDataToSend.append("arquivo", selectedFile);
-
     try {
-      const response = await fetch("/api/fichas", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
-          // Não defina Content-Type para FormData
-        },
-        body: formDataToSend
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao enviar a ficha");
-      }
-
-      const result = await response.json();
-      console.log("Ficha enviada com sucesso:", result);
+      console.log("fichaData:", fichaData);
+      await createFicha(fichaData);
       setShowAlert(true);
     } catch (error) {
-      console.error("Erro:", error);
-      setErrorMessage(error.message);
+      console.error("Erro ao criar ficha:", error);
+      if (error.response && error.response.data && error.response.data.code) {
+        setErrorMessage(error.response.data.message);
+      }
       setShowErrorAlert(true);
     }
+  };
+
+  reader.readAsDataURL(selectedFile);  // Inicia a leitura do arquivo
   };
 
   const handleDownloadPDF = () => {
@@ -150,18 +145,14 @@ function TermoDeConcientizacao() {
               />
             </div>
           </div>
+
           <div className={styles.button_box}>
-            <button
-              type="submit"
-              className={styles.criar_button}
-              disabled={!selectedFile}
-            >
-              Continuar
-            </button>
+            < CancelarWhiteButton />
+            < FinalizarFichaModal onConfirm={handleSubmit} disabled={!selectedFile}/>
           </div>
         </form>
 
-        <Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaSessao`} />
+        <Alert message="Ficha criada com sucesso!" show={showAlert} url={`/termoDeConcientizacao`} />
         {showErrorAlert && <ErrorAlert message={`Erro ao criar ficha: ${errorMessage}`} show={showErrorAlert} />}
       </div>
     </div>

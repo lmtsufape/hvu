@@ -3,7 +3,7 @@ import { Header02 } from "@/components/Header";
 import { SubHeader } from "../../src/components/SubHeader";
 import Footer from "@/components/Footer";
 import "@/styles/styles.css";
-import TermoDeConcientizacao from "@/components/Fichas/TermoDeConcientizacao";
+import TermoDeConcientizacao from "@/components/Fichas/TermoDeConscientizacao";
 
 function TermoDeConcientizacaoPage() {
     return(

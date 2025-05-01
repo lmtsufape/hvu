@@ -1,21 +1,22 @@
 import React from "react";
-import { Header02 } from "@/components/Header";
+import { Header03 } from "@/components/Header";
 import { SubHeader } from "../../src/components/SubHeader";
 import Footer from "@/components/Footer";
 import "@/styles/styles.css";
-import AtendimentoCardiologico from "@/components/Fichas/AtendimentoCardiologico";
+import FichaClinicaMedica from "@/components/Fichas/FichaClinicaMedica";
 
-function CardiologicoPage() {
+
+function FichaClinicaMedicaPage() {
     return(
         <div className="divPai">
-            < Header02 />
+            < Header03 />
             < SubHeader />
             <div className="flexStyle">
-                <AtendimentoCardiologico />
+                <FichaClinicaMedica /> 
             </div>
             < Footer />
         </div>
     );
 }
 
-export default CardiologicoPage;
+export default FichaClinicaMedicaPage;

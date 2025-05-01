@@ -23,9 +23,8 @@
 .container h2 {
   font-size: 17px;
   font-weight: 700;
-
+  text-align: start;
   color: #333;
-  text-align: center;
 }
 
 .form_box {
@@ -39,6 +38,34 @@
   flex-wrap: wrap;
   justify-content: space-between;
   margin-bottom: 15px;
+}
+
+.checkbox_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.checkbox_container label {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.checkbox_container input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #39805f;
+}
+
+.checkbox_container label:hover {
+  background-color: #e3f1ea;
 }
 
 .column {
@@ -105,13 +132,4 @@
   line-height: 30px;
   letter-spacing: 0em;
   text-align: center;
-}
-
-.error_message {
-  margin-top: -0.2em;
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 24px;
-  color: #C7122F;
 }
