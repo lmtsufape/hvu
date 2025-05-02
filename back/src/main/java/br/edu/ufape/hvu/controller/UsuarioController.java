@@ -12,9 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Usuario;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.UsuarioRequest;
 import br.edu.ufape.hvu.controller.dto.response.UsuarioResponse;
@@ -25,7 +22,6 @@ import br.edu.ufape.hvu.controller.dto.response.UsuarioCurrentResponse;
 @RequiredArgsConstructor
 public class UsuarioController {
 	private final Facade facade;
-	private final ModelMapper modelMapper;
 
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("usuario")
@@ -64,17 +60,7 @@ public class UsuarioController {
 	public UsuarioResponse updateUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-
-		//Usuario o = obj.convertToEntity();
-		Usuario oldObject = facade.findUsuarioById(id, principal.getSubject());
-
-		TypeMap<UsuarioRequest, Usuario> typeMapper = modelMapper
-				.typeMap(UsuarioRequest.class, Usuario.class)
-				.addMappings(mapper -> mapper.skip(Usuario::setId));
-			
-			
-		typeMapper.map(obj, oldObject);
-		return new UsuarioResponse(facade.updateUsuario(oldObject, principal.getSubject()));
+		return new UsuarioResponse(facade.updateUsuario(id, obj, principal.getSubject()));
 	}
 
 	@DeleteMapping("usuario/{id}")

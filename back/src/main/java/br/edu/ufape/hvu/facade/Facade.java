@@ -219,11 +219,26 @@ public class Facade {
         return usuarioServiceInterface.saveUsuario(newInstance);
     }
 
-    public Usuario updateUsuario(Usuario transientObject, String idSession) {
-        if (transientObject == null || idSession == null || idSession.isBlank()) {
+    @Transactional
+    public Usuario updateUsuario(long id, UsuarioRequest request, String idSession) {
+        if (request == null || idSession == null || idSession.isBlank()) {
             throw new IllegalArgumentException("Usuário ou ID da sessão inválidos.");
         }
-        return usuarioServiceInterface.updateUsuario(transientObject, idSession);
+
+        Usuario usuarioAtualizado = request.convertToEntity();
+        Usuario usuarioExistente = usuarioServiceInterface.findUsuarioById(id, idSession);
+
+        modelMapper.typeMap(Usuario.class, Usuario.class)
+                .addMappings(mapper -> mapper.skip(Usuario::setId))
+                .map(usuarioAtualizado, usuarioExistente);
+
+        try {
+            Usuario newUsuario = usuarioServiceInterface.updateUsuario(usuarioExistente, idSession);
+            keycloakService.updateUser(newUsuario.getUserId(), newUsuario.getEmail());
+            return newUsuario;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar o usuário: " + e.getMessage());
+        }
     }
 
     public Usuario findUsuarioById(long id, String idSession) {
