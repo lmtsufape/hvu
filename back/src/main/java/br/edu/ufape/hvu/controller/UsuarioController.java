@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -22,11 +22,11 @@ import br.edu.ufape.hvu.controller.dto.response.UsuarioCurrentResponse;
  
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class UsuarioController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
+	private final Facade facade;
+	private final ModelMapper modelMapper;
+
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("usuario")
 	public List<UsuarioResponse> getAllUsuario() {

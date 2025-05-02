@@ -1,20 +1,17 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.UsuarioRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Usuario;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService implements UsuarioServiceInterface {
-	@Autowired
-	private UsuarioRepository repository;
+	private final UsuarioRepository repository;
 
 	public Usuario saveUsuario(Usuario newInstance) {
 		return repository.save(newInstance);

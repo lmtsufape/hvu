@@ -209,8 +209,7 @@ public class Facade {
     }
 
     // Usuario--------------------------------------------------------------
-    @Autowired
-    private UsuarioServiceInterface usuarioServiceInterface;
+    private final UsuarioServiceInterface usuarioServiceInterface;
 
     public Usuario saveUsuario(Usuario newInstance) {
         if(newInstance == null) {
