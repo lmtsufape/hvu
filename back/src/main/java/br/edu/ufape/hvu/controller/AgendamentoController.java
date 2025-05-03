@@ -66,7 +66,9 @@ public class AgendamentoController {
 	
 	@PostMapping("agendamento/especial")
 	public AgendamentoResponse createAgendamentoEspecial(@Valid @RequestBody AgendamentoEspecialRequest newObj) {
-		return new AgendamentoResponse(facade.createAgendamentoEspecial(newObj));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return new AgendamentoResponse(facade.createAgendamentoEspecial(newObj, principal.getSubject()));
 	}
 
 

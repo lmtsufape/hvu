@@ -4,6 +4,9 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,13 +43,17 @@ public class MedicoController {
 	
 	@GetMapping("medico/{id}")
 	public MedicoResponse getMedicoById(@PathVariable Long id) {
-		return new MedicoResponse(facade.findMedicoById(id));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return new MedicoResponse(facade.findMedicoById(id, principal.getSubject()));
 	}
 
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@PatchMapping("medico/{id}")
 	public MedicoResponse updateMedico(@PathVariable Long id, @Valid @RequestBody MedicoRequest obj) {
-		return new MedicoResponse(facade.updateMedico(id, obj));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return new MedicoResponse(facade.updateMedico(id, obj, principal.getSubject()));
 	}
 
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")

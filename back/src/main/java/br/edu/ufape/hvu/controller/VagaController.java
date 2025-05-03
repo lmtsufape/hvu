@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -75,6 +78,8 @@ public class VagaController {
 	
 	@PatchMapping("vaga/{id}")
 	public VagaResponse updateVaga(@PathVariable Long id, @Valid @RequestBody VagaRequest obj) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
 			//Vaga o = obj.convertToEntity();
 			Vaga oldObject = facade.findVagaById(id);
@@ -90,7 +95,7 @@ public class VagaController {
 			}
 
 			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
+				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId(), principal.getSubject()));
 				obj.setMedico(null);
 			}
 
@@ -112,7 +117,9 @@ public class VagaController {
 	
 	@PostMapping("/gestao-vagas/criar")
 	public String createNewVagas(@Valid @RequestBody VagaCreateRequest newObj) {
-		return facade.createVagasByTurno(newObj);
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return facade.createVagasByTurno(newObj, principal.getSubject());
 
 	}
 	
@@ -138,7 +145,9 @@ public class VagaController {
 	
 	@GetMapping("vaga/medico/{idMedico}/{data}")
 	public List<VagaResponse> findVagasAndAgendamentoByMedico(@PathVariable long idMedico, @PathVariable LocalDate data) {
-		return facade.findVagasAndAgendamentoByMedico(data, idMedico)
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return facade.findVagasAndAgendamentoByMedico(data, idMedico, principal.getSubject())
 				.stream()
 				.map(VagaResponse::new)
 				.toList();

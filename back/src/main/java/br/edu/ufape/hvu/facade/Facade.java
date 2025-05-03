@@ -282,8 +282,8 @@ public class Facade {
         return cronogramaServiceInterface.findCronogramaById(id);
     }
 
-    public List<Cronograma> findCronogramaByMedicoId(long id){
-        Medico medico = findMedicoById(id);
+    public List<Cronograma> findCronogramaByMedicoId(long id, String idSession){
+        Medico medico = findMedicoById(id, idSession);
         return cronogramaServiceInterface.findCronogramaByMedico(medico);
     }
 
@@ -371,13 +371,17 @@ public class Facade {
     }
 
     @Transactional
-    public Medico updateMedico(Long id, MedicoRequest request) {
+    public Medico updateMedico(Long id, MedicoRequest request, String idSession) {
         if (request == null) {
             throw new IllegalArgumentException("Dados inválidos para atualização.");
         }
 
         Medico oldMedico = medicoService.findMedicoById(id); // lança EntityNotFoundException se não existir
         Medico medicoAtualizado = request.convertToEntity();
+
+        if(!keycloakService.hasRoleSecretario(idSession) && !medicoAtualizado.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
+        }
 
         // Atualiza instituição, se necessário
         if (request.getInstituicao() != null) {
@@ -394,7 +398,11 @@ public class Facade {
         return newMedico;
     }
 
-    public Medico findMedicoById(long id) {
+    public Medico findMedicoById(long id, String idSession) {
+        Medico medico = medicoService.findMedicoById(id);
+        if(!keycloakService.hasRoleSecretario(idSession) && !medico.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
+        }
         return medicoService.findMedicoById(id);
     }
 
@@ -507,8 +515,8 @@ public class Facade {
     }
 
 
-    public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico){
-        Medico medico = findMedicoById(IdMedico);
+    public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico, String idSession){
+        Medico medico = findMedicoById(IdMedico, idSession);
 
         return vagaServiceInterface.findVagasAndAgendamentoByMedico(data, medico);
     }
@@ -615,7 +623,7 @@ public class Facade {
     }
 
     @Transactional
-    public String createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
+    public String createVagasByTurno(VagaCreateRequest vagaRequestDTO, String idSessio) {
         List<Vaga> vagas = new ArrayList<>();
         LocalDate startDate = vagaRequestDTO.getData();
         LocalDate endDate = vagaRequestDTO.getDataFinal();
@@ -624,15 +632,15 @@ public class Facade {
 
         if (endDate == null) {
             if (!isWeekend(startDate)) {
-                detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
-                detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+                detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
+                detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
             }
         } else {
             LocalDate currentDate = startDate;
             while (!currentDate.isAfter(endDate)) {
                 if (!isWeekend(currentDate)) {
-                    detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
-                    detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+                    detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
+                    detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
                 }
                 currentDate = currentDate.plusDays(1);
             }
@@ -645,7 +653,7 @@ public class Facade {
         return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
-    private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao) {
+    private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao, String idSession) {
         List<Vaga> vagasByData = findVagaByData(data);
         List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
         vagasByData.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
@@ -664,7 +672,7 @@ public class Facade {
             try {
                 Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
                 TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());
-                Medico medico = findMedicoById(especialidadeTipo.getMedico().getId());
+                Medico medico = findMedicoById(especialidadeTipo.getMedico().getId(), idSession);
 
                 if (count[0] < 16 && count[1] < 8) {
                     Vaga newVaga = new Vaga();
@@ -784,12 +792,12 @@ public class Facade {
         return agendamentoServiceInterface.saveAgendamento(newInstance);
     }
 
-    public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject) {
+    public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject, String idSession) {
         Vaga vaga = new Vaga();
         Agendamento agendamento = new Agendamento();
 
         vaga.setEspecialidade(findEspecialidadeById(newObject.getEspecialidade().getId()));
-        vaga.setMedico(findMedicoById(newObject.getMedico().getId()));
+        vaga.setMedico(findMedicoById(newObject.getMedico().getId(), idSession));
         vaga.setTipoConsulta(findTipoConsultaById(newObject.getTipoConsulta().getId()));
         vaga.setDataHora(newObject.getHorario());
 
@@ -848,9 +856,9 @@ public class Facade {
         return agendamentoServiceInterface.getAllAgendamento();
     }
 
-    public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String token){
-        Medico medico = findMedicoById(medicoId);
-        return agendamentoServiceInterface.findAgendamentosByMedicoId(medico, token);
+    public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String idSession){
+        Medico medico = findMedicoById(medicoId, idSession);
+        return agendamentoServiceInterface.findAgendamentosByMedicoId(medico, idSession);
     }
 
     public List<Agendamento> findAgendamentosByTutorId(String userId) {
