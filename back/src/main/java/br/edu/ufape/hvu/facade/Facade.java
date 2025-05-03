@@ -16,9 +16,9 @@ import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
@@ -126,9 +126,9 @@ public class Facade {
     }
 
     // Cancelamento--------------------------------------------------------------
-    @Autowired
-    private CancelamentoServiceInterface cancelamentoServiceInterface;
+    private final CancelamentoServiceInterface cancelamentoServiceInterface;
 
+    @Transactional
     public Cancelamento cancelarAgendamento(Cancelamento newInstance) {
         Agendamento agendamento = findAgendamentoById(newInstance.getAgendamento().getId());
         agendamento.setStatus("Cancelado");
@@ -141,6 +141,7 @@ public class Facade {
         return cancelamentoServiceInterface.saveCancelamento(newInstance);
     }
 
+    @Transactional
     public Cancelamento cancelarVaga(Cancelamento newInstance) {
         Vaga vaga = findVagaById(newInstance.getVaga().getId());
         vaga.setStatus("Cancelado");
@@ -155,8 +156,25 @@ public class Facade {
         return cancelamentoServiceInterface.saveCancelamento(newInstance);
     }
 
-    public Cancelamento updateCancelamento(Cancelamento transientObject) {
-        return cancelamentoServiceInterface.updateCancelamento(transientObject);
+    @Transactional
+    public Cancelamento updateCancelamento(Long id, CancelamentoRequest obj) {
+
+        Cancelamento oldObject = findCancelamentoById(id);
+
+        // Verifica se há uma nova especialidade e busca no banco
+        if (obj.getEspecialidade() != null) {
+            oldObject.setEspecialidade(findEspecialidadeById(obj.getEspecialidade().getId()));
+            obj.setEspecialidade(null); // evita sobrescrita ao mapear
+        }
+
+        // Mapeamento parcial (sem sobrescrever o ID)
+        TypeMap<CancelamentoRequest, Cancelamento> typeMapper = modelMapper
+                .typeMap(CancelamentoRequest.class, Cancelamento.class)
+                .addMappings(mapper -> mapper.skip(Cancelamento::setId));
+
+        typeMapper.map(obj, oldObject);
+
+        return cancelamentoServiceInterface.updateCancelamento(oldObject);
     }
 
     public Cancelamento findCancelamentoById(long id) {
@@ -170,10 +188,6 @@ public class Facade {
 
     public List<Cancelamento> getAllCancelamento() {
         return cancelamentoServiceInterface.getAllCancelamento();
-    }
-
-    public void deleteCancelamento(Cancelamento persistentObject) {
-        cancelamentoServiceInterface.deleteCancelamento(persistentObject);
     }
 
     public void deleteCancelamento(long id) {
