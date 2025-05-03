@@ -197,12 +197,27 @@ public class Facade {
     // TipoConsulta--------------------------------------------------------------
     private final TipoConsultaServiceInterface tipoConsultaServiceInterface;
 
+    @Transactional
     public TipoConsulta saveTipoConsulta(TipoConsulta newInstance) {
         return tipoConsultaServiceInterface.saveTipoConsulta(newInstance);
     }
 
-    public TipoConsulta updateTipoConsulta(TipoConsulta transientObject) {
-        return tipoConsultaServiceInterface.updateTipoConsulta(transientObject);
+    @Transactional
+    public TipoConsulta updateTipoConsulta(Long id, TipoConsultaRequest transientObject) {
+
+
+        //TipoConsulta o = obj.convertToEntity();
+        TipoConsulta oldObject = findTipoConsultaById(id);
+        TipoConsulta obj = transientObject.convertToEntity();
+
+        TypeMap<TipoConsulta, TipoConsulta> typeMapper = modelMapper
+                .typeMap(TipoConsulta.class, TipoConsulta.class)
+                .addMappings(mapper -> mapper.skip(TipoConsulta::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return tipoConsultaServiceInterface.updateTipoConsulta(oldObject);
     }
 
     public TipoConsulta findTipoConsultaById(long id) {
