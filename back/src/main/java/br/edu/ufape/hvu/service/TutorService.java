@@ -3,7 +3,7 @@ package br.edu.ufape.hvu.service;
 import java.util.List;
 
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import br.edu.ufape.hvu.repository.TutorRepository;
@@ -11,9 +11,9 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Tutor;
 
 @Service
+@RequiredArgsConstructor
 public class TutorService implements TutorServiceInterface {
-	@Autowired
-	private TutorRepository repository;
+	private final TutorRepository repository;
 
 	public Tutor saveTutor(Tutor newInstance) throws ResponseStatusException {
 		verificarDuplicidade(newInstance.getCpf(), newInstance.getEmail());
@@ -64,5 +64,4 @@ public class TutorService implements TutorServiceInterface {
 			throw new DuplicateAccountException("Tutor", "EMAIL");
 		}
 	}
-	
 }
