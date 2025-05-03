@@ -1,0 +1,302 @@
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import styles from "./index.module.css";
+import VoltarButton from "../../../VoltarButton";
+import { CancelarWhiteButton } from "../../../WhiteButton";
+import { ContinuarFichasGreenButton } from "@/components/GreenButton";
+
+function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckboxChange, setFormData}) {
+
+    const handleTratamentoChange = (e) => {
+        const { name, value } = e.target;
+        
+        if (name === "tratamentosAtuais.confirmacao") {
+            setFormData(prev => ({
+                ...prev,
+                tratamentosAtuais: {
+                    ...prev.tratamentosAtuais,
+                    confirmacao: value,
+                    // Limpa os outros campos se for "Não"
+                    ...(value === "Não" ? {
+                        tipoTratamento: "",
+                        responsividade: ""
+                    } : {})
+                }
+            }));
+        } else {
+            handleChange(e);
+        }
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        nextStep(); 
+    };
+
+    return(
+        <div className={styles.container}>
+            <VoltarButton />
+            <h1>Ficha Dermatológica</h1>
+            <div className={styles.form_box}>
+
+                <form onSubmit={handleSubmit}>
+                    <h1 className={styles.title}>Anamnese</h1>
+                    <div className={styles.box}>
+                        <div className={styles.column}>
+                            <label>Ambiente:
+                                <select name="ambiente" 
+                                value={formData.ambiente} 
+                                onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Casa">Casa</option>
+                                    <option value="Casa/Quintal">Casa/Quintal</option>
+                                    <option value="Sítio/Fazenda">Sítio/Fazenda</option>
+                                    <option value="Apartamento">Apartamento</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Estilo de vida:
+                                <select name="estiloVida" value={formData.estiloVida} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Domiciliado">Domiciliado</option>
+                                    <option value="Extradomiciliado">Extradomiciliado</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Contato com:
+                                <select name="contatoSuperficie" value={formData.contatoSuperficie} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Tapete">Tapete</option>
+                                    <option value="Cerâmica">Cerâmica</option>
+                                    <option value="Plantas">Plantas</option>
+                                    <option value="Grama">Grama</option>
+                                    <option value="Cimento">Cimento</option>
+                                    <option value="Terra">Terra</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Acesso à rua:
+                                <select name="acessoRua" value={formData.acessoRua} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Livre">Livre</option>
+                                    <option value="Controlado">Controlado</option>
+                                    <option value="Sem acesso">Sem acesso</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Convive com outros animais:
+                                <select name="conviveComAnimais" value={formData.conviveComAnimais} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Cães">Cães</option>
+                                    <option value="Gatos">Gatos</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Contactantes Sintomáticos:
+                                <select name="contactantesSintomaticos" value={formData.contactantesSintomaticos} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Cães">Cães</option>
+                                    <option value="Gatos">Gatos</option>
+                                    <option value="Humanos">Humanos</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Alimentação:
+                                <select name="alimentacao" value={formData.alimentacao} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Ração">Ração</option>
+                                    <option value="Ração + Dieta Caseira">Ração + Dieta Caseira</option>
+                                    <option value="Dieta caseira">Dieta Caseira</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Banhos:
+                                <select name="banhos" value={formData.banhos} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Casa">Casa</option>
+                                    <option value="Pet shop">Pet Shop</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Frequência de banhos:
+                                <select name="frequenciaBanhos" value={formData.frequenciaBanhos} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Semanal">Semanal</option>
+                                    <option value="Quinzenal">Quinzenal</option>
+                                    <option value="Mensal">Mensal</option>
+                                    <option value="Outras">Outras</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Produto utilizado:
+                                <select name="produtoUtilizado" value={formData.produtoUtilizado} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Xampu Can/Fel">Xampu Can/Fel</option>
+                                    <option value="Xampu humano">Xampu Humano</option>
+                                    <option value="Sabonete/Xampu anti-Pulgas">Sabonete/Xampu Anti-Pulgas</option>
+                                    <option value="Terapêutico">Terapêutico</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Controle de ectoparasitas:
+                                <select name="controleEctoparasitas" value={formData.controleEctoparasitas} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Nenhum">Nenhum</option>
+                                    <option value="Banhos">Banhos</option>
+                                    <option value="Pipetas">Pipetas</option>
+                                    <option value="Comprimido">Comprimido</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Última administração:
+                                <input type="date" name="ultimaAdministracao" value={formData.ultimaAdministracao} onChange={handleChange} placeholder="Digite a data" />
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Apresenta ectoparasitas:
+                                <select name="apresentaEctoparasitas" value={formData.apresentaEctoparasitas} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Não">Não</option>
+                                    <option value="Pulgas">Pulgas</option>
+                                    <option value="Carrapatos">Carrapatos</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Quando visto pela última vez:
+                                <select name="quandoVistoUltimaVez" value={formData.quandoVistoUltimaVez} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Menos de 1 mês">Menos de 1 mês</option>
+                                    <option value="Mais de 1 mês">Mais de 1 mês</option>
+                                    <option value="Mais de 3 meses">Mais de 3 meses</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Queixa principal(Início/ Aspecto/ Evolução):
+                            <textarea type="text" name="queixaPrincipal" value={formData.queixaPrincipal} onChange={handleChange} rows="4" cols="50"/>
+                        </label>
+                    </div>
+
+                    {/* Tratamentos Atuais */}
+                    <div className={styles.column}>
+                        <label>Tratamentos atuais:
+                            <select name="tratamentosAtuais.confirmacao" value={formData.tratamentosAtuais?.confirmacao || ""}
+                            onChange={handleTratamentoChange}>
+                                <option value="">Selecione</option>
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não </option>
+                            </select>
+                        </label>
+                    
+
+                    {/* Se SIM for selecionado, mostra as opções de tratamento */}
+                    {formData.tratamentosAtuais?.confirmacao === "Sim" && ( 
+                        <div className={`${styles.column} ${styles.subField}`}>
+                            <label>Tipo de tratamento:
+                                <select name="tratamentosAtuais.tipoTratamento"  value={formData.tratamentosAtuais?.tipoTratamento || ""} 
+                                onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Tópico">Tópico</option>
+                                    <option value="Sistêmico">Sistêmico </option>
+                                </select>
+                            </label>
+
+                            {/* Se Tópico ou Sistêmico for selecionado, mostra responsividade */}
+                            {formData.tratamentosAtuais?.tipoTratamento && (
+                                <div className={styles.column}>
+                                    <label>Responsividade:
+                                        <select name="tratamentosAtuais.responsividade" value={formData.tratamentosAtuais?.responsividade || ""} 
+                                        onChange={handleChange}>
+                                            <option value="">Selecione</option>
+                                            <option value="Responsivo">Responsivo</option>
+                                            <option value="Não responsivo">Não responsivo </option>
+                                            <option value="Parcialmente responsivo">Parcialmente responsivo</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Prurido:
+                            <select name="prurido" value={formData.prurido} onChange={handleChange}>
+                                <option value="">Selecione</option>
+                                <option value="Sim">Sim</option>
+                                <option value="Nao">Não</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <h2 className={styles.title}>Local</h2>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Perilabial", "Periocular", 
+                            "Orelhas", "Axila", "Tórax",
+                            "Abdomen", "Membros",
+                            "Lombo-sacral", "Perianal", 
+                            "Perivulvar"
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["local"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "local")}
+                                /> {item.replace(/([A-Z])/g, ' $1').trim()}
+                            </label>
+                        ))}
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Intensidade:
+                            <select name="intensidade" value={formData.intensidade} onChange={handleChange}>
+                                <option value="">Selecione</option>
+                                <option value="Leve">Leve</option>
+                                <option value="Moderado">Moderado</option>
+                                <option value="Intenso">Intenso</option>
+                            </select>
+                        </label>
+                    </div>      
+
+                    <div className={styles.column}>
+                        <label>Lambedura de patas:
+                            <select name="lambedura" value={formData.lambedura} onChange={handleChange}>
+                                <option value="">Selecione</option>
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não</option>
+                            </select>
+                        </label>
+                    </div>               
+
+                    <div className={styles.button_box}>
+                        < CancelarWhiteButton />
+                        < ContinuarFichasGreenButton type="submit"/>
+                    </div> 
+                </form>
+            </div>
+        </div>
+    )
+}
+
+export default FichaDermatologicaStep1;
