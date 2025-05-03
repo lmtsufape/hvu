@@ -91,7 +91,7 @@ public class Facade {
         Tutor tutor = tutorServiceInterface.findTutorById(id);
 
         if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)){
-            throw new AccessDeniedException("You do not have permission to get this tutor");
+            throw new ForbiddenOperationException("Você não tem permição de acessar esse tutor ou alterar os dados do mesmo.");
         }
 
         return tutor;
@@ -113,8 +113,8 @@ public class Facade {
     public void deleteTutor(long id, String idSession) {
         Tutor oldObject = findTutorById(id, idSession);
 
-        if (!idSession.equals(oldObject.getUserId())) {
-            throw new ForbiddenOperationException("Está não é sua conta");
+        if(!keycloakService.hasRoleSecretario(idSession) && !oldObject.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem permição de acessar esse tutor ou alterar os dados do mesmo.");
         }
 
         try {
