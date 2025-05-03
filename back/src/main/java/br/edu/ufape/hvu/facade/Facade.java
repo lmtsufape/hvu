@@ -353,13 +353,14 @@ public class Facade {
     private final MedicoServiceInterface medicoService;
 
     @Transactional
-    public Medico saveMedico(Medico newInstance, String password) {
+    public Medico saveMedico(MedicoRequest request, String password) {
+        Medico medico = request.convertToEntity();
         String userKcId = null;
-        keycloakService.createUser(newInstance.getCpf(), newInstance.getEmail(), password, "medico");
+        keycloakService.createUser(medico.getCpf(), medico.getEmail(), password, "medico");
         try {
-            userKcId = keycloakService.getUserId(newInstance.getEmail());
-            newInstance.setUserId(userKcId);
-            return medicoService.saveMedico(newInstance);
+            userKcId = keycloakService.getUserId(medico.getEmail());
+            medico.setUserId(userKcId);
+            return medicoService.saveMedico(medico);
         }catch (DataIntegrityViolationException e){
             keycloakService.deleteUser(userKcId);
             throw e;
@@ -370,37 +371,35 @@ public class Facade {
     }
 
     @Transactional
-    public Medico updateMedico(Medico transientObject) {
-        try {
-            Medico newMedico =  medicoService.updateMedico(transientObject);
-            keycloakService.updateUser(newMedico.getUserId(), newMedico.getEmail());
-            return newMedico;
-        }catch (Exception e){
-            throw new RuntimeException("Error updating user: " + e.getMessage());
+    public Medico updateMedico(Long id, MedicoRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Dados inválidos para atualização.");
         }
+
+        Medico oldMedico = medicoService.findMedicoById(id); // lança EntityNotFoundException se não existir
+        Medico medicoAtualizado = request.convertToEntity();
+
+        // Atualiza instituição, se necessário
+        if (request.getInstituicao() != null) {
+            oldMedico.setInstituicao(findInstituicaoById(request.getInstituicao().getId()));
+        }
+
+        modelMapper.typeMap(Medico.class, Medico.class)
+                .addMappings(mapper -> mapper.skip(Medico::setId))
+                .map(medicoAtualizado, oldMedico);
+
+
+        Medico newMedico = medicoService.updateMedico(oldMedico);
+        keycloakService.updateUser(newMedico.getUserId(), newMedico.getEmail());
+        return newMedico;
     }
 
     public Medico findMedicoById(long id) {
         return medicoService.findMedicoById(id);
     }
 
-    public Medico findMedicoByuserId(String userId) throws IdNotFoundException {
-        return medicoService.findMedicoByuserId(userId);
-    }
-
-
     public List<Medico> getAllMedico() {
         return medicoService.getAllMedico();
-    }
-
-
-    public void deleteMedico(Medico persistentObject) {
-        try {
-            medicoService.deleteMedico(persistentObject);
-            keycloakService.deleteUser(persistentObject.getUserId());
-        }catch (Exception e){
-            throw new RuntimeException("Error deleting user");
-        }
     }
 
     public void deleteMedico(long id) {
