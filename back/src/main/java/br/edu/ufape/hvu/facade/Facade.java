@@ -963,8 +963,7 @@ public class Facade {
     }
 
     // Animal--------------------------------------------------------------
-    @Autowired
-    private AnimalServiceInterface animalServiceInterface;
+    private final AnimalServiceInterface animalServiceInterface;
 
     public Animal saveAnimal(Animal newInstance, String idSession) {
         Tutor tutor = findTutorByuserId(idSession);
