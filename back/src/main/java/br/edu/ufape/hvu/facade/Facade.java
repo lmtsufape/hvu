@@ -195,8 +195,7 @@ public class Facade {
     }
 
     // TipoConsulta--------------------------------------------------------------
-    @Autowired
-    private TipoConsultaServiceInterface tipoConsultaServiceInterface;
+    private final TipoConsultaServiceInterface tipoConsultaServiceInterface;
 
     public TipoConsulta saveTipoConsulta(TipoConsulta newInstance) {
         return tipoConsultaServiceInterface.saveTipoConsulta(newInstance);
@@ -212,10 +211,6 @@ public class Facade {
 
     public List<TipoConsulta> getAllTipoConsulta() {
         return tipoConsultaServiceInterface.getAllTipoConsulta();
-    }
-
-    public void deleteTipoConsulta(TipoConsulta persistentObject) {
-        tipoConsultaServiceInterface.deleteTipoConsulta(persistentObject);
     }
 
     public void deleteTipoConsulta(long id) {
