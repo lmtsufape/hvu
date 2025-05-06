@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
-import { CancelarWhiteButton } from "../../../WhiteButton";
+import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
 
 function ReabilitacaoIntegrativa({formData, handleChange,handlePreferenciasChange,handleSubmit, prevStep, handleSelectChange,handlePrincipiosChange}) {
@@ -185,8 +185,8 @@ function ReabilitacaoIntegrativa({formData, handleChange,handlePreferenciasChang
 
                     
                     <div className={styles.button_box}>
-                        < VoltarButton onClick={prevStep}/>
-                         < FinalizarFichaModal onConfirm={handleSubmit} />
+                        < VoltarWhiteButton onClick={prevStep}/>
+                        < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div> 
                 </form>
             </div>

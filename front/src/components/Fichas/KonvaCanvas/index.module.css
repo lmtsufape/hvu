@@ -50,46 +50,19 @@
   cursor: pointer;
 }
 
-/* .toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.brush_controls {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  outline: solid red;
-} */
 .actions {
   display: flex;
   gap: 0.5rem;
-  /* outline: solid red; */
   width: 100%;
   justify-content: space-between;
 }
 
 .buttons_box{
-  /* outline: solid red; */
   display: flex;
   gap: 1rem;
 }
 
 .btn_clear {
-  /* width: 100px;
-  height: 44px;
-  border-radius: 10px;
-  border: 1px solid #39805F;
-  color: #39805F;
-  background-color: white;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: 0em; */
-
   width: 100px;
   height: 44px;
   border-radius: 10px;
