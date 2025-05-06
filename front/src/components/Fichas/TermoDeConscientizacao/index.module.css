@@ -116,45 +116,43 @@
 }
 
 .button_box {
-    display: flex;
-    gap: 1rem;
-    margin-top: 20px;
-  }
+  display: flex;
+  gap: 1rem;
+  margin-top: 20px;
+}
   
-  .submeter_button {
-    background-color: #f2f2f2;
-    color: #333;
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    cursor: pointer;
-  }
+.submeter_button {
+  background-color: #f2f2f2;
+  color: #333;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+}
   
-  .submeter_button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+.submeter_button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
   
-  
-  
-  .criar_button:disabled {
-    background-color: #ccccccea;
-    cursor: not-allowed;
-  }
+.criar_button:disabled {
+  background-color: #ccccccea;
+  cursor: not-allowed;
+}
 
-  .pdfButton {
-    background-color: #f0f0f0;
-    color: #333;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 12px; /* bordas mais arredondadas */
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease; /* transição suave */
-    margin-top: 1rem;
-  }
-  
-  .pdfButton:hover {
-    background-color: #d1e7dd; /* cor suave ao passar o mouse */
-  }
+.pdfButton {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px; /* bordas mais arredondadas */
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease; /* transição suave */
+  margin-top: 1rem;
+}
+
+.pdfButton:hover {
+  background-color: #d1e7dd; /* cor suave ao passar o mouse */
+}
   

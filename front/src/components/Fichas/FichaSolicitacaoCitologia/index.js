@@ -8,6 +8,7 @@ import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
 import FinalizarFichaModal from "../FinalizarFichaModal";
 import { CancelarWhiteButton } from "../../WhiteButton";
+import DrawingModal from "@/components/Fichas/DrawingModal";
 
 function FichaSolicitacaoCitologia() {
 
@@ -20,9 +21,19 @@ function FichaSolicitacaoCitologia() {
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
+    const [showDrawingModal, setShowDrawingModal] = useState(false);
+    const dimensoesImagem = { largura: 700, altura: 360 };
+    const [imagemDesenhada, setImagemDesenhada] = useState(null);
 
     const [formData, setFormData] = useState({
         anamnese: [],
+        dataColheita: "",
+        historicoExameFisico: "",
+        localizacaoLesao: "",
+        imagemLesao:{
+            imagem:"", // string base64 (PNG)
+            linhasDesenhadas: [],
+          },
         caracteristicasLesao: {
             selecionadas: [],
             descricao: "",
@@ -85,6 +96,17 @@ function FichaSolicitacaoCitologia() {
             </div>
         );
     }
+
+    const handleSaveDrawing = (imagemFinal, linhasDesenhadas) => {
+        setFormData(prev => ({
+          ...prev,
+          imagemLesao: {
+            imagem: imagemFinal,                // string base64 (PNG)
+            linhasDesenhadas: linhasDesenhadas // array com dados dos traços
+          }
+        }));
+        setImagemDesenhada(imagemFinal); // Atualiza o estado da imagem desenhada
+    };  
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -163,6 +185,10 @@ function FichaSolicitacaoCitologia() {
             nome: "Ficha de solicitação de citologia",
             conteudo: {
                 Anamnese: anamneseFinal, 
+                dataColheita: formData.dataColheita,
+                historicoExameFisico: formData.historicoExameFisico,
+                localizacaoLesao: formData.localizacaoLesao,
+                imagemLesao: formData.imagemLesao,
                 caracteristicasLesao: { 
                     ...formData.caracteristicasLesao, // Mantém os outros campos
                     selecionadas: caracteristicasFinal //sobrescreve o campo selecionados
@@ -189,6 +215,70 @@ function FichaSolicitacaoCitologia() {
             
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
+
+                    
+                    <div className={styles.column}>
+                        <label>Data da colheita</label>
+                        <input
+                            type="date"
+                            name="dataColheita"
+                            value={formData.dataColheita}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Histórico/Exame físico:</label>
+                        <input
+                            type="text"
+                            name="historicoExameFisico"
+                            value={formData.historicoExameFisico}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    
+                    <div className={styles.column}>
+                        <label>Localização da lesão:</label>
+                        <input
+                            type="text"
+                            name="localizacaoLesao"
+                            value={formData.localizacaoLesao}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Descrição das lesões:
+                            <div 
+                                onClick={() => setShowDrawingModal(true)}
+                                style={{cursor: 'pointer', textAlign: 'center'}}
+                            >
+                                {imagemDesenhada ? (
+                                    <img 
+                                    src={imagemDesenhada} 
+                                    alt="Localização das lesões com marcações" 
+                                    style={{maxWidth: '500px'}}
+                                    />
+                                ) : (
+                                    <img
+                                    src="/images/localizacao_lesao_citologia.png"
+                                    alt="Localização das lesões"
+                                    style={{ maxWidth: '500px'}}
+                                    />
+                                )}
+                                <p style={{color: 'black'}}>Clique para desenhar sobre a imagem</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <DrawingModal 
+                        show={showDrawingModal}
+                        onHide={() => setShowDrawingModal(false)}
+                        backgroundImage="/images/localizacao_lesao_citologia.png"
+                        onSave={handleSaveDrawing}
+                        showDrawingModal={showDrawingModal}
+                        dimensoesImagem={dimensoesImagem}
+                    />
                     
                     <h1 className={styles.title}>Método de colheita</h1>
                     <div className={styles.anamnesecontainer}>
