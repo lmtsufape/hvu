@@ -21,10 +21,14 @@ function FichaAtoCirurgico() {
     const [formData, setFormData] = useState({
         descricaoAtoCirurgico: "",
         prognostico: "",
-        protocolos: "",
+        protocolos: [
+            { medicacao: "", dose: "", frequencia: "", periodo: ""}
+          ],
         reavaliacao: "",
         equipeResponsavel: ""
     });
+
+    const { protocolos } = formData;
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -99,6 +103,41 @@ function FichaAtoCirurgico() {
             setShowErrorAlert(true);
         }
     };
+
+    const handleChangeTratamentos = (index, campo, valor) => {
+        setFormData((prev) => {
+          const novosTratamentos = [...prev.protocolos];
+          novosTratamentos[index][campo] = valor;
+      
+          return {
+            ...prev,
+            protocolos: novosTratamentos
+          };
+        });
+    }; 
+
+    const adicionarLinhaTratamento = () => {
+        setFormData((prev) => ({
+          ...prev,
+          protocolos: [
+            ...prev.protocolos,
+            { medicacao: "", dose: "", frequencia: "", periodo: "" }
+          ]
+        }));
+    };
+    
+      const removerUltimaLinhaTratamento = () => {
+        setFormData((prev) => {
+          const tratamentos = prev.protocolos;
+          if (tratamentos.length > 1) {
+            return {
+              ...prev,
+              protocolos: tratamentos.slice(0, -1),
+            };
+          }
+          return prev;
+        });
+    };  
     
     return(
         <div className={styles.container}>
@@ -106,38 +145,99 @@ function FichaAtoCirurgico() {
             <h1>Ficha de ato cirúrgico </h1>
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
+
+                    <button className={styles.dados_ocultos} type="button">
+                        Dados do animal
+                        <span>+</span>
+                    </button>
+
+                    <div className={styles.titulo}>
+                        Descrição do ato cirúrgico
+                    </div>
                     
                     <div className={styles.column}>
-                        <label>Descrição do ato cirúrgico: <br></br>
-                            <textarea name="descricaoAtoCirurgico" 
-                            value={formData.descricaoAtoCirurgico} 
-                            onChange={handleChange} rows="4" cols="50"/>
-                        </label>
+                        <textarea id="caixa-alta"  name="descricaoAtoCirurgico" 
+                        value={formData.descricaoAtoCirurgico} 
+                        onChange={handleChange}/>
+                    </div>
+
+                    <div className={styles.titulo}>
+                        Prognóstico pós cirúrgico
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Prognóstico</label>
+                        <select id="meia-caixa" name="prognostico" value={formData.prognostico} onChange={handleChange}>
+                            <option value="">Selecione</option>
+                            <option value="FAVORAVEL">Favorável</option>
+                            <option value="RESERVADO">Reservado</option>
+                            <option value="DESFAVORAVEL">Desfavorável</option>
+                        </select>
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Protocolos terapêuticos a serem instituidos</label>
+                        <table className={styles.tabela_tratamento}>
+                            <thead>
+                                <tr>
+                                    <th id="medicacao"> Medicação</th>
+                                    <th>Dose</th>
+                                    <th>Frequência</th>
+                                    <th>Período</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {protocolos.map((linha, index) => (
+                                    <tr key={index}>
+                                        <td>
+                                            <input
+                                            type="text"
+                                            value={linha.medicacao}
+                                            onChange={(e) => handleChangeTratamentos(index, "medicacao", e.target.value)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                            type="text"
+                                            value={linha.dose}
+                                            onChange={(e) => handleChangeTratamentos(index, "dose", e.target.value)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                            type="text"
+                                            value={linha.frequencia}
+                                            onChange={(e) => handleChangeTratamentos(index, "frequencia", e.target.value)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                            type="text"
+                                            value={linha.periodo}
+                                            onChange={(e) => handleChangeTratamentos(index, "periodo", e.target.value)}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div className={styles.bolha_container}>
+                            <div className={styles.bolha} onClick={adicionarLinhaTratamento}>
+                                +
+                            </div>
+                            <div className={`${styles.bolha} ${styles.bolha_remover_linha}`} onClick={removerUltimaLinhaTratamento}>
+                                -
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Retorno para reavaliações</label>
+                        <textarea name="reavaliacao" value={formData.reavaliacao} onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>
-                        <label>Prognóstico pós cirúrgico: 
-                            <select name="prognostico" value={formData.prognostico} onChange={handleChange}>
-                                <option value="">Selecione</option>
-                                <option value="FAVORAVEL">Favorável</option>
-                                <option value="RESERVADO">Reservado</option>
-                                <option value="DESFAVORAVEL">Desfavorável</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div className={styles.column}>
-                        <label>Protocolos terapêuticos a serem instituidos: 
-                            <textarea name="protocolos" value={formData.protocolos} onChange={handleChange} rows="4" cols="50" />
-                        </label>
-                    </div>
-                    <div className={styles.column}>
-                        <label>Retorno para reavaliações:
-                            <textarea name="reavaliacao" value={formData.reavaliacao} onChange={handleChange} rows="4" cols="50" />
-                        </label>
-                    </div>
-                    <div className={styles.column}>
-                        <label>Plantonista(s) discente(s): 
-                            <textarea name="equipeResponsavel" value={formData.equipeResponsavel} onChange={handleChange} rows="4" cols="50"/>
-                        </label>
+                        <label>Plantonista(s) discente(s): </label>
+                        <textarea name="equipeResponsavel" value={formData.equipeResponsavel} onChange={handleChange} rows="4" cols="50"/>
                     </div>
 
                     <div className={styles.button_box}>
