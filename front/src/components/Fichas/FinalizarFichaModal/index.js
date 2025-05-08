@@ -24,8 +24,8 @@ function ConfirmarEnvioButton({ onConfirm, type="button", disabled }) {
     }, []);
 
     return (
-        <div>
-            <div onClick={() => setShowModal(true)}>
+        <div className={styles.conteiner}>
+            <div  onClick={() => setShowModal(true)}>
                 <button className={styles.green_buttonFichas} type={type} disabled={disabled}>
                     Finalizar
                 </button>
