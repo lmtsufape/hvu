@@ -2,8 +2,8 @@
 
 .container {
   display: block;
-  width: 100%;
-  max-width: 65rem;
+  max-width: 1192px;
+  width: 80%;
   min-width: 300px;
   height: auto;
   margin: auto;
@@ -18,39 +18,66 @@
   text-align: center;
   margin-top: 50px;
   color: #333;
+  margin-bottom: 56px;
 }
 
-.container h2 {
-  font-size: 17px;
-  font-weight: 700;
-  text-align: start;
-  color: #333;
+.titulo{
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #EEF8F3;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px;
+  padding-left: 16px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.dados_ocultos{
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #32705380;
+  font-size: 20px;
+  padding: 9.5px;
+  padding-left: 16px;
+  padding-right: 150px;
+  margin-bottom: 18px;
+  margin-top: 38px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dados_ocultos:hover{
+  background-color: #32835d80;
 }
 
 .form_box {
+  display: grid;
   border-radius: 20px;
-  border: 0.5px solid #b1b1b1;
-  padding: 20px;
+  padding-bottom: 18px;
+  padding-left: 29px;
+  padding-right: 37px;
   background-color: #fff;
-}
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 15px;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
 }
 
 .column {
   flex: 1;
   min-width: 250px;
-  margin: 10px;
 }
 
 .column label {
   display: block;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #272727;
 }
 
 .column input,
@@ -62,28 +89,11 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   resize: none;
-}
-
-.criar_button {
-  width: 180px;
-  height: 48px;
-  border-radius: 10px;
-  border: 1px solid #39805F;
-  color: #FFF5F6;
-  background-color: #39805F;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: 0em;
-}
-
-.criar_button:hover {
-  background-color: #39805fe6;
+  margin-bottom: 18px;
 }
 
 .button_box {
-  width: 100%; /* Alterado para usar uma porcentagem */
+  width: 100%; 
   max-width: 1152px;
   height: 10vh;
   display: flex;
@@ -104,4 +114,25 @@
   line-height: 30px;
   letter-spacing: 0em;
   text-align: center;
+}
+
+@media(max-width: 980px) {
+  .form_box {
+    display: block;
+    border-radius: 20px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding: 20px;
+    background-color: #fff;
+  }
+
+  .dados_ocultos{
+    padding-right: 30px;
+    height: auto;
+  }
+
+  .titulo{
+    height: auto;
+  }
 }
