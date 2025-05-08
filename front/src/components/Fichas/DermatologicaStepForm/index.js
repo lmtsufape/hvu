@@ -81,9 +81,13 @@ function DermatologicaSteps() {
         presuntivo: "",
         definitivo: ""
     },
-    tratamentoDermatologico: "",
+    tratamentoDermatologico: [
+      { medicacao: "", dose: "", frequencia: "", periodo: ""}
+    ],
     medico: ""
   });
+
+  const { tratamentoDermatologico } = formData;
 
   useEffect(() => {
       if (typeof window !== 'undefined') {
@@ -163,6 +167,41 @@ function DermatologicaSteps() {
         //return { ...prev, [name]: value };
     });
   };
+
+  const handleChangeTratamentos = (index, campo, valor) => {
+    setFormData((prev) => {
+      const novosTratamentos = [...prev.tratamentoDermatologico];
+      novosTratamentos[index][campo] = valor;
+  
+      return {
+        ...prev,
+        tratamentoDermatologico: novosTratamentos
+      };
+    });
+  }; 
+  
+  const adicionarLinhaTratamento = () => {
+    setFormData((prev) => ({
+      ...prev,
+      tratamentoDermatologico: [
+        ...prev.tratamentoDermatologico,
+        { medicacao: "", dose: "", frequencia: "", periodo: "" }
+      ]
+    }));
+  };
+
+  const removerUltimaLinhaTratamento = () => {
+    setFormData((prev) => {
+      const tratamentos = prev.tratamentoDermatologico;
+      if (tratamentos.length > 1) {
+        return {
+          ...prev,
+          tratamentoDermatologico: tratamentos.slice(0, -1),
+        };
+      }
+      return prev;
+    });
+  };  
 
   const handleSaveDrawing = (imagemFinal, linhasDesenhadas) => {
     setFormData(prev => ({
@@ -305,6 +344,10 @@ function DermatologicaSteps() {
           handleSubmit={handleSubmit}
           handleSaveDrawing={handleSaveDrawing}
           imagemDesenhada={imagemDesenhada} 
+          handleChangeTratamentos={handleChangeTratamentos}
+          tratamentos={tratamentoDermatologico}
+          adicionarLinhaTratamento={adicionarLinhaTratamento}
+          removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
           />
         </>
       );

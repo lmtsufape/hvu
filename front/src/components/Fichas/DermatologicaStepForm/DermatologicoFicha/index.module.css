@@ -165,3 +165,60 @@
   margin: 0 5px;
   border: 1px solid #000;
 }
+
+.tabela_tratamento {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela_tratamento th,
+.tabela_tratamento td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.tabela_tratamento th {
+  background-color: #e9f0ec;
+  font-weight: bold;
+}
+
+.tabela_tratamento input {
+  width: 90%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.bolha_container {
+  display: flex;
+  justify-content: end;
+  gap: 7px;
+}
+
+.bolha {
+  position: absolute;
+  position: sticky ;
+  bottom: -16px; 
+  right: 30px;  
+  width: 23px;
+  height: 16px;
+  background-color: #ccc;
+  color: white;
+  border-radius: 0 0 40px 40px;
+  font-size: 22px;
+  text-align: center;
+  line-height: 18px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  transition: background 0.3s;
+}
+
+.bolha_remover_linha {
+  right: 0px;  
+}
+
+.bolha:hover {
+  background-color: #39805f;
+}
