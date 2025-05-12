@@ -112,43 +112,53 @@ function FichaDermatologicaRetorno() {
             <h1>Ficha clínica dermatológica de retorno </h1>
             <div className={styles.form_box}>
                 <form>
-                    <div className={styles.column}>
-                        <label>Anamnese/Histórico clínico: <br></br>
-                            <textarea name="Anamnese" value={formData.Anamnese} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
-                    </div>
-                    <div className={styles.column}>
-                        <label>Tratamentos realizados (Início/Término/Resposta terapêutica): <br></br>
-                            <textarea name="tratamentos" value={formData.tratamentos} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
-                    </div>
-                    <div className={styles.column}>
-                        <label>Resultados dos exames realizados: <br></br>
-                            <textarea name="resultados" value={formData.resultados} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                    <button className={styles.dados_ocultos} type="button">
+                        Identificação do animal
+                        <span>+</span>
+                    </button>
+                    <div className={styles.titulo}>
+                        Anamnese
                     </div>
 
-                    <h1 className={styles.title}>Exame físico dermatológico/Descrição lesional</h1>
                     <div className={styles.column}>
-                        <label>Locais afetados: <br></br>
-                            <textarea name="locaisAfetados" value={formData.locaisAfetados} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                        <label>Anamnese/Histórico clínico </label>
+                        <textarea name="Anamnese" value={formData.Anamnese} 
+                        onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>
-                        <label>Conduta terapêutica: <br></br>
-                            <textarea name="condutaTerapeutica" value={formData.condutaTerapeutica} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                        <label>Tratamentos realizados (Início/Término/Resposta terapêutica) </label>
+                        <textarea name="tratamentos" value={formData.tratamentos} 
+                        onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>
-                        <label>Estagiários: <br></br>
-                            <textarea name="estagiarios" value={formData.estagiarios} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                        <label>Resultados dos exames realizados </label>
+                        <textarea name="resultados" value={formData.resultados} 
+                        onChange={handleChange} rows="4" cols="50" />
+                    </div>
+
+                    <div className={styles.titulo}>
+                        Exame físico dermatológico/Descrição lesional
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Locais afetados </label>
+                        <textarea name="locaisAfetados" value={formData.locaisAfetados} 
+                        onChange={handleChange} rows="4" cols="50" />
+                    </div>
+                    <div className={styles.column}>
+                        <label>Conduta terapêutica </label>
+                        <textarea name="condutaTerapeutica" value={formData.condutaTerapeutica} 
+                        onChange={handleChange} rows="4" cols="50" />
+                    </div>
+
+                    <div className={styles.titulo}>
+                        Exames complementares 
+                    </div>
+                    
+                    <div className={styles.column}>
+                        <label>Plantonista(s) discente(s): </label>
+                        <textarea name="estagiarios" value={formData.estagiarios} 
+                        onChange={handleChange} rows="4" cols="50" />
                     </div>
 
                     <div className={styles.button_box}>
