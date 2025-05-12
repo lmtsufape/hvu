@@ -1,22 +1,27 @@
 import React from "react";
 import { Header03 } from "@/components/Header";
-import { SubHeader } from "../../src/components/SubHeader";
+import { SubHeader } from "@/components/SubHeader";
 import Footer from "@/components/Footer";
+
 import "@/styles/styles.css";
-import FichaClinicaMedica from "@/components/Fichas/FichaClinicaMedica";
 
+/*  O index.jsx dentro de …/Fichas/ClinicaMedica já exporta
+    o controller de passos (FichaClinicaMedicaSteps)            */
+import ClinicaMedica from "@/components/Fichas/ClinicaMedica";
 
-function FichaClinicaMedicaPage() {
-    return(
-        <div className="divPai">
-            < Header03 />
-            < SubHeader />
-            <div className="flexStyle">
-                <FichaClinicaMedica /> 
-            </div>
-            < Footer />
-        </div>
-    );
+function ClinicaMedicaPage() {
+  return (
+    <div className="divPai">
+      <Header03 />
+      <SubHeader />
+
+      <div className="flexStyle">
+        <ClinicaMedica />
+      </div>
+
+      <Footer />
+    </div>
+  );
 }
 
-export default FichaClinicaMedicaPage;
+export default ClinicaMedicaPage;
