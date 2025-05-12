@@ -14,7 +14,7 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
 
         <div className={styles.form_box}>
             <form onSubmit={handleSubmit}>
-                <h1>Palpação Membro Torácico</h1> 
+                <h2>Palpação Membro Torácico</h2> 
                 <GrupoExame
                     titulo="digitosMetacarpos"
                     label="Dígitos/Metacarpos"
@@ -198,7 +198,7 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                   </label>
                 </div>
 
-                <h1>Palpação Membro Pélvico</h1> 
+                <h2>Palpação Membro Pélvico</h2> 
                 <GrupoExame
                     titulo="digitosMetatarsos"
                     label="Dígitos / Metatarsos"

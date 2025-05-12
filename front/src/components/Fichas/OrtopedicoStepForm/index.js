@@ -54,6 +54,7 @@ function OrtopedicaSteps() {
     faseElevacao: "",
     anguloArticulacoes: "",
     segundaObservacao: "",
+    marcha: "",
 
     // página 3
     digitosMetacarpos: {
@@ -357,6 +358,7 @@ function OrtopedicaSteps() {
             faseElevacao: formData.faseElevacao,
             anguloArticulacoes: formData.anguloArticulacoes,
             segundaObservacao: formData.segundaObservacao,
+            marcha: formData.marcha,
 
             achadosImagem: formData.achadosImagem,
             outrosExames: formData.outrosExames,
