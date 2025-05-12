@@ -115,8 +115,13 @@ function TermoDeConcientizacao() {
       <div className={styles.form_box}>
         <form onSubmit={handleSubmit}>
           <div className={styles.termo_box}>
+
+            <button className={styles.dados_ocultos} type="button">
+                Identificação do animal
+                <span>+</span>
+            </button>
             <p>
-              Pelo presente instrumento particular e na melhor forma do direito, os signatários deste, na qualidade de proprietário/tutor do animal acima identificado, doravante designado <strong>CONTRATANTE</strong>, e de outro lado, o Anestesista da UFAPE, de agora em diante designado <strong>CONTRATADO</strong>, têm entre si justo e contratado o que segue, que mutuamente aceitam e outorgam os seguintes procedimentos:
+              Pelo presente instrumento particular e na melhor forma do direito, os signatários deste, na qualidade de proprietário/tutor do animal acima identificado, doravante designado CONTRATANTE, e de outro lado, o Anestesista da UFAPE, de agora em diante designado CONTRATADO, têm entre si justo e contratado o que segue, que mutuamente aceitam e outorgam os seguintes procedimentos:
             </p>
             <h3>REFERENTE AO PROCEDIMENTO ANESTÉSICO</h3>
             <ol>
@@ -132,17 +137,20 @@ function TermoDeConcientizacao() {
               E para que fique registrado o seu pleno consentimento em submeter seu animal ao procedimento anestésico acima descrito, firma o presente documento.
             </p>
 
-            <button type="button" onClick={handleDownloadPDF} className={styles.pdfButton}>
-              Baixar termo em PDF
-            </button>
-            <div className={styles.submeter_button}>
-              <label htmlFor="upload">Upload do termo assinado:</label>
-              <input
-                type="file"
-                id="upload"
-                accept=".pdf, .jpg, .jpeg, .png"
-                onChange={handleFileChange}
-              />
+            <div className={styles.button_submit}>
+              <button type="button" onClick={handleDownloadPDF} className={styles.pdfButton}>
+                Baixar
+              </button>
+              <div>
+                <label htmlFor="upload" className={styles.pdfButton}>Submeter</label>
+                <input
+                  type="file"
+                  id="upload"
+                  accept=".pdf, .jpg, .jpeg, .png"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+              </div>
             </div>
           </div>
 
