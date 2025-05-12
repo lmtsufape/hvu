@@ -12,6 +12,17 @@
   font-family: "Poppins", sans-serif;
 }
 
+.container h2{
+  background-color: #eef8f3;
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 30px;
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  font-size: 18px; /* tamanho menor do texto */
+}
+
 .container h1 {
   font-size: 24px;
   font-weight: 700;
@@ -20,12 +31,6 @@
   color: #333;
 }
 
-.container h2 {
-  font-size: 14px;
-  font-weight: 700;
-  text-align: start;
-  color: #333;
-}
 
 .form_box {
   border-radius: 20px;

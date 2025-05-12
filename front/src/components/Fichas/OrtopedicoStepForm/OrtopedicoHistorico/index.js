@@ -19,7 +19,7 @@ function AtendimentoOrtopedico({formData, handleChange, nextStep}) {
 
                 <form onSubmit={handleSubmit}>
                     
-                    <h1>Histórico</h1>
+                    <h2>Históricoo</h2>
                     <div className={styles.column}>
                         <label>Queixa principal: </label>
                         <input type="text" name="queixaPrincipal" value={formData.queixaPrincipal} onChange={handleChange} />
