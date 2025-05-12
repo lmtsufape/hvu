@@ -73,6 +73,8 @@ function ClinicaMedicaSteps() {
     });
   };
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleCheckboxChange = ({ target: { value, checked } }, path) => {
     setFormData((prev) => {
       const clone = structuredClone(prev);
@@ -116,6 +118,8 @@ function ClinicaMedicaSteps() {
       conteudo: { ...formData },
       dataHora: moment().format("YYYY-MM-DDTHH:mm:ss")
     };
+
+    console.log("➡️  Enviando para a API:", fichaData);
 
     try {
       await createFicha(fichaData);
