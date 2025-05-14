@@ -387,6 +387,13 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                       onChange={handleChange} />
                   </label>
                 </div>
+                <div className={styles.column}>
+                  <label>Médico(s) Veterinário(s) Responsável:
+                    <input type="text" name="medicosResponsaveis"
+                      value={formData.medicosResponsaveis} 
+                      onChange={handleChange} />
+                  </label>
+                </div>
                 
                 <div className={styles.button_box}>
                     < VoltarWhiteButton onClick={prevStep}/>
