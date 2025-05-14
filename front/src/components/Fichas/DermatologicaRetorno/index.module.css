@@ -12,15 +12,27 @@
   font-family: "Poppins", sans-serif;
 }
 
+.container h2{
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #EEF8F3;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px;
+  padding-left: 16px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
 .container h1 {
   font-size: 24px;
   font-weight: 700;
   text-align: center;
   margin-top: 50px;
   color: #333;
-  margin-bottom: 56px;
 }
-
 .titulo{
   max-width: 1118px;
   width: 100%;
@@ -135,4 +147,54 @@
   .titulo{
     height: auto;
   }
+}
+.toggleButton {
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #98b7a9;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px 16px;
+  padding-left: 16px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-align: left;
+  display: flex; /* Mantém flexbox */
+  align-items: center; /* Alinha verticalmente */
+  justify-content: space-between; /* Distribui o texto à esquerda e o símbolo à direita */
+  box-sizing: border-box;
+  position: relative; /* Para controle de posicionamento, se necessário */
+}
+
+/* Estilo padrão do pseudo-elemento */
+.toggleButton::after {
+  font-weight: 600;
+  position: absolute; /* Posiciona o símbolo independentemente do texto */
+  right: 16px; /* Alinha o símbolo a 16px da borda direita */
+  top: 50%; /* Centraliza verticalmente */
+  transform: translateY(-50%); /* Ajusta para alinhamento preciso */
+}
+
+/* Quando está minimizado (mostrarExames = false), exibe "+" */
+.toggleButton.expand::after {
+  content: "+"; /* Símbolo para expandir */
+}
+
+/* Quando está expandido (mostrarExames = true), exibe "-" */
+.toggleButton.minimize::after {
+  content: "-"; /* Símbolo para minimizar */
+}
+
+/* Efeitos hover e active */
+.toggleButton:hover {
+  background-color: #d6ece0;
+}
+
+.toggleButton:active {
+  background-color: #c4e2d2;
 }
