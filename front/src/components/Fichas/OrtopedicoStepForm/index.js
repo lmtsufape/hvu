@@ -197,6 +197,7 @@ function OrtopedicaSteps() {
     diagnostico: "",
     tratamento: "",
     plantonistas: "",
+    medicosResponsaveis:"",
   });
 
   useEffect(() => {
@@ -383,7 +384,8 @@ function OrtopedicaSteps() {
             articulacaoCoxal: formData.articulacaoCoxal,
             articulacaoSacroiliaca: formData.articulacaoSacroiliaca,
             pelve: formData.pelve,
-            cabecaEsqueletoAxial: formData.cabecaEsqueletoAxial
+            cabecaEsqueletoAxial: formData.cabecaEsqueletoAxial,
+            medicosResponsaveis: formData.medicosResponsaveis,
         },
         dataHora: dataFormatada 
     };
