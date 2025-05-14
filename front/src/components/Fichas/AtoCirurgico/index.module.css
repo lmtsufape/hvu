@@ -235,4 +235,7 @@
     height: 49px;
     margin-bottom: -5px;
   }
+}.row {
+  display: flex; /* Alinha os elementos lado a lado */
+  gap: 16px; /* Espaçamento entre os elementos */
 }

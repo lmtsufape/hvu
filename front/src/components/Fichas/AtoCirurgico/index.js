@@ -17,6 +17,9 @@ function FichaAtoCirurgico() {
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
+    
+    const [errorMessage, setErrorMessage] = useState("");
+    
 
     const [formData, setFormData] = useState({
         descricaoAtoCirurgico: "",
@@ -25,7 +28,10 @@ function FichaAtoCirurgico() {
             { medicacao: "", dose: "", frequencia: "", periodo: ""}
           ],
         reavaliacao: "",
-        equipeResponsavel: ""
+        equipeResponsavel: "",
+        nomeDaCirurgia: "",
+        data: "",
+        medicosResponsaveis: "",
     });
 
     const { protocolos } = formData;
@@ -79,6 +85,7 @@ function FichaAtoCirurgico() {
     };
 
     const handleSubmit = async (event) => {
+        event?.preventDefault();
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
         const fichaData = {
             nome: "Ficha de ato cirúrgico",  
@@ -88,9 +95,15 @@ function FichaAtoCirurgico() {
                 protocolos: formData.protocolos,
                 reavaliacao: formData.reavaliacao,
                 equipeResponsavel: formData.equipeResponsavel,
+                data: formData.data,
+                nomeDaCirurgia: formData.nomeDaCirurgia,
+                medicosResponsaveis: formData.medicosResponsaveis,
+
             },
             dataHora: dataFormatada 
         };
+
+        console.log("Ficha enviada:", fichaData);
 
         try {
             await createFicha(fichaData);
@@ -159,6 +172,20 @@ function FichaAtoCirurgico() {
                         <textarea id="caixa-alta"  name="descricaoAtoCirurgico" 
                         value={formData.descricaoAtoCirurgico} 
                         onChange={handleChange}/>
+                    </div>
+
+                    <div className={styles.row}>
+                        <div className={styles.column}>
+                            <label>Nome da Cirurgia</label>
+                            <textarea name="nomeDaCirurgia" value={formData.nomeDaCirurgia} onChange={handleChange} />
+                        </div>
+                        <div className={styles.column}>
+                            <label>Data</label>
+                            <input
+                                type="date" name="data" value={formData.data} onChange={handleChange}
+                                
+                            />
+                        </div>
                     </div>
 
                     <div className={styles.titulo}>
@@ -237,7 +264,11 @@ function FichaAtoCirurgico() {
                     </div>
                     <div className={styles.column}>
                         <label>Plantonista(s) discente(s): </label>
-                        <textarea name="equipeResponsavel" value={formData.equipeResponsavel} onChange={handleChange} rows="4" cols="50"/>
+                        <textarea name="equipeResponsavel" value={formData.equipeResponsavel} onChange={handleChange}/>
+                    </div>
+                    <div className={styles.column}>
+                        <label>Médico(s) Veterinário(s) Responsável:</label>
+                        <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} onChange={handleChange} />
                     </div>
 
                     <div className={styles.button_box}>
