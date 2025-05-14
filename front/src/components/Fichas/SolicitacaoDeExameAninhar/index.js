@@ -132,10 +132,10 @@ function SolicitacaoDeExameAninhar({ formData, setFormData }) {
     <div className={styles.form_box}>
       {Object.entries(examCategories).map(([field, options]) => (
         <div key={field}>
-          <h1 className={styles.title}>
+          <h2>
             {field.charAt(0).toUpperCase() +
               field.slice(1).replace(/([A-Z])/g, " $1").trim()}
-          </h1>
+          </h2>
           <div className={styles.anamnesecontainer}>
             {options.map((item) => (
               <label key={item}>
