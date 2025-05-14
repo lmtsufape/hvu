@@ -32,7 +32,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
                         <input type="text" name="queixaPrincipal" value={formData.queixaPrincipal} onChange={handleChange} />
                     </div>
 
-                    <h1>Histórico clínico especial</h1>
+                    <h2>Histórico clínico especial</h2>
               
                     <div className={styles.column}> 
                         <label>Histórico Ortopédico:</label>
@@ -51,7 +51,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
                         <input type="text" name="historicoClinico.outros" value={formData.historicoClinico.outros} onChange={handleChange}/>
                     </div>
 
-                    <h1>Exame clínico especial</h1>
+                    <h2>Exame clínico especial</h2>
                     <p>Ortopédico</p>
 
                     <div className={styles.column}>
@@ -91,7 +91,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
                         <input type="text" name="exameClinicoEspecialOrtpedico.avaliacaoDaCapacidadeDeMovimento" value={formData.exameClinicoEspecialOrtpedico.avaliacaoDaCapacidadeDeMovimento} onChange={handleChange} />
                     </div>
 
-                    <h1>Neurológico</h1>
+                    <h2>Neurológico</h2>
                     <div className={styles.column}>
                         <label>Estado Mental: </label>
                         <input type="text" name="exameClinicoEspecialNeurologico.estadoMental" value={formData.exameClinicoEspecialNeurologico.estadoMental} onChange={handleChange} />
@@ -121,13 +121,13 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
                         <input type="text" name="exameClinicoEspecialNeurologico.avaliacaoSensitiva" value={formData.exameClinicoEspecialNeurologico.avaliacaoSensitiva} onChange={handleChange} />
                     </div>
 
-                    <h1>Exame clínico especial / Outros</h1>
+                    <h2>Exame clínico especial / Outros</h2>
                     <div className={styles.column}>
                         <label>Observações: </label>
                         <input type="text" name="exameClinicoEspecialOutros.observacoes" value={formData.exameClinicoEspecialOutros.observacoes} onChange={handleChange} />
                     </div>
 
-                    <h1>queixa Principal</h1>
+                    <h2>queixa Principal</h2>
                     <div className={styles.column}>
                         <label>Sinais clínicos: </label>
                         <input type="text" name="queixaPrincipal2.sinaisClinicos" value={formData.queixaPrincipal2.sinaisClinicos} onChange={handleChange} />
