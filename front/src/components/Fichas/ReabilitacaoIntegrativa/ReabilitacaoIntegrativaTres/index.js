@@ -45,7 +45,7 @@ function ReabilitacaoIntegrativa({formData, handleChange,handlePreferenciasChang
                         width={200}
                     />
 
-                    <h1>Perguntas Adicionais - MTC</h1>
+                    <h2>Perguntas Adicionais - MTC</h2>
               
                     <div className={styles.column}>
                         <label>Historico Ancestral: </label>
@@ -121,7 +121,7 @@ function ReabilitacaoIntegrativa({formData, handleChange,handlePreferenciasChang
                                 <input type="text" name="perguntasAdicionaisMTC.descricao" value={formData.perguntasAdicionaisMTC.descricao} onChange={handleChange} />
                     </div>
 
-                    <h1>Diagnóstico MTC</h1>
+                    <h2>Diagnóstico MTC</h2>
                     <div className={styles.column}>
                         <label>Órgãos envolvimento/ substâncias envolvidas: </label>
                         <input type="text" name="diagnosticoMTC.orgaosSubstacias" value={formData.diagnosticoMTC.orgaosSubstacias} onChange={handleChange} />
