@@ -146,7 +146,7 @@ function FichaDermatologicaStep2({formData, handleChange, nextStep, prevStep,han
                                     <input
                                     type="text"
                                     name={option}
-                                    value={formData.locations[option]}
+                                    value={formData.mucosas[option]}
                                     onChange={handleLocationChange}
                                     placeholder="Digite a localização"
                                     />
