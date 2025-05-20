@@ -68,7 +68,7 @@ function DermatologicaSteps() {
     turgorCutaneo: "",
     scoreCorporal: "",
     temperatura: "",
-    mucosas: "",
+    
     alteracoesClinicas: "",
 
       options: {
@@ -81,7 +81,7 @@ function DermatologicaSteps() {
         naoAvaliado: false
       },
   
-      locations: {
+      mucosas: {
         roseas: "",
         roseasPalidas: "",
         porcelanicas: "",
@@ -357,8 +357,8 @@ function DermatologicaSteps() {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      locations: {
-        ...prevState.locations,
+      mucosas: {
+        ...prevState.mucosas,
         [name]: value
       }
     }));

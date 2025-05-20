@@ -28,16 +28,61 @@ function ClinicaMedicaSteps() {
     /* ------------- passo 1 ------------- */
     queixaPrincipal: "",
     HistoricoMedico: {
-      vacinação: "",
-      vacinasSelecionadas: [],
-      vermifugação: "",
-      produtoVermifugação: "",
-      dataVacinação: "",
-      dataVermifugação: "",
-      ectoparasitas: "",
-      produtoEctoparasitas: "",
-      dataEctoparasitas: ""
+      progresso: "",
+      // vacinação: "",
+      // vacinasSelecionadas: [],
+      // vermifugação: "",
+      // produtoVermifugação: "",
+      // dataVacinação: "",
+      // dataVermifugação: "",
+      // ectoparasitas: "",
+      // produtoEctoparasitas: "",
+      // dataEctoparasitas: "",
     },
+
+    opc: {
+      antiRabica: false,
+      giardia: false,
+      leishmaniose: false,
+      tosseDosCanis: false,
+      polivalenteCanina: false,
+      polivalenteFelina: false,
+      outros: false,
+      naoVacinado: false,
+      naoInformado: false,
+      },
+  
+
+    vacinacao: {
+      antiRabica: "",
+      giardia: "",
+      leishmaniose: "",
+      tosseDosCanis: "",
+      polivalenteCanina: "",
+      polivalenteFelina: "",
+      outros: "",
+      naoVacinado: "",
+      naoInformado: "",
+
+    },
+
+    vermifugacaoDetalhes:{
+      vermifugacao: '',
+      produto: '',
+      data: '',
+    },
+    ectoparasitosDetalhes:{
+      ectoparasitos: '',
+      produto: '',
+      data: '',
+    }
+    ,
+    tpc:"",
+    turgorCutaneo:"",
+    freqCardiaca:"",
+    freqRespiratoria:"",
+
+    
     ExameFisico: {
       alimentacao: "",
       postura: "",
@@ -52,6 +97,28 @@ function ClinicaMedicaSteps() {
       linfonodosGeral: "",
       linfonodosLocal: []
     },
+
+    options: {
+        roseas: false,
+        roseasPalidas: false,
+        porcelanicas: false,
+        hiperemicas: false,
+        cianoticas: false,
+        ictaricas: false,
+        naoAvaliado: false
+      },
+  
+      mucosas: {
+        roseas: "",
+        roseasPalidas: "",
+        porcelanicas: "",
+        hiperemicas: "",
+        cianoticas: "",
+        ictaricas: "",
+        naoAvaliado: ""
+      },
+
+      linfonodos: {},
     /* ------------- passo 2 ------------- */
     fisicogeral: {},
     diagnostico: {},
@@ -72,6 +139,61 @@ function ClinicaMedicaSteps() {
       return clone;
     });
   };
+  const handleChangeAtualizaSelect = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleLinfonodoChange = (e, linfonodo) => {
+    const { checked } = e.target;
+    setFormData((prevState) => {
+      const updatedLinfonodos = { ...prevState.linfonodos };
+      if (checked) {
+        updatedLinfonodos[linfonodo] = []; // Adiciona o linfonodo com array vazio
+      } else {
+        delete updatedLinfonodos[linfonodo]; // Remove o linfonodo ao desmarcar
+      }
+      return {
+        ...prevState,
+        linfonodos: updatedLinfonodos
+      };
+    });
+  };
+  const handleCaracteristicaChange = (e, linfonodo) => {
+    const { name, checked } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      linfonodos: {
+        ...prevState.linfonodos,
+        [linfonodo]: checked
+          ? [...prevState.linfonodos[linfonodo], name]
+          : prevState.linfonodos[linfonodo].filter((item) => item !== name)
+      }
+    }));
+  };
+  const handleCheckboxChangeMucosas = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      options: {
+        ...prevState.options,
+        [name]: checked
+      }
+    }));
+  };
+  const handleChangeSelect = (e) => {
+      setFormData({
+        ...formData,
+        tipo: {
+          ...formData.tipo,
+          [e.target.name]: e.target.value
+        }
+      });
+  };
+ 
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -110,6 +232,27 @@ function ClinicaMedicaSteps() {
   if (!token)                      return <p>Acesso negado – faça login.</p>;
   if (!roles.includes("medico"))   return <p>Acesso negado – sem permissão.</p>;
 
+  const handleCheckboxChangeVacinacao = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      opc: {
+        ...prevState.opc,
+        [name]: checked
+      }
+    }));
+  };
+  const handleLocationChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      vacinacao: {
+        ...prevState.vacinacao,
+        [name]: value
+      }
+    }));
+  };
+
   /* envio final */
   const handleSubmit = async () => {
     setShowErrorAlert(false);
@@ -140,6 +283,14 @@ function ClinicaMedicaSteps() {
             handleChange={handleChange}
             handleCheckboxChange={handleCheckboxChange}
             nextStep={nextStep}
+            handleCheckboxChangeVacinacao={handleCheckboxChangeVacinacao}
+            handleLocationChange={handleLocationChange}
+            handleChangeAtualizaSelect={handleChangeAtualizaSelect}
+            handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
+            handleLinfonodoChange={handleLinfonodoChange}
+            handleCaracteristicaChange={handleCaracteristicaChange}
+            handleChangeSelect={handleChangeSelect}
+
           />
         );
       case 2:

@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .container {
@@ -12,19 +13,39 @@
   font-family: "Poppins", sans-serif;
 }
 
+.container h2{
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #EEF8F3;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px;
+  padding-left: 16px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
 .container h1 {
-  font-size: 24px;
+  font-size: 24px;  
   font-weight: 700;
   text-align: center;
   margin-top: 50px;
   color: #333;
 }
 
+
 .form_box {
   border-radius: 20px;
   border: 0.5px solid #b1b1b1;
   padding: 20px;
   background-color: #fff;
+}
+
+.box{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .row {
@@ -34,14 +55,15 @@
   margin-bottom: 15px;
 }
 
-.anamnesecontainer {
+.checkbox_container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 10px;
   margin-bottom: 15px;
+  margin: 10px;
 }
 
-.anamnesecontainer label {
+.checkbox_container label {
   display: flex;
   align-items: center;
   background-color: #f9f9f9;
@@ -53,23 +75,25 @@
   transition: background 0.3s ease-in-out;
 }
 
-.anamnesecontainer input[type="checkbox"] {
+.checkbox_container input[type="checkbox"] {
   margin-right: 8px;
   accent-color: #39805f;
 }
 
-.anamnesecontainer label:hover {
+.checkbox_container label:hover {
   background-color: #e3f1ea;
 }
 
 .column {
   flex: 1;
-  min-width: 250px;
+  min-width: 100px;
   margin: 10px;
 }
 
 .column label {
-  display: block;
+  /* display: block; */
+  display: flex;
+  flex-direction: column;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 5px;
@@ -86,48 +110,54 @@
   resize: none;
 }
 
-.checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 15px;
-}
 
-.checkbox-group label {
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-}
-
-.checkbox-group input {
-  margin-right: 5px;
-}
-
-.submitButton {
-  width: 100%;
-  max-width: 180px;
-  height: 50px;
+.criar_button {
+  width: 180px;
+  height: 48px;
   border-radius: 10px;
-  border: 1px solid #39805f;
-  color: #fff;
-  background-color: #39805f;
+  border: 1px solid #39805F;
+  color: #FFF5F6;
+  background-color: #39805F;
+  font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 600;
-  display: block;
-  margin: 20px auto;
-  cursor: pointer;
+  line-height: 24px;
+  letter-spacing: 0em;
 }
 
-.submitButton:hover {
-  background-color: #2c6649;
+.criar_button:hover {
+  background-color: #39805fe6;
 }
 
 .button_box {
-  width: 100%; 
+  width: 100%; /* Alterado para usar uma porcentagem */
   max-width: 1152px;
   height: 10vh;
   display: flex;
   justify-content: right;
   align-items: center;
   gap: 3vh;
+}
+
+.message {
+  min-height: 300px;
+  margin-top: 56px; 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
+}
+
+.error_message {
+  margin-top: -0.2em;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 24px;
+  color: #C7122F;
 }
