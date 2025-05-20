@@ -1,0 +1,577 @@
+import styles from "./index.module.css";
+import VoltarButton from "../../../VoltarButton";
+import FinalizarFichaModal from "../../FinalizarFichaModal";
+import { CancelarWhiteButton }         from "@/components/WhiteButton";
+import { ContinuarFichasGreenButton }  from "@/components/GreenButton";
+import React, { useState, useEffect } from "react";
+
+
+
+
+export default function PosAnestesia({
+  formData,
+  setFormData,
+  handleChange,
+  handleCheckboxChange,
+  prevStep,
+  handleSubmit
+}) {
+
+ 
+const [farmacosPos, setFarmacosPos] = useState(
+  formData.pos?.farmacos ?? Array.from({ length: 5 }, () => ({
+    farmaco: "", dose: "", via: ""
+  }))
+);
+
+
+
+useEffect(() => {
+  setFormData(prev => ({
+    ...prev,
+    pos: { ...prev.pos, farmacos: farmacosPos }
+  }));
+}, [farmacosPos, setFormData]);
+
+const [farmacoPosAnestesico, setFarmacoPosAnestesico] = useState(
+  formData.pos?.farmacoPosAnestesico ??               
+  Array.from({ length: 5 }, () => ({
+    farmaco: "", dose: "", via: "", hora: ""
+  }))
+);
+
+useEffect(() => {
+  setFormData(prev => ({
+    ...prev,
+    pos: { ...prev.pos, farmacoPosAnestesico }        
+  }));
+}, [farmacoPosAnestesico, setFormData]);
+
+
+const handleFarmacoPosChange = (idx, field, value) => {
+  setFarmacosPos(prev => {
+    const copy = structuredClone(prev);
+    copy[idx][field] = value;
+    return copy;
+  });
+};
+
+const addFarmacoPosRow    = () =>
+  setFarmacosPos(prev => [...prev, { farmaco: "", dose: "", via: "" }]);
+
+const removeFarmacoPosRow = (idx) =>
+  setFarmacosPos(prev => prev.filter((_, i) => i !== idx));
+
+const handleFarmacoPosAnestesicoChange = (idx, field, value) => {
+  setFarmacoPosAnestesico(prev => {
+    const copy = structuredClone(prev);
+    copy[idx][field] = value;
+    return copy;
+  });
+};
+
+const addFarmacoPosAnestesicoRow    = () =>
+  setFarmacoPosAnestesico(prev => [
+    ...prev,
+    { farmaco: "", dose: "", via: "", hora: "" }
+  ]);
+
+const removeFarmacoPosAnestesicoRow = (idx) =>
+  setFarmacoPosAnestesico(prev => prev.filter((_, i) => i !== idx));
+
+
+return (
+    <div className={styles.container}>
+      <VoltarButton onClick={prevStep} />
+      <div className={styles.boxBorder}>
+      <h1 className="text-center mb-4">Ficha de Anestesiologia – Pós-Anestesia</h1>
+
+      <h5 className="bg-success-subtle p-2 rounded mt-4 mb-4">Indução</h5>
+
+      <div className="row align-items-center mb-3">
+        {/* Hora ---------------------------------------------------- */}
+        <div className="col-md-3">
+          <label className="form-label fw-medium w-100">
+            Hora
+            <input
+              type="time"
+              className="form-control"
+              name="pos.inducao.hora"
+              value={formData.pos?.inducao?.hora || ""}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        {/* Intubação ---------------------------------------------- */}
+        <div className="col-md-9">
+          {/* rótulo acima das opções */}
+          <label className="form-label fw-medium mb-2 d-block">
+            Intubação
+          </label>
+
+          {/* opções lado a lado */}
+          <div className="d-flex align-items-center flex-wrap">
+            {["Sim", "Não"].map((opt) => (
+              <label
+                key={opt}
+                className="me-4 d-inline-flex align-items-center mb-1"
+              >
+                <input
+                  type="radio"
+                  name="pos.inducao.intubacao"
+                  value={opt}
+                  checked={formData.pos?.inducao?.intubacao === opt}
+                  onChange={handleChange}
+                  className="me-1"
+                />
+                {opt}
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <table className="table table-bordered">
+        <thead className="table-light text-center">
+          <tr>
+            <th style={{ width: "55%" }}>Fármaco</th>
+            <th style={{ width: "25%" }}>Dose/Volume</th>
+            <th style={{ width: "15%" }}>Via</th>
+            <th style={{ width: "5%"  }}></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {farmacosPos.map((row, idx) => (
+            <tr key={idx}>
+              <td>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={row.farmaco}
+                  onChange={(e) =>
+                    handleFarmacoPosChange(idx, "farmaco", e.target.value)}
+                />
+              </td>
+
+              <td>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={row.dose}
+                  onChange={(e) =>
+                    handleFarmacoPosChange(idx, "dose", e.target.value)}
+                />
+              </td>
+
+              <td>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={row.via}
+                  onChange={(e) =>
+                    handleFarmacoPosChange(idx, "via", e.target.value)}
+                />
+              </td>
+
+              <td className="text-center align-middle">
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => removeFarmacoPosRow(idx)}
+                  disabled={farmacosPos.length === 1}
+                >
+                  &times;
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="text-center mb-3">
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-primary"
+          onClick={addFarmacoPosRow}
+        >
+          + Adicionar linha
+        </button>
+      </div>
+
+      {/* ─────────── Sonda endotraqueal / Fluidoterapia ─────────── */}
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label className="form-label fw-medium">
+            Número da sonda endotraqueal
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            name="pos.sondaEndotraqueal"       
+            value={formData.pos?.sondaEndotraqueal || ""}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Fluidoterapia */}
+        <div className="col-md-6">
+          <label className="form-label fw-medium">
+            Fluidoterapia
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            name="pos.fluidoterapia"
+            value={formData.pos?.fluidoterapia || ""}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+
+      {/* ------------------ Outros ----------------- */}
+      <div className="mb-3">
+        <label className="form-label fw-medium">Outros:</label>
+        <input
+          type="text"
+          className="form-control"
+          name="pos.outros"
+          value={formData.pos?.outros || ""}
+          onChange={handleChange}
+        />
+      </div>
+
+
+
+      <h5 className="bg-success-subtle p-2 rounded mt-4 mb-3">
+        Fármacos Pós anestésicos
+      </h5>
+
+      <table className="table table-bordered">
+        <thead className="table-light text-center">
+          <tr>
+            <th style={{ width: "40%" }}>Fármaco</th>
+            <th style={{ width: "20%" }}>Dose/Volume</th>
+            <th style={{ width: "15%" }}>Via</th>
+            <th style={{ width: "20%" }}>Hora</th>
+            <th style={{ width: "5%"  }}></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {farmacoPosAnestesico.map((row, idx) => (
+            <tr key={idx}>
+              <td>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={row.farmaco}
+                  onChange={e =>
+                    handleFarmacoPosAnestesicoChange(idx, "farmaco", e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={row.dose}
+                  onChange={e =>
+                    handleFarmacoPosAnestesicoChange(idx, "dose", e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={row.via}
+                  onChange={e =>
+                    handleFarmacoPosAnestesicoChange(idx, "via", e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="time"
+                  className="form-control"
+                  value={row.hora}
+                  onChange={e =>
+                    handleFarmacoPosAnestesicoChange(idx, "hora", e.target.value)}
+                />
+              </td>
+              <td className="text-center align-middle">
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => removeFarmacoPosAnestesicoRow(idx)}
+                  disabled={farmacoPosAnestesico.length === 1}
+                >
+                  &times;
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="text-center mb-3">
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-primary"
+          onClick={addFarmacoPosAnestesicoRow}
+        >
+          + Adicionar linha
+        </button>
+      </div>
+
+      <h5 className="bg-success-subtle p-2 rounded mt-4 mb-3">
+        Trans anestésicos
+      </h5>
+
+      <div className="row align-items-center g-3">
+
+      {/* Hora de início --------------------------------------------------- */}
+      <div className="col-md-2">
+        <label className="form-label w-100">
+          Hora de início
+          <input
+            type="time"
+            className="form-control"
+            name="pos.recuperacao.horaInicio"
+            value={formData.pos?.recuperacao?.horaInicio || ""}
+            onChange={handleChange}
+          />
+        </label>
+      </div>
+
+      {/* Hora final ------------------------------------------------------- */}
+      <div className="col-md-2">
+        <label className="form-label w-100">
+          Hora final
+          <input
+            type="time"
+            className="form-control"
+            name="pos.recuperacao.horaFim"
+            value={formData.pos?.recuperacao?.horaFim || ""}
+            onChange={handleChange}
+          />
+        </label>
+      </div>
+
+      {/* Duração (read-only) --------------------------------------------- */}
+      {(() => {
+        const ini = formData.pos?.recuperacao?.horaInicio;
+        const fim = formData.pos?.recuperacao?.horaFim;
+
+        if (!ini || !fim) return null;           // só exibe se ambos existirem
+
+        // calcula diferença em minutos
+        const [h1, m1] = ini.split(":").map(Number);
+        const [h2, m2] = fim.split(":").map(Number);
+        let diff = (h2 * 60 + m2) - (h1 * 60 + m1);
+        if (diff < 0) diff += 24 * 60;           // caso passe da meia-noite
+
+        const hh = String(Math.floor(diff / 60)).padStart(2, "0");
+        const mm = String(diff % 60).padStart(2, "0");
+        const dur = `${hh}:${mm}`;
+
+        return (
+          <div className="col-md-3">
+            <label className="form-label w-100">
+              Tempo de duração
+              <input
+                type="text"
+                className="form-control"
+                value={dur}
+                readOnly
+                disabled
+              />
+            </label>
+          </div>
+        );
+      })()}
+
+      {/* Suporte de oxigênio --------------------------------------------- */}
+      <div className="col-md-5">
+        <label className="form-label fw-medium mb-2 d-block">
+          Suporte de Oxigênio:
+        </label>
+
+        {["Máscara", "Tubo orotraqueal", "Sem suporte"].map((opt) => (
+          <label
+            key={opt}
+            className="me-4 d-inline-flex align-items-center mb-1"
+          >
+            <input
+              type="radio"
+              name="pos.recuperacao.suporteOxigenio"
+              value={opt}
+              checked={formData.pos?.recuperacao?.suporteOxigenio === opt}
+              onChange={handleChange}
+              className="me-1"
+            />
+            {opt}
+          </label>
+        ))}
+      </div>
+    </div>
+
+    
+    <div className="row align-items-center g-3 mt-4">
+
+    {/* Hora Extubação ---------------------------------------------------- */}
+    <div className="col-md-2">
+      <label className="form-label w-100">
+        Hora Extubação
+        <input
+          type="time"
+          className="form-control"
+          name="pos.extubacao3.horaExtubacao"
+          value={formData.pos?.extubacao3?.horaExtubacao || ""}
+          onChange={handleChange}
+        />
+      </label>
+    </div>
+
+    {/* Respiração -------------------------------------------------------- */}
+    <div className="col-md-10">
+      <label className="form-label fw-medium mb-2 d-block">
+        Respiração:
+      </label>
+
+      {[
+        "Mecânica",
+        "Assistida",
+        "Espontânea",
+        "Assistida & Espontânea",
+      ].map((opt) => (
+        <label
+          key={opt}
+          className="me-4 d-inline-flex align-items-center mb-1"
+        >
+          <input
+            type="radio"
+            name="pos.extubacao3.respiracao"
+            value={opt}
+            checked={formData.pos?.extubacao3?.respiracao === opt}
+            onChange={handleChange}
+            className="me-1"
+          />
+          {opt}
+        </label>
+      ))}
+    </div>
+  </div>
+
+    {/* ▸ PROCEDIMENTO – horários + equipo --------------------------------- */}
+  <div className="row align-items-center g-3 mt-4">
+
+  {/* Início do Procedimento ------------------------------------------- */}
+  <div className="col-md-2">
+    <label className="form-label w-100">
+      Início do Procedimento:
+      <input
+        type="time"
+        className="form-control"
+        name="pos.procedimento.horaInicio"
+        value={formData.pos?.procedimento?.horaInicio || ""}
+        onChange={handleChange}
+      />
+    </label>
+  </div>
+
+  {/* Fim do Procedimento ---------------------------------------------- */}
+  <div className="col-md-2">
+    <label className="form-label w-100">
+      Fim do Procedimento:
+      <input
+        type="time"
+        className="form-control"
+        name="pos.procedimento.horaFim"
+        value={formData.pos?.procedimento?.horaFim || ""}
+        onChange={handleChange}
+      />
+    </label>
+  </div>
+
+  {/* Equipo ------------------------------------------------------------ */}
+  <div className="col-md-8">
+    <label className="form-label fw-medium mb-2 d-block">
+      Equipo:
+    </label>
+
+    {["Macrogotas", "Microgotas"].map((opt) => (
+      <label
+        key={opt}
+        className="me-4 d-inline-flex align-items-center mb-1"
+      >
+        <input
+          type="radio"
+          name="pos.procedimento.equipo"
+          value={opt}
+          checked={formData.pos?.procedimento?.equipo === opt}
+          onChange={handleChange}
+          className="me-1"
+        />
+        {opt}
+      </label>
+    ))}
+  </div>
+
+
+
+
+
+
+  <label htmlFor="pos-observacoes" className="form-label mb-0 fw-medium">
+    Observações e Complicações
+  </label>
+
+  <textarea
+    id="pos-observacoes"
+    name="pos.observacoes"           
+    className="form-control"
+    rows={4}                         
+    value={formData.pos?.observacoes || ""}
+    onChange={handleChange}
+  />
+
+<label htmlFor="pos-medicoResp" className="form-label mb-0 fw-medium">
+    Médico(s) / Veterinário(s) Responsável:
+  </label>
+  <textarea
+    id="pos-medicoResp"
+    name="pos.medicoResponsavel"
+    className="form-control mb-0"
+    rows={1}                                 
+    value={formData.pos?.medicoResponsavel || ""}
+    onChange={handleChange}
+  />
+
+  <label htmlFor="pos-plantonistas" className="form-label mb-0 lb-0 fw-medium">
+    Plantonista(s) discente(s):
+  </label>
+  <textarea
+    id="pos-plantonistas"
+    name="pos.plantonistas"
+    className="form-control"
+    rows={1}                                  
+    value={formData.pos?.plantonistas || ""}
+    onChange={handleChange}
+  />
+
+
+
+
+
+
+
+  </div>
+ 
+      <div className={styles.button_box}>
+        <CancelarWhiteButton />
+        <FinalizarFichaModal onConfirm={handleSubmit} />
+      </div>
+    </div>
+    </div>
+  );
+}
