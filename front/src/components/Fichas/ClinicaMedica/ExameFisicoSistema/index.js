@@ -72,7 +72,7 @@
          <div className="card shadow-sm">
            {/* ================= EXAME FÍSICO POR SISTEMA ================= */}
            <div className="card-body">
-             <h3>Exame físico por sistema</h3>
+             <h2>Exame físico por sistema</h2>
              {FISICO_SISTEMA.map(sys => (
                <div key={sys.key} className="mb-3">
                  <label className="form-label fw-medium" htmlFor={sys.key}>
@@ -93,7 +93,7 @@
    
            {/* ================= DIAGNÓSTICO & TRATAMENTO ================= */}
            <div className="card-body">
-             <h3>Diagnóstico e tratamento</h3>
+             <h2>Diagnóstico</h2>
    
              {DIAGNOSTICO.map(field => (
                <div key={field.key} className="mb-3">
@@ -128,7 +128,7 @@
              ))}
    
              {/* ================= TABELA DE MEDICAÇÕES ================= */}
-             <h3>Tratamento – Medicações</h3>
+             <h2>Tratamento – Medicações</h2>
              <table className="table table-bordered">
                <thead className="table-light">
                  <tr>
