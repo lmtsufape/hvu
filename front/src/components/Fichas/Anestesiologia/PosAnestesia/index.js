@@ -7,6 +7,7 @@ import React, { useState, useEffect } from "react";
 
 
 
+
 export default function PosAnestesia({
   formData,
   setFormData,
@@ -515,11 +516,57 @@ return (
       </label>
     ))}
   </div>
+
+
+
+
+
+
+  <label htmlFor="pos-observacoes" className="form-label mb-0 fw-medium">
+    Observações e Complicações
+  </label>
+
+  <textarea
+    id="pos-observacoes"
+    name="pos.observacoes"           
+    className="form-control"
+    rows={4}                         
+    value={formData.pos?.observacoes || ""}
+    onChange={handleChange}
+  />
+
+<label htmlFor="pos-medicoResp" className="form-label mb-0 fw-medium">
+    Médico(s) / Veterinário(s) Responsável:
+  </label>
+  <textarea
+    id="pos-medicoResp"
+    name="pos.medicoResponsavel"
+    className="form-control mb-0"
+    rows={1}                                 
+    value={formData.pos?.medicoResponsavel || ""}
+    onChange={handleChange}
+  />
+
+  <label htmlFor="pos-plantonistas" className="form-label mb-0 lb-0 fw-medium">
+    Plantonista(s) discente(s):
+  </label>
+  <textarea
+    id="pos-plantonistas"
+    name="pos.plantonistas"
+    className="form-control"
+    rows={1}                                  
+    value={formData.pos?.plantonistas || ""}
+    onChange={handleChange}
+  />
+
+
+
+
+
+
+
   </div>
  
-
-
-
       <div className={styles.button_box}>
         <CancelarWhiteButton />
         <FinalizarFichaModal onConfirm={handleSubmit} />
