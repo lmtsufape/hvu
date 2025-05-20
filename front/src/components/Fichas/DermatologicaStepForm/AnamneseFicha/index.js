@@ -5,7 +5,17 @@ import VoltarButton from "../../../VoltarButton";
 import { CancelarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
-function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckboxChange, setFormData}) {
+function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckboxChange, setFormData,handleCheckboxChangeOutros,
+        showOtherInputConviveComAnimais,
+        setShowOtherInputConviveComAnimais,
+        otherValueConviveComAnimais,
+        setOtherValueConviveComAnimais,
+        showOtherInputProdutosUtilizados,
+        setShowOtherInputProdutosUtilizados,
+        otherValueProdutosUtilizados,
+        setOtherValueProdutosUtilizados}) {
+
+   
 
     const handleTratamentoChange = (e) => {
         const { name, value } = e.target;
@@ -40,8 +50,13 @@ function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckb
             <div className={styles.form_box}>
 
                 <form onSubmit={handleSubmit}>
-                    <h1 className={styles.title}>Anamnese</h1>
+                    <h2>Anamnese</h2>
                     <div className={styles.box}>
+                        <div className={styles.column}>
+                            <label>Peso:
+                                <input type="text" name="peso" value={formData.peso} onChange={handleChange} placeholder="Digite o peso" />
+                            </label>
+                        </div>
                         <div className={styles.column}>
                             <label>Ambiente:
                                 <select name="ambiente" 
@@ -65,19 +80,6 @@ function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckb
                             </label>
                         </div>
                         <div className={styles.column}>
-                            <label>Contato com:
-                                <select name="contatoSuperficie" value={formData.contatoSuperficie} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Tapete">Tapete</option>
-                                    <option value="Cerâmica">Cerâmica</option>
-                                    <option value="Plantas">Plantas</option>
-                                    <option value="Grama">Grama</option>
-                                    <option value="Cimento">Cimento</option>
-                                    <option value="Terra">Terra</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className={styles.column}>
                             <label>Acesso à rua:
                                 <select name="acessoRua" value={formData.acessoRua} onChange={handleChange}>
                                     <option value="">Selecione</option>
@@ -87,28 +89,7 @@ function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckb
                                 </select>
                             </label>
                         </div>
-                        <div className={styles.column}>
-                            <label>Convive com outros animais:
-                                <select name="conviveComAnimais" value={formData.conviveComAnimais} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Não">Não</option>
-                                    <option value="Cães">Cães</option>
-                                    <option value="Gatos">Gatos</option>
-                                    <option value="Outros">Outros</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Contactantes Sintomáticos:
-                                <select name="contactantesSintomaticos" value={formData.contactantesSintomaticos} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Não">Não</option>
-                                    <option value="Cães">Cães</option>
-                                    <option value="Gatos">Gatos</option>
-                                    <option value="Humanos">Humanos</option>
-                                </select>
-                            </label>
-                        </div>
+                        
                         <div className={styles.column}>
                             <label>Alimentação:
                                 <select name="alimentacao" value={formData.alimentacao} onChange={handleChange}>
@@ -116,50 +97,6 @@ function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckb
                                     <option value="Ração">Ração</option>
                                     <option value="Ração + Dieta Caseira">Ração + Dieta Caseira</option>
                                     <option value="Dieta caseira">Dieta Caseira</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Banhos:
-                                <select name="banhos" value={formData.banhos} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Casa">Casa</option>
-                                    <option value="Pet shop">Pet Shop</option>
-                                    <option value="Não">Não</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Frequência de banhos:
-                                <select name="frequenciaBanhos" value={formData.frequenciaBanhos} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Semanal">Semanal</option>
-                                    <option value="Quinzenal">Quinzenal</option>
-                                    <option value="Mensal">Mensal</option>
-                                    <option value="Outras">Outras</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Produto utilizado:
-                                <select name="produtoUtilizado" value={formData.produtoUtilizado} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Xampu Can/Fel">Xampu Can/Fel</option>
-                                    <option value="Xampu humano">Xampu Humano</option>
-                                    <option value="Sabonete/Xampu anti-Pulgas">Sabonete/Xampu Anti-Pulgas</option>
-                                    <option value="Terapêutico">Terapêutico</option>
-                                    <option value="Outros">Outros</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Controle de ectoparasitas:
-                                <select name="controleEctoparasitas" value={formData.controleEctoparasitas} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Nenhum">Nenhum</option>
-                                    <option value="Banhos">Banhos</option>
-                                    <option value="Pipetas">Pipetas</option>
-                                    <option value="Comprimido">Comprimido</option>
                                 </select>
                             </label>
                         </div>
@@ -188,6 +125,133 @@ function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckb
                                 </select>
                             </label>
                         </div>
+                        <div className={styles.column}>
+                            <label>Banhos:
+                                <select name="banhos" value={formData.banhos} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Casa">Casa</option>
+                                    <option value="Pet shop">Pet Shop</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Frequência de banhos:
+                                <select name="frequenciaBanhos" value={formData.frequenciaBanhos} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Semanal">Semanal</option>
+                                    <option value="Quinzenal">Quinzenal</option>
+                                    <option value="Mensal">Mensal</option>
+                                    <option value="Outras">Outras</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                     <div className={styles.column}>
+                        <label>Produtos utilizados:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Xampu Cam/fel", "Xampu humano", 
+                            "Sabonete/Xampu Antipulgas", "Terapêutico",
+                            "Outros",
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData.produtosUtilizados.includes(item)} 
+                                    onChange={(e) => handleCheckboxChangeOutros(e, "produtosUtilizados",setShowOtherInputProdutosUtilizados, setOtherValueProdutosUtilizados)}
+                                /> {item}
+                            </label>
+                        ))}
+                    </div>
+                    {showOtherInputProdutosUtilizados && (
+                        <input
+                            type="text"
+                            placeholder="Digite aqui..."
+                            value={otherValueProdutosUtilizados}
+                            onChange={(e) => setOtherValueProdutosUtilizados(e.target.value)}
+                        />
+                    )}
+                    <div className={styles.column}>
+                        <label>Contato Com:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Tapete", "Cerâmica", 
+                            "Plantas", "Grama", "Cimento",
+                            "Terra",
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["contatoComSuperfice"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "contatoComSuperfice")}
+                                /> {item.replace(/([A-Z])/g, ' $1').trim()}
+                            </label>
+                        ))}
+                    </div>
+                    <div className={styles.column}>
+                     <label>Convive com outros animais:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Não", "cães","Gatos", "Outros",].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData.conviveComAnimais.includes(item)} 
+                                    onChange={(e) => handleCheckboxChangeOutros(e, "conviveComAnimais", setShowOtherInputConviveComAnimais, setOtherValueConviveComAnimais)}
+                                /> {item}
+                            </label>
+                        ))}
+                    </div>
+                    {showOtherInputConviveComAnimais && (
+                        <input
+                            type="text"
+                            placeholder="Digite aqui..."
+                            value={otherValueConviveComAnimais}
+                            onChange={(e) => setOtherValueConviveComAnimais(e.target.value)}
+                        />
+                    )}
+                    <div className={styles.column}>
+                     <label>Contactantes Sintomáticos:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Não", "cães", 
+                            "Gatos", "Humanos",
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["contactantesSintomaticos"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "contactantesSintomaticos")}
+                                /> {item.replace(/([A-Z])/g, ' $1').trim()}
+                            </label>
+                        ))}
+                    </div>
+                    <div className={styles.column}>
+                        <label>Controle de Ectoparasitas:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Nenhum", "Banhos",
+                            "Pipetas", "Comprimido", 
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["controleEctoparasitas"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "controleEctoparasitas")}
+                                /> {item.replace(/([A-Z])/g, ' $1').trim()}
+                            </label>
+                        ))}
                     </div>
 
                     <div className={styles.column}>
@@ -247,8 +311,9 @@ function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckb
                             </select>
                         </label>
                     </div>
-
-                    <h2 className={styles.title}>Local</h2>
+                    <div className={styles.column}>
+                    <label className={styles.title}>Local</label>
+                    </div>
                     <div className={styles.checkbox_container}>
                         {[
                             "Perilabial", "Periocular", 

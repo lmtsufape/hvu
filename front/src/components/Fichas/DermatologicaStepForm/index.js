@@ -9,6 +9,7 @@ import moment from 'moment';
 import { createFicha } from '../../../../services/fichaService';
 import { getCurrentUsuario } from '../../../../services/userService';
 
+
 function DermatologicaSteps() {
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState(null);
@@ -20,21 +21,27 @@ function DermatologicaSteps() {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
   const [imagemDesenhada, setImagemDesenhada] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(""); // Added state for error message
 
+  const [showOtherInputConviveComAnimais, setShowOtherInputConviveComAnimais] = useState(false);
+  const [otherValueConviveComAnimais, setOtherValueConviveComAnimais] = useState("");
+  const [showOtherInputProdutosUtilizados, setShowOtherInputProdutosUtilizados] = useState(false);
+  const [otherValueProdutosUtilizados, setOtherValueProdutosUtilizados] = useState("");
   const [formData, setFormData] = useState({
 
     // página 1
+    peso: "",
     ambiente: "",
     estiloVida: "",
-    contatoSuperficie: "",
+    contatoComSuperfice: [],
     acessoRua: "",
-    conviveComAnimais: "",
-    contactantesSintomaticos: "",
+    conviveComAnimais: [],
+    contactantesSintomaticos: [],
     alimentacao: "",
     banhos: "",
     frequenciaBanhos: "",
-    produtoUtilizado: "",
-    controleEctoparasitas: "",
+    produtosUtilizados: [],
+    controleEctoparasitas: [],
     ultimaAdministracao: "",
     apresentaEctoparasitas: "",
     quandoVistoUltimaVez: "",
@@ -51,41 +58,83 @@ function DermatologicaSteps() {
     lambedura: "",
 
     // página 2
-    comportamento: "",
+    tipo: {
+      postura: "",
+      outrosDetalhes: "",
+    },
+    nivelDeConsciencia: "",
+    grauDedesidratacao: "",
+    tpc: "",
+    turgorCutaneo: "",
     scoreCorporal: "",
     temperatura: "",
     mucosas: "",
-    linfonodos: "",
     alteracoesClinicas: "",
+
+      options: {
+        roseas: false,
+        roseasPalidas: false,
+        porcelanicas: false,
+        hiperemicas: false,
+        cianoticas: false,
+        ictaricas: false,
+        naoAvaliado: false
+      },
+  
+      locations: {
+        roseas: "",
+        roseasPalidas: "",
+        porcelanicas: "",
+        hiperemicas: "",
+        cianoticas: "",
+        ictaricas: "",
+        naoAvaliado: ""
+      },
+
+      linfonodos: {},
+    
+
 
     // página 3
     ectoparasitas: "",
-    pelagem: "",
+    pelagem: [],
     descamacao: "",
     untuosidade: "",
-    condutoAuditivoDireito: "",
-    condutoAuditivoEsquerdo: "",
+    condutoAuditivoDireito: [],
+    condutoAuditivoEsquerdo: [],
     imagemLesao:{
       imagem:"", // string base64 (PNG)
       linhasDesenhadas: [],
     },
-    formacoesSolidas: "",
-    alteracoesDeCor: "",
-    colecoesLiquidas: "",
-    alteracoesEspessura: "",
+    formacoesSolidas: [],
+    alteracoesDeCor: [],
+    colecoesLiquidas: [],
+    alteracoesEspessura: [],
     perdasTeciduais: "",
     descricaoLesional: "",
     criteriosFavrot: [],
     observacao: "",
     diagnostico:{
-        presuntivo: "",
-        definitivo: ""
+        definitivo: "",
+        observacoes: "",
+        prodnostico: "",
     },
     tratamentoDermatologico: [
       { medicacao: "", dose: "", frequencia: "", periodo: ""}
     ],
-    medico: ""
+    medico: "",
+     SolicitacaoDeExame: {
+            hematologiaDiagnostica: [],
+            urinalise: [],
+            parasitologico: [],
+            bioquimicaClinica: [],
+            citologiaHistopatologia: [],
+            imunologicos: [],
+            imaginologia: [],
+            cardiologia: [],
+        },
   });
+  
 
   const { tratamentoDermatologico } = formData;
 
@@ -133,6 +182,45 @@ function DermatologicaSteps() {
           </div>
       );
   }
+ 
+
+    const handleChangeSelect = (e) => {
+      setFormData({
+        ...formData,
+        tipo: {
+          ...formData.tipo,
+          [e.target.name]: e.target.value
+        }
+      });
+  };
+
+  const handleLinfonodoChange = (e, linfonodo) => {
+    const { checked } = e.target;
+    setFormData((prevState) => {
+      const updatedLinfonodos = { ...prevState.linfonodos };
+      if (checked) {
+        updatedLinfonodos[linfonodo] = []; // Adiciona o linfonodo com array vazio
+      } else {
+        delete updatedLinfonodos[linfonodo]; // Remove o linfonodo ao desmarcar
+      }
+      return {
+        ...prevState,
+        linfonodos: updatedLinfonodos
+      };
+    });
+  };
+  const handleCaracteristicaChange = (e, linfonodo) => {
+    const { name, checked } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      linfonodos: {
+        ...prevState.linfonodos,
+        [linfonodo]: checked
+          ? [...prevState.linfonodos[linfonodo], name]
+          : prevState.linfonodos[linfonodo].filter((item) => item !== name)
+      }
+    }));
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -224,22 +312,88 @@ function DermatologicaSteps() {
     }));
   };
 
+   const handleCheckboxChangeOutros = (event, field, setShowOtherInput, setOtherValue) => {
+        const { value, checked } = event.target;
+
+        if (value === "Outros") {
+            setShowOtherInput(checked);
+            if (!checked) setOtherValue("");
+        }
+        setFormData((prev) => {
+         if (field === "conviveComAnimais") {
+            return {
+                ...prev,
+                conviveComAnimais: checked
+                    ? [...prev.conviveComAnimais, value]
+                    : prev.conviveComAnimais.filter((item) => item !== value)
+            };
+            
+          }
+          if (field === "produtosUtilizados") {
+            return {
+                ...prev,
+                produtosUtilizados: checked
+                    ? [...prev.produtosUtilizados, value]
+                    : prev.produtosUtilizados.filter((item) => item !== value)
+            };
+            
+          }
+           return prev;
+        });
+    };
+
+
+  const handleCheckboxChangeMucosas = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      options: {
+        ...prevState.options,
+        [name]: checked
+      }
+    }));
+  };
+  const handleLocationChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      locations: {
+        ...prevState.locations,
+        [name]: value
+      }
+    }));
+  };
+
   const handleSubmit = async (event) => {
+    event.preventDefault();
     setShowErrorAlert(false);
     const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
+    let conviveComAnimaisFinal = [...formData.conviveComAnimais];
+    let produtosUtilizadosFinal = [...formData.produtosUtilizados];
+
+     if (conviveComAnimaisFinal.includes("Outros") && otherValueConviveComAnimais.trim() !== "") {
+        conviveComAnimaisFinal = conviveComAnimaisFinal.filter(item => item !== "Outros");
+        conviveComAnimaisFinal.push(otherValueConviveComAnimais.trim());
+    }
+    if (produtosUtilizadosFinal.includes("Outros") && otherValueProdutosUtilizados.trim() !== "") {
+        produtosUtilizadosFinal = produtosUtilizadosFinal.filter(item => item !== "Outros");
+        produtosUtilizadosFinal.push(otherValueProdutosUtilizados.trim());
+
+    }
     const fichaData = {
         nome: "Ficha clínica dermatológica",  
         conteudo:{
+            peso: formData.peso,
             ambiente: formData.ambiente,
             estiloVida: formData.estiloVida,
-            contatoSuperficie: formData.contatoSuperficie,
+            contatoComSuperfice: formData.contatoComSuperfice,
             acessoRua: formData.acessoRua,
-            conviveComAnimais: formData.conviveComAnimais,
+            conviveComAnimais: conviveComAnimaisFinal,
             contactantesSintomaticos: formData.contactantesSintomaticos,
             alimentacao: formData.alimentacao,
             banhos: formData.banhos,
             frequenciaBanhos: formData.frequenciaBanhos,
-            produtoUtilizado: formData.produtoUtilizado,
+            produtosUtilizados: produtosUtilizadosFinal,
             controleEctoparasitas: formData.controleEctoparasitas,
             ultimaAdministracao: formData.ultimaAdministracao,
             apresentaEctoparasitas: formData.apresentaEctoparasitas,
@@ -252,12 +406,17 @@ function DermatologicaSteps() {
             intensidade: formData.intensidade,
             lambedura: formData.lambedura,
 
-            comportamento: formData.comportamento,
+            tipo:formData.tipo,
+            nivelDeConsciencia: formData.nivelDeConsciencia,
+            grauDedesidratacao: formData.grauDedesidratacao,
             scoreCorporal: formData.scoreCorporal,
+            turgorCutaneo: formData.turgorCutaneo,
+            tpc: formData.tpc,
             temperatura: formData.temperatura,
             mucosas: formData.mucosas,
             linfonodos: formData.linfonodos,
             alteracoesClinicas: formData.alteracoesClinicas,
+            
 
             ectoparasitas: formData.ectoparasitas,
             pelagem: formData.pelagem,
@@ -276,7 +435,8 @@ function DermatologicaSteps() {
             observacao: formData.observacao,
             diagnostico: formData.diagnostico,
             tratamentoDermatologico: formData.tratamentoDermatologico,
-            medico: formData.medico
+            medico: formData.medico,
+            SolicitacaoDeExame: formData.SolicitacaoDeExame
 
         },
         dataHora: dataFormatada 
@@ -292,6 +452,97 @@ function DermatologicaSteps() {
         setShowErrorAlert(true);
     }
  };
+  const handleFinalizar = async () => {
+        
+         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+         let conviveComAnimaisFinal = [...formData.conviveComAnimais];
+         let produtosUtilizadosFinal = [...formData.produtosUtilizados];
+
+        if (conviveComAnimaisFinal.includes("Outros") && otherValueConviveComAnimais.trim() !== "") {
+            conviveComAnimaisFinal = conviveComAnimaisFinal.filter(item => item !== "Outros");
+            conviveComAnimaisFinal.push(otherValueConviveComAnimais.trim());
+        }
+        if (produtosUtilizadosFinal.includes("Outros") && otherValueProdutosUtilizados.trim() !== "") {
+            produtosUtilizadosFinal = produtosUtilizadosFinal.filter(item => item !== "Outros");
+            produtosUtilizadosFinal.push(otherValueProdutosUtilizados.trim());
+        }
+         const fichaData = {
+           nome: "Ficha Demartológica",
+           conteudo: {
+            peso: formData.peso,
+            ambiente: formData.ambiente,
+            estiloVida: formData.estiloVida,
+            contatoComSuperfice: formData.contatoComSuperfice,
+            acessoRua: formData.acessoRua,
+            conviveComAnimais: conviveComAnimaisFinal,
+            contactantesSintomaticos: formData.contactantesSintomaticos,
+            alimentacao: formData.alimentacao,
+            banhos: formData.banhos,
+            frequenciaBanhos: formData.frequenciaBanhos,
+            produtosUtilizados: produtosUtilizadosFinal,
+            controleEctoparasitas: formData.controleEctoparasitas,
+            ultimaAdministracao: formData.ultimaAdministracao,
+            apresentaEctoparasitas: formData.apresentaEctoparasitas,
+            quandoVistoUltimaVez: formData.quandoVistoUltimaVez,
+            queixaPrincipal: formData.queixaPrincipal,
+            tratamento: formData.tratamento,
+            tratamentosAtuais: formData.tratamentosAtuais,
+            prurido: formData.prurido,
+            local: formData.local,
+            intensidade: formData.intensidade,
+            lambedura: formData.lambedura,
+
+            tipo:formData.tipo,
+            nivelDeConsciencia: formData.nivelDeConsciencia,
+            grauDedesidratacao: formData.grauDedesidratacao,
+            scoreCorporal: formData.scoreCorporal,
+            turgorCutaneo: formData.turgorCutaneo,
+            tpc: formData.tpc,
+            temperatura: formData.temperatura,
+            mucosas: formData.mucosas,
+            linfonodos: formData.linfonodos,
+            alteracoesClinicas: formData.alteracoesClinicas,
+            
+
+            ectoparasitas: formData.ectoparasitas,
+            pelagem: formData.pelagem,
+            descamacao: formData.descamacao,
+            untuosidade: formData.untuosidade,
+            condutoAuditivoDireito: formData.condutoAuditivoDireito,
+            condutoAuditivoEsquerdo: formData.condutoAuditivoEsquerdo,
+            imagemLesao: formData.imagemLesao,
+            formacoesSolidas: formData.formacoesSolidas,
+            alteracoesDeCor: formData.alteracoesDeCor,
+            colecoesLiquidas: formData.colecoesLiquidas,
+            alteracoesEspessura: formData.alteracoesEspessura,
+            perdasTeciduais: formData.perdasTeciduais,
+            descricaoLesional: formData.descricaoLesional,
+            criteriosFavrot: formData.criteriosFavrot,
+            observacao: formData.observacao,
+            diagnostico: formData.diagnostico,
+            tratamentoDermatologico: formData.tratamentoDermatologico,
+            medico: formData.medico,
+            SolicitacaoDeExame: formData.SolicitacaoDeExame
+
+            },
+           dataHora: dataFormatada,
+         };
+         try {
+             console.log(fichaData);
+             await createFicha(fichaData);
+             setShowAlert(true);
+         } catch (error) {
+             console.error("Erro ao criar ficha:", error);
+             if (error.response && error.response.data && error.response.data.code) {
+             setErrorMessage(error.response.data.message);
+             } else {
+             setErrorMessage("Erro ao criar ficha");
+             }
+             setShowErrorAlert(true);
+         }
+     };
+      
+ 
 
   const renderStepContent = () => {
     switch(step) {
@@ -302,6 +553,8 @@ function DermatologicaSteps() {
           nextStep={nextStep}
           handleCheckboxChange={handleCheckboxChange}
           setFormData={setFormData}
+         
+  
         />;
       case 1:
         return (
@@ -311,6 +564,18 @@ function DermatologicaSteps() {
             nextStep={nextStep}
             handleCheckboxChange={handleCheckboxChange}
             setFormData={setFormData}
+            handleCheckboxChangeOutros={handleCheckboxChangeOutros}
+             showOtherInputConviveComAnimais={showOtherInputConviveComAnimais}
+            setShowOtherInputConviveComAnimais={setShowOtherInputConviveComAnimais}
+            otherValueConviveComAnimais={otherValueConviveComAnimais}
+            setOtherValueConviveComAnimais={setOtherValueConviveComAnimais}
+
+            showOtherInputProdutosUtilizados={showOtherInputProdutosUtilizados}
+            setShowOtherInputProdutosUtilizados={setShowOtherInputProdutosUtilizados}
+            otherValueProdutosUtilizados={otherValueProdutosUtilizados}
+            setOtherValueProdutosUtilizados={setOtherValueProdutosUtilizados}
+            
+
           />
         );
       case 2:
@@ -320,6 +585,11 @@ function DermatologicaSteps() {
             handleChange={handleChange} 
             nextStep={nextStep}
             prevStep={prevStep}
+            handleChangeSelect={handleChangeSelect}
+            handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
+            handleLocationChange={handleLocationChange}
+            handleLinfonodoChange={handleLinfonodoChange}
+            handleCaracteristicaChange={handleCaracteristicaChange}
           />
         );
       case 3:
@@ -337,6 +607,7 @@ function DermatologicaSteps() {
         </div>}
 
           <Dermatologica3
+          setFormData={setFormData}
           formData={formData} 
           handleChange={handleChange} 
           prevStep={prevStep}
@@ -348,6 +619,8 @@ function DermatologicaSteps() {
           tratamentos={tratamentoDermatologico}
           adicionarLinhaTratamento={adicionarLinhaTratamento}
           removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
+          handleFinalizar={handleFinalizar}
+
           />
         </>
       );

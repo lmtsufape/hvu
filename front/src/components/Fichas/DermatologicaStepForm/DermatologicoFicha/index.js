@@ -5,26 +5,30 @@ import VoltarButton from "../../../VoltarButton";
 import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
 import DrawingModal from "@/components/Fichas/DrawingModal";
+import SolicitacaoDeExameAninhar from "@/components/Fichas/SolicitacaoDeExameAninhar";
 
 function FichaDermatologica({formData, handleChange, prevStep, handleCheckboxChange, handleSubmit, 
     handleSaveDrawing, imagemDesenhada, handleChangeTratamentos, tratamentos, adicionarLinhaTratamento, 
-    removerUltimaLinhaTratamento}) {
+    removerUltimaLinhaTratamento,handleFinalizar,setFormData}) {
     
     const [showDrawingModal, setShowDrawingModal] = useState(false);
     const dimensoesImagem = {
         largura: 600,
         altura: 440
     };
+    const [mostrarExames, setMostrarExames] = useState(false);
+    const toggleMostrarExames = () => {
+        setMostrarExames((prev) => !prev);
+    };
     
     return(
         <div className={styles.container}>
             <VoltarButton onClick={prevStep}/>
             <h1>Ficha Dermatológica</h1>
-            <div className={styles.form_box}>
-
+                <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
-                    <h1 className={styles.title}>Exame dermatológico</h1>
-                    <div className={styles.box}>
+                    <h2>Exame dermatológico</h2>
+                    
                         <div className={styles.column}>
                             <label>Ectoparasitas:
                                 <select name="ectoparasitas" 
@@ -33,18 +37,6 @@ function FichaDermatologica({formData, handleChange, prevStep, handleCheckboxCha
                                     <option value="">Selecione</option>
                                     <option value="Sim">Sim</option>
                                     <option value="Não">Não</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Pelagem:
-                                <select name="pelagem" value={formData.pelagem} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Normal">Normal</option>
-                                    <option value="Opacos">Opacos</option>
-                                    <option value="Oleosa">Oleosa</option>
-                                    <option value="Ressecados">Ressecados</option>
-                                    <option value="Quebradiços">Quebradiços</option>
                                 </select>
                             </label>
                         </div>
@@ -68,38 +60,64 @@ function FichaDermatologica({formData, handleChange, prevStep, handleCheckboxCha
                                 </select>
                             </label>
                         </div>
-                        <div className={styles.column}>
-                            <label>Conduto auditivo direito:
-                                <select name="condutoAuditivoDireito" value={formData.condutoAuditivoDireito} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Eritema">Eritema</option>
-                                    <option value="Cerúmen">Cerúmen</option>
-                                    <option value="Liquenificação">Liquenificação</option>
-                                    <option value="Otorréia amarelada">Otorréia amarelada</option>
-                                    <option value="Descamação">Descamação</option>
-                                    <option value="Melanose">Melanose</option>
-                                    <option value="Estenose">Estenose</option>
-                                    <option value="Otorréia enegrécida">Otorréia enegrécida</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Conduto auditivo esquerdo:
-                                <select name="condutoAuditivoEsquerdo" value={formData.condutoAuditivoEsquerdo} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Eritema">Eritema</option>
-                                    <option value="Cerúmen">Cerúmen</option>
-                                    <option value="Liquenificação">Liquenificação</option>
-                                    <option value="Otorréia amarelada">Otorréia amarelada</option>
-                                    <option value="Descamação">Descamação</option>
-                                    <option value="Melanose">Melanose</option>
-                                    <option value="Estenose">Estenose</option>
-                                    <option value="Otorréia enegrécida">Otorréia enegrécida</option>
-                                </select>
-                            </label>
-                        </div>
+                    <div className={styles.column}>
+                        <label>Pelagem:</label>
                     </div>
-                    
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Normal","Oleosa","Opaco","Resecados","Quebradiços"
+                           
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["pelagem"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "pelagem")}
+                                /> {item}
+                            </label>
+                        ))}
+                    </div>
+                       
+                    <div className={styles.column}>
+                        <label>Conduto auditivo Direito:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "S/A","Com alteração","Eritema","Cerúmen","Liquenificação","Otorréia amarelada",
+                            "Descamação","Melanose","Estenose","Otorréia enegrécida"
+                           
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["condutoAuditivoDireito"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "condutoAuditivoDireito")}
+                                /> {item}
+                            </label>
+                        ))}
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Conduto auditivo esquerdo:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "S/A","Com alteração","Eritema","Cerúmen","Liquenificação","Otorréia amarelada",
+                            "Descamação","Melanose","Estenose","Otorréia enegrécida"
+                           
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["condutoAuditivoEsquerdo"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "condutoAuditivoEsquerdo")}
+                                /> {item}
+                            </label>
+                        ))}
+                    </div>
                     <div className={styles.column}>
                         <label>Localização/Descrição das lesões:
                             <div 
@@ -133,59 +151,81 @@ function FichaDermatologica({formData, handleChange, prevStep, handleCheckboxCha
                         dimensoesImagem={dimensoesImagem}
                     />
 
-                    <div className={styles.box}>
-                        <div className={styles.column}>
-                            <label>Formações sólidas:
-                                <select name="formacoesSolidas" value={formData.formacoesSolidas} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Macula">Macula</option>
-                                    <option value="Pápula">Pápula</option>
-                                    <option value="Placa">Placa</option>
-                                    <option value="Nódulo">Nódulo</option>
-                                    <option value="Tumor">Tumor</option>
-                                    <option value="Goma">Goma</option>
-                                    <option value="Vegetação">Vegetação</option>
-                                    <option value="Verrucosidade">Verrucosidade</option>
-                                </select>
+                    <div className={styles.column}>
+                        <label>Formações sólidas:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Mácula","Pápula","Placa","Nódulo","Tumor","Goma","Vegetação","Verrucosidade"
+                           
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["formacoesSolidas"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "formacoesSolidas")}
+                                /> {item}
                             </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Alterações de cor:
-                                <select name="alteracoesDeCor" value={formData.alteracoesDeCor} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Eritema">Eritema</option>
-                                    <option value="Hiperpigmentação">Hiperpigmentação</option>
-                                    <option value="Despigmentação">Despigmentação</option>
-                                    <option value="Telangiectasia">Telangiectasia</option>
-                                    <option value="Feotriquia">Feotriquia</option>
-                                    <option value="Petéquias">Petéquias</option>
-                                </select>
+                        ))}
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Alteração de Cor:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Liquenificação","Hipergmentação","Despigmentação","Telangiectasia","Petéquias",
+                           
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["alteracoesDeCor"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "alteracoesDeCor")}
+                                /> {item}
                             </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Coleções Líquidas:
-                                <select name="colecoesLiquidas" value={formData.colecoesLiquidas} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Pústulas">Pústulas</option>
-                                    <option value="Vesículas">Vesículas</option>
-                                    <option value="Bolhas">Bolhas</option>
-                                    <option value="Cistos">Cistos</option>
-                                    <option value="Abcesso">Abscesso</option>
-                                    <option value="Flegmão">Flegmão</option>
-                                </select>
+                        ))}
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Coleções Líquidas:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Pústulas","Vesículas","Bolhas","Cistos","Abcesso","Flegmão"
+                           
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["colecoesLiquidas"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "colecoesLiquidas")}
+                                /> {item}
                             </label>
-                        </div>
-                        <div className={styles.column}>
-                            <label>Alterações de Espessura:
-                                <select name="alteracoesEspessura" value={formData.alteracoesEspessura} onChange={handleChange}>
-                                    <option value="">Selecione</option>
-                                    <option value="Liquenificação">Liquenificação</option>
-                                    <option value="Hiperqueratose">Hiperqueratose</option>
-                                    <option value="Cicatriz">Cicatriz</option>
-                                    <option value="Calcinose Cutânea">Calcinose Cutânea</option>
-                                </select>
+                        ))}
+                    </div>
+
+                     <div className={styles.column}>
+                        <label>Alterações de Espessura:</label>
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {[
+                            "Liquenificação","Hiperqueratose","Cicatriz","Calcinose Cutânea"
+                           
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData["alteracoesEspessura"]?.includes(item)} 
+                                    onChange={(e) => handleCheckboxChange(e, "alteracoesEspessura")}
+                                /> {item}
                             </label>
-                        </div>
+                        ))}
+                    </div>
                         <div className={styles.column}>
                             <label>Perdas Teciduais e Reparações:
                                 <select name="perdasTeciduais" value={formData.perdasTeciduais} onChange={handleChange}>
@@ -203,7 +243,7 @@ function FichaDermatologica({formData, handleChange, prevStep, handleCheckboxCha
                             </label>
                         </div>
                  
-                    </div>
+                    
                     <div className={styles.column}>
                         <label>Descrição lesional(Locais afetados):
                             <textarea type="text" name="descricaoLesional" value={formData.descricaoLesional} 
@@ -241,18 +281,42 @@ function FichaDermatologica({formData, handleChange, prevStep, handleCheckboxCha
                             onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
+                     <button
+                        type="button"
+                        onClick={toggleMostrarExames}
+                        className={`${styles.toggleButton} ${
+                            mostrarExames ? styles.minimize : styles.expand
+                        }`}
+                        >
+                        {mostrarExames ? "Ocultar Exames" : "Solicitar Exame"}
+                    </button>
+                    {mostrarExames && (
+                    <SolicitacaoDeExameAninhar
+                        formData={formData.SolicitacaoDeExame}
+                        setFormData={setFormData}
+                    />
+                    )}
                     <div className={styles.column}>
-                        <label>Diagnóstico: </label>
-                        <label>Presuntivo:
-                            <input type="text" name="diagnostico.presuntivo" 
-                            value={formData.diagnostico.presuntivo} 
-                            onChange={handleChange} />
-                        </label>
+                       <h2>Diagnóstico e Tratamento</h2>
                         <label>Definitivo:
                             <input type="text" name="diagnostico.definitivo" 
                             value={formData.diagnostico.definitivo} 
                             onChange={handleChange} />
                         </label>
+                    </div>
+                    <div className={styles.column}>
+                    <label>Observações:
+                        <input type="text" name="diagnostico.observacoes" 
+                        value={formData.diagnostico.observacoes} 
+                        onChange={handleChange} />
+                    </label>
+                    </div>
+                    <div className={styles.column}>
+                    <label>Prognóstico:
+                        <input type="text" name="diagnostico.prognostico" 
+                        value={formData.diagnostico.prognostico} 
+                        onChange={handleChange} />
+                    </label>
                     </div>
 
                     <div className={styles.column}>
@@ -322,13 +386,13 @@ function FichaDermatologica({formData, handleChange, prevStep, handleCheckboxCha
                         <label>Estágiarios:
                             <textarea type="text" name="estagiarios" 
                             value={formData.estagiarios} 
-                            onChange={handleChange} rows="4" cols="50" />
+                            onChange={handleChange} />
                         </label>
                     </div>
 
                     <div className={styles.button_box}>
                         < VoltarWhiteButton onClick={prevStep}/>
-                        < FinalizarFichaModal onConfirm={handleSubmit} />
+                        < FinalizarFichaModal onConfirm={handleFinalizar} />
                     </div>
                 </form>
             </div>
