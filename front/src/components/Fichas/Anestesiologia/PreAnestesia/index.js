@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import VoltarButton                   from "@/components/VoltarButton";
 import { CancelarWhiteButton }        from "@/components/WhiteButton";
@@ -19,6 +19,7 @@ const SEDACAO = ["Nenhuma", "Leve", "Moderado", "Intenso"];
 export default function PreAnestesia({
   formData,
   handleChange,
+  setFormData, 
   handleCheckboxChange,
   nextStep
 }) {
@@ -48,13 +49,21 @@ const handleLocalizacaoChange = (e, mucosa) => {
     [mucosa]: value            // atualiza só a linha da mucosa clicada
     }));
 };
-const [farmacos, setFarmacos] = useState(
+const [farmacosPre, setFarmacosPre] = useState(
+  formData.pre?.farmacosPre ??
   Array.from({ length: 5 }, () => ({ farmaco: "", dose: "", via: "" }))
 );
 
+useEffect(() => {
+    setFormData(prev => ({
+    ...prev,
+    pre: { ...prev.pre, farmacosPre } 
+   }));
+  }, [farmacosPre, setFormData]);
+
 /* handler para alteração de cada célula */
-const handleFarmacoChange = (idx, field, value) => {
-  setFarmacos((prev) => {
+const handleFarmacoPreChange = (idx, field, value) => {
+  setFarmacosPre((prev) => {
     const copy = structuredClone(prev);
     copy[idx][field] = value;
     return copy;
@@ -62,18 +71,19 @@ const handleFarmacoChange = (idx, field, value) => {
 };
 
 /* adiciona nova linha em branco */
-const addFarmacoRow = () => {
-  setFarmacos((prev) => [...prev, { farmaco: "", dose: "", via: "" }]);
+const addFarmacoPreRow = () => {
+  setFarmacosPre((prev) => [...prev, { farmaco: "", dose: "", via: "" }]);
 };
 
 /* remove linha */
-const removeFarmacoRow = (idx) => {
-  setFarmacos((prev) => prev.filter((_, i) => i !== idx));
+const removeFarmacoPreRow = (idx) => {
+  setFarmacosPre((prev) => prev.filter((_, i) => i !== idx));
 };
 
   return (
     <div className={styles.container}>
       <VoltarButton />
+      <div className={styles.boxBorder}>
 
       <h1 className="text-center mb-4">Ficha de Anestesiologia Pré-Anestesia</h1>
 
@@ -377,7 +387,7 @@ const removeFarmacoRow = (idx) => {
                 </thead>
 
                 <tbody>
-                  {farmacos.map((row, idx) => (
+                  {farmacosPre.map((row, idx) => (
                     <tr key={idx}>
                       {/* Fármaco ------------------------------------------------ */}
                       <td>
@@ -385,7 +395,7 @@ const removeFarmacoRow = (idx) => {
                           type="text"
                           className="form-control"
                           value={row.farmaco}
-                          onChange={(e) => handleFarmacoChange(idx, "farmaco", e.target.value)}
+                          onChange={(e) => handleFarmacoPreChange(idx, "farmaco", e.target.value)}
                         />
                       </td>
 
@@ -395,7 +405,7 @@ const removeFarmacoRow = (idx) => {
                           type="text"
                           className="form-control"
                           value={row.dose}
-                          onChange={(e) => handleFarmacoChange(idx, "dose", e.target.value)}
+                          onChange={(e) => handleFarmacoPreChange(idx, "dose", e.target.value)}
                         />
                       </td>
 
@@ -405,7 +415,7 @@ const removeFarmacoRow = (idx) => {
                           type="text"
                           className="form-control"
                           value={row.via}
-                          onChange={(e) => handleFarmacoChange(idx, "via", e.target.value)}
+                          onChange={(e) => handleFarmacoPreChange(idx, "via", e.target.value)}
                         />
                       </td>
 
@@ -414,8 +424,8 @@ const removeFarmacoRow = (idx) => {
                         <button
                           type="button"
                           className="btn btn-sm btn-outline-danger"
-                          onClick={() => removeFarmacoRow(idx)}
-                          disabled={farmacos.length === 1}
+                          onClick={() => removeFarmacoPreRow(idx)}
+                          disabled={farmacosPre.length === 1}
                         >
                           &times;
                         </button>
@@ -429,7 +439,7 @@ const removeFarmacoRow = (idx) => {
               <button
                 type="button"
                 className="btn btn-sm btn-outline-primary"
-                onClick={addFarmacoRow}
+                onClick={addFarmacoPreRow}
               >
                 + Adicionar linha
               </button>
@@ -490,6 +500,7 @@ const removeFarmacoRow = (idx) => {
         </div>
 
       </form>
+    </div>
     </div>
   );
 }

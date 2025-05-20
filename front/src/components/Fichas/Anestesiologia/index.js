@@ -109,6 +109,7 @@ export default function AnestesiologiaSteps() {
       {step === 1 && (
         <Step1Anestesiologia
           formData={formData}
+          setFormData={setFormData}
           handleChange={handleChange}
           handleCheckboxChange={handleCheckboxChange}
           nextStep={nextStep}
