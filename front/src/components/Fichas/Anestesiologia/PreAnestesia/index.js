@@ -23,7 +23,8 @@ export default function PreAnestesia({
   handleCheckboxChange,
   nextStep
 }) {
-    const [localizacao, setLocalizacao] = useState({
+    const [localizacao, setLocalizacao] = useState(
+      formData.pre?.localizacaoMucosas ?? {
         "Róseas": "",
         "Róseas pálidas": "",
         "Porcelanas": "",
@@ -49,6 +50,22 @@ const handleLocalizacaoChange = (e, mucosa) => {
     [mucosa]: value            // atualiza só a linha da mucosa clicada
     }));
 };
+
+useEffect(() => {
+  const localizacaoPreenchida = Object.fromEntries(
+    Object.entries(localizacao).filter(([, v]) => v.trim() !== "")
+  );
+
+  setFormData(prev => ({
+    ...prev,
+    pre: {
+      ...prev.pre,
+      localizacaoMucosas: localizacaoPreenchida
+    }
+  }));
+}, [localizacao, setFormData]);
+
+
 const [farmacosPre, setFarmacosPre] = useState(
   formData.pre?.farmacosPre ??
   Array.from({ length: 5 }, () => ({ farmaco: "", dose: "", via: "" }))
