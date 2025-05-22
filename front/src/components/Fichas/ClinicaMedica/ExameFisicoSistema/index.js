@@ -36,7 +36,12 @@
      prevStep,
      back,
      submit,
-     handleSubmit
+     handleSubmit,
+     removerUltimaLinhaTratamento,
+      adicionarLinhaTratamento,
+      handleChangeTratamentos,
+      medicacoes,
+
    }) {
    
      /* helpers para array de medicações ---------------------- */
@@ -67,12 +72,15 @@
      return (
        <div className={styles.container}>
          <VoltarButton onClick={prevStep}/>
-         <h1 className="text-center mb-4">Ficha Clínica Médica</h1>
+         <h1>Ficha Clínica Médica</h1>
    
-         <div className="card shadow-sm">
+         <div className={styles.form_box}>
+          <form onSubmit={handleSubmit} >
            {/* ================= EXAME FÍSICO POR SISTEMA ================= */}
+           
+           <div className={styles.column}>
+            <h2>Exame físico por sistema</h2>
            <div className="card-body">
-             <h2>Exame físico por sistema</h2>
              {FISICO_SISTEMA.map(sys => (
                <div key={sys.key} className="mb-3">
                  <label className="form-label fw-medium" htmlFor={sys.key}>
@@ -82,18 +90,20 @@
                    id={sys.key}
                    name={`fisicogeral.${sys.key}`}               /* dot-notation */
                    rows={4}
-                   className="form-control bg-light"
-                   placeholder="Descreva aqui..."
+                   className="form-control"
                    value={formData.fisicogeral?.[sys.key] || ""}
                    onChange={handleChange}
                  />
                </div>
              ))}
            </div>
+           </div>
+           
    
            {/* ================= DIAGNÓSTICO & TRATAMENTO ================= */}
+           <div className={styles.column}>
            <div className="card-body">
-             <h2>Diagnóstico</h2>
+             <h2>Diagnóstico e tratamento</h2>
    
              {DIAGNOSTICO.map(field => (
                <div key={field.key} className="mb-3">
@@ -108,7 +118,7 @@
                      min="0"
                      step="0.01"
                      name={`diagnostico.${field.key}`}
-                     className="form-control bg-light"
+                     className="form-control"
                      placeholder="Informe o peso em kg"
                      value={formData.diagnostico?.[field.key] || ""}
                      onChange={handleChange}
@@ -118,69 +128,89 @@
                      id={field.key}
                      rows={4}
                      name={`diagnostico.${field.key}`}
-                     className="form-control bg-light"
-                     placeholder="Descreva aqui..."
+                     className="form-control"
                      value={formData.diagnostico?.[field.key] || ""}
                      onChange={handleChange}
                    />
                  )}
                </div>
              ))}
+            </div>
    
-             {/* ================= TABELA DE MEDICAÇÕES ================= */}
-             <h2>Tratamento – Medicações</h2>
-             <table className="table table-bordered">
-               <thead className="table-light">
-                 <tr>
-                   <th>Medicação</th>
-                   <th>Dose</th>
-                   <th>Frequência</th>
-                   <th>Período</th>
-                   <th style={{ width: "1%" }}></th>
-                 </tr>
-               </thead>
-               <tbody>
-                 {formData.medicacoes.map((row, idx) => (
-                   <tr key={idx}>
-                     {["medicacao","dose","frequencia","periodo"].map(col => (
-                       <td key={col}>
-                         <input
-                           type="text"
-                           className="form-control"
-                           value={row[col]}
-                           onChange={(e) => handleMedChange(idx, col, e.target.value)}
-                         />
-                       </td>
-                     ))}
-                     <td className="text-center">
-                       <button
-                         type="button"
-                         className="btn btn-sm btn-outline-danger"
-                         onClick={() => removeLine(idx)}
-                         disabled={formData.medicacoes.length === 1}
-                       >
-                         &times;
-                       </button>
-                     </td>
-                   </tr>
-                 ))}
-               </tbody>
-             </table>
-   
-             <button
-               type="button"
-               className="btn btn-sm btn-outline-primary mb-3"
-               onClick={addLine}
-             >
-               + Adicionar linha
-             </button>
-           </div>
+            {/* ================= TABELA DE MEDICAÇÕES ================= */}
+             
+            <div className={styles.column}>
+              <h2>Tratamento</h2>
+                  <table className={styles.tabela_tratamento}>
+                      <thead>
+                          <tr>
+                              <th id="medicacao"> Medicação</th>
+                              <th>Dose</th>
+                              <th>Frequência</th>
+                              <th>Período</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {medicacoes.map((linha, index) => (
+                              <tr key={index}>
+                                  <td>
+                                      <input
+                                      type="text"
+                                      value={linha.medicacao}
+                                      onChange={(e) => handleChangeTratamentos(index, "medicacao", e.target.value)}
+                                      />
+                                  </td>
+                                  <td>
+                                      <input
+                                      type="text"
+                                      value={linha.dose}
+                                      onChange={(e) => handleChangeTratamentos(index, "dose", e.target.value)}
+                                      />
+                                  </td>
+                                  <td>
+                                      <input
+                                      type="text"
+                                      value={linha.frequencia}
+                                      onChange={(e) => handleChangeTratamentos(index, "frequencia", e.target.value)}
+                                      />
+                                  </td>
+                                  <td>
+                                      <input
+                                      type="text"
+                                      value={linha.periodo}
+                                      onChange={(e) => handleChangeTratamentos(index, "periodo", e.target.value)}
+                                      />
+                                  </td>
+                              </tr>
+                          ))}
+                      </tbody>
+                  </table>
+                  <div className={styles.bolha_container}>
+                      <div className={styles.bolha} onClick={adicionarLinhaTratamento}>
+                          +
+                      </div>
+                      <div className={`${styles.bolha} ${styles.bolha_remover_linha}`} onClick={removerUltimaLinhaTratamento}>
+                          -
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div className={styles.column}>
+                <label>Plantonista(s) discente(s): </label>
+                <textarea name="plantonistas" value={formData.plantonistas} onChange={handleChange}/>
+            </div>
+            <div className={styles.column}>
+                <label>Médico(s) Veterinário(s) Responsável:</label>
+                <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} onChange={handleChange} />
+            </div>
+           
    
            {/* ================= BOTÕES FINAIS ================= */}
            <div className={styles.button_box}>
                         <VoltarWhiteButton onClick={prevStep} />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
             </div>
+          </form>
          </div>
        </div>
      );
