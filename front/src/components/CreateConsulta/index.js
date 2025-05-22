@@ -176,9 +176,7 @@ function CreateConsulta() {
 
   return (
     <>
-      <div className={styles.voltarButtonHeader}>
-        <VoltarButton />
-      </div>
+      <VoltarButton />
       <div>
         <h1 className={styles.titulocadastro}>Criar consulta</h1>
       </div>
@@ -350,6 +348,63 @@ function CreateConsulta() {
               </div>
             </div>
           </div>
+
+          <div className={styles.box_ficha_buttons}>
+
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaAtoCirurgico')}>
+              Ficha de ato cirúrgico
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaAnestesiologia')}>
+              Ficha de anestesiológia
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaCardiologica')}>
+              Ficha cardiológica
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaAtendimentoOrtopedico')}>
+              Ficha ortopédica
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaClinicaMedica')}>
+              Ficha clínica médica
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaMedicaRetorno')}>
+              Ficha clínica médica de retorno
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaDermatologica')}>
+              Ficha dermatológica
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaDermatologicaRetorno')}>
+              Ficha dermatológica de retorno
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaNeurologica')}>
+              Ficha neurológica
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaReabilitacaoIntegrativa')}>
+              Ficha de reabilitação integrativa
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaSessao')}>
+              Ficha de sessão
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaSolicitacaoCitologia')}>
+              Ficha de solicitação de citologia
+            </button>
+            <button className={styles.ficha_button} type="button"
+            onClick={() => router.push('/fichaSolicitacaoExame')}>
+              Ficha de solicitação de exame
+            </button>
+          </div>
+
 
           <div className={styles.continuarbotao}>
             <button className={styles.voltarButton}>Cancelar</button>
