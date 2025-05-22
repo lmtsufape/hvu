@@ -19,7 +19,15 @@ function FichaNeurologica({formData, handleChange, nextStep, handleCheckboxChang
             <div className={styles.form_box}>
 
                 <form onSubmit={handleSubmit}>
-                    <h1 className={styles.title}>Estado mental</h1>
+                    <button className={styles.dados_ocultos} type="button">
+                        Dados do animal
+                        <span>+</span>
+                    </button>
+
+                    <div className={styles.titulo}>
+                        Estado mental
+                    </div>
+
                     <div className={styles.column}>
                         <label>Nível de consciência ( Troco encefálico e córtex - SARA): 
                             <textarea name="nivelConsciencia" value={formData.nivelConsciencia} onChange={handleChange} rows="4" cols="50" />
@@ -31,13 +39,14 @@ function FichaNeurologica({formData, handleChange, nextStep, handleCheckboxChang
                         </label>
                     </div>
             
-
-                    <h1 className={styles.title}>Postura(Circular)</h1>
+                    <div className={styles.titulo}>
+                         Postura (Circular)
+                    </div>
                     <div className={styles.checkbox_container}>
                         {[
-                            "Estação", "cabeça inclinada (D/E)", "cabeça virada (D/E)", "queda",
-                            "tetania", "tremor", "descerebrada", "descerebelada",
-                            "Schiff-sherrington", "decubito",  "Outro"
+                            "Estação", "Cabeça inclinada (D/E)", "Cabeça virada (D/E)", "Queda",
+                            "Tetania", "Tremor", "Descerebrada", "Descerebelada",
+                            "Schiff-sherrington", "Decubito",  "Outro"
                         ].map((item) => (
                             <label key={item}>
                                 <input
@@ -49,9 +58,13 @@ function FichaNeurologica({formData, handleChange, nextStep, handleCheckboxChang
                             </label>
                         ))}
                     </div>
-
-                    <h1 className={styles.title}>Locomoção</h1>
-                    <label>Descrição e membros afetados:</label>
+                    
+                    <div className={styles.titulo}>
+                        Locomoção (Integração entre visão, equilíbrio, propriocepção e função motora)
+                    </div>
+                    <div className={styles.column}>
+                        <label>Descrição e membros afetados:</label>
+                    </div>
                     <div className={styles.checkbox_container}>
                         {[
                             "Normal", "Claudicação", "Ataxia",  "Paresia"
@@ -66,7 +79,10 @@ function FichaNeurologica({formData, handleChange, nextStep, handleCheckboxChang
                             </label>
                         ))}
                     </div>
-                    <label>Tipo de ataxia: </label>
+                    
+                    <div className={styles.titulo}>
+                        Tipo de ataxia
+                    </div>
                     <div className={styles.checkbox_container}>
                         {[
                             "vestibular", "cerebelar", "proprioceptiva"
@@ -81,11 +97,14 @@ function FichaNeurologica({formData, handleChange, nextStep, handleCheckboxChang
                             </label>
                         ))}
                     </div>
-
+          
                     <div className={styles.column}>
-                        <label>Andar compulsivo?
-                            <input type="text" name="andarCompulsivo" value={formData.andarCompulsivo} onChange={handleChange} />
-                        </label>
+                        <label>Andar compulsivo?</label>
+                        <select id="meia-caixa" name="andarCompulsivo" value={formData.andarCompulsivo} onChange={handleChange} >
+                            <option value="">Selecione</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
                     </div>
 
                     <div className={styles.button_box}>

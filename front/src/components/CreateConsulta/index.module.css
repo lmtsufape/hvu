@@ -95,6 +95,7 @@
 
 .voltarButtonHeader{
   margin-left: 5%;
+  outline: solid red;
 }
   
 
@@ -155,6 +156,32 @@
   background-color: #327053;
   border: 1px solid #ccc;
   box-shadow: #327053;
+}
+
+.box_ficha_buttons{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.ficha_button{
+  max-width: 1118px;
+  width: 300px;
+  height: 44px;
+  background-color: #39805F;
+  color: white;
+  font-size: 14px;
+  padding: 9.5px;
+  padding-left: 16px;
+  margin-top: 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ficha_button:hover{
+  background-color: #327053;
 }
 
 .obrigatorio {
