@@ -98,7 +98,7 @@ function ClinicaMedicaSteps() {
       linfonodosLocal: []
     },
 
-    options: {
+    option: {
         roseas: false,
         roseasPalidas: false,
         porcelanicas: false,
@@ -122,7 +122,10 @@ function ClinicaMedicaSteps() {
     /* ------------- passo 2 ------------- */
     fisicogeral: {},
     diagnostico: {},
-    medicacoes: [{ medicacao: "", dose: "", frequencia: "", periodo: "" }]
+    medicacoes: [{ medicacao: "", dose: "", frequencia: "", periodo: "" }],
+
+    plantonistas:"",
+    medicosResponsaveis:"",
   });
 
   /* ─────────────── handlers genéricos ─────────────── */
@@ -178,8 +181,8 @@ function ClinicaMedicaSteps() {
     const { name, checked } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      options: {
-        ...prevState.options,
+      option: {
+        ...prevState.option,
         [name]: checked
       }
     }));
@@ -253,6 +256,16 @@ function ClinicaMedicaSteps() {
     }));
   };
 
+  const handleMucosaLocationChange = (e) => {
+  const { name, value } = e.target;
+  setFormData((prevState) => ({
+    ...prevState,
+    mucosas: {
+      ...prevState.mucosas,
+      [name]: value,
+    },
+  }));
+};
   /* envio final */
   const handleSubmit = async () => {
     setShowErrorAlert(false);
@@ -273,6 +286,46 @@ function ClinicaMedicaSteps() {
     }
   };
 
+  const { medicacoes } = formData;
+  const handleChangeTratamentos = (index, campo, valor) => {
+        setFormData((prev) => {
+          const novosTratamentos = [...prev.medicacoes];
+          novosTratamentos[index][campo] = valor;
+      
+          return {
+            ...prev,
+            medicacoes: novosTratamentos
+          };
+        });
+    }; 
+
+    const adicionarLinhaTratamento = () => {
+        setFormData((prev) => ({
+          ...prev,
+          medicacoes: [
+            ...prev.medicacoes,
+            { medicacao: "", dose: "", frequencia: "", periodo: "" }
+          ]
+        }));
+    };
+
+     const removerUltimaLinhaTratamento = () => {
+        setFormData((prev) => {
+          const tratamentos = prev.medicacoes;
+          if (tratamentos.length > 1) {
+            return {
+              ...prev,
+              medicacoes: tratamentos.slice(0, -1),
+            };
+          }
+          return prev;
+        });
+    };  
+    
+
+
+
+
   /* renderização de cada página */
   const renderStep = () => {
     switch (step) {
@@ -290,6 +343,7 @@ function ClinicaMedicaSteps() {
             handleLinfonodoChange={handleLinfonodoChange}
             handleCaracteristicaChange={handleCaracteristicaChange}
             handleChangeSelect={handleChangeSelect}
+            handleMucosaLocationChange={handleMucosaLocationChange}
 
           />
         );
@@ -302,6 +356,11 @@ function ClinicaMedicaSteps() {
             handleCheckboxChange={handleCheckboxChange}
             prevStep={prevStep}
             handleSubmit={handleSubmit}
+            handleChangeTratamentos={handleChangeTratamentos}
+            adicionarLinhaTratamento={adicionarLinhaTratamento}
+            removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
+            medicacoes={medicacoes}
+
           />
         );
       default:
