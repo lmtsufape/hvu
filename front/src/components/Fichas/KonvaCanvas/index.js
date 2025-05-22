@@ -23,6 +23,19 @@ const KonvaCanvas = ({ backgroundImage, onSave, showDrawingModal, dimensoesImage
     }
   }, [showDrawingModal]);
 
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      setIsDrawing(false);
+    };
+
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+    
+    return () => {
+      window.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, []);
+
+
   const handleMouseDown = (e) => {
     setIsDrawing(true);
     const pos = e.target.getStage().getPointerPosition();
