@@ -5,10 +5,16 @@ import styles from "./index.module.css";
 import "react-datepicker/dist/react-datepicker.css";
 import VoltarButton from "../VoltarButton";
 import EspecialidadeList from "@/hooks/useEspecialidadeList"
-import { createConsulta } from "../../../services/consultaService";
+import { CancelarWhiteButton } from "../WhiteButton";
 import { getVagaById } from "../../../services/vagaService";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
+import FinalizarFichaModal from "../Fichas/FinalizarFichaModal";
+import SolicitacaoDeExameAninhar from "../Fichas/SolicitacaoDeExameAninhar";
+import FichaClinicaMedicaAninhar from "../Fichas/FichaClinicaMedicaAninhar";
+import moment from "moment";
+import { createFicha } from "../../../services/fichaService";
+
 
 function CreateConsulta() {
   const router = useRouter();
@@ -22,12 +28,13 @@ function CreateConsulta() {
   const [loading, setLoading] = useState(true);
 
   const [errors, setErrors] = useState({});
+   const [errorMessage, setErrorMessage] = useState("")
 
   const [animalId, setAnimalId] = useState(null);
+  const [mostrarExames, setMostrarExames] = useState(false);
+  const [mostrarFichaClinica, setMostrarFichaClinica] = useState(false);
   const [medicoId, setMedicoId] = useState(null);
 
-  console.log("medicoId:", medicoId);
-  console.log("animalId:", animalId);
 
   const [consulta, setConsulta] = useState({
     pesoAtual: null,
@@ -41,8 +48,87 @@ function CreateConsulta() {
     proximaConsulta: false,
     encaminhamento: null,
     animal: { id: null },
-    dataVaga: ""
+    dataVaga: "",
+    SolicitacaoDeExame: {
+      hematologiaDiagnostica: [],
+      urinalise: [],
+      parasitologico: [],
+      bioquimicaClinica: [],
+      citologiaHistopatologia: [],
+      imunologicos: [],
+      imaginologia: [],
+      cardiologia: [],
+    },
+    FichaClinicaMedica: {
+    queixaPrincipal: "",
+    HistoricoMedico: { progresso: "" },
+    opc: {
+      antiRabica: false,
+      giardia: false,
+      leishmaniose: false,
+      tosseDosCanis: false,
+      polivalenteCanina: false,
+      polivalenteFelina: false,
+      outros: false,
+      naoVacinado: false,
+      naoInformado: false,
+    },
+    vacinacao: {
+      antiRabica: "",
+      giardia: "",
+      leishmaniose: "",
+      tosseDosCanis: "",
+      polivalenteCanina: "",
+      polivalenteFelina: "",
+      outros: "",
+      naoVacinado: "",
+      naoInformado: "",
+    },
+    vermifugacaoDetalhes: { vermifugacao: "", produto: "", data: "" },
+    ectoparasitosDetalhes: { ectoparasitos: "", produto: "", data: "" },
+    tpc: "",
+    turgorCutaneo: "",
+    freqCardiaca: "",
+    freqRespiratoria: "",
+    ExameFisico: {
+      alimentacao: "",
+      postura: "",
+      temperatura: "",
+      score: "",
+      hidratacao: "",
+    },
+    option: {
+      roseas: false,
+      roseasPalidas: false,
+      porcelanicas: false,
+      hiperemicas: false,
+      cianoticas: false,
+      ictaricas: false,
+      naoAvaliado: false,
+    },
+    mucosas: {
+      roseas: "",
+      roseasPalidas: "",
+      porcelanicas: "",
+      hiperemicas: "",
+      cianoticas: "",
+      ictaricas: "",
+      naoAvaliado: "",
+    },
+    linfonodos: {},
+    fisicogeral: {},
+    diagnostico: {},
+    medicacoes: [{ medicacao: "", dose: "", frequencia: "", periodo: "" }],
+    plantonistas: "",
+    medicosResponsaveis: "",
+  },
   });
+   {mostrarFichaClinica && (
+  <FichaClinicaMedicaAninhar
+    formData={consulta.FichaClinicaMedica}
+    setFormData={setConsulta}
+  />
+)}
 
   const [vagaData, setVagaData] = useState({});
 
@@ -134,45 +220,60 @@ function CreateConsulta() {
     }
     
     return errors;
-  };
+  };    
 
-  console.log("consulta:", consulta);
-  console.log("vagaData:", vagaData);
-  console.log("especialidade:", especialidade);
-
-  const consultaToCreate = {
-    pesoAtual: parseFloat(consulta.pesoAtual),
-    idadeAtual: parseFloat(consulta.idadeAtual),
-    queixaPrincipal: consulta.queixaPrincipal,
-    alteracoesClinicasDiversas: consulta.alteracoesClinicasDiversas,
-    suspeitasClinicas: consulta.suspeitasClinicas,
-    alimentacao: consulta.alimentacao,
-    medico: {id: medicoId},
-    proximaConsulta: consulta.proximaConsulta,
-    encaminhamento: {id: especialidade},
-    animal: {id: animalId},
-    dataVaga: vagaData.dataHora
-  };
-
-  console.log("consultaToCreate:", consultaToCreate);
-
-  const handleSubmit = async () => {
-    const validationErrors = validateFields(consulta);
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-
-
-    try {
-      await createConsulta(consultaToCreate, id);
-      setShowAlert(true);
-    } catch (error) {
-      console.error("Erro ao criar consulta:", error);
-      setShowErrorAlert(true);
-    }
-  };
+     const handleFinalizar = async () => {
+        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+        const fichaData = {
+          nome: "Criar consulta",
+          conteudo: {
+            pesoAtual: consulta.pesoAtual,
+            idadeAtual: consulta.idadeAtual,
+            queixaPrincipal: consulta.queixaPrincipal,
+            alteracoesClinicasDiversas: consulta.alteracoesClinicasDiversas,
+            suspeitasClinicas: consulta.suspeitasClinicas,
+            alimentacao: consulta.alimentacao,
+            proximaConsulta: consulta.proximaConsulta,
+            encaminhamento: especialidade,
+            animal: { id: animalId },
+            medico: { id: medicoId },
+            parecer: consulta.parecer,
+            dataVaga: vagaData.dataVaga,
+            SolicitacaoDeExame: consulta.SolicitacaoDeExame,
+            FichaClinicaMedica: consulta.FichaClinicaMedica,
+          },
+          dataHora: dataFormatada,
+        };
+    
+        try {
+          console.log(fichaData);
+          await createFicha(fichaData);
+          setShowAlert(true);
+        } catch (error) {
+          console.error("Erro ao criar ficha:", error);
+          if (error.response && error.response.data && error.response.data.code) {
+            setErrorMessage(error.response.data.message);
+          } else {
+            setErrorMessage("Erro ao criar ficha");
+          }
+          setShowErrorAlert(true);
+        }
+      };
+      const handleCheckboxChange = (event, field) => {
+      const { value, checked } = event.target;
+      setFormData((prev) => ({
+        ...prev,
+        [field]: checked
+          ? [...prev[field], value]
+          : prev[field].filter((item) => item !== value),
+      }));
+    };
+    const toggleMostrarExames = () => {
+      setMostrarExames((prev) => !prev);
+    };
+    const toggleMostrarFichaClinica = () => {
+      setMostrarFichaClinica((prev) => !prev);
+    };
 
   return (
     <>
@@ -349,68 +450,39 @@ function CreateConsulta() {
             </div>
           </div>
 
-          <div className={styles.box_ficha_buttons}>
-
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaAtoCirurgico')}>
-              Ficha de ato cirúrgico
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaAnestesiologia')}>
-              Ficha de anestesiológia
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaCardiologica')}>
-              Ficha cardiológica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaAtendimentoOrtopedico')}>
-              Ficha ortopédica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaClinicaMedica')}>
-              Ficha clínica médica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaMedicaRetorno')}>
-              Ficha clínica médica de retorno
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaDermatologica')}>
-              Ficha dermatológica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaDermatologicaRetorno')}>
-              Ficha dermatológica de retorno
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaNeurologica')}>
-              Ficha neurológica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaReabilitacaoIntegrativa')}>
-              Ficha de reabilitação integrativa
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaSessao')}>
-              Ficha de sessão
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaSolicitacaoCitologia')}>
-              Ficha de solicitação de citologia
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaSolicitacaoExame')}>
-              Ficha de solicitação de exame
-            </button>
-          </div>
+           <button
+            type="button"
+            onClick={toggleMostrarExames}
+            className={`${styles.toggleButton} ${
+              mostrarExames ? styles.minimize : styles.expand
+            }`}
+          >
+            {mostrarExames ? "Ocultar Exames" : "Solicitar Exame"}
+          </button>
+          {mostrarExames && (
+            <SolicitacaoDeExameAninhar
+              formData={consulta.SolicitacaoDeExame}
+              setFormData={setConsulta}
+            />
+          )}
+          <button
+            type="button"
+            onClick={toggleMostrarFichaClinica}
+            className={`${styles.toggleButton} ${mostrarFichaClinica ? styles.minimize : styles.expand}`}
+          >
+            {mostrarFichaClinica ? "Ocultar Ficha Clínica" : "Preencher Ficha Clínica"}
+          </button>
+          {mostrarFichaClinica && (
+            <FichaClinicaMedicaAninhar
+              formData={consulta.FichaClinicaMedica}
+              setFormData={setConsulta}
+            />
+          )}
 
 
-          <div className={styles.continuarbotao}>
-            <button className={styles.voltarButton}>Cancelar</button>
-            <button type="button" className={styles.continuarButton} onClick={handleSubmit}>
-              Criar
-            </button>
+         <div className={styles.button_box}>
+            <CancelarWhiteButton />
+            <FinalizarFichaModal onConfirm={handleFinalizar} />
           </div>
         </form>
         
@@ -425,5 +497,6 @@ function CreateConsulta() {
     </>
   );
 }
+
 
 export default CreateConsulta;

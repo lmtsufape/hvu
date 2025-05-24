@@ -63,7 +63,7 @@ return (
 
       {/* QUEIXA PRINCIPAL ------------------------------------------------- */}
       
-        <div className={styles.column}>
+        <div className={styles.checkbox_container}>
           <div className="mb-3">
             <label className="form-label fw-medium">
               Queixa principal (evolução, tratamentos, resultados)
@@ -227,7 +227,7 @@ return (
 
         {/* Alimentação */}
       
-        <div className={styles.column}>
+        <div className={styles.titulo}>
           <label className="form-label fw-medium">Alimentação</label>
         </div>
           <div className={styles.checkbox_container}>

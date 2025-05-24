@@ -2,13 +2,11 @@
 
 .container {
   display: block;
-  width: 1192px;
   width: 100%;
+  max-width: 1200px; /* Limite máximo para evitar que estique demais */
   min-width: 300px;
   height: auto;
-  margin: auto;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin: 30px auto;
   font-family: "Poppins", sans-serif;
 }
 
@@ -20,45 +18,38 @@
   color: #333;
   margin-bottom: 56px;
 }
-.container h2{
-  max-width: 1118px;
-  width: 100%;
+
+.container h2 {
+  max-width: 100%;
   height: 44px;
   background-color: #EEF8F3;
   color: #000000;
   font-size: 20px;
-  padding: 9.5px;
-  padding-left: 16px;
+  padding: 9.5px 16px;
   margin-bottom: 18px;
   border-radius: 10px;
   font-weight: 500;
 }
 
-.titulo{
-  max-width: 1118px;
-  width: 100%;
+.titulo {
+  max-width: 100%;
   height: 44px;
   background-color: #EEF8F3;
   color: #000000;
   font-size: 20px;
-  padding: 9.5px;
-  padding-left: 16px;
+  padding: 9.5px 16px;
   margin-bottom: 18px;
   border-radius: 10px;
   font-weight: 500;
 }
 
-.dados_ocultos{
-  max-width: 1118px;
-  width: 100%;
+.dados_ocultos {
+  max-width: 100%;
   height: 44px;
   background-color: #32705380;
   font-size: 20px;
-  padding: 9.5px;
-  padding-left: 16px;
-  padding-right: 150px;
-  margin-bottom: 18px;
-  margin-top: 38px;
+  padding: 9.5px 16px;
+  margin: 38px 0 18px;
   border-radius: 10px;
   font-weight: 500;
   border: none;
@@ -66,36 +57,35 @@
   justify-content: space-between;
 }
 
-.dados_ocultos:hover{
+.dados_ocultos:hover {
   background-color: #32835d80;
 }
 
 .form_box {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   border-radius: 20px;
-  padding-bottom: 18px;
-  padding-left: 29px;
-  padding-right: 37px;
+  padding: 18px 29px 18px 29px; /* Ajuste de padding para consistência */
   background-color: #fff;
   box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
 }
 
 .checkbox_container {
   display: grid;
-  grid-template-columns: repeat(4, 240px);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajuste dinâmico */
   gap: 10px;
-  margin-top: 20px;
-  margin-bottom: 30px;
+  margin: 20px 0 30px;
 }
 
 .checkbox_container label {
   display: flex;
-  width: 260px;
   align-items: center;
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
+  padding: 5px;
+  width: 100%; /* Garante que ocupe o espaço disponível */
 }
 
 .checkbox_container input[type="checkbox"] {
@@ -115,8 +105,8 @@
 
 .column {
   flex: 1;
-  min-width: 250px;
-   margin: 10px;
+  min-width: 0; /* Evita que colunas estiquem demais */
+  margin: 10px 0;
 }
 
 .column label {
@@ -137,6 +127,7 @@
   border-radius: 5px;
   resize: none;
   margin-bottom: 18px;
+  box-sizing: border-box; /* Garante que padding não aumente a largura */
 }
 
 .column input:focus,
@@ -146,26 +137,25 @@
   box-shadow: 0 0 5px 2px #3d856371;
 }
 
-.column select[id="meia-caixa"]{
-  display: grid;
-  max-width: 526px; 
+.column select[id="meia-caixa"] {
+  max-width: 526px;
   width: 47%;
 }
 
 .button_box {
-  width: 100%; 
+  width: 100%;
   max-width: 1152px;
   height: 10vh;
   display: flex;
-  justify-content: right;
+  justify-content: flex-end;
   align-items: center;
   gap: 3vh;
 }
 
 .message {
   min-height: 300px;
-  margin-top: 56px; 
-  display: flex; 
+  margin-top: 56px;
+  display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Poppins', sans-serif;
@@ -195,10 +185,10 @@
   color: #7f7f7f;
   border: solid 1px #7f7f7f;
   border-radius: 5px;
-  padding-right: 10px;
+  padding: 0 10px;
 }
 
-.tabela_tratamento th[id="medicacao"]{
+.tabela_tratamento th[id="medicacao"] {
   max-width: 526px;
   width: 49%;
 }
@@ -210,11 +200,12 @@
   border-radius: 5px;
   height: 49px;
   margin-bottom: -5px;
+  box-sizing: border-box;
 }
 
 .bolha_container {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   gap: 7px;
   margin-right: 15px;
 }
@@ -224,7 +215,7 @@
   position: relative;
   width: 23px;
   height: 23px;
-  align-items: center;   
+  align-items: center;
   justify-content: center;
   background-color: #ccc;
   color: white;
@@ -239,42 +230,47 @@
 }
 
 .bolha_remover_linha {
-  right: 0px;  
+  right: 0px;
 }
 
 .bolha:hover {
   background-color: #a5a5a5;
 }
 
-.message {
-  min-height: 300px;
-  margin-top: 56px; 
-  display: flex; 
-  align-items: center;
-  justify-content: center;
-  font-family: 'Poppins', sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 30px;
-  letter-spacing: 0em;
-  text-align: center;
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  gap: 10px; /* Espaçamento entre itens */
 }
 
-@media(max-width: 980px) {
-
+@media (max-width: 980px) {
   .container {
     width: 100%;
+    padding: 0 15px; /* Adiciona padding lateral em telas menores */
+  }
+
+  .checkbox_container {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajuste para telas menores */
   }
 
   .tabela_tratamento input {
-    width: 110px;
+    width: 100px;
     padding: 4px;
     border: 1px solid #ccc;
     border-radius: 5px;
     height: 49px;
     margin-bottom: -5px;
   }
-}.row {
-  display: flex; /* Alinha os elementos lado a lado */
-  gap: 16px; /* Espaçamento entre os elementos */
+
+  .column select[id="meia-caixa"] {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .tabela_tratamento th[id="medicacao"] {
+    max-width: 100%;
+    width: 100%;
+  }
 }
