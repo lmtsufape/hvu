@@ -22,7 +22,6 @@ public class ConsultaResponse {
 	private AnimalResponse animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	private EspecialidadeResponse encaminhamento;
 	private List<FichaResponse> ficha;
 	private List<EstagiarioResponse> estagiario;
 
