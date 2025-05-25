@@ -34,4 +34,6 @@ public class Ficha {
     private String conteudo;
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
+    @ManyToOne
+    private Consulta consulta;
 }

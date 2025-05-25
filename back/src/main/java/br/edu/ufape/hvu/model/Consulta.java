@@ -1,6 +1,7 @@
 package br.edu.ufape.hvu.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ufape.hvu.model.enums.TipoFicha;
@@ -39,6 +40,6 @@ public  class Consulta  {
 	private Animal animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	@OneToMany
-	private List<Ficha> ficha;
+	@OneToMany(mappedBy = "consulta", cascade = CascadeType.ALL)
+	private List<Ficha> ficha = new ArrayList<>();
 }
