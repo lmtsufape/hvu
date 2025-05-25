@@ -3,10 +3,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useRouter } from "next/router";
 import styles from "./index.module.css";
 import VoltarButton from "../../VoltarButton";
+import { CancelarWhiteButton } from "../../WhiteButton";
 import { createFicha } from '../../../../services/fichaService';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
+import FinalizarFichaModal from "../FinalizarFichaModal";
 
 function FichaSolicitacaoCitologia() {
     const router = useRouter();
@@ -248,7 +250,7 @@ function FichaSolicitacaoCitologia() {
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
 
-                    <h1 className={styles.title}> Hematologia Diagnóstica</h1>
+                    <h2> Hematologia Diagnóstica</h2>
                     <div className={styles.anamnesecontainer}>
                         {["Hemograma Parcial + Proteínas Plasmáticas Totais", "Proteínas Plasmáticas Totais", "Hemograma Parcial", "Hematócrito/Volume Globular", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -271,7 +273,7 @@ function FichaSolicitacaoCitologia() {
                         />
                     )}
 
-                    <h1 className={styles.title}>Urinálise</h1>
+                    <h2>Urinálise</h2>
                     <div className={styles.anamnesecontainer}>
                         {["Urinálise Completo", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -294,7 +296,7 @@ function FichaSolicitacaoCitologia() {
                         )}
                     </div>
 
-                    <h1 className={styles.title}>parasitologico</h1>
+                    <h2>parasitologico</h2>
                     <div className={styles.anamnesecontainer}>
                         {["Coproparasitológico", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -318,7 +320,7 @@ function FichaSolicitacaoCitologia() {
                         />
                     )}
                      {/* Adicionado o campo de Bioquímica Clínica */}
-                     <h1 className={styles.title}>Bioquímica Clínica</h1>
+                     <h2>Bioquímica Clínica</h2>
                     <div className={styles.anamnesecontainer}>
                         {["Creatinina (CREA)", "Ureia (UR)", "ALT/TGP", "AST/TGO", "Fosfatase alcalina (FA)", "Gama - Glutamiltransferase (GGT)", "Bilirrubina total e frações (BT + BD + BI)", "Proteínas totais (PT)", "Albumina (ALB)", "Globulinas (GLOB)", "Triglicerides (TG)", "Colesterol Total (COL)", "Colesteróis HDL e LDL", "Glicose (GLI)", "Creatina quinase (CK/CPK)", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -341,7 +343,7 @@ function FichaSolicitacaoCitologia() {
                             onChange={(e) => setOtherValueBioquimica(e.target.value)}
                         />
                     )}
-                    <h1 className={styles.title}>Citologia/Histopatologia</h1>
+                    <h2>Citologia/Histopatologia</h2>
                     <div className={styles.anamnesecontainer}>
                         {["Citologia cutânea", "Raspado cutâneo", "Citologia oncológica", "Histopatológico", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -363,7 +365,7 @@ function FichaSolicitacaoCitologia() {
                             onChange={(e) => setOtherValueCitologia(e.target.value)}
                         />
                     )}
-                     <h1 className={styles.title}>Imunológicos</h1>
+                     <h2>Imunológicos</h2>
                     <div className={styles.anamnesecontainer}>
                         {["Teste rápido Cinomose", "Teste rápido Erliquiose", "Teste rápido Leishmaniose", "FIV/FELV", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -385,7 +387,7 @@ function FichaSolicitacaoCitologia() {
                             onChange={(e) => setOtherValueImunologicos(e.target.value)}
                         />
                     )}
-                    <h1 className={styles.title}>Imaginologia</h1>
+                    <h2>Imaginologia</h2>
                     <div className={styles.anamnesecontainer}>
                         {["Ultrassonografia", "Radiografia", "Mielografia", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -407,7 +409,7 @@ function FichaSolicitacaoCitologia() {
                             onChange={(e) => setOtherValueImaginologia(e.target.value)}
                         />
                     )}
-                     <h1 className={styles.title}>Cardiologia</h1>
+                     <h2>Cardiologia</h2>
                     <div className={styles.anamnesecontainer}>
                         {["Eletrocardiograma", "Ecocardiograma", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -431,7 +433,10 @@ function FichaSolicitacaoCitologia() {
                     )}
 
 
-                    <button type="submit" className={styles.submitButton}>Continuar</button>
+                    <div className={styles.button_box}>
+                        < CancelarWhiteButton />
+                        < FinalizarFichaModal onConfirm={handleSubmit} />
+                    </div>
                 </form>
 
                 {<Alert message="Ficha criada com sucesso!" show={showAlert} url={'/fichaSolicitacaoDeExame'} />}

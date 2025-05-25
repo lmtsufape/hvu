@@ -54,6 +54,7 @@ function OrtopedicaSteps() {
     faseElevacao: "",
     anguloArticulacoes: "",
     segundaObservacao: "",
+    marcha: "",
 
     // página 3
     digitosMetacarpos: {
@@ -196,6 +197,7 @@ function OrtopedicaSteps() {
     diagnostico: "",
     tratamento: "",
     plantonistas: "",
+    medicosResponsaveis:"",
   });
 
   useEffect(() => {
@@ -357,6 +359,7 @@ function OrtopedicaSteps() {
             faseElevacao: formData.faseElevacao,
             anguloArticulacoes: formData.anguloArticulacoes,
             segundaObservacao: formData.segundaObservacao,
+            marcha: formData.marcha,
 
             achadosImagem: formData.achadosImagem,
             outrosExames: formData.outrosExames,
@@ -381,7 +384,8 @@ function OrtopedicaSteps() {
             articulacaoCoxal: formData.articulacaoCoxal,
             articulacaoSacroiliaca: formData.articulacaoSacroiliaca,
             pelve: formData.pelve,
-            cabecaEsqueletoAxial: formData.cabecaEsqueletoAxial
+            cabecaEsqueletoAxial: formData.cabecaEsqueletoAxial,
+            medicosResponsaveis: formData.medicosResponsaveis,
         },
         dataHora: dataFormatada 
     };

@@ -2,8 +2,8 @@
 
 .container {
   display: block;
-  width: 100%;
-  max-width: 65rem;
+  max-width: 1192px;
+  width: 80%;
   min-width: 300px;
   height: auto;
   margin: auto;
@@ -18,78 +18,90 @@
   text-align: center;
   margin-top: 50px;
   color: #333;
+  margin-bottom: 56px;
 }
 
-.container h2 {
-  font-size: 17px;
-  font-weight: 700;
+.container p,
+.container h3,
+.container ol {
+  font-size: 16px;
+  font-weight: 600;
+}
 
-  color: #333;
-  text-align: center;
+.container h3{
+  margin-bottom: 1em;
+}
+
+.container li{
+  margin-bottom: 1em;
+}
+
+.dados_ocultos{
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #32705380;
+  font-size: 20px;
+  padding: 9.5px;
+  padding-left: 16px;
+  padding-right: 150px;
+  margin-bottom: 70px;
+  margin-top: 58px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dados_ocultos:hover{
+  background-color: #32835d80;
 }
 
 .form_box {
+  display: grid;
   border-radius: 20px;
-  border: 0.5px solid #b1b1b1;
-  padding: 20px;
+  padding-bottom: 18px;
+  padding-left: 29px;
+  padding-right: 37px;
   background-color: #fff;
-}
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-
-.column {
-  flex: 1;
-  min-width: 250px;
-  margin: 10px;
-}
-
-.column label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.column input,
-.column select,
-.column textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.criar_button {
-  width: 180px;
-  height: 48px;
-  border-radius: 10px;
-  border: 1px solid #39805F;
-  color: #FFF5F6;
-  background-color: #39805F;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: 0em;
-}
-
-.criar_button:hover {
-  background-color: #39805fe6;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
 }
 
 .button_box {
-  width: 100%; /* Alterado para usar uma porcentagem */
+  width: 100%; 
   max-width: 1152px;
   height: 10vh;
   display: flex;
   justify-content: right;
   align-items: center;
   gap: 3vh;
+  margin-top: 20px;
+}
+
+.button_submit{
+  display: flex;
+  gap: 3vh;
+  margin-top: 50px;
+}
+
+.pdfButton {
+  display: flex; 
+  width: 118px;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px;
+  font-size: 18px;
+  color: white;
+  background-color: #327053;
+  font-family: 'Poppins', sans-serif;
+  align-items: center;       
+  justify-content: center; 
+  cursor: pointer;
+}
+
+.pdfButton:hover {
+    background-color: #5b977b;
 }
 
 .message {
@@ -105,56 +117,27 @@
   letter-spacing: 0em;
   text-align: center;
 }
+  
+@media(max-width: 980px) {
+  .form_box {
+    display: block;
+    border-radius: 20px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding: 20px;
+    background-color: #fff;
+  }
 
-.error_message {
-  margin-top: -0.2em;
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 24px;
-  color: #C7122F;
+  .dados_ocultos{
+    padding-right: 30px;
+    height: auto;
+  }
+
+  .container p,
+  .container h3,
+  .container ol {
+    font-size: 14px;
+    font-weight: 500;
+  }
 }
-
-.button_box {
-    display: flex;
-    gap: 1rem;
-    margin-top: 20px;
-  }
-  
-  .submeter_button {
-    background-color: #f2f2f2;
-    color: #333;
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  
-  .submeter_button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  
-  
-  .criar_button:disabled {
-    background-color: #ccccccea;
-    cursor: not-allowed;
-  }
-
-  .pdfButton {
-    background-color: #f0f0f0;
-    color: #333;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 12px; /* bordas mais arredondadas */
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease; /* transição suave */
-    margin-top: 1rem;
-  }
-  
-  .pdfButton:hover {
-    background-color: #d1e7dd; /* cor suave ao passar o mouse */
-  }
-  

@@ -124,7 +124,19 @@
     .modal {
         width: 70vw;
         margin-left: 1em;
-        transform: translate(-70%, -110%);
+        transform: translate(-50%, -110%);
+    }
+
+    .green_buttonFichas {
+        width: 100%;
+        font-size: 14px;
+        line-height: 1em;
+        height: 3.55em;
+        
+    }
+
+    .conteiner {
+        width: 50%;
     }
 
     .box1 {

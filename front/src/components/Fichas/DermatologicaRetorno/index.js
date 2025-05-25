@@ -9,6 +9,7 @@ import FinalizarFichaModal from "../FinalizarFichaModal";
 import moment from 'moment';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
+import SolicitacaoDeExameAninhar from "../SolicitacaoDeExameAninhar";
 
 function FichaDermatologicaRetorno() {
 
@@ -20,6 +21,7 @@ function FichaDermatologicaRetorno() {
     const [loading, setLoading] = useState(true);
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [mostrarExames, setMostrarExames] = useState(false);
 
     const [formData, setFormData] = useState({
         Anamnese: "",
@@ -28,6 +30,18 @@ function FichaDermatologicaRetorno() {
         locaisAfetados: "",
         condutaTerapeutica: "",
         estagiarios: "",
+        peso: "",
+        medicoResponsavel: "",
+        SolicitacaoDeExame: {
+            hematologiaDiagnostica: [],
+            urinalise: [],
+            parasitologico: [],
+            bioquimicaClinica: [],
+            citologiaHistopatologia: [],
+            imunologicos: [],
+            imaginologia: [],
+            cardiologia: [],
+        },
     });
 
     useEffect(() => {
@@ -74,6 +88,7 @@ function FichaDermatologicaRetorno() {
     }
 
     const handleSubmit = async (event) => {
+        event?.preventDefault(); // Usa encadeamento opcional para evitar erro
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
         const fichaData = {
             nome: "Ficha dermatológica de retorno",  
@@ -84,9 +99,13 @@ function FichaDermatologicaRetorno() {
                 locaisAfetados: formData.locaisAfetados,
                 condutaTerapeutica: formData.condutaTerapeutica,
                 estagiarios: formData.estagiarios,
+                peso: formData.peso,
+                medicoResponsavel: formData.medicoResponsavel,
+                SolicitacaoDeExame: formData.SolicitacaoDeExame,
             },
             dataHora: dataFormatada 
         };
+    
 
         try {
             console.log(fichaData)
@@ -100,60 +119,133 @@ function FichaDermatologicaRetorno() {
             setShowErrorAlert(true);
         }
     };
+    const handleFinalizar = async () => {
+        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+        const fichaData = {
+          nome: "Ficha clínico médica de retorno",
+          conteudo: {
+            anamnese: formData.Anamnese,
+            tratamento: formData.tratamentos,
+            resultados: formData.resultados,
+            locaisAfetados: formData.locaisAfetados,
+            condutaTerapeutica: formData.condutaTerapeutica,
+            estagiarios: formData.estagiarios,
+            peso: formData.peso,
+            medicoResponsavel: formData.medicoResponsavel,
+            SolicitacaoDeExame: formData.SolicitacaoDeExame,
+          },
+          dataHora: dataFormatada,
+        };
+        try {
+            console.log(fichaData);
+            await createFicha(fichaData);
+            setShowAlert(true);
+        } catch (error) {
+            console.error("Erro ao criar ficha:", error);
+            if (error.response && error.response.data && error.response.data.code) {
+            setErrorMessage(error.response.data.message);
+            } else {
+            setErrorMessage("Erro ao criar ficha");
+            }
+            setShowErrorAlert(true);
+        }
+    };
+
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-    
+    const toggleMostrarExames = () => {
+        setMostrarExames((prev) => !prev);
+    };
+
     return(
         <div className={styles.container}>
             <VoltarButton />
             <h1>Ficha clínica dermatológica de retorno </h1>
             <div className={styles.form_box}>
-                <form>
-                    <div className={styles.column}>
-                        <label>Anamnese/Histórico clínico: <br></br>
-                            <textarea name="Anamnese" value={formData.Anamnese} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                <form onSubmit={handleSubmit}>
+                    <button className={styles.dados_ocultos} type="button">
+                        Identificação do animal
+                        <span>+</span>
+                    </button>
+                    <div className={styles.titulo}>
+                        Anamnese
                     </div>
                     <div className={styles.column}>
-                        <label>Tratamentos realizados (Início/Término/Resposta terapêutica): <br></br>
-                            <textarea name="tratamentos" value={formData.tratamentos} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
-                    </div>
-                    <div className={styles.column}>
-                        <label>Resultados dos exames realizados: <br></br>
-                            <textarea name="resultados" value={formData.resultados} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                        <label>Peso: </label>
+                        <textarea name="peso" value={formData.peso} 
+                        onChange={handleChange} 
+                        style={{ 
+                            width: "100px" 
+                        }} />
+                        
                     </div>
 
-                    <h1 className={styles.title}>Exame físico dermatológico/Descrição lesional</h1>
                     <div className={styles.column}>
-                        <label>Locais afetados: <br></br>
-                            <textarea name="locaisAfetados" value={formData.locaisAfetados} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                        <label>Anamnese/Histórico clínico </label>
+                        <textarea name="Anamnese" value={formData.Anamnese} 
+                        onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>
-                        <label>Conduta terapêutica: <br></br>
-                            <textarea name="condutaTerapeutica" value={formData.condutaTerapeutica} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                        <label>Tratamentos realizados (Início/Término/Resposta terapêutica) </label>
+                        <textarea name="tratamentos" value={formData.tratamentos} 
+                        onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>
-                        <label>Estagiários: <br></br>
-                            <textarea name="estagiarios" value={formData.estagiarios} 
-                            onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                        <label>Resultados dos exames realizados </label>
+                        <textarea name="resultados" value={formData.resultados} 
+                        onChange={handleChange} rows="4" cols="50" />
+                    </div>
+
+                    <div className={styles.titulo}>
+                        Exame físico dermatológico/Descrição lesional
+                    </div>
+
+                    <div className={styles.column}>
+                        <label>Locais afetados </label>
+                        <textarea name="locaisAfetados" value={formData.locaisAfetados} 
+                        onChange={handleChange} rows="4" cols="50" />
+                    </div>
+                    <div className={styles.column}>
+                        <label>Conduta terapêutica </label>
+                        <textarea name="condutaTerapeutica" value={formData.condutaTerapeutica} 
+                        onChange={handleChange} rows="4" cols="50" />
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={toggleMostrarExames}
+                        className={`${styles.toggleButton} ${
+                            mostrarExames ? styles.minimize : styles.expand
+                        }`}
+                        >
+                        {mostrarExames ? "Ocultar Exames" : "Solicitar Exame"}
+                    </button>
+                    {mostrarExames && (
+                    <SolicitacaoDeExameAninhar
+                        formData={formData.SolicitacaoDeExame}
+                        setFormData={setFormData}
+                    />
+                    )}
+
+                    
+                    <div className={styles.column}>
+                        <label>Médico(s) Veterinário(s) Responsável: </label>
+                        <textarea name="medicoResponsavel" value={formData.medicoResponsavel} 
+                        onChange={handleChange} />
+                        
+                    </div>
+                    <div className={styles.column}>
+                        <label>Plantonista(s) discente(s): </label>
+                        <textarea name="estagiarios" value={formData.estagiarios} 
+                        onChange={handleChange} />
                     </div>
 
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
-                        < FinalizarFichaModal onConfirm={handleSubmit} />
+                        < FinalizarFichaModal onConfirm={handleFinalizar} />
                     </div>
                 </form>
                 {<Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaDermatologicaRetorno`} />}

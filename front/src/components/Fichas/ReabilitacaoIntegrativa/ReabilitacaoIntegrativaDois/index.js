@@ -24,7 +24,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                         <input type="text" name="numeroProntuario" value={formData.numeroProntuario} onChange={handleChange} />
                     </div>
                     
-                    <h1>Sistema Digestório</h1>
+                    <h2>Sistema Digestório</h2>
                     <div className={styles.column}>
                         <label>Alimentação: </label>
                         <input type="text" name="sistemaDigestorio.alimentacao" value={formData.sistemaDigestorio.alimentacao} onChange={handleChange} />
@@ -54,7 +54,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                         <input type="text" name="sistemaDigestorio.ConsumoDeAgua" value={formData.sistemaDigestorio.ConsumoDeAgua} onChange={handleChange} />
                     </div>
 
-                    <h1>Sistema  Cardiorespiratório</h1>
+                    <h2>Sistema  Cardiorespiratório</h2>
                     <div className={styles.column}>
                         <label>Respiração: </label>
                         <input type="text" name="sistemaCardiorespiratorio.respiracao" value={formData.sistemaCardiorespiratorio.respiracao} onChange={handleChange} />
@@ -80,7 +80,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                         <input type="text" name="sistemaCardiorespiratorio.aumentoDeVolume" value={formData.sistemaCardiorespiratorio.aumentoDeVolume} onChange={handleChange} />
                     </div>
 
-                    <h1>Sistema Geniturinário</h1>
+                    <h2>Sistema Geniturinário</h2>
                     <div className={styles.column}>
                         <label>Micção (dor/odor/ coloração): </label>
                         <input type="text" name="sistemaGeniturinario.miccao" value={formData.sistemaGeniturinario.miccao} onChange={handleChange} />
@@ -98,7 +98,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                         <input type="text" name="sistemaGeniturinario.tipo2" value={formData.sistemaGeniturinario.tipo2} onChange={handleChange} />
                     </div>
 
-                    <h1>Sistema Nervoso</h1> 
+                    <h2>Sistema Nervoso</h2> 
                     <div className={styles.column}>
                         <label>Convulsões/ desequilíbrios: </label>
                         <input type="text" name="sistemaNervoso.convulsoesDesequilibrios" value={formData.sistemaNervoso.convulsoesDesequilibrios} onChange={handleChange} />
@@ -120,7 +120,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                         <input type="text" name="sistemaNervoso.sinaisNeurologicos" value={formData.sistemaNervoso.sinaisNeurologicos} onChange={handleChange} />
                     </div>
 
-                    <h1>Sistema Osteoarticular/ Locomotor</h1>
+                    <h2>Sistema Osteoarticular/ Locomotor</h2>
                     <div className={styles.column}>
                         <label>Postura/ marcha: </label>
                         <input type="text" name="sistemaOsteoarticularLocomotor.posturaMarcha" value={formData.sistemaOsteoarticularLocomotor.posturaMarcha} onChange={handleChange} />
@@ -138,7 +138,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                         <input type="text" name="sistemaOsteoarticularLocomotor.tipo4" value={formData.sistemaOsteoarticularLocomotor.tipo4} onChange={handleChange} />
                     </div>
 
-                    <h1>Sistema Tegumentar e Anexos</h1>
+                    <h2>Sistema Tegumentar e Anexos</h2>
                     <div className={styles.column}>
                         <label>Pruridos/ lambedura - alergias: </label>
                         <input type="text" name="sistemaTegumentarAnexos.tipo5" value={formData.sistemaTegumentarAnexos.tipo5} onChange={handleChange} />
@@ -164,7 +164,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                         <input type="text" name="sistemaTegumentarAnexos.unhas" value={formData.sistemaTegumentarAnexos.unhas} onChange={handleChange} />
                     </div>
 
-                    <h1>Sistema Visual</h1> 
+                    <h2>Sistema Visual</h2> 
                     <div className={styles.column}>
                         <label>Opacificação de cristalino: </label>
                         <input type="text" name="sistemaVisual.opacificacaoDeCristalino" value={formData.sistemaVisual.opacificacaoDeCristalino} onChange={handleChange} />
@@ -178,7 +178,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                         <input type="text" name="sistemaVisual.secrecao2" value={formData.sistemaVisual.secrecao2} onChange={handleChange} />
                     </div>
 
-                    <h1>Manejos gerais</h1>
+                    <h2>Manejos gerais</h2>
                     <div className={styles.column}>
                         <label>Vacinação: </label>
                         <input type="text" name="manejosGerais.vacinacao" value={formData.manejosGerais.vacinacao} onChange={handleChange} />
