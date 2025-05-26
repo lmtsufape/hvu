@@ -52,7 +52,7 @@ export default function ClinicaMedicaRetornoStep1({
     return (
     <div className={styles.container}>
       <VoltarButton />
-      <h1>Ficha clínica médica de retorno</h1>
+      <h1>Ficha clínico médica de retorno</h1>
       <div className={styles.form_box}>
         <form onSubmit={handleSubmit}>
           <h2>Anamnese</h2>

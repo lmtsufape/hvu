@@ -8,7 +8,7 @@ import ErrorAlert from "../../ErrorAlert";
 import moment from "moment";
 import { createFicha } from "../../../../services/fichaService";
 import ClinicaMedicaRetornoStep1 from "./AnamneseRetorno";
-import ClinicaMedicaRetornoStep2 from "./ExameFisicoSitemaRetorno"
+import ClinicaMedicaRetornoStep2 from "./ExameFisicoSistemaRetorno"
 
 function FichaMedicaRetorno() {
   const router = useRouter();
@@ -110,36 +110,8 @@ function FichaMedicaRetorno() {
       /* ------------- passo 2 ------------- */
       fisicogeral: {},
       diagnostico: {},
-      medicacoes: [{ medicacao: "", dose: "", frequencia: "", periodo: "" }],
-
       plantonistas:"",
       medicosResponsaveis:"",
-
-    //página 2
-    sistemaRespiratorio: "",
-    sistemaDigestorio: "",
-    sistemaCardiovascular: "",
-    sistemaNefrourinario: "",
-    peleAnexos: "",
-    ouvidos: "",
-    sistemaNeurologico: "",
-    sistemaLocomotor: "",
-    sistemaReprodutor: "",
-    olhos: "",
-    Ouvidos: "",
-    ExamesComplementares: [],
-    plantonista: "",
-    MedicoResponsavel: "",
-    SolicitacaoDeExame: {
-      hematologiaDiagnostica: [],
-      urinalise: [],
-      parasitologico: [],
-      bioquimicaClinica: [],
-      citologiaHistopatologia: [],
-      imunologicos: [],
-      imaginologia: [],
-      cardiologia: [],
-    },
   });
 
   useEffect(() => {
@@ -195,14 +167,7 @@ function FichaMedicaRetorno() {
     const fichaData = {
       nome: "Ficha clínico médica de retorno",
       conteudo: {
-        peso: formData.peso,
-        anamneseHistoricoClinico: formData.anamneseHistoricoClinico,
-        exameClinico: formData.exameClinico,
-        condutaTerapeutica: formData.condutaTerapeutica,
-        ExamesComplementares: formData.ExamesComplementares,
-        plantonista: formData.plantonista,
-        MedicoResponsavel: formData.MedicoResponsavel,
-        SolicitacaoDeExame: formData.SolicitacaoDeExame,
+        ...formData
       },
       dataHora: dataFormatada,
     };
