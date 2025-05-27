@@ -735,12 +735,14 @@ public class Facade {
         agendamentoVaga.setStatus("Finalizado");
 
         if (newInstance.getFicha() != null) {
-            List<Ficha> fichasOriginais = new ArrayList<>(newInstance.getFicha());
-            for (Ficha f : fichasOriginais) {
+            List<Ficha> fichas = new ArrayList<>();
+
+            for (Ficha f : newInstance.getFicha()) {
                 Ficha fichaBuscada = fichaServiceInterface.findFichaById(f.getId());
-                fichaBuscada.setConsulta(consulta);
-                consulta.getFicha().add(fichaBuscada);
+                fichas.add(fichaBuscada);
             }
+
+            consulta.setFicha(fichas);
         }
 
         vagaDaConsulta.setAgendamento(agendamentoVaga);

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.ufape.hvu.model.enums.TipoFicha;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -40,6 +39,6 @@ public  class Consulta  {
 	private Animal animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	@OneToMany(mappedBy = "consulta", cascade = CascadeType.ALL)
+	@OneToMany
 	private List<Ficha> ficha = new ArrayList<>();
 }
