@@ -58,15 +58,15 @@ function OrtopedicaSteps() {
 
     // página 3
     digitosMetacarpos: {
-      flexao: { Direito: "", Esquerdo: "" },
-      extensao: { Direito: "", Esquerdo: "" }
+      flexaoMetacarpos: { Direito: "", Esquerdo: "" },
+      extensaoMetacarpos: { Direito: "", Esquerdo: "" }
     },
     carpo: {
       hiperextensao: { Direito: "", Esquerdo: "" },
-      flexao: { Direito: "", Esquerdo: "" },
-      extensao: { Direito: "", Esquerdo: "" },
+      flexaoCarpo: { Direito: "", Esquerdo: "" },
+      extensaoCarpo: { Direito: "", Esquerdo: "" },
       instabilidadeMedial: { Direito: "", Esquerdo: "" },
-      rotacao: { Direito: "", Esquerdo: "" }
+      rotacaoCarpo: { Direito: "", Esquerdo: "" }
     },
     radioUlna: {
       olecrano: { Direito: "", Esquerdo: "" },
@@ -92,12 +92,12 @@ function OrtopedicaSteps() {
       outros: { Direito: "", Esquerdo: "" }
     },
     umero: {
-      lado: { Direito: "", Esquerdo: "" }
+      ladoUmero: { Direito: "", Esquerdo: "" }
     },
     ombro: {
-      flexao: { Direito: "", Esquerdo: "" },
-      extensao: { Direito: "", Esquerdo: "" },
-      rotacao: { Direito: "", Esquerdo: "" },
+      flexaoOmbro: { Direito: "", Esquerdo: "" },
+      extensaoOmbro: { Direito: "", Esquerdo: "" },
+      rotacaoOmbro: { Direito: "", Esquerdo: "" },
       aducaoAbducao: { Direito: "", Esquerdo: "" },
       palpacaoGlenoideCaudal: { Direito: "", Esquerdo: "" },
       compressaoUmeral: { Direito: "", Esquerdo: "" },
@@ -107,7 +107,7 @@ function OrtopedicaSteps() {
       relAcromioTuberculoMaior: { Direito: "", Esquerdo: "" }
     },
     axilarSubescapular: {
-      lado: { Direito: "", Esquerdo: "" },
+      ladoSubescapular: { Direito: "", Esquerdo: "" },
     },
     escapula: {
       corpoEspinha: { Direito: "", Esquerdo: "" },
@@ -116,8 +116,8 @@ function OrtopedicaSteps() {
       luxacaoDorsal: { Direito: "", Esquerdo: "" },
     },
     articulacaoCubital: {
-      flexao: { Direito: "", Esquerdo: "" },
-      extensao: { Direito: "", Esquerdo: "" },
+      flexaoCubital: { Direito: "", Esquerdo: "" },
+      extensaoCubital: { Direito: "", Esquerdo: "" },
       instabilidadeMedialLateral: { Direito: "", Esquerdo: "" },
       processoAnconeo: { Direito: "", Esquerdo: "" },
       processoCoronoide: { Direito: "", Esquerdo: "" },
@@ -126,15 +126,15 @@ function OrtopedicaSteps() {
       epicondiloMedial: { Direito: "", Esquerdo: "" },
     },
     digitosMetatarsos: {
-      flexao: { Direito: "", Esquerdo: "" },
-      extensao: { Direito: "", Esquerdo: "" },
+      flexaoMetatarsos: { Direito: "", Esquerdo: "" },
+      extensaoMetatarsos: { Direito: "", Esquerdo: "" },
     },
     tarso: {
       calcaneoTendao: { Direito: "", Esquerdo: "" },
-      flexao: { Direito: "", Esquerdo: "" },
-      extensao: { Direito: "", Esquerdo: "" },
-      instabilidadeMedialLateral: { Direito: "", Esquerdo: "" },
-      rotacao: { Direito: "", Esquerdo: "" },
+      flexaoTarso: { Direito: "", Esquerdo: "" },
+      extensaoTarso: { Direito: "", Esquerdo: "" },
+      instabilidadeMedialLateralTarso: { Direito: "", Esquerdo: "" },
+      rotacaoTarso: { Direito: "", Esquerdo: "" },
     },
     tibiaFibula: {
       cristaTibia: { Direito: "", Esquerdo: "" },
@@ -143,8 +143,8 @@ function OrtopedicaSteps() {
       ligamentoElevacaoPatelar: { Direito: "", Esquerdo: "" },
       luxacaoPatelarMedialLateral: { Direito: "", Esquerdo: "" },
       sentar: { Direito: "", Esquerdo: "" },
-      flexao: { Direito: "", Esquerdo: "" },
-      extensao: { Direito: "", Esquerdo: "" },
+      flexaoArticulacaoJoelho: { Direito: "", Esquerdo: "" },
+      extensaoArticulacaoJoelho: { Direito: "", Esquerdo: "" },
       posicaoRotacaoCristaTibial: { Direito: "", Esquerdo: "" },
       instabilidadeCraniomedial: { Direito: "", Esquerdo: "" },
       gavetaCranial: { Direito: "", Esquerdo: "" },
@@ -158,7 +158,7 @@ function OrtopedicaSteps() {
       coximAdiposo: { Direito: "", Esquerdo: "" },
     },
     femur: {
-      lado: { Direito: "", Esquerdo: "" },
+      ladoFemur: { Direito: "", Esquerdo: "" },
     },
     articulacaoCoxal: {
       conformacaoBase: { Direito: "", Esquerdo: "" },
@@ -176,7 +176,7 @@ function OrtopedicaSteps() {
       compressaoTrocanterica: { Direito: "", Esquerdo: "" },
     },
     articulacaoSacroiliaca: {
-      lado: { Direito: "", Esquerdo: "" },
+      ladoSacroiliaca: { Direito: "", Esquerdo: "" },
     },
     pelve: {
       cristaIliaca: { Direito: "", Esquerdo: "" },
