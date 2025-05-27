@@ -15,12 +15,14 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
         <div className={styles.form_box}>
             <form onSubmit={handleSubmit}>
                 <h2>Palpação Membro Torácico</h2> 
+                <div className={styles.two_columns}>
+                  <div>
                 <GrupoExame
                     titulo="digitosMetacarpos"
                     label="Dígitos/Metacarpos"
                     itens={[
-                      {key:"flexao", label:"Flexão"},
-                      {key:"extensao", label:"Extensão"}
+                      {key:"flexaoMetacarpos", label:"Flexão"},
+                      {key:"extensaoMetacarpos", label:"Extensão"}
                     ]}
                     formData={formData}
                     setFormData={setFormData}
@@ -35,10 +37,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     label="Carpo"
                     itens={[
                       { key: "hiperextensao", label: "Hiperextensão" },
-                      { key: "flexao", label: "Flexão" },
-                      { key: "extensao", label: "Extensão" },
+                      { key: "flexaoCarpo", label: "Flexão" },
+                      { key: "extensaoCarpo", label: "Extensão" },
                       { key: "instabilidadeMedial", label: "Instabilidade medial/lateral" },
-                      { key: "rotacao", label: "Rotação" }
+                      { key: "rotacaoCarpo", label: "Rotação" }
                     ]}
                     formData={formData}
                     setFormData={setFormData}
@@ -95,9 +97,9 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                 />
                 <GrupoExame
                     titulo="umero"
-                    label="Úmero *implementar*"
+                    label="Úmero"
                     itens={[
-                      { key:"lado", label:"Lado" }
+                      { key:"ladoUmero", label:"Lado" }
                     ]}
                     formData={formData}
                     setFormData={setFormData}
@@ -107,13 +109,15 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     toggleItem={toggleItem}
                     toggleLadoVisivel={toggleLadoVisivel}
                 />
+                </div>
+                <div>
                 <GrupoExame
                     titulo="ombro"
                     label="Ombro"
                     itens={[
-                      { key: "flexao", label: "Flexão" },
-                      { key: "extensao", label: "Extensão" },
-                      { key: "rotacao", label: "Rotação" },
+                      { key: "flexaoOmbro", label: "Flexão" },
+                      { key: "extensaoOmbro", label: "Extensão" },
+                      { key: "rotacaoOmbro", label: "Rotação" },
                       { key: "aducaoAbducao", label: "Adução/Abdução" },
                       { key: "palpacaoGlenoideCaudal", label: "Palpação Glenóidea caudal" },
                       { key: "compressaoUmeral", label: "Compressão umeral (abdução, adução, rotação)" },
@@ -132,9 +136,9 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                 />
                 <GrupoExame
                     titulo="axilarSubescapular"
-                    label="Área axilar/subescapular *implementar*"
+                    label="Área axilar/subescapular"
                     itens={[
-                      { key: "lado", label: "Lado" },
+                      { key: "ladoSubescapular", label: "Lado" },
                     ]}
                     formData={formData}
                     setFormData={setFormData}
@@ -165,8 +169,8 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     titulo="articulacaoCubital"
                     label="Articulação Cubital"
                     itens={[
-                      { key: "flexao", label: "Flexão" },
-                      { key: "extensao", label: "Extensão" },
+                      { key: "flexaoCubital", label: "Flexão" },
+                      { key: "extensaoCubital", label: "Extensão" },
                       { key: "instabilidadeMedialLateral", label: "Instabilidade medial/lateral" },
                       { key: "processoAnconeo", label: "Processo ânconeo" },
                       { key: "processoCoronoide", label: "Processo coronóide" },
@@ -182,6 +186,8 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     toggleItem={toggleItem}
                     toggleLadoVisivel={toggleLadoVisivel}
                 />
+                </div>
+                </div>
                 <div className={styles.column}>
                     <label>Achados exames de imagem:
                         <textarea type="text" name="achadosImagem" 
@@ -203,8 +209,8 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     titulo="digitosMetatarsos"
                     label="Dígitos / Metatarsos"
                     itens={[
-                      { key: "flexao", label: "Flexão" },
-                      { key: "extensao", label: "Extensão" }
+                      { key: "flexaoMetatarsos", label: "Flexão" },
+                      { key: "extensaoMetatarsos", label: "Extensão" }
                     ]}
                     formData={formData}
                     setFormData={setFormData}
@@ -219,10 +225,10 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                     label="Tarso"
                     itens={[
                       { key: "calcaneoTendao", label: "Calcâneo / Tendão" },
-                      { key: "flexao", label: "Flexão" },
-                      { key: "extensao", label: "Extensão" },
-                      { key: "instabilidadeMedialLateral", label: "Instabilidade medial/lateral" },
-                      { key: "rotacao", label: "Rotação" }
+                      { key: "flexaoTarso", label: "Flexão" },
+                      { key: "extensaoTarso", label: "Extensão" },
+                      { key: "instabilidadeMedialLateralTarso", label: "Instabilidade medial/lateral" },
+                      { key: "rotacaoTarso", label: "Rotação" }
                     ]}
                     formData={formData}
                     setFormData={setFormData}
@@ -253,8 +259,8 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                       { key: "ligamentoElevacaoPatelar", label: "Ligamento/elevação patelar" },
                       { key: "luxacaoPatelarMedialLateral", label: "Luxação patelar M ou L" },
                       { key: "sentar", label: "Sentar" },
-                      { key: "flexao", label: "Flexão" },
-                      { key: "extensao", label: "Extensão" },
+                      { key: "flexaoArticulacaoJoelho", label: "Flexão" },
+                      { key: "extensaoArticulacaoJoelho", label: "Extensão" },
                       { key: "posicaoRotacaoCristaTibial", label: "Posição/Rotação M Crista Tibial" },
                       { key: "instabilidadeCraniomedial", label: "Instabilidade Craniomedial" },
                       { key: "gavetaCranial", label: "Gaveta Cranial (normal/extensão/flexão)" },
@@ -277,9 +283,9 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                 />
                 <GrupoExame
                   titulo="femur"
-                  label="Fêmur *implementar*"
+                  label="Fêmur"
                   itens={[
-                    { key: "lado", label: "Lado" }
+                    { key: "ladoFemur", label: "Lado" }
                   ]}
                   formData={formData}
                   setFormData={setFormData}
@@ -317,9 +323,9 @@ function AtendimentoOrtopedico({formData, handleChange, handleRadioAninhado, han
                 />
                 <GrupoExame
                     titulo="articulacaoSacroiliaca"
-                    label="Articulação Sacroilíaca *implementar*"
+                    label="Articulação Sacroilíaca"
                     itens={[
-                      { key: "lado", label: "Lado" }
+                      { key: "ladoSacroiliaca", label: "Lado" }
                     ]}
                     formData={formData}
                     setFormData={setFormData}
@@ -418,62 +424,63 @@ function GrupoExame({ titulo, label, itens, formData, selecionados,
   };
 
   return (
-    <div style={{ marginBottom: 20, border: "1px solid #ccc", padding: 10, borderRadius: 5 }}>
-      <div
-        onClick={() => setAberto((o) => !o)}
-        style={{ cursor: "pointer", userSelect: "none" }}
-      >
-        {aberto ? "▼ " : "▶ "} {label}
-      </div>
+<div className={styles.accordionContainer}>
+  <div
+    onClick={() => setAberto((o) => !o)}
+    className={styles.accordionHeader}
+  >
+    {aberto ? "-" : "+"} {label}
+  </div>
 
-      {aberto && (
-        <div style={{ marginTop: 10 }}>
-          {itens.map(({ key, label }) => (
-            <div key={key} style={{ marginBottom: 10 }}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={selecionados.includes(key)}
-                  onChange={() => handleToggleItem(key)}
-                />
-                {label}
-              </label>
+  {aberto && (
+    <div className={styles.accordionContent}>
+      {itens.map(({ key, label }) => (
+        <div key={key} className={styles.itemContainer}>
+          <label className={styles.labelCheckbox}>
+            <input
+              type="checkbox"
+              checked={selecionados.includes(key)}
+              onChange={() => handleToggleItem(key)}
+            />
+            {label}
+          </label>
 
-              {selecionados.includes(key) && (
-                <div style={{ marginLeft: 20 }}>
-                  {["Direito", "Esquerdo"].map((lado) => (
-                    <div key={lado} style={{ marginTop: 5 }}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={ladosVisiveis[key]?.[lado] ?? false}
-                          onChange={() => handleToggleLadoVisivel(key, lado)}
-                        />
-                        {lado}
-                      </label>
+          {selecionados.includes(key) && (
+            <div className={styles.subOptions}>
+              {["Direito", "Esquerdo"].map((lado) => (
+                <div key={lado}>
+                  <label className={styles.label_checkbox_circle}>
+                    <input
+                      id="checkbox_circle"
+                      type="checkbox"
+                      checked={ladosVisiveis[key]?.[lado] ?? false}
+                      onChange={() => handleToggleLadoVisivel(key, lado)}
+                    />
+                    {lado}
+                  </label>
 
-                      {ladosVisiveis[key]?.[lado] && (
-                        <div>
-                          <label>
-                            <input
-                              type="text"
-                              placeholder="Descrição..."
-                              name={`${titulo}.${key}.${lado}`}
-                              value={formData[titulo]?.[key]?.[lado] || ""}
-                              onChange={handleRadioAninhado}
-                            />
-                          </label>
-                        </div>
-                      )}
+                  {ladosVisiveis[key]?.[lado] && (
+                    <div className={styles.textInputContainer}>
+                      <input
+                        type="text"
+                        className={styles.textInput}
+                        placeholder="Descrição..."
+                        name={`${titulo}.${key}.${lado}`}
+                        value={formData[titulo]?.[key]?.[lado] || ""}
+                        onChange={handleRadioAninhado}
+                      />
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      )}
+      ))}
     </div>
+  )}
+</div>
+
   );
 }
 
