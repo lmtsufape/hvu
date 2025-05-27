@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import VoltarButton from "../../VoltarButton";
 import { CancelarWhiteButton } from "../../WhiteButton";
@@ -20,6 +21,8 @@ function FichaSessao() {
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
 
+    const router = useRouter();
+
     const [formData, setFormData] = useState({
         numeroSessao: "",
         sessaoData: "",
@@ -27,6 +30,19 @@ function FichaSessao() {
         estagiario: "",
         rg: ""
     });
+
+    const [consultaId, setConsultaId] = useState(null);
+
+    useEffect(() => {
+    if (router.isReady) {
+        const id = router.query.fichaId;
+        if (id) {
+        setConsultaId(id);
+        console.log("ID da ficha:", id);
+        }
+    }
+    }, [router.isReady, router.query.fichaId]);
+
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -94,7 +110,9 @@ function FichaSessao() {
 
         try {
             console.log(fichaData)
-            await createFicha(fichaData);
+            const resultado = await createFicha(fichaData);
+            console.log("Resposta da api", resultado.id);
+            localStorage.setItem('fichaId', resultado.id.toString());
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
@@ -152,7 +170,9 @@ function FichaSessao() {
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
-                {<Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaSessao`} />}
+                {showAlert && consultaId && (
+                <Alert message="Ficha criada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
+                )}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
             </div>
         </div>
