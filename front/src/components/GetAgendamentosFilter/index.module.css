@@ -1,16 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
 .filter {
-    width: 120.68px;
-    height: 56px;
-    border-radius: 10px;
+    width: 150px;
+    height: 50px;
+    border-radius: 8px;
     border: 1px solid #B1B1B1;
-    
+    background-color: white;
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0em;
+    font-weight: 500;
     text-align: center;
-    color: #909090;
+    color: #555;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+    -webkit-appearance: none;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
+
+    /* Adicionando seta personalizada */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='%23909090'><path d='M7 10l5 5 5-5z'></path></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+}
+
+.filter:hover {
+    background-color: #f0f0f0;
+    border-color: #909090;
+}
+
+.filter:focus {
+    /* border-color: #007bff; */
+    box-shadow: 0 0 5px 2px rgba(0, 123, 255, 0.5);
+}
+
+.filter option {
+    background-color: white;
+    color: #333;
+    font-weight: 400;
 }
