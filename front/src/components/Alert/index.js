@@ -2,12 +2,21 @@ import React from "react";
 import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 
-function Alert({ message, show, url }) {
+function Alert({ message, show, url, onClose }) {
     const router = useRouter();
 
     const handleOkClick = () => {
         if (url) {
             router.push(url);
+        }
+        else if (onClose) {
+            closeModal();
+        }
+    };
+
+    const closeModal = () => {
+        if (onClose) {
+            onClose();  
         }
     };
 

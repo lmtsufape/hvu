@@ -19,7 +19,7 @@ function AtendimentoOrtopedico({formData, handleChange, nextStep, prevStep}) {
 
                 <form onSubmit={handleSubmit}>
                     
-                    <h1>Inspeção visual</h1>
+                    <h2>Inspeção visual</h2>
                     <div className={styles.column}>
                         <label>Condição corporal: </label>
                         <input type="text" name="condicaoCorporal" value={formData.condicaoCorporal} onChange={handleChange} />
@@ -53,8 +53,20 @@ function AtendimentoOrtopedico({formData, handleChange, nextStep, prevStep}) {
                         <input type="text" name="escoriacoesFistulas" value={formData.escoriacoesFistulas} onChange={handleChange} />
                     </div>
              
-                    <h1>Marcha</h1>
-                    <h2>(Ante-si, Contra-se, Lareral, Passo-trote, Círculos, Inclinado)</h2>
+                    <h2>Marcha</h2>
+                   
+                    <div className={styles.column}><label>marcha:</label>
+                        <select name="marcha" value={formData.marcha} onChange={handleChange} >
+                            <option value="">Selecione</option>
+                            <option value="anteSe">Ante-si</option>
+                            <option value="contraSe">Contra-se</option>
+                            <option value="lateral">Lateral</option>
+                            <option value="passoTrote">Passo-trote</option>
+                            <option value="circulo">Círculos</option>
+                            <option value="inclinado">Inclinado</option>
+
+                        </select>
+                    </div>
                 
                     <div className={styles.column}>
                         <label>Características: </label>

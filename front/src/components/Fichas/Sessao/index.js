@@ -111,22 +111,31 @@ function FichaSessao() {
             <h1>Ficha de sessão</h1>
             <div className={styles.form_box}>
                 <form onSubmit = {handleSubmit}>
-                    <div className={styles.column}>
-                        <label>Sessão nº:</label>
-                        <input type="text" name="numeroSessao" 
-                        value={formData.numeroSessao} 
-                        onChange={handleChange} />
+                    <div id="flex-grid" className={styles.column}>
+                        <div id="flex-column" className={styles.column}>
+                            <label>Sessão nº:</label>
+                            <input id="meia-caixa" type="text" name="numeroSessao" 
+                            value={formData.numeroSessao} 
+                            onChange={handleChange} />
+                        </div>
+                        <div id="flex-column" className={styles.column}>
+                            <label>Data:</label>
+                            <input id="meia-caixa" type="date" name="sessaoData" 
+                            value={formData.sessaoData} 
+                            onChange={handleChange}/>
+                        </div>
+                    </div>
+
+                    <button className={styles.dados_ocultos} type="button">
+                        Dados do animal
+                        <span>+</span>
+                    </button>
+
+                    <div className={styles.titulo}>
+                        Anotação
                     </div>
                     <div className={styles.column}>
-                        <label>Data:</label>
-                        <input type="date" name="sessaoData" 
-                        value={formData.sessaoData} 
-                        onChange={handleChange}/>
-                    </div>
-                    <div className={styles.column}>
-                        <label>Anotação: 
-                            <textarea name="anotacao" value={formData.anotacao} onChange={handleChange} rows="10" cols="50" />
-                        </label>
+                        <textarea id="caixa-alta" name="anotacao" value={formData.anotacao} onChange={handleChange} rows="10" cols="50" />
                     </div>              
 
                     <div className={styles.column}>
