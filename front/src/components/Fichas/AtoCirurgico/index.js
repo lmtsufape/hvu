@@ -10,6 +10,8 @@ import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import FinalizarFichaModal from "../FinalizarFichaModal";
 
+import { useRouter } from 'next/router';
+
 function FichaAtoCirurgico() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -19,6 +21,8 @@ function FichaAtoCirurgico() {
     const [loading, setLoading] = useState(true);
     
     const [errorMessage, setErrorMessage] = useState("");
+
+    const router = useRouter();
     
 
     const [formData, setFormData] = useState({
@@ -33,6 +37,18 @@ function FichaAtoCirurgico() {
         data: "",
         medicosResponsaveis: "",
     });
+
+    const [consultaId, setConsultaId] = useState(null);
+
+    useEffect(() => {
+    if (router.isReady) {
+        const id = router.query.fichaId;
+        if (id) {
+        setConsultaId(id);
+        console.log("ID da ficha:", id);
+        }
+    }
+    }, [router.isReady, router.query.fichaId]);
 
     const { protocolos } = formData;
 
@@ -106,7 +122,9 @@ function FichaAtoCirurgico() {
         console.log("Ficha enviada:", fichaData);
 
         try {
-            await createFicha(fichaData);
+            const resultado = await createFicha(fichaData);
+            console.log("Resposta da api", resultado.id);
+            localStorage.setItem('fichaId', resultado.id.toString());
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
@@ -276,7 +294,9 @@ function FichaAtoCirurgico() {
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
-                {<Alert message="Ficha criada com sucesso!" show={showAlert} url={`/fichaAtoCirurgico`} />}
+                {showAlert && consultaId && (
+                <Alert message="Ficha criada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
+                )}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
             </div>
         </div>
