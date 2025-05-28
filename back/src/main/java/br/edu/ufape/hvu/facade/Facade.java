@@ -482,8 +482,7 @@ public class Facade {
     }
 
     // Aviso--------------------------------------------------------------
-    @Autowired
-    private AvisoServiceInterface avisoServiceInterface;
+    private final AvisoServiceInterface avisoServiceInterface;
 
     public Aviso saveAviso(Aviso newInstance) {
         return avisoServiceInterface.saveAviso(newInstance);
