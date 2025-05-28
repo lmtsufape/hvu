@@ -10,9 +10,54 @@ import { getVagaById } from "../../../services/vagaService";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 
+// Hook personalizado para gerenciar fichaIds
+const useFichaManager = () => {
+  const [fichaIds, setFichaIds] = useState([]);
+
+  // Carrega IDs existentes ao iniciar
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedIds = localStorage.getItem('fichaIds');
+      if (storedIds) {
+        try {
+          const parsedIds = JSON.parse(storedIds);
+          if (Array.isArray(parsedIds)) {
+            setFichaIds(parsedIds.filter(id => id && id !== "null"));
+            console.log("parsedIds:", parsedIds);
+          }
+        } catch (error) {
+          console.error("Erro ao ler fichaIds:", error);
+        }
+      }
+    }
+  }, []);
+
+    useEffect(() => {
+    console.log("Ficha IDs atualizados:", fichaIds);
+  }, [fichaIds]);
+
+  // Adiciona novo ID ao array
+const addFichaId = (newId) => {
+  if (!newId) return;
+
+  setFichaIds(prevIds => {
+    if (prevIds.includes(newId)) return prevIds;
+
+    const updatedIds = [...prevIds, newId];
+    localStorage.setItem('fichaIds', JSON.stringify(updatedIds));
+    return updatedIds;
+  });
+};
+
+  return { fichaIds, addFichaId };
+};
+
 function CreateConsulta() {
   const router = useRouter();
   const { id } = router.query;
+
+    // Usa o hook personalizado
+  const { fichaIds, addFichaId } = useFichaManager();
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -41,7 +86,8 @@ function CreateConsulta() {
     proximaConsulta: false,
     encaminhamento: null,
     animal: { id: null },
-    dataVaga: ""
+    dataVaga: "",
+    fichaIds: fichaIds
   });
 
   const [vagaData, setVagaData] = useState({});
@@ -52,6 +98,19 @@ function CreateConsulta() {
     const selectedEspecialidadeId = event.target.value;
     setEspecialidade(selectedEspecialidadeId);
   };
+
+    // Captura o ID individual e adiciona ao array
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const currentFichaId = localStorage.getItem('fichaId');
+      if (currentFichaId) {
+        console.log("currentFichaId:", currentFichaId);
+        addFichaId(currentFichaId);
+        // Limpa o ID individual após uso
+        localStorage.removeItem('fichaId');
+      }
+    }
+  }, [addFichaId]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -151,10 +210,9 @@ function CreateConsulta() {
     proximaConsulta: consulta.proximaConsulta,
     encaminhamento: {id: especialidade},
     animal: {id: animalId},
-    dataVaga: vagaData.dataHora
+    dataVaga: vagaData.dataHora,
+    ficha: fichaIds.map(id => ({ id: Number(id) }))
   };
-
-  console.log("consultaToCreate:", consultaToCreate);
 
   const handleSubmit = async () => {
     const validationErrors = validateFields(consulta);
@@ -162,10 +220,8 @@ function CreateConsulta() {
       setErrors(validationErrors);
       return;
     }
-
-
-
     try {
+      console.log("Criando consulta com os dados:", consultaToCreate);
       await createConsulta(consultaToCreate, id);
       setShowAlert(true);
     } catch (error) {
@@ -173,6 +229,10 @@ function CreateConsulta() {
       setShowErrorAlert(true);
     }
   };
+
+const handleClick = (path, id) => {
+  router.push(`${path}?fichaId=${id}`);
+};
 
   return (
     <>
@@ -352,7 +412,7 @@ function CreateConsulta() {
           <div className={styles.box_ficha_buttons}>
 
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaAtoCirurgico')}>
+            onClick={() => handleClick('/fichaAtoCirurgico', id)}>
               Ficha de ato cirúrgico
             </button>
             <button className={styles.ficha_button} type="button"
@@ -392,7 +452,7 @@ function CreateConsulta() {
               Ficha de reabilitação integrativa
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaSessao')}>
+            onClick={() => handleClick('/fichaSessao', id)}>
               Ficha de sessão
             </button>
             <button className={styles.ficha_button} type="button"

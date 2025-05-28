@@ -1,10 +1,12 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState } from "react";
 import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
 import { VoltarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
 function FichaNeurologica({formData, handleChange, nextStep, prevStep}) {
+    const [showField, setShowField] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -15,107 +17,187 @@ function FichaNeurologica({formData, handleChange, nextStep, prevStep}) {
     return(
         <div className={styles.container}>
             <VoltarButton onClick={prevStep}/>
+
             <h1>Ficha Neurológica</h1>
             <div className={styles.form_box}>
 
                 <form onSubmit={handleSubmit}>
-                    <h1 className={styles.title}>Nervos cranianos </h1>
+                    <button className={styles.dados_ocultos} type="button">
+                        Dados do animal
+                        <span>+</span>
+                    </button>
+
+                    <div className={styles.titulo}>
+                        Nervos cranianos
+                    </div>
+
                     <h2 className={styles.title}>Reflexos e reações ( 0 - ausente, 1 - diminuído, 2 - normal, 3 - aumentado) </h2>
                     <div className={styles.box}>
                         <div className={styles.column}>
-                            <label>Ameaça (II, VII, córtex, cerebelo)</label>
-                            <div className={styles.inputGroup}>
-                                <label>Esquerdo:
-                                    <input type="text" name="nervosCranianos.ameaca.Esq" 
-                                    value={formData.nervosCranianos.ameaca.Esq} onChange={handleChange}/>
-                                </label>
-                                <label>Direito:
-                                    <input type="text" name="nervosCranianos.ameaca.Dir" 
-                                    value={formData.nervosCranianos.ameaca.Dir} onChange={handleChange}/>  
-                                </label>
-                            </div>
+                            <label>
+                                <input
+                                id="checkbox"
+                                type="checkbox"
+                                checked={showField}
+                                onChange={() => setShowField(!showField)}
+                                />
+                                Ameaça (II, VII, córtex, cerebelo)
+                            </label>
+
+                            {showField && (
+                                <div className={styles.inputGroup}>
+                                    <label>Esquerdo:
+                                        <input type="text" name="nervosCranianos.ameaca.Esq" 
+                                        value={formData.nervosCranianos.ameaca.Esq} onChange={handleChange}/>
+                                    </label>
+                                    <label>Direito:
+                                        <input type="text" name="nervosCranianos.ameaca.Dir" 
+                                        value={formData.nervosCranianos.ameaca.Dir} onChange={handleChange}/>  
+                                    </label>
+                                </div>
+                            )}
                         </div>
                         <div className={styles.column}>
-                            <label>Tamanho e simetria pupilar (II, III) </label>
-                            <div className={styles.inputGroup}>
-                                <label>Esquerdo:
-                                    <input type="text" name="nervosCranianos.tamanhoSimetria.Esq" 
-                                    value={formData.nervosCranianos.tamanhoSimetria.Esq} onChange={handleChange}/>  
-                                </label>
-                                <label>Direito:
-                                    <input type="text" name="nervosCranianos.tamanhoSimetria.Dir" 
-                                    value={formData.nervosCranianos.tamanhoSimetria.Dir} onChange={handleChange}/>  
-                                </label>
-                            </div>
+                            <label>
+                                <input
+                                id="checkbox"
+                                type="checkbox"
+                                checked={showField}
+                                onChange={() => setShowField(!showField)}
+                                />
+                                Tamanho e simetria pupilar (II, III)
+                            </label>
+                            {showField && (
+                                <div className={styles.inputGroup}>
+                                    <label>Esquerdo:
+                                        <input type="text" name="nervosCranianos.tamanhoSimetria.Esq" 
+                                        value={formData.nervosCranianos.tamanhoSimetria.Esq} onChange={handleChange}/>  
+                                    </label>
+                                    <label>Direito:
+                                        <input type="text" name="nervosCranianos.tamanhoSimetria.Dir" 
+                                        value={formData.nervosCranianos.tamanhoSimetria.Dir} onChange={handleChange}/>  
+                                    </label>
+                                </div>
+                            )}
                         </div>
                         <div className={styles.column}>
-                            <label>Reflexo pupilar fotomotor (II, IIIPS)</label>
-                            <div className={styles.inputGroup}>
-                                <label>Esquerdo:
-                                    <input type="text" name="nervosCranianos.reflexoPupilar.Esq" 
-                                    value={formData.nervosCranianos.reflexoPupilar.Esq} onChange={handleChange}/>
-                                </label>
-                                <label>Direito:
-                                    <input type="text" name="nervosCranianos.reflexoPupilar.Dir" 
-                                    value={formData.nervosCranianos.reflexoPupilar.Dir} onChange={handleChange}/>
-                                </label>
-                            </div>
+                            <label>
+                                <input
+                                id="checkbox"
+                                type="checkbox"
+                                checked={showField}
+                                onChange={() => setShowField(!showField)}
+                                />
+                                Reflexo pupilar fotomotor (II, IIIPS)
+                            </label>
+                            {showField && (
+                                <div className={styles.inputGroup}>
+                                    <label>Esquerdo:
+                                        <input type="text" name="nervosCranianos.reflexoPupilar.Esq" 
+                                        value={formData.nervosCranianos.reflexoPupilar.Esq} onChange={handleChange}/>
+                                    </label>
+                                    <label>Direito:
+                                        <input type="text" name="nervosCranianos.reflexoPupilar.Dir" 
+                                        value={formData.nervosCranianos.reflexoPupilar.Dir} onChange={handleChange}/>
+                                    </label>
+                                </div>
+                            )}
                         </div>
 
                         <div className={styles.column}>
-                            <label>Posição ocular (VIII, III, IV, VI)</label>
-                            <div className={styles.inputGroup}>
-                                <label>Esquerdo:
-                                    <input type="text" name="nervosCranianos.posturaOcular.Esq" 
-                                    value={formData.nervosCranianos.posturaOcular.Esq} onChange={handleChange}/>
-                                </label>
-                                <label>Direito:
-                                    <input type="text" name="nervosCranianos.posturaOcular.Dir" 
-                                    value={formData.nervosCranianos.posturaOcular.Dir} onChange={handleChange}/>
-                                </label>
-                            </div>
+                            <label>
+                                <input
+                                id="checkbox"
+                                type="checkbox"
+                                checked={showField}
+                                onChange={() => setShowField(!showField)}
+                                />
+                                Posição ocular (VIII, III, IV, VI)
+                            </label>
+                            {showField && (
+                                <div className={styles.inputGroup}>
+                                    <label>Esquerdo:
+                                        <input type="text" name="nervosCranianos.posturaOcular.Esq" 
+                                        value={formData.nervosCranianos.posturaOcular.Esq} onChange={handleChange}/>
+                                    </label>
+                                    <label>Direito:
+                                        <input type="text" name="nervosCranianos.posturaOcular.Dir" 
+                                        value={formData.nervosCranianos.posturaOcular.Dir} onChange={handleChange}/>
+                                    </label>
+                                </div>
+                            )}
                         </div>
 
                         <div className={styles.column}>
-                            <label>Reflexo oculocefálico (VIII, III, IV, VI)</label>
-                            <div className={styles.inputGroup}>
-                                <label>Esquerdo:
-                                    <input type="text" name="nervosCranianos.reflexoOculocefalico.Esq" 
-                                    value={formData.nervosCranianos.reflexoOculocefalico.Esq} onChange={handleChange}/>
-                                </label>
-                                <label>Direito:
-                                    <input type="text" name="nervosCranianos.reflexoOculocefalico.Dir" 
-                                    value={formData.nervosCranianos.reflexoOculocefalico.Dir} onChange={handleChange}/>
-                                </label>
-                            </div>
+                            <label>
+                                <input
+                                id="checkbox"
+                                type="checkbox"
+                                checked={showField}
+                                onChange={() => setShowField(!showField)}
+                                />
+                                Reflexo oculocefálico (VIII, III, IV, VI)
+                            </label>
+                            {showField && (
+                                <div className={styles.inputGroup}>
+                                    <label>Esquerdo:
+                                        <input type="text" name="nervosCranianos.reflexoOculocefalico.Esq" 
+                                        value={formData.nervosCranianos.reflexoOculocefalico.Esq} onChange={handleChange}/>
+                                    </label>
+                                    <label>Direito:
+                                        <input type="text" name="nervosCranianos.reflexoOculocefalico.Dir" 
+                                        value={formData.nervosCranianos.reflexoOculocefalico.Dir} onChange={handleChange}/>
+                                    </label>
+                                </div>
+                            )}
                         </div>
 
                         <div className={styles.column}>
-                            <label>Nistagmo patológico (VIII)</label>
-                            <div className={styles.inputGroup}>
-                                <label>Esquerdo:
-                                    <input type="text" name="nervosCranianos.nistagmoPatologico.Esq" 
-                                    value={formData.nervosCranianos.nistagmoPatologico.Esq} onChange={handleChange}/>
-                                </label>
-                                <label>Direito:
-                                    <input type="text" name="nervosCranianos.nistagmoPatologico.Dir" 
-                                    value={formData.nervosCranianos.nistagmoPatologico.Dir} onChange={handleChange}/>
-                                </label>
-                            </div>
+                            <label>
+                                <input
+                                id="checkbox"
+                                type="checkbox"
+                                checked={showField}
+                                onChange={() => setShowField(!showField)}
+                                />
+                                Nistagmo patológico (VIII)
+                            </label>
+                            {showField && (
+                                <div className={styles.inputGroup}>
+                                    <label>Esquerdo:
+                                        <input type="text" name="nervosCranianos.nistagmoPatologico.Esq" 
+                                        value={formData.nervosCranianos.nistagmoPatologico.Esq} onChange={handleChange}/>
+                                    </label>
+                                    <label>Direito:
+                                        <input type="text" name="nervosCranianos.nistagmoPatologico.Dir" 
+                                        value={formData.nervosCranianos.nistagmoPatologico.Dir} onChange={handleChange}/>
+                                    </label>
+                                </div>
+                            )}
                         </div>
 
                         <div className={styles.column}>
-                            <label>Reflexo palpebral</label>
-                            <div className={styles.inputGroup}>
-                                <label>Esquerdo:
-                                    <input type="text" name="nervosCranianos.reflexoPalpebral.Esq" 
-                                    value={formData.nervosCranianos.reflexoPalpebral.Esq} onChange={handleChange}/>
-                                </label>
-                                <label>Direito:
-                                    <input type="text" name="nervosCranianos.reflexoPalpebral.Dir" 
-                                    value={formData.nervosCranianos.reflexoPalpebral.Dir} onChange={handleChange}/>
-                                </label>
-                            </div>
+                            <label>
+                                <input
+                                id="checkbox"
+                                type="checkbox"
+                                checked={showField}
+                                onChange={() => setShowField(!showField)}
+                                />
+                                Reflexo palpebral
+                            </label>
+                            {showField && (
+                                <div className={styles.inputGroup}>
+                                    <label>Esquerdo:
+                                        <input type="text" name="nervosCranianos.reflexoPalpebral.Esq" 
+                                        value={formData.nervosCranianos.reflexoPalpebral.Esq} onChange={handleChange}/>
+                                    </label>
+                                    <label>Direito:
+                                        <input type="text" name="nervosCranianos.reflexoPalpebral.Dir" 
+                                        value={formData.nervosCranianos.reflexoPalpebral.Dir} onChange={handleChange}/>
+                                    </label>
+                                </div>
+                            )}
                         </div>
 
                         <div className={styles.column}>
