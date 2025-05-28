@@ -1,9 +1,9 @@
 package br.edu.ufape.hvu.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.ufape.hvu.model.enums.TipoFicha;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -40,5 +40,5 @@ public  class Consulta  {
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
 	@OneToMany
-	private List<Ficha> ficha;
+	private List<Ficha> ficha = new ArrayList<>();
 }

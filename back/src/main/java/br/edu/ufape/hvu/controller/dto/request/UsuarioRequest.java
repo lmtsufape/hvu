@@ -16,7 +16,6 @@ import lombok.Setter;
 public  class UsuarioRequest  {
 	@Email(message = "Forneça um endereço de email correto")
 	private String email;
-	@NotBlank(message = "Senha não pode estar em branco")
 	private String senha;
 	@NotBlank(message = "CPF não pode estar em branco")
 	private String cpf;

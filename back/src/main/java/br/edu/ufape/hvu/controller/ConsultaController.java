@@ -86,7 +86,7 @@ public class ConsultaController {
 
 			// medico
 			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
+				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId(), principal.getSubject()));
 				obj.setMedico(null);
 			}
 

@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -61,12 +64,14 @@ public class FichaSolicitacaoServicoController {
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("fichaSolicitacaoServico/{id}")
 	public FichaSolicitacaoServicoResponse updateFichaSolicitacaoServico(@PathVariable Long id, @Valid @RequestBody FichaSolicitacaoServicoRequest obj) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
 			//FichaSolicitacaoServico o = obj.convertToEntity();
 			FichaSolicitacaoServico oldObject = facade.findFichaSolicitacaoServicoById(id);
 
 			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
+				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId(), principal.getSubject()));
 				obj.setMedico(null);
 			}
 

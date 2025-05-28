@@ -10,18 +10,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
+import br.edu.ufape.hvu.controller.dto.request.*;
+import br.edu.ufape.hvu.exception.ResourceNotFoundException;
+import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
-import org.hibernate.service.spi.ServiceException;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
-import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
-import br.edu.ufape.hvu.controller.dto.request.VagaTipoRequest;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
@@ -29,6 +28,9 @@ import jakarta.transaction.Transactional;
 
 @Service @RequiredArgsConstructor
 public class Facade {
+    // ModelMapper
+    private final ModelMapper modelMapper;
+
     // Auth--------------------------------------------------------------
     private final KeycloakService keycloakService;
 
@@ -66,13 +68,22 @@ public class Facade {
     }
 
     @Transactional
-    public Tutor updateTutor(Tutor transientObject) {
+    public Tutor updateTutor(Long id, TutorRequest request, String idSession) {
+        Tutor tutor = findTutorById(id, idSession); // já faz a verificação de acesso
+
+        // Mapeamento e atualização
+        Tutor updatedFields = request.convertToEntity();
+
+        modelMapper.typeMap(Tutor.class, Tutor.class)
+                .addMappings(mapper -> mapper.skip(Tutor::setId))
+                .map(updatedFields, tutor);
+
         try {
-            Tutor newTutor =  tutorServiceInterface.updateTutor(transientObject);
+            Tutor newTutor = tutorServiceInterface.updateTutor(tutor);
             keycloakService.updateUser(newTutor.getUserId(), newTutor.getEmail());
             return newTutor;
-        }catch (Exception e){
-            throw new RuntimeException("Error updating user: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar o usuário: " + e.getMessage());
         }
     }
 
@@ -80,7 +91,7 @@ public class Facade {
         Tutor tutor = tutorServiceInterface.findTutorById(id);
 
         if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)){
-            throw new AccessDeniedException("You do not have permission to get this tutor");
+            throw new ForbiddenOperationException("Você não tem permição de acessar esse tutor ou alterar os dados do mesmo.");
         }
 
         return tutor;
@@ -100,18 +111,24 @@ public class Facade {
 
     @Transactional
     public void deleteTutor(long id, String idSession) {
+        Tutor oldObject = findTutorById(id, idSession);
+
+        if(!keycloakService.hasRoleSecretario(idSession) && !oldObject.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem permição de acessar esse tutor ou alterar os dados do mesmo.");
+        }
+
         try {
             tutorServiceInterface.deleteTutor(id);
             keycloakService.deleteUser(idSession);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Error deleting user");
         }
     }
 
     // Cancelamento--------------------------------------------------------------
-    @Autowired
-    private CancelamentoServiceInterface cancelamentoServiceInterface;
+    private final CancelamentoServiceInterface cancelamentoServiceInterface;
 
+    @Transactional
     public Cancelamento cancelarAgendamento(Cancelamento newInstance) {
         Agendamento agendamento = findAgendamentoById(newInstance.getAgendamento().getId());
         agendamento.setStatus("Cancelado");
@@ -124,6 +141,7 @@ public class Facade {
         return cancelamentoServiceInterface.saveCancelamento(newInstance);
     }
 
+    @Transactional
     public Cancelamento cancelarVaga(Cancelamento newInstance) {
         Vaga vaga = findVagaById(newInstance.getVaga().getId());
         vaga.setStatus("Cancelado");
@@ -138,8 +156,25 @@ public class Facade {
         return cancelamentoServiceInterface.saveCancelamento(newInstance);
     }
 
-    public Cancelamento updateCancelamento(Cancelamento transientObject) {
-        return cancelamentoServiceInterface.updateCancelamento(transientObject);
+    @Transactional
+    public Cancelamento updateCancelamento(Long id, CancelamentoRequest obj) {
+
+        Cancelamento oldObject = findCancelamentoById(id);
+
+        // Verifica se há uma nova especialidade e busca no banco
+        if (obj.getEspecialidade() != null) {
+            oldObject.setEspecialidade(findEspecialidadeById(obj.getEspecialidade().getId()));
+            obj.setEspecialidade(null); // evita sobrescrita ao mapear
+        }
+
+        // Mapeamento parcial (sem sobrescrever o ID)
+        TypeMap<CancelamentoRequest, Cancelamento> typeMapper = modelMapper
+                .typeMap(CancelamentoRequest.class, Cancelamento.class)
+                .addMappings(mapper -> mapper.skip(Cancelamento::setId));
+
+        typeMapper.map(obj, oldObject);
+
+        return cancelamentoServiceInterface.updateCancelamento(oldObject);
     }
 
     public Cancelamento findCancelamentoById(long id) {
@@ -155,24 +190,34 @@ public class Facade {
         return cancelamentoServiceInterface.getAllCancelamento();
     }
 
-    public void deleteCancelamento(Cancelamento persistentObject) {
-        cancelamentoServiceInterface.deleteCancelamento(persistentObject);
-    }
-
     public void deleteCancelamento(long id) {
         cancelamentoServiceInterface.deleteCancelamento(id);
     }
 
     // TipoConsulta--------------------------------------------------------------
-    @Autowired
-    private TipoConsultaServiceInterface tipoConsultaServiceInterface;
+    private final TipoConsultaServiceInterface tipoConsultaServiceInterface;
 
+    @Transactional
     public TipoConsulta saveTipoConsulta(TipoConsulta newInstance) {
         return tipoConsultaServiceInterface.saveTipoConsulta(newInstance);
     }
 
-    public TipoConsulta updateTipoConsulta(TipoConsulta transientObject) {
-        return tipoConsultaServiceInterface.updateTipoConsulta(transientObject);
+    @Transactional
+    public TipoConsulta updateTipoConsulta(Long id, TipoConsultaRequest transientObject) {
+
+
+        //TipoConsulta o = obj.convertToEntity();
+        TipoConsulta oldObject = findTipoConsultaById(id);
+        TipoConsulta obj = transientObject.convertToEntity();
+
+        TypeMap<TipoConsulta, TipoConsulta> typeMapper = modelMapper
+                .typeMap(TipoConsulta.class, TipoConsulta.class)
+                .addMappings(mapper -> mapper.skip(TipoConsulta::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return tipoConsultaServiceInterface.updateTipoConsulta(oldObject);
     }
 
     public TipoConsulta findTipoConsultaById(long id) {
@@ -183,17 +228,12 @@ public class Facade {
         return tipoConsultaServiceInterface.getAllTipoConsulta();
     }
 
-    public void deleteTipoConsulta(TipoConsulta persistentObject) {
-        tipoConsultaServiceInterface.deleteTipoConsulta(persistentObject);
-    }
-
     public void deleteTipoConsulta(long id) {
         tipoConsultaServiceInterface.deleteTipoConsulta(id);
     }
 
     // Usuario--------------------------------------------------------------
-    @Autowired
-    private UsuarioServiceInterface usuarioServiceInterface;
+    private final UsuarioServiceInterface usuarioServiceInterface;
 
     public Usuario saveUsuario(Usuario newInstance) {
         if(newInstance == null) {
@@ -203,11 +243,26 @@ public class Facade {
         return usuarioServiceInterface.saveUsuario(newInstance);
     }
 
-    public Usuario updateUsuario(Usuario transientObject, String idSession) {
-        if (transientObject == null || idSession == null || idSession.isBlank()) {
+    @Transactional
+    public Usuario updateUsuario(long id, UsuarioRequest request, String idSession) {
+        if (request == null || idSession == null || idSession.isBlank()) {
             throw new IllegalArgumentException("Usuário ou ID da sessão inválidos.");
         }
-        return usuarioServiceInterface.updateUsuario(transientObject, idSession);
+
+        Usuario usuarioAtualizado = request.convertToEntity();
+        Usuario usuarioExistente = usuarioServiceInterface.findUsuarioById(id, idSession);
+
+        modelMapper.typeMap(Usuario.class, Usuario.class)
+                .addMappings(mapper -> mapper.skip(Usuario::setId))
+                .map(usuarioAtualizado, usuarioExistente);
+
+        try {
+            Usuario newUsuario = usuarioServiceInterface.updateUsuario(usuarioExistente, idSession);
+            keycloakService.updateUser(newUsuario.getUserId(), newUsuario.getEmail());
+            return newUsuario;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar o usuário: " + e.getMessage());
+        }
     }
 
     public Usuario findUsuarioById(long id, String idSession) {
@@ -251,8 +306,8 @@ public class Facade {
         return cronogramaServiceInterface.findCronogramaById(id);
     }
 
-    public List<Cronograma> findCronogramaByMedicoId(long id){
-        Medico medico = findMedicoById(id);
+    public List<Cronograma> findCronogramaByMedicoId(long id, String idSession){
+        Medico medico = findMedicoById(id, idSession);
         return cronogramaServiceInterface.findCronogramaByMedico(medico);
     }
 
@@ -322,13 +377,14 @@ public class Facade {
     private final MedicoServiceInterface medicoService;
 
     @Transactional
-    public Medico saveMedico(Medico newInstance, String password) {
+    public Medico saveMedico(MedicoRequest request, String password) {
+        Medico medico = request.convertToEntity();
         String userKcId = null;
-        keycloakService.createUser(newInstance.getCpf(), newInstance.getEmail(), password, "medico");
+        keycloakService.createUser(medico.getCpf(), medico.getEmail(), password, "medico");
         try {
-            userKcId = keycloakService.getUserId(newInstance.getEmail());
-            newInstance.setUserId(userKcId);
-            return medicoService.saveMedico(newInstance);
+            userKcId = keycloakService.getUserId(medico.getEmail());
+            medico.setUserId(userKcId);
+            return medicoService.saveMedico(medico);
         }catch (DataIntegrityViolationException e){
             keycloakService.deleteUser(userKcId);
             throw e;
@@ -339,37 +395,43 @@ public class Facade {
     }
 
     @Transactional
-    public Medico updateMedico(Medico transientObject) {
-        try {
-            Medico newMedico =  medicoService.updateMedico(transientObject);
-            keycloakService.updateUser(newMedico.getUserId(), newMedico.getEmail());
-            return newMedico;
-        }catch (Exception e){
-            throw new RuntimeException("Error updating user: " + e.getMessage());
+    public Medico updateMedico(Long id, MedicoRequest request, String idSession) {
+        if (request == null) {
+            throw new IllegalArgumentException("Dados inválidos para atualização.");
         }
+
+        Medico oldMedico = medicoService.findMedicoById(id); // lança EntityNotFoundException se não existir
+        Medico medicoAtualizado = request.convertToEntity();
+
+        if(!keycloakService.hasRoleSecretario(idSession) && !medicoAtualizado.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
+        }
+
+        // Atualiza instituição, se necessário
+        if (request.getInstituicao() != null) {
+            oldMedico.setInstituicao(findInstituicaoById(request.getInstituicao().getId()));
+        }
+
+        modelMapper.typeMap(Medico.class, Medico.class)
+                .addMappings(mapper -> mapper.skip(Medico::setId))
+                .map(medicoAtualizado, oldMedico);
+
+
+        Medico newMedico = medicoService.updateMedico(oldMedico);
+        keycloakService.updateUser(newMedico.getUserId(), newMedico.getEmail());
+        return newMedico;
     }
 
-    public Medico findMedicoById(long id) {
+    public Medico findMedicoById(long id, String idSession) {
+        Medico medico = medicoService.findMedicoById(id);
+        if(!keycloakService.hasRoleSecretario(idSession) && !medico.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
+        }
         return medicoService.findMedicoById(id);
     }
 
-    public Medico findMedicoByuserId(String userId) throws IdNotFoundException {
-        return medicoService.findMedicoByuserId(userId);
-    }
-
-
     public List<Medico> getAllMedico() {
         return medicoService.getAllMedico();
-    }
-
-
-    public void deleteMedico(Medico persistentObject) {
-        try {
-            medicoService.deleteMedico(persistentObject);
-            keycloakService.deleteUser(persistentObject.getUserId());
-        }catch (Exception e){
-            throw new RuntimeException("Error deleting user");
-        }
     }
 
     public void deleteMedico(long id) {
@@ -477,8 +539,8 @@ public class Facade {
     }
 
 
-    public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico){
-        Medico medico = findMedicoById(IdMedico);
+    public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico, String idSession){
+        Medico medico = findMedicoById(IdMedico, idSession);
 
         return vagaServiceInterface.findVagasAndAgendamentoByMedico(data, medico);
     }
@@ -536,15 +598,17 @@ public class Facade {
         // verifica se animal já tem uma consulta em aberto -> "Bloqueado"
         List<Agendamento> allAgendamentos = getAllAgendamento();
         Animal animal = animalServiceInterface.findAnimalById(id);
-
+        if(animal == null){
+            throw new IdNotFoundException(id, "Animal");
+        }
         boolean consultaEmAberto = allAgendamentos.stream()
                 .anyMatch(agendamento -> agendamento.getAnimal() != null &&
-                        agendamento.getAnimal().getId() == id &&
+                        agendamento.getAnimal().getId() == animal.getId() &&
                         !agendamento.getStatus().equals("Finalizado") && !agendamento.getStatus().equals("Cancelado"));
 
         if(consultaEmAberto){
             return "Bloqueado";
-        }else if(isAnimalWithRetorno(id) || !isRetornoExpirado(id)){
+        }else if(isAnimalWithRetorno(animal.getId()) || !isRetornoExpirado(animal.getId())){
             return "Retorno";
         }else{
             return "Primeira Consulta";
@@ -583,7 +647,7 @@ public class Facade {
     }
 
     @Transactional
-    public String createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
+    public String createVagasByTurno(VagaCreateRequest vagaRequestDTO, String idSessio) {
         List<Vaga> vagas = new ArrayList<>();
         LocalDate startDate = vagaRequestDTO.getData();
         LocalDate endDate = vagaRequestDTO.getDataFinal();
@@ -592,15 +656,15 @@ public class Facade {
 
         if (endDate == null) {
             if (!isWeekend(startDate)) {
-                detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
-                detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+                detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
+                detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
             }
         } else {
             LocalDate currentDate = startDate;
             while (!currentDate.isAfter(endDate)) {
                 if (!isWeekend(currentDate)) {
-                    detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
-                    detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+                    detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
+                    detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
                 }
                 currentDate = currentDate.plusDays(1);
             }
@@ -613,7 +677,7 @@ public class Facade {
         return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
-    private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao) {
+    private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao, String idSession) {
         List<Vaga> vagasByData = findVagaByData(data);
         List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
         vagasByData.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
@@ -632,7 +696,7 @@ public class Facade {
             try {
                 Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
                 TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());
-                Medico medico = findMedicoById(especialidadeTipo.getMedico().getId());
+                Medico medico = findMedicoById(especialidadeTipo.getMedico().getId(), idSession);
 
                 if (count[0] < 16 && count[1] < 8) {
                     Vaga newVaga = new Vaga();
@@ -669,6 +733,17 @@ public class Facade {
         Consulta consulta = consultaServiceInterface.saveConsulta(newInstance);
         vagaDaConsulta.setStatus("Finalizado");
         agendamentoVaga.setStatus("Finalizado");
+
+        if (newInstance.getFicha() != null) {
+            List<Ficha> fichas = new ArrayList<>();
+
+            for (Ficha f : newInstance.getFicha()) {
+                Ficha fichaBuscada = fichaServiceInterface.findFichaById(f.getId());
+                fichas.add(fichaBuscada);
+            }
+
+            consulta.setFicha(fichas);
+        }
 
         vagaDaConsulta.setAgendamento(agendamentoVaga);
         vagaDaConsulta.setConsulta(consulta);
@@ -752,12 +827,12 @@ public class Facade {
         return agendamentoServiceInterface.saveAgendamento(newInstance);
     }
 
-    public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject) {
+    public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject, String idSession) {
         Vaga vaga = new Vaga();
         Agendamento agendamento = new Agendamento();
 
         vaga.setEspecialidade(findEspecialidadeById(newObject.getEspecialidade().getId()));
-        vaga.setMedico(findMedicoById(newObject.getMedico().getId()));
+        vaga.setMedico(findMedicoById(newObject.getMedico().getId(), idSession));
         vaga.setTipoConsulta(findTipoConsultaById(newObject.getTipoConsulta().getId()));
         vaga.setDataHora(newObject.getHorario());
 
@@ -816,9 +891,9 @@ public class Facade {
         return agendamentoServiceInterface.getAllAgendamento();
     }
 
-    public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String token){
-        Medico medico = findMedicoById(medicoId);
-        return agendamentoServiceInterface.findAgendamentosByMedicoId(medico, token);
+    public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String idSession){
+        Medico medico = findMedicoById(medicoId, idSession);
+        return agendamentoServiceInterface.findAgendamentosByMedicoId(medico, idSession);
     }
 
     public List<Agendamento> findAgendamentosByTutorId(String userId) {
@@ -923,44 +998,54 @@ public class Facade {
     }
 
     // Animal--------------------------------------------------------------
-    @Autowired
-    private AnimalServiceInterface animalServiceInterface;
+    private final AnimalServiceInterface animalServiceInterface;
 
-    public Animal saveAnimal(Animal newInstance, String tutor_id) {
-        Tutor tutor = findTutorByuserId(tutor_id);
+    public Animal saveAnimal(Animal newInstance, String idSession) {
+        Tutor tutor = findTutorByuserId(idSession);
+        if (tutor == null) {
+            throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
+        }
+        racaServiceInterface.findRacaById(newInstance.getRaca().getId());
         Animal animal = animalServiceInterface.saveAnimal(newInstance);
         tutor.getAnimal().add(animal);
-        updateTutor(tutor);
+        tutorServiceInterface.updateTutor(tutor);
         return animal;
     }
 
-    public Animal updateAnimal(Animal transientObject, String idSession) {
-        Tutor tutor = tutorServiceInterface.findTutorByanimalId(transientObject.getId());
-
-        if (tutor == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tutor found");
-        }
-
-        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)) {
-            throw new AccessDeniedException("This is not your animal");
-        }
-
-        return animalServiceInterface.updateAnimal(transientObject);
-    }
-
-    public Animal findAnimalById(long id, String idSession) {
+    public Animal updateAnimal(Long id, AnimalRequest request, String idSession) {
         Animal animal = animalServiceInterface.findAnimalById(id);
         Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
 
-        if (tutor == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tutor found for the animal with ID: " + animal.getId());
+        if (!keycloakService.hasRoleSecretario(idSession) &&
+                !keycloakService.hasRoleMedico(idSession) &&
+                !tutor.getUserId().equals(idSession)) {
+            throw new ForbiddenOperationException("Este não é o seu animal");
         }
 
-        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)){
-            throw new AccessDeniedException("This is not your animal");
+        // Atualiza raça, se fornecida
+        if (request.getRaca() != null) {
+            animal.setRaca(racaServiceInterface.findRacaById(request.getRaca().getId()));
+            request.setRaca(null);
         }
 
-        return animal;
+        // Mapeia os campos restantes
+        modelMapper.typeMap(AnimalRequest.class, Animal.class)
+                .addMappings(mapper -> mapper.skip(Animal::setId))
+                .map(request, animal);
+
+        return animalServiceInterface.updateAnimal(animal);
+    }
+
+    public Animal findAnimalById(long id, String idSession) {
+        // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
+        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession)){
+            Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
+
+            if(!tutor.getUserId().equals(idSession)) {
+                throw new ForbiddenOperationException("Este não é o seu animal");
+            }
+        }
+        return animalServiceInterface.findAnimalById(id);
     }
 
     public List<Animal> getAllAnimal() {
@@ -969,9 +1054,6 @@ public class Facade {
 
     public List<Animal> getAllAnimalTutor(String userId) {
         Tutor tutor = findTutorByuserId(userId);
-        if(tutor.equals(null) ) {
-            throw new ServiceException("Erro ao buscar os Agendamentos");
-        }
         return tutor.getAnimal();
     }
 
@@ -979,11 +1061,16 @@ public class Facade {
         return animalServiceInterface.findAnimalByFichaNumber(fichaNumero);
     }
 
-    public void deleteAnimal(Animal persistentObject) {
-        animalServiceInterface.deleteAnimal(persistentObject);
-    }
+    public void deleteAnimal(long id, String userId) {
+        // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
+        if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId)){
+            Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
 
-    public void deleteAnimal(long id) {
+            if(!tutor.getUserId().equals(userId)) {
+                throw new ForbiddenOperationException("Este não é o seu animal");
+            }
+        }
+
         animalServiceInterface.deleteAnimal(id);
     }
 

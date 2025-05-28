@@ -7,6 +7,9 @@ import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,8 +69,10 @@ public class CronogramaController {
 	
 	@GetMapping("cronograma/medico/{id}")
 	public List<CronogramaResponse> getCronogramaByMedicoId(@PathVariable Long id) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
-			return facade.findCronogramaByMedicoId(id).stream()
+			return facade.findCronogramaByMedicoId(id, principal.getSubject()).stream()
 					.map(CronogramaResponse::new)
 					.toList();
 		} catch (IdNotFoundException ex) {
@@ -91,12 +96,14 @@ public class CronogramaController {
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("cronograma/{id}")
 	public CronogramaResponse updateCronograma(@PathVariable Long id, @Valid @RequestBody CronogramaRequest obj) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 		try {
 			Cronograma oldObject = facade.findCronogramaById(id);
 
 			// medico
 			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
+				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId(), principal.getSubject()));
 				obj.setMedico(null);
 			}
 
