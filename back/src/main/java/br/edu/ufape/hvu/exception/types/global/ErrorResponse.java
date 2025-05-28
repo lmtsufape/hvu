@@ -12,13 +12,13 @@ import java.util.List;
 public class ErrorResponse {
     private String error;
     private String message;
-    //private List<StackTraceElement> stackTrace; //Descomentar quando for preciso Stacktrace
+    private List<StackTraceElement> stackTrace; //Descomentar quando for preciso Stacktrace
     private LocalDateTime timestamp;
 
-    public ErrorResponse(String exceptionType, String message, /* List<StackTraceElement> stackTrace, */ LocalDateTime timestamp) {
+    public ErrorResponse(String exceptionType, String message, List<StackTraceElement> stackTrace, LocalDateTime timestamp) {
         this.error = exceptionType;
         this.message = message;
-        //this.stackTrace = stackTrace;
+        this.stackTrace = stackTrace;
         this.timestamp = timestamp;
     }
 }

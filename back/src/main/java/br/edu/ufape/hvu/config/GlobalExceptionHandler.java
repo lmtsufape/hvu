@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 "Falha de autenticação",
                 ex.getMessage(),
-                //Arrays.asList(ex.getStackTrace()),
+                Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -42,7 +43,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 "Recurso não encontrado",
                 ex.getMessage(),
-                //Arrays.asList(ex.getStackTrace()),
+                Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -55,7 +56,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 "Recurso não encontrado",
                 ex.getMessage(),
-                //Arrays.asList(ex.getStackTrace()),
+                Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -69,7 +70,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 "Acesso negado",
                 ex.getMessage(),
-                //Arrays.asList(ex.getStackTrace()),
+                Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -83,7 +84,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 "Acesso negado",
                 ex.getMessage(),
-                //Arrays.asList(ex.getStackTrace()),
+                Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -96,7 +97,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 "Argumento inválido",
                 ex.getMessage(),
-                //Arrays.asList(ex.getStackTrace()),
+                Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -117,7 +118,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 "Erro de validação",
                 errorMessage,
-                //Arrays.asList(ex.getStackTrace()),
+                Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -131,7 +132,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 "Conflito de dados",
                 ex.getMessage(),
-                //Arrays.asList(ex.getStackTrace()),
+                Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
