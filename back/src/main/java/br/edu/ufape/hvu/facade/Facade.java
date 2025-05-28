@@ -1135,8 +1135,7 @@ public class Facade {
     }
 
     // Area--------------------------------------------------------------
-    @Autowired
-    private AreaServiceInterface areaServiceInterface;
+    private final AreaServiceInterface areaServiceInterface;
 
     public Area saveArea(Area newInstance) {
         return areaServiceInterface.saveArea(newInstance);
