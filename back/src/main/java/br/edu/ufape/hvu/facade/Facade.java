@@ -861,6 +861,25 @@ public class Facade {
         return agendamentoServiceInterface.updateAgendamento(transientObject);
     }
 
+    @Transactional
+    public Agendamento processUpdateAgendamento(AgendamentoRequest transientObject, Long id, String userId) {
+
+        Agendamento oldObject = findAgendamentoById(id);
+
+        if (transientObject.getAnimal() != null) {
+            oldObject.setAnimal(findAnimalById(transientObject.getAnimal().getId(), userId));
+            transientObject.setAnimal(null);
+        }
+
+        TypeMap<AgendamentoRequest, Agendamento> typeMapper = modelMapper
+                .typeMap(AgendamentoRequest.class, Agendamento.class)
+                .addMappings(mapper -> mapper.skip(Agendamento::setId));
+
+        typeMapper.map(transientObject, oldObject);
+
+        return updateAgendamento(oldObject);
+    }
+
     // Reagenda um agendamento para uma nova vaga
     public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga){
         Agendamento agendamento = findAgendamentoById(idAgendamento);

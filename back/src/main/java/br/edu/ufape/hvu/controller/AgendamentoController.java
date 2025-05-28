@@ -126,26 +126,7 @@ public class AgendamentoController {
 	public AgendamentoResponse updateAgendamento(@PathVariable Long id, @Valid @RequestBody AgendamentoRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
-			//Agendamento o = obj.convertToEntity();
-			Agendamento oldObject = facade.findAgendamentoById(id);
-
-			if(obj.getAnimal() != null){
-				oldObject.setAnimal(facade.findAnimalById(obj.getAnimal().getId(), principal.getSubject()));
-				obj.setAnimal(null);
-			}
-
-			TypeMap<AgendamentoRequest, Agendamento> typeMapper = modelMapper
-													.typeMap(AgendamentoRequest.class, Agendamento.class)
-													.addMappings(mapper -> mapper.skip(Agendamento::setId));			
-
-			
-			typeMapper.map(obj, oldObject);	
-			return new AgendamentoResponse(facade.updateAgendamento(oldObject));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
+		return new AgendamentoResponse(facade.processUpdateAgendamento(obj, id, principal.getSubject()));
 	}
 	
 	@DeleteMapping("agendamento/{id}")
