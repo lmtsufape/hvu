@@ -488,8 +488,19 @@ public class Facade {
         return avisoServiceInterface.saveAviso(newInstance);
     }
 
-    public Aviso updateAviso(Aviso transientObject) {
-        return avisoServiceInterface.updateAviso(transientObject);
+    @Transactional
+    public Aviso updateAviso(AvisoRequest transientObject, Long id) {
+        //Aviso o = obj.convertToEntity();
+        Aviso oldObject = avisoServiceInterface.findAvisoById(id);
+
+        TypeMap<AvisoRequest, Aviso> typeMapper = modelMapper
+                .typeMap(AvisoRequest.class, Aviso.class)
+                .addMappings(mapper -> mapper.skip(Aviso::setId));
+
+        typeMapper.map(transientObject, oldObject);
+
+
+        return avisoServiceInterface.updateAviso(oldObject);
     }
 
     public Aviso findAvisoById(long id) {
