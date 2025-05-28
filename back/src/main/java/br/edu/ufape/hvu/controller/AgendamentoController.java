@@ -33,9 +33,6 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 public class AgendamentoController {
 	@Autowired
 	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
-
 
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("agendamento")
@@ -139,6 +136,6 @@ public class AgendamentoController {
 		}
 
 	}
-	
+
 
 }
