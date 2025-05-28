@@ -6,9 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Area;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.AreaRequest;
 import br.edu.ufape.hvu.controller.dto.response.AreaResponse;
@@ -18,8 +15,6 @@ import br.edu.ufape.hvu.controller.dto.response.AreaResponse;
 public class AreaController {
 	@Autowired
 	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("area")
@@ -45,15 +40,7 @@ public class AreaController {
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("area/{id}")
 	public AreaResponse updateArea(@PathVariable Long id, @Valid @RequestBody AreaRequest obj) {
-		//Area o = obj.convertToEntity();
-		Area oldObject = facade.findAreaById(id);
-
-		TypeMap<AreaRequest, Area> typeMapper = modelMapper
-													.typeMap(AreaRequest.class, Area.class)
-													.addMappings(mapper -> mapper.skip(Area::setId));
-			
-		typeMapper.map(obj, oldObject);
-		return new AreaResponse(facade.updateArea(oldObject));
+		return new AreaResponse(facade.updateArea(obj, id));
 	}
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")

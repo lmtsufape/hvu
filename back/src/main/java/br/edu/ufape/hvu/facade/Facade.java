@@ -1142,8 +1142,16 @@ public class Facade {
         return areaServiceInterface.saveArea(newInstance);
     }
 
-    public Area updateArea(Area transientObject) {
-        return areaServiceInterface.updateArea(transientObject);
+    public Area updateArea(AreaRequest transientObject, Long id) {
+        //Area o = obj.convertToEntity();
+        Area oldObject = findAreaById(id);
+
+        TypeMap<AreaRequest, Area> typeMapper = modelMapper
+                .typeMap(AreaRequest.class, Area.class)
+                .addMappings(mapper -> mapper.skip(Area::setId));
+
+        typeMapper.map(transientObject, oldObject);
+        return areaServiceInterface.updateArea(oldObject);
     }
 
     public Area findAreaById(Long id) {
