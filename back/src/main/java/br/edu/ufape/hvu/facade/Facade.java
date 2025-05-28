@@ -811,22 +811,21 @@ public class Facade {
     }
 
     // Agendamento--------------------------------------------------------------
-    @Autowired
-    private AgendamentoServiceInterface agendamentoServiceInterface;
+    private final AgendamentoServiceInterface agendamentoServiceInterface;
 
-    public Agendamento saveAgendamento(Agendamento newInstance, Long idVaga) {
+    @Transactional
+    public Agendamento saveAgendamento(AgendamentoRequest newInstance, Long idVaga, String idSession) {
+        Animal animal = findAnimalById(newInstance.getAnimal().getId(), idSession);
         Vaga vaga = findVagaById(idVaga);
-        if (vaga.getAgendamento() != null ){
-            throw new IllegalStateException("A vaga não está disponível.");
-        }
 
-        vaga.setStatus("Agendado");
-        vaga.setAgendamento(newInstance);
-        newInstance.setDataVaga(vaga.getDataHora());
-        newInstance.setStatus(vaga.getStatus());
-        return agendamentoServiceInterface.saveAgendamento(newInstance);
+        // Validações adicionais aqui, se necessário (ex: se a vaga está no futuro, etc.)
+
+        Agendamento agendamento = newInstance.convertToEntity();
+        agendamento.setAnimal(animal);
+        return confirmarAgendamento(vaga, agendamento);
     }
 
+    @Transactional
     public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject, String idSession) {
         Vaga vaga = new Vaga();
         Agendamento agendamento = new Agendamento();
@@ -838,10 +837,24 @@ public class Facade {
 
         saveVaga(vaga);
 
-        agendamento.setAnimal(animalServiceInterface.findAnimalById(newObject.getAnimal().getId()));
+        agendamento.setAnimal(findAnimalById(newObject.getAnimal().getId(), idSession));
         agendamento.setTipoEspecial(newObject.isTipoEspecial());
 
-        return saveAgendamento(agendamento, vaga.getId());
+        return confirmarAgendamento(vaga, agendamento);
+    }
+
+
+    private Agendamento confirmarAgendamento(Vaga vaga, Agendamento agendamento) {
+        if (vaga.getAgendamento() != null ){
+            throw new IllegalStateException("A vaga não está disponível.");
+        }
+
+        vaga.setStatus("Agendado");
+        vaga.setAgendamento(agendamento);
+        agendamento.setDataVaga(vaga.getDataHora());
+        agendamento.setStatus(vaga.getStatus());
+
+        return agendamentoServiceInterface.saveAgendamento(agendamento);
     }
 
     public Agendamento updateAgendamento(Agendamento transientObject) {

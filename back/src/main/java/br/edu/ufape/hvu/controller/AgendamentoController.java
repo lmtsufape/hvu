@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.edu.ufape.hvu.model.Animal;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -57,11 +58,7 @@ public class AgendamentoController {
 	public AgendamentoResponse createAgendamento(@Valid @RequestBody AgendamentoRequest newObj, @PathVariable Long idVaga) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-
-		Animal animal = facade.findAnimalById(newObj.getAnimal().getId(), principal.getSubject());
-		Agendamento agendamento = newObj.convertToEntity();
-		agendamento.setAnimal(animal);
-		return new AgendamentoResponse(facade.saveAgendamento(agendamento, idVaga));
+		return new AgendamentoResponse(facade.saveAgendamento(newObj, idVaga, principal.getSubject()));
 	}
 	
 	@PostMapping("agendamento/especial")
@@ -159,7 +156,7 @@ public class AgendamentoController {
 		} catch (RuntimeException ex) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
 		}
-		
+
 	}
 	
 
