@@ -16,6 +16,8 @@ import br.edu.ufape.hvu.controller.dto.response.AreaResponse;
 public class AreaController {
 	@Autowired
 	private Facade facade;
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("area")
