@@ -6,8 +6,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -17,9 +15,6 @@ import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
 import br.edu.ufape.hvu.controller.dto.request.AgendamentoRequest;
 import br.edu.ufape.hvu.controller.dto.response.AgendamentoResponse;
-import br.edu.ufape.hvu.exception.IdNotFoundException;
-
-
  
 @RestController
 @RequestMapping("/api/v1/")
@@ -61,40 +56,29 @@ public class AgendamentoController {
 
 	@GetMapping("agendamento/{id}")
 	public AgendamentoResponse getAgendamentoById(@PathVariable Long id) {
-		try {
-			return new AgendamentoResponse(facade.findAgendamentoById(id));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return new AgendamentoResponse(facade.findAgendamentoById(id));
 	}
 	
 	@GetMapping("agendamento/medico/{id}")
 	public List<AgendamentoResponse> getAgendamentosByMedicoId(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
-			return facade.findAgendamentosByMedicoId(id,principal.getSubject())
-					.stream()
-					.map(AgendamentoResponse::new)
-					.toList();
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+
+		return facade.findAgendamentosByMedicoId(id,principal.getSubject())
+				.stream()
+				.map(AgendamentoResponse::new)
+				.toList();
 	}
 
 	@GetMapping("agendamento/tutor")
 	public List<AgendamentoResponse> findAgendamentosByTutorId() {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 			
-			return facade.findAgendamentosByTutorId(principal.getSubject())
-					.stream()
-					.map(AgendamentoResponse::new)
-					.toList();
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return facade.findAgendamentosByTutorId(principal.getSubject())
+				.stream()
+				.map(AgendamentoResponse::new)
+				.toList();
 	}
 
 	@GetMapping("agendamento/datasnaopodeagendar/{tutorId}")
@@ -104,11 +88,7 @@ public class AgendamentoController {
 
 	@PatchMapping("agendamento/reagendamento/{idAgendamento}/{idVaga}")
 	public Agendamento reagendarAgendamento(@PathVariable Long idAgendamento, @PathVariable Long idVaga) {
-		try {
-			return facade.reagendarAgendamento(idAgendamento,idVaga);
-		}catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
+		return facade.reagendarAgendamento(idAgendamento,idVaga);
 	}
 
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
@@ -121,14 +101,8 @@ public class AgendamentoController {
 	
 	@DeleteMapping("agendamento/{id}")
 	public String deleteAgendamento(@PathVariable Long id) {
-		try {
-			facade.deleteAgendamento(id);
-			return "";
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-
+		facade.deleteAgendamento(id);
+		return "";
 	}
-
 
 }
