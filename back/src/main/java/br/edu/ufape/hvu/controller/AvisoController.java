@@ -4,8 +4,7 @@ import br.edu.ufape.hvu.controller.dto.request.AvisoRequest;
 import br.edu.ufape.hvu.controller.dto.response.AvisoResponse;
 import br.edu.ufape.hvu.facade.Facade;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class AvisoController {
-    @Autowired
-    private Facade facade;
+    private final Facade facade;
 
     @GetMapping("aviso")
     public List<AvisoResponse> getAllAviso() {
