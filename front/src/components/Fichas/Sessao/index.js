@@ -31,6 +31,23 @@ function FichaSessao() {
         rg: ""
     });
 
+    // Carrega os dados do formulário do localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedFormData = localStorage.getItem("fichaSessaoFormData");
+            if (savedFormData) {
+                setFormData(JSON.parse(savedFormData));
+            }
+        }
+    }, []); 
+
+    // Salva os dados do formulário no localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("fichaSessaoFormData", JSON.stringify(formData));
+        }
+    }, [formData]); 
+
     const [consultaId, setConsultaId] = useState(null);
 
     useEffect(() => {
@@ -89,6 +106,10 @@ function FichaSessao() {
         );
     }
 
+    const cleanLocalStorage = () => {
+        localStorage.removeItem("fichaSessaoFormData");
+    }
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -113,6 +134,7 @@ function FichaSessao() {
             const resultado = await createFicha(fichaData);
             console.log("Resposta da api", resultado.id);
             localStorage.setItem('fichaId', resultado.id.toString());
+            localStorage.removeItem("fichaSessaoFormData");
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
@@ -166,7 +188,7 @@ function FichaSessao() {
                     </div>
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton />
+                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>

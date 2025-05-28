@@ -9,6 +9,9 @@ import { createConsulta } from "../../../services/consultaService";
 import { getVagaById } from "../../../services/vagaService";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
+import { getFichaById } from "../../../services/fichaService";
+import { deleteFicha } from "../../../services/fichaService";
+
 
 // Hook personalizado para gerenciar fichaIds
 const useFichaManager = () => {
@@ -62,6 +65,8 @@ function CreateConsulta() {
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
+  const [showAlertFicha, setShowAlertFicha] = useState(false);
+
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
@@ -98,6 +103,32 @@ function CreateConsulta() {
     const selectedEspecialidadeId = event.target.value;
     setEspecialidade(selectedEspecialidadeId);
   };
+
+  const [fichasDados, setFichas] = useState([]);
+
+  useEffect(() => {
+    const fetchFichas = async () => {
+      try {
+        const fetchedFichas = await Promise.all(
+          fichaIds.map(id => getFichaById(id))
+        );
+
+        // Parseando o campo conteudo de cada ficha
+        const fichasComConteudo = fetchedFichas.map(ficha => ({
+          ...ficha,
+          conteudo: JSON.parse(ficha.conteudo),
+        }));
+        setFichas(fichasComConteudo);
+      } catch (error) {
+        console.error("Erro ao buscar fichas:", error);
+      }
+    };
+
+    if (fichaIds.length > 0) {
+      fetchFichas();
+    }
+  }, [fichaIds]);
+
 
     // Captura o ID individual e adiciona ao array
   useEffect(() => {
@@ -230,9 +261,33 @@ function CreateConsulta() {
     }
   };
 
-const handleClick = (path, id) => {
-  router.push(`${path}?fichaId=${id}`);
-};
+  const handleClick = (path, id) => {
+    router.push(`${path}?fichaId=${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      console.log('Deletando id:', id, 'do tipo', typeof id);
+      await deleteFicha(id);
+      setFichas(prev => prev.filter(ficha => ficha.id !== id));
+
+      const fichaIdsStr = localStorage.getItem('fichaIds');
+      if (fichaIdsStr) {
+        const fichaIds = JSON.parse(fichaIdsStr);
+        const novaLista = fichaIds.filter(fichaId => fichaId !== id.toString());
+        localStorage.setItem('fichaIds', JSON.stringify(novaLista));
+      }
+
+      setShowAlertFicha(true);
+    } catch (error) {
+      console.error('Erro ao deletar ficha:', error);
+      alert('Não foi possível excluir a ficha.');
+    }
+  };
+
+  const handleCloseAlertFicha = () => {
+    setShowAlertFicha(false);
+  };
 
   return (
     <>
@@ -465,6 +520,25 @@ const handleClick = (path, id) => {
             </button>
           </div>
 
+          {fichasDados.map(ficha => (
+            <div key={ficha.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
+              <p><strong>ID:</strong> {ficha.id}</p>
+              <p><strong>Data de criação:</strong> {new Date(ficha.dataHora).toLocaleString()}</p>
+              <p><strong>Nome:</strong> {ficha.nome}</p>
+
+              <div>
+                {Object.entries(ficha.conteudo).map(([chave, valor]) => (
+                  <p key={chave}>
+                    <strong>{chave.charAt(0).toUpperCase() + chave.slice(1)}:</strong> {String(valor)}
+                  </p>
+                ))}
+              </div>
+
+              <button type="button" onClick={() => handleDelete(ficha.id)} style={{ marginTop: '10px', color: 'red' }}>
+                Excluir ficha
+              </button>
+            </div>
+          ))}
 
           <div className={styles.continuarbotao}>
             <button className={styles.voltarButton}>Cancelar</button>
@@ -475,6 +549,7 @@ const handleClick = (path, id) => {
         </form>
         
         {showAlert && <Alert message="Consulta criada com sucesso!" show={showAlert} url={`/getAllConsultas/${vagaData.agendamento.animal.id}`} />}
+        {showAlertFicha && <Alert message="Ficha excluída com sucesso!" show={showAlertFicha} onClose={handleCloseAlertFicha} />}
         {vagaData.consulta === null ? (
           showErrorAlert && <ErrorAlert message="Erro ao criar consulta, tente novamente." show={showErrorAlert} />
         ) : (

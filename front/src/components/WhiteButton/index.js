@@ -97,11 +97,14 @@ export function CadastrolWhiteButton() {
 	);
 }
 
-export function CancelarWhiteButton({ type = "button" }) {
+export function CancelarWhiteButton({ type = "button", onClick  }) {
 	const router = useRouter();
 
 	const handlCancelarClick = (e) => {
 		e.preventDefault();
+		if (onClick) {
+			onClick(e); 
+		}
 		router.back();
 	};
 
