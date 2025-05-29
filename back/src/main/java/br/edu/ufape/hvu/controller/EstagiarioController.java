@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Estagiario;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EstagiarioRequest;
 import br.edu.ufape.hvu.controller.dto.response.EstagiarioResponse;
@@ -40,16 +38,7 @@ public class EstagiarioController {
 	
 	@PatchMapping("estagiario/{id}")
 	public EstagiarioResponse updateEstagiario(@PathVariable Long id, @Valid @RequestBody EstagiarioRequest obj) {
-			//Estagiario o = obj.convertToEntity();
-			Estagiario oldObject = facade.findEstagiarioById(id);
-
-			TypeMap<EstagiarioRequest, Estagiario> typeMapper = modelMapper
-													.typeMap(EstagiarioRequest.class, Estagiario.class)
-													.addMappings(mapper -> mapper.skip(Estagiario::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new EstagiarioResponse(facade.updateEstagiario(oldObject));
+		return new EstagiarioResponse(facade.updateEstagiario(obj, id));
 	}
 	
 	@DeleteMapping("estagiario/{id}")

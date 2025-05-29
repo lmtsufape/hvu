@@ -1048,8 +1048,17 @@ public class Facade {
         return estagiarioServiceInterface.saveEstagiario(newInstance);
     }
 
-    public Estagiario updateEstagiario(Estagiario transientObject) {
-        return estagiarioServiceInterface.updateEstagiario(transientObject);
+    public Estagiario updateEstagiario(EstagiarioRequest obj, Long id) {
+        //Estagiario o = obj.convertToEntity();
+        Estagiario oldObject = findEstagiarioById(id);
+
+        TypeMap<EstagiarioRequest, Estagiario> typeMapper = modelMapper
+                .typeMap(EstagiarioRequest.class, Estagiario.class)
+                .addMappings(mapper -> mapper.skip(Estagiario::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return estagiarioServiceInterface.updateEstagiario(oldObject);
     }
 
     public Estagiario findEstagiarioById(long id) {
