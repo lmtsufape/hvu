@@ -43,32 +43,6 @@
       medicacoes,
 
    }) {
-   
-     /* helpers para array de medicações ---------------------- */
-     const handleMedChange = (idx, field, value) => {
-       setFormData(prev => {
-         const meds = [...prev.medicacoes];
-         meds[idx][field] = value;
-         return { ...prev, medicacoes: meds };
-       });
-     };
-   
-     const addLine = () =>
-       setFormData(prev => ({
-         ...prev,
-         medicacoes: [
-           ...prev.medicacoes,
-           { medicacao: "", dose: "", frequencia: "", periodo: "" }
-         ]
-       }));
-   
-     const removeLine = (idx) =>
-       setFormData(prev => ({
-         ...prev,
-         medicacoes: prev.medicacoes.filter((_, i) => i !== idx)
-       }));
-   
-     /* ------------------------------------------------------- */
      return (
        <div className={styles.container}>
          <VoltarButton onClick={prevStep}/>
@@ -158,6 +132,7 @@
                                       type="text"
                                       value={linha.medicacao}
                                       onChange={(e) => handleChangeTratamentos(index, "medicacao", e.target.value)}
+                                      className="form-control"
                                       />
                                   </td>
                                   <td>
@@ -165,6 +140,7 @@
                                       type="text"
                                       value={linha.dose}
                                       onChange={(e) => handleChangeTratamentos(index, "dose", e.target.value)}
+                                      className="form-control"
                                       />
                                   </td>
                                   <td>
@@ -172,6 +148,7 @@
                                       type="text"
                                       value={linha.frequencia}
                                       onChange={(e) => handleChangeTratamentos(index, "frequencia", e.target.value)}
+                                      className="form-control"
                                       />
                                   </td>
                                   <td>
@@ -179,6 +156,7 @@
                                       type="text"
                                       value={linha.periodo}
                                       onChange={(e) => handleChangeTratamentos(index, "periodo", e.target.value)}
+                                      className="form-control"
                                       />
                                   </td>
                               </tr>
@@ -197,11 +175,14 @@
             </div>
             <div className={styles.column}>
                 <label>Plantonista(s) discente(s): </label>
-                <textarea name="plantonistas" value={formData.plantonistas} onChange={handleChange}/>
+                <textarea name="plantonistas" value={formData.plantonistas} onChange={handleChange}
+                className="form-control"/>
+                
             </div>
             <div className={styles.column}>
                 <label>Médico(s) Veterinário(s) Responsável:</label>
-                <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} onChange={handleChange} />
+                <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} onChange={handleChange} 
+                className="form-control"/>
             </div>
            
    

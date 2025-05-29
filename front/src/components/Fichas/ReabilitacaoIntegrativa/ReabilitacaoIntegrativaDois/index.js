@@ -35,7 +35,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                     </div>
                     <div className={styles.column}>
                         <label>Êmese/ Regurgitação/ Refluxo/ Eructação/ Flatulência: </label>
-                        <input type="text" name="sistemaDigestorio.tipo" value={formData.sistemaDigestorio.tipo} onChange={handleChange} />
+                        <input type="text" name="sistemaDigestorio.tipo" value={formData.sistemaDigestorio.tipo} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Dentição (tártaro, perda de dentes): </label>
@@ -57,41 +57,41 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                     <h2>Sistema  Cardiorespiratório</h2>
                     <div className={styles.column}>
                         <label>Respiração: </label>
-                        <input type="text" name="sistemaCardiorespiratorio.respiracao" value={formData.sistemaCardiorespiratorio.respiracao} onChange={handleChange} />
+                        <input type="text" name="sistemaCardiorespiratorio.respiracao" value={formData.sistemaCardiorespiratorio.respiracao} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Tosse/ espirros: </label>
-                        <input type="text" name="sistemaCardiorespiratorio.tosseEspirros" value={formData.sistemaCardiorespiratorio.tosseEspirros} onChange={handleChange} />
+                        <input type="text" name="sistemaCardiorespiratorio.tosseEspirros" value={formData.sistemaCardiorespiratorio.tosseEspirros} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Secreções(nasais/ oculares): </label>
-                        <input type="text" name="sistemaCardiorespiratorio.secrecao" value={formData.sistemaCardiorespiratorio.secrecao} onChange={handleChange} />
+                        <input type="text" name="sistemaCardiorespiratorio.secrecao" value={formData.sistemaCardiorespiratorio.secrecao} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Intolerância ao exercício/ cianose: </label>
-                        <input type="text" name="sistemaCardiorespiratorio.intoleranciaExercicio" value={formData.sistemaCardiorespiratorio.intoleranciaExercicio} onChange={handleChange} />
+                        <input type="text" name="sistemaCardiorespiratorio.intoleranciaExercicio" value={formData.sistemaCardiorespiratorio.intoleranciaExercicio} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Cardiopatia: </label>
-                        <input type="text" name="sistemaCardiorespiratorio.cardiopatia" value={formData.sistemaCardiorespiratorio.cardiopatia} onChange={handleChange} />
+                        <input type="text" name="sistemaCardiorespiratorio.cardiopatia" value={formData.sistemaCardiorespiratorio.cardiopatia} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Aumento de volume (membros/ ascite): </label>
-                        <input type="text" name="sistemaCardiorespiratorio.aumentoDeVolume" value={formData.sistemaCardiorespiratorio.aumentoDeVolume} onChange={handleChange} />
+                        <input type="text" name="sistemaCardiorespiratorio.aumentoDeVolume" value={formData.sistemaCardiorespiratorio.aumentoDeVolume} onChange={handleChange}/>
                     </div>
 
                     <h2>Sistema Geniturinário</h2>
                     <div className={styles.column}>
                         <label>Micção (dor/odor/ coloração): </label>
-                        <input type="text" name="sistemaGeniturinario.miccao" value={formData.sistemaGeniturinario.miccao} onChange={handleChange} />
+                        <input type="text" name="sistemaGeniturinario.miccao" value={formData.sistemaGeniturinario.miccao} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Castrado/ inteiro: </label>
-                        <input type="text" name="sistemaGeniturinario.castradoInteiro" value={formData.sistemaGeniturinario.castradoInteiro} onChange={handleChange} />
+                        <input type="text" name="sistemaGeniturinario.castradoInteiro" value={formData.sistemaGeniturinario.castradoInteiro} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Cruzamentos/ cios/ pseudociese/contraceptivos/corrimentos/secreções/partos/ abortos: </label>
-                        <input type="text" name="sistemaGeniturinario.tipo1" value={formData.sistemaGeniturinario.tipo1} onChange={handleChange} />
+                        <input type="text" name="sistemaGeniturinario.tipo1" value={formData.sistemaGeniturinario.tipo1} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Infecções-inflamações/ secreçõesgenitais/ cálculos: </label>
@@ -113,7 +113,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                     </div>
                     <div className={styles.column}>
                         <label>Dor de cabeça: </label>
-                        <input type="text" name="sistemaNervoso.dorDeCabeca" value={formData.sistemaNervoso.dorDeCabeca} onChange={handleChange} />
+                        <input type="text" name="sistemaNervoso.dorDeCabeca" value={formData.sistemaNervoso.dorDeCabeca} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Sinais neurológicos: </label>
@@ -185,7 +185,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep, prevStep}) {
                     </div>
                     <div className={styles.column}>
                         <label>Desverminização: </label>
-                        <input type="text" name="manejosGerais.desverminizacao" value={formData.manejosGerais.desverminizacao} onChange={handleChange} />
+                        <input type="text" name="manejosGerais.desverminizacao" value={formData.manejosGerais.desverminizacao} />
                     </div>
                     <div className={styles.column}>
                         <label>Ambiente: </label>

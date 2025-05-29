@@ -56,9 +56,9 @@ function ReabilitacaoIntegrativa({formData, handleChange,handlePreferenciasChang
                         <input type="text" name="perguntasAdicionaisMTC.comportamento" value={formData.perguntasAdicionaisMTC.comportamento} onChange={handleChange} />
                     </div>
 
-                    <div className={styles.checkboxGroup}>
+                    
                         <label>Preferências:</label>
-                        <div className={styles.checkboxRow}>
+                        <div className={styles.checkbox_container}>
                             <label>
                                 <input type="checkbox"name="preferencias"value="sol"checked={formData.preferencias?.includes("sol")}onChange={handlePreferenciasChange}/> Sol
                             </label>
@@ -75,23 +75,23 @@ function ReabilitacaoIntegrativa({formData, handleChange,handlePreferenciasChang
                                 <input type="checkbox" name="preferencias" value="alimentosFrios" checked={formData.preferencias?.includes("alimentosFrios")} onChange={handlePreferenciasChange} /> Alimentos frios
                             </label>
                             <label>
-                                <input type="checkbox" name="preferencias" value="dormeEsparramado" checked={formData.preferencias?.includes("dormeEsparramado")} onChange={handlePreferenciasChange} /> Dorme esparramado/ barriga no chão
+                                <input type="checkbox" name="preferencias" value="dormeEsparramado" checked={formData.preferencias?.includes("dormeEsparramado")} onChange={handlePreferenciasChange} /> Dorme esparramado, <br></br> barriga no chão
                             </label>
                         </div>
-                    </div>
-                    <div className={styles.fieldsContainer}>
-                        <div className={styles.column}><label>Latido/ Miado:</label>
+                   <div className={styles.box}>
+                        <div className={styles.column}>
+                            <label>Latido/ Miado:</label>
                             <select name="perguntasAdicionaisMTC.latidoMiado" value={formData.perguntasAdicionaisMTC.latidoMiado} onChange={handleChange} >
                                 <option value="">Selecione</option>
-                                <option value="forte">forte</option>
-                                <option value="fraco">fraco</option>
+                                <option value="forte">Forte</option>
+                                <option value="fraco">Fraco</option>
                             </select>
                         </div>
                         <div className={styles.column}><label>Sono:</label>
                             <select name="perguntasAdicionaisMTC.sono" value={formData.perguntasAdicionaisMTC.sono} onChange={handleChange} >
                                 <option value="">Selecione</option>
-                                <option value="forte">agitado</option>
-                                <option value="fraco">tranquilo</option>
+                                <option value="forte">Agitado</option>
+                                <option value="fraco">Tranquilo</option>
                             </select>
                         </div>
                         <div className={styles.column}>
@@ -113,8 +113,7 @@ function ReabilitacaoIntegrativa({formData, handleChange,handlePreferenciasChang
                                 <option value="frioAoToque">Frio ao Toque</option>
                             </select>
                             
-                        </div>
-                            
+                        </div>   
                     </div>
                     <div className={styles.column}>
                                 <label>Alguma época/ clima os sinais clínicos pioram? : </label>
@@ -127,9 +126,9 @@ function ReabilitacaoIntegrativa({formData, handleChange,handlePreferenciasChang
                         <input type="text" name="diagnosticoMTC.orgaosSubstacias" value={formData.diagnosticoMTC.orgaosSubstacias} onChange={handleChange} />
                     </div>
 
-                    <div className={styles.checkboxGroup}>
+                    
                         <label>Principíos:</label>
-                        <div className={styles.checkboxRow}>
+                        <div className={styles.checkbox_container}>
                             <label>
                                 <input type="checkbox"name="principios"value="yin"checked={formData.principios?.includes("yin")}onChange={handlePrincipiosChange}/> yin
                             </label>
@@ -137,19 +136,19 @@ function ReabilitacaoIntegrativa({formData, handleChange,handlePreferenciasChang
                                 <input type="checkbox" name="principios" value="yang" checked={formData.principios?.includes("yang")} onChange={handlePrincipiosChange}/> yang
                             </label>
                             <label>
-                                <input type="checkbox" name="principios" value="frio" checked={formData.principios?.includes("frio")} onChange={handlePrincipiosChange} /> frio
+                                <input type="checkbox" name="principios" value="frio" checked={formData.principios?.includes("frio")} onChange={handlePrincipiosChange} /> Frio
                             </label>
                             <label>
-                                <input type="checkbox" name="principios" value="quente" checked={formData.principios?.includes("quente")} onChange={handlePrincipiosChange} /> quente
+                                <input type="checkbox" name="principios" value="quente" checked={formData.principios?.includes("quente")} onChange={handlePrincipiosChange} /> Quente
                             </label>
                             <label>
-                                <input type="checkbox" name="principios" value="interno" checked={formData.principios?.includes("interno")} onChange={handlePrincipiosChange} /> interno
+                                <input type="checkbox" name="principios" value="interno" checked={formData.principios?.includes("interno")} onChange={handlePrincipiosChange} /> Interno
                             </label>
                             <label>
-                                <input type="checkbox" name="principios" value="externo" checked={formData.principios?.includes("externo")} onChange={handlePrincipiosChange} /> externo
+                                <input type="checkbox" name="principios" value="externo" checked={formData.principios?.includes("externo")} onChange={handlePrincipiosChange} /> Externo
                             </label>
                         </div>
-                    </div>
+                     
 
                     <div className={styles.column}>
                         <label>WU XING :</label>

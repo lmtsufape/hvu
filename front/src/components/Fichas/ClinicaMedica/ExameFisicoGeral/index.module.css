@@ -35,10 +35,13 @@
 }
 
 .form_box {
+  width: 100%;
+  max-width: 100%; 
   border-radius: 20px;
-  border: 0.5px solid #b1b1b1;
-  padding: 20px;
+  padding: 1rem;
   background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
+  overflow-x: hidden; 
 }
 
 .box{
@@ -48,21 +51,56 @@
 
 .checkbox_container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 10px;
-  margin-bottom: 15px;
-  margin: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Grid responsivo */
+  gap: 0.5rem;
+  margin: 1rem 0;
 }
+.radio_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Grid responsivo */
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.checkbox_container input[type="checkbox"] {
+  appearance: none;
+  margin-right: 0.5rem;
+  accent-color: #39805f;
+  border: 1px solid #B1B1B1;
+  /* border-radius: 5px; */
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.radio_container input[type="checkbox"] {
+  appearance: none;
+  margin-right: 0.5rem;
+  accent-color: #39805f;
+  border: 1px solid #B1B1B1;
+  border-radius: 5px;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+}
+
 
 .checkbox_container label {
   display: flex;
   align-items: center;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: clamp(14px, 3.5vw, 16px);
   cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.3s ease-in-out;
+}
+.radio_container label {
+  display: flex;
+  align-items: center;
+  font-size: clamp(14px, 3.5vw, 16px);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
   transition: background 0.3s ease-in-out;
 }
 
@@ -70,11 +108,17 @@
   margin-right: 8px;
   accent-color: #39805f;
 }
-
-.checkbox_container label:hover {
-  background-color: #e3f1ea;
+.radio_container input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #39805f;
 }
 
+.checkbox_container input[type="checkbox"]:checked {
+  background-color: #B1B1B1;
+}
+.radio_container input[type="checkbox"]:checked {
+  background-color: #B1B1B1;
+}
 .column {
   flex: 1;
   min-width: 100px;
@@ -82,12 +126,11 @@
 }
 
 .column label {
-  /* display: block; */
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 5px;
+ display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #272727;
 }
 
 .column input,
