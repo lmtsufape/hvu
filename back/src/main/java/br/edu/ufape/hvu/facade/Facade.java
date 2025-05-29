@@ -1029,8 +1029,17 @@ public class Facade {
         return enderecoServiceInterface.saveEndereco(newInstance);
     }
 
-    public Endereco updateEndereco(Endereco transientObject) {
-        return enderecoServiceInterface.updateEndereco(transientObject);
+    public Endereco updateEndereco(EnderecoRequest obj, Long id) {
+        //Endereco o = obj.convertToEntity();
+        Endereco oldObject = findEnderecoById(id);
+
+        TypeMap<EnderecoRequest, Endereco> typeMapper = modelMapper
+                .typeMap(EnderecoRequest.class, Endereco.class)
+                .addMappings(mapper -> mapper.skip(Endereco::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return enderecoServiceInterface.updateEndereco(oldObject);
     }
 
     public Endereco findEnderecoById(long id) {

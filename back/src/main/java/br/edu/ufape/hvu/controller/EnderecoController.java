@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Endereco;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EnderecoRequest;
 import br.edu.ufape.hvu.controller.dto.response.EnderecoResponse;
@@ -41,16 +39,7 @@ public class EnderecoController {
 	
 	@PatchMapping("endereco/{id}")
 	public EnderecoResponse updateEndereco(@PathVariable Long id, @Valid @RequestBody EnderecoRequest obj) {
-			//Endereco o = obj.convertToEntity();
-			Endereco oldObject = facade.findEnderecoById(id);
-
-			TypeMap<EnderecoRequest, Endereco> typeMapper = modelMapper
-													.typeMap(EnderecoRequest.class, Endereco.class)
-													.addMappings(mapper -> mapper.skip(Endereco::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new EnderecoResponse(facade.updateEndereco(oldObject));
+			return new EnderecoResponse(facade.updateEndereco(obj, id));
 	}
 	
 	@DeleteMapping("endereco/{id}")
