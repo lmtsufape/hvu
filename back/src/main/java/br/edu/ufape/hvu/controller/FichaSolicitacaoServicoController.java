@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import br.edu.ufape.hvu.model.FichaSolicitacaoServico;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.FichaSolicitacaoServicoRequest;
@@ -58,22 +57,7 @@ public class FichaSolicitacaoServicoController {
 	public FichaSolicitacaoServicoResponse updateFichaSolicitacaoServico(@PathVariable Long id, @Valid @RequestBody FichaSolicitacaoServicoRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-			//FichaSolicitacaoServico o = obj.convertToEntity();
-			FichaSolicitacaoServico oldObject = facade.findFichaSolicitacaoServicoById(id);
-
-			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId(), principal.getSubject()));
-				obj.setMedico(null);
-			}
-
-
-			TypeMap<FichaSolicitacaoServicoRequest, FichaSolicitacaoServico> typeMapper = modelMapper
-													.typeMap(FichaSolicitacaoServicoRequest.class, FichaSolicitacaoServico.class)
-													.addMappings(mapper -> mapper.skip(FichaSolicitacaoServico::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);
-			return new FichaSolicitacaoServicoResponse(facade.updateFichaSolicitacaoServico(oldObject));
+		return new FichaSolicitacaoServicoResponse(facade.updateFichaSolicitacaoServico(obj, id, principal.getSubject()));
 	}
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")

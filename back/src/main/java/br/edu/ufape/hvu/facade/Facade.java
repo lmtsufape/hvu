@@ -1312,8 +1312,25 @@ public class Facade {
         return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
     }
 
-    public FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServico transientObject) {
-        return fichaSolicitacaoServicoServiceInterface.updateFichaSolicitacaoServico(transientObject);
+    @Transactional
+    public FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServicoRequest obj, Long id, String idSession) {
+        //FichaSolicitacaoServico o = obj.convertToEntity();
+        FichaSolicitacaoServico oldObject = findFichaSolicitacaoServicoById(id);
+
+        if(obj.getMedico() != null){
+            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
+            obj.setMedico(null);
+        }
+
+
+        TypeMap<FichaSolicitacaoServicoRequest, FichaSolicitacaoServico> typeMapper = modelMapper
+                .typeMap(FichaSolicitacaoServicoRequest.class, FichaSolicitacaoServico.class)
+                .addMappings(mapper -> mapper.skip(FichaSolicitacaoServico::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return fichaSolicitacaoServicoServiceInterface.updateFichaSolicitacaoServico(oldObject);
     }
 
     public FichaSolicitacaoServico findFichaSolicitacaoServicoById(Long id) {
