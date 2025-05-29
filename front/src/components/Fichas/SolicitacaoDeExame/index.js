@@ -249,32 +249,41 @@ function FichaSolicitacaoCitologia() {
 
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
+                     <button className={styles.dados_ocultos} type="button">
+                        Dados do animal
+                        <span>+</span>
+                    </button>
 
-                    <h2> Hematologia Diagnóstica</h2>
-                    <div className={styles.anamnesecontainer}>
-                        {["Hemograma Parcial + Proteínas Plasmáticas Totais", "Proteínas Plasmáticas Totais", "Hemograma Parcial", "Hematócrito/Volume Globular", "Outros(s):"].map((item) => (
+                     <div className={styles.titulo}>
+                        Hematologia Diagnóstica
+                    </div>
+                    <div className={styles.checkbox_container}>
+                        {["Hemograma Parcial mais Proteínas Plasmáticas Totais", "Proteínas Plasmáticas Totais", "Hemograma Parcial", "Hematócrito/Volume Globular", "Outros(s):"].map((item) => (
                             <label key={item}>
                                 <input
                                     type="checkbox"
                                     value={item}
                                     checked={formData.hematologiaDiagnostica.includes(item)}
                                     onChange={(e) => handleCheckboxChange(e, "hematologiaDiagnostica", setShowOtherInputHematologia, setOtherValueHematologia)}
+                                    className="form-control"
                                 />
                                 {item}
                             </label>
                         ))}
-                    </div>
+                    
                     {showOtherInputHematologia && (
                         <input
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValueHematologia}
                             onChange={(e) => setOtherValueHematologia(e.target.value)}
+                            className="form-control"
                         />
                     )}
+                    </div>
 
                     <h2>Urinálise</h2>
-                    <div className={styles.anamnesecontainer}>
+                    <div className={styles.checkbox_container}>
                         {["Urinálise Completo", "Outros(s):"].map((item) => (
                             <label key={item}>
                                 <input
@@ -292,12 +301,13 @@ function FichaSolicitacaoCitologia() {
                                 placeholder="Digite aqui..."
                                 value={otherValueUrinalise}
                                 onChange={(e) => setOtherValueUrinalise(e.target.value)}
+                                className="form-control"
                             />
                         )}
                     </div>
 
                     <h2>parasitologico</h2>
-                    <div className={styles.anamnesecontainer}>
+                    <div className={styles.checkbox_container}>
                         {["Coproparasitológico", "Outros(s):"].map((item) => (
                             <label key={item}>
                                 <input
@@ -309,19 +319,19 @@ function FichaSolicitacaoCitologia() {
                                 {item}
                             </label>
                         ))}
-                    </div>
-
                     {showOtherInputParasitologico && (
                         <input
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValueParasitologico}
                             onChange={(e) => setOtherValueParasitologico(e.target.value)}
+                            className="form-control"
                         />
                     )}
+                    </div>
                      {/* Adicionado o campo de Bioquímica Clínica */}
                      <h2>Bioquímica Clínica</h2>
-                    <div className={styles.anamnesecontainer}>
+                    <div className={styles.checkbox_container}>
                         {["Creatinina (CREA)", "Ureia (UR)", "ALT/TGP", "AST/TGO", "Fosfatase alcalina (FA)", "Gama - Glutamiltransferase (GGT)", "Bilirrubina total e frações (BT + BD + BI)", "Proteínas totais (PT)", "Albumina (ALB)", "Globulinas (GLOB)", "Triglicerides (TG)", "Colesterol Total (COL)", "Colesteróis HDL e LDL", "Glicose (GLI)", "Creatina quinase (CK/CPK)", "Outros(s):"].map((item) => (
                             <label key={item}>
                                 <input
@@ -333,18 +343,18 @@ function FichaSolicitacaoCitologia() {
                                 {item}
                             </label>
                         ))}
-                    </div>
-
                     {showOtherInputBioquimica && (
                         <input
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValueBioquimica}
                             onChange={(e) => setOtherValueBioquimica(e.target.value)}
+                            className="form-control"
                         />
                     )}
+                    </div>
                     <h2>Citologia/Histopatologia</h2>
-                    <div className={styles.anamnesecontainer}>
+                    <div className={styles.checkbox_container}>
                         {["Citologia cutânea", "Raspado cutâneo", "Citologia oncológica", "Histopatológico", "Outros(s):"].map((item) => (
                             <label key={item}>
                                 <input
@@ -356,17 +366,18 @@ function FichaSolicitacaoCitologia() {
                                 {item}
                             </label>
                         ))}
-                    </div>
                     {showOtherInputCitologia && (
                         <input
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValueCitologia}
                             onChange={(e) => setOtherValueCitologia(e.target.value)}
+                            className="form-control"
                         />
                     )}
+                    </div>
                      <h2>Imunológicos</h2>
-                    <div className={styles.anamnesecontainer}>
+                    <div className={styles.checkbox_container}>
                         {["Teste rápido Cinomose", "Teste rápido Erliquiose", "Teste rápido Leishmaniose", "FIV/FELV", "Outros(s):"].map((item) => (
                             <label key={item}>
                                 <input
@@ -378,17 +389,18 @@ function FichaSolicitacaoCitologia() {
                                 {item}
                             </label>
                         ))}
-                    </div>
                     {showOtherInputImunologicos && (
                         <input
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValueImunologicos}
                             onChange={(e) => setOtherValueImunologicos(e.target.value)}
+                            className="form-control"
                         />
                     )}
+                    </div>
                     <h2>Imaginologia</h2>
-                    <div className={styles.anamnesecontainer}>
+                    <div className={styles.checkbox_container}>
                         {["Ultrassonografia", "Radiografia", "Mielografia", "Outros(s):"].map((item) => (
                             <label key={item}>
                                 <input
@@ -400,17 +412,18 @@ function FichaSolicitacaoCitologia() {
                                 {item}
                             </label>
                         ))}
-                    </div>
                     {showOtherInputImaginologia && (
                         <input
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValueImaginologia}
                             onChange={(e) => setOtherValueImaginologia(e.target.value)}
+                            className="form-control"
                         />
                     )}
+                    </div>
                      <h2>Cardiologia</h2>
-                    <div className={styles.anamnesecontainer}>
+                    <div className={styles.checkbox_container}>
                         {["Eletrocardiograma", "Ecocardiograma", "Outros(s):"].map((item) => (
                             <label key={item}>
                                 <input
@@ -422,15 +435,16 @@ function FichaSolicitacaoCitologia() {
                                 {item}
                             </label>
                         ))}
-                    </div>
                     {showOtherInputCardiologia && (
                         <input
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValueCardiologia}
                             onChange={(e) => setOtherValueCardiologia(e.target.value)}
+                            className="form-control"
                         />
                     )}
+                    </div>
 
 
                     <div className={styles.button_box}>
