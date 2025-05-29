@@ -59,11 +59,7 @@ public class FileController {
 
 	@DeleteMapping("arquivos/{filename}")
 	public ResponseEntity<Void> deleteFile(@PathVariable String filename) {
-		try {
-			facade.deleteFile(filename);
-			return ResponseEntity.noContent().build();
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+		facade.deleteFile(filename);
+		return ResponseEntity.noContent().build();
 	}
 }

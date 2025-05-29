@@ -1,32 +1,22 @@
 package br.edu.ufape.hvu.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
-
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
-
 import java.time.LocalDate;
 import java.util.Comparator;
-
 import br.edu.ufape.hvu.model.Vaga;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaRequest;
 import br.edu.ufape.hvu.controller.dto.response.VagaResponse;
-import br.edu.ufape.hvu.exception.IdNotFoundException;
 
-
- 
 @RestController
 @RequestMapping("/api/v1/")
 public class VagaController {
@@ -51,11 +41,7 @@ public class VagaController {
 	
 	@GetMapping("vaga/{id}")
 	public VagaResponse getVagaById(@PathVariable Long id) {
-		try {
-			return new VagaResponse(facade.findVagaById(id));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return new VagaResponse(facade.findVagaById(id));
 	}
 
 	@GetMapping("vaga/data/{date}")
@@ -80,7 +66,6 @@ public class VagaController {
 	public VagaResponse updateVaga(@PathVariable Long id, @Valid @RequestBody VagaRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
 			//Vaga o = obj.convertToEntity();
 			Vaga oldObject = facade.findVagaById(id);
 
@@ -107,12 +92,6 @@ public class VagaController {
 			
 			
 			return new VagaResponse(facade.updateVaga(oldObject));
-			
-			
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
 	}
 	
 	@PostMapping("/gestao-vagas/criar")
@@ -120,19 +99,13 @@ public class VagaController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		return facade.createVagasByTurno(newObj, principal.getSubject());
-
 	}
 	
 	
 	@DeleteMapping("vaga/{id}")
 	public String deleteVaga(@PathVariable Long id) {
-		try {
-			facade.deleteVaga(id);
-			return "";
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
+		facade.deleteVaga(id);
+		return "";
 	}
 	
 	@GetMapping("vaga/especialidade/{idEspecialidade}")
