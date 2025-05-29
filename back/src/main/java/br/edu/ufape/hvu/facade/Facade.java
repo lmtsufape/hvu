@@ -1254,8 +1254,17 @@ public class Facade {
         return etapaServiceInterface.saveEtapa(newInstance);
     }
 
-    public Etapa updateEtapa(Etapa transientObject) {
-        return etapaServiceInterface.updateEtapa(transientObject);
+    public Etapa updateEtapa(EtapaRequest obj, Long id) {
+        //Etapa o = obj.convertToEntity();
+        Etapa oldObject = findEtapaById(id);
+
+        TypeMap<EtapaRequest, Etapa> typeMapper = modelMapper
+                .typeMap(EtapaRequest.class, Etapa.class)
+                .addMappings(mapper -> mapper.skip(Etapa::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return etapaServiceInterface.updateEtapa(oldObject);
     }
 
     public Etapa findEtapaById(Long id) {

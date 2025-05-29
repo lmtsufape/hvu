@@ -45,16 +45,7 @@ public class EtapaController {
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("etapa/{id}")
 	public EtapaResponse updateEtapa(@PathVariable Long id, @Valid @RequestBody EtapaRequest obj) {
-			//Etapa o = obj.convertToEntity();
-			Etapa oldObject = facade.findEtapaById(id);
-
-			TypeMap<EtapaRequest, Etapa> typeMapper = modelMapper
-													.typeMap(EtapaRequest.class, Etapa.class)
-													.addMappings(mapper -> mapper.skip(Etapa::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new EtapaResponse(facade.updateEtapa(oldObject));
+			return new EtapaResponse(facade.updateEtapa(obj, id));
 		
 	}
 
