@@ -18,18 +18,19 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
             <div className={styles.form_box}>
 
                 <form onSubmit={handleSubmit}>
-                    
+                    <div  className={styles.box}>
                     <div className={styles.column}>
                         <label>Nº Prontuário: </label>
-                        <input type="text" name="numeroProntuario" value={formData.numeroProntuario} onChange={handleChange} />
+                        <input type="text" name="numeroProntuario" value={formData.numeroProntuario} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
-                        <label>peso: </label>
-                        <input type="text" name="peso" value={formData.peso} onChange={handleChange} />
+                        <label>Peso: </label>
+                        <input type="text" name="peso" value={formData.peso} onChange={handleChange}/>
+                    </div>
                     </div>
                     <div className={styles.column}>
-                        <label>queixa Principal: </label>
-                        <input type="text" name="queixaPrincipal" value={formData.queixaPrincipal} onChange={handleChange} />
+                        <label>Queixa Principal: </label>
+                        <input type="text" name="queixaPrincipal" value={formData.queixaPrincipal} onChange={handleChange}/>
                     </div>
 
                     <h2>Histórico clínico especial</h2>
@@ -40,7 +41,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
                     </div>
                     <div className={styles.column}>
                         <label>Histórico Neurológico:</label>
-                        <input type="text" name="historicoClinico.neurologico" value={formData.historicoClinico.neurologico} onChange={handleChange} />
+                        <input type="text" name="historicoClinico.neurologico" value={formData.historicoClinico.neurologico} onChange={handleChange}/>
                     </div >
                         <div className={styles.column}>
                     <label>Histórico Oncológico:</label>
@@ -48,7 +49,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
                     </div>
                     <div className={styles.column}>
                         <label>Outros:</label>
-                        <input type="text" name="historicoClinico.outros" value={formData.historicoClinico.outros} onChange={handleChange}/>
+                        <input type="text" name="historicoClinico.outros" value={formData.historicoClinico.outros} onChange={handleChange} />
                     </div>
 
                     <h2>Exame clínico especial</h2>
@@ -56,61 +57,61 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
 
                     <div className={styles.column}>
                         <label>Palpação de membros e articulações: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao" value={formData.exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao" value={formData.exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao}/>
                     </div>
                     <div className={styles.column}>
                         <label>Palpação de coluna: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoColuna" value={formData.exameClinicoEspecialOrtpedico.palpacaoColuna} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoColuna" value={formData.exameClinicoEspecialOrtpedico.palpacaoColuna} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Teste Ortolani: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.testeOrtolani" value={formData.exameClinicoEspecialOrtpedico.testeOrtolani} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.testeOrtolani" value={formData.exameClinicoEspecialOrtpedico.testeOrtolani} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Teste de gaveta: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.testeDeGaveta" value={formData.exameClinicoEspecialOrtpedico.testeDeGaveta} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.testeDeGaveta" value={formData.exameClinicoEspecialOrtpedico.testeDeGaveta} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Teste de compressão tibial: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.testeDeCompressaoTibial" value={formData.exameClinicoEspecialOrtpedico.testeDeCompressaoTibial} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.testeDeCompressaoTibial" value={formData.exameClinicoEspecialOrtpedico.testeDeCompressaoTibial} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Instabilidade medial de ombro: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.instabilidadeMedialDeOmbro" value={formData.exameClinicoEspecialOrtpedico.instabilidadeMedialDeOmbro} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.instabilidadeMedialDeOmbro" value={formData.exameClinicoEspecialOrtpedico.instabilidadeMedialDeOmbro} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Palpação do tendão bicipital: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoDoTendaoBicipital" value={formData.exameClinicoEspecialOrtpedico.palpacaoDoTendaoBicipital} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoDoTendaoBicipital" value={formData.exameClinicoEspecialOrtpedico.palpacaoDoTendaoBicipital} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Avaliação de massa muscular: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.avaliacaoDeMassaMuscular" value={formData.exameClinicoEspecialOrtpedico.avaliacaoDeMassaMuscular} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.avaliacaoDeMassaMuscular" value={formData.exameClinicoEspecialOrtpedico.avaliacaoDeMassaMuscular} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Avaliação da capacidade de movimento: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.avaliacaoDaCapacidadeDeMovimento" value={formData.exameClinicoEspecialOrtpedico.avaliacaoDaCapacidadeDeMovimento} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.avaliacaoDaCapacidadeDeMovimento" value={formData.exameClinicoEspecialOrtpedico.avaliacaoDaCapacidadeDeMovimento} onChange={handleChange}/>
                     </div>
 
                     <h2>Neurológico</h2>
                     <div className={styles.column}>
                         <label>Estado Mental: </label>
-                        <input type="text" name="exameClinicoEspecialNeurologico.estadoMental" value={formData.exameClinicoEspecialNeurologico.estadoMental} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialNeurologico.estadoMental" value={formData.exameClinicoEspecialNeurologico.estadoMental} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Postura: </label>
-                        <input type="text" name="exameClinicoEspecialNeurologico.postura" value={formData.exameClinicoEspecialNeurologico.postura} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialNeurologico.postura" value={formData.exameClinicoEspecialNeurologico.postura} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Locomoção: </label>
-                        <input type="text" name="exameClinicoEspecialNeurologico.locomocao" value={formData.exameClinicoEspecialNeurologico.locomocao} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialNeurologico.locomocao" value={formData.exameClinicoEspecialNeurologico.locomocao} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Nervos Cranianos: </label>
-                        <input type="text" name="exameClinicoEspecialNeurologico.nervosCranianos" value={formData.exameClinicoEspecialNeurologico.nervosrCranianos} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialNeurologico.nervosCranianos" value={formData.exameClinicoEspecialNeurologico.nervosrCranianos} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Reaçoes Posturais: </label>
-                        <input type="text" name="exameClinicoEspecialNeurologico.reacoesPosturais" value={formData.exameClinicoEspecialNeurologico.reacoesPosturais} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialNeurologico.reacoesPosturais" value={formData.exameClinicoEspecialNeurologico.reacoesPosturais} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Reflecões Segmentares: </label>
@@ -127,14 +128,14 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
                         <input type="text" name="exameClinicoEspecialOutros.observacoes" value={formData.exameClinicoEspecialOutros.observacoes} onChange={handleChange} />
                     </div>
 
-                    <h2>queixa Principal</h2>
+                <h2>Queixa Principal</h2>
                     <div className={styles.column}>
                         <label>Sinais clínicos: </label>
-                        <input type="text" name="queixaPrincipal2.sinaisClinicos" value={formData.queixaPrincipal2.sinaisClinicos} onChange={handleChange} />
+                        <input type="text" name="queixaPrincipal2.sinaisClinicos" value={formData.queixaPrincipal2.sinaisClinicos} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Quando Ocorreu pela 1º vez: </label>
-                        <input type="text" name="queixaPrincipal2.primeiraOcorrencia" value={formData.queixaPrincipal2.primeiraOcorrencia} onChange={handleChange} />
+                        <input type="text" name="queixaPrincipal2.primeiraOcorrencia" value={formData.queixaPrincipal2.primeiraOcorrencia} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Evolução: </label>
