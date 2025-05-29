@@ -3,10 +3,8 @@ package br.edu.ufape.hvu.controller;
 import br.edu.ufape.hvu.controller.dto.request.CampoLaudoMicroscopiaRequest;
 import br.edu.ufape.hvu.controller.dto.response.CampoLaudoMicroscopiaResponse;
 import br.edu.ufape.hvu.facade.Facade;
-import br.edu.ufape.hvu.model.CampoLaudoMicroscopia;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/")
 public class CampoLaudoMicroscopiaController {
-
     @Autowired
     private Facade facade;
-
     @Autowired
     private ModelMapper modelMapper;
 
@@ -47,15 +43,7 @@ public class CampoLaudoMicroscopiaController {
     @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
     @PatchMapping("campoLaudoMicroscopia/{id}")
     public CampoLaudoMicroscopiaResponse updateCampoLaudoMicroscopia(@PathVariable Long id, @Valid @RequestBody CampoLaudoMicroscopiaRequest obj) {
-        CampoLaudoMicroscopia oldObject = facade.findCampoLaudoMicroscopiaById(id);
-
-        TypeMap<CampoLaudoMicroscopiaRequest, CampoLaudoMicroscopia> typeMapper = modelMapper
-                    .typeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class)
-                    .addMappings(mapper -> mapper.skip(CampoLaudoMicroscopia::setId));
-
-        typeMapper.map(obj, oldObject);
-        return new CampoLaudoMicroscopiaResponse(facade.updateCampoLaudoMicroscopia(oldObject));
-
+        return new CampoLaudoMicroscopiaResponse(facade.updateCampoLaudoMicroscopia(obj, id));
     }
 
     @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")

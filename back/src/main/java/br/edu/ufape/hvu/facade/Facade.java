@@ -1677,8 +1677,16 @@ public class Facade {
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
     }
 
-    public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopia transientObject) {
-        return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(transientObject);
+    public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopiaRequest obj, Long id) {
+        CampoLaudoMicroscopia oldObject = findCampoLaudoMicroscopiaById(id);
+
+        TypeMap<CampoLaudoMicroscopiaRequest, CampoLaudoMicroscopia> typeMapper = modelMapper
+                .typeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class)
+                .addMappings(mapper -> mapper.skip(CampoLaudoMicroscopia::setId));
+
+        typeMapper.map(obj, oldObject);
+
+        return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(oldObject);
     }
 
     public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {
