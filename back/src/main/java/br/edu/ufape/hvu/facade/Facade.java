@@ -810,8 +810,30 @@ public class Facade {
         return consulta;
     }
 
-    public Consulta updateConsulta(Consulta transientObject) {
-        return consultaServiceInterface.updateConsulta(transientObject);
+    @Transactional
+    public Consulta updateConsulta(ConsultaRequest obj, Long id, String idSession) {
+        //Consulta o = obj.convertToEntity();
+        Consulta oldObject = findConsultaById(id);
+
+        // medico
+        if(obj.getMedico() != null){
+            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
+            obj.setMedico(null);
+        }
+
+        // animal
+        if (obj.getAnimal() != null) {
+            oldObject.setAnimal(findAnimalById(obj.getAnimal().getId(), idSession));
+            obj.setAnimal(null);
+        }
+
+        TypeMap<ConsultaRequest, Consulta> typeMapper = modelMapper
+                .typeMap(ConsultaRequest.class, Consulta.class)
+                .addMappings(mapper -> mapper.skip(Consulta::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return consultaServiceInterface.updateConsulta(oldObject);
     }
 
     public Consulta findConsultaById(long id) {

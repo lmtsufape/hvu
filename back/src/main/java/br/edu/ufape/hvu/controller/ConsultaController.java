@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import br.edu.ufape.hvu.model.Consulta;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ConsultaRequest;
@@ -72,28 +71,8 @@ public class ConsultaController {
 	public ConsultaResponse updateConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-			//Consulta o = obj.convertToEntity();
-			Consulta oldObject = facade.findConsultaById(id);
 
-			// medico
-			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId(), principal.getSubject()));
-				obj.setMedico(null);
-			}
-
-			// animal
-			if (obj.getAnimal() != null) {
-				oldObject.setAnimal(facade.findAnimalById(obj.getAnimal().getId(), principal.getSubject()));
-				obj.setAnimal(null);
-			}
-
-			TypeMap<ConsultaRequest, Consulta> typeMapper = modelMapper
-													.typeMap(ConsultaRequest.class, Consulta.class)
-													.addMappings(mapper -> mapper.skip(Consulta::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new ConsultaResponse(facade.updateConsulta(oldObject));
+		return new ConsultaResponse(facade.updateConsulta(obj, id, principal.getSubject()));
 	}
 	
 	@DeleteMapping("consulta/{id}")
