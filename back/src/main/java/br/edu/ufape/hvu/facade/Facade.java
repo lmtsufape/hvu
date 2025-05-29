@@ -1458,8 +1458,19 @@ public class Facade {
         return OrgaoServiceInterface.saveOrgao(newInstance);
     }
 
-    public Orgao updateOrgao(Orgao transientObject) {
-        return OrgaoServiceInterface.updateOrgao(transientObject);
+    public Orgao updateOrgao(OrgaoRequest transientObject, Long id) {
+        //Orgao o = obj.convertToEntity();
+        Orgao oldObject = OrgaoServiceInterface.findOrgaoById(id);
+
+
+        TypeMap<OrgaoRequest, Orgao> typeMapper = modelMapper
+                .typeMap(OrgaoRequest.class, Orgao.class)
+                .addMappings(mapper -> mapper.skip(Orgao::setId));
+
+
+        typeMapper.map(transientObject, oldObject);
+
+        return OrgaoServiceInterface.updateOrgao(oldObject);
     }
 
     public Orgao findOrgaoById(long id) {
