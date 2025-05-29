@@ -482,15 +482,25 @@ public class Facade {
     }
 
     // Aviso--------------------------------------------------------------
-    @Autowired
-    private AvisoServiceInterface avisoServiceInterface;
+    private final AvisoServiceInterface avisoServiceInterface;
 
     public Aviso saveAviso(Aviso newInstance) {
         return avisoServiceInterface.saveAviso(newInstance);
     }
 
-    public Aviso updateAviso(Aviso transientObject) {
-        return avisoServiceInterface.updateAviso(transientObject);
+    @Transactional
+    public Aviso updateAviso(AvisoRequest transientObject, Long id) {
+        //Aviso o = obj.convertToEntity();
+        Aviso oldObject = avisoServiceInterface.findAvisoById(id);
+
+        TypeMap<AvisoRequest, Aviso> typeMapper = modelMapper
+                .typeMap(AvisoRequest.class, Aviso.class)
+                .addMappings(mapper -> mapper.skip(Aviso::setId));
+
+        typeMapper.map(transientObject, oldObject);
+
+
+        return avisoServiceInterface.updateAviso(oldObject);
     }
 
     public Aviso findAvisoById(long id) {
@@ -811,22 +821,21 @@ public class Facade {
     }
 
     // Agendamento--------------------------------------------------------------
-    @Autowired
-    private AgendamentoServiceInterface agendamentoServiceInterface;
+    private final AgendamentoServiceInterface agendamentoServiceInterface;
 
-    public Agendamento saveAgendamento(Agendamento newInstance, Long idVaga) {
+    @Transactional
+    public Agendamento saveAgendamento(AgendamentoRequest newInstance, Long idVaga, String idSession) {
+        Animal animal = findAnimalById(newInstance.getAnimal().getId(), idSession);
         Vaga vaga = findVagaById(idVaga);
-        if (vaga.getAgendamento() != null ){
-            throw new IllegalStateException("A vaga não está disponível.");
-        }
 
-        vaga.setStatus("Agendado");
-        vaga.setAgendamento(newInstance);
-        newInstance.setDataVaga(vaga.getDataHora());
-        newInstance.setStatus(vaga.getStatus());
-        return agendamentoServiceInterface.saveAgendamento(newInstance);
+        // Validações adicionais aqui, se necessário (ex: se a vaga está no futuro, etc.)
+
+        Agendamento agendamento = newInstance.convertToEntity();
+        agendamento.setAnimal(animal);
+        return confirmarAgendamento(vaga, agendamento);
     }
 
+    @Transactional
     public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject, String idSession) {
         Vaga vaga = new Vaga();
         Agendamento agendamento = new Agendamento();
@@ -838,14 +847,47 @@ public class Facade {
 
         saveVaga(vaga);
 
-        agendamento.setAnimal(animalServiceInterface.findAnimalById(newObject.getAnimal().getId()));
+        agendamento.setAnimal(findAnimalById(newObject.getAnimal().getId(), idSession));
         agendamento.setTipoEspecial(newObject.isTipoEspecial());
 
-        return saveAgendamento(agendamento, vaga.getId());
+        return confirmarAgendamento(vaga, agendamento);
+    }
+
+
+    private Agendamento confirmarAgendamento(Vaga vaga, Agendamento agendamento) {
+        if (vaga.getAgendamento() != null ){
+            throw new IllegalStateException("A vaga não está disponível.");
+        }
+
+        vaga.setStatus("Agendado");
+        vaga.setAgendamento(agendamento);
+        agendamento.setDataVaga(vaga.getDataHora());
+        agendamento.setStatus(vaga.getStatus());
+
+        return agendamentoServiceInterface.saveAgendamento(agendamento);
     }
 
     public Agendamento updateAgendamento(Agendamento transientObject) {
         return agendamentoServiceInterface.updateAgendamento(transientObject);
+    }
+
+    @Transactional
+    public Agendamento processUpdateAgendamento(AgendamentoRequest transientObject, Long id, String userId) {
+
+        Agendamento oldObject = findAgendamentoById(id);
+
+        if (transientObject.getAnimal() != null) {
+            oldObject.setAnimal(findAnimalById(transientObject.getAnimal().getId(), userId));
+            transientObject.setAnimal(null);
+        }
+
+        TypeMap<AgendamentoRequest, Agendamento> typeMapper = modelMapper
+                .typeMap(AgendamentoRequest.class, Agendamento.class)
+                .addMappings(mapper -> mapper.skip(Agendamento::setId));
+
+        typeMapper.map(transientObject, oldObject);
+
+        return updateAgendamento(oldObject);
     }
 
     // Reagenda um agendamento para uma nova vaga
@@ -1103,15 +1145,22 @@ public class Facade {
     }
 
     // Area--------------------------------------------------------------
-    @Autowired
-    private AreaServiceInterface areaServiceInterface;
+    private final AreaServiceInterface areaServiceInterface;
 
     public Area saveArea(Area newInstance) {
         return areaServiceInterface.saveArea(newInstance);
     }
 
-    public Area updateArea(Area transientObject) {
-        return areaServiceInterface.updateArea(transientObject);
+    public Area updateArea(AreaRequest transientObject, Long id) {
+        //Area o = obj.convertToEntity();
+        Area oldObject = findAreaById(id);
+
+        TypeMap<AreaRequest, Area> typeMapper = modelMapper
+                .typeMap(AreaRequest.class, Area.class)
+                .addMappings(mapper -> mapper.skip(Area::setId));
+
+        typeMapper.map(transientObject, oldObject);
+        return areaServiceInterface.updateArea(oldObject);
     }
 
     public Area findAreaById(Long id) {
