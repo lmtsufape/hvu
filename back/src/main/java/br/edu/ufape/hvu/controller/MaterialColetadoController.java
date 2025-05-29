@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.MaterialColetado;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.MaterialColetadoRequest;
 import br.edu.ufape.hvu.controller.dto.response.MaterialColetadoResponse;
@@ -45,16 +43,7 @@ public class MaterialColetadoController {
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("materialColetado/{id}")
 	public MaterialColetadoResponse updateMaterialColetado(@PathVariable Long id, @Valid @RequestBody MaterialColetadoRequest obj) {
-			//MaterialColetado o = obj.convertToEntity();
-			MaterialColetado oldObject = facade.findMaterialColetadoById(id);
-
-			TypeMap<MaterialColetadoRequest, MaterialColetado> typeMapper = modelMapper
-													.typeMap(MaterialColetadoRequest.class, MaterialColetado.class)
-													.addMappings(mapper -> mapper.skip(MaterialColetado::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new MaterialColetadoResponse(facade.updateMaterialColetado(oldObject));
+			return new MaterialColetadoResponse(facade.updateMaterialColetado(obj, id));
 	}
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")

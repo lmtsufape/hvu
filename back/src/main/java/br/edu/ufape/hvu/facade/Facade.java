@@ -1429,8 +1429,18 @@ public class Facade {
         return materialColetadoServiceInterface.saveMaterialColetado(newInstance);
     }
 
-    public MaterialColetado updateMaterialColetado(MaterialColetado transientObject) {
-        return materialColetadoServiceInterface.updateMaterialColetado(transientObject);
+    public MaterialColetado updateMaterialColetado(MaterialColetadoRequest obj, Long id) {
+        //MaterialColetado o = obj.convertToEntity();
+        MaterialColetado oldObject = materialColetadoServiceInterface.findMaterialColetadoById(id);
+
+        TypeMap<MaterialColetadoRequest, MaterialColetado> typeMapper = modelMapper
+                .typeMap(MaterialColetadoRequest.class, MaterialColetado.class)
+                .addMappings(mapper -> mapper.skip(MaterialColetado::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return materialColetadoServiceInterface.updateMaterialColetado(oldObject);
     }
 
     public MaterialColetado findMaterialColetadoById(long id) {
