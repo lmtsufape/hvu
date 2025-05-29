@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Neurologica from "./NeurologicaPostura";
 import Neurologica2 from "./NeurologicaNervos";
 import Neurologica3 from "./NeurologicaDiagnostico";
@@ -19,6 +20,8 @@ function NeurologicaSteps() {
   const [showAlert, setShowAlert] = useState(false);
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
+  const [consultaId, setConsultaId] = useState(null);
+  const router = useRouter();
 
   console.log("userId:", userId);
   const [formData, setFormData] = useState({
@@ -171,6 +174,34 @@ function NeurologicaSteps() {
     plantonistasDiscentes:""
   });
 
+    // Carrega os dados do formulário do localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedFormData = localStorage.getItem("fichaNeurologicaFormData");
+            if (savedFormData) {
+                setFormData(JSON.parse(savedFormData));
+            }
+        }
+    }, []); 
+
+    // Salva os dados do formulário no localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("fichaNeurologicaFormData", JSON.stringify(formData));
+        }
+    }, [formData]); 
+
+    // Obtém o ID da ficha da URL
+    useEffect(() => {
+        if (router.isReady) {
+            const id = router.query.fichaId;
+            if (id) {
+                setConsultaId(id);
+                console.log("ID da ficha:", id);
+            }
+        }
+    }, [router.isReady, router.query.fichaId]);
+
   useEffect(() => {
       if (typeof window !== 'undefined') {
           const storedToken = localStorage.getItem('token');
@@ -295,13 +326,19 @@ function NeurologicaSteps() {
     };
 
     try {
-        await createFicha(fichaData);
+        const resultado = await createFicha(fichaData);
+        localStorage.setItem('fichaId', resultado.id.toString());
+        localStorage.removeItem("fichaNeurologicaFormData");
         setShowAlert(true);
     } catch (error) {
         console.error("Erro ao criar ficha:", error);
         setShowErrorAlert(true);
     }
  };
+
+  const cleanLocalStorage = () => {
+    localStorage.removeItem("fichaNeurologicaFormData");
+  }
 
     const renderStepContent = () => {
         switch(step) {
@@ -311,6 +348,7 @@ function NeurologicaSteps() {
                 handleChange={handleChange} 
                 nextStep={nextStep}
                 handleCheckboxChange={handleCheckboxChange}
+                cleanLocalStorage={cleanLocalStorage}
             />;
             case 1:
             return (
@@ -319,6 +357,7 @@ function NeurologicaSteps() {
                 handleChange={handleChange} 
                 nextStep={nextStep}
                 handleCheckboxChange={handleCheckboxChange}
+                cleanLocalStorage={cleanLocalStorage}
                 />
             );
             case 2:
@@ -333,10 +372,10 @@ function NeurologicaSteps() {
             case 3:
             return (
             <>
-            {showAlert && 
+            {showAlert && consultaId &&
             <div className={styles.alert}>
                 <Alert message="Ficha criada com sucesso!" 
-                show={showAlert} url={`/fichaNeurologica`} />
+                show={showAlert} url={`/createConsulta/${consultaId}`} />
             </div>}
             {showErrorAlert && 
             <div className={styles.alert}>

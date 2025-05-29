@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Ortopedica from "./OrtopedicoHistorico";
 import Ortopedica2 from "./OrtopedicoMarcha";
 import Ortopedica3 from "./OrtopedicoPalpacao"
@@ -21,6 +22,8 @@ function OrtopedicaSteps() {
   const prevStep = () => setStep(step - 1);
   const [selecionadosGrupoExame, setSelecionadosGrupoExame] = useState([]);
   const [ladosVisiveisGrupoExame, setLadosVisiveisGrupoExame] = useState({});
+  const [consultaId, setConsultaId] = useState(null);
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
 
@@ -199,6 +202,34 @@ function OrtopedicaSteps() {
     plantonistas: "",
     medicosResponsaveis:"",
   });
+
+  // Carrega os dados do formulário do localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          const savedFormData = localStorage.getItem("fichaCardiologicaFormData");
+          if (savedFormData) {
+              setFormData(JSON.parse(savedFormData));
+          }
+      }
+  }, []); 
+
+  // Salva os dados do formulário no localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          localStorage.setItem("fichaCardiologicaFormData", JSON.stringify(formData));
+      }
+  }, [formData]); 
+
+  // Obtém o ID da ficha da URL
+  useEffect(() => {
+    if (router.isReady) {
+        const id = router.query.fichaId;
+        if (id) {
+          setConsultaId(id);
+          console.log("ID da ficha:", id);
+        }
+    }
+  }, [router.isReady, router.query.fichaId]);
 
   useEffect(() => {
       if (typeof window !== 'undefined') {
@@ -391,14 +422,19 @@ function OrtopedicaSteps() {
     };
 
     try {
-        console.log("Formulário válido. Dados prontos para envio:", formData);
-        await createFicha(fichaData);
+        const resultado = await createFicha(fichaData);
+        localStorage.setItem('fichaId', resultado.id.toString());
+        localStorage.removeItem("fichaCardiologicaFormData");
         setShowAlert(true);
     } catch (error) {
         console.error("Erro ao criar ficha:", error);
         setShowErrorAlert(true);
     }
  };
+
+   const cleanLocalStorage = () => {
+    localStorage.removeItem("fichaCardiologicaFormData");
+  }
 
  const renderStepContent = () => {
     switch(step) {
@@ -408,6 +444,7 @@ function OrtopedicaSteps() {
             formData={formData} 
             handleChange={handleChange} 
             nextStep={nextStep}
+            cleanLocalStorage={cleanLocalStorage}
           />
         );
       case 2:
@@ -422,10 +459,10 @@ function OrtopedicaSteps() {
       case 3:
       return (
         <>
-        {showAlert && 
+        {showAlert && consultaId &&
         <div className={styles.alert}>
           <Alert message="Ficha criada com sucesso!" 
-          show={showAlert} url={`/fichaAtendimentoOrtopedico`} />
+          show={showAlert} url={`/createConsulta/${consultaId}`} />
         </div>}
         {showErrorAlert && 
         <div className={styles.alert}>

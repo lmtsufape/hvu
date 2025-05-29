@@ -10,7 +10,7 @@ import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
 import FinalizarFichaModal from "../FinalizarFichaModal";
 
-function FichaSolicitacaoCitologia() {
+function FichaSolicitacaoExame() {
     const router = useRouter();
 
     const [showAlert, setShowAlert] = useState(false);
@@ -37,6 +37,7 @@ function FichaSolicitacaoCitologia() {
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
+    const [consultaId, setConsultaId] = useState(null);
 
 
     const [formData, setFormData] = useState({
@@ -49,6 +50,34 @@ function FichaSolicitacaoCitologia() {
         imaginologia: [],
         cardiologia: [],
     });
+
+    // Carrega os dados do formulário do localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedFormData = localStorage.getItem("solicitacaoExameFormData");
+            if (savedFormData) {
+                setFormData(JSON.parse(savedFormData));
+            }
+        }
+    }, []); 
+
+    // Salva os dados do formulário no localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("solicitacaoExameFormData", JSON.stringify(formData));
+        }
+    }, [formData]); 
+
+    // Obtém o ID da ficha da URL
+    useEffect(() => {
+      if (router.isReady) {
+          const id = router.query.fichaId;
+          if (id) {
+            setConsultaId(id);
+            console.log("ID da ficha:", id);
+          }
+      }
+    }, [router.isReady, router.query.fichaId]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -171,7 +200,6 @@ function FichaSolicitacaoCitologia() {
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
 
         let hematologiaDiagnosticaFinal = [...formData.hematologiaDiagnostica];
@@ -233,14 +261,19 @@ function FichaSolicitacaoCitologia() {
         };
 
         try {
-            console.log(fichaData);
-            await createFicha(fichaData);
+            const resultado = await createFicha(fichaData);
+            localStorage.setItem('fichaId', resultado.id.toString());
+            localStorage.removeItem("solicitacaoExameFormData");
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
             setShowErrorAlert(true);
         }
     };
+
+    const cleanLocalStorage = () => {
+        localStorage.removeItem("solicitacaoExameFormData");
+    }
 
     return (
         <div className={styles.container}>
@@ -448,12 +481,16 @@ function FichaSolicitacaoCitologia() {
 
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton />
+                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
 
-                {<Alert message="Ficha criada com sucesso!" show={showAlert} url={'/fichaSolicitacaoDeExame'} />}
+                {showAlert && consultaId &&
+                <div className={styles.alert}>
+                    <Alert message="Ficha criada com sucesso!" 
+                    show={showAlert} url={`/createConsulta/${consultaId}`} />
+                </div>}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
 
             </div>
@@ -461,4 +498,4 @@ function FichaSolicitacaoCitologia() {
     );
 }
 
-export default FichaSolicitacaoCitologia;
+export default FichaSolicitacaoExame;

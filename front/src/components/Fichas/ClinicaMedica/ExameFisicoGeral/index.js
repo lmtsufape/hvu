@@ -23,7 +23,8 @@ export default function Step1ClinicaMedica({
   handleLinfonodoChange,
   handleCaracteristicaChange,
   handleChangeAtualizaSelect,
-  handleMucosaLocationChange
+  handleMucosaLocationChange,
+  cleanLocalStorage
   
 }) {
    const linfonodos = [
@@ -476,7 +477,7 @@ return (
 
       {/* BOTÕES ---------------------------------------------------------- */}
       <div className={styles.button_box}>
-        <CancelarWhiteButton />
+        <CancelarWhiteButton onClick={cleanLocalStorage}/>
         <ContinuarFichasGreenButton type="submit" />
       </div>
 

@@ -23,6 +23,7 @@ function FichaMedicaRetorno() {
   const [showAlert, setShowAlert] = useState(false);
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
+  const [consultaId, setConsultaId] = useState(null);
 
   const [formData, setFormData] = useState({
     // página 1
@@ -114,6 +115,34 @@ function FichaMedicaRetorno() {
       medicosResponsaveis:"",
   });
 
+  // Carrega os dados do formulário do localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          const savedFormData = localStorage.getItem("fichaMedicaRetornoFormData");
+          if (savedFormData) {
+              setFormData(JSON.parse(savedFormData));
+          }
+      }
+  }, []); 
+
+  // Salva os dados do formulário no localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          localStorage.setItem("fichaMedicaRetornoFormData", JSON.stringify(formData));
+      }
+  }, [formData]); 
+
+  // Obtém o ID da ficha da URL
+  useEffect(() => {
+    if (router.isReady) {
+        const id = router.query.fichaId;
+        if (id) {
+          setConsultaId(id);
+          console.log("ID da ficha:", id);
+        }
+    }
+  }, [router.isReady, router.query.fichaId]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("token");
@@ -173,9 +202,10 @@ function FichaMedicaRetorno() {
     };
 
     try {
-      console.log(fichaData);
-      await createFicha(fichaData);
-      setShowAlert(true);
+        const resultado = await createFicha(fichaData);
+        localStorage.setItem('fichaId', resultado.id.toString());
+        localStorage.removeItem("fichaMedicaRetornoFormData");
+        setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar ficha:", error);
       if (error.response && error.response.data && error.response.data.code) {
@@ -340,6 +370,10 @@ function FichaMedicaRetorno() {
     }
   };
 
+  const cleanLocalStorage = () => {
+    localStorage.removeItem("fichaMedicaRetornoFormData");
+  }
+
   const renderStep = () => {
     switch (step) {
         case 1:
@@ -357,6 +391,7 @@ function FichaMedicaRetorno() {
                     handleCaracteristicaChange={handleCaracteristicaChange}
                     handleChangeSelect={handleChangeSelect}
                     handleMucosaLocationChange={handleMucosaLocationChange}
+                    cleanLocalStorage={cleanLocalStorage}
                 />
             );
         case 2:
@@ -392,12 +427,12 @@ function FichaMedicaRetorno() {
             ))}
         </div>
 
-        {showAlert && (
+        {showAlert && consultaId && (
             <div className={styles.alert}>
                 <Alert
                     message="Ficha criada com sucesso!"
                     show={showAlert}
-                    url="/fichaMedicaRetorno"
+                    url={`/createConsulta/${consultaId}`}
                 />
             </div>
         )}

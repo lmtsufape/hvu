@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 import Step1ClinicaMedica from "./ExameFisicoGeral";    
 import Step2ClinicaMedica from "./ExameFisicoSistema";
 
@@ -22,6 +23,8 @@ function ClinicaMedicaSteps() {
     const [showAlert, setShowAlert] = useState(false);
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);
+    const [consultaId, setConsultaId] = useState(null);
+    const router = useRouter();
 
   /* dados do formulário (pág. 1 + pág. 2) */
   const [formData, setFormData] = useState({
@@ -214,6 +217,34 @@ function ClinicaMedicaSteps() {
   };
   /* ─────────────────────────────────────────────────── */
 
+  // Carrega os dados do formulário do localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          const savedFormData = localStorage.getItem("fichaClinicaMedicaFormData");
+          if (savedFormData) {
+              setFormData(JSON.parse(savedFormData));
+          }
+      }
+  }, []); 
+
+  // Salva os dados do formulário no localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          localStorage.setItem("fichaClinicaMedicaFormData", JSON.stringify(formData));
+      }
+  }, [formData]); 
+
+  // Obtém o ID da ficha da URL
+  useEffect(() => {
+    if (router.isReady) {
+        const id = router.query.fichaId;
+        if (id) {
+        setConsultaId(id);
+        console.log("ID da ficha:", id);
+        }
+    }
+  }, [router.isReady, router.query.fichaId]);
+
   /* carregar token/roles e verificar usuário */
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -278,7 +309,9 @@ function ClinicaMedicaSteps() {
     console.log("➡️  Enviando para a API:", fichaData);
 
     try {
-      await createFicha(fichaData);
+        const resultado = await createFicha(fichaData);
+        localStorage.setItem('fichaId', resultado.id.toString());
+        localStorage.removeItem("fichaClinicaMedicaFormData");
       setShowAlert(true);
     } catch (err) {
       setErrorMessage(err?.response?.data?.message ?? "");
@@ -322,9 +355,9 @@ function ClinicaMedicaSteps() {
         });
     };  
     
-
-
-
+  const cleanLocalStorage = () => {
+    localStorage.removeItem("fichaClinicaMedicaFormData");
+  }
 
   /* renderização de cada página */
   const renderStep = () => {
@@ -344,6 +377,7 @@ function ClinicaMedicaSteps() {
             handleCaracteristicaChange={handleCaracteristicaChange}
             handleChangeSelect={handleChangeSelect}
             handleMucosaLocationChange={handleMucosaLocationChange}
+            cleanLocalStorage={cleanLocalStorage}
 
           />
         );
@@ -386,12 +420,12 @@ function ClinicaMedicaSteps() {
         ))}
       </div>
 
-      {showAlert && (
+      {showAlert && consultaId &&(
         <div className={styles.alert}>
           <Alert
             message="Ficha criada com sucesso!"
             show={showAlert}
-            url="/fichaClinicaMedica"
+            url={`/createConsulta/${consultaId}`}
           />
         </div>
       )}
