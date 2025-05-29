@@ -1180,8 +1180,7 @@ public class Facade {
     }
 
     // CampoLaudo--------------------------------------------------------------
-    @Autowired
-    private CampoLaudoServiceInterface campoLaudoServiceInterface;
+    private final CampoLaudoServiceInterface campoLaudoServiceInterface;
 
     public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
         return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
