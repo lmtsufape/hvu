@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Especie;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EspecieRequest;
 import br.edu.ufape.hvu.controller.dto.response.EspecieResponse;
@@ -45,16 +43,7 @@ public class EspecieController {
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("especie/{id}")
 	public EspecieResponse updateEspecie(@PathVariable Long id, @Valid @RequestBody EspecieRequest obj) {
-			//Especie o = obj.convertToEntity();
-			Especie oldObject = facade.findEspecieById(id);
-
-			TypeMap<EspecieRequest, Especie> typeMapper = modelMapper
-													.typeMap(EspecieRequest.class, Especie.class)
-													.addMappings(mapper -> mapper.skip(Especie::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new EspecieResponse(facade.updateEspecie(oldObject));
+		return new EspecieResponse(facade.updateEspecie(obj, id));
 	}
 
 	@PreAuthorize("hasRole('SECRETARIO')")

@@ -1162,8 +1162,17 @@ public class Facade {
         return especieServiceInterface.saveEspecie(newInstance);
     }
 
-    public Especie updateEspecie(Especie transientObject) {
-        return especieServiceInterface.updateEspecie(transientObject);
+    public Especie updateEspecie(EspecieRequest obj, Long id) {
+        //Especie o = obj.convertToEntity();
+        Especie oldObject = findEspecieById(id);
+
+        TypeMap<EspecieRequest, Especie> typeMapper = modelMapper
+                .typeMap(EspecieRequest.class, Especie.class)
+                .addMappings(mapper -> mapper.skip(Especie::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return especieServiceInterface.updateEspecie(oldObject);
     }
 
     public Especie findEspecieById(long id) {
