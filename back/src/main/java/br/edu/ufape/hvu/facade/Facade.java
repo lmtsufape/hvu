@@ -1342,8 +1342,18 @@ public class Facade {
         return fotoServiceInterface.saveFoto(newInstance);
     }
 
-    public Foto updateFoto(Foto transientObject) {
-        return fotoServiceInterface.updateFoto(transientObject);
+    public Foto updateFoto(FotoRequest obj, Long id) {
+        //Foto o = obj.convertToEntity();
+        Foto oldObject = findFotoById(id);
+
+        TypeMap<FotoRequest, Foto> typeMapper = modelMapper
+                .typeMap(FotoRequest.class, Foto.class)
+                .addMappings(mapper -> mapper.skip(Foto::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return fotoServiceInterface.updateFoto(oldObject);
     }
 
     public Foto findFotoById(Long id) {

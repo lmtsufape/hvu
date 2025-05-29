@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Foto;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.FotoRequest;
 import br.edu.ufape.hvu.controller.dto.response.FotoResponse;
@@ -40,16 +38,7 @@ public class FotoController {
 	
 	@PatchMapping("foto/{id}")
 	public FotoResponse updateFoto(@PathVariable Long id, @Valid @RequestBody FotoRequest obj) {
-			//Foto o = obj.convertToEntity();
-			Foto oldObject = facade.findFotoById(id);
-
-			TypeMap<FotoRequest, Foto> typeMapper = modelMapper
-													.typeMap(FotoRequest.class, Foto.class)
-													.addMappings(mapper -> mapper.skip(Foto::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new FotoResponse(facade.updateFoto(oldObject));
+			return new FotoResponse(facade.updateFoto(obj, id));
 	}
 	
 	@DeleteMapping("foto/{id}")
