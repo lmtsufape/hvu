@@ -1283,8 +1283,16 @@ public class Facade {
         return fichaServiceInterface.saveFicha(newInstance);
     }
 
-    public Ficha updateFicha(Ficha transientObject) {
-        return fichaServiceInterface.updateFicha(transientObject);
+    public Ficha updateFicha(FichaRequest obj, Long id) {
+
+        //Ficha o = obj.convertToEntity();
+        Ficha oldObject = findFichaById(id);
+        TypeMap<FichaRequest, Ficha> typeMapper = modelMapper
+                .typeMap(FichaRequest.class, Ficha.class)
+                .addMappings(mapper -> mapper.skip(Ficha::setId));
+        typeMapper.map(obj, oldObject);
+
+        return fichaServiceInterface.updateFicha(oldObject);
     }
 
     public Ficha findFichaById(long id) {

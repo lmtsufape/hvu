@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Ficha;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.FichaRequest;
 import br.edu.ufape.hvu.controller.dto.response.FichaResponse;
@@ -16,7 +14,6 @@ import br.edu.ufape.hvu.controller.dto.response.FichaResponse;
 public class FichaController {
     @Autowired
     private Facade facade;
-
     @Autowired
     private ModelMapper modelMapper;
 
@@ -44,14 +41,7 @@ public class FichaController {
     //@PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
     @PatchMapping("ficha/{id}")
     public FichaResponse updateFicha(@PathVariable Long id, @Valid @RequestBody FichaRequest obj) {
-
-            //Ficha o = obj.convertToEntity();
-            Ficha oldObject = facade.findFichaById(id);
-            TypeMap<FichaRequest, Ficha> typeMapper = modelMapper
-                    .typeMap(FichaRequest.class, Ficha.class)
-                    .addMappings(mapper -> mapper.skip(Ficha::setId));
-            typeMapper.map(obj, oldObject);
-            return new FichaResponse(facade.updateFicha(oldObject));
+        return new FichaResponse(facade.updateFicha(obj, id));
     }
 
 //    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
