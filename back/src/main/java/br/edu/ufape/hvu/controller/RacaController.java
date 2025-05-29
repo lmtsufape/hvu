@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Raca;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.RacaRequest;
 import br.edu.ufape.hvu.controller.dto.response.RacaResponse;
@@ -52,22 +50,7 @@ public class RacaController {
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("raca/{id}")
 	public RacaResponse updateRaca(@PathVariable Long id, @Valid @RequestBody RacaRequest obj) {
-			//Raca o = obj.convertToEntity();
-			Raca oldObject = facade.findRacaById(id);
-
-			if (obj.getEspecie() != null) {
-				oldObject.setEspecie(facade.findEspecieById(obj.getEspecie().getId()));
-				obj.setEspecie(null);
-			}
-
-			TypeMap<RacaRequest, Raca> typeMapper = modelMapper
-													.typeMap(RacaRequest.class, Raca.class)
-													.addMappings(mapper -> mapper.skip(Raca::setId));
-
-
-			typeMapper.map(obj, oldObject);
-			return new RacaResponse(facade.updateRaca(oldObject));
-
+		return new RacaResponse(facade.updateRaca(obj, id));
 	}
 
 	@PreAuthorize("hasRole('SECRETARIO')")

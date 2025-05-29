@@ -476,8 +476,22 @@ public class Facade {
         return racaServiceInterface.saveRaca(newInstance);
     }
 
-    public Raca updateRaca(Raca transientObject) {
-        return racaServiceInterface.updateRaca(transientObject);
+    public Raca updateRaca(RacaRequest obj, Long id) {
+        //Raca o = obj.convertToEntity();
+        Raca oldObject = findRacaById(id);
+
+        if (obj.getEspecie() != null) {
+            oldObject.setEspecie(findEspecieById(obj.getEspecie().getId()));
+            obj.setEspecie(null);
+        }
+
+        TypeMap<RacaRequest, Raca> typeMapper = modelMapper
+                .typeMap(RacaRequest.class, Raca.class)
+                .addMappings(mapper -> mapper.skip(Raca::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return racaServiceInterface.updateRaca(oldObject);
     }
 
     public Raca findRacaById(long id) {
