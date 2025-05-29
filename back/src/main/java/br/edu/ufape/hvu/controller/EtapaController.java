@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Etapa;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EtapaRequest;
 import br.edu.ufape.hvu.controller.dto.response.EtapaResponse;
@@ -45,8 +43,7 @@ public class EtapaController {
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("etapa/{id}")
 	public EtapaResponse updateEtapa(@PathVariable Long id, @Valid @RequestBody EtapaRequest obj) {
-			return new EtapaResponse(facade.updateEtapa(obj, id));
-		
+		return new EtapaResponse(facade.updateEtapa(obj, id));
 	}
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
