@@ -1371,8 +1371,20 @@ public class Facade {
         return instituicaoServiceInterface.saveInstituicao(newInstance);
     }
 
-    public Instituicao updateInstituicao(Instituicao transientObject) {
-        return instituicaoServiceInterface.updateInstituicao(transientObject);
+    public Instituicao updateInstituicao(InstituicaoRequest obj, Long id) {
+
+        //Instituicao o = obj.convertToEntity();
+        Instituicao oldObject = findInstituicaoById(id);
+
+        TypeMap<InstituicaoRequest, Instituicao> typeMapper = modelMapper
+                .typeMap(InstituicaoRequest.class, Instituicao.class)
+                .addMappings(mapper -> mapper.skip(Instituicao::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+
+        return instituicaoServiceInterface.updateInstituicao(oldObject);
     }
 
     public Instituicao findInstituicaoById(long id) {
