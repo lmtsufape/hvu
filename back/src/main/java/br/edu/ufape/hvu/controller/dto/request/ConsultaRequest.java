@@ -24,13 +24,11 @@ public  class ConsultaRequest  {
 	private AnimalRequest animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	private EspecialidadeRequest encaminhamento;
 	private List<FichaRequest> ficha;
 	private List<EstagiarioRequest> estagiario;
 
 	public Consulta convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-		Consulta obj = modelMapper.map(this, Consulta.class);
-		return obj;
+        return modelMapper.map(this, Consulta.class);
 	}
 }

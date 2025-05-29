@@ -1,22 +1,19 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import br.edu.ufape.hvu.exception.ObjectNotFoundException;
 import br.edu.ufape.hvu.model.Especialidade;
 import br.edu.ufape.hvu.model.Instituicao;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.MedicoRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Medico;
 
 @Service
+@RequiredArgsConstructor
 public class MedicoService implements MedicoServiceInterface {
-	@Autowired
-	private MedicoRepository repository;
-
+	private final MedicoRepository repository;
 
 	public Medico saveMedico(Medico newInstance) {
 		return repository.save(newInstance);
@@ -28,14 +25,6 @@ public class MedicoService implements MedicoServiceInterface {
 
 	public Medico findMedicoById(long id) {
 		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Medico"));
-	}
-	
-	public Medico findMedicoByuserId(String userId) throws IdNotFoundException {
-		Optional<Medico> medico = repository.findByuserId(userId);
-		if(medico.isEmpty()) {
-			throw new IdNotFoundException(userId, "Medico");
-		}
-		return medico.get();
 	}
 
 	public List<Medico> findByInstituicao(Instituicao instituicao){
@@ -53,23 +42,13 @@ public class MedicoService implements MedicoServiceInterface {
 		}
 		return medico;
 	}
-	
 
 	public List<Medico> getAllMedico(){
 		return repository.findByDeletedFalse();
-	}
-
-	public void deleteMedico(Medico persistentObject){
-		persistentObject.setDeleted(true);
-		repository.save(persistentObject);
-		
 	}
 	
 	public void deleteMedico(long id){
 		Medico obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Medico"));
 		repository.delete(obj);
-	}	
-	
-	
-	
+	}
 }

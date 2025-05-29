@@ -4,17 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.Usuario;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.UsuarioRequest;
 import br.edu.ufape.hvu.controller.dto.response.UsuarioResponse;
@@ -22,11 +19,10 @@ import br.edu.ufape.hvu.controller.dto.response.UsuarioCurrentResponse;
  
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class UsuarioController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
+	private final Facade facade;
+
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("usuario")
 	public List<UsuarioResponse> getAllUsuario() {
@@ -64,17 +60,7 @@ public class UsuarioController {
 	public UsuarioResponse updateUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-
-		//Usuario o = obj.convertToEntity();
-		Usuario oldObject = facade.findUsuarioById(id, principal.getSubject());
-
-		TypeMap<UsuarioRequest, Usuario> typeMapper = modelMapper
-				.typeMap(UsuarioRequest.class, Usuario.class)
-				.addMappings(mapper -> mapper.skip(Usuario::setId));
-			
-			
-		typeMapper.map(obj, oldObject);
-		return new UsuarioResponse(facade.updateUsuario(oldObject, principal.getSubject()));
+		return new UsuarioResponse(facade.updateUsuario(id, obj, principal.getSubject()));
 	}
 
 	@DeleteMapping("usuario/{id}")

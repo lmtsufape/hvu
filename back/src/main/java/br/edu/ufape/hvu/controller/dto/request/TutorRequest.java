@@ -14,7 +14,6 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
 public  class TutorRequest extends UsuarioRequest {
-	//@NotNull( message = "Rg não pode estar em branco")
 	private String rg;
 	private List<AnimalRequest> animal;
 	private long id;
@@ -22,7 +21,6 @@ public  class TutorRequest extends UsuarioRequest {
 
 	public Tutor convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-		Tutor obj = modelMapper.map(this, Tutor.class);
-		return obj;
+        return modelMapper.map(this, Tutor.class);
 	}
 }

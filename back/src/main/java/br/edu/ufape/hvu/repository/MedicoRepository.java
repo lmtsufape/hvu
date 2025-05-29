@@ -12,8 +12,6 @@ import br.edu.ufape.hvu.model.Medico;
 
 @Repository
 public interface MedicoRepository extends JpaRepository<Medico, Long> {
-	
-	Optional<Medico> findByuserId (String userId);
 	List<Medico> findByInstituicaoAndDeletedFalse (Instituicao instituicao);
 	List<Medico> findByEspecialidadeAndDeletedFalse(Especialidade especialidade);
 	List<Medico> findByDeletedFalse();

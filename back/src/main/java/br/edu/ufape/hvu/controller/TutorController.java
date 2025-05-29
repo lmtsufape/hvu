@@ -1,17 +1,13 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
-import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import br.edu.ufape.hvu.model.Tutor;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TutorRequest;
@@ -20,13 +16,11 @@ import br.edu.ufape.hvu.controller.dto.response.TutorResponse;
  
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class TutorController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
+	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("tutor")
 	public List<TutorResponse> getAllTutor() {
 		return facade.getAllTutor()
@@ -58,30 +52,13 @@ public class TutorController {
 	public TutorResponse updateTutor(@PathVariable Long id, @Valid @RequestBody TutorRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-
-		Tutor o = obj.convertToEntity();
-		Tutor oldObject = facade.findTutorById(id, principal.getSubject());
-
-		
-		TypeMap<Tutor, Tutor> typeMapper = modelMapper
-				.typeMap(Tutor.class, Tutor.class)
-				.addMappings(mapper -> mapper.skip(Tutor::setId));
-
-		typeMapper.map(o, oldObject);
-		return new TutorResponse(facade.updateTutor(oldObject));
+		return new TutorResponse(facade.updateTutor(id, obj, principal.getSubject()));
     }
 	
 	@DeleteMapping("tutor/{id}")
 	public String deleteTutor(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-			
-		Tutor oldObject = facade.findTutorById(id, principal.getSubject());
-			
-		if(!principal.getSubject().equals(oldObject.getUserId())) {
-			throw new ForbiddenOperationException("Está não é sua conta");
-		}
-
 		facade.deleteTutor(id, principal.getSubject());
 		return "";
 	}

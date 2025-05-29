@@ -9,13 +9,63 @@ import { createConsulta } from "../../../services/consultaService";
 import { getVagaById } from "../../../services/vagaService";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
+import { getFichaById } from "../../../services/fichaService";
+import { deleteFicha } from "../../../services/fichaService";
+
+
+// Hook personalizado para gerenciar fichaIds
+const useFichaManager = () => {
+  const [fichaIds, setFichaIds] = useState([]);
+
+  // Carrega IDs existentes ao iniciar
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedIds = localStorage.getItem('fichaIds');
+      if (storedIds) {
+        try {
+          const parsedIds = JSON.parse(storedIds);
+          if (Array.isArray(parsedIds)) {
+            setFichaIds(parsedIds.filter(id => id && id !== "null"));
+            console.log("parsedIds:", parsedIds);
+          }
+        } catch (error) {
+          console.error("Erro ao ler fichaIds:", error);
+        }
+      }
+    }
+  }, []);
+
+    useEffect(() => {
+    console.log("Ficha IDs atualizados:", fichaIds);
+  }, [fichaIds]);
+
+  // Adiciona novo ID ao array
+const addFichaId = (newId) => {
+  if (!newId) return;
+
+  setFichaIds(prevIds => {
+    if (prevIds.includes(newId)) return prevIds;
+
+    const updatedIds = [...prevIds, newId];
+    localStorage.setItem('fichaIds', JSON.stringify(updatedIds));
+    return updatedIds;
+  });
+};
+
+  return { fichaIds, addFichaId };
+};
 
 function CreateConsulta() {
   const router = useRouter();
   const { id } = router.query;
 
+    // Usa o hook personalizado
+  const { fichaIds, addFichaId } = useFichaManager();
+
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+
+  const [showAlertFicha, setShowAlertFicha] = useState(false);
 
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
@@ -41,7 +91,8 @@ function CreateConsulta() {
     proximaConsulta: false,
     encaminhamento: null,
     animal: { id: null },
-    dataVaga: ""
+    dataVaga: "",
+    fichaIds: fichaIds
   });
 
   const [vagaData, setVagaData] = useState({});
@@ -52,6 +103,45 @@ function CreateConsulta() {
     const selectedEspecialidadeId = event.target.value;
     setEspecialidade(selectedEspecialidadeId);
   };
+
+  const [fichasDados, setFichas] = useState([]);
+
+  useEffect(() => {
+    const fetchFichas = async () => {
+      try {
+        const fetchedFichas = await Promise.all(
+          fichaIds.map(id => getFichaById(id))
+        );
+
+        // Parseando o campo conteudo de cada ficha
+        const fichasComConteudo = fetchedFichas.map(ficha => ({
+          ...ficha,
+          conteudo: JSON.parse(ficha.conteudo),
+        }));
+        setFichas(fichasComConteudo);
+      } catch (error) {
+        console.error("Erro ao buscar fichas:", error);
+      }
+    };
+
+    if (fichaIds.length > 0) {
+      fetchFichas();
+    }
+  }, [fichaIds]);
+
+
+    // Captura o ID individual e adiciona ao array
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const currentFichaId = localStorage.getItem('fichaId');
+      if (currentFichaId) {
+        console.log("currentFichaId:", currentFichaId);
+        addFichaId(currentFichaId);
+        // Limpa o ID individual após uso
+        localStorage.removeItem('fichaId');
+      }
+    }
+  }, [addFichaId]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -151,10 +241,9 @@ function CreateConsulta() {
     proximaConsulta: consulta.proximaConsulta,
     encaminhamento: {id: especialidade},
     animal: {id: animalId},
-    dataVaga: vagaData.dataHora
+    dataVaga: vagaData.dataHora,
+    ficha: fichaIds.map(id => ({ id: Number(id) }))
   };
-
-  console.log("consultaToCreate:", consultaToCreate);
 
   const handleSubmit = async () => {
     const validationErrors = validateFields(consulta);
@@ -162,16 +251,42 @@ function CreateConsulta() {
       setErrors(validationErrors);
       return;
     }
-
-
-
     try {
+      console.log("Criando consulta com os dados:", consultaToCreate);
       await createConsulta(consultaToCreate, id);
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar consulta:", error);
       setShowErrorAlert(true);
     }
+  };
+
+  const handleClick = (path, id) => {
+    router.push(`${path}?fichaId=${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      console.log('Deletando id:', id, 'do tipo', typeof id);
+      await deleteFicha(id);
+      setFichas(prev => prev.filter(ficha => ficha.id !== id));
+
+      const fichaIdsStr = localStorage.getItem('fichaIds');
+      if (fichaIdsStr) {
+        const fichaIds = JSON.parse(fichaIdsStr);
+        const novaLista = fichaIds.filter(fichaId => fichaId !== id.toString());
+        localStorage.setItem('fichaIds', JSON.stringify(novaLista));
+      }
+
+      setShowAlertFicha(true);
+    } catch (error) {
+      console.error('Erro ao deletar ficha:', error);
+      alert('Não foi possível excluir a ficha.');
+    }
+  };
+
+  const handleCloseAlertFicha = () => {
+    setShowAlertFicha(false);
   };
 
   return (
@@ -352,7 +467,7 @@ function CreateConsulta() {
           <div className={styles.box_ficha_buttons}>
 
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaAtoCirurgico')}>
+            onClick={() => handleClick('/fichaAtoCirurgico', id)}>
               Ficha de ato cirúrgico
             </button>
             <button className={styles.ficha_button} type="button"
@@ -392,7 +507,7 @@ function CreateConsulta() {
               Ficha de reabilitação integrativa
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaSessao')}>
+            onClick={() => handleClick('/fichaSessao', id)}>
               Ficha de sessão
             </button>
             <button className={styles.ficha_button} type="button"
@@ -405,6 +520,25 @@ function CreateConsulta() {
             </button>
           </div>
 
+          {fichasDados.map(ficha => (
+            <div key={ficha.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
+              <p><strong>ID:</strong> {ficha.id}</p>
+              <p><strong>Data de criação:</strong> {new Date(ficha.dataHora).toLocaleString()}</p>
+              <p><strong>Nome:</strong> {ficha.nome}</p>
+
+              <div>
+                {Object.entries(ficha.conteudo).map(([chave, valor]) => (
+                  <p key={chave}>
+                    <strong>{chave.charAt(0).toUpperCase() + chave.slice(1)}:</strong> {String(valor)}
+                  </p>
+                ))}
+              </div>
+
+              <button type="button" onClick={() => handleDelete(ficha.id)} style={{ marginTop: '10px', color: 'red' }}>
+                Excluir ficha
+              </button>
+            </div>
+          ))}
 
           <div className={styles.continuarbotao}>
             <button className={styles.voltarButton}>Cancelar</button>
@@ -415,6 +549,7 @@ function CreateConsulta() {
         </form>
         
         {showAlert && <Alert message="Consulta criada com sucesso!" show={showAlert} url={`/getAllConsultas/${vagaData.agendamento.animal.id}`} />}
+        {showAlertFicha && <Alert message="Ficha excluída com sucesso!" show={showAlertFicha} onClose={handleCloseAlertFicha} />}
         {vagaData.consulta === null ? (
           showErrorAlert && <ErrorAlert message="Erro ao criar consulta, tente novamente." show={showErrorAlert} />
         ) : (
