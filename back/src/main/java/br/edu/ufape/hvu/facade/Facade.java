@@ -534,7 +534,7 @@ public class Facade {
         return vagaServiceInterface.updateVaga(transientObject);
     }
 
-    public Vaga processUpdateAgendamento(VagaRequest obj, Long id, String idSession){
+    public Vaga processUpdateVaga(VagaRequest obj, Long id, String idSession){
         //Vaga o = obj.convertToEntity();
         Vaga oldObject = vagaServiceInterface.findVagaById(id);
 
