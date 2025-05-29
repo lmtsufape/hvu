@@ -1186,8 +1186,19 @@ public class Facade {
         return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
     }
 
-    public CampoLaudo updateCampoLaudo(CampoLaudo transientObject) {
-        return campoLaudoServiceInterface.updateCampoLaudo(transientObject);
+    public CampoLaudo updateCampoLaudo(CampoLaudoRequest transientObject, Long id) {
+
+        //CampoLaudo o = obj.convertToEntity();
+        CampoLaudo oldObject = campoLaudoServiceInterface.findCampoLaudoById(id);
+
+        TypeMap<CampoLaudoRequest, CampoLaudo> typeMapper = modelMapper
+                .typeMap(CampoLaudoRequest.class, CampoLaudo.class)
+                .addMappings(mapper -> mapper.skip(CampoLaudo::setId));
+
+
+        typeMapper.map(transientObject, oldObject);
+
+        return campoLaudoServiceInterface.updateCampoLaudo(oldObject);
     }
 
     public CampoLaudo findCampoLaudoById(Long id) {
