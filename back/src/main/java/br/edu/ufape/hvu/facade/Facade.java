@@ -829,8 +829,17 @@ public class Facade {
         return especialidadeServiceInterface.saveEspecialidade(newInstance);
     }
 
-    public Especialidade updateEspecialidade(Especialidade transientObject) {
-        return especialidadeServiceInterface.updateEspecialidade(transientObject);
+    public Especialidade updateEspecialidade(EspecialidadeRequest obj, Long id) {
+        //Especialidade o = obj.convertToEntity();
+        Especialidade oldObject = findEspecialidadeById(id);
+
+        TypeMap<EspecialidadeRequest, Especialidade> typeMapper = modelMapper
+                .typeMap(EspecialidadeRequest.class, Especialidade.class)
+                .addMappings(mapper -> mapper.skip(Especialidade::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return especialidadeServiceInterface.updateEspecialidade(oldObject);
     }
 
     public Especialidade findEspecialidadeById(long id) {
