@@ -1,16 +1,11 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import br.edu.ufape.hvu.model.CampoLaudo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import br.edu.ufape.hvu.model.LaudoNecropsia;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.LaudoNecropsiaRequest;
 import br.edu.ufape.hvu.controller.dto.response.LaudoNecropsiaResponse;
@@ -47,23 +42,7 @@ public class LaudoNecropsiaController {
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@PatchMapping("laudoNecropsia/{id}")
 	public LaudoNecropsiaResponse updateLaudoNecropsia(@PathVariable Long id, @Valid @RequestBody LaudoNecropsiaRequest obj) {
-			LaudoNecropsia oldObject = facade.findLaudoNecropsiaById(id);
-
-			// campoLaudo
-			if(obj.getCampoLaudo() != null && !obj.getCampoLaudo().isEmpty()){
-				List<CampoLaudo> updatedCampoLaudos = obj.getCampoLaudo().stream()
-						.map(campo -> facade.findCampoLaudoById(campo.getId()))
-						.collect(Collectors.toList());
-				oldObject.setCampoLaudo(updatedCampoLaudos);
-				obj.setCampoLaudo(null); // Limpar para evitar mapeamento duplo
-			}
-
-			TypeMap<LaudoNecropsiaRequest, LaudoNecropsia> typeMapper = modelMapper
-					.typeMap(LaudoNecropsiaRequest.class, LaudoNecropsia.class)
-					.addMappings(mapper -> mapper.skip(LaudoNecropsia::setId));
-
-			typeMapper.map(obj, oldObject);
-			return new LaudoNecropsiaResponse(facade.updateLaudoNecropsia(oldObject));
+		return new LaudoNecropsiaResponse(facade.updateLaudoNecropsia(obj, id));
 	}
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")

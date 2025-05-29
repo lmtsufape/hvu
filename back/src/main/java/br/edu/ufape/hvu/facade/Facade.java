@@ -1400,8 +1400,26 @@ public class Facade {
         return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
     }
 
-    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsia transientObject) {
-        return laudoNecropsiaServiceInterfcae.updateLaudoNecropsia(transientObject);
+    @Transactional
+    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsiaRequest obj, Long id) {
+        LaudoNecropsia oldObject = laudoNecropsiaServiceInterfcae.findLaudoNecropsiaById(id);
+
+        // campoLaudo
+        if(obj.getCampoLaudo() != null && !obj.getCampoLaudo().isEmpty()){
+            List<CampoLaudo> updatedCampoLaudos = obj.getCampoLaudo().stream()
+                    .map(campo -> findCampoLaudoById(campo.getId()))
+                    .collect(Collectors.toList());
+            oldObject.setCampoLaudo(updatedCampoLaudos);
+            obj.setCampoLaudo(null); // Limpar para evitar mapeamento duplo
+        }
+
+        TypeMap<LaudoNecropsiaRequest, LaudoNecropsia> typeMapper = modelMapper
+                .typeMap(LaudoNecropsiaRequest.class, LaudoNecropsia.class)
+                .addMappings(mapper -> mapper.skip(LaudoNecropsia::setId));
+
+        typeMapper.map(obj, oldObject);
+
+        return laudoNecropsiaServiceInterfcae.updateLaudoNecropsia(oldObject);
     }
 
     public LaudoNecropsia findLaudoNecropsiaById(long id) {
