@@ -8,8 +8,6 @@ import jakarta.validation.Valid;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.CampoLaudoRequest;
 import br.edu.ufape.hvu.controller.dto.response.CampoLaudoResponse;
-
-
  
 @RestController
 @RequestMapping("/api/v1/")
@@ -42,7 +40,6 @@ public class CampoLaudoController {
 	@PatchMapping("campoLaudo/{id}")
 	public CampoLaudoResponse updateCampoLaudo(@PathVariable Long id, @Valid @RequestBody CampoLaudoRequest obj) {
 		return new CampoLaudoResponse(facade.updateCampoLaudo(obj, id));
-		
 	}
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
@@ -51,6 +48,5 @@ public class CampoLaudoController {
 		facade.deleteCampoLaudo(id);
 		return "";
 	}
-	
 
 }
