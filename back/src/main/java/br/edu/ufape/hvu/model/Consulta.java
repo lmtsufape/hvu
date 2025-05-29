@@ -27,13 +27,16 @@ public  class Consulta  {
 	private Double pesoAtual;
 	private Double idadeAtual;
 	private boolean proximaConsulta;
+	private String alteracoesClinicasDiversas;
+	private String suspeitasClinicas;
+	private String alimentacao;
+	private String queixaPrincipal;
+	@ManyToOne
+	@ToString.Exclude
+	private Especialidade encaminhamento;
 	@ManyToOne
 	@ToString.Exclude
 	private Medico medico;
-	@ManyToMany
-	@JoinColumn(name = "consulta_id")
-	@ToString.Exclude
-	private List<Estagiario> estagiario;
 	@ManyToOne
 	@ToString.Exclude
 	private Animal animal;
