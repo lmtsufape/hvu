@@ -66,32 +66,7 @@ public class VagaController {
 	public VagaResponse updateVaga(@PathVariable Long id, @Valid @RequestBody VagaRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-			//Vaga o = obj.convertToEntity();
-			Vaga oldObject = facade.findVagaById(id);
-
-			if (obj.getTipoConsulta() != null) {
-				oldObject.setTipoConsulta(facade.findTipoConsultaById(obj.getTipoConsulta().getId()));
-				obj.setTipoConsulta(null);
-			}
-
-			if (obj.getEspecialidade() != null) {
-				oldObject.setEspecialidade(facade.findEspecialidadeById(obj.getEspecialidade().getId()));
-				obj.setEspecialidade(null);
-			}
-
-			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId(), principal.getSubject()));
-				obj.setMedico(null);
-			}
-
-			TypeMap<VagaRequest, Vaga> typeMapper = modelMapper
-													.typeMap(VagaRequest.class, Vaga.class)
-													.addMappings(mapper -> mapper.skip(Vaga::setId));
-													
-			typeMapper.map(obj, oldObject);	
-			
-			
-			return new VagaResponse(facade.updateVaga(oldObject));
+		return new VagaResponse(facade.processUpdateAgendamento(obj, id, principal.getSubject()));
 	}
 	
 	@PostMapping("/gestao-vagas/criar")

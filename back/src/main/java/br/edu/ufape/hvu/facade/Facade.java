@@ -33,6 +33,8 @@ public class Facade {
 
     // Auth--------------------------------------------------------------
     private final KeycloakService keycloakService;
+    @Autowired
+    private MedicoServiceInterface medicoServiceInterface;
 
     public TokenResponse login(String username, String password) {
         return keycloakService.login(username, password);
@@ -530,6 +532,33 @@ public class Facade {
 
     public Vaga updateVaga(Vaga transientObject) {
         return vagaServiceInterface.updateVaga(transientObject);
+    }
+
+    public Vaga processUpdateAgendamento(VagaRequest obj, Long id, String idSession){
+        //Vaga o = obj.convertToEntity();
+        Vaga oldObject = vagaServiceInterface.findVagaById(id);
+
+        if (obj.getTipoConsulta() != null) {
+            oldObject.setTipoConsulta(tipoConsultaServiceInterface.findTipoConsultaById(obj.getTipoConsulta().getId()));
+            obj.setTipoConsulta(null);
+        }
+
+        if (obj.getEspecialidade() != null) {
+            oldObject.setEspecialidade(especialidadeServiceInterface.findEspecialidadeById(obj.getEspecialidade().getId()));
+            obj.setEspecialidade(null);
+        }
+
+        if(obj.getMedico() != null){
+            oldObject.setMedico(medicoServiceInterface.findMedicoById(obj.getMedico().getId()));
+            obj.setMedico(null);
+        }
+
+        TypeMap<VagaRequest, Vaga> typeMapper = modelMapper
+                .typeMap(VagaRequest.class, Vaga.class)
+                .addMappings(mapper -> mapper.skip(Vaga::setId));
+
+        typeMapper.map(obj, oldObject);
+        return updateVaga(oldObject);
     }
 
     public Vaga findVagaById(long id) {
