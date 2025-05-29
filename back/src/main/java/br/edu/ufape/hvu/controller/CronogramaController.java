@@ -3,7 +3,6 @@ package br.edu.ufape.hvu.controller;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.ufape.hvu.controller.dto.request.CronogramaRequest;
 import br.edu.ufape.hvu.controller.dto.response.CronogramaResponse;
 import br.edu.ufape.hvu.facade.Facade;
-import br.edu.ufape.hvu.model.Cronograma;
 import jakarta.validation.Valid;
 
 
@@ -76,27 +74,7 @@ public class CronogramaController {
 	public CronogramaResponse updateCronograma(@PathVariable Long id, @Valid @RequestBody CronogramaRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-			Cronograma oldObject = facade.findCronogramaById(id);
-
-			// medico
-			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId(), principal.getSubject()));
-				obj.setMedico(null);
-			}
-
-			if (obj.getEspecialidade() != null) {
-				oldObject.setEspecialidade(facade.findEspecialidadeById(obj.getEspecialidade().getId()));
-				obj.setEspecialidade(null);
-			}
-
-
-			TypeMap<CronogramaRequest, Cronograma> typeMapper = modelMapper
-													.typeMap(CronogramaRequest.class, Cronograma.class)
-													.addMappings(mapper -> mapper.skip(Cronograma::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new CronogramaResponse(facade.updateCronograma(oldObject));
+		return new CronogramaResponse(facade.updateCronograma(obj, id, principal.getSubject()));
 		
 	}
 

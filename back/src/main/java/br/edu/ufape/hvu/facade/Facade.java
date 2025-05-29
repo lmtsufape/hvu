@@ -300,8 +300,26 @@ public class Facade {
         return cronogramaServiceInterface.saveCronograma(newInstance);
     }
 
-    public Cronograma updateCronograma(Cronograma transientObject) {
-        return cronogramaServiceInterface.updateCronograma(transientObject);
+    public Cronograma updateCronograma(CronogramaRequest obj, Long id, String idSession) {
+        Cronograma oldObject = findCronogramaById(id);
+
+        // medico
+        if(obj.getMedico() != null){
+            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
+            obj.setMedico(null);
+        }
+
+        if (obj.getEspecialidade() != null) {
+            oldObject.setEspecialidade(findEspecialidadeById(obj.getEspecialidade().getId()));
+            obj.setEspecialidade(null);
+        }
+
+        TypeMap<CronogramaRequest, Cronograma> typeMapper = modelMapper
+                .typeMap(CronogramaRequest.class, Cronograma.class)
+                .addMappings(mapper -> mapper.skip(Cronograma::setId));
+
+        typeMapper.map(obj, oldObject);
+        return cronogramaServiceInterface.updateCronograma(oldObject);
     }
 
     public Cronograma findCronogramaById(long id) {
