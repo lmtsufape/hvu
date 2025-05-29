@@ -111,7 +111,7 @@ return (
             {Object.keys(formData.opc).map((opc) => (
             <div key={opc} className="row align-items-start mb-2">
               <div className="col-3">
-                <label className="d-flex align-items-center">
+                <label className={`${styles.radio_container} d-flex align-items-center`}>
                 <input
                     type="checkbox"
                     name={opc}
@@ -234,7 +234,7 @@ return (
           {ALIMENTACAO_OPTS.map(opt => (
             <label key={opt} >
               <input
-                type="radio"
+                type="checkbox"
                 name="ExameFisico.alimentacao"
                 value={opt}
                 checked={formData.ExameFisico.alimentacao === opt}
@@ -257,9 +257,10 @@ return (
         </div>
         <div className={styles.checkbox_container}>
           {POSTURAS.map(opt => (
-            <label key={opt} >
+            <label key={opt} >  
               <input
-                type="radio"
+                type="checkbox"
+                id="circle_checkbox"
                 name="ExameFisico.postura"
                 value={opt}
                 checked={formData.ExameFisico.postura === opt}
@@ -280,7 +281,7 @@ return (
           {CONCIENCIA.map(opt => (
             <label key={opt}>
               <input
-                type="radio"
+                type="checkbox"
                 name="ExameFisico.nivelConsciencia"
                 value={opt}
                 checked={formData.ExameFisico.nivelConsciencia === opt}
@@ -299,7 +300,7 @@ return (
           {SCORE_CORPORAL.map(opt => (
             <label key={opt} >
               <input
-                type="radio"
+                type="checkbox"
                 name="ExameFisico.score"
                 value={opt}
                 checked={formData.ExameFisico.score === opt}
@@ -319,7 +320,7 @@ return (
             {HIDRATACAO_OPTS.map(opt => (
               <label key={opt} >
                 <input
-                  type="radio"
+                  type="checkbox"
                   name="ExameFisico.hidratacao"
                   value={opt}
                   checked={formData.ExameFisico.hidratacao === opt}
@@ -347,12 +348,14 @@ return (
         <div className={styles.column}>
             <label className="form-label fw-medium">Frequência cardíaca (BPM):
               <input type="text" name="freqCardiaca" value={formData.freqCardiaca} onChange={handleChange} 
+              className="form-control"
                 />
             </label>
         </div>
           <div className={styles.column}>
             <label className="form-label fw-medium">Frequência Respiratória (RPM):
-              <input type="text" name="freqRespiratoria" value={formData.freqRespiratoria} onChange={handleChange} 
+              <input type="text" name="freqRespiratoria" value={formData.freqRespiratoria} onChange={handleChange}
+              className="form-control" 
                 />
             </label>
         </div>
@@ -363,6 +366,7 @@ return (
           name="turgorCutaneo"
           value={formData.turgorCutaneo}
           onChange={handleChangeAtualizaSelect}
+          className="form-control"
           >
           <option value="">Selecione</option>
           <option value="Normal">Normal</option>
@@ -377,6 +381,7 @@ return (
             name="tpc"
             value={formData.tpc}
             onChange={handleChangeAtualizaSelect}
+            className="form-control"
         >
             <option value="">Selecione</option>
             <option value="2 segundos">2 segundos</option>
@@ -387,85 +392,86 @@ return (
       </div>
       
       <div className="row fw-medium mb-2">
-        <div className="col-3 mb-3 mt-4">Mucosas</div>
-        <div className="col mt-4 mb-3">
-          Localização (oculopalpebral, nasal, bucal, vulvar, prepucial ou anal)
-        </div>
-        
-          <div >
-            {Object.keys(formData.option).map((option) => (
-            <div key={option} className="row align-items-start mb-2" >
-                <div className="col-3">
-                  <label className="d-flex align-items-center">
-                  <input
-                      type="checkbox"
-                      name={option}
-                      checked={formData.option[option]}
-                      onChange={handleCheckboxChangeMucosas}
-                      className="me-2"
-                  />
-                  {option === "roseas" && "Róseas"}
-                  {option === "roseasPalidas" && "Róseas-pálidas"}
-                  {option === "porcelanicas" && "Porcelânicas"}
-                  {option === "hiperemicas" && "Hiperêmicas"}
-                  {option === "cianoticas" && "Cianóticas"}
-                  {option === "ictaricas" && "Ictéricas"}
-                  {option === "naoAvaliado" && "Não-avaliado"}
-                  </label>
-                </div>
-                
-                <div className="col">
-                  <input
-                  type="text"
-                  className="form-control"
-                  name={option}
-                  value={formData.mucosas[option]}
-                  onChange={handleMucosaLocationChange}
-                  disabled={!formData.option[option]}
-                  />
-                </div>
-            </div>
-            ))}
-        </div>
-        </div>
+  <div className="col-3 mb-3 mt-4">Mucosas</div>
+  <div className="col mt-4 mb-3">
+    Localização (oculopalpebral, nasal, bucal, vulvar, prepucial ou anal)
+  </div>
 
-        <div>
-        <div className={styles.column}>
-        <label>Linfonodos</label>
+  <div>
+    {Object.keys(formData.option).map((option) => (
+      <div key={option} className="row align-items-start mb-2">
+        <div className="col-3">
+          <label className={`${styles.radio_container} d-flex align-items-center`}>
+            <input
+              type="checkbox"
+              name={option}
+              checked={formData.option[option]}
+              onChange={handleCheckboxChangeMucosas}
+              className="me-2"
+            />
+            {option === "roseas" && "Róseas"}
+            {option === "roseasPalidas" && "Róseas-pálidas"}
+            {option === "porcelanicas" && "Porcelânicas"}
+            {option === "hiperemicas" && "Hiperêmicas"}
+            {option === "cianoticas" && "Cianóticas"}
+            {option === "ictaricas" && "Ictéricas"}
+            {option === "naoAvaliado" && "Não-avaliado"}
+          </label>
         </div>
-        <div className={styles.checkbox_container}>
-            {linfonodos.map((linfonodo) => (
-            <div key={linfonodo.value}>
-                <label>
-                <input
-                    type="checkbox"
-                    name={linfonodo.value}
-                    checked={linfonodo.value in formData.linfonodos}
-                    onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
-                />
-            
-                {linfonodo.label}
-                </label>
-                
-                {formData.linfonodos[linfonodo.value] && (
-                <div>
-                    {caracteristicas.map((caracteristica) => (
-                    <label key={caracteristica.value}>
-                        <input
-                        type="checkbox"
-                        name={caracteristica.value}
-                        checked={formData.linfonodos[linfonodo.value]?.includes(caracteristica.value) || false}
-                        onChange={(e) => handleCaracteristicaChange(e, linfonodo.value)}
-                        />
-                        {caracteristica.label}
-                    </label>
-                    ))}
-                </div>
-                )}
-            </div>
-            ))}
+        <div className="col">
+          <input
+            type="text"
+            name={option}
+            value={formData.mucosas[option]}
+            onChange={handleMucosaLocationChange}
+            disabled={!formData.option[option]}
+            className="form-control"
+          />
         </div>
       </div>
+    ))}
+  </div>
+</div>
+
+<div className="row fw-medium mb-2">
+  <div className="col-3 mb-3 mt-4">Linfonodos</div>
+  <div className="col mt-4 mb-3"></div>
+
+  <div>
+    {linfonodos.map((linfonodo) => (
+      <div key={linfonodo.value} className="row align-items-start mb-2">
+        <div className="col-12" >
+          <label className={`${styles.radio_container} d-flex align-items-center`}>
+            <input
+              type="checkbox"
+              name={linfonodo.value}
+              checked={linfonodo.value in formData.linfonodos}
+              onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
+              className="me-2"
+            />
+            {linfonodo.label}
+          </label>
+          {formData.linfonodos[linfonodo.value] && (
+            <div className={`${styles.radio_container} d-flex align-items-center`}>
+              {caracteristicas.map((caracteristica) => (
+                <label key={caracteristica.value} className="d-flex align-items-center me-3 mb-1">
+                  <input
+                    type="checkbox"
+                    name={caracteristica.value}
+                    checked={formData.linfonodos[linfonodo.value]?.includes(caracteristica.value) || false}
+                    onChange={(e) => handleCaracteristicaChange(e, linfonodo.value)}
+                    className="me-2"
+                  />
+                  {caracteristica.label}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
       
 
       {/* BOTÕES ---------------------------------------------------------- */}

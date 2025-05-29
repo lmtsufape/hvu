@@ -1,14 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .container {
-  display: block;
   width: 100%;
   max-width: 65rem;
   min-width: 300px;
-  height: auto;
-  margin: auto;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin: 30px auto;
   font-family: "Poppins", sans-serif;
 }
 
@@ -35,10 +31,13 @@
 }
 
 .form_box {
+    width: 100%;
+  max-width: 100%; 
   border-radius: 20px;
-  border: 0.5px solid #b1b1b1;
-  padding: 20px;
+  padding: 1rem; 
   background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
+  overflow-x: hidden; 
 }
 
 .box{
@@ -82,12 +81,11 @@
 }
 
 .column label {
-  /* display: block; */
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 5px;
+ display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #272727;
 }
 
 .column input,
