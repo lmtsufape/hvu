@@ -21,7 +21,8 @@ export default function ClinicaMedicaRetornoStep1({
     handleLinfonodoChange,
     handleCaracteristicaChange,
     handleChangeAtualizaSelect,
-    handleMucosaLocationChange
+    handleMucosaLocationChange,
+    cleanLocalStorage
 }) {
 
       const linfonodos = [
@@ -420,7 +421,7 @@ export default function ClinicaMedicaRetornoStep1({
           </div>
 
           <div className={styles.button_box}>
-            <CancelarWhiteButton />
+            <CancelarWhiteButton onClick={cleanLocalStorage}/>
             <ContinuarFichasGreenButton type="submit" />
           </div>
         </form>

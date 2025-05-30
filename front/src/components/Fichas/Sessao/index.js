@@ -22,6 +22,7 @@ function FichaSessao() {
     const [loading, setLoading] = useState(true);
 
     const router = useRouter();
+    const [consultaId, setConsultaId] = useState(null);
 
     const [formData, setFormData] = useState({
         numeroSessao: "",
@@ -48,8 +49,7 @@ function FichaSessao() {
         }
     }, [formData]); 
 
-    const [consultaId, setConsultaId] = useState(null);
-
+    // Obtém o ID da ficha da URL
     useEffect(() => {
     if (router.isReady) {
         const id = router.query.fichaId;

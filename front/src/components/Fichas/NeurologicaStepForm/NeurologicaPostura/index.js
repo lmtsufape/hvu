@@ -4,7 +4,7 @@ import VoltarButton from "../../../VoltarButton";
 import { CancelarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
-function FichaNeurologica({formData, handleChange, nextStep, handleCheckboxChange}) {
+function FichaNeurologica({formData, handleChange, nextStep, handleCheckboxChange, cleanLocalStorage}) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -108,7 +108,7 @@ function FichaNeurologica({formData, handleChange, nextStep, handleCheckboxChang
                     </div>
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton />
+                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < ContinuarFichasGreenButton type="submit"/>
                     </div>
                 </form>

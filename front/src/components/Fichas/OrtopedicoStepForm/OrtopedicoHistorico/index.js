@@ -4,7 +4,7 @@ import VoltarButton from "../../../VoltarButton";
 import { CancelarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
-function AtendimentoOrtopedico({formData, handleChange, nextStep}) {
+function AtendimentoOrtopedico({formData, handleChange, nextStep, cleanLocalStorage}) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -75,7 +75,7 @@ function AtendimentoOrtopedico({formData, handleChange, nextStep}) {
                     </div>
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton />
+                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < ContinuarFichasGreenButton type="submit"/>
                     </div> 
                 </form>

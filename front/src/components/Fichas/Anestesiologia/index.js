@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 import Step1Anestesiologia from "./PreAnestesia";
 import Step2Anestesiologia from "./PosAnestesia";
 
@@ -14,6 +15,8 @@ export default function AnestesiologiaSteps() {
   const [step, setStep] = useState(1);
   const nextStep = () => setStep((s) => s + 1);
   const prevStep = () => setStep((s) => s - 1);
+  const [consultaId, setConsultaId] = useState(null);
+  const router = useRouter();
 
   /* auth */
   const [loading, setLoading] = useState(true);
@@ -59,6 +62,33 @@ export default function AnestesiologiaSteps() {
   };
   /* ------------------------------------ */
 
+    // Carrega os dados do formulário do localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          const savedFormData = localStorage.getItem("anestesiologiaFormData");
+          if (savedFormData) {
+              setFormData(JSON.parse(savedFormData));
+          }
+      }
+  }, []); 
+
+  // Salva os dados do formulário no localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          localStorage.setItem("anestesiologiaFormData", JSON.stringify(formData));
+      }
+  }, [formData]); 
+
+  // Obtém o ID da ficha da URL
+  useEffect(() => {
+    if (router.isReady) {
+        const id = router.query.fichaId;
+        if (id) {
+          setConsultaId(id);
+        }
+    }
+  }, [router.isReady, router.query.fichaId]);
+
   /* auth */
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -91,7 +121,9 @@ export default function AnestesiologiaSteps() {
     console.log("Enviando para API:", data);
 
     try {
-      await createFicha(data);
+      const resultado = await createFicha(data);
+      localStorage.setItem('fichaId', resultado.id.toString());
+      localStorage.removeItem("anestesiologiaFormData");
       setShowOK(true);
     } catch (err) {
       console.error(err);
@@ -100,7 +132,9 @@ export default function AnestesiologiaSteps() {
     }
   };
 
-
+  const cleanLocalStorage = () => {
+    localStorage.removeItem("anestesiologiaFormData");
+  }
 
 
   /* render */
@@ -113,6 +147,7 @@ export default function AnestesiologiaSteps() {
           handleChange={handleChange}
           handleCheckboxChange={handleCheckboxChange}
           nextStep={nextStep}
+          cleanLocalStorage={cleanLocalStorage}
         />
       )}
 
@@ -142,7 +177,7 @@ export default function AnestesiologiaSteps() {
     </div>
 
 
-      {showOK  && <Alert      message="Ficha criada!" show url="/fichaAnestesiologia" />}
+      {showOK  && consultaId && <Alert message="Ficha criada!" show url={`/createConsulta/${consultaId}`} />}
       {showErr && <ErrorAlert message={errMsg || "Erro"} show />}
     </div>
   );

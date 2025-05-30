@@ -486,39 +486,39 @@ function CreateConsulta() {
               Ficha de ato cirúrgico
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaAnestesiologia')}>
+            onClick={() => handleClick('/fichaAnestesiologia', id)}>
               Ficha de anestesiológia
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaCardiologica')}>
+            onClick={() => handleClick('/fichaCardiologica', id)}>
               Ficha cardiológica
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaAtendimentoOrtopedico')}>
+            onClick={() => handleClick('/fichaAtendimentoOrtopedico', id)}>
               Ficha ortopédica
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaClinicaMedica')}>
+            onClick={() => handleClick('/fichaClinicaMedica', id)}>
               Ficha clínica médica
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaMedicaRetorno')}>
+            onClick={() => handleClick('/fichaMedicaRetorno', id)}>
               Ficha clínica médica de retorno
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaDermatologica')}>
+            onClick={() => handleClick('/fichaDermatologica', id)}>
               Ficha dermatológica
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaDermatologicaRetorno')}>
+            onClick={() => handleClick('/fichaDermatologicaRetorno', id)}>
               Ficha dermatológica de retorno
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaNeurologica')}>
+            onClick={() => handleClick('/fichaNeurologica', id)}>
               Ficha neurológica
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaReabilitacaoIntegrativa')}>
+            onClick={() => handleClick('/fichaReabilitacaoIntegrativa', id)}>
               Ficha de reabilitação integrativa
             </button>
             <button className={styles.ficha_button} type="button"
@@ -526,11 +526,11 @@ function CreateConsulta() {
               Ficha de sessão
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaSolicitacaoCitologia')}>
+            onClick={() => handleClick('/fichaSolicitacaoCitologia', id)}>
               Ficha de solicitação de citologia
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => router.push('/fichaSolicitacaoExame')}>
+            onClick={() => handleClick('/fichaSolicitacaoExame', id)}>
               Ficha de solicitação de exame
             </button>
           </div>
