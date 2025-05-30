@@ -33,6 +33,8 @@ public class Facade {
 
     // Auth--------------------------------------------------------------
     private final KeycloakService keycloakService;
+    @Autowired
+    private MedicoServiceInterface medicoServiceInterface;
 
     public TokenResponse login(String username, String password) {
         return keycloakService.login(username, password);
@@ -298,8 +300,26 @@ public class Facade {
         return cronogramaServiceInterface.saveCronograma(newInstance);
     }
 
-    public Cronograma updateCronograma(Cronograma transientObject) {
-        return cronogramaServiceInterface.updateCronograma(transientObject);
+    public Cronograma updateCronograma(CronogramaRequest obj, Long id, String idSession) {
+        Cronograma oldObject = findCronogramaById(id);
+
+        // medico
+        if(obj.getMedico() != null){
+            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
+            obj.setMedico(null);
+        }
+
+        if (obj.getEspecialidade() != null) {
+            oldObject.setEspecialidade(findEspecialidadeById(obj.getEspecialidade().getId()));
+            obj.setEspecialidade(null);
+        }
+
+        TypeMap<CronogramaRequest, Cronograma> typeMapper = modelMapper
+                .typeMap(CronogramaRequest.class, Cronograma.class)
+                .addMappings(mapper -> mapper.skip(Cronograma::setId));
+
+        typeMapper.map(obj, oldObject);
+        return cronogramaServiceInterface.updateCronograma(oldObject);
     }
 
     public Cronograma findCronogramaById(long id) {
@@ -456,8 +476,22 @@ public class Facade {
         return racaServiceInterface.saveRaca(newInstance);
     }
 
-    public Raca updateRaca(Raca transientObject) {
-        return racaServiceInterface.updateRaca(transientObject);
+    public Raca updateRaca(RacaRequest obj, Long id) {
+        //Raca o = obj.convertToEntity();
+        Raca oldObject = findRacaById(id);
+
+        if (obj.getEspecie() != null) {
+            oldObject.setEspecie(findEspecieById(obj.getEspecie().getId()));
+            obj.setEspecie(null);
+        }
+
+        TypeMap<RacaRequest, Raca> typeMapper = modelMapper
+                .typeMap(RacaRequest.class, Raca.class)
+                .addMappings(mapper -> mapper.skip(Raca::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return racaServiceInterface.updateRaca(oldObject);
     }
 
     public Raca findRacaById(long id) {
@@ -482,15 +516,25 @@ public class Facade {
     }
 
     // Aviso--------------------------------------------------------------
-    @Autowired
-    private AvisoServiceInterface avisoServiceInterface;
+    private final AvisoServiceInterface avisoServiceInterface;
 
     public Aviso saveAviso(Aviso newInstance) {
         return avisoServiceInterface.saveAviso(newInstance);
     }
 
-    public Aviso updateAviso(Aviso transientObject) {
-        return avisoServiceInterface.updateAviso(transientObject);
+    @Transactional
+    public Aviso updateAviso(AvisoRequest transientObject, Long id) {
+        //Aviso o = obj.convertToEntity();
+        Aviso oldObject = avisoServiceInterface.findAvisoById(id);
+
+        TypeMap<AvisoRequest, Aviso> typeMapper = modelMapper
+                .typeMap(AvisoRequest.class, Aviso.class)
+                .addMappings(mapper -> mapper.skip(Aviso::setId));
+
+        typeMapper.map(transientObject, oldObject);
+
+
+        return avisoServiceInterface.updateAviso(oldObject);
     }
 
     public Aviso findAvisoById(long id) {
@@ -520,6 +564,33 @@ public class Facade {
 
     public Vaga updateVaga(Vaga transientObject) {
         return vagaServiceInterface.updateVaga(transientObject);
+    }
+
+    public Vaga processUpdateVaga(VagaRequest obj, Long id, String idSession){
+        //Vaga o = obj.convertToEntity();
+        Vaga oldObject = vagaServiceInterface.findVagaById(id);
+
+        if (obj.getTipoConsulta() != null) {
+            oldObject.setTipoConsulta(tipoConsultaServiceInterface.findTipoConsultaById(obj.getTipoConsulta().getId()));
+            obj.setTipoConsulta(null);
+        }
+
+        if (obj.getEspecialidade() != null) {
+            oldObject.setEspecialidade(especialidadeServiceInterface.findEspecialidadeById(obj.getEspecialidade().getId()));
+            obj.setEspecialidade(null);
+        }
+
+        if(obj.getMedico() != null){
+            oldObject.setMedico(medicoServiceInterface.findMedicoById(obj.getMedico().getId()));
+            obj.setMedico(null);
+        }
+
+        TypeMap<VagaRequest, Vaga> typeMapper = modelMapper
+                .typeMap(VagaRequest.class, Vaga.class)
+                .addMappings(mapper -> mapper.skip(Vaga::setId));
+
+        typeMapper.map(obj, oldObject);
+        return updateVaga(oldObject);
     }
 
     public Vaga findVagaById(long id) {
@@ -753,8 +824,30 @@ public class Facade {
         return consulta;
     }
 
-    public Consulta updateConsulta(Consulta transientObject) {
-        return consultaServiceInterface.updateConsulta(transientObject);
+    @Transactional
+    public Consulta updateConsulta(ConsultaRequest obj, Long id, String idSession) {
+        //Consulta o = obj.convertToEntity();
+        Consulta oldObject = findConsultaById(id);
+
+        // medico
+        if(obj.getMedico() != null){
+            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
+            obj.setMedico(null);
+        }
+
+        // animal
+        if (obj.getAnimal() != null) {
+            oldObject.setAnimal(findAnimalById(obj.getAnimal().getId(), idSession));
+            obj.setAnimal(null);
+        }
+
+        TypeMap<ConsultaRequest, Consulta> typeMapper = modelMapper
+                .typeMap(ConsultaRequest.class, Consulta.class)
+                .addMappings(mapper -> mapper.skip(Consulta::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return consultaServiceInterface.updateConsulta(oldObject);
     }
 
     public Consulta findConsultaById(long id) {
@@ -790,8 +883,17 @@ public class Facade {
         return especialidadeServiceInterface.saveEspecialidade(newInstance);
     }
 
-    public Especialidade updateEspecialidade(Especialidade transientObject) {
-        return especialidadeServiceInterface.updateEspecialidade(transientObject);
+    public Especialidade updateEspecialidade(EspecialidadeRequest obj, Long id) {
+        //Especialidade o = obj.convertToEntity();
+        Especialidade oldObject = findEspecialidadeById(id);
+
+        TypeMap<EspecialidadeRequest, Especialidade> typeMapper = modelMapper
+                .typeMap(EspecialidadeRequest.class, Especialidade.class)
+                .addMappings(mapper -> mapper.skip(Especialidade::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return especialidadeServiceInterface.updateEspecialidade(oldObject);
     }
 
     public Especialidade findEspecialidadeById(long id) {
@@ -811,22 +913,21 @@ public class Facade {
     }
 
     // Agendamento--------------------------------------------------------------
-    @Autowired
-    private AgendamentoServiceInterface agendamentoServiceInterface;
+    private final AgendamentoServiceInterface agendamentoServiceInterface;
 
-    public Agendamento saveAgendamento(Agendamento newInstance, Long idVaga) {
+    @Transactional
+    public Agendamento saveAgendamento(AgendamentoRequest newInstance, Long idVaga, String idSession) {
+        Animal animal = findAnimalById(newInstance.getAnimal().getId(), idSession);
         Vaga vaga = findVagaById(idVaga);
-        if (vaga.getAgendamento() != null ){
-            throw new IllegalStateException("A vaga não está disponível.");
-        }
 
-        vaga.setStatus("Agendado");
-        vaga.setAgendamento(newInstance);
-        newInstance.setDataVaga(vaga.getDataHora());
-        newInstance.setStatus(vaga.getStatus());
-        return agendamentoServiceInterface.saveAgendamento(newInstance);
+        // Validações adicionais aqui, se necessário (ex: se a vaga está no futuro, etc.)
+
+        Agendamento agendamento = newInstance.convertToEntity();
+        agendamento.setAnimal(animal);
+        return confirmarAgendamento(vaga, agendamento);
     }
 
+    @Transactional
     public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject, String idSession) {
         Vaga vaga = new Vaga();
         Agendamento agendamento = new Agendamento();
@@ -838,14 +939,47 @@ public class Facade {
 
         saveVaga(vaga);
 
-        agendamento.setAnimal(animalServiceInterface.findAnimalById(newObject.getAnimal().getId()));
+        agendamento.setAnimal(findAnimalById(newObject.getAnimal().getId(), idSession));
         agendamento.setTipoEspecial(newObject.isTipoEspecial());
 
-        return saveAgendamento(agendamento, vaga.getId());
+        return confirmarAgendamento(vaga, agendamento);
+    }
+
+
+    private Agendamento confirmarAgendamento(Vaga vaga, Agendamento agendamento) {
+        if (vaga.getAgendamento() != null ){
+            throw new IllegalStateException("A vaga não está disponível.");
+        }
+
+        vaga.setStatus("Agendado");
+        vaga.setAgendamento(agendamento);
+        agendamento.setDataVaga(vaga.getDataHora());
+        agendamento.setStatus(vaga.getStatus());
+
+        return agendamentoServiceInterface.saveAgendamento(agendamento);
     }
 
     public Agendamento updateAgendamento(Agendamento transientObject) {
         return agendamentoServiceInterface.updateAgendamento(transientObject);
+    }
+
+    @Transactional
+    public Agendamento processUpdateAgendamento(AgendamentoRequest transientObject, Long id, String userId) {
+
+        Agendamento oldObject = findAgendamentoById(id);
+
+        if (transientObject.getAnimal() != null) {
+            oldObject.setAnimal(findAnimalById(transientObject.getAnimal().getId(), userId));
+            transientObject.setAnimal(null);
+        }
+
+        TypeMap<AgendamentoRequest, Agendamento> typeMapper = modelMapper
+                .typeMap(AgendamentoRequest.class, Agendamento.class)
+                .addMappings(mapper -> mapper.skip(Agendamento::setId));
+
+        typeMapper.map(transientObject, oldObject);
+
+        return updateAgendamento(oldObject);
     }
 
     // Reagenda um agendamento para uma nova vaga
@@ -949,8 +1083,17 @@ public class Facade {
         return enderecoServiceInterface.saveEndereco(newInstance);
     }
 
-    public Endereco updateEndereco(Endereco transientObject) {
-        return enderecoServiceInterface.updateEndereco(transientObject);
+    public Endereco updateEndereco(EnderecoRequest obj, Long id) {
+        //Endereco o = obj.convertToEntity();
+        Endereco oldObject = findEnderecoById(id);
+
+        TypeMap<EnderecoRequest, Endereco> typeMapper = modelMapper
+                .typeMap(EnderecoRequest.class, Endereco.class)
+                .addMappings(mapper -> mapper.skip(Endereco::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return enderecoServiceInterface.updateEndereco(oldObject);
     }
 
     public Endereco findEnderecoById(long id) {
@@ -977,8 +1120,17 @@ public class Facade {
         return estagiarioServiceInterface.saveEstagiario(newInstance);
     }
 
-    public Estagiario updateEstagiario(Estagiario transientObject) {
-        return estagiarioServiceInterface.updateEstagiario(transientObject);
+    public Estagiario updateEstagiario(EstagiarioRequest obj, Long id) {
+        //Estagiario o = obj.convertToEntity();
+        Estagiario oldObject = findEstagiarioById(id);
+
+        TypeMap<EstagiarioRequest, Estagiario> typeMapper = modelMapper
+                .typeMap(EstagiarioRequest.class, Estagiario.class)
+                .addMappings(mapper -> mapper.skip(Estagiario::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return estagiarioServiceInterface.updateEstagiario(oldObject);
     }
 
     public Estagiario findEstagiarioById(long id) {
@@ -1082,8 +1234,17 @@ public class Facade {
         return especieServiceInterface.saveEspecie(newInstance);
     }
 
-    public Especie updateEspecie(Especie transientObject) {
-        return especieServiceInterface.updateEspecie(transientObject);
+    public Especie updateEspecie(EspecieRequest obj, Long id) {
+        //Especie o = obj.convertToEntity();
+        Especie oldObject = findEspecieById(id);
+
+        TypeMap<EspecieRequest, Especie> typeMapper = modelMapper
+                .typeMap(EspecieRequest.class, Especie.class)
+                .addMappings(mapper -> mapper.skip(Especie::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return especieServiceInterface.updateEspecie(oldObject);
     }
 
     public Especie findEspecieById(long id) {
@@ -1103,15 +1264,22 @@ public class Facade {
     }
 
     // Area--------------------------------------------------------------
-    @Autowired
-    private AreaServiceInterface areaServiceInterface;
+    private final AreaServiceInterface areaServiceInterface;
 
     public Area saveArea(Area newInstance) {
         return areaServiceInterface.saveArea(newInstance);
     }
 
-    public Area updateArea(Area transientObject) {
-        return areaServiceInterface.updateArea(transientObject);
+    public Area updateArea(AreaRequest transientObject, Long id) {
+        //Area o = obj.convertToEntity();
+        Area oldObject = findAreaById(id);
+
+        TypeMap<AreaRequest, Area> typeMapper = modelMapper
+                .typeMap(AreaRequest.class, Area.class)
+                .addMappings(mapper -> mapper.skip(Area::setId));
+
+        typeMapper.map(transientObject, oldObject);
+        return areaServiceInterface.updateArea(oldObject);
     }
 
     public Area findAreaById(Long id) {
@@ -1131,15 +1299,25 @@ public class Facade {
     }
 
     // CampoLaudo--------------------------------------------------------------
-    @Autowired
-    private CampoLaudoServiceInterface campoLaudoServiceInterface;
+    private final CampoLaudoServiceInterface campoLaudoServiceInterface;
 
     public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
         return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
     }
 
-    public CampoLaudo updateCampoLaudo(CampoLaudo transientObject) {
-        return campoLaudoServiceInterface.updateCampoLaudo(transientObject);
+    public CampoLaudo updateCampoLaudo(CampoLaudoRequest transientObject, Long id) {
+
+        //CampoLaudo o = obj.convertToEntity();
+        CampoLaudo oldObject = campoLaudoServiceInterface.findCampoLaudoById(id);
+
+        TypeMap<CampoLaudoRequest, CampoLaudo> typeMapper = modelMapper
+                .typeMap(CampoLaudoRequest.class, CampoLaudo.class)
+                .addMappings(mapper -> mapper.skip(CampoLaudo::setId));
+
+
+        typeMapper.map(transientObject, oldObject);
+
+        return campoLaudoServiceInterface.updateCampoLaudo(oldObject);
     }
 
     public CampoLaudo findCampoLaudoById(Long id) {
@@ -1166,8 +1344,17 @@ public class Facade {
         return etapaServiceInterface.saveEtapa(newInstance);
     }
 
-    public Etapa updateEtapa(Etapa transientObject) {
-        return etapaServiceInterface.updateEtapa(transientObject);
+    public Etapa updateEtapa(EtapaRequest obj, Long id) {
+        //Etapa o = obj.convertToEntity();
+        Etapa oldObject = findEtapaById(id);
+
+        TypeMap<EtapaRequest, Etapa> typeMapper = modelMapper
+                .typeMap(EtapaRequest.class, Etapa.class)
+                .addMappings(mapper -> mapper.skip(Etapa::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return etapaServiceInterface.updateEtapa(oldObject);
     }
 
     public Etapa findEtapaById(Long id) {
@@ -1195,8 +1382,16 @@ public class Facade {
         return fichaServiceInterface.saveFicha(newInstance);
     }
 
-    public Ficha updateFicha(Ficha transientObject) {
-        return fichaServiceInterface.updateFicha(transientObject);
+    public Ficha updateFicha(FichaRequest obj, Long id) {
+
+        //Ficha o = obj.convertToEntity();
+        Ficha oldObject = findFichaById(id);
+        TypeMap<FichaRequest, Ficha> typeMapper = modelMapper
+                .typeMap(FichaRequest.class, Ficha.class)
+                .addMappings(mapper -> mapper.skip(Ficha::setId));
+        typeMapper.map(obj, oldObject);
+
+        return fichaServiceInterface.updateFicha(oldObject);
     }
 
     public Ficha findFichaById(long id) {
@@ -1224,8 +1419,25 @@ public class Facade {
         return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
     }
 
-    public FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServico transientObject) {
-        return fichaSolicitacaoServicoServiceInterface.updateFichaSolicitacaoServico(transientObject);
+    @Transactional
+    public FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServicoRequest obj, Long id, String idSession) {
+        //FichaSolicitacaoServico o = obj.convertToEntity();
+        FichaSolicitacaoServico oldObject = findFichaSolicitacaoServicoById(id);
+
+        if(obj.getMedico() != null){
+            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
+            obj.setMedico(null);
+        }
+
+
+        TypeMap<FichaSolicitacaoServicoRequest, FichaSolicitacaoServico> typeMapper = modelMapper
+                .typeMap(FichaSolicitacaoServicoRequest.class, FichaSolicitacaoServico.class)
+                .addMappings(mapper -> mapper.skip(FichaSolicitacaoServico::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return fichaSolicitacaoServicoServiceInterface.updateFichaSolicitacaoServico(oldObject);
     }
 
     public FichaSolicitacaoServico findFichaSolicitacaoServicoById(Long id) {
@@ -1254,8 +1466,18 @@ public class Facade {
         return fotoServiceInterface.saveFoto(newInstance);
     }
 
-    public Foto updateFoto(Foto transientObject) {
-        return fotoServiceInterface.updateFoto(transientObject);
+    public Foto updateFoto(FotoRequest obj, Long id) {
+        //Foto o = obj.convertToEntity();
+        Foto oldObject = findFotoById(id);
+
+        TypeMap<FotoRequest, Foto> typeMapper = modelMapper
+                .typeMap(FotoRequest.class, Foto.class)
+                .addMappings(mapper -> mapper.skip(Foto::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return fotoServiceInterface.updateFoto(oldObject);
     }
 
     public Foto findFotoById(Long id) {
@@ -1283,8 +1505,20 @@ public class Facade {
         return instituicaoServiceInterface.saveInstituicao(newInstance);
     }
 
-    public Instituicao updateInstituicao(Instituicao transientObject) {
-        return instituicaoServiceInterface.updateInstituicao(transientObject);
+    public Instituicao updateInstituicao(InstituicaoRequest obj, Long id) {
+
+        //Instituicao o = obj.convertToEntity();
+        Instituicao oldObject = findInstituicaoById(id);
+
+        TypeMap<InstituicaoRequest, Instituicao> typeMapper = modelMapper
+                .typeMap(InstituicaoRequest.class, Instituicao.class)
+                .addMappings(mapper -> mapper.skip(Instituicao::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+
+        return instituicaoServiceInterface.updateInstituicao(oldObject);
     }
 
     public Instituicao findInstituicaoById(long id) {
@@ -1312,8 +1546,26 @@ public class Facade {
         return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
     }
 
-    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsia transientObject) {
-        return laudoNecropsiaServiceInterfcae.updateLaudoNecropsia(transientObject);
+    @Transactional
+    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsiaRequest obj, Long id) {
+        LaudoNecropsia oldObject = laudoNecropsiaServiceInterfcae.findLaudoNecropsiaById(id);
+
+        // campoLaudo
+        if(obj.getCampoLaudo() != null && !obj.getCampoLaudo().isEmpty()){
+            List<CampoLaudo> updatedCampoLaudos = obj.getCampoLaudo().stream()
+                    .map(campo -> findCampoLaudoById(campo.getId()))
+                    .collect(Collectors.toList());
+            oldObject.setCampoLaudo(updatedCampoLaudos);
+            obj.setCampoLaudo(null); // Limpar para evitar mapeamento duplo
+        }
+
+        TypeMap<LaudoNecropsiaRequest, LaudoNecropsia> typeMapper = modelMapper
+                .typeMap(LaudoNecropsiaRequest.class, LaudoNecropsia.class)
+                .addMappings(mapper -> mapper.skip(LaudoNecropsia::setId));
+
+        typeMapper.map(obj, oldObject);
+
+        return laudoNecropsiaServiceInterfcae.updateLaudoNecropsia(oldObject);
     }
 
     public LaudoNecropsia findLaudoNecropsiaById(long id) {
@@ -1341,8 +1593,18 @@ public class Facade {
         return materialColetadoServiceInterface.saveMaterialColetado(newInstance);
     }
 
-    public MaterialColetado updateMaterialColetado(MaterialColetado transientObject) {
-        return materialColetadoServiceInterface.updateMaterialColetado(transientObject);
+    public MaterialColetado updateMaterialColetado(MaterialColetadoRequest obj, Long id) {
+        //MaterialColetado o = obj.convertToEntity();
+        MaterialColetado oldObject = materialColetadoServiceInterface.findMaterialColetadoById(id);
+
+        TypeMap<MaterialColetadoRequest, MaterialColetado> typeMapper = modelMapper
+                .typeMap(MaterialColetadoRequest.class, MaterialColetado.class)
+                .addMappings(mapper -> mapper.skip(MaterialColetado::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return materialColetadoServiceInterface.updateMaterialColetado(oldObject);
     }
 
     public MaterialColetado findMaterialColetadoById(long id) {
@@ -1370,8 +1632,19 @@ public class Facade {
         return OrgaoServiceInterface.saveOrgao(newInstance);
     }
 
-    public Orgao updateOrgao(Orgao transientObject) {
-        return OrgaoServiceInterface.updateOrgao(transientObject);
+    public Orgao updateOrgao(OrgaoRequest transientObject, Long id) {
+        //Orgao o = obj.convertToEntity();
+        Orgao oldObject = OrgaoServiceInterface.findOrgaoById(id);
+
+
+        TypeMap<OrgaoRequest, Orgao> typeMapper = modelMapper
+                .typeMap(OrgaoRequest.class, Orgao.class)
+                .addMappings(mapper -> mapper.skip(Orgao::setId));
+
+
+        typeMapper.map(transientObject, oldObject);
+
+        return OrgaoServiceInterface.updateOrgao(oldObject);
     }
 
     public Orgao findOrgaoById(long id) {
@@ -1418,8 +1691,16 @@ public class Facade {
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
     }
 
-    public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopia transientObject) {
-        return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(transientObject);
+    public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopiaRequest obj, Long id) {
+        CampoLaudoMicroscopia oldObject = findCampoLaudoMicroscopiaById(id);
+
+        TypeMap<CampoLaudoMicroscopiaRequest, CampoLaudoMicroscopia> typeMapper = modelMapper
+                .typeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class)
+                .addMappings(mapper -> mapper.skip(CampoLaudoMicroscopia::setId));
+
+        typeMapper.map(obj, oldObject);
+
+        return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(oldObject);
     }
 
     public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {

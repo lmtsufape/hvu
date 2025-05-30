@@ -25,8 +25,11 @@ public  class ConsultaRequest  {
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
 	private List<FichaRequest> ficha;
-	private List<EstagiarioRequest> estagiario;
-
+	private String queixaPrincipal;
+	private String alteracoesClinicasDiversas;
+	private String suspeitasClinicas;
+	private String alimentacao;
+	private EspecialidadeRequest encaminhamento;
 	public Consulta convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
         return modelMapper.map(this, Consulta.class);
