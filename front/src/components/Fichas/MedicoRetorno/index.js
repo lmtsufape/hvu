@@ -75,6 +75,7 @@ function FichaMedicaRetorno() {
       ExameFisico: {
         alimentacao: "",
         postura: "",
+        nivelConsciencia: "",
         temperatura: "",
         score: "",
         freqCardiaca: "",
@@ -206,31 +207,6 @@ function FichaMedicaRetorno() {
         localStorage.setItem('fichaId', resultado.id.toString());
         localStorage.removeItem("fichaMedicaRetornoFormData");
         setShowAlert(true);
-    } catch (error) {
-      console.error("Erro ao criar ficha:", error);
-      if (error.response && error.response.data && error.response.data.code) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage("Erro ao criar ficha");
-      }
-      setShowErrorAlert(true);
-    }
-  };
-
-  const handleFinalizar = async () => {
-    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
-    const fichaData = {
-      nome: "Ficha clínico médica de retorno",
-      conteudo: {
-        conteudo: { ...formData },
-      },
-      dataHora: dataFormatada,
-    };
-
-    try {
-      console.log(fichaData);
-      await createFicha(fichaData);
-      setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar ficha:", error);
       if (error.response && error.response.data && error.response.data.code) {
