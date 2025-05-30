@@ -97,7 +97,7 @@ function AtendimentoCardiologico({
                         <label key={opt} >
                             <input
                             type="radio"
-                            name="ExameFisico.alimentacao"
+                            name="alimentacao"
                             value={opt}
                             checked={formData.alimentacao === opt}
                             onChange={handleChange}
@@ -114,13 +114,26 @@ function AtendimentoCardiologico({
                         <label key={opt} >
                             <input
                             type="radio"
-                            name="ExameFisico.alimentacao"
+                            name="estiloVida"
                             value={opt}
                             checked={formData.estiloVida === opt}
                             onChange={handleChange}
                             /> {opt}
                         </label>
                         ))}
+                    </div>
+
+                    <div className={styles.column}>
+                        <label className="form-label fw-medium">Contactantes/Ambiente/Manejo domissanitário/Tabagismo passivo</label>
+                        <input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        max="100"
+                        name="contactantes"
+                        value={formData?.contactantes || ""}
+                        onChange={handleChange}
+                        className="form-control"/>
                     </div>
 
                     <div className={styles.column}>
