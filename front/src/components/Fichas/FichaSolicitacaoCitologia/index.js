@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import VoltarButton from "../../VoltarButton";
@@ -24,6 +25,8 @@ function FichaSolicitacaoCitologia() {
     const [showDrawingModal, setShowDrawingModal] = useState(false);
     const dimensoesImagem = { largura: 700, altura: 360 };
     const [imagemDesenhada, setImagemDesenhada] = useState(null);
+    const [consultaId, setConsultaId] = useState(null);
+    const router = useRouter();
 
     const [formData, setFormData] = useState({
         anamnese: [],
@@ -54,6 +57,34 @@ function FichaSolicitacaoCitologia() {
             comentarios: ""
         }
     });
+
+    // Carrega os dados do formulário do localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedFormData = localStorage.getItem("SolicitacaoCitologiaFormData");
+            if (savedFormData) {
+                setFormData(JSON.parse(savedFormData));
+            }
+        }
+    }, []); 
+
+    // Salva os dados do formulário no localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("SolicitacaoCitologiaFormData", JSON.stringify(formData));
+        }
+    }, [formData]); 
+
+    // Obtém o ID da ficha da URL
+    useEffect(() => {
+      if (router.isReady) {
+          const id = router.query.fichaId;
+          if (id) {
+            setConsultaId(id);
+            console.log("ID da ficha:", id);
+          }
+      }
+    }, [router.isReady, router.query.fichaId]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -199,14 +230,19 @@ function FichaSolicitacaoCitologia() {
         };
     
         try {
-            console.log(fichaData);
-            await createFicha(fichaData);
+            const resultado = await createFicha(fichaData);
+            localStorage.setItem('fichaId', resultado.id.toString());
+            localStorage.removeItem("SolicitacaoCitologiaFormData");
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
             setShowErrorAlert(true);
         }
     };
+
+    const cleanLocalStorage = () => {
+        localStorage.removeItem("SolicitacaoCitologiaFormData");
+    }
 
     return (
         <div className={styles.container}>
@@ -484,12 +520,16 @@ function FichaSolicitacaoCitologia() {
                         </div>
                     </div>
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton />
+                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
 
-                {<Alert message="Ficha criada com sucesso!" show={showAlert} url={'/fichaSolicitacaoCitologia'} />}
+                {showAlert && consultaId &&
+                <div className={styles.alert}>
+                    <Alert message="Ficha criada com sucesso!" 
+                    show={showAlert} url={`/createConsulta/${consultaId}`} />
+                </div>}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
                 
             </div>

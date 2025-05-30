@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Dermatologica from "./AnamneseFicha";
 import Dermatologica2 from "./FisicoFicha";
 import Dermatologica3 from "./DermatologicoFicha";
@@ -22,6 +23,8 @@ function DermatologicaSteps() {
   const prevStep = () => setStep(step - 1);
   const [imagemDesenhada, setImagemDesenhada] = useState(null);
   const [errorMessage, setErrorMessage] = useState(""); // Added state for error message
+  const [consultaId, setConsultaId] = useState(null);
+  const router = useRouter();
 
   const [showOtherInputConviveComAnimais, setShowOtherInputConviveComAnimais] = useState(false);
   const [otherValueConviveComAnimais, setOtherValueConviveComAnimais] = useState("");
@@ -138,6 +141,34 @@ function DermatologicaSteps() {
 
   const { tratamentoDermatologico } = formData;
 
+    // Carrega os dados do formulário do localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          const savedFormData = localStorage.getItem("fichaDermatologicaFormData");
+          if (savedFormData) {
+              setFormData(JSON.parse(savedFormData));
+          }
+      }
+  }, []); 
+
+  // Salva os dados do formulário no localStorage 
+  useEffect(() => {
+      if (typeof window !== 'undefined') {
+          localStorage.setItem("fichaDermatologicaFormData", JSON.stringify(formData));
+      }
+  }, [formData]); 
+
+  // Obtém o ID da ficha da URL
+  useEffect(() => {
+    if (router.isReady) {
+        const id = router.query.fichaId;
+        if (id) {
+          setConsultaId(id);
+          console.log("ID da ficha:", id);
+        }
+    }
+  }, [router.isReady, router.query.fichaId]);
+
   useEffect(() => {
       if (typeof window !== 'undefined') {
           const storedToken = localStorage.getItem('token');
@@ -181,6 +212,11 @@ function DermatologicaSteps() {
               <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
           </div>
       );
+  }
+
+  const cleanLocalStorage = () => {
+    localStorage.removeItem("fichaDermatologicaFormData");
+    localStorage.removeItem('canvasKonva'); 
   }
  
 
@@ -443,8 +479,11 @@ function DermatologicaSteps() {
     };
 
     try {
-        console.log("Formulário válido. Dados prontos para envio:", formData);
-        await createFicha(fichaData);
+        const resultado = await createFicha(fichaData);
+        localStorage.setItem('fichaId', resultado.id.toString());
+        console.log("Ficha criada com sucesso:");
+        console.log("Ficha id:", resultado.id);
+        localStorage.removeItem("fichaDermatologicaFormData");
         localStorage.removeItem('canvasKonva'); 
         setShowAlert(true);
     } catch (error) {
@@ -542,8 +581,6 @@ function DermatologicaSteps() {
          }
      };
       
- 
-
   const renderStepContent = () => {
     switch(step) {
       default:
@@ -553,7 +590,6 @@ function DermatologicaSteps() {
           nextStep={nextStep}
           handleCheckboxChange={handleCheckboxChange}
           setFormData={setFormData}
-         
   
         />;
       case 1:
@@ -574,6 +610,7 @@ function DermatologicaSteps() {
             setShowOtherInputProdutosUtilizados={setShowOtherInputProdutosUtilizados}
             otherValueProdutosUtilizados={otherValueProdutosUtilizados}
             setOtherValueProdutosUtilizados={setOtherValueProdutosUtilizados}
+            cleanLocalStorage={cleanLocalStorage}
             
 
           />
@@ -595,10 +632,10 @@ function DermatologicaSteps() {
       case 3:
       return (
         <>
-        {showAlert && 
+        {showAlert && consultaId &&
         <div className={styles.alert}>
           <Alert message="Ficha criada com sucesso!" 
-          show={showAlert} url={`/fichaDermatologica`} />
+          show={showAlert} url={`/createConsulta/${consultaId}`} />
         </div>}
         {showErrorAlert && 
         <div className={styles.alert}>

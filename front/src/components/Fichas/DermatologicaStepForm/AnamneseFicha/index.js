@@ -13,7 +13,8 @@ function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckb
         showOtherInputProdutosUtilizados,
         setShowOtherInputProdutosUtilizados,
         otherValueProdutosUtilizados,
-        setOtherValueProdutosUtilizados}) {
+        setOtherValueProdutosUtilizados,
+        cleanLocalStorage}) {
 
    
 
@@ -355,7 +356,7 @@ function FichaDermatologicaStep1({formData, handleChange, nextStep, handleCheckb
                     </div>               
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton />
+                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < ContinuarFichasGreenButton type="submit"/>
                     </div> 
                 </form>

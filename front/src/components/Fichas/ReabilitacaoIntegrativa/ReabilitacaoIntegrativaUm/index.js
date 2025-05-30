@@ -4,7 +4,7 @@ import VoltarButton from "../../../VoltarButton";
 import { CancelarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
-function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
+function ReabilitacaoIntegrativa({formData, handleChange, nextStep, cleanLocalStorage}) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -147,7 +147,7 @@ function ReabilitacaoIntegrativa({formData, handleChange, nextStep}) {
                     </div>
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton />
+                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < ContinuarFichasGreenButton type="submit"/>
                     </div> 
                 </form>

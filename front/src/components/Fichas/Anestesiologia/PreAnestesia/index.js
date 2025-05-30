@@ -21,7 +21,8 @@ export default function PreAnestesia({
   handleChange,
   setFormData, 
   handleCheckboxChange,
-  nextStep
+  nextStep,
+  cleanLocalStorage
 }) {
     const [localizacao, setLocalizacao] = useState(
       formData.pre?.localizacaoMucosas ?? {
@@ -512,7 +513,7 @@ const removeFarmacoPreRow = (idx) => {
 
         {/* Botões ---------------------------------------------------------- */}
         <div className={styles.button_box}>
-          <CancelarWhiteButton />
+          <CancelarWhiteButton onClick={cleanLocalStorage}/>
           <ContinuarFichasGreenButton type="submit" />
         </div>
 
