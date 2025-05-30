@@ -59,6 +59,9 @@ function CreateConsulta() {
   const router = useRouter();
   const { id } = router.query;
 
+  const [showButtons, setShowButtons] = useState(false);
+
+
     // Usa o hook personalizado
   const { fichaIds, addFichaId } = useFichaManager();
 
@@ -296,7 +299,7 @@ function CreateConsulta() {
         <h1 className={styles.titulocadastro}>Criar consulta</h1>
       </div>
 
-      <div className={`${styles.boxagendarconsulta} ${styles.container}`}>
+      <div className={`${styles.boxagendarconsulta} ${styles.container} `}>
         <form>
           <div className="row">
             <div className={`col ${styles.col}`}>
@@ -464,6 +467,18 @@ function CreateConsulta() {
             </div>
           </div>
 
+          <div className={styles.box_ficha_toggle}>
+          <button
+            type="button"
+            className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
+            onClick={() => setShowButtons(prev => !prev)}
+          >
+            {showButtons ? 'Minimizar Fichas' : 'Fichas '}
+          </button>
+          {showButtons && (
+        <div className={styles.ficha_container}>
+
+          <div className={styles.form_box}>
           <div className={styles.box_ficha_buttons}>
 
             <button className={styles.ficha_button} type="button"
@@ -519,6 +534,13 @@ function CreateConsulta() {
               Ficha de solicitação de exame
             </button>
           </div>
+        </div>
+        </div>
+          )}
+          </div>
+          
+          
+
 
           {fichasDados.map(ficha => (
             <div key={ficha.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
