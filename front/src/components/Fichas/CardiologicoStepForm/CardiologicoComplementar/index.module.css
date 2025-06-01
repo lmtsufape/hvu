@@ -1,37 +1,43 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .container {
-  display: block;
   width: 100%;
   max-width: 65rem;
   min-width: 300px;
-  height: auto;
-  margin: auto;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin: 30px auto;
   font-family: "Poppins", sans-serif;
 }
 
+.container h2{
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #EEF8F3;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px;
+  padding-left: 16px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
 .container h1 {
-  font-size: 24px;
+  font-size: 24px;  
   font-weight: 700;
   text-align: center;
   margin-top: 50px;
   color: #333;
 }
 
-.container h2 {
-  font-size: 14px;
-  font-weight: 700;
-  text-align: start;
-  color: #333;
-}
-
 .form_box {
+    width: 100%;
+  max-width: 100%; 
   border-radius: 20px;
-  border: 0.5px solid #b1b1b1;
-  padding: 20px;
+  padding: 1rem; 
   background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
+  overflow-x: hidden; 
 }
 
 .box{
@@ -75,12 +81,11 @@
 }
 
 .column label {
-  /* display: block; */
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 5px;
+ display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #272727;
 }
 
 .column input,
@@ -153,4 +158,117 @@
   font-weight: 300;
   line-height: 24px;
   color: #C7122F;
+}
+/* index.module.css */
+.boxBorder {
+  display: grid;
+  border-radius: 20px;
+  padding-bottom: 18px;
+  padding-left: 29px;
+  padding-right: 37px;
+  background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);      
+}
+
+.tabela_tratamento {
+  width: 100%;
+  border-spacing: 10px 11px;
+  border-collapse: separate;
+}
+
+.tabela_tratamento td {
+  text-align: center;
+  font-size: 16px;
+}
+
+.tabela_tratamento th {
+  text-align: center;
+  background-color: #f6fbf9;
+  font-weight: 600;
+  font-size: 16px;
+  color: #7f7f7f;
+  border: solid 1px #7f7f7f;
+  border-radius: 5px;
+  padding-right: 10px;
+}
+
+.tabela_tratamento th[id="medicacao"]{
+  max-width: 526px;
+  width: 49%;
+}
+
+.tabela_tratamento input {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 49px;
+  margin-bottom: -5px;
+}
+
+.bolha_container {
+  display: flex;
+  justify-content: end;
+  gap: 7px;
+  margin-right: 15px;
+}
+
+.bolha {
+  display: flex;
+  position: relative;
+  width: 23px;
+  height: 23px;
+  align-items: center;   
+  justify-content: center;
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 18px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  transition: background 0.3s;
+  padding-top: 3px;
+}
+
+.bolha_remover_linha {
+  right: 0px;  
+}
+
+.bolha:hover {
+  background-color: #a5a5a5;
+}
+
+.message {
+  min-height: 300px;
+  margin-top: 56px; 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
+}
+
+@media(max-width: 980px) {
+
+  .container {
+    width: 100%;
+  }
+
+  .tabela_tratamento input {
+    width: 110px;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 49px;
+    margin-bottom: -5px;
+  }
+}.row {
+  display: flex; /* Alinha os elementos lado a lado */
+  gap: 16px; /* Espaçamento entre os elementos */
 }

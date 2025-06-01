@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Cardiologica from "./AtendimentoCardiologico";
-import Cardiologica2 from "./CardiologicoComplementar";
+import Cardiologica2 from "./ExameFisicoCardiologico";
+import Cardiologica3 from "./CardiologicoComplementar";
 import styles from "./index.module.css";
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
@@ -25,76 +26,92 @@ function CardiologicaSteps() {
   const [formData, setFormData] = useState({
 
     // página 1
-    anamnese: [],
-    exameFisico: {
-        nivelConsciencia: "",
-        atitudePostura: "",
-        acp: "",
-        pulsoArterial: "",
-        distensaoPulsoJugular: "",
-        fc: "",
-        fr: "",
-        respiracao: "",
-        mucosas: "",
-        tpc: "",
-        hidratacao: "",
-        narinasTraqueiaTireoide: "",
-        abdome: ""
-    },
+    peso: "",
+    opc: {
+      antiRabica: false,
+      giardia: false,
+      leishmaniose: false,
+      tosseDosCanis: false,
+      polivalenteCanina: false,
+      polivalenteFelina: false,
+      outros: false,
+      naoVacinado: false,
+      naoInformado: false,
+      },
+  
+
+      vacinacao: {
+        antiRabica: "",
+        giardia: "",
+        leishmaniose: "",
+        tosseDosCanis: "",
+        polivalenteCanina: "",
+        polivalenteFelina: "",
+        outros: "",
+        naoVacinado: "",
+        naoInformado: "",
+
+      },
+    alimentacao: "",
+    estiloVida: "",
+    contactantes: "",
+    sinaisClinicos: [],
     antecedentesHistorico:"",
 
     // página 2
-    afericaoPressao: {
-        metodoUtilizado: [],
-        tamanhoManguito: "",
-        numeroAfericoes: "",
-        comportamentoPaciente: "",
-        classificacaoPressao: [],
-        conclusoes: ""
+    
+    ExameFisico: {
+    postura: "",
+    nivelConsciencia: "",
+    temperatura: "",
+    score: "",
+    acp: "",
+    pulsoArterial: "",
+    distencaoEPulso: "",
+    respiracao: "",
+    narinasEOutros: "",
+    freqCardiaca: "",
+    freqRespiratoria: "",
+    abdomem: "",
+    hidratacao: "",
+    tpc: "",
+    turgor: "",
+    mucosas: "",
+    linfonodosGeral: "",
+    linfonodosLocal: []
     },
-    eletrocardiograma: {
-        ritmo: "",
-        fc: "",
-        eixoOndaP: "",
-        eixoQRS: "",
-        duracaoP: "",
-        amplitudeP: "",
-        intervaloPR: "",
-        duracaoQRS: "",
-        amplitudeR: "",
-        intervaloQT: "",
-        desnivelST: "",
-        amplitudeT: "",
-        conclusoes: ""
+    option: {
+      roseas: false,
+      roseasPalidas: false,
+      porcelanicas: false,
+      hiperemicas: false,
+      cianoticas: false,
+      ictaricas: false,
+      naoAvaliado: false
     },
-    ecocardiograma:{
-        aeAo: "",
-        divEdn: "",
-        divEs: "",
-        fs: "",
-        fe: "",
-        mapse: "",
-        eSepto: "",
-        tapse: "",
-        fluxoTransmitral: "",
-        eTriv: "",
-        aortico: "",
-        pulmonar: "",
-        velELateral: "",
-        velALateral: "",
-        velESeptal: "",
-        velASeptal: "",
-        eeLinha: "",
-        tricuspide: "",
-        gpvd: "",
-        indiceDistensibilidadeRdpa: ""
+    mucosas: {
+      roseas: "",
+      roseasPalidas: "",
+      porcelanicas: "",
+      hiperemicas: "",
+      cianoticas: "",
+      ictaricas: "",
+      naoAvaliado: ""
     },
-    conclusoes: "",
-    examesAnteriores: "",
-    diagnosticoPrognostico: "",
-    tratamentoInstituido: "",
-    plantonistasDiscentes:""
+    linfonodos: {},
+    //página 3
+    ExamesComplementares: {
+      examesAnteriores: "",
+    },
+
+    diagnostico: {},
+    medicacoes: [{ medicacao: "", dose: "", frequencia: "", periodo: "" }],
+
+    plantonistas:"",
+    medicosResponsaveis:"",
   });
+
+    const { medicacoes } = formData;
 
     // Carrega os dados do formulário do localStorage 
     useEffect(() => {
@@ -170,44 +187,41 @@ function CardiologicaSteps() {
   }
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    const path = name.split(".");
-  
-    setFormData((prev) => {
-      const updated = structuredClone(prev); 
-      let current = updated;
-  
-      for (let i = 0; i < path.length - 1; i++) {
-        if (!(path[i] in current)) current[path[i]] = {};
-        current = current[path[i]];
-      }
-  
-      current[path[path.length - 1]] = value;
-  
-      return updated;
-    });
+    const { name, value, type, checked } = event.target;
+
+    const finalValue = type === 'checkbox' ? checked : value;
+
+    if (name.includes('.')) {
+      const path = name.split('.');
+      setFormData(prev => {
+        const clone = JSON.parse(JSON.stringify(prev));
+        let ref = clone;
+        
+        for (let i = 0; i < path.length - 1; i++) {
+          if (!ref[path[i]]) ref[path[i]] = {};
+          ref = ref[path[i]];
+        }
+        
+        ref[path[path.length - 1]] = finalValue;
+        return clone;
+      });
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: finalValue
+      }));
+    }
   };
   
 
-  const handleCheckboxChange = (e, path) => {
-    const { value, checked } = e.target;
-  
-    setFormData((prev) => {
-      const updated = structuredClone(prev); // cópia profunda segura
-      const keys = path.split(".");
-      const lastKey = keys.pop();
-  
-      // Navega até o último objeto antes da propriedade
-      const target = keys.reduce((acc, key) => acc[key], updated);
-  
-      const array = target[lastKey] || [];
-  
-      target[lastKey] = checked
-        ? [...array, value]
-        : array.filter((item) => item !== value);
-  
-      return updated;
-    });
+  const handleCheckboxChange = (event, field) => {
+    const { value, checked } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [field]: checked
+        ? [...prev[field], value]
+        : prev[field].filter((item) => item !== value),
+    }));
   };
   
 
@@ -217,18 +231,7 @@ function CardiologicaSteps() {
     const fichaData = {
         nome: "Ficha clínica cardiológica",  
         conteudo:{
-            antecedentes: formData.antecedentesHistorico,
-            exameFisico: formData.exameFisico,
-            anamnese: formData.anamnese,
-
-            afericaoPressao: formData.afericaoPressao,
-            eletrocardiograma: formData.eletrocardiograma,
-            ecocardiograma: formData.ecocardiograma,
-            conclusoes: formData.conclusoes,
-            examesAnteriores: formData.examesAnteriores,
-            diagnosticoPrognostico: formData.diagnosticoPrognostico,
-            tratamentoInstituido: formData.tratamentoInstituido,
-            plantonistasDiscentes: formData.plantonistasDiscentes
+          ...formData
         },
         dataHora: dataFormatada 
     };
@@ -244,6 +247,138 @@ function CardiologicaSteps() {
     }
  };
 
+ const handleCheckboxChangeVacinacao = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      opc: {
+        ...prevState.opc,
+        [name]: checked
+      }
+    }));
+  };
+
+  const handleLocationChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      vacinacao: {
+        ...prevState.vacinacao,
+        [name]: value
+      }
+    }));
+  };
+
+  const handleChangeAtualizaSelect = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSinalChange = (e, sinalClinico) => {
+    const { checked } = e.target;
+    setFormData((prevState) => {
+      const updatedSinaisClinicos = { ...prevState.sinalClinico };
+      if (checked) {
+        updatedSinaisClinicos[sinalClinico] = []; // Adiciona o linfonodo com array vazio
+      } else {
+        delete updatedSinaisClinicos[sinalClinico]; // Remove o linfonodo ao desmarcar
+      }
+      return {
+        ...prevState,
+        sinaisClinicos: updatedSinaisClinicos
+      };
+    });
+  };
+
+  const handleCheckboxChangeMucosas = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      option: {
+        ...prevState.option,
+        [name]: checked
+      }
+    }));
+  };
+
+  const handleLinfonodoChange = (e, linfonodo) => {
+    const { checked } = e.target;
+    setFormData((prevState) => {
+      const updatedLinfonodos = { ...prevState.linfonodos };
+      if (checked) {
+        updatedLinfonodos[linfonodo] = []; // Adiciona o linfonodo com array vazio
+      } else {
+        delete updatedLinfonodos[linfonodo]; // Remove o linfonodo ao desmarcar
+      }
+      return {
+        ...prevState,
+        linfonodos: updatedLinfonodos
+      };
+    });
+  };
+
+  const handleCaracteristicaChange = (e, linfonodo) => {
+    const { name, checked } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      linfonodos: {
+        ...prevState.linfonodos,
+        [linfonodo]: checked
+          ? [...prevState.linfonodos[linfonodo], name]
+          : prevState.linfonodos[linfonodo].filter((item) => item !== name)
+      }
+    }));
+  };
+
+  const handleMucosaLocationChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      mucosas: {
+        ...prevState.mucosas,
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleChangeTratamentos = (index, campo, valor) => {
+        setFormData((prev) => {
+          const novosTratamentos = [...prev.medicacoes];
+          novosTratamentos[index][campo] = valor;
+      
+          return {
+            ...prev,
+            medicacoes: novosTratamentos
+          };
+        });
+    }; 
+
+  const adicionarLinhaTratamento = () => {
+        setFormData((prev) => ({
+          ...prev,
+          medicacoes: [
+            ...(prev.medicacoes || []),
+            { medicacao: "", dose: "", frequencia: "", periodo: "" }
+          ]
+        }));
+    };
+
+  const removerUltimaLinhaTratamento = () => {
+        setFormData((prev) => {
+          const tratamentos = prev.medicacoes;
+          if (tratamentos.length > 1) {
+            return {
+              ...prev,
+              medicacoes: tratamentos.slice(0, -1),
+            };
+          }
+          return prev;
+        });
+    };  
+  
   const cleanLocalStorage = () => {
     localStorage.removeItem("fichaCardiologicaFormData");
   }
@@ -258,31 +393,53 @@ function CardiologicaSteps() {
             nextStep={nextStep}
             handleCheckboxChange={handleCheckboxChange}
             cleanLocalStorage={cleanLocalStorage}
+            handleCheckboxChangeVacinacao={handleCheckboxChangeVacinacao}
+            handleLocationChange={handleLocationChange}
           />
         );
       case 2:
-      return (
-        <>
-        {showAlert && consultaId &&
-        <div className={styles.alert}>
-          <Alert message="Ficha criada com sucesso!" 
-          show={showAlert} url={`/createConsulta/${consultaId}`} />
-        </div>}
-        {showErrorAlert && 
-        <div className={styles.alert}>
-          <ErrorAlert message={errorMessage || "Erro ao criar ficha"} 
-          show={showErrorAlert} />
-        </div>}
+        return (
+          <>
+            <Cardiologica2
+            formData={formData} 
+            handleChange={handleChange} 
+            nextStep={nextStep}
+            handleCheckboxChange={handleCheckboxChange}
+            handleChangeAtualizaSelect={handleChangeAtualizaSelect}
+            handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
+            handleLinfonodoChange={handleLinfonodoChange}
+            handleCaracteristicaChange={handleCaracteristicaChange}
+            handleMucosaLocationChange={handleMucosaLocationChange}
+            cleanLocalStorage={cleanLocalStorage}
+            />
+          </>
+        );
+      case 3:
+        return (
+          <>
+          {showAlert && consultaId &&
+          <div className={styles.alert}>
+            <Alert message="Ficha criada com sucesso!" 
+            show={showAlert} url={`/createConsulta/${consultaId}`} />
+          </div>}
+          {showErrorAlert && 
+          <div className={styles.alert}>
+            <ErrorAlert message={errorMessage || "Erro ao criar ficha"} 
+            show={showErrorAlert} />
+          </div>}
 
-          <Cardiologica2
-          formData={formData} 
-          handleChange={handleChange} 
-          prevStep={prevStep}
-          handleCheckboxChange={handleCheckboxChange}
-          handleSubmit={handleSubmit}
-          />
-        </>
-      );
+            <Cardiologica3
+            formData={formData} 
+            handleChange={handleChange} 
+            prevStep={prevStep}
+            handleSubmit={handleSubmit}
+            handleChangeTratamentos={handleChangeTratamentos}
+            adicionarLinhaTratamento={adicionarLinhaTratamento}
+            removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
+            medicacoes={medicacoes}
+            />
+          </>
+        );
     }
   }
   return (
@@ -290,7 +447,7 @@ function CardiologicaSteps() {
       {renderStepContent()}
 
       <div className={styles.pagination}>
-        {[1, 2].map((page) => (
+        {[1, 2, 3].map((page) => (
           <button
             key={page}
             className={styles.pageButton}
