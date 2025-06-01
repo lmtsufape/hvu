@@ -1,114 +1,112 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .container {
-  display: block;
   width: 100%;
   max-width: 65rem;
   min-width: 300px;
-  height: auto;
-  margin: auto;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin: 30px auto;
   font-family: "Poppins", sans-serif;
 }
 
-.container h2{
-  max-width: 1118px;
+.container h1 {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+}
+
+.container h2,
+.titulo {
   width: 100%;
-  height: 44px;
+  height: auto;
   background-color: #EEF8F3;
   color: #000000;
-  font-size: 20px;
-  padding: 9.5px;
-  padding-left: 16px;
-  margin-bottom: 18px;
+  font-size: clamp(16px, 4vw, 20px); /* Font size responsivo */
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
   border-radius: 10px;
   font-weight: 500;
 }
 
-.container h1 {
-  font-size: 24px;
-  font-weight: 700;
-  text-align: center;
-  margin-top: 50px;
-  color: #333;
-}
-
-
 .form_box {
+  width: 100%;
+  max-width: 100%;
   border-radius: 20px;
-  border: 0.5px solid #b1b1b1;
-  padding: 20px;
+  padding: 1rem;
   background-color: #fff;
-}
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 15px;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
+  overflow-x: hidden;
 }
 
 .column {
   flex: 1;
-  min-width: 250px;
-  margin: 10px;
+  min-width: 100px;
+  margin: 0.5rem;
 }
 
 .column label {
   display: block;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #272727;
 }
 
 .column input,
 .column select,
 .column textarea {
   width: 100%;
-  padding: 10px;
-  font-size: 14px;
+  max-width: 100%;
+  padding: 0.5rem;
+  font-size: clamp(12px, 3vw, 14px);
   border: 1px solid #ccc;
   border-radius: 5px;
+  resize: none;
+  margin-bottom: 1ram;
 }
 
-.criar_button {
-  width: 180px;
-  height: 48px;
-  border-radius: 10px;
-  border: 1px solid #39805F;
-  color: #FFF5F6;
-  background-color: #39805F;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: 0em;
-}
-
-.criar_button:hover {
-  background-color: #39805fe6;
+.column input:focus,
+.column select:focus,
+.column textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
 }
 
 .button_box {
-  width: 100%; /* Alterado para usar uma porcentagem */
-  max-width: 1152px;
-  height: 10vh;
+  width: 100%;
   display: flex;
-  justify-content: right;
+  justify-content: flex-end;
   align-items: center;
-  gap: 3vh;
+  gap: 1rem;
+  padding: 1rem 0;
 }
 
-.message {
-  min-height: 300px;
-  margin-top: 56px; 
-  display: flex; 
-  align-items: center;
-  justify-content: center;
-  font-family: 'Poppins', sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 30px;
-  letter-spacing: 0em;
-  text-align: center;
+@media (max-width: 768px) {
+  .container {
+    margin: 20px 1rem;
+  }
+
+  .container h1 {
+    font-size: clamp(18px, 4.5vw, 20px);
+    margin: 20px 0 30px;
+  }
+
+  .form_box {
+    padding: 0.5rem;
+  }
+
+  .button_box {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .form_box {
+    padding: 0.25rem;
+  }
+
+  .button_box {
+    gap: 0.5rem;
+  }
 }
