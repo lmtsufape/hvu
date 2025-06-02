@@ -265,7 +265,7 @@ function CreateConsulta() {
   };
 
   const handleClick = (path, id) => {
-    router.push(`${path}?fichaId=${id}`);
+    router.push(`${path}?fichaId=${id}&animalId=${animalId}`);
   };
 
   const handleDelete = async (id) => {
@@ -522,7 +522,7 @@ function CreateConsulta() {
               Ficha de reabilitação integrativa
             </button>
             <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaSessao', id)}>
+            onClick={() => handleClick('/fichaSessao', id, animalId)}>
               Ficha de sessão
             </button>
             <button className={styles.ficha_button} type="button"

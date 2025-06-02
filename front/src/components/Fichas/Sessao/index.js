@@ -5,6 +5,7 @@ import styles from "./index.module.css";
 import VoltarButton from "../../VoltarButton";
 import { CancelarWhiteButton } from "../../WhiteButton";
 import { getCurrentUsuario } from '../../../../services/userService';
+import { getAnimalById } from '../../../../services/animalService';
 import { createFicha } from '../../../../services/fichaService';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
@@ -23,6 +24,9 @@ function FichaSessao() {
 
     const router = useRouter();
     const [consultaId, setConsultaId] = useState(null);
+    const [animalId, setAnimalId] = useState(null);
+    const [animal, setAnimal] = useState({});
+    const [showButtons, setShowButtons] = useState(false);
 
     const [formData, setFormData] = useState({
         numeroSessao: "",
@@ -53,13 +57,31 @@ function FichaSessao() {
     useEffect(() => {
     if (router.isReady) {
         const id = router.query.fichaId;
+        const animalId = router.query.animalId;
         if (id) {
         setConsultaId(id);
-        console.log("ID da ficha:", id);
+        }
+        if (animalId) {
+            setAnimalId(animalId);
         }
     }
     }, [router.isReady, router.query.fichaId]);
 
+    useEffect(() => {
+        if (animalId) {
+            const fetchData = async () => {
+                try {
+                    const animalData = await getAnimalById(animalId);
+                    setAnimal(animalData);
+                } catch (error) {
+                    console.error('Erro ao buscar animal:', error);
+                } finally {
+                    setLoading(false); 
+                }
+            };
+            fetchData();
+        }
+    }, [animalId]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -144,6 +166,11 @@ function FichaSessao() {
             setShowErrorAlert(true);
         }
     };
+
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('pt-BR', options);
+    };
     
     return(
         <div className={styles.container}>
@@ -166,10 +193,73 @@ function FichaSessao() {
                         </div>
                     </div>
 
-                    <button className={styles.dados_ocultos} type="button">
-                        Dados do animal
-                        <span>+</span>
-                    </button>
+                    <div className={styles.box_ficha_toggle}>
+                        <button
+                            type="button"
+                            className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
+                            onClick={() => setShowButtons(prev => !prev)}
+                        >
+                            Dados do animal
+                        </button>
+                        {showButtons && (
+                            <div className={styles.container_toggle}>
+                                <ul>
+                                    {animal && ( 
+                                        <li key={animal.id} className={styles.infos_box}>
+                                            <div className={styles.identificacao}>
+                                                <div className={styles.nome_animal}>{animal.nome}</div>
+                                                <div className={styles.especie_animal}>Nome</div>
+                                            </div>
+                                            <div className={styles.form}>
+                                                <div className={styles.box}>
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Espécie</h6>
+                                                            <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Sexo</h6>
+                                                            <p>{animal.sexo}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Peso</h6>
+                                                            <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Raça</h6>
+                                                            <p>{animal.raca && animal.raca.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Porte</h6>
+                                                            <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Data de nascimento</h6>
+                                                            <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Alergias</h6>
+                                                            <p>{animal.alergias ? animal.alergias : 'Não definidas'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Número da ficha</h6>
+                                                            <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
 
                     <div className={styles.titulo}>
                         Anotação
