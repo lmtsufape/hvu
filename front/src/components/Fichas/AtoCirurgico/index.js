@@ -214,7 +214,7 @@ function FichaAtoCirurgico() {
                         onChange={handleChange}/>
                     </div>
 
-                    <div className={styles.row}>
+                    <div className={styles.grid}>
                         <div className={styles.column}>
                             <label>Nome da Cirurgia</label>
                             <textarea name="nomeDaCirurgia" value={formData.nomeDaCirurgia} onChange={handleChange} />

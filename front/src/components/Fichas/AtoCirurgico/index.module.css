@@ -18,7 +18,6 @@
   text-align: center;
   margin-top: 50px;
   color: #333;
-  margin-bottom: 56px;
 }
 
 .container h2 {
@@ -92,11 +91,19 @@
 .column textarea {
   width: 100%;
   padding: 10px;
+  height: 42px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
   resize: none;
   margin-bottom: 18px;
+}
+
+.column input:focus,
+.column select:focus,
+.column textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
 }
 
 .column textarea[id="caixa-alta"]{
@@ -125,6 +132,12 @@
 
 .criar_button:hover {
   background-color: #39805fe6;
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .button_box {
