@@ -9,7 +9,7 @@ import SolicitacaoDeExameAninhar from "@/components/Fichas/SolicitacaoDeExameAni
 
 function FichaDermatologica({formData, handleChange, prevStep, handleCheckboxChange, handleSubmit, 
     handleSaveDrawing, imagemDesenhada, handleChangeTratamentos, tratamentos, adicionarLinhaTratamento, 
-    removerUltimaLinhaTratamento,handleFinalizar,setFormData}) {
+    removerUltimaLinhaTratamento,setFormData}) {
     
     const [showDrawingModal, setShowDrawingModal] = useState(false);
     const dimensoesImagem = {
@@ -392,7 +392,7 @@ function FichaDermatologica({formData, handleChange, prevStep, handleCheckboxCha
 
                     <div className={styles.button_box}>
                         < VoltarWhiteButton onClick={prevStep}/>
-                        < FinalizarFichaModal onConfirm={handleFinalizar} />
+                        < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
             </div>

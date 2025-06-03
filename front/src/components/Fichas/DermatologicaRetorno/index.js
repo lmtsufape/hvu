@@ -50,7 +50,7 @@ function FichaDermatologicaRetorno() {
     // Carrega os dados do formulário do localStorage 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const savedFormData = localStorage.getItem("fichaCardiologicaFormData");
+            const savedFormData = localStorage.getItem("dermatologicaRetornoFormData");
             if (savedFormData) {
                 setFormData(JSON.parse(savedFormData));
             }
@@ -60,7 +60,7 @@ function FichaDermatologicaRetorno() {
     // Salva os dados do formulário no localStorage 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            localStorage.setItem("fichaCardiologicaFormData", JSON.stringify(formData));
+            localStorage.setItem("dermatologicaRetornoFormData", JSON.stringify(formData));
         }
     }, [formData]); 
 
@@ -141,7 +141,7 @@ function FichaDermatologicaRetorno() {
         try {
             const resultado = await createFicha(fichaData);
             localStorage.setItem('fichaId', resultado.id.toString());
-            localStorage.removeItem("fichaCardiologicaFormData");
+            localStorage.removeItem("dermatologicaRetornoFormData");
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
@@ -151,39 +151,6 @@ function FichaDermatologicaRetorno() {
             setShowErrorAlert(true);
         }
     };
-    const handleFinalizar = async () => {
-        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
-        const fichaData = {
-          nome: "Ficha clínico médica de retorno",
-          conteudo: {
-            anamnese: formData.Anamnese,
-            tratamento: formData.tratamentos,
-            resultados: formData.resultados,
-            locaisAfetados: formData.locaisAfetados,
-            condutaTerapeutica: formData.condutaTerapeutica,
-            estagiarios: formData.estagiarios,
-            peso: formData.peso,
-            medicoResponsavel: formData.medicoResponsavel,
-            SolicitacaoDeExame: formData.SolicitacaoDeExame,
-          },
-          dataHora: dataFormatada,
-        };
-        try {
-            const resultado = await createFicha(fichaData);
-            localStorage.setItem('fichaId', resultado.id.toString());
-            localStorage.removeItem("fichaCardiologicaFormData");
-            setShowAlert(true);
-        } catch (error) {
-            console.error("Erro ao criar ficha:", error);
-            if (error.response && error.response.data && error.response.data.code) {
-            setErrorMessage(error.response.data.message);
-            } else {
-            setErrorMessage("Erro ao criar ficha");
-            }
-            setShowErrorAlert(true);
-        }
-    };
-
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -194,7 +161,7 @@ function FichaDermatologicaRetorno() {
     };
 
     const cleanLocalStorage = () => {
-        localStorage.removeItem("fichaCardiologicaFormData");
+        localStorage.removeItem("dermatologicaRetornoFormData");
     }
 
     return(
@@ -282,7 +249,7 @@ function FichaDermatologicaRetorno() {
 
                     <div className={styles.button_box}>
                         < CancelarWhiteButton onClick={cleanLocalStorage}/>
-                        < FinalizarFichaModal onConfirm={handleFinalizar} />
+                        < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
                 {showAlert && consultaId &&
