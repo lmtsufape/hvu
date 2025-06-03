@@ -11,6 +11,7 @@ import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
 import FinalizarFichaModal from "../FinalizarFichaModal";
+import { getTutorByAnimal } from "../../../../services/tutorService";
 
 function FichaSessao() {
 
@@ -27,6 +28,8 @@ function FichaSessao() {
     const [animalId, setAnimalId] = useState(null);
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
+    const [tutor , setTutor] = useState({});
+     
 
     const [formData, setFormData] = useState({
         numeroSessao: "",
@@ -67,21 +70,30 @@ function FichaSessao() {
     }
     }, [router.isReady, router.query.fichaId]);
 
-    useEffect(() => {
-        if (animalId) {
-            const fetchData = async () => {
-                try {
-                    const animalData = await getAnimalById(animalId);
-                    setAnimal(animalData);
-                } catch (error) {
-                    console.error('Erro ao buscar animal:', error);
-                } finally {
-                    setLoading(false); 
-                }
-            };
-            fetchData();
+   useEffect(() => {
+    if (!animalId) return;
+
+    const fetchData = async () => {
+        try {
+            const animalData = await getAnimalById(animalId);
+            setAnimal(animalData);
+        } catch (error) {
+            console.error('Erro ao buscar animal:', error);
         }
-    }, [animalId]);
+
+        try {
+            const tutorData = await getTutorByAnimal(animalId);
+            setTutor(tutorData);
+        } catch (error) {
+            console.error('Erro ao buscar tutor do animal:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchData();
+}, [animalId]);
+
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -250,6 +262,10 @@ function FichaSessao() {
                                                         <div className={styles.infos}>
                                                             <h6>Número da ficha</h6>
                                                             <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Tutor</h6>
+                                                            <p>{tutor.nome ? tutor.nome : 'Não definido'}</p>
                                                         </div>
                                                     </div>
                                                 </div>
