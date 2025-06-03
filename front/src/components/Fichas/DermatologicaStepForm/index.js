@@ -401,7 +401,6 @@ function DermatologicaSteps() {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
     setShowErrorAlert(false);
     const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
     let conviveComAnimaisFinal = [...formData.conviveComAnimais];
@@ -481,8 +480,6 @@ function DermatologicaSteps() {
     try {
         const resultado = await createFicha(fichaData);
         localStorage.setItem('fichaId', resultado.id.toString());
-        console.log("Ficha criada com sucesso:");
-        console.log("Ficha id:", resultado.id);
         localStorage.removeItem("fichaDermatologicaFormData");
         localStorage.removeItem('canvasKonva'); 
         setShowAlert(true);
@@ -491,95 +488,6 @@ function DermatologicaSteps() {
         setShowErrorAlert(true);
     }
  };
-  const handleFinalizar = async () => {
-        
-         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
-         let conviveComAnimaisFinal = [...formData.conviveComAnimais];
-         let produtosUtilizadosFinal = [...formData.produtosUtilizados];
-
-        if (conviveComAnimaisFinal.includes("Outros") && otherValueConviveComAnimais.trim() !== "") {
-            conviveComAnimaisFinal = conviveComAnimaisFinal.filter(item => item !== "Outros");
-            conviveComAnimaisFinal.push(otherValueConviveComAnimais.trim());
-        }
-        if (produtosUtilizadosFinal.includes("Outros") && otherValueProdutosUtilizados.trim() !== "") {
-            produtosUtilizadosFinal = produtosUtilizadosFinal.filter(item => item !== "Outros");
-            produtosUtilizadosFinal.push(otherValueProdutosUtilizados.trim());
-        }
-         const fichaData = {
-           nome: "Ficha Demartológica",
-           conteudo: {
-            peso: formData.peso,
-            ambiente: formData.ambiente,
-            estiloVida: formData.estiloVida,
-            contatoComSuperfice: formData.contatoComSuperfice,
-            acessoRua: formData.acessoRua,
-            conviveComAnimais: conviveComAnimaisFinal,
-            contactantesSintomaticos: formData.contactantesSintomaticos,
-            alimentacao: formData.alimentacao,
-            banhos: formData.banhos,
-            frequenciaBanhos: formData.frequenciaBanhos,
-            produtosUtilizados: produtosUtilizadosFinal,
-            controleEctoparasitas: formData.controleEctoparasitas,
-            ultimaAdministracao: formData.ultimaAdministracao,
-            apresentaEctoparasitas: formData.apresentaEctoparasitas,
-            quandoVistoUltimaVez: formData.quandoVistoUltimaVez,
-            queixaPrincipal: formData.queixaPrincipal,
-            tratamento: formData.tratamento,
-            tratamentosAtuais: formData.tratamentosAtuais,
-            prurido: formData.prurido,
-            local: formData.local,
-            intensidade: formData.intensidade,
-            lambedura: formData.lambedura,
-
-            tipo:formData.tipo,
-            nivelDeConsciencia: formData.nivelDeConsciencia,
-            grauDedesidratacao: formData.grauDedesidratacao,
-            scoreCorporal: formData.scoreCorporal,
-            turgorCutaneo: formData.turgorCutaneo,
-            tpc: formData.tpc,
-            temperatura: formData.temperatura,
-            mucosas: formData.mucosas,
-            linfonodos: formData.linfonodos,
-            alteracoesClinicas: formData.alteracoesClinicas,
-            
-
-            ectoparasitas: formData.ectoparasitas,
-            pelagem: formData.pelagem,
-            descamacao: formData.descamacao,
-            untuosidade: formData.untuosidade,
-            condutoAuditivoDireito: formData.condutoAuditivoDireito,
-            condutoAuditivoEsquerdo: formData.condutoAuditivoEsquerdo,
-            imagemLesao: formData.imagemLesao,
-            formacoesSolidas: formData.formacoesSolidas,
-            alteracoesDeCor: formData.alteracoesDeCor,
-            colecoesLiquidas: formData.colecoesLiquidas,
-            alteracoesEspessura: formData.alteracoesEspessura,
-            perdasTeciduais: formData.perdasTeciduais,
-            descricaoLesional: formData.descricaoLesional,
-            criteriosFavrot: formData.criteriosFavrot,
-            observacao: formData.observacao,
-            diagnostico: formData.diagnostico,
-            tratamentoDermatologico: formData.tratamentoDermatologico,
-            medico: formData.medico,
-            SolicitacaoDeExame: formData.SolicitacaoDeExame
-
-            },
-           dataHora: dataFormatada,
-         };
-         try {
-             console.log(fichaData);
-             await createFicha(fichaData);
-             setShowAlert(true);
-         } catch (error) {
-             console.error("Erro ao criar ficha:", error);
-             if (error.response && error.response.data && error.response.data.code) {
-             setErrorMessage(error.response.data.message);
-             } else {
-             setErrorMessage("Erro ao criar ficha");
-             }
-             setShowErrorAlert(true);
-         }
-     };
       
   const renderStepContent = () => {
     switch(step) {
@@ -656,7 +564,6 @@ function DermatologicaSteps() {
           tratamentos={tratamentoDermatologico}
           adicionarLinhaTratamento={adicionarLinhaTratamento}
           removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
-          handleFinalizar={handleFinalizar}
 
           />
         </>
