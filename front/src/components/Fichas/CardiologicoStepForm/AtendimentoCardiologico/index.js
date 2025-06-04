@@ -8,8 +8,10 @@ import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
 
-const ALIMENTACAO_OPTS = [" RAÇÃO", " DIETA CASEIRA", " RAÇÃO + DIETA CASEIRA"];
-const ESTILO_VIDA_OPTS = [" Domiciliado", " Extradomiciliado", " Área endêmica para Dirofilariose"];
+
+const ALIMENTACAO_OPTS  = [" Ração", " Dieta caseira", " Ração + Dieta caseira"];
+const ESTILO_VIDA_OPTS  = [" Domiciliado", " Extradomiciliado", " Área endêmica para Dirofilariose"];
+
 function AtendimentoCardiologico({
     formData,
     handleChange,
@@ -177,41 +179,41 @@ function AtendimentoCardiologico({
                         </div>
 
                         <div >
-                            {formData.opc && Object.keys(formData.opc).map((opc) => (
-                                <div key={opc} className="row align-items-start mb-2">
-                                    <div className="col-3">
-                                        <label className="d-flex align-items-center">
-                                            <input
-                                                type="checkbox"
-                                                name={opc}
-                                                checked={formData.opc[opc]}
-                                                onChange={handleCheckboxChangeVacinacao}
-                                                className="me-2"
-                                            />
-                                            {opc === "antiRabica" && "anti-Rábica"}
-                                            {opc === "giardia" && "Giardia"}
-                                            {opc === "leishmaniose" && "Leishmaniose"}
-                                            {opc === "tosseDosCanis" && "Tose dos Canis"}
-                                            {opc === "polivalenteCanina" && "Polivalente Canina"}
-                                            {opc === "polivalenteFelina" && "Polivalente Felina"}
-                                            {opc === "outros" && "Outros"}
-                                            {opc === "naoInformado" && "Não informados"}
-                                            {opc === "naoVacinado" && "Não vacinado"}
-                                        </label>
-                                    </div>
-
-                                    <div className="col">
-                                        <input
-                                            type="text"
-                                            name={opc}
-                                            value={formData.vacinacao[opc]}
-                                            onChange={handleLocationChange}
-                                            disabled={!formData.opc[opc]}
-                                            className="form-control"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
+                        {formData.opc && Object.keys(formData.opc).map((opc) => (
+                        <div key={opc} className="row align-items-start mb-2">
+                            <div className={`${styles.checkbox_container} ${styles.checkbox_square} col-3`}>
+                            <label className="d-flex align-items-center">
+                            <input
+                                type="checkbox"
+                                name={opc}
+                                checked={formData.opc[opc]}
+                                onChange={handleCheckboxChangeVacinacao}
+                                className="me-2"
+                            />
+                            {opc === "antiRabica" && "anti-Rábica"}
+                            {opc === "giardia" && "Giardia"}
+                            {opc === "leishmaniose" && "Leishmaniose"}
+                            {opc === "tosseDosCanis" && "Tose dos Canis"}
+                            {opc === "polivalenteCanina" && "Polivalente Canina"}
+                            {opc === "polivalenteFelina" && "Polivalente Felina"}
+                            {opc === "outros" && "Outros"}
+                            {opc === "naoInformado" && "Não informados"}
+                            {opc === "naoVacinado" && "Não vacinado"}
+                            </label>
+                            </div>
+                            
+                            <div className="col">
+                                <input
+                                type="text"
+                                name={opc}
+                                value={formData.vacinacao[opc]}
+                                onChange={handleLocationChange}
+                                disabled={!formData.opc[opc]}
+                                className="form-control"
+                                />
+                            </div>
+                        </div>
+                        ))}
                         </div>
                     </div>
 
@@ -265,7 +267,7 @@ function AtendimentoCardiologico({
                     <div className={styles.column}>
                         <label>Sinais Clinicos</label>
                     </div>
-                    <div className={styles.checkbox_container}>
+                    <div className={`${styles.checkbox_container} ${styles.checkbox_square} ${styles.inputs_three_columns}`}>
                         {[
                             "Cansaço facil/Intolerância à atividade física", " Inquietação noturna/ortopnéica",
                             "Síncope", "Espirro/Espirro reverso", "Perda aguda de visão",
@@ -288,11 +290,13 @@ function AtendimentoCardiologico({
                     </div>
 
                     <div className={styles.column}>
-                        <label>Antecedentes familiares / Histórico de doenças e tratamentos / Respostas (anterior e atual):
-                            <textarea name="antecedentesHistorico"
-                                value={formData.antecedentesHistorico}
-                                onChange={handleChange} rows="4" cols="50" />
-                        </label>
+
+                        <label>Antecedentes familiares / Histórico de doenças e tratamentos / Respostas (anterior e atual)</label>
+                            <textarea name="antecedentesHistorico" 
+                            value={formData.antecedentesHistorico} 
+                            onChange={handleChange} rows="4" cols="50" />
+                        
+
                     </div>
 
                     <div className={styles.button_box}>

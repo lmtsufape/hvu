@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
-import { CancelarWhiteButton } from "../../../WhiteButton";
+import { VoltarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
@@ -13,96 +13,50 @@ const CONCIENCIA = [" ALERTA", " Deprimido", " Excitado", " Ausente (COMA)"];
 const SCORE_CORPORAL = [" CAQUÉTICO", " MAGRO", " NORMAL", " SOBREPESO", " OBESO"];
 const HIDRATACAO_OPTS = [" NORMAL", " 6 A 8%", " 8 A 10%", " ACIMA DE 10%"];
 
-
+const POSTURAS = ["Estação", "Decúbito", "Cavalete", "Outras"];
+const CONCIENCIA = ["Alerta", "Deprimido", "Excitado", "Ausente (Coma)"];
+const SCORE_CORPORAL = ["Caquético", "Magro", "Normal", "Sobrepeso", "Obeso"];
+const HIDRATACAO_OPTS = ["Normal", "6 a 8%", "8 a 10%", "Acima de 10%"];
 
 function AtendimentoCardiologico({
-  formData,
-  handleChange,
-  nextStep,
-  handleCheckboxChangeMucosas,
-  handleLinfonodoChange,
-  handleCaracteristicaChange,
-  handleChangeAtualizaSelect,
-  handleMucosaLocationChange,
-  cleanLocalStorage
+    formData, 
+    handleChange, 
+    nextStep, 
+    prevStep,
+    handleCheckboxChangeMucosas,
+    handleLinfonodoChange,
+    handleCaracteristicaChange,
+    handleChangeAtualizaSelect,
+    handleMucosaLocationChange,
 }) {
 
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const [consultaId, setConsultaId] = useState(null);
-  const [animalId, setAnimalId] = useState(null);
-  const [animal, setAnimal] = useState({});
-  const [showButtons, setShowButtons] = useState(false);
-  const [tutor, setTutor] = useState({});
+    const linfonodos = [
+      { value: "mandibularD", label: "Mandibular D" },
+      { value: "mandibularE", label: "Mandibular E" },
+      { value: "cervicalSuperiorD", label: "Cervical superior D" },
+      { value: "cervicalSuperiorE", label: "Cervical superior E" },
+      { value: "axilarD", label: "Axilar D" },
+      { value: "axilarE", label: "Axilar E" },
+      { value: "inguinalD", label: "Inguinal D" },
+      { value: "inguinalE", label: "Inguinal E" },
+      { value: "popliteoD", label: "Poplíteo D" },
+      { value: "popliteoE", label: "Poplíteo E" }
+    ];
 
-  useEffect(() => {
-  if (router.isReady) {
-    const id = router.query.fichaId;
-    const animalId = router.query.animalId;
-    if (id) {
-      setConsultaId(id);
-    }
-    if (animalId) {
-      setAnimalId(animalId);
-    }
-  }
-}, [router.isReady, router.query.fichaId]);
+    const caracteristicas = [
+      { value: "sa", label: "S/A" },
+      { value: "aumentado", label: "Aumentado" },
+      { value: "doloroso", label: "Doloroso" },
+      { value: "aderido", label: "Aderido" },
+      { value: "naoAvaliado", label: "Não avaliado" }
+    ];
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("Formulário válido. Dados prontos para envio:", formData);
+        nextStep();
+    };
 
-useEffect(() => {
-  if (!animalId) return;
-
-  const fetchData = async () => {
-    try {
-      const animalData = await getAnimalById(animalId);
-      setAnimal(animalData);
-    } catch (error) {
-      console.error('Erro ao buscar animal:', error);
-    }
-
-    try {
-      const tutorData = await getTutorByAnimal(animalId);
-      setTutor(tutorData);
-    } catch (error) {
-      console.error('Erro ao buscar tutor do animal:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchData();
-}, [animalId]);
-
-const formatDate = (dateString) => {
-  const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-  return new Date(dateString).toLocaleDateString('pt-BR', options);
-};
-
-  const linfonodos = [
-    { value: "mandibularD", label: "Mandibular D" },
-    { value: "mandibularE", label: "Mandibular E" },
-    { value: "cervicalSuperiorD", label: "Cervical superior D" },
-    { value: "cervicalSuperiorE", label: "Cervical superior E" },
-    { value: "axilarD", label: "Axilar D" },
-    { value: "axilarE", label: "Axilar E" },
-    { value: "inguinalD", label: "Inguinal D" },
-    { value: "inguinalE", label: "Inguinal E" },
-    { value: "popliteoD", label: "Poplíteo D" },
-    { value: "popliteoE", label: "Poplíteo E" }
-  ];
-
-  const caracteristicas = [
-    { value: "sa", label: "S/A" },
-    { value: "aumentado", label: "Aumentado" },
-    { value: "doloroso", label: "Doloroso" },
-    { value: "aderido", label: "Aderido" },
-    { value: "naoAvaliado", label: "Não avaliado" }
-  ];
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    nextStep();
-  };
-
-  return (
+    return (
     <div className={styles.container}>
       <VoltarButton />
       <h1>Ficha clínico médica de retorno</h1>
@@ -290,36 +244,37 @@ const formatDate = (dateString) => {
 
           <div className={styles.box}>
             <div className={styles.column}>
-              <label className="form-label fw-medium">ACP
-                <input type="text" name="acp" value={formData.ExameFisico.acp} onChange={handleChange}
-                />
-              </label>
+
+                <label className="form-label fw-medium">ACP
+                  <input type="text" name="ExameFisico.acp" value={formData.ExameFisico.acp} onChange={handleChange} 
+                    />
+                </label>
             </div>
             <div className={styles.column}>
-              <label className="form-label fw-medium">Pulso arterial
-                <input type="text" name="pulsoArterial" value={formData.ExameFisico.pulsoArterial} onChange={handleChange}
-                />
-              </label>
+                <label className="form-label fw-medium">Pulso arterial
+                  <input type="text" name="ExameFisico.pulsoArterial" value={formData.ExameFisico.pulsoArterial} onChange={handleChange} 
+                    />
+                </label>
             </div>
             <div className={styles.column}>
-              <label className="form-label fw-medium">Frequência cardíaca (BPM)
-                <input type="text" name="freqCardiaca" value={formData.ExameFisico.freqCardiaca} onChange={handleChange}
-                />
-              </label>
+                <label className="form-label fw-medium">Frequência cardíaca (BPM)
+                  <input type="text" name="ExameFisico.freqCardiaca" value={formData.ExameFisico.freqCardiaca} onChange={handleChange} 
+                    />
+                </label>
             </div>
             <div className={styles.column}>
-              <label className="form-label fw-medium">Frequência Respiratória (RPM)
-                <input type="text" name="freqRespiratoria" value={formData.ExameFisico.freqRespiratoria} onChange={handleChange}
-                />
-              </label>
+                <label className="form-label fw-medium">Frequência Respiratória (RPM)
+                  <input type="text" name="ExameFisico.freqRespiratoria" value={formData.ExameFisico.freqRespiratoria} onChange={handleChange} 
+                    />
+                </label>
             </div>
-            <div className={styles.column}>
-              <label htmlFor="turgorCutaneo" className="form-label fw-medium">turgor Cutâneo</label>
-              <select
-                id="turgorCutaneo"
-                name="turgorCutaneo"
-                value={formData.ExameFisico.turgorCutaneo}
-                onChange={handleChangeAtualizaSelect}
+            <div className={styles.column}>            
+            <label htmlFor="turgorCutaneo" className="form-label fw-medium">Turgor Cutâneo</label>
+            <select
+              id="turgorCutaneo"
+              name="ExameFisico.turgorCutaneo"
+              value={formData.ExameFisico.turgorCutaneo}
+              onChange={handleChangeAtualizaSelect}
               >
                 <option value="">Selecione</option>
                 <option value="Normal">Normal</option>
@@ -331,7 +286,7 @@ const formatDate = (dateString) => {
               <label htmlFor="tpc">TPC:</label>
               <select
                 id="tpc"
-                name="tpc"
+                name="ExameFisico.tpc"
                 value={formData.ExameFisico.tpc}
                 onChange={handleChangeAtualizaSelect}
               >
@@ -352,8 +307,10 @@ const formatDate = (dateString) => {
             <div >
               {Object.keys(formData.option).map((option) => (
                 <div key={option} className="row align-items-start mb-2" >
-                  <div className="col-3">
-                    <label className="d-flex align-items-center">
+
+                    <div className={`${styles.checkbox_container} ${styles.checkbox_square} col-3`}>
+                      <label className="d-flex align-items-center">
+
                       <input
                         type="checkbox"
                         name={option}
@@ -390,8 +347,10 @@ const formatDate = (dateString) => {
             <div className={styles.column}>
               <label>Linfonodos</label>
             </div>
-            <div className={styles.checkbox_container}>
-              {linfonodos.map((linfonodo) => (
+
+            <div className={`${styles.checkbox_container} ${styles.checkbox_square}`}>
+                {linfonodos.map((linfonodo) => (
+
                 <div key={linfonodo.value}>
                   <label>
                     <input
@@ -402,11 +361,13 @@ const formatDate = (dateString) => {
                     />
 
                     {linfonodo.label}
-                  </label>
 
-                  {formData.linfonodos[linfonodo.value] && (
-                    <div>
-                      {caracteristicas.map((caracteristica) => (
+                    </label>
+                    
+                    {formData.linfonodos[linfonodo.value] && (
+                    <div className={styles.options_border}>
+                        {caracteristicas.map((caracteristica) => (
+
                         <label key={caracteristica.value}>
                           <input
                             type="checkbox"
@@ -425,7 +386,8 @@ const formatDate = (dateString) => {
           </div>
 
           <div className={styles.button_box}>
-            <CancelarWhiteButton onClick={cleanLocalStorage} />
+
+            < VoltarWhiteButton onClick={prevStep}/>
             <ContinuarFichasGreenButton type="submit" />
           </div>
         </form>

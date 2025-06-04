@@ -45,35 +45,6 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
-.checkbox_container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 10px;
-  margin-bottom: 15px;
-  margin: 10px;
-}
-
-.checkbox_container label {
-  display: flex;
-  align-items: center;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
-}
-
-.checkbox_container input[type="checkbox"] {
-  margin-right: 8px;
-  accent-color: #39805f;
-}
-
-.checkbox_container label:hover {
-  background-color: #e3f1ea;
-}
-
 .column {
   flex: 1;
   min-width: 100px;
@@ -99,36 +70,15 @@
   resize: none;
 }
 
-.inputs_three_columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-}
-
-.inputs_four_columns {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); 
-}
-
-.criar_button {
-  width: 180px;
-  height: 48px;
-  border-radius: 10px;
-  border: 1px solid #39805F;
-  color: #FFF5F6;
-  background-color: #39805F;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: 0em;
-}
-
-.criar_button:hover {
-  background-color: #39805fe6;
+.column input:focus,
+.column select:focus,
+.column textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
 }
 
 .button_box {
-  width: 100%; /* Alterado para usar uma porcentagem */
+  width: 100%; 
   max-width: 1152px;
   height: 10vh;
   display: flex;
@@ -158,16 +108,6 @@
   font-weight: 300;
   line-height: 24px;
   color: #C7122F;
-}
-/* index.module.css */
-.boxBorder {
-  display: grid;
-  border-radius: 20px;
-  padding-bottom: 18px;
-  padding-left: 29px;
-  padding-right: 37px;
-  background-color: #fff;
-  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);      
 }
 
 .tabela_tratamento {
@@ -268,7 +208,8 @@
     height: 49px;
     margin-bottom: -5px;
   }
-}.row {
+}
+.row {
   display: flex; /* Alinha os elementos lado a lado */
   gap: 16px; /* Espaçamento entre os elementos */
 }
@@ -406,5 +347,3 @@
   line-height: 24px;
   color: #404040;
 }
-
-
