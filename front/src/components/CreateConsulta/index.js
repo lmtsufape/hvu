@@ -55,6 +55,91 @@ const addFichaId = (newId) => {
   return { fichaIds, addFichaId };
 };
 
+// Função para limpar conteúdo da ficha (remover campos vazios)
+const cleanFichaContent = (content) => {
+  const clean = (obj) => {
+    if (Array.isArray(obj)) {
+      // Limpa cada item do array e remove itens vazios
+      const cleanedArray = obj
+        .map(item => clean(item))
+        .filter(item => item !== undefined && 
+                       !(typeof item === 'object' && Object.keys(item).length === 0));
+      return cleanedArray.length > 0 ? cleanedArray : undefined;
+    }
+    
+    if (obj && typeof obj === 'object') {
+      // Remove campos vazios de objetos
+      const cleaned = {};
+      Object.entries(obj).forEach(([key, value]) => {
+        const cleanedValue = clean(value);
+        if (cleanedValue !== undefined) {
+          cleaned[key] = cleanedValue;
+        }
+      });
+      return Object.keys(cleaned).length > 0 ? cleaned : undefined;
+    }
+    
+    // Mantém apenas valores não vazios
+    return obj !== "" && obj !== null && obj !== undefined ? obj : undefined;
+  };
+
+  return clean(content) || {};
+};
+
+// Função para formatar o conteúdo limpo para exibição
+const formatFichaContent = (content) => {
+  if (!content || typeof content !== 'object') return null;
+  
+  return Object.entries(content).map(([key, value]) => {
+    // Formata chaves para legibilidade
+    const formattedKey = key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .replace(/_/g, ' ');
+
+    if (Array.isArray(value)) {
+      return (
+        <div key={key}>
+          <strong>{formattedKey}:</strong>
+          {value.map((item, idx) => (
+            <div key={idx} style={{ marginLeft: '20px' }}>
+              {Object.entries(item).map(([subKey, subValue]) => {
+                const formattedSubKey = subKey
+                  .replace(/([A-Z])/g, ' $1')
+                  .replace(/^./, str => str.toUpperCase())
+                  .replace(/_/g, ' ');
+                
+                return (
+                  <p key={subKey}>
+                    <strong>{formattedSubKey}:</strong> {String(subValue)}
+                  </p>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      return (
+        <div key={key}>
+          <strong>{formattedKey}:</strong>
+          <div style={{ marginLeft: '20px' }}>
+            {formatFichaContent(value)}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <p key={key}>
+        <strong>{formattedKey}:</strong> {String(value)}
+      </p>
+    );
+  });
+};
+
 function CreateConsulta() {
   const router = useRouter();
   const { id } = router.query;
@@ -538,29 +623,33 @@ function CreateConsulta() {
         </div>
           )}
           </div>
+
           
           
 
 
-          {fichasDados.map(ficha => (
+          {/* Exibição das fichas com campos limpos */}
+          {fichasDados.map(ficha => {
+            const cleanedContent = cleanFichaContent(ficha.conteudo);
+             return (
             <div key={ficha.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
               <p><strong>ID:</strong> {ficha.id}</p>
               <p><strong>Data de criação:</strong> {new Date(ficha.dataHora).toLocaleString()}</p>
               <p><strong>Nome:</strong> {ficha.nome}</p>
 
-              <div>
-                {Object.entries(ficha.conteudo).map(([chave, valor]) => (
-                  <p key={chave}>
-                    <strong>{chave.charAt(0).toUpperCase() + chave.slice(1)}:</strong> {String(valor)}
-                  </p>
-                ))}
+              <div className={styles.fichaContent}>
+                {formatFichaContent(cleanedContent)}
               </div>
 
-              <button type="button" onClick={() => handleDelete(ficha.id)} style={{ marginTop: '10px', color: 'red' }}>
-                Excluir ficha
-              </button>
-            </div>
-          ))}
+              <button className={styles.voltarButton} type="button" onClick={() => handleDelete(ficha.id)} style={{ 
+                    marginTop: "15px",
+                  }}
+                >
+              Excluir ficha
+                </button>
+              </div>
+            );
+          })}
 
           <div className={styles.continuarbotao}>
             <button className={styles.voltarButton}>Cancelar</button>
