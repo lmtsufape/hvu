@@ -36,9 +36,9 @@
 
 .form_box {
   border-radius: 20px;
-  border: 0.5px solid #b1b1b1;
   padding: 20px;
   background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
 }
 
 .box{
@@ -50,29 +50,42 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 10px;
-  margin-bottom: 15px;
-  margin: 10px;
 }
 
 .checkbox_container label {
   display: flex;
   align-items: center;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: clamp(14px, 3.5vw, 16px);
   cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
   transition: background 0.3s ease-in-out;
 }
 
-.checkbox_container input[type="checkbox"] {
-  margin-right: 8px;
+.checkbox_container input[type="checkbox"],
+.checkbox_container input[type="radio"] {
+  appearance: none;
+  margin-right: 0.5rem;
   accent-color: #39805f;
+  border: 1px solid #B1B1B1;
+  border-radius: 50%;
+  min-width: 26px;
+  height: 26px;
+  cursor: pointer;
 }
 
-.checkbox_container label:hover {
-  background-color: #e3f1ea;
+.checkbox_container input[type="checkbox"]:checked,
+.checkbox_container input[type="radio"]:checked {
+  background-color: #B1B1B1;
+}
+
+.checkbox_square input[type="checkbox"]{
+  border-radius: 5px;
+}
+
+.options_border{
+  border: 1px solid #B1B1B1;
+  border-radius: 5px;
 }
 
 .column {
@@ -82,12 +95,12 @@
 }
 
 .column label {
-  /* display: block; */
   display: flex;
   flex-direction: column;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 5px;
+  color: #272727;
 }
 
 .column input,
@@ -101,14 +114,11 @@
   resize: none;
 }
 
-.inputs_three_columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-}
-
-.inputs_four_columns {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); 
+.column input:focus,
+.column select:focus,
+.column textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
 }
 
 .criar_button {
@@ -160,14 +170,4 @@
   font-weight: 300;
   line-height: 24px;
   color: #C7122F;
-}
-/* index.module.css */
-.boxBorder {
-  display: grid;
-  border-radius: 20px;
-  padding-bottom: 18px;
-  padding-left: 29px;
-  padding-right: 37px;
-  background-color: #fff;
-  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);      
 }

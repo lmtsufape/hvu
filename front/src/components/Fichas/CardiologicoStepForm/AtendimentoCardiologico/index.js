@@ -4,7 +4,7 @@ import VoltarButton from "../../../VoltarButton";
 import { CancelarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
-const ALIMENTACAO_OPTS  = [" RAÇÃO", " DIETA CASEIRA", " RAÇÃO + DIETA CASEIRA"];
+const ALIMENTACAO_OPTS  = [" Ração", " Dieta caseira", " Ração + Dieta caseira"];
 const ESTILO_VIDA_OPTS  = [" Domiciliado", " Extradomiciliado", " Área endêmica para Dirofilariose"];
 function AtendimentoCardiologico({
     formData, 
@@ -53,7 +53,7 @@ function AtendimentoCardiologico({
                         <div >
                         {formData.opc && Object.keys(formData.opc).map((opc) => (
                         <div key={opc} className="row align-items-start mb-2">
-                            <div className="col-3">
+                            <div className={`${styles.checkbox_container} ${styles.checkbox_square} col-3`}>
                             <label className="d-flex align-items-center">
                             <input
                                 type="checkbox"
@@ -139,7 +139,7 @@ function AtendimentoCardiologico({
                     <div className={styles.column}>
                         <label>Sinais Clinicos</label>
                     </div>
-                    <div className={styles.checkbox_container}>
+                    <div className={`${styles.checkbox_container} ${styles.checkbox_square} ${styles.inputs_three_columns}`}>
                         {[
                             "Cansaço facil/Intolerância à atividade física", " Inquietação noturna/ortopnéica", 
                             "Síncope", "Espirro/Espirro reverso", "Perda aguda de visão",
@@ -162,11 +162,11 @@ function AtendimentoCardiologico({
                     </div>
                     
                     <div className={styles.column}>
-                        <label>Antecedentes familiares / Histórico de doenças e tratamentos / Respostas (anterior e atual):
+                        <label>Antecedentes familiares / Histórico de doenças e tratamentos / Respostas (anterior e atual)</label>
                             <textarea name="antecedentesHistorico" 
                             value={formData.antecedentesHistorico} 
                             onChange={handleChange} rows="4" cols="50" />
-                        </label>
+                        
                     </div>
 
                     <div className={styles.button_box}>

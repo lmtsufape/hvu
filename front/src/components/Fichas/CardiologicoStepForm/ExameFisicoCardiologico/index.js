@@ -1,24 +1,24 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
-import { CancelarWhiteButton } from "../../../WhiteButton";
+import { VoltarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
-const POSTURAS          = [" ESTAÇÃO", " DECÚBITO", " CAVALETE", " OUTRAS"];
-const CONCIENCIA        = [" ALERTA", " Deprimido", " Excitado", " Ausente (COMA)"];
-const SCORE_CORPORAL    = [" CAQUÉTICO", " MAGRO", " NORMAL", " SOBREPESO", " OBESO"];
-const HIDRATACAO_OPTS   = [" NORMAL", " 6 A 8%", " 8 A 10%", " ACIMA DE 10%"];
+const POSTURAS = ["Estação", "Decúbito", "Cavalete", "Outras"];
+const CONCIENCIA = ["Alerta", "Deprimido", "Excitado", "Ausente (Coma)"];
+const SCORE_CORPORAL = ["Caquético", "Magro", "Normal", "Sobrepeso", "Obeso"];
+const HIDRATACAO_OPTS = ["Normal", "6 a 8%", "8 a 10%", "Acima de 10%"];
 
 function AtendimentoCardiologico({
     formData, 
     handleChange, 
     nextStep, 
+    prevStep,
     handleCheckboxChangeMucosas,
     handleLinfonodoChange,
     handleCaracteristicaChange,
     handleChangeAtualizaSelect,
     handleMucosaLocationChange,
-    cleanLocalStorage
 }) {
 
     const linfonodos = [
@@ -43,6 +43,7 @@ function AtendimentoCardiologico({
     ];
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log("Formulário válido. Dados prontos para envio:", formData);
         nextStep();
     };
 
@@ -164,33 +165,33 @@ function AtendimentoCardiologico({
           <div className={styles.box}>
             <div className={styles.column}>
                 <label className="form-label fw-medium">ACP
-                  <input type="text" name="acp" value={formData.ExameFisico.acp} onChange={handleChange} 
+                  <input type="text" name="ExameFisico.acp" value={formData.ExameFisico.acp} onChange={handleChange} 
                     />
                 </label>
             </div>
             <div className={styles.column}>
                 <label className="form-label fw-medium">Pulso arterial
-                  <input type="text" name="pulsoArterial" value={formData.ExameFisico.pulsoArterial} onChange={handleChange} 
+                  <input type="text" name="ExameFisico.pulsoArterial" value={formData.ExameFisico.pulsoArterial} onChange={handleChange} 
                     />
                 </label>
             </div>
             <div className={styles.column}>
                 <label className="form-label fw-medium">Frequência cardíaca (BPM)
-                  <input type="text" name="freqCardiaca" value={formData.ExameFisico.freqCardiaca} onChange={handleChange} 
+                  <input type="text" name="ExameFisico.freqCardiaca" value={formData.ExameFisico.freqCardiaca} onChange={handleChange} 
                     />
                 </label>
             </div>
             <div className={styles.column}>
                 <label className="form-label fw-medium">Frequência Respiratória (RPM)
-                  <input type="text" name="freqRespiratoria" value={formData.ExameFisico.freqRespiratoria} onChange={handleChange} 
+                  <input type="text" name="ExameFisico.freqRespiratoria" value={formData.ExameFisico.freqRespiratoria} onChange={handleChange} 
                     />
                 </label>
             </div>
             <div className={styles.column}>            
-            <label htmlFor="turgorCutaneo" className="form-label fw-medium">turgor Cutâneo</label>
+            <label htmlFor="turgorCutaneo" className="form-label fw-medium">Turgor Cutâneo</label>
             <select
               id="turgorCutaneo"
-              name="turgorCutaneo"
+              name="ExameFisico.turgorCutaneo"
               value={formData.ExameFisico.turgorCutaneo}
               onChange={handleChangeAtualizaSelect}
               >
@@ -201,10 +202,10 @@ function AtendimentoCardiologico({
             </select>
             </div>
             <div className={styles.column}>
-            <label htmlFor="tpc">TPC:</label>
+            <label htmlFor="tpc">TPC</label>
             <select
                 id="tpc"
-                name="tpc"
+                name="ExameFisico.tpc"
                 value={formData.ExameFisico.tpc}
                 onChange={handleChangeAtualizaSelect}
             >
@@ -225,7 +226,7 @@ function AtendimentoCardiologico({
               <div >
                 {Object.keys(formData.option).map((option) => (
                 <div key={option} className="row align-items-start mb-2" >
-                    <div className="col-3">
+                    <div className={`${styles.checkbox_container} ${styles.checkbox_square} col-3`}>
                       <label className="d-flex align-items-center">
                       <input
                           type="checkbox"
@@ -263,7 +264,7 @@ function AtendimentoCardiologico({
             <div className={styles.column}>
             <label>Linfonodos</label>
             </div>
-            <div className={styles.checkbox_container}>
+            <div className={`${styles.checkbox_container} ${styles.checkbox_square}`}>
                 {linfonodos.map((linfonodo) => (
                 <div key={linfonodo.value}>
                     <label>
@@ -278,7 +279,7 @@ function AtendimentoCardiologico({
                     </label>
                     
                     {formData.linfonodos[linfonodo.value] && (
-                    <div>
+                    <div className={styles.options_border}>
                         {caracteristicas.map((caracteristica) => (
                         <label key={caracteristica.value}>
                             <input
@@ -298,7 +299,7 @@ function AtendimentoCardiologico({
           </div>
 
           <div className={styles.button_box}>
-            <CancelarWhiteButton onClick={cleanLocalStorage}/>
+            < VoltarWhiteButton onClick={prevStep}/>
             <ContinuarFichasGreenButton type="submit" />
           </div>
         </form>
