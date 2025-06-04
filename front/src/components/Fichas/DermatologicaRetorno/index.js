@@ -10,7 +10,8 @@ import FinalizarFichaModal from "../FinalizarFichaModal";
 import moment from 'moment';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
-import SolicitacaoDeExameAninhar from "../SolicitacaoDeExameAninhar";
+import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getAnimalById } from "../../../../services/animalService";
 
 function FichaDermatologicaRetorno() {
 
@@ -26,6 +27,10 @@ function FichaDermatologicaRetorno() {
     const [consultaId, setConsultaId] = useState(null);
     const router = useRouter();
 
+    const [animalId, setAnimalId] = useState(null);
+    const [animal, setAnimal] = useState({});
+    const [showButtons, setShowButtons] = useState(false);
+    const [tutor , setTutor] = useState({});
     const [formData, setFormData] = useState({
         Anamnese: "",
         tratamento: "",
@@ -35,16 +40,6 @@ function FichaDermatologicaRetorno() {
         estagiarios: "",
         peso: "",
         medicoResponsavel: "",
-        SolicitacaoDeExame: {
-            hematologiaDiagnostica: [],
-            urinalise: [],
-            parasitologico: [],
-            bioquimicaClinica: [],
-            citologiaHistopatologia: [],
-            imunologicos: [],
-            imaginologia: [],
-            cardiologia: [],
-        },
     });
 
     // Carrega os dados do formulário do localStorage 
@@ -65,25 +60,51 @@ function FichaDermatologicaRetorno() {
     }, [formData]); 
 
     // Obtém o ID da ficha da URL
-    useEffect(() => {
+   useEffect(() => {
       if (router.isReady) {
           const id = router.query.fichaId;
+          const animalId = router.query.animalId;
           if (id) {
-            setConsultaId(id);
-            console.log("ID da ficha:", id);
+          setConsultaId(id);
+          }
+          if (animalId) {
+              setAnimalId(animalId);
           }
       }
-    }, [router.isReady, router.query.fichaId]);
+      }, [router.isReady, router.query.fichaId]);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const storedToken = localStorage.getItem('token');
-            const storedRoles = JSON.parse(localStorage.getItem('roles'));
-            setToken(storedToken || "");
-            setRoles(storedRoles || []);
-        }
-        }, []);
+    if (!animalId) return;
 
+    const fetchData = async () => {
+        try {
+            const animalData = await getAnimalById(animalId);
+            setAnimal(animalData);
+        } catch (error) {
+            console.error('Erro ao buscar animal:', error);
+        }
+
+        try {
+            const tutorData = await getTutorByAnimal(animalId);
+            setTutor(tutorData);
+        } catch (error) {
+            console.error('Erro ao buscar tutor do animal:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchData();
+}, [animalId]);
+
+     useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem('token');
+        const storedRoles = JSON.parse(localStorage.getItem('roles'));
+        setToken(storedToken || "");
+        setRoles(storedRoles || []);
+    }
+    }, []);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -118,6 +139,7 @@ function FichaDermatologicaRetorno() {
         );
     }
 
+
     const handleSubmit = async (event) => {
         event?.preventDefault(); // Usa encadeamento opcional para evitar erro
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
@@ -132,11 +154,10 @@ function FichaDermatologicaRetorno() {
                 estagiarios: formData.estagiarios,
                 peso: formData.peso,
                 medicoResponsavel: formData.medicoResponsavel,
-                SolicitacaoDeExame: formData.SolicitacaoDeExame,
+                
             },
             dataHora: dataFormatada 
         };
-    
 
         try {
             const resultado = await createFicha(fichaData);
@@ -151,46 +172,14 @@ function FichaDermatologicaRetorno() {
             setShowErrorAlert(true);
         }
     };
-    const handleFinalizar = async () => {
-        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
-        const fichaData = {
-          nome: "Ficha clínico médica de retorno",
-          conteudo: {
-            anamnese: formData.Anamnese,
-            tratamento: formData.tratamentos,
-            resultados: formData.resultados,
-            locaisAfetados: formData.locaisAfetados,
-            condutaTerapeutica: formData.condutaTerapeutica,
-            estagiarios: formData.estagiarios,
-            peso: formData.peso,
-            medicoResponsavel: formData.medicoResponsavel,
-            SolicitacaoDeExame: formData.SolicitacaoDeExame,
-          },
-          dataHora: dataFormatada,
-        };
-        try {
-            const resultado = await createFicha(fichaData);
-            localStorage.setItem('fichaId', resultado.id.toString());
-            localStorage.removeItem("fichaCardiologicaFormData");
-            setShowAlert(true);
-        } catch (error) {
-            console.error("Erro ao criar ficha:", error);
-            if (error.response && error.response.data && error.response.data.code) {
-            setErrorMessage(error.response.data.message);
-            } else {
-            setErrorMessage("Erro ao criar ficha");
-            }
-            setShowErrorAlert(true);
-        }
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('pt-BR', options);
     };
-
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-    const toggleMostrarExames = () => {
-        setMostrarExames((prev) => !prev);
     };
 
     const cleanLocalStorage = () => {
@@ -203,21 +192,87 @@ function FichaDermatologicaRetorno() {
             <h1>Ficha clínica dermatológica de retorno </h1>
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
-                    <button className={styles.dados_ocultos} type="button">
-                        Identificação do animal
-                        <span>+</span>
-                    </button>
+                    <div className={styles.box_ficha_toggle}>
+                        <button
+                            type="button"
+                            className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
+                            onClick={() => setShowButtons(prev => !prev)}
+                        >
+                            Dados do animal
+                        </button>
+                        {showButtons && (
+                            <div className={styles.container_toggle}>
+                                <ul>
+                                    {animal && ( 
+                                        <li key={animal.id} className={styles.infos_box}>
+                                            <div className={styles.identificacao}>
+                                                <div className={styles.nome_animal}>{animal.nome}</div>
+                                                <div className={styles.especie_animal}>Nome</div>
+                                            </div>
+                                            <div className={styles.form}>
+                                                <div className={styles.box}>
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Espécie</h6>
+                                                            <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Sexo</h6>
+                                                            <p>{animal.sexo}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Peso</h6>
+                                                            <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Raça</h6>
+                                                            <p>{animal.raca && animal.raca.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Porte</h6>
+                                                            <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Data de nascimento</h6>
+                                                            <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Alergias</h6>
+                                                            <p>{animal.alergias ? animal.alergias : 'Não definidas'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Número da ficha</h6>
+                                                            <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Tutor</h6>
+                                                            <p>{tutor.nome ? tutor.nome : 'Não definido'}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                     <div className={styles.titulo}>
                         Anamnese
                     </div>
                     <div className={styles.column}>
-                        <label>Peso: </label>
-                        <textarea name="peso" value={formData.peso} 
-                        onChange={handleChange} 
-                        style={{ 
-                            width: "100px" 
-                        }} />
-                        
+                    <div id="flex-column" className={styles.column}>
+                        <label>peso:</label>
+                        <input id="meia-caixa" type="text" name="peso" 
+                        value={formData.peso} 
+                        onChange={handleChange} />
+                    </div>
                     </div>
 
                     <div className={styles.column}>
@@ -250,23 +305,6 @@ function FichaDermatologicaRetorno() {
                         <textarea name="condutaTerapeutica" value={formData.condutaTerapeutica} 
                         onChange={handleChange} rows="4" cols="50" />
                     </div>
-
-                    <button
-                        type="button"
-                        onClick={toggleMostrarExames}
-                        className={`${styles.toggleButton} ${
-                            mostrarExames ? styles.minimize : styles.expand
-                        }`}
-                        >
-                        {mostrarExames ? "Ocultar Exames" : "Solicitar Exame"}
-                    </button>
-                    {mostrarExames && (
-                    <SolicitacaoDeExameAninhar
-                        formData={formData.SolicitacaoDeExame}
-                        setFormData={setFormData}
-                    />
-                    )}
-
                     
                     <div className={styles.column}>
                         <label>Médico(s) Veterinário(s) Responsável: </label>
@@ -282,7 +320,7 @@ function FichaDermatologicaRetorno() {
 
                     <div className={styles.button_box}>
                         < CancelarWhiteButton onClick={cleanLocalStorage}/>
-                        < FinalizarFichaModal onConfirm={handleFinalizar} />
+                        < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
                 {showAlert && consultaId &&
