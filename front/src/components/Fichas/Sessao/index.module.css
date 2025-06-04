@@ -13,12 +13,10 @@
 }
 
 .container h1 {
-  font-size: 24px;
+  font-size: clamp(20px, 5vw, 24px); /* Font size responsivo */
   font-weight: 700;
   text-align: center;
-  margin-top: 50px;
   color: #333;
-  margin-bottom: 56px;
 }
 
 .titulo{
