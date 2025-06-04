@@ -9,28 +9,30 @@ import { createFicha } from '../../../../services/fichaService';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import FinalizarFichaModal from "../FinalizarFichaModal";
-
+import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getAnimalById } from '../../../../services/animalService';
 import { useRouter } from 'next/router';
 
 function FichaAtoCirurgico() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
-
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
-    
     const [errorMessage, setErrorMessage] = useState("");
-
     const router = useRouter();
-    
+    const [animalId, setAnimalId] = useState(null);
+    const [animal, setAnimal] = useState({});
+    const [showButtons, setShowButtons] = useState(false);
+    const [tutor, setTutor] = useState({});
+
 
     const [formData, setFormData] = useState({
         descricaoAtoCirurgico: "",
         prognostico: "",
         protocolos: [
-            { medicacao: "", dose: "", frequencia: "", periodo: ""}
-          ],
+            { medicacao: "", dose: "", frequencia: "", periodo: "" }
+        ],
         reavaliacao: "",
         equipeResponsavel: "",
         nomeDaCirurgia: "",
@@ -48,26 +50,26 @@ function FichaAtoCirurgico() {
                 setFormData(JSON.parse(savedFormData));
             }
         }
-    }, []); 
+    }, []);
 
     // Salva os dados do formulário no localStorage 
     useEffect(() => {
         if (typeof window !== 'undefined') {
             localStorage.setItem("fichaAtoCirurgicoFormData", JSON.stringify(formData));
         }
-    }, [formData]); 
+    }, [formData]);
 
     useEffect(() => {
-    if (router.isReady) {
-        const id = router.query.fichaId;
-        if (id) {
-        setConsultaId(id);
-        console.log("ID da ficha:", id);
+        if (router.isReady) {
+            const id = router.query.fichaId;
+            if (id) {
+                setConsultaId(id);
+                console.log("ID da ficha:", id);
+            }
         }
-    }
     }, [router.isReady, router.query.fichaId]);
 
-    const { protocolos = []} = formData;
+    const { protocolos = [] } = formData;
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -76,7 +78,7 @@ function FichaAtoCirurgico() {
             setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-        }, []);
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -86,11 +88,53 @@ function FichaAtoCirurgico() {
             } catch (error) {
                 console.error('Erro ao buscar usuário:', error);
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         };
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (router.isReady) {
+            const id = router.query.fichaId;
+            const animalId = router.query.animalId;
+            if (id) {
+                setConsultaId(id);
+            }
+            if (animalId) {
+                setAnimalId(animalId);
+            }
+        }
+    }, [router.isReady, router.query.fichaId]);
+
+    useEffect(() => {
+        if (!animalId) return;
+
+        const fetchData = async () => {
+            try {
+                const animalData = await getAnimalById(animalId);
+                setAnimal(animalData);
+            } catch (error) {
+                console.error('Erro ao buscar animal:', error);
+            }
+
+            try {
+                const tutorData = await getTutorByAnimal(animalId);
+                setTutor(tutorData);
+            } catch (error) {
+                console.error('Erro ao buscar tutor do animal:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [animalId]);
+
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('pt-BR', options);
+    };
 
     if (loading) {
         return <div className={styles.message}>Carregando dados do usuário...</div>;
@@ -102,7 +146,7 @@ function FichaAtoCirurgico() {
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
             </div>
         );
-    }    
+    }
 
     if (!token) {
         return (
@@ -119,10 +163,10 @@ function FichaAtoCirurgico() {
 
     const handleSubmit = async (event) => {
         event?.preventDefault();
-        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
+        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
         const fichaData = {
-            nome: "Ficha de ato cirúrgico",  
-            conteudo:{
+            nome: "Ficha de ato cirúrgico",
+            conteudo: {
                 descricaoAtoCirurgico: formData.descricaoAtoCirurgico,
                 prognostico: formData.prognostico,
                 protocolos: formData.protocolos,
@@ -133,7 +177,7 @@ function FichaAtoCirurgico() {
                 medicosResponsaveis: formData.medicosResponsaveis,
 
             },
-            dataHora: dataFormatada 
+            dataHora: dataFormatada
         };
 
         console.log("Ficha enviada:", fichaData);
@@ -155,63 +199,130 @@ function FichaAtoCirurgico() {
 
     const handleChangeTratamentos = (index, campo, valor) => {
         setFormData((prev) => {
-          const novosTratamentos = [...prev.protocolos];
-          novosTratamentos[index][campo] = valor;
-      
-          return {
-            ...prev,
-            protocolos: novosTratamentos
-          };
+            const novosTratamentos = [...prev.protocolos];
+            novosTratamentos[index][campo] = valor;
+
+            return {
+                ...prev,
+                protocolos: novosTratamentos
+            };
         });
-    }; 
+    };
 
     const adicionarLinhaTratamento = () => {
         setFormData((prev) => ({
-          ...prev,
-          protocolos: [
-            ...prev.protocolos,
-            { medicacao: "", dose: "", frequencia: "", periodo: "" }
-          ]
+            ...prev,
+            protocolos: [
+                ...prev.protocolos,
+                { medicacao: "", dose: "", frequencia: "", periodo: "" }
+            ]
         }));
     };
-    
-      const removerUltimaLinhaTratamento = () => {
+
+    const removerUltimaLinhaTratamento = () => {
         setFormData((prev) => {
-          const tratamentos = prev.protocolos;
-          if (tratamentos.length > 1) {
-            return {
-              ...prev,
-              protocolos: tratamentos.slice(0, -1),
-            };
-          }
-          return prev;
+            const tratamentos = prev.protocolos;
+            if (tratamentos.length > 1) {
+                return {
+                    ...prev,
+                    protocolos: tratamentos.slice(0, -1),
+                };
+            }
+            return prev;
         });
-    };  
+    };
 
     const cleanLocalStorage = () => {
         localStorage.removeItem("fichaAtoCirurgicoFormData");
     }
-    
-    return(
+
+    return (
         <div className={styles.container}>
             <VoltarButton />
             <h1>Ficha de ato cirúrgico </h1>
+
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
+                    <div className={styles.box_ficha_toggle}>
+                        <button
+                            type="button"
+                            className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
+                            onClick={() => setShowButtons(prev => !prev)}
+                        >
+                            Dados do animal
+                        </button>
+                        {showButtons && (
+                            <div className={styles.container_toggle}>
+                                <ul>
+                                    {animal && (
+                                        <li key={animal.id} className={styles.infos_box}>
+                                            <div className={styles.identificacao}>
+                                                <div className={styles.nome_animal}>{animal.nome}</div>
+                                                <div className={styles.especie_animal}>Nome</div>
+                                            </div>
+                                            <div className={styles.form}>
+                                                <div className={styles["animal-data-box"]}>
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Espécie</h6>
+                                                            <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Sexo</h6>
+                                                            <p>{animal.sexo}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Peso</h6>
+                                                            <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
+                                                        </div>
+                                                    </div>
 
-                    <button className={styles.dados_ocultos} type="button">
-                        Dados do animal
-                        <span>+</span>
-                    </button>
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Raça</h6>
+                                                            <p>{animal.raca && animal.raca.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Porte</h6>
+                                                            <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Data de nascimento</h6>
+                                                            <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Alergias</h6>
+                                                            <p>{animal.alergias ? animal.alergias : 'Não definidas'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Número da ficha</h6>
+                                                            <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Tutor</h6>
+                                                            <p>{tutor.nome ? tutor.nome : 'Não definido'}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
 
                     <div className={styles.titulo}>
                         Descrição do ato cirúrgico
                     </div>
-                    
+
                     <div className={styles.column}>
-                        <textarea id="caixa-alta"  name="descricaoAtoCirurgico" 
-                        value={formData.descricaoAtoCirurgico} 
-                        onChange={handleChange}/>
+                        <textarea id="caixa-alta" name="descricaoAtoCirurgico"
+                            value={formData.descricaoAtoCirurgico}
+                            onChange={handleChange} />
                     </div>
 
                     <div className={styles.grid}>
@@ -223,7 +334,7 @@ function FichaAtoCirurgico() {
                             <label>Data</label>
                             <input
                                 type="date" name="data" value={formData.data} onChange={handleChange}
-                                
+
                             />
                         </div>
                     </div>
@@ -258,30 +369,30 @@ function FichaAtoCirurgico() {
                                     <tr key={index}>
                                         <td>
                                             <input
-                                            type="text"
-                                            value={linha.medicacao}
-                                            onChange={(e) => handleChangeTratamentos(index, "medicacao", e.target.value)}
+                                                type="text"
+                                                value={linha.medicacao}
+                                                onChange={(e) => handleChangeTratamentos(index, "medicacao", e.target.value)}
                                             />
                                         </td>
                                         <td>
                                             <input
-                                            type="text"
-                                            value={linha.dose}
-                                            onChange={(e) => handleChangeTratamentos(index, "dose", e.target.value)}
+                                                type="text"
+                                                value={linha.dose}
+                                                onChange={(e) => handleChangeTratamentos(index, "dose", e.target.value)}
                                             />
                                         </td>
                                         <td>
                                             <input
-                                            type="text"
-                                            value={linha.frequencia}
-                                            onChange={(e) => handleChangeTratamentos(index, "frequencia", e.target.value)}
+                                                type="text"
+                                                value={linha.frequencia}
+                                                onChange={(e) => handleChangeTratamentos(index, "frequencia", e.target.value)}
                                             />
                                         </td>
                                         <td>
                                             <input
-                                            type="text"
-                                            value={linha.periodo}
-                                            onChange={(e) => handleChangeTratamentos(index, "periodo", e.target.value)}
+                                                type="text"
+                                                value={linha.periodo}
+                                                onChange={(e) => handleChangeTratamentos(index, "periodo", e.target.value)}
                                             />
                                         </td>
                                     </tr>
@@ -304,7 +415,7 @@ function FichaAtoCirurgico() {
                     </div>
                     <div className={styles.column}>
                         <label>Plantonista(s) discente(s): </label>
-                        <textarea name="equipeResponsavel" value={formData.equipeResponsavel} onChange={handleChange}/>
+                        <textarea name="equipeResponsavel" value={formData.equipeResponsavel} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Médico(s) Veterinário(s) Responsável:</label>
@@ -312,12 +423,12 @@ function FichaAtoCirurgico() {
                     </div>
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
+                        < CancelarWhiteButton onClick={cleanLocalStorage} />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
                 {showAlert && consultaId && (
-                <Alert message="Ficha criada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
+                    <Alert message="Ficha criada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
                 )}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
             </div>
