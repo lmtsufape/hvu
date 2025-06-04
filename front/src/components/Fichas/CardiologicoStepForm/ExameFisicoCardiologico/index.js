@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
-import { CancelarWhiteButton } from "../../../WhiteButton";
+import { VoltarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
 const POSTURAS = ["Estação", "Decúbito", "Cavalete", "Outras"];
@@ -13,12 +13,12 @@ function AtendimentoCardiologico({
     formData, 
     handleChange, 
     nextStep, 
+    prevStep,
     handleCheckboxChangeMucosas,
     handleLinfonodoChange,
     handleCaracteristicaChange,
     handleChangeAtualizaSelect,
     handleMucosaLocationChange,
-    cleanLocalStorage
 }) {
 
     const linfonodos = [
@@ -43,6 +43,7 @@ function AtendimentoCardiologico({
     ];
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log("Formulário válido. Dados prontos para envio:", formData);
         nextStep();
     };
 
@@ -164,25 +165,25 @@ function AtendimentoCardiologico({
           <div className={styles.box}>
             <div className={styles.column}>
                 <label className="form-label fw-medium">ACP
-                  <input type="text" name="acp" value={formData.ExameFisico.acp} onChange={handleChange} 
+                  <input type="text" name="ExameFisico.acp" value={formData.ExameFisico.acp} onChange={handleChange} 
                     />
                 </label>
             </div>
             <div className={styles.column}>
                 <label className="form-label fw-medium">Pulso arterial
-                  <input type="text" name="pulsoArterial" value={formData.ExameFisico.pulsoArterial} onChange={handleChange} 
+                  <input type="text" name="ExameFisico.pulsoArterial" value={formData.ExameFisico.pulsoArterial} onChange={handleChange} 
                     />
                 </label>
             </div>
             <div className={styles.column}>
                 <label className="form-label fw-medium">Frequência cardíaca (BPM)
-                  <input type="text" name="freqCardiaca" value={formData.ExameFisico.freqCardiaca} onChange={handleChange} 
+                  <input type="text" name="ExameFisico.freqCardiaca" value={formData.ExameFisico.freqCardiaca} onChange={handleChange} 
                     />
                 </label>
             </div>
             <div className={styles.column}>
                 <label className="form-label fw-medium">Frequência Respiratória (RPM)
-                  <input type="text" name="freqRespiratoria" value={formData.ExameFisico.freqRespiratoria} onChange={handleChange} 
+                  <input type="text" name="ExameFisico.freqRespiratoria" value={formData.ExameFisico.freqRespiratoria} onChange={handleChange} 
                     />
                 </label>
             </div>
@@ -190,7 +191,7 @@ function AtendimentoCardiologico({
             <label htmlFor="turgorCutaneo" className="form-label fw-medium">Turgor Cutâneo</label>
             <select
               id="turgorCutaneo"
-              name="turgorCutaneo"
+              name="ExameFisico.turgorCutaneo"
               value={formData.ExameFisico.turgorCutaneo}
               onChange={handleChangeAtualizaSelect}
               >
@@ -204,7 +205,7 @@ function AtendimentoCardiologico({
             <label htmlFor="tpc">TPC</label>
             <select
                 id="tpc"
-                name="tpc"
+                name="ExameFisico.tpc"
                 value={formData.ExameFisico.tpc}
                 onChange={handleChangeAtualizaSelect}
             >
@@ -298,7 +299,7 @@ function AtendimentoCardiologico({
           </div>
 
           <div className={styles.button_box}>
-            <CancelarWhiteButton onClick={cleanLocalStorage}/>
+            < VoltarWhiteButton onClick={prevStep}/>
             <ContinuarFichasGreenButton type="submit" />
           </div>
         </form>

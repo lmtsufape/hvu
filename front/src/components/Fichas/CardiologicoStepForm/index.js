@@ -75,7 +75,7 @@ function CardiologicaSteps() {
     abdomem: "",
     hidratacao: "",
     tpc: "",
-    turgor: "",
+    turgorCutaneo: "",
     mucosas: "",
     linfonodosGeral: "",
     linfonodosLocal: []
@@ -270,12 +270,21 @@ function CardiologicaSteps() {
   };
 
   const handleChangeAtualizaSelect = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  const { name, value } = e.target;
+  const path = name.split(".");
+
+  setFormData((prevData) => {
+    const clone = JSON.parse(JSON.stringify(prevData));
+    let ref = clone;
+    for (let i = 0; i < path.length - 1; i++) {
+      if (!ref[path[i]]) ref[path[i]] = {};
+      ref = ref[path[i]];
+    }
+    ref[path[path.length - 1]] = value;
+    return clone;
+  });
+};
+
 
   const handleSinalChange = (e, sinalClinico) => {
     const { checked } = e.target;
@@ -404,13 +413,13 @@ function CardiologicaSteps() {
             formData={formData} 
             handleChange={handleChange} 
             nextStep={nextStep}
+            prevStep={prevStep}
             handleCheckboxChange={handleCheckboxChange}
             handleChangeAtualizaSelect={handleChangeAtualizaSelect}
             handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
             handleLinfonodoChange={handleLinfonodoChange}
             handleCaracteristicaChange={handleCaracteristicaChange}
             handleMucosaLocationChange={handleMucosaLocationChange}
-            cleanLocalStorage={cleanLocalStorage}
             />
           </>
         );
