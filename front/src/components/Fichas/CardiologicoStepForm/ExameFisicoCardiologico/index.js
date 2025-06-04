@@ -279,7 +279,7 @@ function AtendimentoCardiologico({
                     </label>
                     
                     {formData.linfonodos[linfonodo.value] && (
-                    <div>
+                    <div className={styles.options_border}>
                         {caracteristicas.map((caracteristica) => (
                         <label key={caracteristica.value}>
                             <input
