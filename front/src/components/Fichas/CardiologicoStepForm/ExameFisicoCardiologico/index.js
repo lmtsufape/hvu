@@ -4,10 +4,10 @@ import VoltarButton from "../../../VoltarButton";
 import { CancelarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
-const POSTURAS          = [" ESTAÇÃO", " DECÚBITO", " CAVALETE", " OUTRAS"];
-const CONCIENCIA        = [" ALERTA", " Deprimido", " Excitado", " Ausente (COMA)"];
-const SCORE_CORPORAL    = [" CAQUÉTICO", " MAGRO", " NORMAL", " SOBREPESO", " OBESO"];
-const HIDRATACAO_OPTS   = [" NORMAL", " 6 A 8%", " 8 A 10%", " ACIMA DE 10%"];
+const POSTURAS = ["Estação", "Decúbito", "Cavalete", "Outras"];
+const CONCIENCIA = ["Alerta", "Deprimido", "Excitado", "Ausente (Coma)"];
+const SCORE_CORPORAL = ["Caquético", "Magro", "Normal", "Sobrepeso", "Obeso"];
+const HIDRATACAO_OPTS = ["Normal", "6 a 8%", "8 a 10%", "Acima de 10%"];
 
 function AtendimentoCardiologico({
     formData, 
@@ -187,7 +187,7 @@ function AtendimentoCardiologico({
                 </label>
             </div>
             <div className={styles.column}>            
-            <label htmlFor="turgorCutaneo" className="form-label fw-medium">turgor Cutâneo</label>
+            <label htmlFor="turgorCutaneo" className="form-label fw-medium">Turgor Cutâneo</label>
             <select
               id="turgorCutaneo"
               name="turgorCutaneo"
@@ -201,7 +201,7 @@ function AtendimentoCardiologico({
             </select>
             </div>
             <div className={styles.column}>
-            <label htmlFor="tpc">TPC:</label>
+            <label htmlFor="tpc">TPC</label>
             <select
                 id="tpc"
                 name="tpc"
@@ -225,7 +225,7 @@ function AtendimentoCardiologico({
               <div >
                 {Object.keys(formData.option).map((option) => (
                 <div key={option} className="row align-items-start mb-2" >
-                    <div className="col-3">
+                    <div className={`${styles.checkbox_container} ${styles.checkbox_square} col-3`}>
                       <label className="d-flex align-items-center">
                       <input
                           type="checkbox"
@@ -263,7 +263,7 @@ function AtendimentoCardiologico({
             <div className={styles.column}>
             <label>Linfonodos</label>
             </div>
-            <div className={styles.checkbox_container}>
+            <div className={`${styles.checkbox_container} ${styles.checkbox_square}`}>
                 {linfonodos.map((linfonodo) => (
                 <div key={linfonodo.value}>
                     <label>
