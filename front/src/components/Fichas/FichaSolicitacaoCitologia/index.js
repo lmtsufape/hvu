@@ -233,6 +233,7 @@ function FichaSolicitacaoCitologia() {
             const resultado = await createFicha(fichaData);
             localStorage.setItem('fichaId', resultado.id.toString());
             localStorage.removeItem("SolicitacaoCitologiaFormData");
+            localStorage.removeItem('canvasKonva'); 
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);

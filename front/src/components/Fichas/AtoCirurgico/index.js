@@ -40,6 +40,23 @@ function FichaAtoCirurgico() {
 
     const [consultaId, setConsultaId] = useState(null);
 
+    // Carrega os dados do formulário do localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedFormData = localStorage.getItem("fichaAtoCirurgicoFormData");
+            if (savedFormData) {
+                setFormData(JSON.parse(savedFormData));
+            }
+        }
+    }, []); 
+
+    // Salva os dados do formulário no localStorage 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem("fichaAtoCirurgicoFormData", JSON.stringify(formData));
+        }
+    }, [formData]); 
+
     useEffect(() => {
     if (router.isReady) {
         const id = router.query.fichaId;
@@ -50,7 +67,7 @@ function FichaAtoCirurgico() {
     }
     }, [router.isReady, router.query.fichaId]);
 
-    const { protocolos } = formData;
+    const { protocolos = []} = formData;
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -125,6 +142,7 @@ function FichaAtoCirurgico() {
             const resultado = await createFicha(fichaData);
             console.log("Resposta da api", resultado.id);
             localStorage.setItem('fichaId', resultado.id.toString());
+            localStorage.removeItem("fichaAtoCirurgicoFormData");
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
@@ -169,6 +187,10 @@ function FichaAtoCirurgico() {
           return prev;
         });
     };  
+
+    const cleanLocalStorage = () => {
+        localStorage.removeItem("fichaAtoCirurgicoFormData");
+    }
     
     return(
         <div className={styles.container}>
@@ -192,7 +214,7 @@ function FichaAtoCirurgico() {
                         onChange={handleChange}/>
                     </div>
 
-                    <div className={styles.row}>
+                    <div className={styles.grid}>
                         <div className={styles.column}>
                             <label>Nome da Cirurgia</label>
                             <textarea name="nomeDaCirurgia" value={formData.nomeDaCirurgia} onChange={handleChange} />
@@ -290,7 +312,7 @@ function FichaAtoCirurgico() {
                     </div>
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton />
+                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>

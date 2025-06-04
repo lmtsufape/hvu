@@ -206,7 +206,7 @@ function OrtopedicaSteps() {
   // Carrega os dados do formulário do localStorage 
   useEffect(() => {
       if (typeof window !== 'undefined') {
-          const savedFormData = localStorage.getItem("fichaCardiologicaFormData");
+          const savedFormData = localStorage.getItem("fichaOrtopedicaFormData");
           if (savedFormData) {
               setFormData(JSON.parse(savedFormData));
           }
@@ -216,7 +216,7 @@ function OrtopedicaSteps() {
   // Salva os dados do formulário no localStorage 
   useEffect(() => {
       if (typeof window !== 'undefined') {
-          localStorage.setItem("fichaCardiologicaFormData", JSON.stringify(formData));
+          localStorage.setItem("fichaOrtopedicaFormData", JSON.stringify(formData));
       }
   }, [formData]); 
 
@@ -424,7 +424,7 @@ function OrtopedicaSteps() {
     try {
         const resultado = await createFicha(fichaData);
         localStorage.setItem('fichaId', resultado.id.toString());
-        localStorage.removeItem("fichaCardiologicaFormData");
+        localStorage.removeItem("fichaOrtopedicaFormData");
         setShowAlert(true);
     } catch (error) {
         console.error("Erro ao criar ficha:", error);
@@ -433,7 +433,7 @@ function OrtopedicaSteps() {
  };
 
    const cleanLocalStorage = () => {
-    localStorage.removeItem("fichaCardiologicaFormData");
+    localStorage.removeItem("fichaOrtopedicaFormData");
   }
 
  const renderStepContent = () => {
