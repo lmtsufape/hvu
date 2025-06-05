@@ -7,8 +7,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import java.time.LocalDate;
 import java.util.Comparator;
 import br.edu.ufape.hvu.model.Vaga;
@@ -22,8 +20,6 @@ import br.edu.ufape.hvu.controller.dto.response.VagaResponse;
 public class VagaController {
 	@Autowired
 	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
 	
 	@GetMapping("vaga")
 	public List<VagaResponse> getAllVaga() {

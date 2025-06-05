@@ -6,7 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.RacaRequest;
 import br.edu.ufape.hvu.controller.dto.response.RacaResponse;
@@ -16,8 +15,6 @@ import br.edu.ufape.hvu.controller.dto.response.RacaResponse;
 public class RacaController {
 	@Autowired
 	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
 
 	@GetMapping("raca")
 	public List<RacaResponse> getAllRaca() {

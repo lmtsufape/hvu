@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EnderecoRequest;
 import br.edu.ufape.hvu.controller.dto.response.EnderecoResponse;
@@ -16,9 +15,7 @@ import br.edu.ufape.hvu.controller.dto.response.EnderecoResponse;
 public class EnderecoController {
 	@Autowired
 	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
-	
+
 	@GetMapping("endereco")
 	public List<EnderecoResponse> getAllEndereco() {
 		return facade.getAllEndereco()

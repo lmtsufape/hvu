@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import br.edu.ufape.hvu.model.Consulta;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ConsultaRequest;
@@ -22,8 +21,6 @@ import br.edu.ufape.hvu.controller.dto.response.ConsultaResponse;
 public class ConsultaController {
 	@Autowired
 	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
 	
 	@GetMapping("consulta")
 	public List<ConsultaResponse> getAllConsulta() {

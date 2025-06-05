@@ -6,7 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EspecialidadeRequest;
 import br.edu.ufape.hvu.controller.dto.response.EspecialidadeResponse;
@@ -17,8 +16,6 @@ import br.edu.ufape.hvu.controller.dto.response.EspecialidadeResponse;
 public class EspecialidadeController {
 	@Autowired
 	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
 
 	@PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
 	@GetMapping("especialidade")

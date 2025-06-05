@@ -4,7 +4,6 @@ import br.edu.ufape.hvu.controller.dto.request.CampoLaudoMicroscopiaRequest;
 import br.edu.ufape.hvu.controller.dto.response.CampoLaudoMicroscopiaResponse;
 import br.edu.ufape.hvu.facade.Facade;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +15,6 @@ import java.util.List;
 public class CampoLaudoMicroscopiaController {
     @Autowired
     private Facade facade;
-    @Autowired
-    private ModelMapper modelMapper;
 
     @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
     @GetMapping("campoLaudoMicroscopia")
