@@ -9,6 +9,8 @@ import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
 import FinalizarFichaModal from "../FinalizarFichaModal";
+import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getAnimalById } from '../../../../services/animalService';
 
 function FichaSolicitacaoExame() {
     const router = useRouter();
@@ -40,6 +42,57 @@ function FichaSolicitacaoExame() {
     const [consultaId, setConsultaId] = useState(null);
 
 
+
+    const [animalId, setAnimalId] = useState(null);
+    const [animal, setAnimal] = useState({});
+    const [showButtons, setShowButtons] = useState(false);
+    const [tutor, setTutor] = useState({});
+
+
+    useEffect(() => {
+        if (router.isReady) {
+            const id = router.query.fichaId;
+            const animalId = router.query.animalId;
+            if (id) {
+                setConsultaId(id);
+            }
+            if (animalId) {
+                setAnimalId(animalId);
+            }
+        }
+    }, [router.isReady, router.query.fichaId]);
+
+    useEffect(() => {
+        if (!animalId) return;
+
+        const fetchData = async () => {
+            try {
+                const animalData = await getAnimalById(animalId);
+                setAnimal(animalData);
+            } catch (error) {
+                console.error('Erro ao buscar animal:', error);
+            }
+
+            try {
+                const tutorData = await getTutorByAnimal(animalId);
+                setTutor(tutorData);
+            } catch (error) {
+                console.error('Erro ao buscar tutor do animal:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [animalId]);
+
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('pt-BR', options);
+    };
+
+
+
     const [formData, setFormData] = useState({
         hematologiaDiagnostica: [],
         urinalise: [],
@@ -59,24 +112,24 @@ function FichaSolicitacaoExame() {
                 setFormData(JSON.parse(savedFormData));
             }
         }
-    }, []); 
+    }, []);
 
     // Salva os dados do formulário no localStorage 
     useEffect(() => {
         if (typeof window !== 'undefined') {
             localStorage.setItem("solicitacaoExameFormData", JSON.stringify(formData));
         }
-    }, [formData]); 
+    }, [formData]);
 
     // Obtém o ID da ficha da URL
     useEffect(() => {
-      if (router.isReady) {
-          const id = router.query.fichaId;
-          if (id) {
-            setConsultaId(id);
-            console.log("ID da ficha:", id);
-          }
-      }
+        if (router.isReady) {
+            const id = router.query.fichaId;
+            if (id) {
+                setConsultaId(id);
+                console.log("ID da ficha:", id);
+            }
+        }
     }, [router.isReady, router.query.fichaId]);
 
     useEffect(() => {
@@ -282,12 +335,78 @@ function FichaSolicitacaoExame() {
 
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
-                     <button className={styles.dados_ocultos} type="button">
-                        Dados do animal
-                        <span>+</span>
-                    </button>
+                    <div className={styles.box_ficha_toggle}>
+                        <button
+                            type="button"
+                            className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
+                            onClick={() => setShowButtons(prev => !prev)}
+                        >
+                            Dados do animal
+                        </button>
+                        {showButtons && (
+                            <div className={styles.container_toggle}>
+                                <ul>
+                                    {animal && (
+                                        <li key={animal.id} className={styles.infos_box}>
+                                            <div className={styles.identificacao}>
+                                                <div className={styles.nome_animal}>{animal.nome}</div>
+                                                <div className={styles.especie_animal}>Nome</div>
+                                            </div>
+                                            <div className={styles.form}>
+                                                <div className={styles["animal-data-box"]}>
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Espécie</h6>
+                                                            <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Sexo</h6>
+                                                            <p>{animal.sexo}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Peso</h6>
+                                                            <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
+                                                        </div>
+                                                    </div>
 
-                     <div className={styles.titulo}>
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Raça</h6>
+                                                            <p>{animal.raca && animal.raca.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Porte</h6>
+                                                            <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Data de nascimento</h6>
+                                                            <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Alergias</h6>
+                                                            <p>{animal.alergias ? animal.alergias : 'Não definidas'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Número da ficha</h6>
+                                                            <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Tutor</h6>
+                                                            <p>{tutor.nome ? tutor.nome : 'Não definido'}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                    <div className={styles.titulo}>
                         Hematologia Diagnóstica
                     </div>
                     <div className={styles.checkbox_container}>
@@ -303,16 +422,16 @@ function FichaSolicitacaoExame() {
                                 {item}
                             </label>
                         ))}
-                    
-                    {showOtherInputHematologia && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValueHematologia}
-                            onChange={(e) => setOtherValueHematologia(e.target.value)}
-                            className="form-control"
-                        />
-                    )}
+
+                        {showOtherInputHematologia && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValueHematologia}
+                                onChange={(e) => setOtherValueHematologia(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
                     </div>
 
                     <h2>Urinálise</h2>
@@ -352,18 +471,18 @@ function FichaSolicitacaoExame() {
                                 {item}
                             </label>
                         ))}
-                    {showOtherInputParasitologico && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValueParasitologico}
-                            onChange={(e) => setOtherValueParasitologico(e.target.value)}
-                            className="form-control"
-                        />
-                    )}
+                        {showOtherInputParasitologico && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValueParasitologico}
+                                onChange={(e) => setOtherValueParasitologico(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
                     </div>
-                     {/* Adicionado o campo de Bioquímica Clínica */}
-                     <h2>Bioquímica Clínica</h2>
+                    {/* Adicionado o campo de Bioquímica Clínica */}
+                    <h2>Bioquímica Clínica</h2>
                     <div className={styles.checkbox_container}>
                         {["Creatinina (CREA)", "Ureia (UR)", "ALT/TGP", "AST/TGO", "Fosfatase alcalina (FA)", "Gama - Glutamiltransferase (GGT)", "Bilirrubina total e frações (BT + BD + BI)", "Proteínas totais (PT)", "Albumina (ALB)", "Globulinas (GLOB)", "Triglicerides (TG)", "Colesterol Total (COL)", "Colesteróis HDL e LDL", "Glicose (GLI)", "Creatina quinase (CK/CPK)", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -376,15 +495,15 @@ function FichaSolicitacaoExame() {
                                 {item}
                             </label>
                         ))}
-                    {showOtherInputBioquimica && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValueBioquimica}
-                            onChange={(e) => setOtherValueBioquimica(e.target.value)}
-                            className="form-control"
-                        />
-                    )}
+                        {showOtherInputBioquimica && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValueBioquimica}
+                                onChange={(e) => setOtherValueBioquimica(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
                     </div>
                     <h2>Citologia/Histopatologia</h2>
                     <div className={styles.checkbox_container}>
@@ -399,17 +518,17 @@ function FichaSolicitacaoExame() {
                                 {item}
                             </label>
                         ))}
-                    {showOtherInputCitologia && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValueCitologia}
-                            onChange={(e) => setOtherValueCitologia(e.target.value)}
-                            className="form-control"
-                        />
-                    )}
+                        {showOtherInputCitologia && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValueCitologia}
+                                onChange={(e) => setOtherValueCitologia(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
                     </div>
-                     <h2>Imunológicos</h2>
+                    <h2>Imunológicos</h2>
                     <div className={styles.checkbox_container}>
                         {["Teste rápido Cinomose", "Teste rápido Erliquiose", "Teste rápido Leishmaniose", "FIV/FELV", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -422,15 +541,15 @@ function FichaSolicitacaoExame() {
                                 {item}
                             </label>
                         ))}
-                    {showOtherInputImunologicos && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValueImunologicos}
-                            onChange={(e) => setOtherValueImunologicos(e.target.value)}
-                            className="form-control"
-                        />
-                    )}
+                        {showOtherInputImunologicos && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValueImunologicos}
+                                onChange={(e) => setOtherValueImunologicos(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
                     </div>
                     <h2>Imaginologia</h2>
                     <div className={styles.checkbox_container}>
@@ -445,17 +564,17 @@ function FichaSolicitacaoExame() {
                                 {item}
                             </label>
                         ))}
-                    {showOtherInputImaginologia && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValueImaginologia}
-                            onChange={(e) => setOtherValueImaginologia(e.target.value)}
-                            className="form-control"
-                        />
-                    )}
+                        {showOtherInputImaginologia && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValueImaginologia}
+                                onChange={(e) => setOtherValueImaginologia(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
                     </div>
-                     <h2>Cardiologia</h2>
+                    <h2>Cardiologia</h2>
                     <div className={styles.checkbox_container}>
                         {["Eletrocardiograma", "Ecocardiograma", "Outros(s):"].map((item) => (
                             <label key={item}>
@@ -468,29 +587,29 @@ function FichaSolicitacaoExame() {
                                 {item}
                             </label>
                         ))}
-                    {showOtherInputCardiologia && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValueCardiologia}
-                            onChange={(e) => setOtherValueCardiologia(e.target.value)}
-                            className="form-control"
-                        />
-                    )}
+                        {showOtherInputCardiologia && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValueCardiologia}
+                                onChange={(e) => setOtherValueCardiologia(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
                     </div>
 
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
+                        < CancelarWhiteButton onClick={cleanLocalStorage} />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
 
                 {showAlert && consultaId &&
-                <div className={styles.alert}>
-                    <Alert message="Ficha criada com sucesso!" 
-                    show={showAlert} url={`/createConsulta/${consultaId}`} />
-                </div>}
+                    <div className={styles.alert}>
+                        <Alert message="Ficha criada com sucesso!"
+                            show={showAlert} url={`/createConsulta/${consultaId}`} />
+                    </div>}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
 
             </div>

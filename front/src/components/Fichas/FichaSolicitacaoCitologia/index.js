@@ -10,6 +10,8 @@ import moment from 'moment';
 import FinalizarFichaModal from "../FinalizarFichaModal";
 import { CancelarWhiteButton } from "../../WhiteButton";
 import DrawingModal from "@/components/Fichas/DrawingModal";
+import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getAnimalById } from '../../../../services/animalService';
 
 function FichaSolicitacaoCitologia() {
 
@@ -27,6 +29,13 @@ function FichaSolicitacaoCitologia() {
     const [imagemDesenhada, setImagemDesenhada] = useState(null);
     const [consultaId, setConsultaId] = useState(null);
     const router = useRouter();
+
+
+    const [animalId, setAnimalId] = useState(null);
+    const [animal, setAnimal] = useState({});
+    const [showButtons, setShowButtons] = useState(false);
+    const [tutor, setTutor] = useState({});
+
 
     const [formData, setFormData] = useState({
         anamnese: [],
@@ -67,6 +76,48 @@ function FichaSolicitacaoCitologia() {
             }
         }
     }, []);
+
+    useEffect(() => {
+        if (router.isReady) {
+            const id = router.query.fichaId;
+            const animalId = router.query.animalId;
+            if (id) {
+                setConsultaId(id);
+            }
+            if (animalId) {
+                setAnimalId(animalId);
+            }
+        }
+    }, [router.isReady, router.query.fichaId]);
+
+    useEffect(() => {
+        if (!animalId) return;
+
+        const fetchData = async () => {
+            try {
+                const animalData = await getAnimalById(animalId);
+                setAnimal(animalData);
+            } catch (error) {
+                console.error('Erro ao buscar animal:', error);
+            }
+
+            try {
+                const tutorData = await getTutorByAnimal(animalId);
+                setTutor(tutorData);
+            } catch (error) {
+                console.error('Erro ao buscar tutor do animal:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [animalId]);
+
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('pt-BR', options);
+    };
 
     // Salva os dados do formulário no localStorage 
     useEffect(() => {
@@ -233,7 +284,7 @@ function FichaSolicitacaoCitologia() {
             const resultado = await createFicha(fichaData);
             localStorage.setItem('fichaId', resultado.id.toString());
             localStorage.removeItem("SolicitacaoCitologiaFormData");
-            localStorage.removeItem('canvasKonva'); 
+            localStorage.removeItem('canvasKonva');
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
@@ -252,6 +303,77 @@ function FichaSolicitacaoCitologia() {
 
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
+                    <div className={styles.box_ficha_toggle}>
+                        <button
+                            type="button"
+                            className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
+                            onClick={() => setShowButtons(prev => !prev)}
+                        >
+                            Dados do animal
+                        </button>
+                        {showButtons && (
+                            <div className={styles.container_toggle}>
+                                <ul>
+                                    {animal && (
+                                        <li key={animal.id} className={styles.infos_box}>
+                                            <div className={styles.identificacao}>
+                                                <div className={styles.nome_animal}>{animal.nome}</div>
+                                                <div className={styles.especie_animal}>Nome</div>
+                                            </div>
+                                            <div className={styles.form}>
+                                                <div  className={styles["animal-data-box"]}>
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Espécie</h6>
+                                                            <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Sexo</h6>
+                                                            <p>{animal.sexo}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Peso</h6>
+                                                            <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Raça</h6>
+                                                            <p>{animal.raca && animal.raca.nome}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Porte</h6>
+                                                            <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Data de nascimento</h6>
+                                                            <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className={styles.lista}>
+                                                        <div className={styles.infos}>
+                                                            <h6>Alergias</h6>
+                                                            <p>{animal.alergias ? animal.alergias : 'Não definidas'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Número da ficha</h6>
+                                                            <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
+                                                        </div>
+                                                        <div className={styles.infos}>
+                                                            <h6>Tutor</h6>
+                                                            <p>{tutor.nome ? tutor.nome : 'Não definido'}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
 
                     <div className={styles.box}>
                         <div className={styles.column}>
@@ -318,7 +440,7 @@ function FichaSolicitacaoCitologia() {
                         dimensoesImagem={dimensoesImagem}
                     />
                     <div className={styles.column}>
-                      <label>Método de colheita</label>
+                        <label>Método de colheita</label>
                     </div>
                     <div className={styles.checkbox_container}>
                         {["PAAF", "Swab", "Capilaridade", "Imprint", "Escarificação", "Outros(s):"].map((item) => (
@@ -345,7 +467,7 @@ function FichaSolicitacaoCitologia() {
 
                     {/* CARACTERÍSTICAS DA LESÃO / MATERIAL */}
                     <div className={styles.column}>
-                    <label>Características da Lesão / Material</label>
+                        <label>Características da Lesão / Material</label>
                     </div>
                     <div className={styles.checkbox_container}>
                         {["Nódulo", "Pápula", "Vesícula", "Tumefação", "Tumoração", "Outros(s):"].map((item) => (
@@ -360,7 +482,7 @@ function FichaSolicitacaoCitologia() {
                             </label>
                         ))}
                     </div>
-                    
+
 
                     {showOtherInputLesao && (
                         <input
@@ -470,9 +592,9 @@ function FichaSolicitacaoCitologia() {
                             </select>
                         </div>
                     </div>
-                        {/* CAMPOS PARA CITOLGIA */}
-                        <h2>Citologia</h2>
-                        <div className={styles.box}>
+                    {/* CAMPOS PARA CITOLGIA */}
+                    <h2>Citologia</h2>
+                    <div className={styles.box}>
                         <div className={styles.column}>
                             <label>Descrição:</label>
                             <input
