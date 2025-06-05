@@ -226,26 +226,30 @@ function CardiologicaSteps() {
   
 
   const handleSubmit = async (event) => {
-    setShowErrorAlert(false);
-    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
-    const fichaData = {
-        nome: "Ficha clínica cardiológica",  
-        conteudo:{
-          ...formData
-        },
-        dataHora: dataFormatada 
-    };
 
-    try {
-        const resultado = await createFicha(fichaData);
-        localStorage.setItem('fichaId', resultado.id.toString());
-        localStorage.removeItem("fichaCardiologicaFormData");
-        setShowAlert(true);
-    } catch (error) {
-        console.error("Erro ao criar ficha:", error);
-        setShowErrorAlert(true);
-    }
- };
+  setShowErrorAlert(false);
+
+  const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+
+  // Criar uma cópia de formData excluindo os campos 'option' e 'opc'
+  const { option, opc, ...dadosParaEnviar } = formData;
+
+  const fichaData = {
+    nome: "Ficha clínica cardiológica",
+    conteudo: dadosParaEnviar, // Envia apenas os dados relevantes
+    dataHora: dataFormatada,
+  };
+
+  try {
+    const resultado = await createFicha(fichaData);
+    localStorage.setItem('fichaId', resultado.id.toString());
+    localStorage.removeItem("fichaCardiologicaFormData");
+    setShowAlert(true);
+  } catch (error) {
+    console.error("Erro ao criar ficha:", error);
+    setShowErrorAlert(true);
+  }
+};
 
  const handleCheckboxChangeVacinacao = (e) => {
     const { name, checked } = e.target;
