@@ -5,7 +5,6 @@ import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
-import { createFicha } from '../../../../../services/fichaService';
 import { useRouter } from 'next/router';
 
 function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, handleSubmit, prevStep, setFormData,
@@ -337,172 +336,176 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
 
           <h2>Palpação Membro Pélvico</h2>
           <div className={styles.two_columns}>
-            <GrupoExame
-              titulo="digitosMetatarsos"
-              label="Dígitos / Metatarsos"
-              itens={[
-                { key: "flexaoMetatarsos", label: "Flexão" },
-                { key: "extensaoMetatarsos", label: "Extensão" }
-              ]}
-              formData={formData}
-              setFormData={setFormData}
-              handleRadioAninhado={handleRadioAninhado}
-              selecionados={selecionados}
-              ladosVisiveis={ladosVisiveis}
-              toggleItem={toggleItem}
-              toggleLadoVisivel={toggleLadoVisivel}
-            />
-            <GrupoExame
-              titulo="tarso"
-              label="Tarso"
-              itens={[
-                { key: "calcaneoTendao", label: "Calcâneo / Tendão" },
-                { key: "flexaoTarso", label: "Flexão" },
-                { key: "extensaoTarso", label: "Extensão" },
-                { key: "instabilidadeMedialLateralTarso", label: "Instabilidade medial/lateral" },
-                { key: "rotacaoTarso", label: "Rotação" }
-              ]}
-              formData={formData}
-              setFormData={setFormData}
-              handleRadioAninhado={handleRadioAninhado}
-              selecionados={selecionados}
-              ladosVisiveis={ladosVisiveis}
-              toggleItem={toggleItem}
-              toggleLadoVisivel={toggleLadoVisivel}
-            />
-            <GrupoExame
-              titulo="tibiaFibula"
-              label="Tíbia / Fíbula"
-              itens={[
-                { key: "cristaTibia", label: "Crista da tíbia" }
-              ]}
-              formData={formData}
-              setFormData={setFormData}
-              handleRadioAninhado={handleRadioAninhado}
-              selecionados={selecionados}
-              ladosVisiveis={ladosVisiveis}
-              toggleItem={toggleItem}
-              toggleLadoVisivel={toggleLadoVisivel}
-            />
-            <GrupoExame
-              titulo="articulacaoJoelho"
-              label="Articulação do Joelho"
-              itens={[
-                { key: "ligamentoElevacaoPatelar", label: "Ligamento/elevação patelar" },
-                { key: "luxacaoPatelarMedialLateral", label: "Luxação patelar M ou L" },
-                { key: "sentar", label: "Sentar" },
-                { key: "flexaoArticulacaoJoelho", label: "Flexão" },
-                { key: "extensaoArticulacaoJoelho", label: "Extensão" },
-                { key: "posicaoRotacaoCristaTibial", label: "Posição/Rotação M Crista Tibial" },
-                { key: "instabilidadeCraniomedial", label: "Instabilidade Craniomedial" },
-                { key: "gavetaCranial", label: "Gaveta Cranial (normal/extensão/flexão)" },
-                { key: "gavetaCaudal", label: "Gaveta Caudal (normal/extensão/flexão)" },
-                { key: "compressaoTibial", label: "Compressão Tibial" },
-                { key: "gavetaMedialLateral", label: "Gaveta Medial / Lateral" },
-                { key: "menisco", label: "Menisco" },
-                { key: "clickMeniscal", label: "Click Meniscal" },
-                { key: "clickTendaoExtensorDigitalLongo", label: "Click tendão ext. dig. Longo" },
-                { key: "efusaoArticular", label: "Efusão articular" },
-                { key: "coximAdiposo", label: "Coxim Adiposo" }
-              ]}
-              formData={formData}
-              setFormData={setFormData}
-              handleRadioAninhado={handleRadioAninhado}
-              selecionados={selecionados}
-              ladosVisiveis={ladosVisiveis}
-              toggleItem={toggleItem}
-              toggleLadoVisivel={toggleLadoVisivel}
-            />
-            <GrupoExame
-              titulo="femur"
-              label="Fêmur"
-              itens={[
-                { key: "ladoFemur", label: "Lado" }
-              ]}
-              formData={formData}
-              setFormData={setFormData}
-              handleRadioAninhado={handleRadioAninhado}
-              selecionados={selecionados}
-              ladosVisiveis={ladosVisiveis}
-              toggleItem={toggleItem}
-              toggleLadoVisivel={toggleLadoVisivel}
-            />
-            <GrupoExame
-              titulo="articulacaoCoxal"
-              label="Articulação Coxal"
-              itens={[
-                { key: "conformacaoBase", label: "Conformação/base" },
-                { key: "clunck", label: "“Clunck”" },
-                { key: "stand", label: "“Stand”" },
-                { key: "abducaoRotacaoExterna", label: "Abdução com Rotação externa" },
-                { key: "simetriaReacaoExtensao", label: "Simetria/Reação extensão" },
-                { key: "testeSubluxacao", label: "Teste Subluxação" },
-                { key: "testeIliopsoas", label: "Teste Iliopsoas" },
-                { key: "anguloSubluxacao", label: "Ângulo de Subluxação" },
-                { key: "anguloReducao", label: "Ângulo de Redução" },
-                { key: "sinalOrtolani", label: "Sinal de Ortolani" },
-                { key: "sinalBarlow", label: "Sinal de Barlow" },
-                { key: "testeBardens", label: "Teste de Bardens" },
-                { key: "compressaoTrocanterica", label: "Compressão Trocantérica" }
-              ]}
-              formData={formData}
-              setFormData={setFormData}
-              handleRadioAninhado={handleRadioAninhado}
-              selecionados={selecionados}
-              ladosVisiveis={ladosVisiveis}
-              toggleItem={toggleItem}
-              toggleLadoVisivel={toggleLadoVisivel}
-            />
-            <GrupoExame
-              titulo="articulacaoSacroiliaca"
-              label="Articulação Sacroilíaca"
-              itens={[
-                { key: "ladoSacroiliaca", label: "Lado" }
-              ]}
-              formData={formData}
-              setFormData={setFormData}
-              handleRadioAninhado={handleRadioAninhado}
-              selecionados={selecionados}
-              ladosVisiveis={ladosVisiveis}
-              toggleItem={toggleItem}
-              toggleLadoVisivel={toggleLadoVisivel}
-            />
-            <GrupoExame
-              titulo="pelve"
-              label="Pelve"
-              itens={[
-                { key: "cristaIliaca", label: "Crista ilíaca" },
-                { key: "tuberosidadeIsquiatica", label: "Tuberosidade Isquiática" },
-                { key: "relacaoTrocanterMaior", label: "Relação com Trocânter Maior" },
-                { key: "exameRetal", label: "Exame Retal" }
-              ]}
-              formData={formData}
-              setFormData={setFormData}
-              handleRadioAninhado={handleRadioAninhado}
-              selecionados={selecionados}
-              ladosVisiveis={ladosVisiveis}
-              toggleItem={toggleItem}
-              toggleLadoVisivel={toggleLadoVisivel}
-            />
-            <GrupoExame
-              titulo="cabecaEsqueletoAxial"
-              label="Cabeça e Esqueleto Axial"
-              itens={[
-                { key: "cranio", label: "Crânio" },
-                { key: "maxila", label: "Maxila" },
-                { key: "ramosMandibulares", label: "Ramos mandibulares" },
-                { key: "sinfiseMandibular", label: "Sínfise mandibular" },
-                { key: "atm", label: "ATM" },
-                { key: "colunaCervical", label: "Coluna cervical" }
-              ]}
-              formData={formData}
-              setFormData={setFormData}
-              handleRadioAninhado={handleRadioAninhado}
-              selecionados={selecionados}
-              ladosVisiveis={ladosVisiveis}
-              toggleItem={toggleItem}
-              toggleLadoVisivel={toggleLadoVisivel}
-            />
+            <div>
+              <GrupoExame
+                titulo="digitosMetatarsos"
+                label="Dígitos / Metatarsos"
+                itens={[
+                  { key: "flexaoMetatarsos", label: "Flexão" },
+                  { key: "extensaoMetatarsos", label: "Extensão" }
+                ]}
+                formData={formData}
+                setFormData={setFormData}
+                handleRadioAninhado={handleRadioAninhado}
+                selecionados={selecionados}
+                ladosVisiveis={ladosVisiveis}
+                toggleItem={toggleItem}
+                toggleLadoVisivel={toggleLadoVisivel}
+              />
+              <GrupoExame
+                titulo="tarso"
+                label="Tarso"
+                itens={[
+                  { key: "calcaneoTendao", label: "Calcâneo / Tendão" },
+                  { key: "flexaoTarso", label: "Flexão" },
+                  { key: "extensaoTarso", label: "Extensão" },
+                  { key: "instabilidadeMedialLateralTarso", label: "Instabilidade medial/lateral" },
+                  { key: "rotacaoTarso", label: "Rotação" }
+                ]}
+                formData={formData}
+                setFormData={setFormData}
+                handleRadioAninhado={handleRadioAninhado}
+                selecionados={selecionados}
+                ladosVisiveis={ladosVisiveis}
+                toggleItem={toggleItem}
+                toggleLadoVisivel={toggleLadoVisivel}
+              />
+              <GrupoExame
+                titulo="tibiaFibula"
+                label="Tíbia / Fíbula"
+                itens={[
+                  { key: "cristaTibia", label: "Crista da tíbia" }
+                ]}
+                formData={formData}
+                setFormData={setFormData}
+                handleRadioAninhado={handleRadioAninhado}
+                selecionados={selecionados}
+                ladosVisiveis={ladosVisiveis}
+                toggleItem={toggleItem}
+                toggleLadoVisivel={toggleLadoVisivel}
+              />
+              <GrupoExame
+                titulo="articulacaoJoelho"
+                label="Articulação do Joelho"
+                itens={[
+                  { key: "ligamentoElevacaoPatelar", label: "Ligamento/elevação patelar" },
+                  { key: "luxacaoPatelarMedialLateral", label: "Luxação patelar M ou L" },
+                  { key: "sentar", label: "Sentar" },
+                  { key: "flexaoArticulacaoJoelho", label: "Flexão" },
+                  { key: "extensaoArticulacaoJoelho", label: "Extensão" },
+                  { key: "posicaoRotacaoCristaTibial", label: "Posição/Rotação M Crista Tibial" },
+                  { key: "instabilidadeCraniomedial", label: "Instabilidade Craniomedial" },
+                  { key: "gavetaCranial", label: "Gaveta Cranial (normal/extensão/flexão)" },
+                  { key: "gavetaCaudal", label: "Gaveta Caudal (normal/extensão/flexão)" },
+                  { key: "compressaoTibial", label: "Compressão Tibial" },
+                  { key: "gavetaMedialLateral", label: "Gaveta Medial / Lateral" },
+                  { key: "menisco", label: "Menisco" },
+                  { key: "clickMeniscal", label: "Click Meniscal" },
+                  { key: "clickTendaoExtensorDigitalLongo", label: "Click tendão ext. dig. Longo" },
+                  { key: "efusaoArticular", label: "Efusão articular" },
+                  { key: "coximAdiposo", label: "Coxim Adiposo" }
+                ]}
+                formData={formData}
+                setFormData={setFormData}
+                handleRadioAninhado={handleRadioAninhado}
+                selecionados={selecionados}
+                ladosVisiveis={ladosVisiveis}
+                toggleItem={toggleItem}
+                toggleLadoVisivel={toggleLadoVisivel}
+              />
+              <GrupoExame
+                titulo="femur"
+                label="Fêmur"
+                itens={[
+                  { key: "ladoFemur", label: "Lado" }
+                ]}
+                formData={formData}
+                setFormData={setFormData}
+                handleRadioAninhado={handleRadioAninhado}
+                selecionados={selecionados}
+                ladosVisiveis={ladosVisiveis}
+                toggleItem={toggleItem}
+                toggleLadoVisivel={toggleLadoVisivel}
+              />
+            </div>
+            <div>
+              <GrupoExame
+                titulo="articulacaoCoxal"
+                label="Articulação Coxal"
+                itens={[
+                  { key: "conformacaoBase", label: "Conformação/base" },
+                  { key: "clunck", label: "“Clunck”" },
+                  { key: "stand", label: "“Stand”" },
+                  { key: "abducaoRotacaoExterna", label: "Abdução com Rotação externa" },
+                  { key: "simetriaReacaoExtensao", label: "Simetria/Reação extensão" },
+                  { key: "testeSubluxacao", label: "Teste Subluxação" },
+                  { key: "testeIliopsoas", label: "Teste Iliopsoas" },
+                  { key: "anguloSubluxacao", label: "Ângulo de Subluxação" },
+                  { key: "anguloReducao", label: "Ângulo de Redução" },
+                  { key: "sinalOrtolani", label: "Sinal de Ortolani" },
+                  { key: "sinalBarlow", label: "Sinal de Barlow" },
+                  { key: "testeBardens", label: "Teste de Bardens" },
+                  { key: "compressaoTrocanterica", label: "Compressão Trocantérica" }
+                ]}
+                formData={formData}
+                setFormData={setFormData}
+                handleRadioAninhado={handleRadioAninhado}
+                selecionados={selecionados}
+                ladosVisiveis={ladosVisiveis}
+                toggleItem={toggleItem}
+                toggleLadoVisivel={toggleLadoVisivel}
+              />
+              <GrupoExame
+                titulo="articulacaoSacroiliaca"
+                label="Articulação Sacroilíaca"
+                itens={[
+                  { key: "ladoSacroiliaca", label: "Lado" }
+                ]}
+                formData={formData}
+                setFormData={setFormData}
+                handleRadioAninhado={handleRadioAninhado}
+                selecionados={selecionados}
+                ladosVisiveis={ladosVisiveis}
+                toggleItem={toggleItem}
+                toggleLadoVisivel={toggleLadoVisivel}
+              />
+              <GrupoExame
+                titulo="pelve"
+                label="Pelve"
+                itens={[
+                  { key: "cristaIliaca", label: "Crista ilíaca" },
+                  { key: "tuberosidadeIsquiatica", label: "Tuberosidade Isquiática" },
+                  { key: "relacaoTrocanterMaior", label: "Relação com Trocânter Maior" },
+                  { key: "exameRetal", label: "Exame Retal" }
+                ]}
+                formData={formData}
+                setFormData={setFormData}
+                handleRadioAninhado={handleRadioAninhado}
+                selecionados={selecionados}
+                ladosVisiveis={ladosVisiveis}
+                toggleItem={toggleItem}
+                toggleLadoVisivel={toggleLadoVisivel}
+              />
+              <GrupoExame
+                titulo="cabecaEsqueletoAxial"
+                label="Cabeça e Esqueleto Axial"
+                itens={[
+                  { key: "cranio", label: "Crânio" },
+                  { key: "maxila", label: "Maxila" },
+                  { key: "ramosMandibulares", label: "Ramos mandibulares" },
+                  { key: "sinfiseMandibular", label: "Sínfise mandibular" },
+                  { key: "atm", label: "ATM" },
+                  { key: "colunaCervical", label: "Coluna cervical" }
+                ]}
+                formData={formData}
+                setFormData={setFormData}
+                handleRadioAninhado={handleRadioAninhado}
+                selecionados={selecionados}
+                ladosVisiveis={ladosVisiveis}
+                toggleItem={toggleItem}
+                toggleLadoVisivel={toggleLadoVisivel}
+              />
+            </div>
           </div>
           <div className={styles.column}>
             <label>Diagnótico:
