@@ -89,7 +89,7 @@ const cleanFichaContent = (content) => {
 // Função para formatar o conteúdo limpo para exibição
 const formatFichaContent = (content) => {
   if (!content || typeof content !== 'object') return null;
-  
+
   return Object.entries(content).map(([key, value]) => {
     // Formata chaves para legibilidade
     const formattedKey = key
@@ -97,6 +97,16 @@ const formatFichaContent = (content) => {
       .replace(/^./, str => str.toUpperCase())
       .replace(/_/g, ' ');
 
+    // Caso o valor seja um array de valores primitivos (como strings ou números)
+    if (Array.isArray(value) && value.every(item => typeof item !== 'object')) {
+      return (
+        <p key={key}>
+          <strong>{formattedKey}:</strong> {value.join(' ')}
+        </p>
+      );
+    }
+
+    // Caso o valor seja um array de objetos
     if (Array.isArray(value)) {
       return (
         <div key={key}>
@@ -121,6 +131,7 @@ const formatFichaContent = (content) => {
       );
     }
 
+    // Caso o valor seja um objeto
     if (typeof value === 'object' && value !== null) {
       return (
         <div key={key}>
@@ -132,13 +143,14 @@ const formatFichaContent = (content) => {
       );
     }
 
+    // Caso o valor seja um primitivo (string, número, etc.)
     return (
       <p key={key}>
         <strong>{formattedKey}:</strong> {String(value)}
       </p>
     );
   });
-};
+};;
 
 function CreateConsulta() {
   const router = useRouter();
