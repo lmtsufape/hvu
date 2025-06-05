@@ -3,18 +3,17 @@ import styles from "./index.module.css";
 import React, { useState, useEffect } from "react";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
-import { createFicha } from '../../../../../services/fichaService';
 import { useRouter } from 'next/router';
 
 import VoltarButton from "@/components/VoltarButton";
 import { CancelarWhiteButton } from "@/components/WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
-const ALIMENTACAO_OPTS = [" RAÇÃO", " DIETA CASEIRA", " RAÇÃO + DIETA CASEIRA"];
-const POSTURAS = [" ESTAÇÃO", " DECÚBITO", " CAVALETE", " OUTRAS"];
-const CONCIENCIA = [" ALERTA", " Deprimido", " Excitado", " Ausente (COMA)"];
-const SCORE_CORPORAL = [" CAQUÉTICO", " MAGRO", " NORMAL", " SOBREPESO", " OBESO"];
-const HIDRATACAO_OPTS = [" NORMAL", " 6 A 8%", " 8 A 10%", " ACIMA DE 10%"];
+const ALIMENTACAO_OPTS = [" Ração", " Dieta caseira", " Ração + Dieta caseira"];
+const POSTURAS = [" Estação", " Decúbito", " Cavalete", " Outras"];
+const CONCIENCIA = [" Alerta", " Deprimido", " Excitado", " Ausente (coma)"];
+const SCORE_CORPORAL = [" Caquético", " Magro", " Normal", " Sobrepeso", " Obeso"];
+const HIDRATACAO_OPTS = [" Normal", " 6 a 8%", " 8 a 10%", " Acima de 10%"];
 
 export default function ClinicaMedicaRetornoStep1({
   formData,
@@ -216,7 +215,7 @@ export default function ClinicaMedicaRetornoStep1({
             <div >
               {Object.keys(formData.opc).map((opc) => (
                 <div key={opc} className="row align-items-start mb-2">
-                  <div className="col-3">
+                  <div className={`${styles.checkbox_container} ${styles.checkbox_square} col-3`}>
                     <label className="d-flex align-items-center">
                       <input
                         type="checkbox"
@@ -225,7 +224,7 @@ export default function ClinicaMedicaRetornoStep1({
                         onChange={handleCheckboxChangeVacinacao}
                         className="me-2"
                       />
-                      {opc === "antiRabica" && "anti-Rábica"}
+                      {opc === "antiRabica" && "Anti-Rábica"}
                       {opc === "giardia" && "Giardia"}
                       {opc === "leishmaniose" && "Leishmaniose"}
                       {opc === "tosseDosCanis" && "Tose dos Canis"}
@@ -324,7 +323,7 @@ export default function ClinicaMedicaRetornoStep1({
           <div className={styles.column}>
             <label className="form-label fw-medium">Alimentação</label>
           </div>
-          <div className={styles.checkbox_container}>
+          <div className={`${styles.checkbox_container} ${styles.space_bottom}`}>
             {ALIMENTACAO_OPTS.map(opt => (
               <label key={opt} >
                 <input
@@ -435,7 +434,7 @@ export default function ClinicaMedicaRetornoStep1({
               </label>
             </div>
             <div className={styles.column}>
-              <label htmlFor="turgorCutaneo" className="form-label fw-medium">turgor Cutâneo:</label>
+              <label htmlFor="turgorCutaneo" className="form-label fw-medium">Turgor Cutâneo:</label>
               <select
                 id="turgorCutaneo"
                 name="turgorCutaneo"
@@ -473,7 +472,7 @@ export default function ClinicaMedicaRetornoStep1({
             <div >
               {Object.keys(formData.option).map((option) => (
                 <div key={option} className="row align-items-start mb-2" >
-                  <div className="col-3">
+                  <div className={`${styles.checkbox_container} ${styles.checkbox_square} col-3`}>
                     <label className="d-flex align-items-center">
                       <input
                         type="checkbox"
@@ -511,7 +510,7 @@ export default function ClinicaMedicaRetornoStep1({
             <div className={styles.column}>
               <label>Linfonodos</label>
             </div>
-            <div className={styles.checkbox_container}>
+            <div className={`${styles.checkbox_container}`}>
               {linfonodos.map((linfonodo) => (
                 <div key={linfonodo.value}>
                   <label>
@@ -526,7 +525,7 @@ export default function ClinicaMedicaRetornoStep1({
                   </label>
 
                   {formData.linfonodos[linfonodo.value] && (
-                    <div>
+                    <div className={styles.options_border}>
                       {caracteristicas.map((caracteristica) => (
                         <label key={caracteristica.value}>
                           <input
