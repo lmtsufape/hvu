@@ -2,9 +2,9 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.OrgaoRequest;
@@ -12,9 +12,9 @@ import br.edu.ufape.hvu.controller.dto.response.OrgaoResponse;
  
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class OrgaoController {
-	@Autowired
-	private Facade facade;
+	private final Facade facade;
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("orgao")

@@ -4,7 +4,7 @@ import br.edu.ufape.hvu.controller.dto.request.CampoLaudoMicroscopiaRequest;
 import br.edu.ufape.hvu.controller.dto.response.CampoLaudoMicroscopiaResponse;
 import br.edu.ufape.hvu.facade.Facade;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class CampoLaudoMicroscopiaController {
-    @Autowired
-    private Facade facade;
+    private final Facade facade;
 
     @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
     @GetMapping("campoLaudoMicroscopia")

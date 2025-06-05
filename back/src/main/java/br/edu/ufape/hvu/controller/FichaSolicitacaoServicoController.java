@@ -3,12 +3,12 @@ package br.edu.ufape.hvu.controller;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
 import br.edu.ufape.hvu.model.FichaSolicitacaoServico;
 import br.edu.ufape.hvu.facade.Facade;
@@ -20,10 +20,9 @@ import br.edu.ufape.hvu.controller.dto.response.FichaSolicitacaoServicoResponse;
 @RestController
 @RequestMapping("/api/v1/")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-
+@RequiredArgsConstructor
 public class FichaSolicitacaoServicoController {
-	@Autowired
-	private Facade facade;
+	private final Facade facade;
 
 	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
 	@GetMapping("fichaSolicitacaoServico")
