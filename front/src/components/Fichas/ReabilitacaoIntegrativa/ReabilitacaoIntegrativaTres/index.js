@@ -162,14 +162,16 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                         <input type="text" name="lingua" value={formData.lingua} onChange={handleChange} />
                     </div>
 
-
-                    {/*aqui vai ficar a seguda imagem*/}
-                    <img
-                        src="/images/imgReabilitacaoIntegrativa.png"
-                        alt="imgReabilitacao"
-                        height={200}
-                        width={200}
-                    />
+                    <div className={styles.image_container}>
+                        <div className={styles.image_border}>
+                            <img
+                                src="/images/imgReabilitacaoIntegrativa.png"
+                                alt="imgReabilitacao"
+                                height={200}
+                                width={200}
+                            />
+                        </div>
+                    </div>
 
                     <h2>Perguntas Adicionais - MTC</h2>
 
@@ -285,12 +287,16 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                         <input type="text" name="diagnosticoMTC.zangFu" value={formData.diagnosticoMTC.zangFu} onChange={handleChange} />
                     </div>
 
-                    <img
-                        src="/images/imgReabilitacaoIntegrativa2.png"
-                        alt="imgReabilitacao2"
-                        height={300}
-                        width={500}
-                    />
+                    <div className={styles.image_container}>
+                        <div className={styles.image_border}>
+                            <img
+                                src="/images/imgReabilitacaoIntegrativa2.png"
+                                alt="imgReabilitacao2"
+                                height={300}
+                                width={500}
+                            />
+                        </div>
+                    </div>
 
                     {/*dados*/}
                     <div className={styles.column}>

@@ -32,25 +32,6 @@
   font-weight: 500;
 }
 
-.dados_ocultos {
-  width: 100%;
-  height: auto;
-  background-color: #32705380;
-  font-size: clamp(16px, 4vw, 20px);
-  padding: 0.5rem 1rem;
-  margin: 1.5rem 0 1rem;
-  border-radius: 10px;
-  font-weight: 500;
-  border: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.dados_ocultos:hover {
-  background-color: #32835d80;
-}
-
 .form_box {
   width: 100%;
   max-width: 100%; /* Garante que o formulário não ultrapasse o contêiner */
@@ -101,6 +82,16 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-top: 0.5rem;
+}
+
+.image_container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.image_border{
+  border: #ccc 1px solid;
 }
 
 .column {
