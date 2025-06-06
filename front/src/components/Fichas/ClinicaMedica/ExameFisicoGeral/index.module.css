@@ -133,6 +133,12 @@
   color: #272727;
 }
 
+.options_border{
+  border: 1px solid #B1B1B1;
+  border-radius: 5px;
+}
+
+
 .column input,
 .column select,
 .column textarea {

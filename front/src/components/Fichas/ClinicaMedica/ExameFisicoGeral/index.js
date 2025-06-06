@@ -12,11 +12,11 @@ import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
 /* listas de opções ----------------------------- */
 
-const ALIMENTACAO_OPTS = [" RAÇÃO", " DIETA CASEIRA", " RAÇÃO + DIETA CASEIRA"];
-const POSTURAS = [" ESTAÇÃO", " DECÚBITO", " CAVALETE", " OUTRAS"];
-const CONCIENCIA = [" ALERTA", " Deprimido", " Excitado", " Ausente (COMA)"];
-const SCORE_CORPORAL = [" CAQUÉTICO", " MAGRO", " NORMAL", " SOBREPESO", " OBESO"];
-const HIDRATACAO_OPTS = [" NORMAL", " 6 A 8%", " 8 A 10%", " ACIMA DE 10%"];
+const ALIMENTACAO_OPTS = [" Ração", " Dieta caseira", " Ração + Dieta caseira"];
+const POSTURAS = [" Estação", " Decúbito", " Cavalete", " Outras"];
+const CONCIENCIA = [" Alerta", " Deprimido", " Excitado", " Ausente (COMA)"];
+const SCORE_CORPORAL = [" Caquético", " Magro", " Normal", " Sobrepeso", " Obeso"];
+const HIDRATACAO_OPTS = [" Normal", " 6 A 8%", " 8 A 10%", " Acima de 10%"];
 
 export default function Step1ClinicaMedica({
   formData,
@@ -487,7 +487,7 @@ export default function Step1ClinicaMedica({
           </div>
           <div className={styles.box}>
             <div className={styles.column}>
-              <label htmlFor="turgorCutaneo" className="form-label fw-medium">turgor Cutâneo:</label>
+              <label htmlFor="turgorCutaneo" className="form-label fw-medium">Turgor Cutâneo:</label>
               <select
                 id="turgorCutaneo"
                 name="turgorCutaneo"
@@ -565,40 +565,41 @@ export default function Step1ClinicaMedica({
             <div className="col mt-4 mb-3"></div>
 
             <div>
+            
+            <div className={`${styles.checkbox_container}`}>
               {linfonodos.map((linfonodo) => (
-                <div key={linfonodo.value} className="row align-items-start mb-2">
-                  <div className="col-12" >
-                    <label className={`${styles.radio_container} d-flex align-items-center`}>
-                      <input
-                        type="checkbox"
-                        name={linfonodo.value}
-                        checked={linfonodo.value in formData.linfonodos}
-                        onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
-                        className="me-2"
-                      />
-                      {linfonodo.label}
-                    </label>
-                    {formData.linfonodos[linfonodo.value] && (
-                      <div className={`${styles.radio_container} d-flex align-items-center`}>
-                        {caracteristicas.map((caracteristica) => (
-                          <label key={caracteristica.value} className="d-flex align-items-center me-3 mb-1">
-                            <input
-                              type="checkbox"
-                              name={caracteristica.value}
-                              checked={formData.linfonodos[linfonodo.value]?.includes(caracteristica.value) || false}
-                              onChange={(e) => handleCaracteristicaChange(e, linfonodo.value)}
-                              className="me-2"
-                            />
-                            {caracteristica.label}
-                          </label>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                <div key={linfonodo.value}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name={linfonodo.value}
+                      checked={linfonodo.value in formData.linfonodos}
+                      onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
+                    />
+
+                    {linfonodo.label}
+                  </label>
+
+                  {formData.linfonodos[linfonodo.value] && (
+                    <div className={styles.options_border}>
+                      {caracteristicas.map((caracteristica) => (
+                        <label key={caracteristica.value}>
+                          <input
+                            type="checkbox"
+                            name={caracteristica.value}
+                            checked={formData.linfonodos[linfonodo.value]?.includes(caracteristica.value) || false}
+                            onChange={(e) => handleCaracteristicaChange(e, linfonodo.value)}
+                          />
+                          {caracteristica.label}
+                        </label>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           </div>
+            </div>
 
 
           {/* BOTÕES ---------------------------------------------------------- */}
