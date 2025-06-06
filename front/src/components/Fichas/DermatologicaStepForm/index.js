@@ -475,7 +475,10 @@ function DermatologicaSteps() {
 
         },
         dataHora: dataFormatada 
+        
     };
+    console.log("Dados enviados para o backend:", JSON.stringify(fichaData, null, 2));
+    
 
     try {
         const resultado = await createFicha(fichaData);
