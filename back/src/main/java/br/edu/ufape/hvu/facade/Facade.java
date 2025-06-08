@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,8 +32,7 @@ public class Facade {
 
     // Auth--------------------------------------------------------------
     private final KeycloakService keycloakService;
-    @Autowired
-    private MedicoServiceInterface medicoServiceInterface;
+    private final MedicoServiceInterface medicoServiceInterface;
 
     public TokenResponse login(String username, String password) {
         return keycloakService.login(username, password);
@@ -293,8 +291,7 @@ public class Facade {
     }
 
     // Cronograma--------------------------------------------------------------
-    @Autowired
-    private CronogramaServiceInterface cronogramaServiceInterface;
+    private final CronogramaServiceInterface cronogramaServiceInterface;
 
     public Cronograma saveCronograma(Cronograma newInstance) {
         return cronogramaServiceInterface.saveCronograma(newInstance);
@@ -469,8 +466,7 @@ public class Facade {
     }
 
     // Raca--------------------------------------------------------------
-    @Autowired
-    private RacaServiceInterface racaServiceInterface;
+    private final RacaServiceInterface racaServiceInterface;
 
     public Raca saveRaca(Raca newInstance) {
         return racaServiceInterface.saveRaca(newInstance);
@@ -554,8 +550,8 @@ public class Facade {
     }
 
     // Vaga--------------------------------------------------------------
-    @Autowired
-    private VagaServiceInterface vagaServiceInterface;
+
+    private final VagaServiceInterface vagaServiceInterface;
 
     public Vaga saveVaga(Vaga newInstance) {
         newInstance.setStatus(String.valueOf(StatusAgendamentoEVaga.Disponivel));
@@ -794,8 +790,8 @@ public class Facade {
 
 
     // Consulta--------------------------------------------------------------
-    @Autowired
-    private ConsultaServiceInterface consultaServiceInterface;
+
+    private final ConsultaServiceInterface consultaServiceInterface;
 
     public Consulta saveConsulta(Long id, Consulta newInstance) {
         Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
@@ -876,8 +872,8 @@ public class Facade {
 
 
     // Especialidade--------------------------------------------------------------
-    @Autowired
-    private EspecialidadeServiceInterface especialidadeServiceInterface;
+
+    private final EspecialidadeServiceInterface especialidadeServiceInterface;
 
     public Especialidade saveEspecialidade(Especialidade newInstance) {
         return especialidadeServiceInterface.saveEspecialidade(newInstance);
@@ -1076,8 +1072,8 @@ public class Facade {
     }
 
     // Endereco--------------------------------------------------------------
-    @Autowired
-    private EnderecoServiceInterface enderecoServiceInterface;
+
+    private final EnderecoServiceInterface enderecoServiceInterface;
 
     public Endereco saveEndereco(Endereco newInstance) {
         return enderecoServiceInterface.saveEndereco(newInstance);
@@ -1113,8 +1109,8 @@ public class Facade {
     }
 
     // Estagiario--------------------------------------------------------------
-    @Autowired
-    private EstagiarioServiceInterface estagiarioServiceInterface;
+
+    private final EstagiarioServiceInterface estagiarioServiceInterface;
 
     public Estagiario saveEstagiario(Estagiario newInstance) {
         return estagiarioServiceInterface.saveEstagiario(newInstance);
@@ -1227,8 +1223,8 @@ public class Facade {
     }
 
     // Especie--------------------------------------------------------------
-    @Autowired
-    private EspecieServiceInterface especieServiceInterface;
+
+    private final EspecieServiceInterface especieServiceInterface;
 
     public Especie saveEspecie(Especie newInstance) {
         return especieServiceInterface.saveEspecie(newInstance);
@@ -1337,8 +1333,8 @@ public class Facade {
     }
 
     // Etapa--------------------------------------------------------------
-    @Autowired
-    private EtapaServiceInterface etapaServiceInterface;
+
+    private final EtapaServiceInterface etapaServiceInterface;
 
     public Etapa saveEtapa(Etapa newInstance) {
         return etapaServiceInterface.saveEtapa(newInstance);
@@ -1375,8 +1371,8 @@ public class Facade {
 
     // Ficha--------------------------------------------------------------
 
-    @Autowired
-    private FichaServiceInterface fichaServiceInterface;
+
+    private final FichaServiceInterface fichaServiceInterface;
 
     public Ficha saveFicha(Ficha newInstance) {
         return fichaServiceInterface.saveFicha(newInstance);
@@ -1412,8 +1408,8 @@ public class Facade {
 
     // FichaSolicitacaoServico--------------------------------------------------------------
 
-    @Autowired
-    private FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
+
+    private final FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
 
     public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
         return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
@@ -1458,9 +1454,8 @@ public class Facade {
 
     // Foto--------------------------------------------------------------
 
-    @Autowired
 
-    private FotoServiceInterface fotoServiceInterface;
+    private final FotoServiceInterface fotoServiceInterface;
 
     public Foto saveFoto(Foto newInstance) {
         return fotoServiceInterface.saveFoto(newInstance);
@@ -1498,8 +1493,7 @@ public class Facade {
 
     // Instituicao--------------------------------------------------------------
 
-    @Autowired
-    private InstituicaoServiceInterface instituicaoServiceInterface;
+    private final InstituicaoServiceInterface instituicaoServiceInterface;
 
     public Instituicao saveInstituicao(Instituicao newInstance) {
         return instituicaoServiceInterface.saveInstituicao(newInstance);
@@ -1539,8 +1533,8 @@ public class Facade {
 
 
     // LaudoNecropsia--------------------------------------------------------------
-    @Autowired
-    private LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
+
+    private final LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
 
     public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
         return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
@@ -1585,9 +1579,8 @@ public class Facade {
     }
 
     // MaterialColetado--------------------------------------------------------------
-    @Autowired
 
-    private MaterialColetadoServiceInterface materialColetadoServiceInterface;
+    private final MaterialColetadoServiceInterface materialColetadoServiceInterface;
 
     public MaterialColetado saveMaterialColetado(MaterialColetado newInstance) {
         return materialColetadoServiceInterface.saveMaterialColetado(newInstance);
@@ -1624,9 +1617,8 @@ public class Facade {
     }
 
     // Orgao--------------------------------------------------------------
-    @Autowired
 
-    private OrgaoServiceInterface OrgaoServiceInterface;
+    private final OrgaoServiceInterface OrgaoServiceInterface;
 
     public Orgao saveOrgao(Orgao newInstance) {
         return OrgaoServiceInterface.saveOrgao(newInstance);
@@ -1666,8 +1658,8 @@ public class Facade {
 
     // Arquivo --------------------------------------------------------------
 
-    @Autowired
-    private FileServiceInterface fileService;
+
+    private final FileServiceInterface fileService;
 
     public File findFile(String fileName) {
         return fileService.findFile(fileName);
@@ -1684,8 +1676,7 @@ public class Facade {
 
     // CampoLaudoMicroscopia --------------------------------------------------------------
 
-    @Autowired
-    private CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
+    private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
 
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
