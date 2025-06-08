@@ -173,7 +173,7 @@ const KonvaCanvas = ({ backgroundImage, onSave, showDrawingModal, dimensoesImage
               onClick={toggleTool}
               className={styles.btn_toggle}
             >
-              {tool === 'eraser' ? 'Borracha': 'Caneta'}
+              {tool === 'eraser' ? 'Caneta': 'Borracha'}
             </button>
           </div>
           <div className={styles.buttons_box}>

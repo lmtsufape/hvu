@@ -27,19 +27,21 @@
 }
 
 .container h1 {
-  font-size: 24px;
+  font-size: 24px;  
   font-weight: 700;
   text-align: center;
   margin-top: 50px;
   color: #333;
 }
 
-
 .form_box {
+  width: 100%;
+  max-width: 100%; /* Garante que o formulário não ultrapasse o contêiner */
   border-radius: 20px;
-  border: 0.5px solid #b1b1b1;
-  padding: 20px;
+  padding: 1rem; /* Padding relativo */
   background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
+  overflow-x: hidden; /* Evita overflow horizontal */
 }
 
 .box{
@@ -47,40 +49,45 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-
 .checkbox_container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 10px;
-  margin-bottom: 15px;
-  margin: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Grid responsivo */
+  gap: 0.5rem;
+  margin: 1rem 0;
 }
 
 .checkbox_container label {
   display: flex;
   align-items: center;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: clamp(14px, 3.5vw, 16px);
   cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
   transition: background 0.3s ease-in-out;
 }
 
 .checkbox_container input[type="checkbox"] {
-  margin-right: 8px;
+  appearance: none;
+  margin-right: 0.5rem;
   accent-color: #39805f;
+  border: 1px solid #B1B1B1;
+  border-radius: 5px;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
 }
 
-.checkbox_container label:hover {
-  background-color: #e3f1ea;
+.checkbox_container input[type="checkbox"]:checked {
+  background-color: #B1B1B1;
+}
+
+.checkbox_square input[type="checkbox"]{
+  border-radius: 5px;
+}
+
+.options_border{
+  border: 1px solid #B1B1B1;
+  border-radius: 5px;
 }
 
 .column {
@@ -90,12 +97,12 @@
 }
 
 .column label {
-  /* display: block; */
   display: flex;
   flex-direction: column;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 5px;
+  color: #272727;
 }
 
 .column input,
@@ -109,6 +116,12 @@
   resize: none;
 }
 
+.column input:focus,
+.column select:focus,
+.column textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
+}
 
 .criar_button {
   width: 180px;
@@ -159,4 +172,151 @@
   font-weight: 300;
   line-height: 24px;
   color: #C7122F;
+
 }
+/* index.module.css */
+.boxBorder {
+  display: grid;
+  border-radius: 20px;
+  padding-bottom: 18px;
+  padding-left: 29px;
+  padding-right: 37px;
+  background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);      
+}
+
+ .box_ficha_toggle{
+  max-width: 1118px;
+  width: 100%;
+  margin-bottom: 18px;
+  margin-top: 38px;
+}
+
+.toggleButton {
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #98b7a9;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px 16px;
+  padding-left: 16px;
+  margin-bottom: 0px;
+  border-radius: 10px 10px 10px 10px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-align: left;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  box-sizing: border-box;
+  position: relative; 
+}
+
+.toggleButton::after {
+  font-weight: 600;
+  position: absolute; 
+  right: 16px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+}
+
+.toggleButton.expand::after {
+  content: "+"; 
+}
+
+.toggleButton.minimize::after {
+  content: "-"; 
+}
+
+.toggleButton:hover {
+  background-color: #d6ece0;
+}
+
+.toggleButton:active {
+  background-color: #c4e2d2;
+}
+
+.container_toggle {
+  width: 100%;
+  height: 430px;
+  align-items: center;
+  margin-top: 22px;
+}
+
+.container_toggle h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+}
+
+.infos_box {
+  display: flex;
+  flex-direction: column;
+  width: 97%;
+  border-radius: 20px;
+  border: 0.5px solid #B1B1B1;
+  gap: 10px;
+}
+
+.identificacao {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 28px;
+  margin-top: 32px;
+}
+
+.nome_animal {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  letter-spacing: 0em;
+}
+
+.especie_animal {
+  color: #39805F;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.infos {
+  display: flex;
+  flex-direction: column;
+}
+
+.infos p {
+  margin-top: -6px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #39805F;
+}
+
+.infos h6 {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #404040;
+}
+
+.animal-data-box {
+  display: flex;
+  gap: 188px;
+  margin-left: 28px;
+  margin-bottom: 32px;
+}
+
+
