@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import "react-datepicker/dist/react-datepicker.css";
 import VoltarButton from "../VoltarButton";
-import EspecialidadeList from "@/hooks/useEspecialidadeList"
+import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import { createConsulta } from "../../../services/consultaService";
 import { getVagaById } from "../../../services/vagaService";
 import Alert from "../Alert";
@@ -12,20 +12,18 @@ import ErrorAlert from "../ErrorAlert";
 import { getFichaById } from "../../../services/fichaService";
 import { deleteFicha } from "../../../services/fichaService";
 
-
 // Hook personalizado para gerenciar fichaIds
 const useFichaManager = () => {
   const [fichaIds, setFichaIds] = useState([]);
 
-  // Carrega IDs existentes ao iniciar
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedIds = localStorage.getItem('fichaIds');
+      const storedIds = localStorage.getItem("fichaIds");
       if (storedIds) {
         try {
           const parsedIds = JSON.parse(storedIds);
           if (Array.isArray(parsedIds)) {
-            setFichaIds(parsedIds.filter(id => id && id !== "null"));
+            setFichaIds(parsedIds.filter((id) => id && id !== "null"));
             console.log("parsedIds:", parsedIds);
           }
         } catch (error) {
@@ -35,40 +33,40 @@ const useFichaManager = () => {
     }
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     console.log("Ficha IDs atualizados:", fichaIds);
   }, [fichaIds]);
 
-  // Adiciona novo ID ao array
-const addFichaId = (newId) => {
-  if (!newId) return;
+  const addFichaId = (newId) => {
+    if (!newId) return;
 
-  setFichaIds(prevIds => {
-    if (prevIds.includes(newId)) return prevIds;
+    setFichaIds((prevIds) => {
+      if (prevIds.includes(newId)) return prevIds;
 
-    const updatedIds = [...prevIds, newId];
-    localStorage.setItem('fichaIds', JSON.stringify(updatedIds));
-    return updatedIds;
-  });
-};
+      const updatedIds = [...prevIds, newId];
+      localStorage.setItem("fichaIds", JSON.stringify(updatedIds));
+      return updatedIds;
+    });
+  };
 
-  return { fichaIds, addFichaId };
+  return { fichaIds, addFichaId, setFichaIds };
 };
 
 // Função para limpar conteúdo da ficha (remover campos vazios)
 const cleanFichaContent = (content) => {
   const clean = (obj) => {
     if (Array.isArray(obj)) {
-      // Limpa cada item do array e remove itens vazios
       const cleanedArray = obj
-        .map(item => clean(item))
-        .filter(item => item !== undefined && 
-                       !(typeof item === 'object' && Object.keys(item).length === 0));
+        .map((item) => clean(item))
+        .filter(
+          (item) =>
+            item !== undefined &&
+            !(typeof item === "object" && Object.keys(item).length === 0)
+        );
       return cleanedArray.length > 0 ? cleanedArray : undefined;
     }
-    
-    if (obj && typeof obj === 'object') {
-      // Remove campos vazios de objetos
+
+    if (obj && typeof obj === "object") {
       const cleaned = {};
       Object.entries(obj).forEach(([key, value]) => {
         const cleanedValue = clean(value);
@@ -78,8 +76,7 @@ const cleanFichaContent = (content) => {
       });
       return Object.keys(cleaned).length > 0 ? cleaned : undefined;
     }
-    
-    // Mantém apenas valores não vazios
+
     return obj !== "" && obj !== null && obj !== undefined ? obj : undefined;
   };
 
@@ -88,37 +85,33 @@ const cleanFichaContent = (content) => {
 
 // Função para formatar o conteúdo limpo para exibição
 const formatFichaContent = (content) => {
-  if (!content || typeof content !== 'object') return null;
+  if (!content || typeof content !== "object") return null;
 
   return Object.entries(content).map(([key, value]) => {
-    // Formata chaves para legibilidade
     const formattedKey = key
-      .replace(/([A-Z])/g, ' $1')
-      .replace(/^./, str => str.toUpperCase())
-      .replace(/_/g, ' ');
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, (str) => str.toUpperCase())
+      .replace(/_/g, " ");
 
-    // Caso o valor seja um array de valores primitivos (como strings ou números)
-    if (Array.isArray(value) && value.every(item => typeof item !== 'object')) {
+    if (Array.isArray(value) && value.every((item) => typeof item !== "object")) {
       return (
         <p key={key}>
-          <strong>{formattedKey}:</strong> {value.join(' ')}
+          <strong>{formattedKey}:</strong> {value.join(" ")}
         </p>
       );
     }
 
-    // Caso o valor seja um array de objetos
     if (Array.isArray(value)) {
       return (
         <div key={key}>
           <strong>{formattedKey}:</strong>
           {value.map((item, idx) => (
-            <div key={idx} style={{ marginLeft: '20px' }}>
+            <div key={idx} style={{ marginLeft: "20px" }}>
               {Object.entries(item).map(([subKey, subValue]) => {
                 const formattedSubKey = subKey
-                  .replace(/([A-Z])/g, ' $1')
-                  .replace(/^./, str => str.toUpperCase())
-                  .replace(/_/g, ' ');
-                
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/^./, (str) => str.toUpperCase())
+                  .replace(/_/g, " ");
                 return (
                   <p key={subKey}>
                     <strong>{formattedSubKey}:</strong> {String(subValue)}
@@ -131,54 +124,41 @@ const formatFichaContent = (content) => {
       );
     }
 
-    // Caso o valor seja um objeto
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value === "object" && value !== null) {
       return (
         <div key={key}>
           <strong>{formattedKey}:</strong>
-          <div style={{ marginLeft: '20px' }}>
-            {formatFichaContent(value)}
-          </div>
+          <div style={{ marginLeft: "20px" }}>{formatFichaContent(value)}</div>
         </div>
       );
     }
 
-    // Caso o valor seja um primitivo (string, número, etc.)
     return (
       <p key={key}>
         <strong>{formattedKey}:</strong> {String(value)}
       </p>
     );
   });
-};;
+};
 
 function CreateConsulta() {
   const router = useRouter();
   const { id } = router.query;
 
   const [showButtons, setShowButtons] = useState(false);
+  const [showFichas, setShowFichas] = useState(false);
+  const [selectedFichaId, setSelectedFichaId] = useState(null);
 
-
-    // Usa o hook personalizado
-  const { fichaIds, addFichaId } = useFichaManager();
-
+  const { fichaIds, addFichaId, setFichaIds } = useFichaManager();
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
-
   const [showAlertFicha, setShowAlertFicha] = useState(false);
-
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
-
   const [errors, setErrors] = useState({});
-
   const [animalId, setAnimalId] = useState(null);
   const [medicoId, setMedicoId] = useState(null);
-
-  console.log("medicoId:", medicoId);
-  console.log("animalId:", animalId);
-
   const [consulta, setConsulta] = useState({
     pesoAtual: null,
     idadeAtual: null,
@@ -192,35 +172,32 @@ function CreateConsulta() {
     encaminhamento: null,
     animal: { id: null },
     dataVaga: "",
-    fichaIds: fichaIds
+    fichaIds: fichaIds,
   });
-
   const [vagaData, setVagaData] = useState({});
-
   const { especialidades, error: especialidadesError } = EspecialidadeList();
   const [especialidade, setEspecialidade] = useState(null);
+  const [fichasDados, setFichas] = useState([]);
+
   const handleEspecialidadeSelection = (event) => {
     const selectedEspecialidadeId = event.target.value;
     setEspecialidade(selectedEspecialidadeId);
   };
 
-  const [fichasDados, setFichas] = useState([]);
-
   useEffect(() => {
     const fetchFichas = async () => {
       try {
         const fetchedFichas = await Promise.all(
-          fichaIds.map(id => getFichaById(id))
+          fichaIds.map((id) => getFichaById(id))
         );
-
-        // Parseando o campo conteudo de cada ficha
-        const fichasComConteudo = fetchedFichas.map(ficha => ({
+        const fichasComConteudo = fetchedFichas.map((ficha) => ({
           ...ficha,
-          conteudo: JSON.parse(ficha.conteudo),
+          conteudo: JSON.parse(ficha.conteudo || "{}"),
         }));
         setFichas(fichasComConteudo);
       } catch (error) {
         console.error("Erro ao buscar fichas:", error);
+        setShowErrorAlert(true);
       }
     };
 
@@ -229,26 +206,23 @@ function CreateConsulta() {
     }
   }, [fichaIds]);
 
-
-    // Captura o ID individual e adiciona ao array
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const currentFichaId = localStorage.getItem('fichaId');
+      const currentFichaId = localStorage.getItem("fichaId");
       if (currentFichaId) {
         console.log("currentFichaId:", currentFichaId);
         addFichaId(currentFichaId);
-        // Limpa o ID individual após uso
-        localStorage.removeItem('fichaId');
+        localStorage.removeItem("fichaId");
       }
     }
   }, [addFichaId]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-        const storedToken = localStorage.getItem('token');
-        const storedRoles = JSON.parse(localStorage.getItem('roles'));
-        setToken(storedToken || "");
-        setRoles(storedRoles || []);
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("token");
+      const storedRoles = JSON.parse(localStorage.getItem("roles") || "[]");
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
     }
   }, []);
 
@@ -261,25 +235,32 @@ function CreateConsulta() {
           setAnimalId(vagaJson.agendamento.animal.id);
           setMedicoId(vagaJson.medico.id);
         } catch (error) {
-          console.error('Erro ao buscar vaga:', error);
+          console.error("Erro ao buscar vaga:", error);
+          setShowErrorAlert(true);
         } finally {
-          setLoading(false); // Marcar como carregado após buscar os dados
+          setLoading(false);
         }
       };
       fetchData();
+    } else {
+      setLoading(false);
     }
   }, [id]);
 
-    // Verifica se os dados estão carregando
-    if (loading) {
-      return <div className={styles.message}>Carregando dados do usuário...</div>;
-    }
+  useEffect(() => {
+    setConsulta((prev) => ({ ...prev, fichaIds }));
+  }, [fichaIds]);
 
-  // Verifica se o usuário tem permissão
+  if (loading) {
+    return <div className={styles.message}>Carregando dados do usuário...</div>;
+  }
+
   if (!roles.includes("medico")) {
     return (
       <div className={styles.container}>
-        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+        <h3 className={styles.message}>
+          Acesso negado: Você não tem permissão para acessar esta página.
+        </h3>
       </div>
     );
   }
@@ -287,7 +268,9 @@ function CreateConsulta() {
   if (!token) {
     return (
       <div className={styles.container}>
-        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+        <h3 className={styles.message}>
+          Acesso negado: Faça login para acessar esta página.
+        </h3>
       </div>
     );
   }
@@ -297,52 +280,47 @@ function CreateConsulta() {
     setConsulta({ ...consulta, [name]: value });
   };
 
-  function handleProximaConsultaChange(event) {
+  const handleProximaConsultaChange = (event) => {
     const { value } = event.target;
     setConsulta({ ...consulta, proximaConsulta: value === "true" });
-  }
+  };
 
   const validateFields = (consulta) => {
     const errors = {};
-    if (!consulta.pesoAtual) {
-      errors.pesoAtual = "Campo obrigatório";
+    if (!consulta.pesoAtual || isNaN(consulta.pesoAtual) || consulta.pesoAtual <= 0) {
+      errors.pesoAtual = "Peso deve ser um número positivo";
     }
-    if (!consulta.idadeAtual) {
-      errors.idadeAtual = "Campo obrigatório";
+    if (!consulta.idadeAtual || isNaN(consulta.idadeAtual) || consulta.idadeAtual <= 0) {
+      errors.idadeAtual = "Idade deve ser um número positivo";
     }
-    if (consulta.queixaPrincipal == "") {
+    if (!consulta.queixaPrincipal.trim()) {
       errors.queixaPrincipal = "Campo obrigatório";
     }
-    if (consulta.alteracoesClinicasDiversas == "") {
+    if (!consulta.alteracoesClinicasDiversas.trim()) {
       errors.alteracoesClinicasDiversas = "Campo obrigatório";
     }
-    if (consulta.suspeitasClinicas == "") {
+    if (!consulta.suspeitasClinicas.trim()) {
       errors.suspeitasClinicas = "Campo obrigatório";
     }
-    if (consulta.alimentacao == "") {
+    if (!consulta.alimentacao.trim()) {
       errors.alimentacao = "Campo obrigatório";
     }
-    
     return errors;
   };
 
-  console.log("consulta:", consulta);
-  console.log("vagaData:", vagaData);
-  console.log("especialidade:", especialidade);
-
   const consultaToCreate = {
-    pesoAtual: parseFloat(consulta.pesoAtual),
-    idadeAtual: parseFloat(consulta.idadeAtual),
-    queixaPrincipal: consulta.queixaPrincipal,
-    alteracoesClinicasDiversas: consulta.alteracoesClinicasDiversas,
-    suspeitasClinicas: consulta.suspeitasClinicas,
-    alimentacao: consulta.alimentacao,
-    medico: {id: medicoId},
+    pesoAtual: isNaN(parseFloat(consulta.pesoAtual)) ? null : parseFloat(consulta.pesoAtual),
+    idadeAtual: isNaN(parseFloat(consulta.idadeAtual)) ? null : parseFloat(consulta.idadeAtual),
+    queixaPrincipal: consulta.queixaPrincipal.trim(),
+    alteracoesClinicasDiversas: consulta.alteracoesClinicasDiversas.trim(),
+    suspeitasClinicas: consulta.suspeitasClinicas.trim(),
+    alimentacao: consulta.alimentacao.trim(),
+    medico: { id: medicoId },
     proximaConsulta: consulta.proximaConsulta,
-    encaminhamento: {id: especialidade},
-    animal: {id: animalId},
+    encaminhamento: especialidade ? { id: especialidade } : null,
+    animal: { id: animalId },
     dataVaga: vagaData.dataHora,
-    ficha: fichaIds.map(id => ({ id: Number(id) }))
+    ficha: fichaIds.map((id) => ({ id: Number(id) })),
   };
 
   const handleSubmit = async () => {
@@ -367,26 +345,29 @@ function CreateConsulta() {
 
   const handleDelete = async (id) => {
     try {
-      console.log('Deletando id:', id, 'do tipo', typeof id);
       await deleteFicha(id);
-      setFichas(prev => prev.filter(ficha => ficha.id !== id));
-
-      const fichaIdsStr = localStorage.getItem('fichaIds');
-      if (fichaIdsStr) {
-        const fichaIds = JSON.parse(fichaIdsStr);
-        const novaLista = fichaIds.filter(fichaId => fichaId !== id.toString());
-        localStorage.setItem('fichaIds', JSON.stringify(novaLista));
-      }
-
+      setFichas((prev) => prev.filter((ficha) => ficha.id !== id));
+      setFichaIds((prev) => {
+        const updatedIds = prev.filter((fichaId) => fichaId !== id.toString());
+        localStorage.setItem("fichaIds", JSON.stringify(updatedIds));
+        return updatedIds;
+      });
       setShowAlertFicha(true);
+      if (selectedFichaId === id) {
+        setSelectedFichaId(null);
+      }
     } catch (error) {
-      console.error('Erro ao deletar ficha:', error);
-      alert('Não foi possível excluir a ficha.');
+      console.error("Erro ao deletar ficha:", error);
+      setShowErrorAlert(true);
     }
   };
 
   const handleCloseAlertFicha = () => {
     setShowAlertFicha(false);
+  };
+
+  const toggleFichaDisplay = (fichaId) => {
+    setSelectedFichaId((prev) => (prev === fichaId ? null : fichaId));
   };
 
   return (
@@ -396,21 +377,30 @@ function CreateConsulta() {
         <h1 className={styles.titulocadastro}>Criar consulta</h1>
       </div>
 
-      <div className={`${styles.boxagendarconsulta} ${styles.container} `}>
+      <div className={`${styles.boxagendarconsulta} ${styles.container}`}>
         <form>
           <div className="row">
             <div className={`col ${styles.col}`}>
-              <label htmlFor="animal" className="form-label">Paciente<span className={styles.obrigatorio}>*</span></label>
+              <label htmlFor="animal" className="form-label">
+                Paciente<span className={styles.obrigatorio}>*</span>
+              </label>
               <input
                 type="text"
                 className={`form-control ${styles.input}`}
-                placeholder={vagaData.agendamento && vagaData.agendamento.animal && vagaData.agendamento.animal.nome || "Carregando..."}
+                placeholder={
+                  vagaData.agendamento &&
+                  vagaData.agendamento.animal &&
+                  vagaData.agendamento.animal.nome ||
+                  "Carregando..."
+                }
                 disabled
               />
             </div>
 
             <div className={`col ${styles.col}`}>
-              <label htmlFor="medico" className="form-label">Veterinário&#40;a&#41;<span className={styles.obrigatorio}>*</span></label>
+              <label htmlFor="medico" className="form-label">
+                Veterinário(a)<span className={styles.obrigatorio}>*</span>
+              </label>
               <input
                 type="text"
                 className={`form-control ${styles.input}`}
@@ -423,7 +413,9 @@ function CreateConsulta() {
           <div className={styles.espacodosforms}>
             <div className="row">
               <div className={`col ${styles.col}`}>
-                <label htmlFor="pesoAtual" className="form-label">Peso atual<span className={styles.obrigatorio}>*</span></label>
+                <label htmlFor="pesoAtual" className="form-label">
+                  Peso atual<span className={styles.obrigatorio}>*</span>
+                </label>
                 <input
                   type="text"
                   className={`form-control ${styles.input} ${errors.pesoAtual ? "is-invalid" : ""}`}
@@ -432,11 +424,17 @@ function CreateConsulta() {
                   value={consulta.pesoAtual || ""}
                   onChange={handleConsultaChange}
                 />
-                {errors.pesoAtual && <div className={`invalid-feedback ${styles.error_message}`}>{errors.pesoAtual}</div>}
+                {errors.pesoAtual && (
+                  <div className={`invalid-feedback ${styles.error_message}`}>
+                    {errors.pesoAtual}
+                  </div>
+                )}
               </div>
 
               <div className={`col ${styles.col}`}>
-                <label htmlFor="idadeAtual" className="form-label">Idade atual<span className={styles.obrigatorio}>*</span></label>
+                <label htmlFor="idadeAtual" className="form-label">
+                  Idade atual<span className={styles.obrigatorio}>*</span>
+                </label>
                 <input
                   type="text"
                   className={`form-control ${styles.input} ${errors.idadeAtual ? "is-invalid" : ""}`}
@@ -445,12 +443,18 @@ function CreateConsulta() {
                   value={consulta.idadeAtual || ""}
                   onChange={handleConsultaChange}
                 />
-                {errors.idadeAtual && <div className={`invalid-feedback ${styles.error_message}`}>{errors.idadeAtual}</div>}
+                {errors.idadeAtual && (
+                  <div className={`invalid-feedback ${styles.error_message}`}>
+                    {errors.idadeAtual}
+                  </div>
+                )}
               </div>
 
               <div className={`col ${styles.col}`}>
-                <label htmlFor="medico" className="form-label">Especialidade</label>
-                <select 
+                <label htmlFor="medico" className="form-label">
+                  Especialidade
+                </label>
+                <select
                   className={`form-select ${styles.input}`}
                   name="encaminhamento"
                   aria-label="Selecione uma especialidade"
@@ -471,7 +475,9 @@ function CreateConsulta() {
           <div className={styles.espacodosforms}>
             <div className="row">
               <div className={`col ${styles.col}`}>
-                <label htmlFor="queixaPrincipal" className="form-label">Queixa principal</label>
+                <label htmlFor="queixaPrincipal" className="form-label">
+                  Queixa principal
+                </label>
                 <textarea
                   className={`form-control ${styles.input} ${errors.queixaPrincipal ? "is-invalid" : ""}`}
                   name="queixaPrincipal"
@@ -481,9 +487,16 @@ function CreateConsulta() {
                   rows="4"
                   cols="50"
                 />
-                </div>
+                {errors.queixaPrincipal && (
+                  <div className={`invalid-feedback ${styles.error_message}`}>
+                    {errors.queixaPrincipal}
+                  </div>
+                )}
+              </div>
               <div className={`col ${styles.col}`}>
-                <label htmlFor="alteracoesClinicasDiversas" className="form-label">Alterações clínicas diversas</label>
+                <label htmlFor="alteracoesClinicasDiversas" className="form-label">
+                  Alterações clínicas diversas
+                </label>
                 <textarea
                   className={`form-control ${styles.input} ${errors.alteracoesClinicasDiversas ? "is-invalid" : ""}`}
                   name="alteracoesClinicasDiversas"
@@ -493,14 +506,21 @@ function CreateConsulta() {
                   rows="4"
                   cols="50"
                 />
-                </div>
+                {errors.alteracoesClinicasDiversas && (
+                  <div className={`invalid-feedback ${styles.error_message}`}>
+                    {errors.alteracoesClinicasDiversas}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           <div className={styles.espacodosforms}>
             <div className="row">
               <div className={`col ${styles.col}`}>
-                <label htmlFor="suspeitasClinicas" className="form-label">Suspeitas clínicas</label>
+                <label htmlFor="suspeitasClinicas" className="form-label">
+                  Suspeitas clínicas
+                </label>
                 <textarea
                   className={`form-control ${styles.input} ${errors.suspeitasClinicas ? "is-invalid" : ""}`}
                   name="suspeitasClinicas"
@@ -510,9 +530,16 @@ function CreateConsulta() {
                   rows="4"
                   cols="50"
                 />
-                </div>
+                {errors.suspeitasClinicas && (
+                  <div className={`invalid-feedback ${styles.error_message}`}>
+                    {errors.suspeitasClinicas}
+                  </div>
+                )}
+              </div>
               <div className={`col ${styles.col}`}>
-                <label htmlFor="alimentacao" className="form-label">Alimentação</label>
+                <label htmlFor="alimentacao" className="form-label">
+                  Alimentação
+                </label>
                 <textarea
                   className={`form-control ${styles.input} ${errors.alimentacao ? "is-invalid" : ""}`}
                   name="alimentacao"
@@ -520,9 +547,14 @@ function CreateConsulta() {
                   value={consulta.alimentacao || ""}
                   onChange={handleConsultaChange}
                   rows="4"
-                  cols="50" 
+                  cols="50"
                 />
-                </div>
+                {errors.alimentacao && (
+                  <div className={`invalid-feedback ${styles.error_message}`}>
+                    {errors.alimentacao}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -565,120 +597,232 @@ function CreateConsulta() {
           </div>
 
           <div className={styles.box_ficha_toggle}>
-          <button
-            type="button"
-            className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
-            onClick={() => setShowButtons(prev => !prev)}
-          >
-            {showButtons ? 'Minimizar Fichas' : 'Fichas '}
-          </button>
-          {showButtons && (
-        <div className={styles.ficha_container}>
-
-          <div className={styles.form_box}>
-          <div className={styles.box_ficha_buttons}>
-
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaAtoCirurgico', id)}>
-              Ficha de ato cirúrgico
+            <button
+              type="button"
+              className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
+              onClick={() => setShowButtons((prev) => !prev)}
+            >
+              {showButtons ? "Minimizar Fichas" : "Fichas"}
             </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaAnestesiologia', id)}>
-              Ficha de anestesiológia
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaCardiologica', id)}>
-              Ficha cardiológica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaAtendimentoOrtopedico', id)}>
-              Ficha ortopédica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaClinicaMedica', id)}>
-              Ficha clínica médica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaMedicaRetorno', id)}>
-              Ficha clínica médica de retorno
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaDermatologica', id)}>
-              Ficha dermatológica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaDermatologicaRetorno', id)}>
-              Ficha dermatológica de retorno
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaNeurologica', id)}>
-              Ficha neurológica
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaReabilitacaoIntegrativa', id)}>
-              Ficha de reabilitação integrativa
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaSessao', id, animalId)}>
-              Ficha de sessão
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaSolicitacaoCitologia', id)}>
-              Ficha de solicitação de citologia
-            </button>
-            <button className={styles.ficha_button} type="button"
-            onClick={() => handleClick('/fichaSolicitacaoExame', id)}>
-              Ficha de solicitação de exame
-            </button>
-          </div>
-        </div>
-        </div>
-          )}
-          </div>
-
-          
-          
-
-
-          {/* Exibição das fichas com campos limpos */}
-          {fichasDados.map(ficha => {
-            const cleanedContent = cleanFichaContent(ficha.conteudo);
-             return (
-            <div key={ficha.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
-              <p><strong>ID:</strong> {ficha.id}</p>
-              <p><strong>Data de criação:</strong> {new Date(ficha.dataHora).toLocaleString()}</p>
-              <p><strong>Nome:</strong> {ficha.nome}</p>
-
-              <div className={styles.fichaContent}>
-                {formatFichaContent(cleanedContent)}
+            {showButtons && (
+              <div className={styles.ficha_container}>
+                <div className={styles.form_box}>
+                  <div className={styles.box_ficha_buttons}>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaAtoCirurgico", id)}
+                    >
+                      Ficha de ato cirúrgico
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaAnestesiologia", id)}
+                    >
+                      Ficha de anestesiologia
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaCardiologica", id)}
+                    >
+                      Ficha cardiológica
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaAtendimentoOrtopedico", id)}
+                    >
+                      Ficha ortopédica
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaClinicaMedica", id)}
+                    >
+                      Ficha clínica médica
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaMedicaRetorno", id)}
+                    >
+                      Ficha clínica médica de retorno
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaDermatologica", id)}
+                    >
+                      Ficha dermatológica
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaDermatologicaRetorno", id)}
+                    >
+                      Ficha dermatológica de retorno
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaNeurologica", id)}
+                    >
+                      Ficha neurológica
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaReabilitacaoIntegrativa", id)}
+                    >
+                      Ficha de reabilitação integrativa
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaSessao", id)}
+                    >
+                      Ficha de sessão
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaSolicitacaoCitologia", id)}
+                    >
+                      Ficha de solicitação de citologia
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaSolicitacaoExame", id)}
+                    >
+                      Ficha de solicitação de exame
+                    </button>
+                  </div>
+                </div>
               </div>
+            )}
+          </div>
 
-              <button className={styles.voltarButton} type="button" onClick={() => handleDelete(ficha.id)} style={{ 
-                    marginTop: "15px",
-                  }}
-                >
-              Excluir ficha
-                </button>
+          {/* Botão Fichas Solicitadas */}
+          <div className={styles.box_ficha_toggle}>
+            <button
+              type="button"
+              className={`${styles.toggleButton} ${showFichas ? styles.minimize : styles.expand}`}
+              onClick={() => setShowFichas((prev) => !prev)}
+            >
+              {showFichas ? "Ocultar Fichas Solicitadas" : "Fichas Solicitadas"}
+            </button>
+            {showFichas && (
+              <div className={styles.ficha_container}>
+                <div className={styles.form_box}>
+                  <div className={styles.box_ficha_buttons}>
+                    {fichasDados.length > 0 ? (
+                      fichasDados.map((ficha) => (
+                        <div key={ficha.id} className={styles.ficha_item}>
+                          <button
+                            type="button"
+                            className={`${styles.ficha_button} ${
+                              selectedFichaId === ficha.id ? styles.selected : ""
+                            }`}
+                            onClick={() => toggleFichaDisplay(ficha.id)}
+                            aria-label={`Exibir detalhes da ficha ${ficha.nome || "Ficha sem nome"}`}
+                          >
+                            {ficha.nome || `Ficha ${ficha.id}`}
+                          </button>
+                          {selectedFichaId === ficha.id && (
+                            <div
+                              className={styles.ficha_details}
+                              style={{
+                                border: "1px solid #ccc",
+                                margin: "10px 0",
+                                padding: "10px",
+                                backgroundColor: "#f8f9fa",
+                              }}
+                            >
+                              <p>
+                                <strong>ID:</strong> {ficha.id}
+                              </p>
+                              <p>
+                                <strong>Data de criação:</strong>{" "}
+                                {new Date(ficha.dataHora).toLocaleString()}
+                              </p>
+                              <p>
+                                <strong>Nome:</strong> {ficha.nome || "Sem nome"}
+                              </p>
+                              <div className={styles.fichaContent}>
+                                {formatFichaContent(cleanFichaContent(ficha.conteudo))}
+                              </div>
+                              <button
+                                className={styles.voltarButton}
+                                type="button"
+                                onClick={() => handleDelete(ficha.id)}
+                                style={{ marginTop: "15px" }}
+                                aria-label={`Excluir ficha ${ficha.nome || "Ficha sem nome"}`}
+                              >
+                                Excluir ficha
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <p className={styles.no_fichas}>Nenhuma ficha solicitada.</p>
+                    )}
+                  </div>
+                </div>
               </div>
-            );
-          })}
+            )}
+          </div>
 
           <div className={styles.continuarbotao}>
-            <button className={styles.voltarButton}>Cancelar</button>
-            <button type="button" className={styles.continuarButton} onClick={handleSubmit}>
+            <button
+              className={styles.voltarButton}
+              type="button"
+              onClick={() => router.back()}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className={styles.continuarButton}
+              onClick={handleSubmit}
+            >
               Criar
             </button>
           </div>
         </form>
-        
-        {showAlert && <Alert message="Consulta criada com sucesso!" show={showAlert} url={`/getAllConsultas/${vagaData.agendamento.animal.id}`} />}
-        {showAlertFicha && <Alert message="Ficha excluída com sucesso!" show={showAlertFicha} onClose={handleCloseAlertFicha} />}
-        {vagaData.consulta === null ? (
-          showErrorAlert && <ErrorAlert message="Erro ao criar consulta, tente novamente." show={showErrorAlert} />
-        ) : (
-          showErrorAlert && <ErrorAlert message="Consulta já foi criada, tente editá-la." show={showErrorAlert} />
+
+        {showAlert && (
+          <Alert
+            message="Consulta criada com sucesso!"
+            show={showAlert}
+            url={`/getAllConsultas/${vagaData.agendamento?.animal?.id}`}
+          />
         )}
-        
+        {showAlertFicha && (
+          <Alert
+            message="Ficha excluída com sucesso!"
+            show={showAlertFicha}
+            onClose={handleCloseAlertFicha}
+          />
+        )}
+        {vagaData.consulta === null ? (
+          showErrorAlert && (
+            <ErrorAlert
+              message="Erro ao criar consulta, tente novamente."
+              show={showErrorAlert}
+            />
+          )
+        ) : (
+          showErrorAlert && (
+            <ErrorAlert
+              message="Consulta já foi criada, tente editá-la."
+              show={showErrorAlert}
+            />
+          )
+        )}
       </div>
     </>
   );
