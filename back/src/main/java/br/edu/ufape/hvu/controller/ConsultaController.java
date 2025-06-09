@@ -3,13 +3,12 @@ package br.edu.ufape.hvu.controller;
 import java.util.List;
 
 import br.edu.ufape.hvu.model.Animal;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import br.edu.ufape.hvu.model.Consulta;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ConsultaRequest;
@@ -19,11 +18,9 @@ import br.edu.ufape.hvu.controller.dto.response.ConsultaResponse;
  
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class ConsultaController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
+	private final Facade facade;
 	
 	@GetMapping("consulta")
 	public List<ConsultaResponse> getAllConsulta() {
