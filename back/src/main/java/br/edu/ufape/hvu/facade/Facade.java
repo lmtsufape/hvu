@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -338,53 +337,6 @@ public class Facade {
     }
 
 
-
-    public Map<LocalDateTime, List<Cronograma>> scheduleAvailable (LocalDate data, String turno, Especialidade especialidade) {
-        LocalTime shiftBegin = turno.equals("Manhã") ? LocalTime.of(6, 0) : LocalTime.of(12, 0);
-        LocalTime shiftEnd = turno.equals("Manhã") ? LocalTime.of(12, 0) : LocalTime.of(20, 0);
-
-        Map<LocalDateTime, List<Cronograma>> horariosCronogramas = new TreeMap<>();
-
-        List<Cronograma> cronogramas = findByEspecialidadeAndDiaAndTurno(especialidade, data.getDayOfWeek(), turno);
-        for (Cronograma cronograma : cronogramas) {
-
-            List<LocalDateTime> scheduleFilled = findVagaByDataAndEspecialidadeAndMedico(data, especialidade, cronograma.getMedico())
-                    .stream()
-                    .map(Vaga::getDataHora)
-                    .collect(Collectors.toList());
-
-            LocalTime currentTime = cronograma.getHorarios().get(data.getDayOfWeek()).getInicio();
-            if (currentTime.isBefore(shiftBegin)){
-                currentTime = shiftBegin;
-            }
-            LocalTime shiftEndCronograma = cronograma.getHorarios().get(data.getDayOfWeek()).getFim();
-
-            while (currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).isBefore(shiftEnd) &&
-                    currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).isBefore(shiftEndCronograma) ||
-                    currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).equals(shiftEnd) &&
-                            currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).equals(shiftEndCronograma)){
-                LocalDateTime scheduleFull = LocalDateTime.of(data, currentTime);
-
-                if (!scheduleFilled.contains(scheduleFull)) {
-                    horariosCronogramas.computeIfAbsent(scheduleFull, k -> new ArrayList<>()).add(cronograma);
-                    scheduleFilled.add(scheduleFull);
-                }
-
-                currentTime = currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento()));
-            }
-        }
-
-        return horariosCronogramas;
-    }
-
-    public List<Cronograma> findByEspecialidadeAndDiaAndTurno(Especialidade especialidade, DayOfWeek dia, String turno){
-        return cronogramaServiceInterface.findByEspecialidadeAndDiaAndTurno(especialidade, dia, turno);
-    }
-
-    public void deleteCronograma(Cronograma persistentObject) {
-        cronogramaServiceInterface.deleteCronograma(persistentObject);
-    }
-
     public void deleteCronograma(long cronogramaId) {
         Cronograma cronograma = findCronogramaById(cronogramaId);
         cronogramaServiceInterface.deleteCronograma(cronograma.getId());
@@ -503,10 +455,6 @@ public class Facade {
         return racaServiceInterface.findByEspecie(especie);
     }
 
-    public void deleteRaca(Raca persistentObject) {
-        racaServiceInterface.deleteRaca(persistentObject);
-    }
-
     public void deleteRaca(long id) {
         racaServiceInterface.deleteRaca(id);
     }
@@ -539,10 +487,6 @@ public class Facade {
 
     public List<Aviso> getAllAviso() {
         return avisoServiceInterface.getAllAviso();
-    }
-
-    public void deleteAviso(Aviso persistentObject) {
-        avisoServiceInterface.deleteAviso(persistentObject);
     }
 
     public void deleteAviso(long id) {
@@ -610,10 +554,6 @@ public class Facade {
         Medico medico = findMedicoById(IdMedico, idSession);
 
         return vagaServiceInterface.findVagasAndAgendamentoByMedico(data, medico);
-    }
-
-    public List<Vaga> findVagaByDataAndEspecialidade(LocalDate data, Especialidade especialidade){
-        return vagaServiceInterface.findVagasByDataAndEspecialidade(data, especialidade);
     }
 
     public List<Animal> findAnimaisWithReturn(){
@@ -687,16 +627,8 @@ public class Facade {
         return findAnimaisWithReturn().contains(animal);
     }
 
-    public List<Vaga> findVagaByDataAndEspecialidadeAndMedico(LocalDate data, Especialidade especialidade, Medico medico){
-        return vagaServiceInterface.findVagasByDataAndEspecialidadeAndMedico(data, especialidade, medico);
-    }
-
     public List<Vaga> findVagaByDataAndTurno(LocalDate data, String turno){
         return vagaServiceInterface.findVagasByDataAndTurno(data, turno);
-    }
-
-    public void deleteVaga(Vaga persistentObject) {
-        vagaServiceInterface.deleteVaga(persistentObject);
     }
 
     public void deleteVaga(long id) {
@@ -862,10 +794,6 @@ public class Facade {
         return consultaServiceInterface.getConsultasByAnimalId(id);
     }
 
-    public void deleteConsulta(Consulta persistentObject) {
-        consultaServiceInterface.deleteConsulta(persistentObject);
-    }
-
     public void deleteConsulta(long id) {
         consultaServiceInterface.deleteConsulta(id);
     }
@@ -898,10 +826,6 @@ public class Facade {
 
     public List<Especialidade> getAllEspecialidade() {
         return especialidadeServiceInterface.getAllEspecialidade();
-    }
-
-    public void deleteEspecialidade(Especialidade persistentObject) {
-        especialidadeServiceInterface.deleteEspecialidade(persistentObject);
     }
 
     public void deleteEspecialidade(long id) {
@@ -1063,10 +987,6 @@ public class Facade {
                 .toList();
     }
 
-    public void deleteAgendamento(Agendamento persistentObject) {
-        agendamentoServiceInterface.deleteAgendamento(persistentObject);
-    }
-
     public void deleteAgendamento(long id) {
         agendamentoServiceInterface.deleteAgendamento(id);
     }
@@ -1100,10 +1020,6 @@ public class Facade {
         return enderecoServiceInterface.getAllEndereco();
     }
 
-    public void deleteEndereco(Endereco persistentObject) {
-        enderecoServiceInterface.deleteEndereco(persistentObject);
-    }
-
     public void deleteEndereco(long id) {
         enderecoServiceInterface.deleteEndereco(id);
     }
@@ -1135,10 +1051,6 @@ public class Facade {
 
     public List<Estagiario> getAllEstagiario() {
         return estagiarioServiceInterface.getAllEstagiario();
-    }
-
-    public void deleteEstagiario(Estagiario persistentObject) {
-        estagiarioServiceInterface.deleteEstagiario(persistentObject);
     }
 
     public void deleteEstagiario(long id) {
@@ -1251,10 +1163,6 @@ public class Facade {
         return especieServiceInterface.getAllEspecie();
     }
 
-    public void deleteEspecie(Especie persistentObject) {
-        especieServiceInterface.deleteEspecie(persistentObject);
-    }
-
     public void deleteEspecie(long id) {
         especieServiceInterface.deleteEspecie(id);
     }
@@ -1284,10 +1192,6 @@ public class Facade {
 
     public List<Area> getAllArea() {
         return areaServiceInterface.getAllArea();
-    }
-
-    public void deleteArea(Area persistentObject) {
-        areaServiceInterface.deleteArea(persistentObject);
     }
 
     public void deleteArea(long id) {
@@ -1324,10 +1228,6 @@ public class Facade {
         return campoLaudoServiceInterface.getAllCampoLaudo();
     }
 
-    public void deleteCampoLaudo(CampoLaudo persistentObject) {
-        campoLaudoServiceInterface.deleteCampoLaudo(persistentObject);
-    }
-
     public void deleteCampoLaudo(long id) {
         campoLaudoServiceInterface.deleteCampoLaudo(id);
     }
@@ -1361,10 +1261,6 @@ public class Facade {
         return etapaServiceInterface.getAllEtapa();
     }
 
-    public void deleteEtapa(Etapa persistentObject) {
-        etapaServiceInterface.deleteEtapa(persistentObject);
-    }
-
     public void deleteEtapa(long id) {
         etapaServiceInterface.deleteEtapa(id);
     }
@@ -1396,10 +1292,6 @@ public class Facade {
 
     public List<Ficha> getAllFicha() {
         return fichaServiceInterface.getAllFicha();
-    }
-
-    public void deleteFicha(Ficha persistentObject) {
-        fichaServiceInterface.deleteFicha(persistentObject);
     }
 
     public void deleteFicha(long id) {
@@ -1444,10 +1336,6 @@ public class Facade {
         return fichaSolicitacaoServicoServiceInterface.getAllFichaSolicitacaoServico();
     }
 
-    public void deleteFichaSolicitacaoServico(FichaSolicitacaoServico persistentObject) {
-        fichaSolicitacaoServicoServiceInterface.deleteFichaSolicitacaoServico(persistentObject);
-    }
-
     public void deleteFichaSolicitacaoServico(long id) {
         fichaSolicitacaoServicoServiceInterface.deleteFichaSolicitacaoServico(id);
     }
@@ -1481,10 +1369,6 @@ public class Facade {
 
     public List<Foto> getAllFoto() {
         return fotoServiceInterface.getAllFoto();
-    }
-
-    public void deleteFoto(Foto persistentObject) {
-        fotoServiceInterface.deleteFoto(persistentObject);
     }
 
     public void deleteFoto(long id) {
@@ -1521,10 +1405,6 @@ public class Facade {
 
     public List<Instituicao> getAllInstituicao() {
         return instituicaoServiceInterface.getAllInstituicao();
-    }
-
-    public void deleteInstituicao(Instituicao persistentObject) {
-        instituicaoServiceInterface.deleteInstituicao(persistentObject);
     }
 
     public void deleteInstituicao(long id) {
@@ -1570,10 +1450,6 @@ public class Facade {
         return laudoNecropsiaServiceInterfcae.getAllLaudoNecropsia();
     }
 
-    public void deleteLaudoNecropsia(LaudoNecropsia persistentObject) {
-        laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(persistentObject);
-    }
-
     public void deleteLaudoNecropsia(long id) {
         laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(id);
     }
@@ -1606,10 +1482,6 @@ public class Facade {
 
     public List<MaterialColetado> getAllMaterialColetado() {
         return materialColetadoServiceInterface.getAllMaterialColetado();
-    }
-
-    public void deleteMaterialColetado(MaterialColetado persistentObject) {
-        materialColetadoServiceInterface.deleteMaterialColetado(persistentObject);
     }
 
     public void deleteMaterialColetado(long id) {
@@ -1645,10 +1517,6 @@ public class Facade {
 
     public List<Orgao> getAllOrgao() {
         return OrgaoServiceInterface.getAllOrgao();
-    }
-
-    public void deleteOrgao(Orgao persistentObject) {
-        OrgaoServiceInterface.deleteOrgao(persistentObject);
     }
 
     public void deleteOrgao(long id) {
@@ -1700,10 +1568,6 @@ public class Facade {
 
     public List<CampoLaudoMicroscopia> getAllCampoLaudoMicroscopia() {
         return campoLaudoMicroscopiaServiceInterface.getAllCampoLaudoMicroscopia();
-    }
-
-    public void deleteCampoLaudoMicroscopia(CampoLaudoMicroscopia persistentObject) {
-        campoLaudoMicroscopiaServiceInterface.deleteCampoLaudoMicroscopia(persistentObject.getId());
     }
 
     public void deleteCampoLaudoMicroscopia(long id) {
