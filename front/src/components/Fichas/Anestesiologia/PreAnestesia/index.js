@@ -141,14 +141,19 @@ export default function PreAnestesia({
 
   /* adiciona nova linha em branco */
   const addFarmacoPreRow = () => {
-    setFarmacosPre((prev) => [...prev, { farmaco: "", dose: "", via: "" }]);
-  };
+    setFarmacosPre((prev) => [
+      ...prev,
+      { farmaco: "", dose: "", via: "" }
+    ]);
+  }
 
-  /* remove linha */
-  const removeFarmacoPreRow = (idx) => {
-    setFarmacosPre((prev) => prev.filter((_, i) => i !== idx));
+  /* remove a última linha */
+  const removerUltimaFarmacoPreRow = () => {
+    setFarmacosPre((prev) => {
+      if (prev.length <= 1) return prev; // não remove se só tiver uma linha
+      return prev.slice(0, -1);
+    });
   };
-
   return (
     <div className={styles.container}>
       <VoltarButton />
@@ -275,7 +280,7 @@ export default function PreAnestesia({
           </fieldset>
 
           {/* Avaliação pré-anestésica --------------------------------------- */}
-          <h5 className="bg-success-subtle p-2 rounded">Avaliação Pré-Anestésica</h5>
+          <h5 className="p-2 rounded" style={{ backgroundColor: '#EEF8F3' }}> Avaliação Pré-Anestésica</h5>
 
           <div className="row mb-3">
             <div className="col-md-3">
@@ -471,7 +476,7 @@ export default function PreAnestesia({
 
 
             {/* Medicação Pré-Anestésica --------------------------------------- */}
-            <h5 className="bg-success-subtle p-2 rounded mt-4 mb-4">Medicação Pré-Anestésica</h5>
+            <h5 className="p-2 rounded mt-4 mb-4" style={{ backgroundColor: '#EEF8F3' }}>Medicação Pré-Anestésica</h5>
 
             <div className="row align-items-center mb-3">
               {/* Hora ----------------------------------------------------------- */}
@@ -516,14 +521,14 @@ export default function PreAnestesia({
                 </div>
               </div>
             </div>
-
+            
+            <div className={styles.colum}>
             <table className="table table-bordered">
               <thead className="table-light text-center">
                 <tr>
                   <th style={{ width: "55%" }}>Fármaco</th>
                   <th style={{ width: "25%" }}>Dose/Volume</th>
                   <th style={{ width: "15%" }}>Via</th>
-                  <th style={{ width: "5%" }}></th>
                 </tr>
               </thead>
 
@@ -559,31 +564,19 @@ export default function PreAnestesia({
                         onChange={(e) => handleFarmacoPreChange(idx, "via", e.target.value)}
                       />
                     </td>
-
-                    {/* Remover linha ---------------------------------------- */}
-                    <td className="text-center align-middle">
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-outline-danger"
-                        onClick={() => removeFarmacoPreRow(idx)}
-                        disabled={farmacosPre.length === 1}
-                      >
-                        &times;
-                      </button>
-                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div className={styles.bolha_container}>
+              <div className={styles.bolha} onClick={addFarmacoPreRow}>
+              +
+              </div>
+              <div className={`${styles.bolha} ${styles.bolha_remover_linha}`} onClick={removerUltimaFarmacoPreRow}>
+              -
+            </div>
+          </div>
 
-            <div className="text-center mb-3">
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-primary"
-                onClick={addFarmacoPreRow}
-              >
-                + Adicionar linha
-              </button>
             </div>
 
             {/* --------------- AINES e Antibiótico – lado a lado --------------- */}

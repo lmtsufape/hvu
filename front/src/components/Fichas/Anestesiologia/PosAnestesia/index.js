@@ -7,6 +7,7 @@ import React, { useState, useEffect } from "react";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
+import { set } from "date-fns";
 
 
 export default function PosAnestesia({
@@ -121,14 +122,33 @@ const handleFarmacoPosAnestesicoChange = (idx, field, value) => {
   });
 };
 
-const addFarmacoPosAnestesicoRow    = () =>
-  setFarmacoPosAnestesico(prev => [
-    ...prev,
-    { farmaco: "", dose: "", via: "", hora: "" }
-  ]);
+const addFarmacoRow = () => {
+    setFarmacosPos((prev) => [ 
+        ...prev,
+        { farmaco: "", dose: "", via: "" } // nova linha com campos vazios
+    ]);
+};
+const removerUltimaFarmacoRow = () => {
+    setFarmacosPos((prev) => {
+        if (prev.length <= 1) return prev; // não permite remover se só houver uma linha
+        return prev.slice(0, -1); // remove a última linha
+    });
+};
 
-const removeFarmacoPosAnestesicoRow = (idx) =>
-  setFarmacoPosAnestesico(prev => prev.filter((_, i) => i !== idx));
+
+const addFarmacoPosAnestesicoRow = () => {
+        setFarmacoPosAnestesico((prev) => [
+            ...prev,  
+            { farmaco: "", dose: "", via: "", hora: "" } // nova linha com campos vazios
+        ]);
+    };
+
+    const removerUltimaFarmacoPosAnestesicoRow = () => {
+        setFarmacoPosAnestesico((prev) => {
+            if (prev.length <= 1) return prev; // não permite remover se só houver uma linha
+            return prev.slice(0, -1); // remove a última linha  
+        });
+    };
 
 
 return (
@@ -208,7 +228,7 @@ return (
           )}
       </div>
 
-      <h5 className="bg-success-subtle p-2 rounded mt-4 mb-4">Indução</h5>
+      <h5 className="p-2 rounded mt-4 mb-4" style={{ backgroundColor: '#EEF8F3' }}>Indução</h5>
 
       <div className="row align-items-center mb-3">
         {/* Hora ---------------------------------------------------- */}
@@ -254,13 +274,13 @@ return (
         </div>
       </div>
 
-      <table className="table table-bordered">
-        <thead className="table-light text-center">
+      <div className={styles.colum}>
+      <table className={styles.tabela_tratamento}>
+        <thead>
           <tr>
             <th style={{ width: "55%" }}>Fármaco</th>
             <th style={{ width: "25%" }}>Dose/Volume</th>
             <th style={{ width: "15%" }}>Via</th>
-            <th style={{ width: "5%"  }}></th>
           </tr>
         </thead>
 
@@ -296,31 +316,21 @@ return (
                     handleFarmacoPosChange(idx, "via", e.target.value)}
                 />
               </td>
-
-              <td className="text-center align-middle">
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-danger"
-                  onClick={() => removeFarmacoPosRow(idx)}
-                  disabled={farmacosPos.length === 1}
-                >
-                  &times;
-                </button>
-              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div className="text-center mb-3">
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-primary"
-          onClick={addFarmacoPosRow}
-        >
-          + Adicionar linha
-        </button>
+      <div className={styles.bolha_container}>
+              <div className={styles.bolha} onClick={addFarmacoRow}>
+              +
+              </div>
+              <div className={`${styles.bolha} ${styles.bolha_remover_linha}`} onClick={removerUltimaFarmacoRow}>
+              -
+            </div>
+          </div>
       </div>
+    
 
       {/* ─────────── Sonda endotraqueal / Fluidoterapia ─────────── */}
       <div className="row mb-3">
@@ -366,18 +376,19 @@ return (
 
 
 
-      <h5 className="bg-success-subtle p-2 rounded mt-4 mb-3">
+      <h5 className="p-2 rounded mt-4 mb-4" style={{ backgroundColor: '#EEF8F3' }}>
         Fármacos Pós anestésicos
       </h5>
+      <div className={styles.column}>
 
-      <table className="table table-bordered">
-        <thead className="table-light text-center">
+      <table className={styles.tabela_tratamento}>
+        <thead>
           <tr>
             <th style={{ width: "40%" }}>Fármaco</th>
             <th style={{ width: "20%" }}>Dose/Volume</th>
             <th style={{ width: "15%" }}>Via</th>
             <th style={{ width: "20%" }}>Hora</th>
-            <th style={{ width: "5%"  }}></th>
+            
           </tr>
         </thead>
 
@@ -420,32 +431,21 @@ return (
                     handleFarmacoPosAnestesicoChange(idx, "hora", e.target.value)}
                 />
               </td>
-              <td className="text-center align-middle">
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-danger"
-                  onClick={() => removeFarmacoPosAnestesicoRow(idx)}
-                  disabled={farmacoPosAnestesico.length === 1}
-                >
-                  &times;
-                </button>
-              </td>
             </tr>
           ))}
         </tbody>
       </table>
-
-      <div className="text-center mb-3">
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-primary"
-          onClick={addFarmacoPosAnestesicoRow}
-        >
-          + Adicionar linha
-        </button>
+      <div className={styles.bolha_container}>
+              <div className={styles.bolha} onClick={addFarmacoPosAnestesicoRow}>
+              +
+              </div>
+              <div className={`${styles.bolha} ${styles.bolha_remover_linha}`} onClick={removerUltimaFarmacoPosAnestesicoRow}>
+              -
+            </div>
+          </div>
       </div>
 
-      <h5 className="bg-success-subtle p-2 rounded mt-4 mb-3">
+      <h5 className="p-2 rounded mt-4 mb-4" style={{ backgroundColor: '#EEF8F3' }}>
         Trans anestésicos
       </h5>
 
@@ -680,12 +680,6 @@ return (
     value={formData.pos?.plantonistas || ""}
     onChange={handleChange}
   />
-
-
-
-
-
-
 
   </div>
  
