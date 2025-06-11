@@ -2,10 +2,12 @@ package br.edu.ufape.hvu.config;
 
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
+import br.edu.ufape.hvu.exception.InvalidJsonException;
 import br.edu.ufape.hvu.exception.types.NotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import br.edu.ufape.hvu.exception.types.auth.KeycloakAuthenticationException;
 import br.edu.ufape.hvu.exception.types.global.ErrorResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -137,5 +139,33 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        logger.error("Violação de integridade de dados: {}", ex.getRootCause().getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                "Erro de integridade de dados",
+                ex.getRootCause().getMessage(), // Detalhe técnico
+                Arrays.asList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST); // ou UNPROCESSABLE_ENTITY (422)
+    }
+
+    @ExceptionHandler(InvalidJsonException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidJson(InvalidJsonException ex) {
+        logger.warn("JSON inválido: {}", ex.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                "Erro de formatação",
+                ex.getMessage(),
+                Arrays.asList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
