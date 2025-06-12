@@ -1,5 +1,6 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
+import br.edu.ufape.hvu.exception.InvalidJsonException;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -31,9 +32,10 @@ public  class FichaRequest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            obj.setConteudo(objectMapper.writeValueAsString(conteudo));
+            String conteudoJson = objectMapper.writeValueAsString(conteudo);
+            obj.setConteudo(conteudoJson);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new InvalidJsonException("Erro ao converter o campo 'conteudo' para JSON válido.", e);
         }
 
         return obj;
