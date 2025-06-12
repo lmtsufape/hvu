@@ -52,7 +52,8 @@ const useFichaManager = () => {
   return { fichaIds, addFichaId, setFichaIds };
 };
 
-// Função para limpar conteúdo da ficha (remover campos vazios)
+// Função para limpar conteúdo da ficha (remover campos vazios e indesejados)
+// Função cleanFichaContent (já ajustada anteriormente)
 const cleanFichaContent = (content) => {
   const clean = (obj) => {
     if (Array.isArray(obj)) {
@@ -69,9 +70,16 @@ const cleanFichaContent = (content) => {
     if (obj && typeof obj === "object") {
       const cleaned = {};
       Object.entries(obj).forEach(([key, value]) => {
-        const cleanedValue = clean(value);
-        if (cleanedValue !== undefined) {
-          cleaned[key] = cleanedValue;
+        // Ignora chaves indesejadas como "otherExameValue", "opc", "option"
+        if (
+          key.toLowerCase() !== "otherExameValue" &&
+          key.toLowerCase() !== "opc" &&
+          key.toLowerCase() !== "option"
+        ) {
+          const cleanedValue = clean(value);
+          if (cleanedValue !== undefined) {
+            cleaned[key] = cleanedValue;
+          }
         }
       });
       return Object.keys(cleaned).length > 0 ? cleaned : undefined;
@@ -83,7 +91,7 @@ const cleanFichaContent = (content) => {
   return clean(content) || {};
 };
 
-// Função para formatar o conteúdo limpo para exibição
+// Função formatFichaContent (sem alterações adicionais necessárias)
 const formatFichaContent = (content) => {
   if (!content || typeof content !== "object") return null;
 
@@ -93,10 +101,12 @@ const formatFichaContent = (content) => {
       .replace(/^./, (str) => str.toUpperCase())
       .replace(/_/g, " ");
 
+    if (key.toLowerCase() === "opc" || key.toLowerCase() === "option") return null;
+
     if (Array.isArray(value) && value.every((item) => typeof item !== "object")) {
       return (
         <p key={key}>
-          <strong>{formattedKey}:</strong> {value.join(" ")}
+          <strong>{formattedKey}:</strong> {value.join(", ")}
         </p>
       );
     }
@@ -107,17 +117,19 @@ const formatFichaContent = (content) => {
           <strong>{formattedKey}:</strong>
           {value.map((item, idx) => (
             <div key={idx} style={{ marginLeft: "20px" }}>
-              {Object.entries(item).map(([subKey, subValue]) => {
-                const formattedSubKey = subKey
-                  .replace(/([A-Z])/g, " $1")
-                  .replace(/^./, (str) => str.toUpperCase())
-                  .replace(/_/g, " ");
-                return (
-                  <p key={subKey}>
-                    <strong>{formattedSubKey}:</strong> {String(subValue)}
-                  </p>
-                );
-              })}
+              {Object.entries(item)
+                .filter(([subKey]) => subKey.toLowerCase() !== "opc" && subKey.toLowerCase() !== "option")
+                .map(([subKey, subValue]) => {
+                  const formattedSubKey = subKey
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/^./, (str) => str.toUpperCase())
+                    .replace(/_/g, " ");
+                  return (
+                    <p key={subKey}>
+                      <strong>{formattedSubKey}:</strong> {String(subValue)}
+                    </p>
+                  );
+                })}
             </div>
           ))}
         </div>
@@ -192,9 +204,10 @@ function CreateConsulta() {
         );
         const fichasComConteudo = fetchedFichas.map((ficha) => ({
           ...ficha,
-          conteudo: JSON.parse(ficha.conteudo || "{}"),
+          conteudo: cleanFichaContent(JSON.parse(ficha.conteudo || "{}")), // Limpa o conteúdo aqui
         }));
         setFichas(fichasComConteudo);
+        console.log("Fichas processadas:", fichasComConteudo); // Depuração
       } catch (error) {
         console.error("Erro ao buscar fichas:", error);
         setShowErrorAlert(true);
@@ -699,6 +712,13 @@ function CreateConsulta() {
                     >
                       Ficha de solicitação de exame
                     </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaClinicaMedicaSilvestres", id)}
+                    >
+                      Ficha Clínica Médica (silvestres ou exóticos)
+                    </button>
                   </div>
                 </div>
               </div>
@@ -752,7 +772,7 @@ function CreateConsulta() {
                                 <strong>Nome:</strong> {ficha.nome || "Sem nome"}
                               </p>
                               <div className={styles.fichaContent}>
-                                {formatFichaContent(cleanFichaContent(ficha.conteudo))}
+                                {formatFichaContent(ficha.conteudo)}
                               </div>
                               <button
                                 className={styles.voltarButton}
