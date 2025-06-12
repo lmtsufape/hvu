@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,8 +31,7 @@ public class Facade {
 
     // Auth--------------------------------------------------------------
     private final KeycloakService keycloakService;
-    @Autowired
-    private MedicoServiceInterface medicoServiceInterface;
+    private final MedicoServiceInterface medicoServiceInterface;
 
     public TokenResponse login(String username, String password) {
         return keycloakService.login(username, password);
@@ -293,8 +290,7 @@ public class Facade {
     }
 
     // Cronograma--------------------------------------------------------------
-    @Autowired
-    private CronogramaServiceInterface cronogramaServiceInterface;
+    private final CronogramaServiceInterface cronogramaServiceInterface;
 
     public Cronograma saveCronograma(Cronograma newInstance) {
         return cronogramaServiceInterface.saveCronograma(newInstance);
@@ -340,53 +336,6 @@ public class Facade {
         return cronogramaServiceInterface.getAllCronograma();
     }
 
-
-
-    public Map<LocalDateTime, List<Cronograma>> scheduleAvailable (LocalDate data, String turno, Especialidade especialidade) {
-        LocalTime shiftBegin = turno.equals("Manhã") ? LocalTime.of(6, 0) : LocalTime.of(12, 0);
-        LocalTime shiftEnd = turno.equals("Manhã") ? LocalTime.of(12, 0) : LocalTime.of(20, 0);
-
-        Map<LocalDateTime, List<Cronograma>> horariosCronogramas = new TreeMap<>();
-
-        List<Cronograma> cronogramas = findByEspecialidadeAndDiaAndTurno(especialidade, data.getDayOfWeek(), turno);
-        for (Cronograma cronograma : cronogramas) {
-
-            List<LocalDateTime> scheduleFilled = findVagaByDataAndEspecialidadeAndMedico(data, especialidade, cronograma.getMedico())
-                    .stream()
-                    .map(Vaga::getDataHora)
-                    .collect(Collectors.toList());
-
-            LocalTime currentTime = cronograma.getHorarios().get(data.getDayOfWeek()).getInicio();
-            if (currentTime.isBefore(shiftBegin)){
-                currentTime = shiftBegin;
-            }
-            LocalTime shiftEndCronograma = cronograma.getHorarios().get(data.getDayOfWeek()).getFim();
-
-            while (currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).isBefore(shiftEnd) &&
-                    currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).isBefore(shiftEndCronograma) ||
-                    currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).equals(shiftEnd) &&
-                            currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).equals(shiftEndCronograma)){
-                LocalDateTime scheduleFull = LocalDateTime.of(data, currentTime);
-
-                if (!scheduleFilled.contains(scheduleFull)) {
-                    horariosCronogramas.computeIfAbsent(scheduleFull, k -> new ArrayList<>()).add(cronograma);
-                    scheduleFilled.add(scheduleFull);
-                }
-
-                currentTime = currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento()));
-            }
-        }
-
-        return horariosCronogramas;
-    }
-
-    public List<Cronograma> findByEspecialidadeAndDiaAndTurno(Especialidade especialidade, DayOfWeek dia, String turno){
-        return cronogramaServiceInterface.findByEspecialidadeAndDiaAndTurno(especialidade, dia, turno);
-    }
-
-    public void deleteCronograma(Cronograma persistentObject) {
-        cronogramaServiceInterface.deleteCronograma(persistentObject);
-    }
 
     public void deleteCronograma(long cronogramaId) {
         Cronograma cronograma = findCronogramaById(cronogramaId);
@@ -469,8 +418,7 @@ public class Facade {
     }
 
     // Raca--------------------------------------------------------------
-    @Autowired
-    private RacaServiceInterface racaServiceInterface;
+    private final RacaServiceInterface racaServiceInterface;
 
     public Raca saveRaca(Raca newInstance) {
         return racaServiceInterface.saveRaca(newInstance);
@@ -507,10 +455,6 @@ public class Facade {
         return racaServiceInterface.findByEspecie(especie);
     }
 
-    public void deleteRaca(Raca persistentObject) {
-        racaServiceInterface.deleteRaca(persistentObject);
-    }
-
     public void deleteRaca(long id) {
         racaServiceInterface.deleteRaca(id);
     }
@@ -545,17 +489,13 @@ public class Facade {
         return avisoServiceInterface.getAllAviso();
     }
 
-    public void deleteAviso(Aviso persistentObject) {
-        avisoServiceInterface.deleteAviso(persistentObject);
-    }
-
     public void deleteAviso(long id) {
         avisoServiceInterface.deleteAviso(id);
     }
 
     // Vaga--------------------------------------------------------------
-    @Autowired
-    private VagaServiceInterface vagaServiceInterface;
+
+    private final VagaServiceInterface vagaServiceInterface;
 
     public Vaga saveVaga(Vaga newInstance) {
         newInstance.setStatus(String.valueOf(StatusAgendamentoEVaga.Disponivel));
@@ -614,10 +554,6 @@ public class Facade {
         Medico medico = findMedicoById(IdMedico, idSession);
 
         return vagaServiceInterface.findVagasAndAgendamentoByMedico(data, medico);
-    }
-
-    public List<Vaga> findVagaByDataAndEspecialidade(LocalDate data, Especialidade especialidade){
-        return vagaServiceInterface.findVagasByDataAndEspecialidade(data, especialidade);
     }
 
     public List<Animal> findAnimaisWithReturn(){
@@ -691,16 +627,8 @@ public class Facade {
         return findAnimaisWithReturn().contains(animal);
     }
 
-    public List<Vaga> findVagaByDataAndEspecialidadeAndMedico(LocalDate data, Especialidade especialidade, Medico medico){
-        return vagaServiceInterface.findVagasByDataAndEspecialidadeAndMedico(data, especialidade, medico);
-    }
-
     public List<Vaga> findVagaByDataAndTurno(LocalDate data, String turno){
         return vagaServiceInterface.findVagasByDataAndTurno(data, turno);
-    }
-
-    public void deleteVaga(Vaga persistentObject) {
-        vagaServiceInterface.deleteVaga(persistentObject);
     }
 
     public void deleteVaga(long id) {
@@ -794,8 +722,8 @@ public class Facade {
 
 
     // Consulta--------------------------------------------------------------
-    @Autowired
-    private ConsultaServiceInterface consultaServiceInterface;
+
+    private final ConsultaServiceInterface consultaServiceInterface;
 
     public Consulta saveConsulta(Long id, Consulta newInstance) {
         Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
@@ -866,18 +794,14 @@ public class Facade {
         return consultaServiceInterface.getConsultasByAnimalId(id);
     }
 
-    public void deleteConsulta(Consulta persistentObject) {
-        consultaServiceInterface.deleteConsulta(persistentObject);
-    }
-
     public void deleteConsulta(long id) {
         consultaServiceInterface.deleteConsulta(id);
     }
 
 
     // Especialidade--------------------------------------------------------------
-    @Autowired
-    private EspecialidadeServiceInterface especialidadeServiceInterface;
+
+    private final EspecialidadeServiceInterface especialidadeServiceInterface;
 
     public Especialidade saveEspecialidade(Especialidade newInstance) {
         return especialidadeServiceInterface.saveEspecialidade(newInstance);
@@ -902,10 +826,6 @@ public class Facade {
 
     public List<Especialidade> getAllEspecialidade() {
         return especialidadeServiceInterface.getAllEspecialidade();
-    }
-
-    public void deleteEspecialidade(Especialidade persistentObject) {
-        especialidadeServiceInterface.deleteEspecialidade(persistentObject);
     }
 
     public void deleteEspecialidade(long id) {
@@ -1067,17 +987,13 @@ public class Facade {
                 .toList();
     }
 
-    public void deleteAgendamento(Agendamento persistentObject) {
-        agendamentoServiceInterface.deleteAgendamento(persistentObject);
-    }
-
     public void deleteAgendamento(long id) {
         agendamentoServiceInterface.deleteAgendamento(id);
     }
 
     // Endereco--------------------------------------------------------------
-    @Autowired
-    private EnderecoServiceInterface enderecoServiceInterface;
+
+    private final EnderecoServiceInterface enderecoServiceInterface;
 
     public Endereco saveEndereco(Endereco newInstance) {
         return enderecoServiceInterface.saveEndereco(newInstance);
@@ -1104,17 +1020,13 @@ public class Facade {
         return enderecoServiceInterface.getAllEndereco();
     }
 
-    public void deleteEndereco(Endereco persistentObject) {
-        enderecoServiceInterface.deleteEndereco(persistentObject);
-    }
-
     public void deleteEndereco(long id) {
         enderecoServiceInterface.deleteEndereco(id);
     }
 
     // Estagiario--------------------------------------------------------------
-    @Autowired
-    private EstagiarioServiceInterface estagiarioServiceInterface;
+
+    private final EstagiarioServiceInterface estagiarioServiceInterface;
 
     public Estagiario saveEstagiario(Estagiario newInstance) {
         return estagiarioServiceInterface.saveEstagiario(newInstance);
@@ -1139,10 +1051,6 @@ public class Facade {
 
     public List<Estagiario> getAllEstagiario() {
         return estagiarioServiceInterface.getAllEstagiario();
-    }
-
-    public void deleteEstagiario(Estagiario persistentObject) {
-        estagiarioServiceInterface.deleteEstagiario(persistentObject);
     }
 
     public void deleteEstagiario(long id) {
@@ -1227,8 +1135,8 @@ public class Facade {
     }
 
     // Especie--------------------------------------------------------------
-    @Autowired
-    private EspecieServiceInterface especieServiceInterface;
+
+    private final EspecieServiceInterface especieServiceInterface;
 
     public Especie saveEspecie(Especie newInstance) {
         return especieServiceInterface.saveEspecie(newInstance);
@@ -1253,10 +1161,6 @@ public class Facade {
 
     public List<Especie> getAllEspecie() {
         return especieServiceInterface.getAllEspecie();
-    }
-
-    public void deleteEspecie(Especie persistentObject) {
-        especieServiceInterface.deleteEspecie(persistentObject);
     }
 
     public void deleteEspecie(long id) {
@@ -1288,10 +1192,6 @@ public class Facade {
 
     public List<Area> getAllArea() {
         return areaServiceInterface.getAllArea();
-    }
-
-    public void deleteArea(Area persistentObject) {
-        areaServiceInterface.deleteArea(persistentObject);
     }
 
     public void deleteArea(long id) {
@@ -1328,17 +1228,13 @@ public class Facade {
         return campoLaudoServiceInterface.getAllCampoLaudo();
     }
 
-    public void deleteCampoLaudo(CampoLaudo persistentObject) {
-        campoLaudoServiceInterface.deleteCampoLaudo(persistentObject);
-    }
-
     public void deleteCampoLaudo(long id) {
         campoLaudoServiceInterface.deleteCampoLaudo(id);
     }
 
     // Etapa--------------------------------------------------------------
-    @Autowired
-    private EtapaServiceInterface etapaServiceInterface;
+
+    private final EtapaServiceInterface etapaServiceInterface;
 
     public Etapa saveEtapa(Etapa newInstance) {
         return etapaServiceInterface.saveEtapa(newInstance);
@@ -1365,18 +1261,14 @@ public class Facade {
         return etapaServiceInterface.getAllEtapa();
     }
 
-    public void deleteEtapa(Etapa persistentObject) {
-        etapaServiceInterface.deleteEtapa(persistentObject);
-    }
-
     public void deleteEtapa(long id) {
         etapaServiceInterface.deleteEtapa(id);
     }
 
     // Ficha--------------------------------------------------------------
 
-    @Autowired
-    private FichaServiceInterface fichaServiceInterface;
+
+    private final FichaServiceInterface fichaServiceInterface;
 
     public Ficha saveFicha(Ficha newInstance) {
         return fichaServiceInterface.saveFicha(newInstance);
@@ -1402,18 +1294,14 @@ public class Facade {
         return fichaServiceInterface.getAllFicha();
     }
 
-    public void deleteFicha(Ficha persistentObject) {
-        fichaServiceInterface.deleteFicha(persistentObject);
-    }
-
     public void deleteFicha(long id) {
         fichaServiceInterface.deleteFicha(id);
     }
 
     // FichaSolicitacaoServico--------------------------------------------------------------
 
-    @Autowired
-    private FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
+
+    private final FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
 
     public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
         return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
@@ -1448,19 +1336,14 @@ public class Facade {
         return fichaSolicitacaoServicoServiceInterface.getAllFichaSolicitacaoServico();
     }
 
-    public void deleteFichaSolicitacaoServico(FichaSolicitacaoServico persistentObject) {
-        fichaSolicitacaoServicoServiceInterface.deleteFichaSolicitacaoServico(persistentObject);
-    }
-
     public void deleteFichaSolicitacaoServico(long id) {
         fichaSolicitacaoServicoServiceInterface.deleteFichaSolicitacaoServico(id);
     }
 
     // Foto--------------------------------------------------------------
 
-    @Autowired
 
-    private FotoServiceInterface fotoServiceInterface;
+    private final FotoServiceInterface fotoServiceInterface;
 
     public Foto saveFoto(Foto newInstance) {
         return fotoServiceInterface.saveFoto(newInstance);
@@ -1488,18 +1371,13 @@ public class Facade {
         return fotoServiceInterface.getAllFoto();
     }
 
-    public void deleteFoto(Foto persistentObject) {
-        fotoServiceInterface.deleteFoto(persistentObject);
-    }
-
     public void deleteFoto(long id) {
         fotoServiceInterface.deleteFoto(id);
     }
 
     // Instituicao--------------------------------------------------------------
 
-    @Autowired
-    private InstituicaoServiceInterface instituicaoServiceInterface;
+    private final InstituicaoServiceInterface instituicaoServiceInterface;
 
     public Instituicao saveInstituicao(Instituicao newInstance) {
         return instituicaoServiceInterface.saveInstituicao(newInstance);
@@ -1529,18 +1407,14 @@ public class Facade {
         return instituicaoServiceInterface.getAllInstituicao();
     }
 
-    public void deleteInstituicao(Instituicao persistentObject) {
-        instituicaoServiceInterface.deleteInstituicao(persistentObject);
-    }
-
     public void deleteInstituicao(long id) {
         instituicaoServiceInterface.deleteInstituicao(id);
     }
 
 
     // LaudoNecropsia--------------------------------------------------------------
-    @Autowired
-    private LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
+
+    private final LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
 
     public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
         return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
@@ -1576,18 +1450,13 @@ public class Facade {
         return laudoNecropsiaServiceInterfcae.getAllLaudoNecropsia();
     }
 
-    public void deleteLaudoNecropsia(LaudoNecropsia persistentObject) {
-        laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(persistentObject);
-    }
-
     public void deleteLaudoNecropsia(long id) {
         laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(id);
     }
 
     // MaterialColetado--------------------------------------------------------------
-    @Autowired
 
-    private MaterialColetadoServiceInterface materialColetadoServiceInterface;
+    private final MaterialColetadoServiceInterface materialColetadoServiceInterface;
 
     public MaterialColetado saveMaterialColetado(MaterialColetado newInstance) {
         return materialColetadoServiceInterface.saveMaterialColetado(newInstance);
@@ -1615,18 +1484,13 @@ public class Facade {
         return materialColetadoServiceInterface.getAllMaterialColetado();
     }
 
-    public void deleteMaterialColetado(MaterialColetado persistentObject) {
-        materialColetadoServiceInterface.deleteMaterialColetado(persistentObject);
-    }
-
     public void deleteMaterialColetado(long id) {
         materialColetadoServiceInterface.deleteMaterialColetado(id);
     }
 
     // Orgao--------------------------------------------------------------
-    @Autowired
 
-    private OrgaoServiceInterface OrgaoServiceInterface;
+    private final OrgaoServiceInterface OrgaoServiceInterface;
 
     public Orgao saveOrgao(Orgao newInstance) {
         return OrgaoServiceInterface.saveOrgao(newInstance);
@@ -1655,10 +1519,6 @@ public class Facade {
         return OrgaoServiceInterface.getAllOrgao();
     }
 
-    public void deleteOrgao(Orgao persistentObject) {
-        OrgaoServiceInterface.deleteOrgao(persistentObject);
-    }
-
     public void deleteOrgao(long id) {
         OrgaoServiceInterface.deleteOrgao(id);
     }
@@ -1666,8 +1526,8 @@ public class Facade {
 
     // Arquivo --------------------------------------------------------------
 
-    @Autowired
-    private FileServiceInterface fileService;
+
+    private final FileServiceInterface fileService;
 
     public File findFile(String fileName) {
         return fileService.findFile(fileName);
@@ -1684,8 +1544,7 @@ public class Facade {
 
     // CampoLaudoMicroscopia --------------------------------------------------------------
 
-    @Autowired
-    private CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
+    private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
 
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
@@ -1709,10 +1568,6 @@ public class Facade {
 
     public List<CampoLaudoMicroscopia> getAllCampoLaudoMicroscopia() {
         return campoLaudoMicroscopiaServiceInterface.getAllCampoLaudoMicroscopia();
-    }
-
-    public void deleteCampoLaudoMicroscopia(CampoLaudoMicroscopia persistentObject) {
-        campoLaudoMicroscopiaServiceInterface.deleteCampoLaudoMicroscopia(persistentObject.getId());
     }
 
     public void deleteCampoLaudoMicroscopia(long id) {

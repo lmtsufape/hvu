@@ -680,6 +680,13 @@ function CreateConsulta() {
                     <button
                       className={styles.ficha_button}
                       type="button"
+                      onClick={() => handleClick("/fichaRetornoClinicoSil", id)}
+                    >
+                      Ficha clíniaca médica de retorno silvestre
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
                       onClick={() => handleClick("/fichaNeurologica", id)}
                     >
                       Ficha neurológica

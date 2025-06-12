@@ -1,14 +1,13 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import java.time.LocalDate;
 import java.util.Comparator;
 import br.edu.ufape.hvu.model.Vaga;
@@ -19,11 +18,9 @@ import br.edu.ufape.hvu.controller.dto.response.VagaResponse;
 
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class VagaController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
+	private final Facade facade;
 	
 	@GetMapping("vaga")
 	public List<VagaResponse> getAllVaga() {
