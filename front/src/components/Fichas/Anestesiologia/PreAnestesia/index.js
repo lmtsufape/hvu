@@ -296,10 +296,11 @@ export default function PreAnestesia({
             </div>
           </div>
 
-          <div className="mb-3">
-            <label className="form-label fw-medium">Estado</label><br />
-            {ESTADOS.map(s => (
-              <label key={s} className="me-3">
+
+          <label className="form-label fw-medium">Estado</label>
+          <div className={styles.checkbox_container}>
+            {ESTADOS.map((s) => (
+              <label key={s}>
                 <input
                   type="radio"
                   name="pre.estado"
@@ -311,10 +312,11 @@ export default function PreAnestesia({
             ))}
           </div>
 
-          <div className="mb-3">
-            <label className="form-label fw-medium">Dor</label><br />
-            {DORES.map(d => (
-              <label key={d} className="me-3">
+        
+          <label className="form-label fw-medium">Dor</label>
+          <div className={styles.checkbox_container}>
+            {DORES.map((d) => (
+              <label key={d}>
                 <input
                   type="radio"
                   name="pre.dor"
@@ -325,6 +327,7 @@ export default function PreAnestesia({
               </label>
             ))}
           </div>
+
 
           {/* Sinais vitais --------------------------------------------------- */}
           <div className="row mb-3">
@@ -348,6 +351,7 @@ export default function PreAnestesia({
                   name="pre.jejum"
                   value={formData.pre?.jejum || ""}
                   onChange={handleChange}
+                  style={{ marginTop: "0.5rem" }}
                 />
               </label>
             </div>
@@ -447,7 +451,7 @@ export default function PreAnestesia({
             {MUCOSAS.map((mucosa) => (
               <div key={mucosa} className="row align-items-start mb-2">
                 {/* coluna do checkbox + rótulo */}
-                <div className="col-3">
+                <div className={`${styles.checkbox_container} ${styles.checkbox_square} col-3`}>
                   <label className="d-flex align-items-center">
                     <input
                       type="checkbox"

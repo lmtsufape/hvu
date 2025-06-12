@@ -1,5 +1,6 @@
 import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
+import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
 import { CancelarWhiteButton }         from "@/components/WhiteButton";
 import { ContinuarFichasGreenButton }  from "@/components/GreenButton";
@@ -7,7 +8,6 @@ import React, { useState, useEffect } from "react";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
-import { set } from "date-fns";
 
 
 export default function PosAnestesia({
@@ -684,8 +684,8 @@ return (
   </div>
  
       <div className={styles.button_box}>
-        <CancelarWhiteButton />
-        <FinalizarFichaModal onConfirm={handleSubmit} />
+            <VoltarWhiteButton onClick={prevStep} />
+            <FinalizarFichaModal onConfirm={handleSubmit} />
       </div>
     </div>
     </div>
