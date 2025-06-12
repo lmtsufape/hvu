@@ -10,8 +10,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
+import br.edu.ufape.hvu.exception.InvalidJsonException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
@@ -1323,13 +1326,10 @@ public class Facade {
 
     @Transactional
     public Ficha updateFicha(FichaRequest obj, Long id) {
-
-        //Ficha o = obj.convertToEntity();
         Ficha oldObject = findFichaById(id);
-        TypeMap<FichaRequest, Ficha> typeMapper = modelMapper
-                .typeMap(FichaRequest.class, Ficha.class)
-                .addMappings(mapper -> mapper.skip(Ficha::setId));
-        typeMapper.map(obj, oldObject);
+
+        // Aplica os dados atualizados no objeto existente
+        obj.applyToEntity(oldObject);
 
         return fichaServiceInterface.updateFicha(oldObject);
     }
