@@ -12,6 +12,8 @@ import { createFicha } from '../../../../services/fichaService';
 import { getCurrentUsuario }    from "../../../../services/userService";
 
 export default function AnestesiologiaSteps() {
+  const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [step, setStep] = useState(1);
   const nextStep = () => setStep((s) => s + 1);
   const prevStep = () => setStep((s) => s - 1);
@@ -124,7 +126,7 @@ export default function AnestesiologiaSteps() {
       const resultado = await createFicha(data);
       localStorage.setItem('fichaId', resultado.id.toString());
       localStorage.removeItem("anestesiologiaFormData");
-      setShowOK(true);
+      setShowAlert(true);
     } catch (err) {
       console.error(err);
       setErrMsg(err?.response?.data?.message ?? "");
@@ -177,8 +179,23 @@ export default function AnestesiologiaSteps() {
     </div>
 
 
-      {showOK  && consultaId && <Alert message="Ficha criada!" show url={`/createConsulta/${consultaId}`} />}
-      {showErr && <ErrorAlert message={errMsg || "Erro"} show />}
+   {showAlert && consultaId &&(
+        <div className={styles.alert}>
+          <Alert
+            message="Ficha criada com sucesso!"
+            show={showAlert}
+            url={`/createConsulta/${consultaId}`}
+          />
+        </div>
+      )}
+      {showErrorAlert && (
+        <div className={styles.alert}>
+          <ErrorAlert
+            message={errorMessage || "Erro ao criar ficha"}
+            show={showErrorAlert}
+          />
+        </div>
+      )}
     </div>
   );
   
