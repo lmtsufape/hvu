@@ -192,6 +192,7 @@ public class Facade {
         return cancelamentoServiceInterface.getAllCancelamento();
     }
 
+    @Transactional
     public void deleteCancelamento(long id) {
         cancelamentoServiceInterface.deleteCancelamento(id);
     }
@@ -230,6 +231,7 @@ public class Facade {
         return tipoConsultaServiceInterface.getAllTipoConsulta();
     }
 
+    @Transactional
     public void deleteTipoConsulta(long id) {
         tipoConsultaServiceInterface.deleteTipoConsulta(id);
     }
@@ -237,6 +239,7 @@ public class Facade {
     // Usuario--------------------------------------------------------------
     private final UsuarioServiceInterface usuarioServiceInterface;
 
+    @Transactional
     public Usuario saveUsuario(Usuario newInstance) {
         if(newInstance == null) {
             throw new IllegalArgumentException("Usuario não pode ser nulo");
@@ -285,6 +288,7 @@ public class Facade {
         return usuarioServiceInterface.getAllUsuario();
     }
 
+    @Transactional
     public void deleteUsuario(long id) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID inválido para exclusão.");
@@ -295,10 +299,12 @@ public class Facade {
     // Cronograma--------------------------------------------------------------
     private final CronogramaServiceInterface cronogramaServiceInterface;
 
+    @Transactional
     public Cronograma saveCronograma(Cronograma newInstance) {
         return cronogramaServiceInterface.saveCronograma(newInstance);
     }
 
+    @Transactional
     public Cronograma updateCronograma(CronogramaRequest obj, Long id, String idSession) {
         Cronograma oldObject = findCronogramaById(id);
 
@@ -339,7 +345,7 @@ public class Facade {
         return cronogramaServiceInterface.getAllCronograma();
     }
 
-
+    @Transactional
     public void deleteCronograma(long cronogramaId) {
         Cronograma cronograma = findCronogramaById(cronogramaId);
         cronogramaServiceInterface.deleteCronograma(cronograma.getId());
@@ -406,6 +412,7 @@ public class Facade {
         return medicoService.getAllMedico();
     }
 
+    @Transactional
     public void deleteMedico(long id) {
         medicoService.deleteMedico(id);
     }
@@ -423,10 +430,12 @@ public class Facade {
     // Raca--------------------------------------------------------------
     private final RacaServiceInterface racaServiceInterface;
 
+    @Transactional
     public Raca saveRaca(Raca newInstance) {
         return racaServiceInterface.saveRaca(newInstance);
     }
 
+    @Transactional
     public Raca updateRaca(RacaRequest obj, Long id) {
         //Raca o = obj.convertToEntity();
         Raca oldObject = findRacaById(id);
@@ -458,6 +467,7 @@ public class Facade {
         return racaServiceInterface.findByEspecie(especie);
     }
 
+    @Transactional
     public void deleteRaca(long id) {
         racaServiceInterface.deleteRaca(id);
     }
@@ -465,6 +475,7 @@ public class Facade {
     // Aviso--------------------------------------------------------------
     private final AvisoServiceInterface avisoServiceInterface;
 
+    @Transactional
     public Aviso saveAviso(Aviso newInstance) {
         return avisoServiceInterface.saveAviso(newInstance);
     }
@@ -492,6 +503,7 @@ public class Facade {
         return avisoServiceInterface.getAllAviso();
     }
 
+    @Transactional
     public void deleteAviso(long id) {
         avisoServiceInterface.deleteAviso(id);
     }
@@ -500,15 +512,18 @@ public class Facade {
 
     private final VagaServiceInterface vagaServiceInterface;
 
+    @Transactional
     public Vaga saveVaga(Vaga newInstance) {
         newInstance.setStatus(String.valueOf(StatusAgendamentoEVaga.Disponivel));
         return vagaServiceInterface.saveVaga(newInstance);
     }
 
+    @Transactional
     public Vaga updateVaga(Vaga transientObject) {
         return vagaServiceInterface.updateVaga(transientObject);
     }
 
+    @Transactional
     public Vaga processUpdateVaga(VagaRequest obj, Long id, String idSession){
         //Vaga o = obj.convertToEntity();
         Vaga oldObject = vagaServiceInterface.findVagaById(id);
@@ -634,6 +649,7 @@ public class Facade {
         return vagaServiceInterface.findVagasByDataAndTurno(data, turno);
     }
 
+    @Transactional
     public void deleteVaga(long id) {
         vagaServiceInterface.deleteVaga(id);
     }
@@ -679,6 +695,7 @@ public class Facade {
         return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
+    @Transactional
     private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao, String idSession) {
         List<Vaga> vagasByData = findVagaByData(data);
         List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
@@ -728,6 +745,7 @@ public class Facade {
 
     private final ConsultaServiceInterface consultaServiceInterface;
 
+    @Transactional
     public Consulta saveConsulta(Long id, Consulta newInstance) {
         Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
         Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
@@ -797,6 +815,7 @@ public class Facade {
         return consultaServiceInterface.getConsultasByAnimalId(id);
     }
 
+    @Transactional
     public void deleteConsulta(long id) {
         consultaServiceInterface.deleteConsulta(id);
     }
@@ -806,10 +825,12 @@ public class Facade {
 
     private final EspecialidadeServiceInterface especialidadeServiceInterface;
 
+    @Transactional
     public Especialidade saveEspecialidade(Especialidade newInstance) {
         return especialidadeServiceInterface.saveEspecialidade(newInstance);
     }
 
+    @Transactional
     public Especialidade updateEspecialidade(EspecialidadeRequest obj, Long id) {
         //Especialidade o = obj.convertToEntity();
         Especialidade oldObject = findEspecialidadeById(id);
@@ -831,6 +852,7 @@ public class Facade {
         return especialidadeServiceInterface.getAllEspecialidade();
     }
 
+    @Transactional
     public void deleteEspecialidade(long id) {
         especialidadeServiceInterface.deleteEspecialidade(id);
     }
@@ -869,6 +891,7 @@ public class Facade {
     }
 
 
+    @Transactional
     private Agendamento confirmarAgendamento(Vaga vaga, Agendamento agendamento) {
         if (vaga.getAgendamento() != null ){
             throw new IllegalStateException("A vaga não está disponível.");
@@ -906,6 +929,7 @@ public class Facade {
     }
 
     // Reagenda um agendamento para uma nova vaga
+    @Transactional
     public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga){
         Agendamento agendamento = findAgendamentoById(idAgendamento);
         Vaga vagaAntiga = getVagaByAgendamento(agendamento.getId());
@@ -990,6 +1014,7 @@ public class Facade {
                 .toList();
     }
 
+    @Transactional
     public void deleteAgendamento(long id) {
         agendamentoServiceInterface.deleteAgendamento(id);
     }
@@ -998,10 +1023,12 @@ public class Facade {
 
     private final EnderecoServiceInterface enderecoServiceInterface;
 
+    @Transactional
     public Endereco saveEndereco(Endereco newInstance) {
         return enderecoServiceInterface.saveEndereco(newInstance);
     }
 
+    @Transactional
     public Endereco updateEndereco(EnderecoRequest obj, Long id) {
         //Endereco o = obj.convertToEntity();
         Endereco oldObject = findEnderecoById(id);
@@ -1023,6 +1050,7 @@ public class Facade {
         return enderecoServiceInterface.getAllEndereco();
     }
 
+    @Transactional
     public void deleteEndereco(long id) {
         enderecoServiceInterface.deleteEndereco(id);
     }
@@ -1031,10 +1059,12 @@ public class Facade {
 
     private final EstagiarioServiceInterface estagiarioServiceInterface;
 
+    @Transactional
     public Estagiario saveEstagiario(Estagiario newInstance) {
         return estagiarioServiceInterface.saveEstagiario(newInstance);
     }
 
+    @Transactional
     public Estagiario updateEstagiario(EstagiarioRequest obj, Long id) {
         //Estagiario o = obj.convertToEntity();
         Estagiario oldObject = findEstagiarioById(id);
@@ -1056,6 +1086,7 @@ public class Facade {
         return estagiarioServiceInterface.getAllEstagiario();
     }
 
+    @Transactional
     public void deleteEstagiario(long id) {
         estagiarioServiceInterface.deleteEstagiario(id);
     }
@@ -1063,6 +1094,7 @@ public class Facade {
     // Animal--------------------------------------------------------------
     private final AnimalServiceInterface animalServiceInterface;
 
+    @Transactional
     public Animal saveAnimal(Animal newInstance, String idSession) {
         Tutor tutor = findTutorByuserId(idSession);
         if (tutor == null) {
@@ -1075,6 +1107,7 @@ public class Facade {
         return animal;
     }
 
+    @Transactional
     public Animal updateAnimal(Long id, AnimalRequest request, String idSession) {
         Animal animal = animalServiceInterface.findAnimalById(id);
         Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
@@ -1124,6 +1157,7 @@ public class Facade {
         return animalServiceInterface.findAnimalByFichaNumber(fichaNumero);
     }
 
+    @Transactional
     public void deleteAnimal(long id, String userId) {
         // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
         if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId)){
@@ -1141,10 +1175,12 @@ public class Facade {
 
     private final EspecieServiceInterface especieServiceInterface;
 
+    @Transactional
     public Especie saveEspecie(Especie newInstance) {
         return especieServiceInterface.saveEspecie(newInstance);
     }
 
+    @Transactional
     public Especie updateEspecie(EspecieRequest obj, Long id) {
         //Especie o = obj.convertToEntity();
         Especie oldObject = findEspecieById(id);
@@ -1166,6 +1202,7 @@ public class Facade {
         return especieServiceInterface.getAllEspecie();
     }
 
+    @Transactional
     public void deleteEspecie(long id) {
         especieServiceInterface.deleteEspecie(id);
     }
@@ -1173,10 +1210,12 @@ public class Facade {
     // Area--------------------------------------------------------------
     private final AreaServiceInterface areaServiceInterface;
 
+    @Transactional
     public Area saveArea(Area newInstance) {
         return areaServiceInterface.saveArea(newInstance);
     }
 
+    @Transactional
     public Area updateArea(AreaRequest transientObject, Long id) {
         //Area o = obj.convertToEntity();
         Area oldObject = findAreaById(id);
@@ -1197,6 +1236,7 @@ public class Facade {
         return areaServiceInterface.getAllArea();
     }
 
+    @Transactional
     public void deleteArea(long id) {
         areaServiceInterface.deleteArea(id);
     }
@@ -1204,10 +1244,12 @@ public class Facade {
     // CampoLaudo--------------------------------------------------------------
     private final CampoLaudoServiceInterface campoLaudoServiceInterface;
 
+    @Transactional
     public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
         return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
     }
 
+    @Transactional
     public CampoLaudo updateCampoLaudo(CampoLaudoRequest transientObject, Long id) {
 
         //CampoLaudo o = obj.convertToEntity();
@@ -1231,6 +1273,7 @@ public class Facade {
         return campoLaudoServiceInterface.getAllCampoLaudo();
     }
 
+    @Transactional
     public void deleteCampoLaudo(long id) {
         campoLaudoServiceInterface.deleteCampoLaudo(id);
     }
@@ -1239,10 +1282,12 @@ public class Facade {
 
     private final EtapaServiceInterface etapaServiceInterface;
 
+    @Transactional
     public Etapa saveEtapa(Etapa newInstance) {
         return etapaServiceInterface.saveEtapa(newInstance);
     }
 
+    @Transactional
     public Etapa updateEtapa(EtapaRequest obj, Long id) {
         //Etapa o = obj.convertToEntity();
         Etapa oldObject = findEtapaById(id);
@@ -1264,6 +1309,7 @@ public class Facade {
         return etapaServiceInterface.getAllEtapa();
     }
 
+    @Transactional
     public void deleteEtapa(long id) {
         etapaServiceInterface.deleteEtapa(id);
     }
@@ -1273,10 +1319,12 @@ public class Facade {
 
     private final FichaServiceInterface fichaServiceInterface;
 
+    @Transactional
     public Ficha saveFicha(Ficha newInstance) {
         return fichaServiceInterface.saveFicha(newInstance);
     }
 
+    @Transactional
     public Ficha updateFicha(FichaRequest obj, Long id) {
         Ficha oldObject = findFichaById(id);
 
@@ -1294,6 +1342,7 @@ public class Facade {
         return fichaServiceInterface.getAllFicha();
     }
 
+    @Transactional
     public void deleteFicha(long id) {
         fichaServiceInterface.deleteFicha(id);
     }
@@ -1303,6 +1352,7 @@ public class Facade {
 
     private final FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
 
+    @Transactional
     public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
         return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
     }
@@ -1336,6 +1386,7 @@ public class Facade {
         return fichaSolicitacaoServicoServiceInterface.getAllFichaSolicitacaoServico();
     }
 
+    @Transactional
     public void deleteFichaSolicitacaoServico(long id) {
         fichaSolicitacaoServicoServiceInterface.deleteFichaSolicitacaoServico(id);
     }
@@ -1345,10 +1396,12 @@ public class Facade {
 
     private final FotoServiceInterface fotoServiceInterface;
 
+    @Transactional
     public Foto saveFoto(Foto newInstance) {
         return fotoServiceInterface.saveFoto(newInstance);
     }
 
+    @Transactional
     public Foto updateFoto(FotoRequest obj, Long id) {
         //Foto o = obj.convertToEntity();
         Foto oldObject = findFotoById(id);
@@ -1371,6 +1424,7 @@ public class Facade {
         return fotoServiceInterface.getAllFoto();
     }
 
+    @Transactional
     public void deleteFoto(long id) {
         fotoServiceInterface.deleteFoto(id);
     }
@@ -1379,10 +1433,12 @@ public class Facade {
 
     private final InstituicaoServiceInterface instituicaoServiceInterface;
 
+    @Transactional
     public Instituicao saveInstituicao(Instituicao newInstance) {
         return instituicaoServiceInterface.saveInstituicao(newInstance);
     }
 
+    @Transactional
     public Instituicao updateInstituicao(InstituicaoRequest obj, Long id) {
 
         //Instituicao o = obj.convertToEntity();
@@ -1407,6 +1463,7 @@ public class Facade {
         return instituicaoServiceInterface.getAllInstituicao();
     }
 
+    @Transactional
     public void deleteInstituicao(long id) {
         instituicaoServiceInterface.deleteInstituicao(id);
     }
@@ -1416,6 +1473,7 @@ public class Facade {
 
     private final LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
 
+    @Transactional
     public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
         return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
     }
@@ -1450,6 +1508,7 @@ public class Facade {
         return laudoNecropsiaServiceInterfcae.getAllLaudoNecropsia();
     }
 
+    @Transactional
     public void deleteLaudoNecropsia(long id) {
         laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(id);
     }
@@ -1458,10 +1517,12 @@ public class Facade {
 
     private final MaterialColetadoServiceInterface materialColetadoServiceInterface;
 
+    @Transactional
     public MaterialColetado saveMaterialColetado(MaterialColetado newInstance) {
         return materialColetadoServiceInterface.saveMaterialColetado(newInstance);
     }
 
+    @Transactional
     public MaterialColetado updateMaterialColetado(MaterialColetadoRequest obj, Long id) {
         //MaterialColetado o = obj.convertToEntity();
         MaterialColetado oldObject = materialColetadoServiceInterface.findMaterialColetadoById(id);
@@ -1484,6 +1545,7 @@ public class Facade {
         return materialColetadoServiceInterface.getAllMaterialColetado();
     }
 
+    @Transactional
     public void deleteMaterialColetado(long id) {
         materialColetadoServiceInterface.deleteMaterialColetado(id);
     }
@@ -1492,10 +1554,12 @@ public class Facade {
 
     private final OrgaoServiceInterface OrgaoServiceInterface;
 
+    @Transactional
     public Orgao saveOrgao(Orgao newInstance) {
         return OrgaoServiceInterface.saveOrgao(newInstance);
     }
 
+    @Transactional
     public Orgao updateOrgao(OrgaoRequest transientObject, Long id) {
         //Orgao o = obj.convertToEntity();
         Orgao oldObject = OrgaoServiceInterface.findOrgaoById(id);
@@ -1519,6 +1583,7 @@ public class Facade {
         return OrgaoServiceInterface.getAllOrgao();
     }
 
+    @Transactional
     public void deleteOrgao(long id) {
         OrgaoServiceInterface.deleteOrgao(id);
     }
@@ -1533,11 +1598,13 @@ public class Facade {
         return fileService.findFile(fileName);
     }
 
+    @Transactional
     public String storeFile(InputStream file, String fileName) {
         String fn = System.currentTimeMillis() + "-" + fileName;
         return fileService.storeFile(file, fn.replace(" ", ""));
     }
 
+    @Transactional
     public void deleteFile(String fileName) {
         fileService.deleteFile(fileName);
     }
@@ -1546,10 +1613,12 @@ public class Facade {
 
     private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
 
+    @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
     }
 
+    @Transactional
     public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopiaRequest obj, Long id) {
         CampoLaudoMicroscopia oldObject = findCampoLaudoMicroscopiaById(id);
 
@@ -1570,6 +1639,7 @@ public class Facade {
         return campoLaudoMicroscopiaServiceInterface.getAllCampoLaudoMicroscopia();
     }
 
+    @Transactional
     public void deleteCampoLaudoMicroscopia(long id) {
         campoLaudoMicroscopiaServiceInterface.deleteCampoLaudoMicroscopia(id);
     }
