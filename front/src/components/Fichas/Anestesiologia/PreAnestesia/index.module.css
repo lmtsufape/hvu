@@ -40,31 +40,38 @@
 
 .checkbox_container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 10px;
-  margin-bottom: 15px;
-  margin: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
 }
 
 .checkbox_container label {
   display: flex;
   align-items: center;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: clamp(14px, 3.5vw, 16px);
   cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
   transition: background 0.3s ease-in-out;
 }
 
-.checkbox_container input[type="checkbox"] {
-  margin-right: 8px;
+.checkbox_container input[type="checkbox"],
+.checkbox_container input[type="radio"] {
+  appearance: none;
+  margin-right: 0.5rem;
   accent-color: #39805f;
+  border: 1px solid #B1B1B1;
+  border-radius: 50%;
+  min-width: 26px;
+  height: 26px;
+  cursor: pointer;
 }
 
-.checkbox_container label:hover {
-  background-color: #e3f1ea;
+.checkbox_container input[type="checkbox"]:checked,
+.checkbox_container input[type="radio"]:checked {
+  background-color: #B1B1B1;
+}
+
+.checkbox_square input[type="checkbox"]{
+  border-radius: 5px;
 }
 
 .column {
@@ -296,4 +303,69 @@
   font-weight: 700;
   line-height: 24px;
   color: #404040;
+}
+
+.tabela_tratamento {
+  width: 100%;
+  border-spacing: 10px 11px;
+  border-collapse: separate;
+}
+
+.tabela_tratamento td {
+  text-align: center;
+  font-size: 16px;
+}
+
+.tabela_tratamento th {
+  text-align: center;
+  background-color: #f6fbf9;
+  font-weight: 600;
+  font-size: 16px;
+  color: #7f7f7f;
+  border: solid 1px #7f7f7f;
+  border-radius: 5px;
+  padding-right: 10px;
+}
+
+.tabela_tratamento input {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 49px;
+  margin-bottom: -5px;
+}
+
+.bolha_container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  margin-right: 15px;
+}
+
+.bolha {
+  display: flex;
+  position: relative;
+  width: 23px;
+  height: 23px;
+  align-items: center;   
+  justify-content: center;
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 18px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  transition: background 0.3s;
+  padding-top: 3px;
+}
+
+.bolha_remover_linha {
+  right: 0px;  
+}
+
+.bolha:hover {
+  background-color: #a5a5a5;
 }
