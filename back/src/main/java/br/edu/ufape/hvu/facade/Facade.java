@@ -592,7 +592,7 @@ public class Facade {
         animalNoReturn
                 .addAll(vagas.stream()
                         .map(vaga -> vaga.getAgendamento().getAnimal())
-                        .collect(Collectors.toList()));
+                        .toList());
         return animalNoReturn;
     }
 
