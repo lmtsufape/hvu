@@ -670,14 +670,14 @@ public class Facade {
         StringBuilder detalheBuilder = new StringBuilder();
 
         if (endDate == null) {
-            if (!isWeekend(startDate)) {
+            if (isWeekend(startDate)) {
                 detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
                 detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
             }
         } else {
             LocalDate currentDate = startDate;
             while (!currentDate.isAfter(endDate)) {
-                if (!isWeekend(currentDate)) {
+                if (isWeekend(currentDate)) {
                     detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
                     detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
                 }
@@ -689,7 +689,7 @@ public class Facade {
     }
 
     private boolean isWeekend(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+        return date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY;
     }
 
     @Transactional
