@@ -521,7 +521,7 @@ public class Facade {
     }
 
     @Transactional
-    public Vaga processUpdateVaga(VagaRequest obj, Long id, String idSession){
+    public Vaga processUpdateVaga(VagaRequest obj, Long id){
         //Vaga o = obj.convertToEntity();
         Vaga oldObject = vagaServiceInterface.findVagaById(id);
 
