@@ -1,0 +1,283 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
+
+.container {
+  display: block;
+  width: 100%;
+  max-width: 65rem;
+  min-width: 300px;
+  height: auto;
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-family: "Poppins", sans-serif;
+}
+
+.container h1 {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 50px;
+  color: #333;
+}
+
+.container h2 {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: start;
+  color: #333;
+}
+
+.titulo{
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #EEF8F3;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px;
+  padding-left: 16px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.dados_ocultos{
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #32705380;
+  font-size: 20px;
+  padding: 9.5px;
+  padding-left: 16px;
+  padding-right: 150px;
+  margin-bottom: 18px;
+  margin-top: 38px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dados_ocultos:hover{
+  background-color: #32835d80;
+}
+
+.form_box {
+  display: grid;
+  border-radius: 20px;
+  padding-bottom: 18px;
+  padding-left: 29px;
+  padding-right: 37px;
+  background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
+}
+
+.box{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.column {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+  min-width: 100px;
+  outline: solid red;
+}
+
+.column label {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #272727;
+}
+
+.column input,
+.column select,
+.column textarea {
+  width: 80px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  margin-bottom: 18px;
+}
+
+.column input[id="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+.column input.inputLargo {
+  width: 100%;
+}
+
+.inputGroup {
+  display: flex;
+  gap: 40px;
+}
+
+.criar_button {
+  width: 180px;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid #39805F;
+  color: #FFF5F6;
+  background-color: #39805F;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
+}
+
+.criar_button:hover {
+  background-color: #39805fe6;
+}
+
+.button_box {
+  width: 100%; /* Alterado para usar uma porcentagem */
+  max-width: 1152px;
+  height: 10vh;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  gap: 3vh;
+}
+.box_ficha_toggle{
+  max-width: 1118px;
+  width: 100%;
+  margin-bottom: 18px;
+  margin-top: 38px;
+}
+
+.toggleButton {
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #98b7a9;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px 16px;
+  padding-left: 16px;
+  margin-bottom: 0px;
+  border-radius: 10px 10px 10px 10px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-align: left;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  box-sizing: border-box;
+  position: relative; 
+}
+
+.toggleButton::after {
+  font-weight: 600;
+  position: absolute; 
+  right: 16px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+}
+
+.toggleButton.expand::after {
+  content: "+"; 
+}
+
+.toggleButton.minimize::after {
+  content: "-"; 
+}
+
+.toggleButton:hover {
+  background-color: #d6ece0;
+}
+
+.toggleButton:active {
+  background-color: #c4e2d2;
+}
+
+.container_toggle {
+  width: 100%;
+  height: 430px;
+  align-items: center;
+  margin-top: 22px;
+}
+
+.container_toggle h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+}
+
+.infos_box {
+  display: flex;
+  flex-direction: column;
+  width: 97%;
+  border-radius: 20px;
+  border: 0.5px solid #B1B1B1;
+  gap: 10px;
+}
+
+.identificacao {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 28px;
+  margin-top: 32px;
+}
+
+.nome_animal {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  letter-spacing: 0em;
+}
+
+.especie_animal {
+  color: #39805F;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+}
+
+.animal-data-box {
+  display: flex;
+  gap: 188px;
+  margin-left: 28px;
+  margin-bottom: 32px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.infos {
+  display: flex;
+  flex-direction: column;
+}
+
+.infos p {
+  margin-top: -6px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #39805F;
+}
+
+.infos h6 {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #404040;
+}
+

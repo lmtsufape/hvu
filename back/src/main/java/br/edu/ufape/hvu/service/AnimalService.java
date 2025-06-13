@@ -2,7 +2,7 @@ package br.edu.ufape.hvu.service;
 
 import java.util.List;
 
-import org.hibernate.service.spi.ServiceException;
+import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AnimalRepository;
@@ -13,7 +13,6 @@ import br.edu.ufape.hvu.model.Animal;
 public class AnimalService implements AnimalServiceInterface {
 	@Autowired
 	private AnimalRepository repository;
-
 
 	public Animal saveAnimal(Animal newInstance) {
 		return repository.save(newInstance);
@@ -31,27 +30,22 @@ public class AnimalService implements AnimalServiceInterface {
 		return repository.findAll();
 	}
 
-
 	public Animal findAnimalByFichaNumber(String fichaNumber) {
 		try {
-			// retorna um unico animal por meio do numeor da ficha
-			return repository.findAnimalByFicha(fichaNumber);
-		} catch (RuntimeException e) {
-			throw new ServiceException("Erro ao buscar animal por meio do numero da ficha, verifique o número da ficha");
+			Animal animal = repository.findAnimalByFicha(fichaNumber);
+			if (animal == null) {
+				throw new ResourceNotFoundException("Animal", "ficha", fichaNumber);
+			}
+			return animal;
+		} catch (Exception e) {
+			throw new RuntimeException("Erro ao buscar animal pelo número da ficha: " + fichaNumber, e);
 		}
 	}
 
-
-	public void deleteAnimal(Animal persistentObject){
-		this.deleteAnimal(persistentObject.getId());
-		
-	}
-	
 	public void deleteAnimal(long id){
-		Animal obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Animal"));
+		Animal obj = repository.findById(id).orElseThrow(
+				() -> new IdNotFoundException(id, "Animal"));
 		repository.delete(obj);
-	}	
-	
-	
+	}
 	
 }

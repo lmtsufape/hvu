@@ -2,28 +2,25 @@ package br.edu.ufape.hvu.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import br.edu.ufape.hvu.exception.DuplicateAccountException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import br.edu.ufape.hvu.repository.TutorRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Tutor;
 
 @Service
+@RequiredArgsConstructor
 public class TutorService implements TutorServiceInterface {
-	@Autowired
-	private TutorRepository repository;
-
+	private final TutorRepository repository;
 
 	public Tutor saveTutor(Tutor newInstance) throws ResponseStatusException {
-		Tutor tutorSalvo = repository.findByuserId(newInstance.getUserId());
-		if (tutorSalvo != null) {
-		    throw new ResponseStatusException(HttpStatus.CONFLICT, "This Tutor account is already in use.");
-		} else {
-			return repository.save(newInstance);
+		verificarDuplicidade(newInstance.getCpf(), newInstance.getEmail());
+		if(repository.existsById(newInstance.getId())){
+			throw new DuplicateAccountException("Tutor", "Id");
 		}
+		return repository.save(newInstance);
 	}
 
 	public Tutor updateTutor(Tutor transientObject) {
@@ -35,28 +32,23 @@ public class TutorService implements TutorServiceInterface {
 	}
 	
 	public Tutor findTutorByanimalId(long animalId) {
-		try {
-			return repository.findByanimalId(animalId);
-		} catch (RuntimeException ex){
-			throw new RuntimeException ("It doesn't exist Tutor with userId = " + animalId);
+		Tutor tutor = repository.findByanimalId(animalId);
+		if (tutor == null) {
+			throw new IdNotFoundException(animalId, "Tutor vinculado ao animal");
 		}
+		return tutor;
 	}
 	
 	public Tutor findTutorByuserId(String userId) {
-		try {
-			return repository.findByuserId(userId);
-		} catch (RuntimeException ex){
-			throw new RuntimeException ("It doesn't exist Tutor with id = " + userId);
+		Tutor tutor = repository.findByuserId(userId);
+		if (tutor == null) {
+			throw new IdNotFoundException(userId, "Tutor com userId");
 		}
+		return tutor;
 	}
 
 	public List<Tutor> getAllTutor(){
 		return repository.findAll();
-	}
-
-	public void deleteTutor(Tutor persistentObject){
-		this.deleteTutor(persistentObject.getId());
-		
 	}
 	
 	public void deleteTutor(long id){
@@ -64,6 +56,12 @@ public class TutorService implements TutorServiceInterface {
 		repository.delete(obj);
 	}	
 	
-	
-	
+	public void verificarDuplicidade(String cpf, String email){
+		if(repository.existsByCpf(cpf)){
+			throw new DuplicateAccountException("Tutor", "CPF");
+		}
+		if(repository.existsByEmail(email)){
+			throw new DuplicateAccountException("Tutor", "EMAIL");
+		}
+	}
 }

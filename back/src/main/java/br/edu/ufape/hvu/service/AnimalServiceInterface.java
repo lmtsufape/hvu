@@ -8,7 +8,6 @@ public interface AnimalServiceInterface {
 	Animal saveAnimal(Animal o);
 	Animal findAnimalById(long id);
 	Animal updateAnimal(Animal u);
-	void deleteAnimal(Animal u);
 	void deleteAnimal(long id);
 	List<Animal> getAllAnimal();
 	Animal findAnimalByFichaNumber (String fichaNumber);

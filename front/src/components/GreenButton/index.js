@@ -5,6 +5,7 @@ import styles from './index.module.css'
 const text_green_button = {
     login: 'Login',
     continuar: 'Continuar',
+    continuarFichas: 'Continuar',
     finalizar: 'Finalizar',
     entrar: 'Entrar',
     agendar: 'Agendar',
@@ -29,6 +30,14 @@ export function ContinuarGreenButton() {
     return (
         <button className={styles.green_button}>
             {text_green_button.continuar}
+        </button>
+    );
+}
+
+export function ContinuarFichasGreenButton({type = "submit"}) {
+    return (
+        <button className={styles.green_buttonFichas} type={type}> 
+            {text_green_button.continuarFichas}
         </button>
     );
 }

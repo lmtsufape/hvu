@@ -8,11 +8,7 @@ public interface TipoConsultaServiceInterface {
 	TipoConsulta saveTipoConsulta(TipoConsulta o);
 	TipoConsulta findTipoConsultaById(long id);
 	TipoConsulta updateTipoConsulta(TipoConsulta u);
-	void deleteTipoConsulta(TipoConsulta u);
 	void deleteTipoConsulta(long id);
 	List<TipoConsulta> getAllTipoConsulta();
-    
-    
-
     
 }

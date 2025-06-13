@@ -2,30 +2,21 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-
-import br.edu.ufape.hvu.model.Especie;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EspecieRequest;
 import br.edu.ufape.hvu.controller.dto.response.EspecieResponse;
-import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 
  
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class EspecieController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
+	private final Facade facade;
 
 	@GetMapping("especie")
 	public List<EspecieResponse> getAllEspecie() {
@@ -43,42 +34,19 @@ public class EspecieController {
 
 	@GetMapping("especie/{id}")
 	public EspecieResponse getEspecieById(@PathVariable Long id) {
-		try {
-			return new EspecieResponse(facade.findEspecieById(id));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
-		
+		return new EspecieResponse(facade.findEspecieById(id));
 	}
 
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("especie/{id}")
 	public EspecieResponse updateEspecie(@PathVariable Long id, @Valid @RequestBody EspecieRequest obj) {
-		try {
-			//Especie o = obj.convertToEntity();
-			Especie oldObject = facade.findEspecieById(id);
-
-			TypeMap<EspecieRequest, Especie> typeMapper = modelMapper
-													.typeMap(EspecieRequest.class, Especie.class)
-													.addMappings(mapper -> mapper.skip(Especie::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new EspecieResponse(facade.updateEspecie(oldObject));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
+		return new EspecieResponse(facade.updateEspecie(obj, id));
 	}
 
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("especie/{id}")
 	public String deleteEspecie(@PathVariable Long id) {
-		try {
-			facade.deleteEspecie(id);
-			return "";
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
+		facade.deleteEspecie(id);
+		return "";
 	}
 }

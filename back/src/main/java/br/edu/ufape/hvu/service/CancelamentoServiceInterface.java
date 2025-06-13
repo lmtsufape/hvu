@@ -9,7 +9,6 @@ public interface CancelamentoServiceInterface {
 	Cancelamento findCancelamentoById(long id);
 	List<Cancelamento> findCancelamentosByTutorId(long id);
 	Cancelamento updateCancelamento(Cancelamento u);
-	void deleteCancelamento(Cancelamento u);
 	void deleteCancelamento(long id);
 	List<Cancelamento> getAllCancelamento();
 

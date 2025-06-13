@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.request;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -20,10 +21,6 @@ public  class TutorRequest extends UsuarioRequest {
 
 	public Tutor convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-		Tutor obj = modelMapper.map(this, Tutor.class);
-		return obj;
+        return modelMapper.map(this, Tutor.class);
 	}
-
-
-
 }

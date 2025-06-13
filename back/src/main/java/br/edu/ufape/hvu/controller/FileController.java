@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ufape.hvu.facade.Facade;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class FileController {
-	@Autowired
-	private Facade facade;
+	private final Facade facade;
 
 	@GetMapping(value = "arquivos/{filename}", produces = MediaType.ALL_VALUE)
 	public ResponseEntity<byte[]> getFile(@PathVariable String filename) {
@@ -59,11 +59,7 @@ public class FileController {
 
 	@DeleteMapping("arquivos/{filename}")
 	public ResponseEntity<Void> deleteFile(@PathVariable String filename) {
-		try {
-			facade.deleteFile(filename);
-			return ResponseEntity.noContent().build();
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+		facade.deleteFile(filename);
+		return ResponseEntity.noContent().build();
 	}
 }

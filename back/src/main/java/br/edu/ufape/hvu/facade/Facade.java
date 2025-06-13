@@ -5,38 +5,36 @@ import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import br.edu.ufape.hvu.controller.dto.request.ReagendamentoRequest;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
+import br.edu.ufape.hvu.controller.dto.request.*;
+import br.edu.ufape.hvu.exception.InvalidJsonException;
+import br.edu.ufape.hvu.exception.ResourceNotFoundException;
+import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
-import org.hibernate.service.spi.ServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import br.edu.ufape.hvu.controller.dto.request.AgendamentoEspecialRequest;
-import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
-import br.edu.ufape.hvu.controller.dto.request.VagaTipoRequest;
-import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 import jakarta.transaction.Transactional;
 
-import javax.xml.crypto.Data;
-
 @Service @RequiredArgsConstructor
 public class Facade {
+    // ModelMapper
+    private final ModelMapper modelMapper;
+
     // Auth--------------------------------------------------------------
     private final KeycloakService keycloakService;
+    private final MedicoServiceInterface medicoServiceInterface;
 
     public TokenResponse login(String username, String password) {
         return keycloakService.login(username, password);
@@ -52,10 +50,9 @@ public class Facade {
 
     private final TutorServiceInterface tutorServiceInterface;
 
-
-
     @Transactional
     public Tutor saveTutor(Tutor newInstance, String password) throws ResponseStatusException {
+        tutorServiceInterface.verificarDuplicidade(newInstance.getCpf(), newInstance.getEmail());
         String userKcId = null;
         keycloakService.createUser(newInstance.getCpf(), newInstance.getEmail(), password, "tutor");
         try {
@@ -73,13 +70,22 @@ public class Facade {
     }
 
     @Transactional
-    public Tutor updateTutor(Tutor transientObject) {
+    public Tutor updateTutor(Long id, TutorRequest request, String idSession) {
+        Tutor tutor = findTutorById(id, idSession); // já faz a verificação de acesso
+
+        // Mapeamento e atualização
+        Tutor updatedFields = request.convertToEntity();
+
+        modelMapper.typeMap(Tutor.class, Tutor.class)
+                .addMappings(mapper -> mapper.skip(Tutor::setId))
+                .map(updatedFields, tutor);
+
         try {
-            Tutor newTutor =  tutorServiceInterface.updateTutor(transientObject);
+            Tutor newTutor = tutorServiceInterface.updateTutor(tutor);
             keycloakService.updateUser(newTutor.getUserId(), newTutor.getEmail());
             return newTutor;
-        }catch (Exception e){
-            throw new RuntimeException("Error updating user: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar o usuário: " + e.getMessage());
         }
     }
 
@@ -87,7 +93,7 @@ public class Facade {
         Tutor tutor = tutorServiceInterface.findTutorById(id);
 
         if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)){
-            throw new AccessDeniedException("You do not have permission to get this tutor");
+            throw new ForbiddenOperationException("Você não tem permição de acessar esse tutor ou alterar os dados do mesmo.");
         }
 
         return tutor;
@@ -105,25 +111,26 @@ public class Facade {
         return tutorServiceInterface.getAllTutor();
     }
 
-    public void deleteTutor(Tutor persistentObject) {
-        tutorServiceInterface.deleteTutor(persistentObject);
-    }
-
     @Transactional
     public void deleteTutor(long id, String idSession) {
+        Tutor oldObject = findTutorById(id, idSession);
+
+        if(!keycloakService.hasRoleSecretario(idSession) && !oldObject.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem permição de acessar esse tutor ou alterar os dados do mesmo.");
+        }
+
         try {
             tutorServiceInterface.deleteTutor(id);
             keycloakService.deleteUser(idSession);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Error deleting user");
         }
     }
 
-
     // Cancelamento--------------------------------------------------------------
-    @Autowired
-    private CancelamentoServiceInterface cancelamentoServiceInterface;
+    private final CancelamentoServiceInterface cancelamentoServiceInterface;
 
+    @Transactional
     public Cancelamento cancelarAgendamento(Cancelamento newInstance) {
         Agendamento agendamento = findAgendamentoById(newInstance.getAgendamento().getId());
         agendamento.setStatus("Cancelado");
@@ -136,6 +143,7 @@ public class Facade {
         return cancelamentoServiceInterface.saveCancelamento(newInstance);
     }
 
+    @Transactional
     public Cancelamento cancelarVaga(Cancelamento newInstance) {
         Vaga vaga = findVagaById(newInstance.getVaga().getId());
         vaga.setStatus("Cancelado");
@@ -150,8 +158,25 @@ public class Facade {
         return cancelamentoServiceInterface.saveCancelamento(newInstance);
     }
 
-    public Cancelamento updateCancelamento(Cancelamento transientObject) {
-        return cancelamentoServiceInterface.updateCancelamento(transientObject);
+    @Transactional
+    public Cancelamento updateCancelamento(Long id, CancelamentoRequest obj) {
+
+        Cancelamento oldObject = findCancelamentoById(id);
+
+        // Verifica se há uma nova especialidade e busca no banco
+        if (obj.getEspecialidade() != null) {
+            oldObject.setEspecialidade(findEspecialidadeById(obj.getEspecialidade().getId()));
+            obj.setEspecialidade(null); // evita sobrescrita ao mapear
+        }
+
+        // Mapeamento parcial (sem sobrescrever o ID)
+        TypeMap<CancelamentoRequest, Cancelamento> typeMapper = modelMapper
+                .typeMap(CancelamentoRequest.class, Cancelamento.class)
+                .addMappings(mapper -> mapper.skip(Cancelamento::setId));
+
+        typeMapper.map(obj, oldObject);
+
+        return cancelamentoServiceInterface.updateCancelamento(oldObject);
     }
 
     public Cancelamento findCancelamentoById(long id) {
@@ -167,24 +192,35 @@ public class Facade {
         return cancelamentoServiceInterface.getAllCancelamento();
     }
 
-    public void deleteCancelamento(Cancelamento persistentObject) {
-        cancelamentoServiceInterface.deleteCancelamento(persistentObject);
-    }
-
+    @Transactional
     public void deleteCancelamento(long id) {
         cancelamentoServiceInterface.deleteCancelamento(id);
     }
 
     // TipoConsulta--------------------------------------------------------------
-    @Autowired
-    private TipoConsultaServiceInterface tipoConsultaServiceInterface;
+    private final TipoConsultaServiceInterface tipoConsultaServiceInterface;
 
+    @Transactional
     public TipoConsulta saveTipoConsulta(TipoConsulta newInstance) {
         return tipoConsultaServiceInterface.saveTipoConsulta(newInstance);
     }
 
-    public TipoConsulta updateTipoConsulta(TipoConsulta transientObject) {
-        return tipoConsultaServiceInterface.updateTipoConsulta(transientObject);
+    @Transactional
+    public TipoConsulta updateTipoConsulta(Long id, TipoConsultaRequest transientObject) {
+
+
+        //TipoConsulta o = obj.convertToEntity();
+        TipoConsulta oldObject = findTipoConsultaById(id);
+        TipoConsulta obj = transientObject.convertToEntity();
+
+        TypeMap<TipoConsulta, TipoConsulta> typeMapper = modelMapper
+                .typeMap(TipoConsulta.class, TipoConsulta.class)
+                .addMappings(mapper -> mapper.skip(TipoConsulta::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return tipoConsultaServiceInterface.updateTipoConsulta(oldObject);
     }
 
     public TipoConsulta findTipoConsultaById(long id) {
@@ -195,81 +231,108 @@ public class Facade {
         return tipoConsultaServiceInterface.getAllTipoConsulta();
     }
 
-    public void deleteTipoConsulta(TipoConsulta persistentObject) {
-        tipoConsultaServiceInterface.deleteTipoConsulta(persistentObject);
-    }
-
+    @Transactional
     public void deleteTipoConsulta(long id) {
         tipoConsultaServiceInterface.deleteTipoConsulta(id);
     }
 
     // Usuario--------------------------------------------------------------
-    @Autowired
-    private UsuarioServiceInterface usuarioServiceInterface;
+    private final UsuarioServiceInterface usuarioServiceInterface;
 
+    @Transactional
     public Usuario saveUsuario(Usuario newInstance) {
+        if(newInstance == null) {
+            throw new IllegalArgumentException("Usuario não pode ser nulo");
+        }
+
         return usuarioServiceInterface.saveUsuario(newInstance);
     }
 
-    public Usuario updateUsuario(Usuario transientObject, String idSession) {
-        return usuarioServiceInterface.updateUsuario(transientObject, idSession);
+    @Transactional
+    public Usuario updateUsuario(long id, UsuarioRequest request, String idSession) {
+        if (request == null || idSession == null || idSession.isBlank()) {
+            throw new IllegalArgumentException("Usuário ou ID da sessão inválidos.");
+        }
+
+        Usuario usuarioAtualizado = request.convertToEntity();
+        Usuario usuarioExistente = usuarioServiceInterface.findUsuarioById(id, idSession);
+
+        modelMapper.typeMap(Usuario.class, Usuario.class)
+                .addMappings(mapper -> mapper.skip(Usuario::setId))
+                .map(usuarioAtualizado, usuarioExistente);
+
+        try {
+            Usuario newUsuario = usuarioServiceInterface.updateUsuario(usuarioExistente, idSession);
+            keycloakService.updateUser(newUsuario.getUserId(), newUsuario.getEmail());
+            return newUsuario;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar o usuário: " + e.getMessage());
+        }
     }
 
     public Usuario findUsuarioById(long id, String idSession) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID do usuário inválido.");
+        }
         return usuarioServiceInterface.findUsuarioById(id, idSession);
     }
 
     public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
-        return usuarioServiceInterface.findUsuarioByuserId(userId);
-    }
-
-    public void findDuplicateAccountByuserId(String userId) throws DuplicateAccountException {
-        try {
-            Usuario usuario = findUsuarioByuserId(userId);
-            if (usuario instanceof Tutor) {
-                throw new DuplicateAccountException("tutor");
-            }
-
-            if (usuario instanceof Medico) {
-                throw new DuplicateAccountException("medico");
-            }
-
-        } catch (IdNotFoundException ex) {
-
+        if (userId == null || userId.isBlank()) {
+            throw new IllegalArgumentException("userId não pode ser vazio.");
         }
-
+        return usuarioServiceInterface.findUsuarioByuserId(userId);
     }
 
     public List<Usuario> getAllUsuario() {
         return usuarioServiceInterface.getAllUsuario();
     }
 
-    public void deleteUsuario(Usuario persistentObject) {
-        usuarioServiceInterface.deleteUsuario(persistentObject);
-    }
-
+    @Transactional
     public void deleteUsuario(long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID inválido para exclusão.");
+        }
         usuarioServiceInterface.deleteUsuario(id);
     }
 
     // Cronograma--------------------------------------------------------------
-    @Autowired
-    private CronogramaServiceInterface cronogramaServiceInterface;
+    private final CronogramaServiceInterface cronogramaServiceInterface;
 
+    @Transactional
     public Cronograma saveCronograma(Cronograma newInstance) {
         return cronogramaServiceInterface.saveCronograma(newInstance);
     }
 
-    public Cronograma updateCronograma(Cronograma transientObject) {
-        return cronogramaServiceInterface.updateCronograma(transientObject);
+    @Transactional
+    public Cronograma updateCronograma(CronogramaRequest obj, Long id, String idSession) {
+        Cronograma oldObject = findCronogramaById(id);
+
+        // medico
+        if(obj.getMedico() != null){
+            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
+            obj.setMedico(null);
+        }
+
+        if (obj.getEspecialidade() != null) {
+            oldObject.setEspecialidade(findEspecialidadeById(obj.getEspecialidade().getId()));
+            obj.setEspecialidade(null);
+        }
+
+        TypeMap<CronogramaRequest, Cronograma> typeMapper = modelMapper
+                .typeMap(CronogramaRequest.class, Cronograma.class)
+                .addMappings(mapper -> mapper.skip(Cronograma::setId));
+
+        typeMapper.map(obj, oldObject);
+        return cronogramaServiceInterface.updateCronograma(oldObject);
     }
 
     public Cronograma findCronogramaById(long id) {
         return cronogramaServiceInterface.findCronogramaById(id);
     }
 
-    public List<Cronograma> findCronogramaByMedicoId(long id){
-        Medico medico = findMedicoById(id);
+    public List<Cronograma> findCronogramaByMedicoId(long id, String idSession){
+        Medico medico = findMedicoById(id, idSession);
         return cronogramaServiceInterface.findCronogramaByMedico(medico);
     }
 
@@ -282,54 +345,7 @@ public class Facade {
         return cronogramaServiceInterface.getAllCronograma();
     }
 
-
-
-    public Map<LocalDateTime, List<Cronograma>> scheduleAvailable (LocalDate data, String turno, Especialidade especialidade) {
-        LocalTime shiftBegin = turno.equals("Manhã") ? LocalTime.of(6, 0) : LocalTime.of(12, 0);
-        LocalTime shiftEnd = turno.equals("Manhã") ? LocalTime.of(12, 0) : LocalTime.of(20, 0);
-
-        Map<LocalDateTime, List<Cronograma>> horariosCronogramas = new TreeMap<>();
-
-        List<Cronograma> cronogramas = findByEspecialidadeAndDiaAndTurno(especialidade, data.getDayOfWeek(), turno);
-        for (Cronograma cronograma : cronogramas) {
-
-            List<LocalDateTime> scheduleFilled = findVagaByDataAndEspecialidadeAndMedico(data, especialidade, cronograma.getMedico())
-                    .stream()
-                    .map(Vaga::getDataHora)
-                    .collect(Collectors.toList());
-
-            LocalTime currentTime = cronograma.getHorarios().get(data.getDayOfWeek()).getInicio();
-            if (currentTime.isBefore(shiftBegin)){
-                currentTime = shiftBegin;
-            }
-            LocalTime shiftEndCronograma = cronograma.getHorarios().get(data.getDayOfWeek()).getFim();
-
-            while (currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).isBefore(shiftEnd) &&
-                    currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).isBefore(shiftEndCronograma) ||
-                    currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).equals(shiftEnd) &&
-                            currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento() - 1)).equals(shiftEndCronograma)){
-                LocalDateTime scheduleFull = LocalDateTime.of(data, currentTime);
-
-                if (!scheduleFilled.contains(scheduleFull)) {
-                    horariosCronogramas.computeIfAbsent(scheduleFull, k -> new ArrayList<>()).add(cronograma);
-                    scheduleFilled.add(scheduleFull);
-                }
-
-                currentTime = currentTime.plusMinutes(Math.round(cronograma.getTempoAtendimento()));
-            }
-        }
-
-        return horariosCronogramas;
-    }
-
-    public List<Cronograma> findByEspecialidadeAndDiaAndTurno(Especialidade especialidade, DayOfWeek dia, String turno){
-        return cronogramaServiceInterface.findByEspecialidadeAndDiaAndTurno(especialidade, dia, turno);
-    }
-
-    public void deleteCronograma(Cronograma persistentObject) {
-        cronogramaServiceInterface.deleteCronograma(persistentObject);
-    }
-
+    @Transactional
     public void deleteCronograma(long cronogramaId) {
         Cronograma cronograma = findCronogramaById(cronogramaId);
         cronogramaServiceInterface.deleteCronograma(cronograma.getId());
@@ -339,13 +355,14 @@ public class Facade {
     private final MedicoServiceInterface medicoService;
 
     @Transactional
-    public Medico saveMedico(Medico newInstance, String password) {
+    public Medico saveMedico(MedicoRequest request, String password) {
+        Medico medico = request.convertToEntity();
         String userKcId = null;
-        keycloakService.createUser(newInstance.getCpf(), newInstance.getEmail(), password, "medico");
+        keycloakService.createUser(medico.getCpf(), medico.getEmail(), password, "medico");
         try {
-            userKcId = keycloakService.getUserId(newInstance.getEmail());
-            newInstance.setUserId(userKcId);
-            return medicoService.saveMedico(newInstance);
+            userKcId = keycloakService.getUserId(medico.getEmail());
+            medico.setUserId(userKcId);
+            return medicoService.saveMedico(medico);
         }catch (DataIntegrityViolationException e){
             keycloakService.deleteUser(userKcId);
             throw e;
@@ -356,39 +373,46 @@ public class Facade {
     }
 
     @Transactional
-    public Medico updateMedico(Medico transientObject) {
-        try {
-            Medico newMedico =  medicoService.updateMedico(transientObject);
-            keycloakService.updateUser(newMedico.getUserId(), newMedico.getEmail());
-            return newMedico;
-        }catch (Exception e){
-            throw new RuntimeException("Error updating user: " + e.getMessage());
+    public Medico updateMedico(Long id, MedicoRequest request, String idSession) {
+        if (request == null) {
+            throw new IllegalArgumentException("Dados inválidos para atualização.");
         }
+
+        Medico oldMedico = medicoService.findMedicoById(id); // lança EntityNotFoundException se não existir
+        Medico medicoAtualizado = request.convertToEntity();
+
+        if(!keycloakService.hasRoleSecretario(idSession) && !medicoAtualizado.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
+        }
+
+        // Atualiza instituição, se necessário
+        if (request.getInstituicao() != null) {
+            oldMedico.setInstituicao(findInstituicaoById(request.getInstituicao().getId()));
+        }
+
+        modelMapper.typeMap(Medico.class, Medico.class)
+                .addMappings(mapper -> mapper.skip(Medico::setId))
+                .map(medicoAtualizado, oldMedico);
+
+
+        Medico newMedico = medicoService.updateMedico(oldMedico);
+        keycloakService.updateUser(newMedico.getUserId(), newMedico.getEmail());
+        return newMedico;
     }
 
-    public Medico findMedicoById(long id) {
+    public Medico findMedicoById(long id, String idSession) {
+        Medico medico = medicoService.findMedicoById(id);
+        if(!keycloakService.hasRoleSecretario(idSession) && !medico.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
+        }
         return medicoService.findMedicoById(id);
     }
-
-    public Medico findMedicoByuserId(String userId) throws IdNotFoundException {
-        return medicoService.findMedicoByuserId(userId);
-    }
-
 
     public List<Medico> getAllMedico() {
         return medicoService.getAllMedico();
     }
 
-
-    public void deleteMedico(Medico persistentObject) {
-        try {
-            medicoService.deleteMedico(persistentObject);
-            keycloakService.deleteUser(persistentObject.getUserId());
-        }catch (Exception e){
-            throw new RuntimeException("Error deleting user");
-        }
-    }
-
+    @Transactional
     public void deleteMedico(long id) {
         medicoService.deleteMedico(id);
     }
@@ -404,15 +428,30 @@ public class Facade {
     }
 
     // Raca--------------------------------------------------------------
-    @Autowired
-    private RacaServiceInterface racaServiceInterface;
+    private final RacaServiceInterface racaServiceInterface;
 
+    @Transactional
     public Raca saveRaca(Raca newInstance) {
         return racaServiceInterface.saveRaca(newInstance);
     }
 
-    public Raca updateRaca(Raca transientObject) {
-        return racaServiceInterface.updateRaca(transientObject);
+    @Transactional
+    public Raca updateRaca(RacaRequest obj, Long id) {
+        //Raca o = obj.convertToEntity();
+        Raca oldObject = findRacaById(id);
+
+        if (obj.getEspecie() != null) {
+            oldObject.setEspecie(findEspecieById(obj.getEspecie().getId()));
+            obj.setEspecie(null);
+        }
+
+        TypeMap<RacaRequest, Raca> typeMapper = modelMapper
+                .typeMap(RacaRequest.class, Raca.class)
+                .addMappings(mapper -> mapper.skip(Raca::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return racaServiceInterface.updateRaca(oldObject);
     }
 
     public Raca findRacaById(long id) {
@@ -428,24 +467,32 @@ public class Facade {
         return racaServiceInterface.findByEspecie(especie);
     }
 
-    public void deleteRaca(Raca persistentObject) {
-        racaServiceInterface.deleteRaca(persistentObject);
-    }
-
+    @Transactional
     public void deleteRaca(long id) {
         racaServiceInterface.deleteRaca(id);
     }
 
     // Aviso--------------------------------------------------------------
-    @Autowired
-    private AvisoServiceInterface avisoServiceInterface;
+    private final AvisoServiceInterface avisoServiceInterface;
 
+    @Transactional
     public Aviso saveAviso(Aviso newInstance) {
         return avisoServiceInterface.saveAviso(newInstance);
     }
 
-    public Aviso updateAviso(Aviso transientObject) {
-        return avisoServiceInterface.updateAviso(transientObject);
+    @Transactional
+    public Aviso updateAviso(AvisoRequest transientObject, Long id) {
+        //Aviso o = obj.convertToEntity();
+        Aviso oldObject = avisoServiceInterface.findAvisoById(id);
+
+        TypeMap<AvisoRequest, Aviso> typeMapper = modelMapper
+                .typeMap(AvisoRequest.class, Aviso.class)
+                .addMappings(mapper -> mapper.skip(Aviso::setId));
+
+        typeMapper.map(transientObject, oldObject);
+
+
+        return avisoServiceInterface.updateAviso(oldObject);
     }
 
     public Aviso findAvisoById(long id) {
@@ -456,25 +503,52 @@ public class Facade {
         return avisoServiceInterface.getAllAviso();
     }
 
-    public void deleteAviso(Aviso persistentObject) {
-        avisoServiceInterface.deleteAviso(persistentObject);
-    }
-
+    @Transactional
     public void deleteAviso(long id) {
         avisoServiceInterface.deleteAviso(id);
     }
 
     // Vaga--------------------------------------------------------------
-    @Autowired
-    private VagaServiceInterface vagaServiceInterface;
 
+    private final VagaServiceInterface vagaServiceInterface;
+
+    @Transactional
     public Vaga saveVaga(Vaga newInstance) {
         newInstance.setStatus(String.valueOf(StatusAgendamentoEVaga.Disponivel));
         return vagaServiceInterface.saveVaga(newInstance);
     }
 
+    @Transactional
     public Vaga updateVaga(Vaga transientObject) {
         return vagaServiceInterface.updateVaga(transientObject);
+    }
+
+    @Transactional
+    public Vaga processUpdateVaga(VagaRequest obj, Long id, String idSession){
+        //Vaga o = obj.convertToEntity();
+        Vaga oldObject = vagaServiceInterface.findVagaById(id);
+
+        if (obj.getTipoConsulta() != null) {
+            oldObject.setTipoConsulta(tipoConsultaServiceInterface.findTipoConsultaById(obj.getTipoConsulta().getId()));
+            obj.setTipoConsulta(null);
+        }
+
+        if (obj.getEspecialidade() != null) {
+            oldObject.setEspecialidade(especialidadeServiceInterface.findEspecialidadeById(obj.getEspecialidade().getId()));
+            obj.setEspecialidade(null);
+        }
+
+        if(obj.getMedico() != null){
+            oldObject.setMedico(medicoServiceInterface.findMedicoById(obj.getMedico().getId()));
+            obj.setMedico(null);
+        }
+
+        TypeMap<VagaRequest, Vaga> typeMapper = modelMapper
+                .typeMap(VagaRequest.class, Vaga.class)
+                .addMappings(mapper -> mapper.skip(Vaga::setId));
+
+        typeMapper.map(obj, oldObject);
+        return updateVaga(oldObject);
     }
 
     public Vaga findVagaById(long id) {
@@ -494,14 +568,10 @@ public class Facade {
     }
 
 
-    public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico){
-        Medico medico = findMedicoById(IdMedico);
+    public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico, String idSession){
+        Medico medico = findMedicoById(IdMedico, idSession);
 
         return vagaServiceInterface.findVagasAndAgendamentoByMedico(data, medico);
-    }
-
-    public List<Vaga> findVagaByDataAndEspecialidade(LocalDate data, Especialidade especialidade){
-        return vagaServiceInterface.findVagasByDataAndEspecialidade(data, especialidade);
     }
 
     public List<Animal> findAnimaisWithReturn(){
@@ -553,15 +623,17 @@ public class Facade {
         // verifica se animal já tem uma consulta em aberto -> "Bloqueado"
         List<Agendamento> allAgendamentos = getAllAgendamento();
         Animal animal = animalServiceInterface.findAnimalById(id);
-
+        if(animal == null){
+            throw new IdNotFoundException(id, "Animal");
+        }
         boolean consultaEmAberto = allAgendamentos.stream()
                 .anyMatch(agendamento -> agendamento.getAnimal() != null &&
-                        agendamento.getAnimal().getId() == id &&
+                        agendamento.getAnimal().getId() == animal.getId() &&
                         !agendamento.getStatus().equals("Finalizado") && !agendamento.getStatus().equals("Cancelado"));
 
         if(consultaEmAberto){
             return "Bloqueado";
-        }else if(isAnimalWithRetorno(id) || !isRetornoExpirado(id)){
+        }else if(isAnimalWithRetorno(animal.getId()) || !isRetornoExpirado(animal.getId())){
             return "Retorno";
         }else{
             return "Primeira Consulta";
@@ -573,18 +645,11 @@ public class Facade {
         return findAnimaisWithReturn().contains(animal);
     }
 
-    public List<Vaga> findVagaByDataAndEspecialidadeAndMedico(LocalDate data, Especialidade especialidade, Medico medico){
-        return vagaServiceInterface.findVagasByDataAndEspecialidadeAndMedico(data, especialidade, medico);
-    }
-
     public List<Vaga> findVagaByDataAndTurno(LocalDate data, String turno){
         return vagaServiceInterface.findVagasByDataAndTurno(data, turno);
     }
 
-    public void deleteVaga(Vaga persistentObject) {
-        vagaServiceInterface.deleteVaga(persistentObject);
-    }
-
+    @Transactional
     public void deleteVaga(long id) {
         vagaServiceInterface.deleteVaga(id);
     }
@@ -600,7 +665,7 @@ public class Facade {
     }
 
     @Transactional
-    public String createVagasByTurno(VagaCreateRequest vagaRequestDTO) {
+    public String createVagasByTurno(VagaCreateRequest vagaRequestDTO, String idSessio) {
         List<Vaga> vagas = new ArrayList<>();
         LocalDate startDate = vagaRequestDTO.getData();
         LocalDate endDate = vagaRequestDTO.getDataFinal();
@@ -609,15 +674,15 @@ public class Facade {
 
         if (endDate == null) {
             if (!isWeekend(startDate)) {
-                detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
-                detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+                detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
+                detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
             }
         } else {
             LocalDate currentDate = startDate;
             while (!currentDate.isAfter(endDate)) {
                 if (!isWeekend(currentDate)) {
-                    detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao));
-                    detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao));
+                    detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
+                    detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
                 }
                 currentDate = currentDate.plusDays(1);
             }
@@ -630,7 +695,8 @@ public class Facade {
         return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
-    private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao) {
+    @Transactional
+    private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao, String idSession) {
         List<Vaga> vagasByData = findVagaByData(data);
         List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
         vagasByData.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
@@ -649,7 +715,7 @@ public class Facade {
             try {
                 Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
                 TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());
-                Medico medico = findMedicoById(especialidadeTipo.getMedico().getId());
+                Medico medico = findMedicoById(especialidadeTipo.getMedico().getId(), idSession);
 
                 if (count[0] < 16 && count[1] < 8) {
                     Vaga newVaga = new Vaga();
@@ -676,9 +742,10 @@ public class Facade {
 
 
     // Consulta--------------------------------------------------------------
-    @Autowired
-    private ConsultaServiceInterface consultaServiceInterface;
 
+    private final ConsultaServiceInterface consultaServiceInterface;
+
+    @Transactional
     public Consulta saveConsulta(Long id, Consulta newInstance) {
         Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
         Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
@@ -686,6 +753,17 @@ public class Facade {
         Consulta consulta = consultaServiceInterface.saveConsulta(newInstance);
         vagaDaConsulta.setStatus("Finalizado");
         agendamentoVaga.setStatus("Finalizado");
+
+        if (newInstance.getFicha() != null) {
+            List<Ficha> fichas = new ArrayList<>();
+
+            for (Ficha f : newInstance.getFicha()) {
+                Ficha fichaBuscada = fichaServiceInterface.findFichaById(f.getId());
+                fichas.add(fichaBuscada);
+            }
+
+            consulta.setFicha(fichas);
+        }
 
         vagaDaConsulta.setAgendamento(agendamentoVaga);
         vagaDaConsulta.setConsulta(consulta);
@@ -695,8 +773,30 @@ public class Facade {
         return consulta;
     }
 
-    public Consulta updateConsulta(Consulta transientObject) {
-        return consultaServiceInterface.updateConsulta(transientObject);
+    @Transactional
+    public Consulta updateConsulta(ConsultaRequest obj, Long id, String idSession) {
+        //Consulta o = obj.convertToEntity();
+        Consulta oldObject = findConsultaById(id);
+
+        // medico
+        if(obj.getMedico() != null){
+            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
+            obj.setMedico(null);
+        }
+
+        // animal
+        if (obj.getAnimal() != null) {
+            oldObject.setAnimal(findAnimalById(obj.getAnimal().getId(), idSession));
+            obj.setAnimal(null);
+        }
+
+        TypeMap<ConsultaRequest, Consulta> typeMapper = modelMapper
+                .typeMap(ConsultaRequest.class, Consulta.class)
+                .addMappings(mapper -> mapper.skip(Consulta::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return consultaServiceInterface.updateConsulta(oldObject);
     }
 
     public Consulta findConsultaById(long id) {
@@ -715,25 +815,33 @@ public class Facade {
         return consultaServiceInterface.getConsultasByAnimalId(id);
     }
 
-    public void deleteConsulta(Consulta persistentObject) {
-        consultaServiceInterface.deleteConsulta(persistentObject);
-    }
-
+    @Transactional
     public void deleteConsulta(long id) {
         consultaServiceInterface.deleteConsulta(id);
     }
 
 
     // Especialidade--------------------------------------------------------------
-    @Autowired
-    private EspecialidadeServiceInterface especialidadeServiceInterface;
 
+    private final EspecialidadeServiceInterface especialidadeServiceInterface;
+
+    @Transactional
     public Especialidade saveEspecialidade(Especialidade newInstance) {
         return especialidadeServiceInterface.saveEspecialidade(newInstance);
     }
 
-    public Especialidade updateEspecialidade(Especialidade transientObject) {
-        return especialidadeServiceInterface.updateEspecialidade(transientObject);
+    @Transactional
+    public Especialidade updateEspecialidade(EspecialidadeRequest obj, Long id) {
+        //Especialidade o = obj.convertToEntity();
+        Especialidade oldObject = findEspecialidadeById(id);
+
+        TypeMap<EspecialidadeRequest, Especialidade> typeMapper = modelMapper
+                .typeMap(EspecialidadeRequest.class, Especialidade.class)
+                .addMappings(mapper -> mapper.skip(Especialidade::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return especialidadeServiceInterface.updateEspecialidade(oldObject);
     }
 
     public Especialidade findEspecialidadeById(long id) {
@@ -744,53 +852,84 @@ public class Facade {
         return especialidadeServiceInterface.getAllEspecialidade();
     }
 
-    public void deleteEspecialidade(Especialidade persistentObject) {
-        especialidadeServiceInterface.deleteEspecialidade(persistentObject);
-    }
-
+    @Transactional
     public void deleteEspecialidade(long id) {
         especialidadeServiceInterface.deleteEspecialidade(id);
     }
 
     // Agendamento--------------------------------------------------------------
-    @Autowired
-    private AgendamentoServiceInterface agendamentoServiceInterface;
+    private final AgendamentoServiceInterface agendamentoServiceInterface;
 
-    public Agendamento saveAgendamento(Agendamento newInstance, Long idVaga) {
+    @Transactional
+    public Agendamento saveAgendamento(AgendamentoRequest newInstance, Long idVaga, String idSession) {
+        Animal animal = findAnimalById(newInstance.getAnimal().getId(), idSession);
         Vaga vaga = findVagaById(idVaga);
-        if (vaga.getAgendamento() != null ){
-            throw new IllegalStateException("A vaga não está disponível.");
-        }
 
-        vaga.setStatus("Agendado");
-        vaga.setAgendamento(newInstance);
-        newInstance.setDataVaga(vaga.getDataHora());
-        newInstance.setStatus(vaga.getStatus());
-        return agendamentoServiceInterface.saveAgendamento(newInstance);
+        // Validações adicionais aqui, se necessário (ex: se a vaga está no futuro, etc.)
+
+        Agendamento agendamento = newInstance.convertToEntity();
+        agendamento.setAnimal(animal);
+        return confirmarAgendamento(vaga, agendamento);
     }
 
-    public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject) {
+    @Transactional
+    public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject, String idSession) {
         Vaga vaga = new Vaga();
         Agendamento agendamento = new Agendamento();
 
         vaga.setEspecialidade(findEspecialidadeById(newObject.getEspecialidade().getId()));
-        vaga.setMedico(findMedicoById(newObject.getMedico().getId()));
+        vaga.setMedico(findMedicoById(newObject.getMedico().getId(), idSession));
         vaga.setTipoConsulta(findTipoConsultaById(newObject.getTipoConsulta().getId()));
         vaga.setDataHora(newObject.getHorario());
 
         saveVaga(vaga);
 
-        agendamento.setAnimal(animalServiceInterface.findAnimalById(newObject.getAnimal().getId()));
+        agendamento.setAnimal(findAnimalById(newObject.getAnimal().getId(), idSession));
         agendamento.setTipoEspecial(newObject.isTipoEspecial());
 
-        return saveAgendamento(agendamento, vaga.getId());
+        return confirmarAgendamento(vaga, agendamento);
+    }
+
+
+    @Transactional
+    private Agendamento confirmarAgendamento(Vaga vaga, Agendamento agendamento) {
+        if (vaga.getAgendamento() != null ){
+            throw new IllegalStateException("A vaga não está disponível.");
+        }
+
+        vaga.setStatus("Agendado");
+        vaga.setAgendamento(agendamento);
+        agendamento.setDataVaga(vaga.getDataHora());
+        agendamento.setStatus(vaga.getStatus());
+
+        return agendamentoServiceInterface.saveAgendamento(agendamento);
     }
 
     public Agendamento updateAgendamento(Agendamento transientObject) {
         return agendamentoServiceInterface.updateAgendamento(transientObject);
     }
 
+    @Transactional
+    public Agendamento processUpdateAgendamento(AgendamentoRequest transientObject, Long id, String userId) {
+
+        Agendamento oldObject = findAgendamentoById(id);
+
+        if (transientObject.getAnimal() != null) {
+            oldObject.setAnimal(findAnimalById(transientObject.getAnimal().getId(), userId));
+            transientObject.setAnimal(null);
+        }
+
+        TypeMap<AgendamentoRequest, Agendamento> typeMapper = modelMapper
+                .typeMap(AgendamentoRequest.class, Agendamento.class)
+                .addMappings(mapper -> mapper.skip(Agendamento::setId));
+
+        typeMapper.map(transientObject, oldObject);
+
+        return updateAgendamento(oldObject);
+    }
+
     // Reagenda um agendamento para uma nova vaga
+    @Transactional
     public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga){
         Agendamento agendamento = findAgendamentoById(idAgendamento);
         Vaga vagaAntiga = getVagaByAgendamento(agendamento.getId());
@@ -833,9 +972,9 @@ public class Facade {
         return agendamentoServiceInterface.getAllAgendamento();
     }
 
-    public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String token){
-        Medico medico = findMedicoById(medicoId);
-        return agendamentoServiceInterface.findAgendamentosByMedicoId(medico, token);
+    public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String idSession){
+        Medico medico = findMedicoById(medicoId, idSession);
+        return agendamentoServiceInterface.findAgendamentosByMedicoId(medico, idSession);
     }
 
     public List<Agendamento> findAgendamentosByTutorId(String userId) {
@@ -875,24 +1014,32 @@ public class Facade {
                 .toList();
     }
 
-    public void deleteAgendamento(Agendamento persistentObject) {
-        agendamentoServiceInterface.deleteAgendamento(persistentObject);
-    }
-
+    @Transactional
     public void deleteAgendamento(long id) {
         agendamentoServiceInterface.deleteAgendamento(id);
     }
 
     // Endereco--------------------------------------------------------------
-    @Autowired
-    private EnderecoServiceInterface enderecoServiceInterface;
 
+    private final EnderecoServiceInterface enderecoServiceInterface;
+
+    @Transactional
     public Endereco saveEndereco(Endereco newInstance) {
         return enderecoServiceInterface.saveEndereco(newInstance);
     }
 
-    public Endereco updateEndereco(Endereco transientObject) {
-        return enderecoServiceInterface.updateEndereco(transientObject);
+    @Transactional
+    public Endereco updateEndereco(EnderecoRequest obj, Long id) {
+        //Endereco o = obj.convertToEntity();
+        Endereco oldObject = findEnderecoById(id);
+
+        TypeMap<EnderecoRequest, Endereco> typeMapper = modelMapper
+                .typeMap(EnderecoRequest.class, Endereco.class)
+                .addMappings(mapper -> mapper.skip(Endereco::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return enderecoServiceInterface.updateEndereco(oldObject);
     }
 
     public Endereco findEnderecoById(long id) {
@@ -903,24 +1050,32 @@ public class Facade {
         return enderecoServiceInterface.getAllEndereco();
     }
 
-    public void deleteEndereco(Endereco persistentObject) {
-        enderecoServiceInterface.deleteEndereco(persistentObject);
-    }
-
+    @Transactional
     public void deleteEndereco(long id) {
         enderecoServiceInterface.deleteEndereco(id);
     }
 
     // Estagiario--------------------------------------------------------------
-    @Autowired
-    private EstagiarioServiceInterface estagiarioServiceInterface;
 
+    private final EstagiarioServiceInterface estagiarioServiceInterface;
+
+    @Transactional
     public Estagiario saveEstagiario(Estagiario newInstance) {
         return estagiarioServiceInterface.saveEstagiario(newInstance);
     }
 
-    public Estagiario updateEstagiario(Estagiario transientObject) {
-        return estagiarioServiceInterface.updateEstagiario(transientObject);
+    @Transactional
+    public Estagiario updateEstagiario(EstagiarioRequest obj, Long id) {
+        //Estagiario o = obj.convertToEntity();
+        Estagiario oldObject = findEstagiarioById(id);
+
+        TypeMap<EstagiarioRequest, Estagiario> typeMapper = modelMapper
+                .typeMap(EstagiarioRequest.class, Estagiario.class)
+                .addMappings(mapper -> mapper.skip(Estagiario::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return estagiarioServiceInterface.updateEstagiario(oldObject);
     }
 
     public Estagiario findEstagiarioById(long id) {
@@ -931,53 +1086,62 @@ public class Facade {
         return estagiarioServiceInterface.getAllEstagiario();
     }
 
-    public void deleteEstagiario(Estagiario persistentObject) {
-        estagiarioServiceInterface.deleteEstagiario(persistentObject);
-    }
-
+    @Transactional
     public void deleteEstagiario(long id) {
         estagiarioServiceInterface.deleteEstagiario(id);
     }
 
     // Animal--------------------------------------------------------------
-    @Autowired
-    private AnimalServiceInterface animalServiceInterface;
+    private final AnimalServiceInterface animalServiceInterface;
 
-    public Animal saveAnimal(Animal newInstance, String tutor_id) {
-        Tutor tutor = findTutorByuserId(tutor_id);
+    @Transactional
+    public Animal saveAnimal(Animal newInstance, String idSession) {
+        Tutor tutor = findTutorByuserId(idSession);
+        if (tutor == null) {
+            throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
+        }
+        racaServiceInterface.findRacaById(newInstance.getRaca().getId());
         Animal animal = animalServiceInterface.saveAnimal(newInstance);
         tutor.getAnimal().add(animal);
-        updateTutor(tutor);
+        tutorServiceInterface.updateTutor(tutor);
         return animal;
     }
 
-    public Animal updateAnimal(Animal transientObject, String idSession) {
-        Tutor tutor = tutorServiceInterface.findTutorByanimalId(transientObject.getId());
-
-        if (tutor == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tutor found");
-        }
-
-        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)) {
-            throw new AccessDeniedException("This is not your animal");
-        }
-
-        return animalServiceInterface.updateAnimal(transientObject);
-    }
-
-    public Animal findAnimalById(long id, String idSession) {
+    @Transactional
+    public Animal updateAnimal(Long id, AnimalRequest request, String idSession) {
         Animal animal = animalServiceInterface.findAnimalById(id);
         Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
 
-        if (tutor == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tutor found for the animal with ID: " + animal.getId());
+        if (!keycloakService.hasRoleSecretario(idSession) &&
+                !keycloakService.hasRoleMedico(idSession) &&
+                !tutor.getUserId().equals(idSession)) {
+            throw new ForbiddenOperationException("Este não é o seu animal");
         }
 
-        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)){
-            throw new AccessDeniedException("This is not your animal");
+        // Atualiza raça, se fornecida
+        if (request.getRaca() != null) {
+            animal.setRaca(racaServiceInterface.findRacaById(request.getRaca().getId()));
+            request.setRaca(null);
         }
 
-        return animal;
+        // Mapeia os campos restantes
+        modelMapper.typeMap(AnimalRequest.class, Animal.class)
+                .addMappings(mapper -> mapper.skip(Animal::setId))
+                .map(request, animal);
+
+        return animalServiceInterface.updateAnimal(animal);
+    }
+
+    public Animal findAnimalById(long id, String idSession) {
+        // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
+        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession)){
+            Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
+
+            if(!tutor.getUserId().equals(idSession)) {
+                throw new ForbiddenOperationException("Este não é o seu animal");
+            }
+        }
+        return animalServiceInterface.findAnimalById(id);
     }
 
     public List<Animal> getAllAnimal() {
@@ -986,9 +1150,6 @@ public class Facade {
 
     public List<Animal> getAllAnimalTutor(String userId) {
         Tutor tutor = findTutorByuserId(userId);
-        if(tutor.equals(null) ) {
-            throw new ServiceException("Erro ao buscar os Agendamentos");
-        }
         return tutor.getAnimal();
     }
 
@@ -996,24 +1157,41 @@ public class Facade {
         return animalServiceInterface.findAnimalByFichaNumber(fichaNumero);
     }
 
-    public void deleteAnimal(Animal persistentObject) {
-        animalServiceInterface.deleteAnimal(persistentObject);
-    }
+    @Transactional
+    public void deleteAnimal(long id, String userId) {
+        // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
+        if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId)){
+            Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
 
-    public void deleteAnimal(long id) {
+            if(!tutor.getUserId().equals(userId)) {
+                throw new ForbiddenOperationException("Este não é o seu animal");
+            }
+        }
+
         animalServiceInterface.deleteAnimal(id);
     }
 
     // Especie--------------------------------------------------------------
-    @Autowired
-    private EspecieServiceInterface especieServiceInterface;
 
+    private final EspecieServiceInterface especieServiceInterface;
+
+    @Transactional
     public Especie saveEspecie(Especie newInstance) {
         return especieServiceInterface.saveEspecie(newInstance);
     }
 
-    public Especie updateEspecie(Especie transientObject) {
-        return especieServiceInterface.updateEspecie(transientObject);
+    @Transactional
+    public Especie updateEspecie(EspecieRequest obj, Long id) {
+        //Especie o = obj.convertToEntity();
+        Especie oldObject = findEspecieById(id);
+
+        TypeMap<EspecieRequest, Especie> typeMapper = modelMapper
+                .typeMap(EspecieRequest.class, Especie.class)
+                .addMappings(mapper -> mapper.skip(Especie::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return especieServiceInterface.updateEspecie(oldObject);
     }
 
     public Especie findEspecieById(long id) {
@@ -1024,24 +1202,30 @@ public class Facade {
         return especieServiceInterface.getAllEspecie();
     }
 
-    public void deleteEspecie(Especie persistentObject) {
-        especieServiceInterface.deleteEspecie(persistentObject);
-    }
-
+    @Transactional
     public void deleteEspecie(long id) {
         especieServiceInterface.deleteEspecie(id);
     }
 
     // Area--------------------------------------------------------------
-    @Autowired
-    private AreaServiceInterface areaServiceInterface;
+    private final AreaServiceInterface areaServiceInterface;
 
+    @Transactional
     public Area saveArea(Area newInstance) {
         return areaServiceInterface.saveArea(newInstance);
     }
 
-    public Area updateArea(Area transientObject) {
-        return areaServiceInterface.updateArea(transientObject);
+    @Transactional
+    public Area updateArea(AreaRequest transientObject, Long id) {
+        //Area o = obj.convertToEntity();
+        Area oldObject = findAreaById(id);
+
+        TypeMap<AreaRequest, Area> typeMapper = modelMapper
+                .typeMap(AreaRequest.class, Area.class)
+                .addMappings(mapper -> mapper.skip(Area::setId));
+
+        typeMapper.map(transientObject, oldObject);
+        return areaServiceInterface.updateArea(oldObject);
     }
 
     public Area findAreaById(Long id) {
@@ -1052,24 +1236,33 @@ public class Facade {
         return areaServiceInterface.getAllArea();
     }
 
-    public void deleteArea(Area persistentObject) {
-        areaServiceInterface.deleteArea(persistentObject);
-    }
-
+    @Transactional
     public void deleteArea(long id) {
         areaServiceInterface.deleteArea(id);
     }
 
     // CampoLaudo--------------------------------------------------------------
-    @Autowired
-    private CampoLaudoServiceInterface campoLaudoServiceInterface;
+    private final CampoLaudoServiceInterface campoLaudoServiceInterface;
 
+    @Transactional
     public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
         return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
     }
 
-    public CampoLaudo updateCampoLaudo(CampoLaudo transientObject) {
-        return campoLaudoServiceInterface.updateCampoLaudo(transientObject);
+    @Transactional
+    public CampoLaudo updateCampoLaudo(CampoLaudoRequest transientObject, Long id) {
+
+        //CampoLaudo o = obj.convertToEntity();
+        CampoLaudo oldObject = campoLaudoServiceInterface.findCampoLaudoById(id);
+
+        TypeMap<CampoLaudoRequest, CampoLaudo> typeMapper = modelMapper
+                .typeMap(CampoLaudoRequest.class, CampoLaudo.class)
+                .addMappings(mapper -> mapper.skip(CampoLaudo::setId));
+
+
+        typeMapper.map(transientObject, oldObject);
+
+        return campoLaudoServiceInterface.updateCampoLaudo(oldObject);
     }
 
     public CampoLaudo findCampoLaudoById(Long id) {
@@ -1080,24 +1273,32 @@ public class Facade {
         return campoLaudoServiceInterface.getAllCampoLaudo();
     }
 
-    public void deleteCampoLaudo(CampoLaudo persistentObject) {
-        campoLaudoServiceInterface.deleteCampoLaudo(persistentObject);
-    }
-
+    @Transactional
     public void deleteCampoLaudo(long id) {
         campoLaudoServiceInterface.deleteCampoLaudo(id);
     }
 
     // Etapa--------------------------------------------------------------
-    @Autowired
-    private EtapaServiceInterface etapaServiceInterface;
 
+    private final EtapaServiceInterface etapaServiceInterface;
+
+    @Transactional
     public Etapa saveEtapa(Etapa newInstance) {
         return etapaServiceInterface.saveEtapa(newInstance);
     }
 
-    public Etapa updateEtapa(Etapa transientObject) {
-        return etapaServiceInterface.updateEtapa(transientObject);
+    @Transactional
+    public Etapa updateEtapa(EtapaRequest obj, Long id) {
+        //Etapa o = obj.convertToEntity();
+        Etapa oldObject = findEtapaById(id);
+
+        TypeMap<EtapaRequest, Etapa> typeMapper = modelMapper
+                .typeMap(EtapaRequest.class, Etapa.class)
+                .addMappings(mapper -> mapper.skip(Etapa::setId));
+
+
+        typeMapper.map(obj, oldObject);
+        return etapaServiceInterface.updateEtapa(oldObject);
     }
 
     public Etapa findEtapaById(Long id) {
@@ -1108,25 +1309,29 @@ public class Facade {
         return etapaServiceInterface.getAllEtapa();
     }
 
-    public void deleteEtapa(Etapa persistentObject) {
-        etapaServiceInterface.deleteEtapa(persistentObject);
-    }
-
+    @Transactional
     public void deleteEtapa(long id) {
         etapaServiceInterface.deleteEtapa(id);
     }
 
     // Ficha--------------------------------------------------------------
 
-    @Autowired
-    private FichaServiceInterface fichaServiceInterface;
 
+    private final FichaServiceInterface fichaServiceInterface;
+
+    @Transactional
     public Ficha saveFicha(Ficha newInstance) {
         return fichaServiceInterface.saveFicha(newInstance);
     }
 
-    public Ficha updateFicha(Ficha transientObject) {
-        return fichaServiceInterface.updateFicha(transientObject);
+    @Transactional
+    public Ficha updateFicha(FichaRequest obj, Long id) {
+        Ficha oldObject = findFichaById(id);
+
+        // Aplica os dados atualizados no objeto existente
+        obj.applyToEntity(oldObject);
+
+        return fichaServiceInterface.updateFicha(oldObject);
     }
 
     public Ficha findFichaById(long id) {
@@ -1137,25 +1342,40 @@ public class Facade {
         return fichaServiceInterface.getAllFicha();
     }
 
-    public void deleteFicha(Ficha persistentObject) {
-        fichaServiceInterface.deleteFicha(persistentObject);
-    }
-
+    @Transactional
     public void deleteFicha(long id) {
         fichaServiceInterface.deleteFicha(id);
     }
 
     // FichaSolicitacaoServico--------------------------------------------------------------
 
-    @Autowired
-    private FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
 
+    private final FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
+
+    @Transactional
     public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
         return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
     }
 
-    public FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServico transientObject) {
-        return fichaSolicitacaoServicoServiceInterface.updateFichaSolicitacaoServico(transientObject);
+    @Transactional
+    public FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServicoRequest obj, Long id, String idSession) {
+        //FichaSolicitacaoServico o = obj.convertToEntity();
+        FichaSolicitacaoServico oldObject = findFichaSolicitacaoServicoById(id);
+
+        if(obj.getMedico() != null){
+            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
+            obj.setMedico(null);
+        }
+
+
+        TypeMap<FichaSolicitacaoServicoRequest, FichaSolicitacaoServico> typeMapper = modelMapper
+                .typeMap(FichaSolicitacaoServicoRequest.class, FichaSolicitacaoServico.class)
+                .addMappings(mapper -> mapper.skip(FichaSolicitacaoServico::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return fichaSolicitacaoServicoServiceInterface.updateFichaSolicitacaoServico(oldObject);
     }
 
     public FichaSolicitacaoServico findFichaSolicitacaoServicoById(Long id) {
@@ -1166,26 +1386,34 @@ public class Facade {
         return fichaSolicitacaoServicoServiceInterface.getAllFichaSolicitacaoServico();
     }
 
-    public void deleteFichaSolicitacaoServico(FichaSolicitacaoServico persistentObject) {
-        fichaSolicitacaoServicoServiceInterface.deleteFichaSolicitacaoServico(persistentObject);
-    }
-
+    @Transactional
     public void deleteFichaSolicitacaoServico(long id) {
         fichaSolicitacaoServicoServiceInterface.deleteFichaSolicitacaoServico(id);
     }
 
     // Foto--------------------------------------------------------------
 
-    @Autowired
 
-    private FotoServiceInterface fotoServiceInterface;
+    private final FotoServiceInterface fotoServiceInterface;
 
+    @Transactional
     public Foto saveFoto(Foto newInstance) {
         return fotoServiceInterface.saveFoto(newInstance);
     }
 
-    public Foto updateFoto(Foto transientObject) {
-        return fotoServiceInterface.updateFoto(transientObject);
+    @Transactional
+    public Foto updateFoto(FotoRequest obj, Long id) {
+        //Foto o = obj.convertToEntity();
+        Foto oldObject = findFotoById(id);
+
+        TypeMap<FotoRequest, Foto> typeMapper = modelMapper
+                .typeMap(FotoRequest.class, Foto.class)
+                .addMappings(mapper -> mapper.skip(Foto::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return fotoServiceInterface.updateFoto(oldObject);
     }
 
     public Foto findFotoById(Long id) {
@@ -1196,25 +1424,35 @@ public class Facade {
         return fotoServiceInterface.getAllFoto();
     }
 
-    public void deleteFoto(Foto persistentObject) {
-        fotoServiceInterface.deleteFoto(persistentObject);
-    }
-
+    @Transactional
     public void deleteFoto(long id) {
         fotoServiceInterface.deleteFoto(id);
     }
 
     // Instituicao--------------------------------------------------------------
 
-    @Autowired
-    private InstituicaoServiceInterface instituicaoServiceInterface;
+    private final InstituicaoServiceInterface instituicaoServiceInterface;
 
+    @Transactional
     public Instituicao saveInstituicao(Instituicao newInstance) {
         return instituicaoServiceInterface.saveInstituicao(newInstance);
     }
 
-    public Instituicao updateInstituicao(Instituicao transientObject) {
-        return instituicaoServiceInterface.updateInstituicao(transientObject);
+    @Transactional
+    public Instituicao updateInstituicao(InstituicaoRequest obj, Long id) {
+
+        //Instituicao o = obj.convertToEntity();
+        Instituicao oldObject = findInstituicaoById(id);
+
+        TypeMap<InstituicaoRequest, Instituicao> typeMapper = modelMapper
+                .typeMap(InstituicaoRequest.class, Instituicao.class)
+                .addMappings(mapper -> mapper.skip(Instituicao::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+
+        return instituicaoServiceInterface.updateInstituicao(oldObject);
     }
 
     public Instituicao findInstituicaoById(long id) {
@@ -1225,25 +1463,41 @@ public class Facade {
         return instituicaoServiceInterface.getAllInstituicao();
     }
 
-    public void deleteInstituicao(Instituicao persistentObject) {
-        instituicaoServiceInterface.deleteInstituicao(persistentObject);
-    }
-
+    @Transactional
     public void deleteInstituicao(long id) {
         instituicaoServiceInterface.deleteInstituicao(id);
     }
 
 
     // LaudoNecropsia--------------------------------------------------------------
-    @Autowired
-    private LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
 
+    private final LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
+
+    @Transactional
     public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
         return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
     }
 
-    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsia transientObject) {
-        return laudoNecropsiaServiceInterfcae.updateLaudoNecropsia(transientObject);
+    @Transactional
+    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsiaRequest obj, Long id) {
+        LaudoNecropsia oldObject = laudoNecropsiaServiceInterfcae.findLaudoNecropsiaById(id);
+
+        // campoLaudo
+        if(obj.getCampoLaudo() != null && !obj.getCampoLaudo().isEmpty()){
+            List<CampoLaudo> updatedCampoLaudos = obj.getCampoLaudo().stream()
+                    .map(campo -> findCampoLaudoById(campo.getId()))
+                    .collect(Collectors.toList());
+            oldObject.setCampoLaudo(updatedCampoLaudos);
+            obj.setCampoLaudo(null); // Limpar para evitar mapeamento duplo
+        }
+
+        TypeMap<LaudoNecropsiaRequest, LaudoNecropsia> typeMapper = modelMapper
+                .typeMap(LaudoNecropsiaRequest.class, LaudoNecropsia.class)
+                .addMappings(mapper -> mapper.skip(LaudoNecropsia::setId));
+
+        typeMapper.map(obj, oldObject);
+
+        return laudoNecropsiaServiceInterfcae.updateLaudoNecropsia(oldObject);
     }
 
     public LaudoNecropsia findLaudoNecropsiaById(long id) {
@@ -1254,25 +1508,33 @@ public class Facade {
         return laudoNecropsiaServiceInterfcae.getAllLaudoNecropsia();
     }
 
-    public void deleteLaudoNecropsia(LaudoNecropsia persistentObject) {
-        laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(persistentObject);
-    }
-
+    @Transactional
     public void deleteLaudoNecropsia(long id) {
         laudoNecropsiaServiceInterfcae.deleteLaudoNecropsia(id);
     }
 
     // MaterialColetado--------------------------------------------------------------
-    @Autowired
 
-    private MaterialColetadoServiceInterface materialColetadoServiceInterface;
+    private final MaterialColetadoServiceInterface materialColetadoServiceInterface;
 
+    @Transactional
     public MaterialColetado saveMaterialColetado(MaterialColetado newInstance) {
         return materialColetadoServiceInterface.saveMaterialColetado(newInstance);
     }
 
-    public MaterialColetado updateMaterialColetado(MaterialColetado transientObject) {
-        return materialColetadoServiceInterface.updateMaterialColetado(transientObject);
+    @Transactional
+    public MaterialColetado updateMaterialColetado(MaterialColetadoRequest obj, Long id) {
+        //MaterialColetado o = obj.convertToEntity();
+        MaterialColetado oldObject = materialColetadoServiceInterface.findMaterialColetadoById(id);
+
+        TypeMap<MaterialColetadoRequest, MaterialColetado> typeMapper = modelMapper
+                .typeMap(MaterialColetadoRequest.class, MaterialColetado.class)
+                .addMappings(mapper -> mapper.skip(MaterialColetado::setId));
+
+
+        typeMapper.map(obj, oldObject);
+
+        return materialColetadoServiceInterface.updateMaterialColetado(oldObject);
     }
 
     public MaterialColetado findMaterialColetadoById(long id) {
@@ -1283,25 +1545,34 @@ public class Facade {
         return materialColetadoServiceInterface.getAllMaterialColetado();
     }
 
-    public void deleteMaterialColetado(MaterialColetado persistentObject) {
-        materialColetadoServiceInterface.deleteMaterialColetado(persistentObject);
-    }
-
+    @Transactional
     public void deleteMaterialColetado(long id) {
         materialColetadoServiceInterface.deleteMaterialColetado(id);
     }
 
     // Orgao--------------------------------------------------------------
-    @Autowired
 
-    private OrgaoServiceInterface OrgaoServiceInterface;
+    private final OrgaoServiceInterface OrgaoServiceInterface;
 
+    @Transactional
     public Orgao saveOrgao(Orgao newInstance) {
         return OrgaoServiceInterface.saveOrgao(newInstance);
     }
 
-    public Orgao updateOrgao(Orgao transientObject) {
-        return OrgaoServiceInterface.updateOrgao(transientObject);
+    @Transactional
+    public Orgao updateOrgao(OrgaoRequest transientObject, Long id) {
+        //Orgao o = obj.convertToEntity();
+        Orgao oldObject = OrgaoServiceInterface.findOrgaoById(id);
+
+
+        TypeMap<OrgaoRequest, Orgao> typeMapper = modelMapper
+                .typeMap(OrgaoRequest.class, Orgao.class)
+                .addMappings(mapper -> mapper.skip(Orgao::setId));
+
+
+        typeMapper.map(transientObject, oldObject);
+
+        return OrgaoServiceInterface.updateOrgao(oldObject);
     }
 
     public Orgao findOrgaoById(long id) {
@@ -1312,10 +1583,7 @@ public class Facade {
         return OrgaoServiceInterface.getAllOrgao();
     }
 
-    public void deleteOrgao(Orgao persistentObject) {
-        OrgaoServiceInterface.deleteOrgao(persistentObject);
-    }
-
+    @Transactional
     public void deleteOrgao(long id) {
         OrgaoServiceInterface.deleteOrgao(id);
     }
@@ -1323,33 +1591,44 @@ public class Facade {
 
     // Arquivo --------------------------------------------------------------
 
-    @Autowired
-    private FileServiceInterface fileService;
+
+    private final FileServiceInterface fileService;
 
     public File findFile(String fileName) {
         return fileService.findFile(fileName);
     }
 
+    @Transactional
     public String storeFile(InputStream file, String fileName) {
         String fn = System.currentTimeMillis() + "-" + fileName;
         return fileService.storeFile(file, fn.replace(" ", ""));
     }
 
+    @Transactional
     public void deleteFile(String fileName) {
         fileService.deleteFile(fileName);
     }
 
     // CampoLaudoMicroscopia --------------------------------------------------------------
 
-    @Autowired
-    private CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
+    private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
 
+    @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
     }
 
-    public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopia transientObject) {
-        return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(transientObject);
+    @Transactional
+    public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopiaRequest obj, Long id) {
+        CampoLaudoMicroscopia oldObject = findCampoLaudoMicroscopiaById(id);
+
+        TypeMap<CampoLaudoMicroscopiaRequest, CampoLaudoMicroscopia> typeMapper = modelMapper
+                .typeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class)
+                .addMappings(mapper -> mapper.skip(CampoLaudoMicroscopia::setId));
+
+        typeMapper.map(obj, oldObject);
+
+        return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(oldObject);
     }
 
     public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {
@@ -1360,10 +1639,7 @@ public class Facade {
         return campoLaudoMicroscopiaServiceInterface.getAllCampoLaudoMicroscopia();
     }
 
-    public void deleteCampoLaudoMicroscopia(CampoLaudoMicroscopia persistentObject) {
-        campoLaudoMicroscopiaServiceInterface.deleteCampoLaudoMicroscopia(persistentObject.getId());
-    }
-
+    @Transactional
     public void deleteCampoLaudoMicroscopia(long id) {
         campoLaudoMicroscopiaServiceInterface.deleteCampoLaudoMicroscopia(id);
     }

@@ -1,9 +1,9 @@
 package br.edu.ufape.hvu.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.ufape.hvu.model.enums.TipoFicha;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -27,23 +27,21 @@ public  class Consulta  {
 	private Double pesoAtual;
 	private Double idadeAtual;
 	private boolean proximaConsulta;
+	private String alteracoesClinicasDiversas;
+	private String suspeitasClinicas;
+	private String alimentacao;
+	private String queixaPrincipal;
 	@ManyToOne
 	@ToString.Exclude
 	private Especialidade encaminhamento;
 	@ManyToOne
 	@ToString.Exclude
 	private Medico medico;
-	@ManyToMany
-	@JoinColumn(name = "consulta_id")
-	@ToString.Exclude
-	private List<Estagiario> estagiario;
 	@ManyToOne
 	@ToString.Exclude
 	private Animal animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	@OneToOne
-	private Ficha ficha;
-	@Column(nullable = false)
-	private boolean tipo;
+	@OneToMany
+	private List<Ficha> ficha = new ArrayList<>();
 }

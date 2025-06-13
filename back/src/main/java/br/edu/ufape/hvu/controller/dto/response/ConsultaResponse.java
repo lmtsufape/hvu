@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.edu.ufape.hvu.controller.dto.request.EspecialidadeRequest;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -22,9 +23,12 @@ public class ConsultaResponse {
 	private AnimalResponse animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	private EspecialidadeResponse encaminhamento;
-	private FichaResponse ficha;
-	private List<EstagiarioResponse> estagiario;
+	private List<FichaResponse> ficha;
+	private String queixaPrincipal;
+	private String alteracoesClinicasDiversas;
+	private String suspeitasClinicas;
+	private String alimentacao;
+	private EspecialidadeRequest encaminhamento;
 
 	public ConsultaResponse(Consulta obj) {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
