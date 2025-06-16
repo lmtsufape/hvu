@@ -739,7 +739,7 @@ function CreateConsulta() {
               className={`${styles.toggleButton} ${showFichas ? styles.minimize : styles.expand}`}
               onClick={() => setShowFichas((prev) => !prev)}
             >
-              {showFichas ? "Ocultar Fichas Solicitadas" : "Fichas Solicitadas"}
+              {showFichas ? "Ocultar Fichas Adicionadas" : "Fichas Adicionadas"}
             </button>
             {showFichas && (
               <div className={styles.ficha_container}>
