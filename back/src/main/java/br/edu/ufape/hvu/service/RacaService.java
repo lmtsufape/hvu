@@ -1,7 +1,7 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.RacaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
@@ -10,9 +10,9 @@ import br.edu.ufape.hvu.model.Especie;
 import br.edu.ufape.hvu.model.Raca;
 
 @Service
+@RequiredArgsConstructor
 public class RacaService implements RacaServiceInterface {
-	@Autowired
-	private RacaRepository repository;
+	private final RacaRepository repository;
 
 
 	public Raca saveRaca(Raca newInstance) {

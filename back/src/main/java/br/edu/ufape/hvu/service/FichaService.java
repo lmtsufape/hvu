@@ -3,17 +3,16 @@ package br.edu.ufape.hvu.service;
 import java.util.List;
 
 import br.edu.ufape.hvu.exception.InvalidJsonException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.FichaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Ficha;
 
 @Service
+@RequiredArgsConstructor
 public class FichaService implements FichaServiceInterface {
-
-    @Autowired
-    private FichaRepository repository;
+    private final FichaRepository repository;
 
     public Ficha saveFicha(Ficha newInstance) {
         validarJson(newInstance.getConteudo());

@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.FichaSolicitacaoServicoRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.FichaSolicitacaoServico;
 
 @Service
+@RequiredArgsConstructor
 public class FichaSolicitacaoServicoService implements FichaSolicitacaoServicoServiceInterface {
-	@Autowired
-	private FichaSolicitacaoServicoRepository repository;
+	private final FichaSolicitacaoServicoRepository repository;
 
 
 	public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {

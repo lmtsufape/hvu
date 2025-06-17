@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.EstagiarioRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Estagiario;
 
 @Service
+@RequiredArgsConstructor
 public class EstagiarioService implements EstagiarioServiceInterface {
-	@Autowired
-	private EstagiarioRepository repository;
+	private final EstagiarioRepository repository;
 
 
 	public Estagiario saveEstagiario(Estagiario newInstance) {

@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.LaudoNecropsiaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.LaudoNecropsia;
 
 @Service
+@RequiredArgsConstructor
 public class LaudoNecropsiaService implements LaudoNecropsiaServiceInterface {
-	@Autowired
-	private LaudoNecropsiaRepository repository;
+	private final LaudoNecropsiaRepository repository;
 
 
 	public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
