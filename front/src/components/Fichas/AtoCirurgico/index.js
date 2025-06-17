@@ -172,7 +172,7 @@ function FichaAtoCirurgico() {
                 protocolos: formData.protocolos,
                 reavaliacao: formData.reavaliacao,
                 equipeResponsavel: formData.equipeResponsavel,
-                data: formData.data,
+                //data: formData.data,
                 nomeDaCirurgia: formData.nomeDaCirurgia,
                 medicosResponsaveis: formData.medicosResponsaveis,
 
@@ -330,13 +330,13 @@ function FichaAtoCirurgico() {
                             <label>Nome da Cirurgia</label>
                             <textarea name="nomeDaCirurgia" value={formData.nomeDaCirurgia} onChange={handleChange} />
                         </div>
-                        <div className={styles.column}>
+                       {/*<div className={styles.column}>
                             <label>Data</label>
                             <input
                                 type="date" name="data" value={formData.data} onChange={handleChange}
 
                             />
-                        </div>
+                        </div>*/}
                     </div>
 
                     <div className={styles.titulo}>
