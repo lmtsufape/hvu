@@ -10,8 +10,6 @@ import VoltarButton from "@/components/VoltarButton";
 import { CancelarWhiteButton } from "@/components/WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 
-/* listas de opções ----------------------------- */
-
 const ALIMENTACAO_OPTS = [" Ração", " Dieta caseira", " Ração + Dieta caseira"];
 const POSTURAS = [" Estação", " Decúbito", " Cavalete", " Outras"];
 const CONCIENCIA = [" Alerta", " Deprimido", " Excitado", " Ausente (COMA)"];
@@ -21,7 +19,7 @@ const HIDRATACAO_OPTS = [" Normal", " 6 A 8%", " 8 A 10%", " Acima de 10%"];
 export default function Step1ClinicaMedica({
   formData,
   handleChange,
-  nextStep,       /* mesmo nome do cardiológico */
+  nextStep,
   handleCheckboxChangeVacinacao,
   handleCheckboxChangeMucosas,
   handleLocationChange,
@@ -30,7 +28,6 @@ export default function Step1ClinicaMedica({
   handleChangeAtualizaSelect,
   handleMucosaLocationChange,
   cleanLocalStorage
-
 }) {
   const linfonodos = [
     { value: "mandibularD", label: "Mandibular D" },
@@ -53,11 +50,17 @@ export default function Step1ClinicaMedica({
     { value: "naoAvaliado", label: "Não avaliado" }
   ];
 
-  /* apenas avança para o step 2 */
   const handleSubmit = (e) => {
     e.preventDefault();
+    // If "Outras" is selected, replace postura with posturaOutras value
+    if (formData.ExameFisico.postura === " Outras" && formData.ExameFisico.posturaOutras) {
+      handleChange({ target: { name: "ExameFisico.postura", value: formData.ExameFisico.posturaOutras } });
+    }
+    // Clear posturaOutras to prevent it from being sent
+    handleChange({ target: { name: "ExameFisico.posturaOutras", value: "" } });
     nextStep();
   };
+
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [animalId, setAnimalId] = useState(null);
@@ -108,12 +111,25 @@ export default function Step1ClinicaMedica({
     return new Date(dateString).toLocaleDateString('pt-BR', options);
   };
 
+  // Handle posture checkbox change to ensure single selection and clear posturaOutras if needed
+  const handlePosturaChange = (e) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      handleChange({ target: { name: "ExameFisico.postura", value } });
+    } else {
+      handleChange({ target: { name: "ExameFisico.postura", value: "" } });
+      if (value === " Outras") {
+        handleChange({ target: { name: "ExameFisico.posturaOutras", value: "" } });
+      }
+    }
+  };
+
   return (
     <div className={styles.container}>
       <VoltarButton />
       <h1>Ficha Clínica Médica</h1>
       <div className={styles.form_box}>
-        <form onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit}>
           <div className={styles.column}>
             <div className="mb-3">
               <div className={styles.box_ficha_toggle}>
@@ -134,7 +150,7 @@ export default function Step1ClinicaMedica({
                             <div className={styles.especie_animal}>Nome</div>
                           </div>
                           <div className={styles.form}>
-                            <div  className={styles["animal-data-box"]}>
+                            <div className={styles["animal-data-box"]}>
                               <div className={styles.lista}>
                                 <div className={styles.infos}>
                                   <h6>Espécie</h6>
@@ -157,7 +173,7 @@ export default function Step1ClinicaMedica({
                                 </div>
                                 <div className={styles.infos}>
                                   <h6>Porte</h6>
-                                  <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
+                                  <p>{animal.raca && animal.raca.porte ? animal.raca.porte : 'Não definido'}</p>
                                 </div>
                                 <div className={styles.infos}>
                                   <h6>Data de nascimento</h6>
@@ -187,7 +203,7 @@ export default function Step1ClinicaMedica({
                   </div>
                 )}
               </div>
-               <h2>Anamnese</h2>
+              <h2>Anamnese</h2>
               <label className="form-label fw-medium">
                 Queixa principal (evolução, tratamentos, resultados)
               </label>
@@ -230,7 +246,7 @@ export default function Step1ClinicaMedica({
               Produto e data de aplicação:
             </div>
 
-            <div >
+            <div>
               {Object.keys(formData.opc).map((opc) => (
                 <div key={opc} className="row align-items-start mb-2">
                   <div className="col-3">
@@ -264,7 +280,6 @@ export default function Step1ClinicaMedica({
                       className="form-control"
                     />
                   </div>
-
                 </div>
               ))}
             </div>
@@ -277,7 +292,6 @@ export default function Step1ClinicaMedica({
                   <option value="">Selecione</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
-
                 </select>
               </label>
               {formData.ectoparasitosDetalhes.ectoparasitos === 'Sim' && (
@@ -307,7 +321,7 @@ export default function Step1ClinicaMedica({
               )}
             </div>
             <div className={styles.column}>
-              <label className="form-label fw-medium" >Vermifugação:
+              <label className="form-label fw-medium">Vermifugação:
                 <select name="vermifugacaoDetalhes.vermifugacao" value={formData.vermifugacaoDetalhes.vermifugacao} onChange={handleChange}>
                   <option value="">Selecione</option>
                   <option value="Sim">Sim</option>
@@ -336,7 +350,6 @@ export default function Step1ClinicaMedica({
                       className="form-control"
                     />
                   </label>
-
                 </div>
               )}
             </div>
@@ -349,13 +362,12 @@ export default function Step1ClinicaMedica({
           </div>
 
           {/* Alimentação */}
-
           <div className={styles.column}>
             <label className="form-label fw-medium">Alimentação</label>
           </div>
           <div className={styles.checkbox_container}>
             {ALIMENTACAO_OPTS.map(opt => (
-              <label key={opt} >
+              <label key={opt}>
                 <input
                   type="checkbox"
                   name="ExameFisico.alimentacao"
@@ -367,12 +379,8 @@ export default function Step1ClinicaMedica({
             ))}
           </div>
 
-
-
           {/* EXAME FÍSICO GERAL --------------------------------------------- */}
           <h2>Exame físico geral</h2>
-
-
 
           {/* Postura */}
           <div className={styles.column}>
@@ -380,21 +388,32 @@ export default function Step1ClinicaMedica({
           </div>
           <div className={styles.checkbox_container}>
             {POSTURAS.map(opt => (
-              <label key={opt} >
-                <input
-                  type="checkbox"
-                  id="circle_checkbox"
-                  name="ExameFisico.postura"
-                  value={opt}
-                  checked={formData.ExameFisico.postura === opt}
-                  onChange={handleChange}
-                /> {opt}
-              </label>
+              <div key={opt}>
+                <label>
+                  <input
+                    type="checkbox"
+                    id="circle_checkbox"
+                    name="ExameFisico.postura"
+                    value={opt}
+                    checked={formData.ExameFisico.postura === opt}
+                    onChange={handlePosturaChange}
+                  /> {opt}
+                </label>
+                {opt === " Outras" && formData.ExameFisico.postura === " Outras" && (
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      name="ExameFisico.posturaOutras"
+                      value={formData.ExameFisico.posturaOutras || ""}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="Especifique a outra postura"
+                    />
+                  </div>
+                )}
+              </div>
             ))}
           </div>
-
-
-
 
           {/* Nivel de consciencia */}
           <div className={styles.column}>
@@ -414,14 +433,13 @@ export default function Step1ClinicaMedica({
             ))}
           </div>
 
-
           {/* Score corporal */}
           <div className={styles.column}>
             <label className="form-label fw-medium">Score corporal</label>
           </div>
           <div className={styles.checkbox_container}>
             {SCORE_CORPORAL.map(opt => (
-              <label key={opt} >
+              <label key={opt}>
                 <input
                   type="checkbox"
                   name="ExameFisico.score"
@@ -430,18 +448,16 @@ export default function Step1ClinicaMedica({
                   onChange={handleChange}
                 /> {opt}
               </label>
-
             ))}
           </div>
 
-
-          {/* Hidratação + TPC */}
+          {/* Hidratação */}
           <div className={styles.column}>
             <label className="form-label fw-medium">Hidratação</label>
           </div>
           <div className={styles.checkbox_container}>
             {HIDRATACAO_OPTS.map(opt => (
-              <label key={opt} >
+              <label key={opt}>
                 <input
                   type="checkbox"
                   name="ExameFisico.hidratacao"
@@ -498,7 +514,6 @@ export default function Step1ClinicaMedica({
                 <option value="">Selecione</option>
                 <option value="Normal">Normal</option>
                 <option value="Reduzido">Reduzido</option>
-
               </select>
             </div>
             <div className={styles.column}>
@@ -565,49 +580,45 @@ export default function Step1ClinicaMedica({
             <div className="col mt-4 mb-3"></div>
 
             <div>
-            
-            <div className={`${styles.checkbox_container}`}>
-              {linfonodos.map((linfonodo) => (
-                <div key={linfonodo.value}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      name={linfonodo.value}
-                      checked={linfonodo.value in formData.linfonodos}
-                      onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
-                    />
+              <div className={`${styles.checkbox_container}`}>
+                {linfonodos.map((linfonodo) => (
+                  <div key={linfonodo.value}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name={linfonodo.value}
+                        checked={linfonodo.value in formData.linfonodos}
+                        onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
+                      />
+                      {linfonodo.label}
+                    </label>
 
-                    {linfonodo.label}
-                  </label>
-
-                  {formData.linfonodos[linfonodo.value] && (
-                    <div className={styles.options_border}>
-                      {caracteristicas.map((caracteristica) => (
-                        <label key={caracteristica.value}>
-                          <input
-                            type="checkbox"
-                            name={caracteristica.value}
-                            checked={formData.linfonodos[linfonodo.value]?.includes(caracteristica.value) || false}
-                            onChange={(e) => handleCaracteristicaChange(e, linfonodo.value)}
-                          />
-                          {caracteristica.label}
-                        </label>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+                    {formData.linfonodos[linfonodo.value] && (
+                      <div className={styles.options_border}>
+                        {caracteristicas.map((caracteristica) => (
+                          <label key={caracteristica.value}>
+                            <input
+                              type="checkbox"
+                              name={caracteristica.value}
+                              checked={formData.linfonodos[linfonodo.value]?.includes(caracteristica.value) || false}
+                              onChange={(e) => handleCaracteristicaChange(e, linfonodo.value)}
+                            />
+                            {caracteristica.label}
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-            </div>
-
 
           {/* BOTÕES ---------------------------------------------------------- */}
           <div className={styles.button_box}>
             <CancelarWhiteButton onClick={cleanLocalStorage} />
             <ContinuarFichasGreenButton type="submit" />
           </div>
-
         </form>
       </div>
     </div>
