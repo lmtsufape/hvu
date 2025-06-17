@@ -8,8 +8,7 @@ public interface OrgaoServiceInterface {
 	Orgao saveOrgao(Orgao o);
 	Orgao findOrgaoById(long id);
 	Orgao updateOrgao(Orgao u);
-	void deleteOrgao(Orgao u);
-	void deleteOrgao(long id);
+    void deleteOrgao(long id);
 	List<Orgao> getAllOrgao();
     
     

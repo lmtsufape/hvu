@@ -29,11 +29,6 @@ public class OrgaoService implements OrgaoServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteOrgao(Orgao persistentObject){
-		this.deleteOrgao(persistentObject.getId());
-		
-	}
-	
 	public void deleteOrgao(long id){
 		Orgao obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Orgao"));
 		repository.delete(obj);

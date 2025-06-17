@@ -29,11 +29,6 @@ public class InstituicaoService implements InstituicaoServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteInstituicao(Instituicao persistentObject){
-		this.deleteInstituicao(persistentObject.getId());
-		
-	}
-	
 	public void deleteInstituicao(long id){
 		Instituicao obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Instituição"));
 		repository.delete(obj);

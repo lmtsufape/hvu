@@ -29,11 +29,6 @@ public class MaterialColetadoService implements MaterialColetadoServiceInterface
 		return repository.findAll();
 	}
 
-	public void deleteMaterialColetado(MaterialColetado persistentObject){
-		this.deleteMaterialColetado(persistentObject.getId());
-		
-	}
-	
 	public void deleteMaterialColetado(long id){
 		MaterialColetado obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "MaterialColetado"));
 		repository.delete(obj);

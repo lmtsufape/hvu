@@ -29,11 +29,6 @@ public class FichaSolicitacaoServicoService implements FichaSolicitacaoServicoSe
 		return repository.findAll();
 	}
 
-	public void deleteFichaSolicitacaoServico(FichaSolicitacaoServico persistentObject){
-		this.deleteFichaSolicitacaoServico(persistentObject.getId());
-		
-	}
-	
 	public void deleteFichaSolicitacaoServico(long id){
 		FichaSolicitacaoServico obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id,"FichaSolicitacaoServico"));
 		repository.delete(obj);

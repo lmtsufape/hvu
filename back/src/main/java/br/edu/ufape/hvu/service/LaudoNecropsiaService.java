@@ -29,11 +29,6 @@ public class LaudoNecropsiaService implements LaudoNecropsiaServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteLaudoNecropsia(LaudoNecropsia persistentObject){
-		this.deleteLaudoNecropsia(persistentObject.getId());
-		
-	}
-	
 	public void deleteLaudoNecropsia(long id){
 		LaudoNecropsia obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "LaudoNecropsia"));
 		repository.delete(obj);

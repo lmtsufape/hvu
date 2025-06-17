@@ -29,11 +29,6 @@ public class EspecialidadeService implements EspecialidadeServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteEspecialidade(Especialidade persistentObject){
-		this.deleteEspecialidade(persistentObject.getId());
-		
-	}
-	
 	public void deleteEspecialidade(long id){
 		Especialidade obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Especialidade"));
 		repository.delete(obj);

@@ -1,6 +1,5 @@
 package br.edu.ufape.hvu.repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,14 +21,6 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 
 	List<Vaga> findByDataHoraBetween(LocalDateTime dataInicio, LocalDateTime dataFinal);
 
-	@Query("SELECT v FROM Vaga v WHERE v.dataHora BETWEEN :inicioDoDia AND :fimDoDia AND v.especialidade = :especialidade")
-    List<Vaga> findByDataAndEspecialidade(@Param("inicioDoDia") LocalDateTime inicioDoDia, @Param("fimDoDia") 
-    LocalDateTime fimDoDia, @Param("especialidade") Especialidade especialidade);
-	
-	@Query("SELECT v FROM Vaga v WHERE v.dataHora BETWEEN :inicioDoDia AND :fimDoDia AND v.medico = :medico AND v.especialidade = :especialidade")
-    List<Vaga> findByDataAndEspecialidadeAndMedico(@Param("inicioDoDia") LocalDateTime inicioDoDia, @Param("fimDoDia") 
-    LocalDateTime fimDoDia, @Param("especialidade") Especialidade especialidade, @Param("medico") Medico medico);
-	
 	@Query(value = "SELECT DISTINCT ON (animal.id) v.* FROM Vaga v " +
 	           "JOIN agendamento a ON v.agendamento_id = a.id " +
 	           "JOIN animal ON a.animal_id = animal.id " +
@@ -44,7 +35,5 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 	           "ORDER BY animal.id, v.data_hora DESC", nativeQuery = true)
 	List<Vaga> findLatestVagaForEachAnimalNotReturn();
 
-	Vaga findByConsulta(Consulta consulta);
-	
 	List<Vaga> findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(LocalDateTime begin, LocalDateTime end, Medico medico);
 }

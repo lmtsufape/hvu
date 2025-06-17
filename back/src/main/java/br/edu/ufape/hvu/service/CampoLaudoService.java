@@ -29,11 +29,6 @@ public class CampoLaudoService implements CampoLaudoServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteCampoLaudo(CampoLaudo persistentObject){
-		this.deleteCampoLaudo(persistentObject.getId());
-		
-	}
-	
 	public void deleteCampoLaudo(long id){
 		CampoLaudo obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "CampoLaudo"));
 		repository.delete(obj);
