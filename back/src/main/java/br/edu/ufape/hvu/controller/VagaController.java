@@ -63,7 +63,7 @@ public class VagaController {
 	public VagaResponse updateVaga(@PathVariable Long id, @Valid @RequestBody VagaRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		return new VagaResponse(facade.processUpdateVaga(obj, id, principal.getSubject()));
+		return new VagaResponse(facade.processUpdateVaga(obj, id));
 	}
 	
 	@PostMapping("/gestao-vagas/criar")

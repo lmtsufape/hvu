@@ -5,12 +5,10 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import br.edu.ufape.hvu.repository.CronogramaRepository;
 import jakarta.transaction.Transactional;
@@ -21,9 +19,9 @@ import br.edu.ufape.hvu.model.Horario;
 import br.edu.ufape.hvu.model.Medico;
 
 @Service
+@RequiredArgsConstructor
 public class CronogramaService implements CronogramaServiceInterface {
-	@Autowired
-	private CronogramaRepository repository;
+	private final CronogramaRepository repository;
 
 
 	public Cronograma saveCronograma(Cronograma newInstance) {

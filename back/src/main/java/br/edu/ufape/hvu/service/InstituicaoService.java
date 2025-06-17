@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.InstituicaoRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Instituicao;
 
 @Service
+@RequiredArgsConstructor
 public class InstituicaoService implements InstituicaoServiceInterface {
-	@Autowired
-	private InstituicaoRepository repository;
+	private final InstituicaoRepository repository;
 
 
 	public Instituicao saveInstituicao(Instituicao newInstance) {

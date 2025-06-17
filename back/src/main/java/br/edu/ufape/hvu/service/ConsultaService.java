@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.ConsultaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Consulta;
 
 @Service
+@RequiredArgsConstructor
 public class ConsultaService implements ConsultaServiceInterface {
-	@Autowired
-	private ConsultaRepository repository;
+	private final ConsultaRepository repository;
 
 	public Consulta saveConsulta(Consulta newInstance) {
 		return repository.save(newInstance);
