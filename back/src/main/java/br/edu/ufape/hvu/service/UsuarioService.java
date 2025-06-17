@@ -35,11 +35,6 @@ public class UsuarioService implements UsuarioServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteUsuario( Usuario persistentObject){
-		this.deleteUsuario(persistentObject.getId());
-		
-	}
-	
 	public void deleteUsuario(long id){
 		Usuario obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Usuario"));
 		repository.delete(obj);

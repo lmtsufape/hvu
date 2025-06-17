@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.EspecialidadeRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Especialidade;
 
 @Service
+@RequiredArgsConstructor
 public class EspecialidadeService implements EspecialidadeServiceInterface {
-	@Autowired
-	private EspecialidadeRepository repository;
+	private final EspecialidadeRepository repository;
 
 
 	public Especialidade saveEspecialidade(Especialidade newInstance) {
@@ -29,11 +29,6 @@ public class EspecialidadeService implements EspecialidadeServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteEspecialidade(Especialidade persistentObject){
-		this.deleteEspecialidade(persistentObject.getId());
-		
-	}
-	
 	public void deleteEspecialidade(long id){
 		Especialidade obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Especialidade"));
 		repository.delete(obj);

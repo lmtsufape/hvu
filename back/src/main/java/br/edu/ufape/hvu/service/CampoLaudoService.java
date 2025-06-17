@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.CampoLaudoRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.CampoLaudo;
 
 @Service
+@RequiredArgsConstructor
 public class CampoLaudoService implements CampoLaudoServiceInterface {
-	@Autowired
-	private CampoLaudoRepository repository;
+	private final CampoLaudoRepository repository;
 
 
 	public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
@@ -29,11 +29,6 @@ public class CampoLaudoService implements CampoLaudoServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteCampoLaudo(CampoLaudo persistentObject){
-		this.deleteCampoLaudo(persistentObject.getId());
-		
-	}
-	
 	public void deleteCampoLaudo(long id){
 		CampoLaudo obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "CampoLaudo"));
 		repository.delete(obj);

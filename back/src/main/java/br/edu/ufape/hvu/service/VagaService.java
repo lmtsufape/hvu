@@ -5,15 +5,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import br.edu.ufape.hvu.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.VagaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 @Service
+@RequiredArgsConstructor
 public class VagaService implements VagaServiceInterface {
-	@Autowired
-	private VagaRepository repository;
+	private final VagaRepository repository;
 
 	public Vaga saveVaga(Vaga newInstance) {
 		return repository.save(newInstance);
@@ -44,21 +44,7 @@ public class VagaService implements VagaServiceInterface {
 		
 		return repository.findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(begin, end, medico);
 	}
-	
-	public List<Vaga> findVagasByDataAndEspecialidade(LocalDate data, Especialidade especialidade) {
-        LocalDateTime begin = data.atStartOfDay(); 
-        LocalDateTime end = data.plusDays(1).atStartOfDay().minusSeconds(1); 
-        
-        return repository.findByDataAndEspecialidade(begin, end, especialidade);
-    }
-	
-	public List<Vaga> findVagasByDataAndEspecialidadeAndMedico(LocalDate data, Especialidade especialidade, Medico medico) {
-        LocalDateTime begin = data.atStartOfDay();
-        LocalDateTime end = data.plusDays(1).atStartOfDay().minusSeconds(1); 
-        
-        return repository.findByDataAndEspecialidadeAndMedico(begin, end, especialidade, medico);
-    }
-	
+
 	public List<Vaga> findVagasByDataAndTurno(LocalDate data, String turno) {
         LocalDateTime begin, end;
 
@@ -75,11 +61,6 @@ public class VagaService implements VagaServiceInterface {
         return repository.findByData(begin, end);
 	}
 
-	public void deleteVaga(Vaga persistentObject){
-		this.deleteVaga(persistentObject.getId());
-		
-	}
-	
 	public void deleteVaga(long id){
 		Vaga obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Vaga"));
 		repository.delete(obj);
@@ -106,9 +87,6 @@ public class VagaService implements VagaServiceInterface {
 
 	public Vaga findVagaByAgendamento(Agendamento agendamento) {
 		return repository.findByAgendamento(agendamento);
-	}	
-	
-	public Vaga findVagaByConsulta(Consulta consulta){ return repository.findByConsulta(consulta);}
+	}
 
-	
 }

@@ -3,8 +3,8 @@ package br.edu.ufape.hvu.service;
 import java.util.List;
 
 import br.edu.ufape.hvu.model.Medico;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
@@ -13,9 +13,9 @@ import br.edu.ufape.hvu.model.Agendamento;
 import br.edu.ufape.hvu.model.Animal;
 
 @Service
+@RequiredArgsConstructor
 public class AgendamentoService implements AgendamentoServiceInterface {
-	@Autowired
-	private AgendamentoRepository repository;
+	private final AgendamentoRepository repository;
 
 
 	public Agendamento saveAgendamento(Agendamento newInstance) {
@@ -51,11 +51,6 @@ public class AgendamentoService implements AgendamentoServiceInterface {
 
 	public List<Agendamento> getAllAgendamento(){
 		return repository.findAll();
-	}
-
-	public void deleteAgendamento(Agendamento persistentObject){
-		this.deleteAgendamento(persistentObject.getId());
-		
 	}
 	
 	public void deleteAgendamento(long id){

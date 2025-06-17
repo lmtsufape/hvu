@@ -8,7 +8,6 @@ public interface EspecieServiceInterface {
 	Especie saveEspecie(Especie o);
 	Especie findEspecieById(long id);
 	Especie updateEspecie(Especie u);
-	void deleteEspecie(Especie u);
 	void deleteEspecie(long id);
 	List<Especie> getAllEspecie();
     

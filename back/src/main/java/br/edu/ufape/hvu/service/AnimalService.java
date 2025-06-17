@@ -3,16 +3,16 @@ package br.edu.ufape.hvu.service;
 import java.util.List;
 
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AnimalRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Animal;
 
 @Service
+@RequiredArgsConstructor
 public class AnimalService implements AnimalServiceInterface {
-	@Autowired
-	private AnimalRepository repository;
+	private final AnimalRepository repository;
 
 	public Animal saveAnimal(Animal newInstance) {
 		return repository.save(newInstance);

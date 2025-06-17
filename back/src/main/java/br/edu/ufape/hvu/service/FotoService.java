@@ -1,18 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.FotoRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Foto;
 
 @Service
+@RequiredArgsConstructor
 public class FotoService implements FotoServiceInterface {
-
-	@Autowired
-	private FotoRepository repository;
-
+	private final FotoRepository repository;
 
 
 	public Foto saveFoto(Foto newInstance) {
@@ -31,11 +29,6 @@ public class FotoService implements FotoServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteFoto(Foto persistentObject){
-		this.deleteFoto(persistentObject.getId());
-		
-	}
-	
 	public void deleteFoto(long id){
 		Foto obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Foto"));
 		repository.delete(obj);

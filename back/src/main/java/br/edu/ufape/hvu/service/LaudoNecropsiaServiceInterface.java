@@ -8,8 +8,7 @@ public interface LaudoNecropsiaServiceInterface {
 	LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia o);
 	LaudoNecropsia findLaudoNecropsiaById(long id);
 	LaudoNecropsia updateLaudoNecropsia(LaudoNecropsia u);
-	void deleteLaudoNecropsia(LaudoNecropsia u);
-	void deleteLaudoNecropsia(long id);
+    void deleteLaudoNecropsia(long id);
 	List<LaudoNecropsia> getAllLaudoNecropsia();
     
     

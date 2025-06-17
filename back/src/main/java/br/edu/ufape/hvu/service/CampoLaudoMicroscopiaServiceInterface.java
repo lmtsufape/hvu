@@ -8,6 +8,5 @@ public interface CampoLaudoMicroscopiaServiceInterface {
     CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopia transientObject);
     CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id);
     List<CampoLaudoMicroscopia> getAllCampoLaudoMicroscopia();
-    void deleteCampoLaudoMicroscopia(CampoLaudoMicroscopia persistentObject);
     void deleteCampoLaudoMicroscopia(Long id);
 }
