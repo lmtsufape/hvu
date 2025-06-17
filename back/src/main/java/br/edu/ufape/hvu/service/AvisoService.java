@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AvisoRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Aviso;
 
 @Service
+@RequiredArgsConstructor
 public class AvisoService implements AvisoServiceInterface {
-    @Autowired
-    private AvisoRepository repository;
+    private final AvisoRepository repository;
 
     public Aviso saveAviso(Aviso newInstance) {
         return repository.save(newInstance);

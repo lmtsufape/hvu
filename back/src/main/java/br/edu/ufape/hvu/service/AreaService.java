@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AreaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Area;
 
 @Service
+@RequiredArgsConstructor
 public class AreaService implements AreaServiceInterface {
-	@Autowired
-	private AreaRepository repository;
+	private final AreaRepository repository;
 
 
 	public Area saveArea(Area newInstance) {

@@ -5,15 +5,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import br.edu.ufape.hvu.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.VagaRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 
 @Service
+@RequiredArgsConstructor
 public class VagaService implements VagaServiceInterface {
-	@Autowired
-	private VagaRepository repository;
+	private final VagaRepository repository;
 
 	public Vaga saveVaga(Vaga newInstance) {
 		return repository.save(newInstance);
