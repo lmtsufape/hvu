@@ -106,20 +106,35 @@ export default function Step1ClinicaMedica({
   };
 
   const handlePosturaChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "ExameFisico.posturaOutras") {
-      // Atualiza postura com o valor digitado em posturaOutras
+  const { name, value, type, checked } = e.target;
+  
+  if (name === "ExameFisico.posturaOutras") {
+    handleChange({
+      target: {
+        name: "ExameFisico.postura",
+        value: value.trim() 
+      }
+    });
+  } 
+  else if (name === "ExameFisico.postura") {
+    if (formData.ExameFisico.postura === value) {
       handleChange({
         target: {
           name: "ExameFisico.postura",
-          value: value.trim() || " Outras" // Mantém "Outras" se o campo estiver vazio
+          value: "" 
         }
       });
-    } else {
-      // Para outras opções de postura, usa o comportamento padrão
-      handleChange(e);
+    } 
+    else {
+      handleChange({
+        target: {
+          name: "ExameFisico.postura",
+          value: value 
+        }
+      });
     }
-  };
+  }
+};
 
   return (
     <div className={styles.container}>
@@ -319,20 +334,24 @@ export default function Step1ClinicaMedica({
                     type="checkbox"
                     name="ExameFisico.postura"
                     value={opt}
-                    checked={formData.ExameFisico.postura === opt || (opt === " Outras" && !POSTURAS.includes(formData.ExameFisico.postura))}
+                    checked={formData.ExameFisico.postura === opt || (opt === " Outras" && !POSTURAS.includes(formData.ExameFisico.postura) && formData.ExameFisico.postura !== "")}
                     onChange={handlePosturaChange}
                   /> {opt}
                 </label>
-                {opt === " Outras" && (formData.ExameFisico.postura === " Outras" || !POSTURAS.includes(formData.ExameFisico.postura)) && (
-                  <input
-                    type="text"
-                    name="ExameFisico.posturaOutras"
-                    value={formData.ExameFisico.postura !== " Outras" ? formData.ExameFisico.postura : ""}
-                    onChange={handlePosturaChange}
-                    className="form-control"
-                    placeholder="Especifique a postura"
-                  />
-                )}
+
+                {opt === " Outras" && (
+                  (formData.ExameFisico.postura === " Outras" || 
+                  !POSTURAS.includes(formData.ExameFisico.postura)) && 
+                  formData.ExameFisico.postura !== "" && (
+                    <input
+                      type="text"
+                      name="ExameFisico.posturaOutras"
+                      value={formData.ExameFisico.postura === " Outras" ? "" : formData.ExameFisico.postura}
+                      onChange={handlePosturaChange}
+                      className="form-control"
+                      placeholder="Especifique a postura"
+                    />
+                ))}
               </div>
             ))}
           </div>
