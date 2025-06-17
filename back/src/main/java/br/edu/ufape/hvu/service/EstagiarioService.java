@@ -28,11 +28,6 @@ public class EstagiarioService implements EstagiarioServiceInterface {
 	public List<Estagiario> getAllEstagiario(){
 		return repository.findAll();
 	}
-
-	public void deleteEstagiario(Estagiario persistentObject){
-		this.deleteEstagiario(persistentObject.getId());
-		
-	}
 	
 	public void deleteEstagiario(long id){
 		Estagiario obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Estagiario"));

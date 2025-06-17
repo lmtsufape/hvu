@@ -34,11 +34,6 @@ public class CampoLaudoMicroscopiaService implements CampoLaudoMicroscopiaServic
     }
 
     @Override
-    public void deleteCampoLaudoMicroscopia(CampoLaudoMicroscopia persistentObject) {
-        this.deleteCampoLaudoMicroscopia(persistentObject.getId());
-    }
-
-    @Override
     public void deleteCampoLaudoMicroscopia(Long id) {
         CampoLaudoMicroscopia obj = repository.findById(id).orElseThrow(() -> new IdNotFoundException(id, "CampoLaudoMicroscopia"));
         repository.delete(obj);

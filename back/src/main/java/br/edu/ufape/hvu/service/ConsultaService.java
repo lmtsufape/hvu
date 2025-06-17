@@ -37,11 +37,6 @@ public class ConsultaService implements ConsultaServiceInterface {
 		return repository.findConsultasByAnimalId(id);
 	}
 
-	public void deleteConsulta(Consulta persistentObject){
-		this.deleteConsulta(persistentObject.getId());
-		
-	}
-	
 	public void deleteConsulta(long id){
 		Consulta obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Consulta"));
 		repository.delete(obj);

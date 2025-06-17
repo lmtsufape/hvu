@@ -29,11 +29,6 @@ public class FotoService implements FotoServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteFoto(Foto persistentObject){
-		this.deleteFoto(persistentObject.getId());
-		
-	}
-	
 	public void deleteFoto(long id){
 		Foto obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Foto"));
 		repository.delete(obj);

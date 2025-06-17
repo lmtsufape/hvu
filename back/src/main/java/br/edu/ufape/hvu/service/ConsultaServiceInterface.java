@@ -8,7 +8,6 @@ public interface ConsultaServiceInterface {
 	Consulta saveConsulta(Consulta o);
 	Consulta findConsultaById(long id);
 	Consulta updateConsulta(Consulta u);
-	void deleteConsulta(Consulta u);
 	void deleteConsulta(long id);
 	List<Consulta> getAllConsulta();
     List<Consulta> getConsultasByAnimalFichaNumero(String animalFichaNumero);

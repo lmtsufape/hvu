@@ -28,11 +28,6 @@ public class EspecieService implements EspecieServiceInterface {
 	public List<Especie> getAllEspecie(){
 		return repository.findAll();
 	}
-
-	public void deleteEspecie(Especie persistentObject){
-		this.deleteEspecie(persistentObject.getId());
-		
-	}
 	
 	public void deleteEspecie(long id){
 		Especie obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Especie"));

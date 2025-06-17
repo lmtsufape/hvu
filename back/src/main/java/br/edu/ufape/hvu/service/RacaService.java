@@ -37,13 +37,8 @@ public class RacaService implements RacaServiceInterface {
 			throw new ObjectNotFoundException("Raca");
 		}
 		return raca;
-	} 
-
-	public void deleteRaca(Raca persistentObject){
-		this.deleteRaca(persistentObject.getId());
-		
 	}
-	
+
 	public void deleteRaca(long id){
 		Raca obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Raca"));
 		repository.delete(obj);

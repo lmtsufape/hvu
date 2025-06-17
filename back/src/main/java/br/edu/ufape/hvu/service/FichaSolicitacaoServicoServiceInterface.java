@@ -8,7 +8,6 @@ public interface FichaSolicitacaoServicoServiceInterface {
 	FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico o);
 	FichaSolicitacaoServico findFichaSolicitacaoServicoById(long id);
 	FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServico u);
-	void deleteFichaSolicitacaoServico(FichaSolicitacaoServico u);
 	void deleteFichaSolicitacaoServico(long id);
 	List<FichaSolicitacaoServico> getAllFichaSolicitacaoServico();
     

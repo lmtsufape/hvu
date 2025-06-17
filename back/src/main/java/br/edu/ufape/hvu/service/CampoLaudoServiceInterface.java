@@ -8,7 +8,6 @@ public interface CampoLaudoServiceInterface {
 	CampoLaudo saveCampoLaudo(CampoLaudo o);
 	CampoLaudo findCampoLaudoById(long id);
 	CampoLaudo updateCampoLaudo(CampoLaudo u);
-	void deleteCampoLaudo(CampoLaudo u);
 	void deleteCampoLaudo(long id);
 	List<CampoLaudo> getAllCampoLaudo();
     

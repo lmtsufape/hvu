@@ -29,11 +29,6 @@ public class EnderecoService implements EnderecoServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteEndereco(Endereco persistentObject){
-		this.deleteEndereco(persistentObject.getId());
-		
-	}
-	
 	public void deleteEndereco(long id){
 		Endereco obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Endereco"));
 		repository.delete(obj);

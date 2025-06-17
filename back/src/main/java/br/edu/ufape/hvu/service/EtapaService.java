@@ -29,11 +29,6 @@ public class EtapaService implements EtapaServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteEtapa(Etapa persistentObject){
-		this.deleteEtapa(persistentObject.getId());
-		
-	}
-	
 	public void deleteEtapa(long id){
 		Etapa obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Etapa"));
 		repository.delete(obj);

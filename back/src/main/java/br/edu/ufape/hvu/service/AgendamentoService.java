@@ -52,11 +52,6 @@ public class AgendamentoService implements AgendamentoServiceInterface {
 	public List<Agendamento> getAllAgendamento(){
 		return repository.findAll();
 	}
-
-	public void deleteAgendamento(Agendamento persistentObject){
-		this.deleteAgendamento(persistentObject.getId());
-		
-	}
 	
 	public void deleteAgendamento(long id){
 		Agendamento obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Agendamento"));

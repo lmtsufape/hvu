@@ -28,11 +28,6 @@ public class AreaService implements AreaServiceInterface {
 	public List<Area> getAllArea(){
 		return repository.findAll();
 	}
-
-	public void deleteArea(Area persistentObject){
-		this.deleteArea(persistentObject.getId());
-		
-	}
 	
 	public void deleteArea(long id){
 		Area obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Area"));
