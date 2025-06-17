@@ -14,7 +14,6 @@ import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getAnimalById } from '../../../../services/animalService';
 
 function FichaSolicitacaoCitologia() {
-
     const [showAlert, setShowAlert] = useState(false);
     const [showOtherInput, setShowOtherInput] = useState(false);
     const [otherValue, setOtherValue] = useState("");
@@ -28,14 +27,11 @@ function FichaSolicitacaoCitologia() {
     const dimensoesImagem = { largura: 700, altura: 360 };
     const [imagemDesenhada, setImagemDesenhada] = useState(null);
     const [consultaId, setConsultaId] = useState(null);
-    const router = useRouter();
-
-
     const [animalId, setAnimalId] = useState(null);
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
-
+    const router = useRouter();
 
     const [formData, setFormData] = useState({
         anamnese: [],
@@ -43,7 +39,7 @@ function FichaSolicitacaoCitologia() {
         historicoExameFisico: "",
         localizacaoLesao: "",
         imagemLesao: {
-            imagem: "", // string base64 (PNG)
+            imagem: "",
             linhasDesenhadas: [],
         },
         caracteristicasLesao: {
@@ -67,16 +63,67 @@ function FichaSolicitacaoCitologia() {
         }
     });
 
-    // Carrega os dados do formulário do localStorage 
+    // Função para gerar uma chave única no localStorage com base no consultaId
+    const getLocalStorageKey = () => `solicitacaoCitologiaFormData_${consultaId || "default"}`;
+
+    // Carrega os dados do formulário e dos campos "Outros" do localStorage
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedFormData = localStorage.getItem("SolicitacaoCitologiaFormData");
+        if (typeof window !== 'undefined' && consultaId) {
+            const savedFormData = localStorage.getItem(getLocalStorageKey());
             if (savedFormData) {
-                setFormData(JSON.parse(savedFormData));
+                try {
+                    const parsedData = JSON.parse(savedFormData);
+                    setFormData(parsedData.formData || {
+                        anamnese: [],
+                        dataColheita: "",
+                        historicoExameFisico: "",
+                        localizacaoLesao: "",
+                        imagemLesao: {
+                            imagem: "",
+                            linhasDesenhadas: [],
+                        },
+                        caracteristicasLesao: {
+                            selecionadas: [],
+                            descricao: "",
+                            cor: "",
+                            consistencia: "",
+                            bordas: "",
+                            ulceracao: "",
+                            dorPalpacao: "",
+                            temperaturaLocal: "",
+                            relacaoTecidosVizinhos: ""
+                        },
+                        citologia: {
+                            descricao: "",
+                            metodo: "",
+                            numeroLaminas: "",
+                            resultado: "",
+                            conclusao: "",
+                            comentarios: ""
+                        }
+                    });
+                    setOtherValue(parsedData.otherValue || "");
+                    setOtherValueLesao(parsedData.otherValueLesao || "");
+                    setShowOtherInput(parsedData.formData?.anamnese.includes("Outros(s):"));
+                    setShowOtherInputLesao(parsedData.formData?.caracteristicasLesao.selecionadas.includes("Outros(s):"));
+                } catch (error) {
+                    console.error("Erro ao carregar os dados do localStorage:", error);
+                }
             }
         }
-    }, []);
+    }, [consultaId]);
 
+    // Salva os dados do formulário e dos campos "Outros" no localStorage
+    useEffect(() => {
+        if (typeof window !== 'undefined' && consultaId) {
+            localStorage.setItem(
+                getLocalStorageKey(),
+                JSON.stringify({ formData, otherValue, otherValueLesao })
+            );
+        }
+    }, [formData, otherValue, otherValueLesao, consultaId]);
+
+    // Obtém o ID da ficha e animal da URL
     useEffect(() => {
         if (router.isReady) {
             const id = router.query.fichaId;
@@ -88,8 +135,9 @@ function FichaSolicitacaoCitologia() {
                 setAnimalId(animalId);
             }
         }
-    }, [router.isReady, router.query.fichaId]);
+    }, [router.isReady, router.query.fichaId, router.query.animalId]);
 
+    // Carrega os dados do animal e tutor
     useEffect(() => {
         if (!animalId) return;
 
@@ -114,47 +162,13 @@ function FichaSolicitacaoCitologia() {
         fetchData();
     }, [animalId]);
 
-    const formatDate = (dateString) => {
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-        return new Date(dateString).toLocaleDateString('pt-BR', options);
-    };
-
-    // Salva os dados do formulário no localStorage 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem("SolicitacaoCitologiaFormData", JSON.stringify(formData));
-        }
-    }, [formData]);
-
-    // Obtém o ID da ficha da URL
-    useEffect(() => {
-        if (router.isReady) {
-            const id = router.query.fichaId;
-            if (id) {
-                setConsultaId(id);
-                console.log("ID da ficha:", id);
-            }
-        }
-    }, [router.isReady, router.query.fichaId]);
-
+    // Carrega token e roles do localStorage
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const storedToken = localStorage.getItem('token');
-            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            const storedRoles = JSON.parse(localStorage.getItem('roles') || '[]');
             setToken(storedToken || "");
             setRoles(storedRoles || []);
-        }
-        setLoading(false); // Alterar o estado para falso após o carregamento
-    }, []);
-
-    useEffect(() => {
-        const storedData = localStorage.getItem("formData");
-        if (storedData) {
-            try {
-                setFormData(JSON.parse(storedData));
-            } catch (error) {
-                console.error("Erro ao carregar os dados do localStorage", error);
-            }
         }
     }, []);
 
@@ -162,7 +176,6 @@ function FichaSolicitacaoCitologia() {
         return <div className={styles.message}>Carregando dados do usuário...</div>;
     }
 
-    // Verifica se o usuário tem permissão
     if (!roles.includes("medico")) {
         return (
             <div className={styles.container}>
@@ -183,23 +196,21 @@ function FichaSolicitacaoCitologia() {
         setFormData(prev => ({
             ...prev,
             imagemLesao: {
-                imagem: imagemFinal,                // string base64 (PNG)
-                linhasDesenhadas: linhasDesenhadas // array com dados dos traços
+                imagem: imagemFinal,
+                linhasDesenhadas: linhasDesenhadas
             }
         }));
-        setImagemDesenhada(imagemFinal); // Atualiza o estado da imagem desenhada
+        setImagemDesenhada(imagemFinal);
     };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
 
-        // Verifica se o nome do campo contém pontos (caminho aninhado)
         if (name.includes(".")) {
             const nameParts = name.split(".");
             setFormData((prev) => {
                 const updatedFormData = { ...prev };
                 let current = updatedFormData;
-                // Percorre o caminho e atualiza o valor no objeto aninhado
                 for (let i = 0; i < nameParts.length - 1; i++) {
                     current = current[nameParts[i]];
                 }
@@ -207,7 +218,6 @@ function FichaSolicitacaoCitologia() {
                 return updatedFormData;
             });
         } else {
-            // Caso o campo não seja aninhado, trata diretamente
             setFormData((prev) => ({ ...prev, [name]: value }));
         }
     };
@@ -217,7 +227,7 @@ function FichaSolicitacaoCitologia() {
 
         if (value === "Outros(s):") {
             setShowOtherInput(checked);
-            if (!checked) setOtherValue(""); // Limpa o valor se desmarcar
+            if (!checked) setOtherValue("");
         }
 
         setFormData((prev) => {
@@ -246,18 +256,16 @@ function FichaSolicitacaoCitologia() {
         });
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async () => {
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
 
         let anamneseFinal = [...formData.anamnese];
         let caracteristicasFinal = [...formData.caracteristicasLesao.selecionadas];
 
-        // Se "Outros(s):" estiver selecionado e houver um valor digitado, substitui no array
         if (anamneseFinal.includes("Outros(s):") && otherValue.trim() !== "") {
             anamneseFinal = anamneseFinal.filter(item => item !== "Outros(s):");
             anamneseFinal.push(otherValue.trim());
         }
-        // Se "Outros(s):" estiver selecionado e houver um valor digitado, substitui no array
         if (caracteristicasFinal.includes("Outros(s):") && otherValueLesao.trim() !== "") {
             caracteristicasFinal = caracteristicasFinal.filter(item => item !== "Outros(s):");
             caracteristicasFinal.push(otherValueLesao.trim());
@@ -272,8 +280,8 @@ function FichaSolicitacaoCitologia() {
                 localizacaoLesao: formData.localizacaoLesao,
                 imagemLesao: formData.imagemLesao,
                 caracteristicasLesao: {
-                    ...formData.caracteristicasLesao, // Mantém os outros campos
-                    selecionadas: caracteristicasFinal //sobrescreve o campo selecionados
+                    ...formData.caracteristicasLesao,
+                    selecionadas: caracteristicasFinal
                 },
                 citologia: formData.citologia
             },
@@ -283,7 +291,7 @@ function FichaSolicitacaoCitologia() {
         try {
             const resultado = await createFicha(fichaData);
             localStorage.setItem('fichaId', resultado.id.toString());
-            localStorage.removeItem("SolicitacaoCitologiaFormData");
+            localStorage.removeItem(getLocalStorageKey());
             localStorage.removeItem('canvasKonva');
             setShowAlert(true);
         } catch (error) {
@@ -293,8 +301,14 @@ function FichaSolicitacaoCitologia() {
     };
 
     const cleanLocalStorage = () => {
-        localStorage.removeItem("SolicitacaoCitologiaFormData");
-    }
+        localStorage.removeItem(getLocalStorageKey());
+        localStorage.removeItem('canvasKonva');
+    };
+
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('pt-BR', options);
+    };
 
     return (
         <div className={styles.container}>
@@ -302,7 +316,7 @@ function FichaSolicitacaoCitologia() {
             <h1>Ficha de Solicitação de Citologia</h1>
 
             <div className={styles.form_box}>
-                <form onSubmit={handleSubmit}>
+                <form>
                     <div className={styles.box_ficha_toggle}>
                         <button
                             type="button"
@@ -321,7 +335,7 @@ function FichaSolicitacaoCitologia() {
                                                 <div className={styles.especie_animal}>Nome</div>
                                             </div>
                                             <div className={styles.form}>
-                                                <div  className={styles["animal-data-box"]}>
+                                                <div className={styles["animal-data-box"]}>
                                                     <div className={styles.lista}>
                                                         <div className={styles.infos}>
                                                             <h6>Espécie</h6>
@@ -336,7 +350,6 @@ function FichaSolicitacaoCitologia() {
                                                             <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
                                                         </div>
                                                     </div>
-
                                                     <div className={styles.lista}>
                                                         <div className={styles.infos}>
                                                             <h6>Raça</h6>
@@ -344,14 +357,13 @@ function FichaSolicitacaoCitologia() {
                                                         </div>
                                                         <div className={styles.infos}>
                                                             <h6>Porte</h6>
-                                                            <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
+                                                            <p>{animal.raca && animal.raca.porte ? animal.raca.porte : 'Não definido'}</p>
                                                         </div>
                                                         <div className={styles.infos}>
                                                             <h6>Data de nascimento</h6>
                                                             <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
                                                         </div>
                                                     </div>
-
                                                     <div className={styles.lista}>
                                                         <div className={styles.infos}>
                                                             <h6>Alergias</h6>
@@ -439,33 +451,36 @@ function FichaSolicitacaoCitologia() {
                         showDrawingModal={showDrawingModal}
                         dimensoesImagem={dimensoesImagem}
                     />
+
                     <div className={styles.column}>
                         <label>Método de colheita</label>
                     </div>
                     <div className={styles.checkbox_container}>
                         {["PAAF", "Swab", "Capilaridade", "Imprint", "Escarificação", "Outros(s):"].map((item) => (
+
                             <label key={item}>
                                 <input
                                     type="checkbox"
                                     value={item}
                                     checked={formData.anamnese.includes(item)}
                                     onChange={(e) => handleCheckboxChange(e, "anamnese", setShowOtherInput, setOtherValue)}
+                                    className="form-control"
                                 />
                                 {item}
                             </label>
                         ))}
-                    </div>
-                    {showOtherInput && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValue}
-                            onChange={(e) => setOtherValue(e.target.value)}
-                            className="form-control"
-                        />
-                    )}
 
-                    {/* CARACTERÍSTICAS DA LESÃO / MATERIAL */}
+                        {showOtherInput && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValue}
+                                onChange={(e) => setOtherValue(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
+                    </div>
+
                     <div className={styles.column}>
                         <label>Características da Lesão / Material</label>
                     </div>
@@ -477,24 +492,23 @@ function FichaSolicitacaoCitologia() {
                                     value={item}
                                     checked={formData.caracteristicasLesao.selecionadas.includes(item)}
                                     onChange={(e) => handleCheckboxChange(e, "caracteristicasLesao", setShowOtherInputLesao, setOtherValueLesao)}
+                                    className="form-control"
                                 />
                                 {item}
                             </label>
                         ))}
+
+                        {showOtherInputLesao && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValueLesao}
+                                onChange={(e) => setOtherValueLesao(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
                     </div>
 
-
-                    {showOtherInputLesao && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValueLesao}
-                            onChange={(e) => setOtherValueLesao(e.target.value)}
-                            className="form-control"
-                        />
-                    )}
-
-                    {/* CAMPOS DE TEXTO E SELECTS DENTRO DE CARACTERISTICASLESAO */}
                     <div className={styles.box}>
                         <div className={styles.column}>
                             <label>Descrição:</label>
@@ -505,7 +519,6 @@ function FichaSolicitacaoCitologia() {
                                 onChange={handleChange}
                             />
                         </div>
-
                         <div className={styles.column}>
                             <label>Cor:</label>
                             <input
@@ -516,8 +529,6 @@ function FichaSolicitacaoCitologia() {
                                 className="form-control"
                             />
                         </div>
-
-
                         <div className={styles.column}>
                             <label>Consistência:</label>
                             <input
@@ -527,7 +538,6 @@ function FichaSolicitacaoCitologia() {
                                 onChange={handleChange}
                             />
                         </div>
-
                         <div className={styles.column}>
                             <label>Bordas:</label>
                             <input
@@ -537,9 +547,6 @@ function FichaSolicitacaoCitologia() {
                                 onChange={handleChange}
                             />
                         </div>
-
-
-
                         <div className={styles.column}>
                             <label>Ulceração:</label>
                             <select
@@ -552,7 +559,6 @@ function FichaSolicitacaoCitologia() {
                                 <option value="Não">Não</option>
                             </select>
                         </div>
-
                         <div className={styles.column}>
                             <label>Dor à palpação:</label>
                             <select
@@ -565,7 +571,6 @@ function FichaSolicitacaoCitologia() {
                                 <option value="Não">Não</option>
                             </select>
                         </div>
-
                         <div className={styles.column}>
                             <label>Temperatura local:</label>
                             <select
@@ -578,7 +583,6 @@ function FichaSolicitacaoCitologia() {
                                 <option value="Normal">Normal</option>
                             </select>
                         </div>
-
                         <div className={styles.column}>
                             <label>Relação com os tecidos vizinhos:</label>
                             <select
@@ -592,7 +596,7 @@ function FichaSolicitacaoCitologia() {
                             </select>
                         </div>
                     </div>
-                    {/* CAMPOS PARA CITOLGIA */}
+
                     <h2>Citologia</h2>
                     <div className={styles.box}>
                         <div className={styles.column}>
@@ -648,21 +652,24 @@ function FichaSolicitacaoCitologia() {
                                 onChange={handleChange}
                             />
                         </div>
-
                     </div>
+
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton onClick={cleanLocalStorage} />
-                        < FinalizarFichaModal onConfirm={handleSubmit} />
+                        <CancelarWhiteButton onClick={cleanLocalStorage} />
+                        <FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
 
-                {showAlert && consultaId &&
+                {showAlert && consultaId && (
                     <div className={styles.alert}>
-                        <Alert message="Ficha criada com sucesso!"
-                            show={showAlert} url={`/createConsulta/${consultaId}`} />
-                    </div>}
-                {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
-
+                        <Alert
+                            message="Ficha criada com sucesso!"
+                            show={showAlert}
+                            url={`/createConsulta/${consultaId}`}
+                        />
+                    </div>
+                )}
+                {showErrorAlert && <ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />}
             </div>
         </div>
     );

@@ -79,7 +79,7 @@ function AtendimentoCardiologico({
   return (
     <div className={styles.container}>
       <VoltarButton />
-      <h1>Ficha clínico médica de retorno</h1>
+      <h1>Ficha de Atendimento Cardiológico</h1>
       <div className={styles.form_box}>
         <form onSubmit={handleSubmit}>
           <div className={styles.box_ficha_toggle}>

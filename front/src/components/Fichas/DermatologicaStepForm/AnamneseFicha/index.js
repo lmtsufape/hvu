@@ -8,7 +8,13 @@ import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
 
-function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheckboxChange, setFormData, handleCheckboxChangeOutros,
+function FichaDermatologicaStep1({
+    formData,
+    handleChange,
+    nextStep,
+    handleCheckboxChange,
+    setFormData,
+    handleCheckboxChangeOutros,
     showOtherInputConviveComAnimais,
     setShowOtherInputConviveComAnimais,
     otherValueConviveComAnimais,
@@ -17,9 +23,8 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
     setShowOtherInputProdutosUtilizados,
     otherValueProdutosUtilizados,
     setOtherValueProdutosUtilizados,
-    cleanLocalStorage }) {
-
-
+    cleanLocalStorage
+}) {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const [animalId, setAnimalId] = useState(null);
@@ -28,6 +33,69 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
 
+    // Função para gerar uma chave única no localStorage com base no consultaId
+    const getLocalStorageKey = () => `fichaDermatologicaStep1FormData_${consultaId || "default"}`;
+
+    // Carrega os dados do formulário e dos campos "Outros" do localStorage
+    useEffect(() => {
+        if (typeof window !== 'undefined' && consultaId) {
+            const savedFormData = localStorage.getItem(getLocalStorageKey());
+            if (savedFormData) {
+                try {
+                    const parsedData = JSON.parse(savedFormData);
+                    setFormData(parsedData.formData || {
+                        peso: "",
+                        ambiente: "",
+                        estiloVida: "",
+                        acessoRua: "",
+                        alimentacao: "",
+                        ultimaAdministracao: "",
+                        apresentaEctoparasitas: "",
+                        quandoVistoUltimaVez: "",
+                        banhos: "",
+                        frequenciaBanhos: "",
+                        produtosUtilizados: [],
+                        contatoComSuperfice: [],
+                        conviveComAnimais: [],
+                        contactantesSintomaticos: [],
+                        controleEctoparasitas: [],
+                        queixaPrincipal: "",
+                        tratamentosAtuais: {
+                            confirmacao: "",
+                            tipoTratamento: "",
+                            responsividade: ""
+                        },
+                        prurido: "",
+                        local: [],
+                        intensidade: "",
+                        lambedura: ""
+                    });
+                    setOtherValueProdutosUtilizados(parsedData.otherValueProdutosUtilizados || "");
+                    setOtherValueConviveComAnimais(parsedData.otherValueConviveComAnimais || "");
+                    setShowOtherInputProdutosUtilizados(parsedData.formData?.produtosUtilizados.includes("Outros"));
+                    setShowOtherInputConviveComAnimais(parsedData.formData?.conviveComAnimais.includes("Outros"));
+                } catch (error) {
+                    console.error("Erro ao carregar os dados do localStorage:", error);
+                }
+            }
+        }
+    }, [consultaId, setFormData, setOtherValueProdutosUtilizados, setOtherValueConviveComAnimais, setShowOtherInputProdutosUtilizados, setShowOtherInputConviveComAnimais]);
+
+    // Salva os dados do formulário e dos campos "Outros" no localStorage
+    useEffect(() => {
+        if (typeof window !== 'undefined' && consultaId) {
+            localStorage.setItem(
+                getLocalStorageKey(),
+                JSON.stringify({
+                    formData,
+                    otherValueProdutosUtilizados,
+                    otherValueConviveComAnimais
+                })
+            );
+        }
+    }, [formData, otherValueProdutosUtilizados, otherValueConviveComAnimais, consultaId]);
+
+    // Obtém o ID da ficha e animal da URL
     useEffect(() => {
         if (router.isReady) {
             const id = router.query.fichaId;
@@ -39,8 +107,9 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                 setAnimalId(animalId);
             }
         }
-    }, [router.isReady, router.query.fichaId]);
+    }, [router.isReady, router.query.fichaId, router.query.animalId]);
 
+    // Carrega os dados do animal e tutor
     useEffect(() => {
         if (!animalId) return;
 
@@ -70,8 +139,6 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
         return new Date(dateString).toLocaleDateString('pt-BR', options);
     };
 
-
-
     const handleTratamentoChange = (e) => {
         const { name, value } = e.target;
 
@@ -81,7 +148,6 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                 tratamentosAtuais: {
                     ...prev.tratamentosAtuais,
                     confirmacao: value,
-                    // Limpa os outros campos se for "Não"
                     ...(value === "Não" ? {
                         tipoTratamento: "",
                         responsividade: ""
@@ -103,7 +169,6 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
             <VoltarButton />
             <h1>Ficha Dermatológica</h1>
             <div className={styles.form_box}>
-
                 <form onSubmit={handleSubmit}>
                     <div className={styles.box_ficha_toggle}>
                         <button
@@ -138,7 +203,6 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                                             <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
                                                         </div>
                                                     </div>
-
                                                     <div className={styles.lista}>
                                                         <div className={styles.infos}>
                                                             <h6>Raça</h6>
@@ -146,14 +210,13 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                                         </div>
                                                         <div className={styles.infos}>
                                                             <h6>Porte</h6>
-                                                            <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
+                                                            <p>{animal.raca && animal.raca.porte ? animal.raca.porte : 'Não definido'}</p>
                                                         </div>
                                                         <div className={styles.infos}>
                                                             <h6>Data de nascimento</h6>
                                                             <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
                                                         </div>
                                                     </div>
-
                                                     <div className={styles.lista}>
                                                         <div className={styles.infos}>
                                                             <h6>Alergias</h6>
@@ -186,9 +249,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         </div>
                         <div className={styles.column}>
                             <label>Ambiente:
-                                <select name="ambiente"
-                                    value={formData.ambiente}
-                                    onChange={handleChange}>
+                                <select name="ambiente" value={formData.ambiente} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Casa">Casa</option>
                                     <option value="Casa/Quintal">Casa/Quintal</option>
@@ -216,7 +277,6 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                 </select>
                             </label>
                         </div>
-
                         <div className={styles.column}>
                             <label>Alimentação:
                                 <select name="alimentacao" value={formData.alimentacao} onChange={handleChange}>
@@ -289,6 +349,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                     value={item}
                                     checked={formData.produtosUtilizados.includes(item)}
                                     onChange={(e) => handleCheckboxChangeOutros(e, "produtosUtilizados", setShowOtherInputProdutosUtilizados, setOtherValueProdutosUtilizados)}
+                                    className="form-control"
                                 /> {item}
                             </label>
                         ))}
@@ -299,6 +360,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                             placeholder="Digite aqui..."
                             value={otherValueProdutosUtilizados}
                             onChange={(e) => setOtherValueProdutosUtilizados(e.target.value)}
+                            className="form-control"
                         />
                     )}
                     <div className={styles.column}>
@@ -314,8 +376,9 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                 <input
                                     type="checkbox"
                                     value={item}
-                                    checked={formData["contatoComSuperfice"]?.includes(item)}
+                                    checked={formData.contatoComSuperfice?.includes(item)}
                                     onChange={(e) => handleCheckboxChange(e, "contatoComSuperfice")}
+                                    className="form-control"
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
                         ))}
@@ -325,25 +388,28 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                     </div>
                     <div className={styles.checkbox_container}>
                         {[
-                            "Não", "cães", "Gatos", "Outros",].map((item) => (
-                                <label key={item}>
-                                    <input
-                                        type="checkbox"
-                                        value={item}
-                                        checked={formData.conviveComAnimais.includes(item)}
-                                        onChange={(e) => handleCheckboxChangeOutros(e, "conviveComAnimais", setShowOtherInputConviveComAnimais, setOtherValueConviveComAnimais)}
-                                    /> {item}
-                                </label>
-                            ))}
+                            "Não", "cães", "Gatos", "Outros",
+                        ].map((item) => (
+                            <label key={item}>
+                                <input
+                                    type="checkbox"
+                                    value={item}
+                                    checked={formData.conviveComAnimais.includes(item)}
+                                    onChange={(e) => handleCheckboxChangeOutros(e, "conviveComAnimais", setShowOtherInputConviveComAnimais, setOtherValueConviveComAnimais)}
+                                    className="form-control"
+                                /> {item}
+                            </label>
+                        ))}
+                        {showOtherInputConviveComAnimais && (
+                            <input
+                                type="text"
+                                placeholder="Digite aqui..."
+                                value={otherValueConviveComAnimais}
+                                onChange={(e) => setOtherValueConviveComAnimais(e.target.value)}
+                                className="form-control"
+                            />
+                        )}
                     </div>
-                    {showOtherInputConviveComAnimais && (
-                        <input
-                            type="text"
-                            placeholder="Digite aqui..."
-                            value={otherValueConviveComAnimais}
-                            onChange={(e) => setOtherValueConviveComAnimais(e.target.value)}
-                        />
-                    )}
                     <div className={styles.column}>
                         <label>Contactantes Sintomáticos:</label>
                     </div>
@@ -356,8 +422,9 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                 <input
                                     type="checkbox"
                                     value={item}
-                                    checked={formData["contactantesSintomaticos"]?.includes(item)}
+                                    checked={formData.contactantesSintomaticos?.includes(item)}
                                     onChange={(e) => handleCheckboxChange(e, "contactantesSintomaticos")}
+                                    className="form-control"
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
                         ))}
@@ -374,53 +441,43 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                 <input
                                     type="checkbox"
                                     value={item}
-                                    checked={formData["controleEctoparasitas"]?.includes(item)}
+                                    checked={formData.controleEctoparasitas?.includes(item)}
                                     onChange={(e) => handleCheckboxChange(e, "controleEctoparasitas")}
+                                    className="form-control"
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
                         ))}
                     </div>
-
                     <div className={styles.column}>
-                        <label>Queixa principal(Início/ Aspecto/ Evolução):
+                        <label>Queixa principal (Início/ Aspecto/ Evolução):
                             <textarea type="text" name="queixaPrincipal" value={formData.queixaPrincipal} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
-
-                    {/* Tratamentos Atuais */}
                     <div className={styles.box}>
                         <div className={styles.column}>
                             <label>Tratamentos atuais:
-                                <select name="tratamentosAtuais.confirmacao" value={formData.tratamentosAtuais?.confirmacao || ""}
-                                    onChange={handleTratamentoChange}>
+                                <select name="tratamentosAtuais.confirmacao" value={formData.tratamentosAtuais?.confirmacao || ""} onChange={handleTratamentoChange}>
                                     <option value="">Selecione</option>
                                     <option value="Sim">Sim</option>
-                                    <option value="Não">Não </option>
+                                    <option value="Não">Não</option>
                                 </select>
                             </label>
-
-
-                            {/* Se SIM for selecionado, mostra as opções de tratamento */}
                             {formData.tratamentosAtuais?.confirmacao === "Sim" && (
                                 <div className={`${styles.column} ${styles.subField}`}>
                                     <label>Tipo de tratamento:
-                                        <select name="tratamentosAtuais.tipoTratamento" value={formData.tratamentosAtuais?.tipoTratamento || ""}
-                                            onChange={handleChange}>
+                                        <select name="tratamentosAtuais.tipoTratamento" value={formData.tratamentosAtuais?.tipoTratamento || ""} onChange={handleChange}>
                                             <option value="">Selecione</option>
                                             <option value="Tópico">Tópico</option>
-                                            <option value="Sistêmico">Sistêmico </option>
+                                            <option value="Sistêmico">Sistêmico</option>
                                         </select>
                                     </label>
-
-                                    {/* Se Tópico ou Sistêmico for selecionado, mostra responsividade */}
                                     {formData.tratamentosAtuais?.tipoTratamento && (
                                         <div className={styles.column}>
                                             <label>Responsividade:
-                                                <select name="tratamentosAtuais.responsividade" value={formData.tratamentosAtuais?.responsividade || ""}
-                                                    onChange={handleChange}>
+                                                <select name="tratamentosAtuais.responsividade" value={formData.tratamentosAtuais?.responsividade || ""} onChange={handleChange}>
                                                     <option value="">Selecione</option>
                                                     <option value="Responsivo">Responsivo</option>
-                                                    <option value="Não responsivo">Não responsivo </option>
+                                                    <option value="Não responsivo">Não responsivo</option>
                                                     <option value="Parcialmente responsivo">Parcialmente responsivo</option>
                                                 </select>
                                             </label>
@@ -428,9 +485,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                     )}
                                 </div>
                             )}
-
                         </div>
-
                         <div className={styles.column}>
                             <label>Prurido:
                                 <select name="prurido" value={formData.prurido} onChange={handleChange}>
@@ -456,42 +511,42 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                 <input
                                     type="checkbox"
                                     value={item}
-                                    checked={formData["local"]?.includes(item)}
+                                    checked={formData.local?.includes(item)}
                                     onChange={(e) => handleCheckboxChange(e, "local")}
+                                    className="form-control"
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
                         ))}
                     </div>
-                        <div className={styles.box}>
-                    <div className={styles.column}>
-                        <label>Intensidade:
-                            <select name="intensidade" value={formData.intensidade} onChange={handleChange}>
-                                <option value="">Selecione</option>
-                                <option value="Leve">Leve</option>
-                                <option value="Moderado">Moderado</option>
-                                <option value="Intenso">Intenso</option>
-                            </select>
-                        </label>
-                    </div>
-
-                    <div className={styles.column}>
-                        <label>Lambedura de patas:
-                            <select name="lambedura" value={formData.lambedura} onChange={handleChange}>
-                                <option value="">Selecione</option>
-                                <option value="Sim">Sim</option>
-                                <option value="Não">Não</option>
-                            </select>
-                        </label>
-                    </div>
+                    <div className={styles.box}>
+                        <div className={styles.column}>
+                            <label>Intensidade:
+                                <select name="intensidade" value={formData.intensidade} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Leve">Leve</option>
+                                    <option value="Moderado">Moderado</option>
+                                    <option value="Intenso">Intenso</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div className={styles.column}>
+                            <label>Lambedura de patas:
+                                <select name="lambedura" value={formData.lambedura} onChange={handleChange}>
+                                    <option value="">Selecione</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </label>
+                        </div>
                     </div>
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton onClick={cleanLocalStorage} />
-                        < ContinuarFichasGreenButton type="submit" />
+                        <CancelarWhiteButton onClick={cleanLocalStorage} />
+                        <ContinuarFichasGreenButton type="submit" />
                     </div>
                 </form>
             </div>
         </div>
-    )
+    );
 }
 
 export default FichaDermatologicaStep1;
