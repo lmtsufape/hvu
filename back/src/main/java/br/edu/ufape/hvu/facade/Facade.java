@@ -10,11 +10,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
-import br.edu.ufape.hvu.exception.InvalidJsonException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
@@ -524,7 +521,7 @@ public class Facade {
     }
 
     @Transactional
-    public Vaga processUpdateVaga(VagaRequest obj, Long id, String idSession){
+    public Vaga processUpdateVaga(VagaRequest obj, Long id){
         //Vaga o = obj.convertToEntity();
         Vaga oldObject = vagaServiceInterface.findVagaById(id);
 
@@ -595,7 +592,7 @@ public class Facade {
         animalNoReturn
                 .addAll(vagas.stream()
                         .map(vaga -> vaga.getAgendamento().getAnimal())
-                        .collect(Collectors.toList()));
+                        .toList());
         return animalNoReturn;
     }
 
@@ -673,14 +670,14 @@ public class Facade {
         StringBuilder detalheBuilder = new StringBuilder();
 
         if (endDate == null) {
-            if (!isWeekend(startDate)) {
+            if (isWeekend(startDate)) {
                 detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
                 detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
             }
         } else {
             LocalDate currentDate = startDate;
             while (!currentDate.isAfter(endDate)) {
-                if (!isWeekend(currentDate)) {
+                if (isWeekend(currentDate)) {
                     detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
                     detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
                 }
@@ -692,7 +689,7 @@ public class Facade {
     }
 
     private boolean isWeekend(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+        return date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY;
     }
 
     @Transactional
