@@ -185,13 +185,13 @@ function ReabilitacaoIntegrativaSteps() {
   // Obtém o ID da ficha da URL
   useEffect(() => {
     if (router.isReady) {
-        const id = router.query.fichaId;
+        const id = router.query.consultaId;
         if (id) {
           setConsultaId(id);
           console.log("ID da ficha:", id);
         }
     }
-  }, [router.isReady, router.query.fichaId]);
+  }, [router.isReady, router.query.consultaId]);
 
   useEffect(() => {
       if (typeof window !== 'undefined') {
@@ -374,11 +374,11 @@ const handleSelectChange = (e, index) => {
             diagnosticoMTC:formData.diagnosticoMTC,
 
 
-        dados:{
+
           responsavel:formData.responsavel,
           estagiario:formData.estagiario,
           cpf:formData.cpf,
-        },
+
         principios:formData.principios,
         constituicaoCorporal:formData.constituicaoCorporal,
         preferencias:formData.preferencias,

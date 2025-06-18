@@ -69,7 +69,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, prevStep })
     return (
         <div className={styles.container}>
             <VoltarButton onClick={prevStep} />
-            <h1>Ficha de atendimento ortopédico</h1>
+            <h1>Ficha de Reabilitação Integrativa</h1>
             <div className={styles.form_box}>
 
                 <form onSubmit={handleSubmit}>
@@ -312,7 +312,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, prevStep })
                     </div>
                     <div className={styles.column}>
                         <label>Desverminização: </label>
-                        <input type="text" name="manejosGerais.desverminizacao" value={formData.manejosGerais.desverminizacao} />
+                        <input type="text" name="manejosGerais.desverminizacao" value={formData.manejosGerais.desverminizacao} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Ambiente: </label>

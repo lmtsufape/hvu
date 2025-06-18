@@ -69,7 +69,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, cleanLocalS
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Ficha de Reabilitacao Integrativa</h1>
+            <h1>Ficha de Reabilitação Integrativa</h1>
             <div className={styles.form_box}>
 
                 <form onSubmit={handleSubmit}>
@@ -184,7 +184,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, cleanLocalS
 
                     <div className={styles.column}>
                         <label>Palpação de membros e articulações: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao" value={formData.exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao} />
+                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao" value={formData.exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao} onChange={handleChange}/>
                     </div>
                     <div className={styles.column}>
                         <label>Palpação de coluna: </label>
@@ -234,7 +234,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, cleanLocalS
                     </div>
                     <div className={styles.column}>
                         <label>Nervos Cranianos: </label>
-                        <input type="text" name="exameClinicoEspecialNeurologico.nervosCranianos" value={formData.exameClinicoEspecialNeurologico.nervosrCranianos} onChange={handleChange} />
+                        <input type="text" name="exameClinicoEspecialNeurologico.nervosCranianos" value={formData.exameClinicoEspecialNeurologico.nervosCranianos} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Reaçoes Posturais: </label>

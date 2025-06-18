@@ -64,7 +64,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
     return (
         <div className={styles.container}>
             <VoltarButton onClick={prevStep} />
-            <h1>Ficha de Reabilitacao Integrativa</h1>
+            <h1>Ficha de Reabilitação Integrativa</h1>
             <div className={styles.form_box}>
 
                 <form onSubmit={handleSubmit}>
@@ -143,7 +143,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
 
                     <div className={styles.column}>
                         <label>Sensibilidade pontos Mu: </label>
-                        <input type="text" name="sensibilidadePontosMu" value={formData.SensibilidadePontosMu} onChange={handleChange} />
+                        <input type="text" name="sensibilidadePontosMu" value={formData.sensibilidadePontosMu} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Sensibilidade pontos Shu: </label>
