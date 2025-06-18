@@ -371,6 +371,7 @@ function CreateConsulta() {
     "Ficha clínica ortopédica": "/updateFichaOrtopedica",
     "Ficha de Reabilitação Integrativa": "/updateFichaReabilitacao",
     "Ficha Solicitação de Exame": "/updateFichaSolicitacaoExame",
+    "Ficha de Retorno Clínico de Animais Silvestres e Exóticos" : "/updateFichaRetornoClinicoSil",
   };
 
   const handleRoute = (fichaNome, id, fichaId) => {
@@ -705,7 +706,7 @@ function CreateConsulta() {
                       type="button"
                       onClick={() => handleClick("/fichaRetornoClinicoSil", id)}
                     >
-                      Ficha clíniaca médica de retorno silvestre
+                      Ficha clínica médica de retorno silvestre
                     </button>
                     <button
                       className={styles.ficha_button}

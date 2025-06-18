@@ -6,14 +6,15 @@ import VoltarButton from "../../VoltarButton";
 import { CancelarWhiteButton } from "../../WhiteButton";
 import { getCurrentUsuario } from '../../../../services/userService';
 import { getAnimalById } from '../../../../services/animalService';
-import { createFicha } from '../../../../services/fichaService';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
 import FinalizarFichaModal from "../FinalizarFichaModal";
 import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getFichaById } from "../../../../services/fichaService";
+import { updateFicha } from "../../../../services/fichaService";
 
-function fichaRetornoClinicoSil() {
+function updateFichaRetornoClinicoSil() {
 
     const [userId, setUserId] = useState(null);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -29,6 +30,8 @@ function fichaRetornoClinicoSil() {
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
+    const [fichaId, setFichaId] = useState(null);
+    const [data, setData] = useState([]);
      
 
     const [formData, setFormData] = useState({
@@ -43,62 +46,57 @@ function fichaRetornoClinicoSil() {
         medicoresponsavel: "",
         outros_texto: ""
     });
-    
-
-    // Carrega os dados do formulário do localStorage 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedFormData = localStorage.getItem("fichaRetornoClinicoSilFormData");
-            if (savedFormData) {
-                setFormData(JSON.parse(savedFormData));
-            }
-        }
-    }, []); 
-
-    // Salva os dados do formulário no localStorage 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem("fichaRetornoClinicoSilFormData", JSON.stringify(formData));
-        }
-    }, [formData]); 
 
     // Obtém o ID da ficha da URL
     useEffect(() => {
-    if (router.isReady) {
-        const id = router.query.consultaId;
-        const animalId = router.query.animalId;
-        if (id) {
-            setConsultaId(id);
+        if (router.isReady) {
+            const id = router.query.consultaId;
+            const animalId = router.query.animalId;
+            const ficha = router.query.fichaId;
+            if (id) {
+                setConsultaId(id);
+            }
+            if (animalId) {
+                setAnimalId(animalId);
+            }
+            if (ficha) {
+                setFichaId(ficha);
+            }
         }
-        if (animalId) {
-            setAnimalId(animalId);
-        }
-    }
     }, [router.isReady, router.query.consultaId]);
 
    useEffect(() => {
-    if (!animalId) return;
+        if (!animalId) return;
+        if (!fichaId) return;
 
-    const fetchData = async () => {
-        try {
-            const animalData = await getAnimalById(animalId);
-            setAnimal(animalData);
-        } catch (error) {
-            console.error('Erro ao buscar animal:', error);
-        }
+        const fetchData = async () => {
+            try {
+                const animalData = await getAnimalById(animalId);
+                setAnimal(animalData);
+            } catch (error) {
+                console.error('Erro ao buscar animal:', error);
+            }
 
-        try {
-            const tutorData = await getTutorByAnimal(animalId);
-            setTutor(tutorData);
-        } catch (error) {
-            console.error('Erro ao buscar tutor do animal:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+            try {
+                const tutorData = await getTutorByAnimal(animalId);
+                setTutor(tutorData);
+            } catch (error) {
+                console.error('Erro ao buscar tutor do animal:', error);
+            } 
 
-    fetchData();
-}, [animalId]);
+            try {
+                const formData = await getFichaById(fichaId);
+                setFormData(JSON.parse(formData.conteudo));
+                setData(formData.dataHora);
+            } catch (error) {
+                console.error('Erro ao buscar dados da ficha:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [animalId, fichaId]);
 
 
     useEffect(() => {
@@ -146,17 +144,13 @@ function fichaRetornoClinicoSil() {
         );
     }
 
-    const cleanLocalStorage = () => {
-        localStorage.removeItem("fichaRetornoClinicoSilFormData");
-    }
-
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (event) => {
-        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
+        const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss");
         const fichaData = {
             nome: "Ficha de Retorno Clínico de Animais Silvestres e Exóticos",  
             conteudo:{
@@ -171,18 +165,14 @@ function fichaRetornoClinicoSil() {
                 medicoresponsavel: formData.medicoresponsavel,
                 outros_texto: formData.outros_texto
             },
-            dataHora: dataFormatada // Gera a data atual no formato ISO 8601
+            dataHora: dataFormatada 
         };
 
         try {
-            console.log(fichaData)
-            const resultado = await createFicha(fichaData);
-            console.log("Resposta da api", resultado.id);
-            localStorage.setItem('fichaId', resultado.id.toString());
-            localStorage.removeItem("fichaRetornoClinicoSilFormData");
+            await updateFicha(fichaData, fichaId);
             setShowAlert(true);
         } catch (error) {
-            console.error("Erro ao criar ficha:", error);
+            console.error("Erro ao editar ficha:", error);
             if (error.response && error.response.data && error.response.data.code) {
                 setErrorMessage(error.response.data.message);
             }
@@ -211,7 +201,7 @@ function fichaRetornoClinicoSil() {
     return(
         <div className={styles.container}>
             <VoltarButton />
-            <h1>FICHA CLÍNICO MÉDICA DE RETORNO DE ANIMAIS SILVESTRES E EXÓTICOS</h1>
+            <h1>Ficha clínico médica de retorno de animais silvestres e exóticos</h1>
             <div className={styles.form_box}>
                 <form onSubmit = {handleSubmit}>
                     <div id="flex-grid" className={styles.column}>
@@ -395,17 +385,17 @@ function fichaRetornoClinicoSil() {
                     </div>
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
+                        < CancelarWhiteButton />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
                 {showAlert && consultaId && (
-                <Alert message="Ficha criada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
+                <Alert message="Ficha editada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
                 )}
-                {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
+                {showErrorAlert && (<ErrorAlert message="Erro ao editar ficha" show={showErrorAlert} />)}
             </div>
         </div>
     )
 }
 
-export default fichaRetornoClinicoSil;
+export default updateFichaRetornoClinicoSil;
