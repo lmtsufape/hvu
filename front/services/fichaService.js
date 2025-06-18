@@ -27,9 +27,9 @@ export async function getFichaById(fichaId) {
     }
 }
 
-export async function updateFicha(fichaId) {
+export async function updateFicha(formData, fichaId) {
     try {
-        const response = await api.patch(`/ficha/${fichaId}`);
+        const response = await api.patch(`/ficha/${fichaId}`, formData);
         return response.data;
     } catch (error) {
         throw error;
