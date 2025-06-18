@@ -424,6 +424,70 @@ public class Facade {
         return medicoService.findByEspecialidade(especialidade);
     }
 
+
+    // Patologista--------------------------------------------------------------
+    private final PatologistaServiceInterface patologistaService;
+
+    @Transactional
+    public Patologista savePatologista(PatologistaRequest request, String password) {
+        Patologista patologista = request.convertToEntity();
+        String userKcId = null;
+        keycloakService.createUser(patologista.getCpf(), patologista.getEmail(), password, "patologista");
+        try {
+            userKcId = keycloakService.getUserId(patologista.getEmail());
+            patologista.setUserId(userKcId);
+            return patologistaService.savePatologista(patologista);
+        }catch (DataIntegrityViolationException e){
+            keycloakService.deleteUser(userKcId);
+            throw e;
+        }catch (Exception e){
+            keycloakService.deleteUser(userKcId);
+            throw new RuntimeException("Ocorreu um erro inesperado ao salvar o usuário: "+ e.getMessage(), e);
+        }
+    }
+
+    @Transactional
+    public Patologista updatePatologista(Long id, PatologistaRequest request, String idSession) {
+        if (request == null) {
+            throw new IllegalArgumentException("Dados inválidos para atualização.");
+        }
+
+        Patologista oldPatologista = patologistaService.findPatologistaById(id); // lança EntityNotFoundException se não existir
+        Patologista patologistaAtualizado = request.convertToEntity();
+
+        if(!keycloakService.hasRoleSecretario(idSession) && !patologistaAtualizado.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
+        }
+
+        modelMapper.typeMap(Patologista.class, Patologista.class)
+                .addMappings(mapper -> mapper.skip(Patologista::setId))
+                .map(patologistaAtualizado, oldPatologista);
+
+
+        Patologista newPatologista = patologistaService.updatePatologista(oldPatologista);
+        keycloakService.updateUser(newPatologista.getUserId(), newPatologista.getEmail());
+        return newPatologista;
+    }
+
+    public Patologista findPatologistaById(long id, String idSession) {
+        Patologista patologista = patologistaService.findPatologistaById(id);
+        if(!keycloakService.hasRoleSecretario(idSession) && !patologista.getUserId().equals(idSession)){
+            throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
+        }
+        return patologistaService.findPatologistaById(id);
+    }
+
+    public List<Patologista> getAllPatologista() {
+        return patologistaService.getAllPatologista();
+    }
+
+    @Transactional
+    public void deletePatologista(long id) {
+        patologistaService.deletePatologista(id);
+    }
+
+
+
     // Raca--------------------------------------------------------------
     private final RacaServiceInterface racaServiceInterface;
 
