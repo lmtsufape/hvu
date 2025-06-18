@@ -191,11 +191,10 @@ function FichaNeurologica({ formData, handleChange, prevStep, handleCheckboxChan
                             </div>
                         )}
                     </div>
-                    <h1 className={styles.title}>Diagnóstico anatômico</h1>
+                    <div className={styles.titulo}>Diagnóstico anatômico</div>
 
-                    <div className={styles.column}>
-                        <label>Local da lesão: </label>
-                        <div className={styles.checkbox_container}>
+                    <label>Local da lesão: </label>
+                    <div className={styles.checkbox_container}>
                             {[
                                 "Cerebral",
                                 "Diencéfalo",
@@ -239,8 +238,6 @@ function FichaNeurologica({ formData, handleChange, prevStep, handleCheckboxChan
                                 </div>
                             ))}
                         </div>
-
-                    </div>
                     <div className={styles.column}>
                         <label>Nervo periferico:
                             <input type="text" name="diagnosticoAnatomico.nervoPeriferico"

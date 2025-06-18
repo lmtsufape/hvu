@@ -1,22 +1,17 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .container {
-  display: block;
   width: 100%;
   max-width: 65rem;
   min-width: 300px;
-  height: auto;
-  margin: auto;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin: 30px auto;
   font-family: "Poppins", sans-serif;
 }
-
 .container h1 {
-  font-size: 24px;
+  font-size: clamp(20px, 5vw, 24px); /* Font size responsivo */
   font-weight: 700;
   text-align: center;
-  margin-top: 50px;
   color: #333;
 }
 
@@ -25,77 +20,76 @@
   font-weight: 700;
   text-align: start;
   color: #333;
+  margin-bottom: 10px;
 }
 
-.titulo{
+.titulo {
   max-width: 1118px;
   width: 100%;
   height: 44px;
-  background-color: #EEF8F3;
-  color: #000000;
+  background-color: #eef8f3;
+  color: #000;
   font-size: 20px;
-  padding: 9.5px;
-  padding-left: 16px;
+  padding: 9.5px 16px;
   margin-bottom: 18px;
   border-radius: 10px;
   font-weight: 500;
+  box-sizing: border-box;
 }
 
-.dados_ocultos{
-  max-width: 1118px;
+.dados_ocultos {
   width: 100%;
-  height: 44px;
+  height: auto;
   background-color: #32705380;
-  font-size: 20px;
-  padding: 9.5px;
-  padding-left: 16px;
-  padding-right: 150px;
-  margin-bottom: 18px;
-  margin-top: 38px;
+  font-size: clamp(16px, 4vw, 20px);
+  padding: 0.5rem 1rem;
+  margin: 1.5rem 0 1rem;
   border-radius: 10px;
   font-weight: 500;
   border: none;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
-.dados_ocultos:hover{
+.dados_ocultos:hover {
   background-color: #32835d80;
 }
 
 .form_box {
-  display: grid;
+  width: 100%;
+  max-width: 100%; /* Garante que o formulário não ultrapasse o contêiner */
   border-radius: 20px;
-  padding-bottom: 18px;
-  padding-left: 29px;
-  padding-right: 37px;
+  padding: 1rem; /* Padding relativo */
   background-color: #fff;
   box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
+  overflow-x: hidden; /* Evita overflow horizontal */
 }
 
-.box{
+.box {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.singleColumn {
+  display: block; /* Remove o grid, usando uma única coluna */
 }
 
 .column {
-  flex: 1;
-  flex-direction: column;
   display: flex;
-  min-width: 100px;
-  outline: solid red;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.column label {
-  display: block;
-  font-size: 16px;
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: #272727;
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px
 }
 
 .column input,
-.column select,
 .column textarea {
   width: 80px;
   padding: 10px;
@@ -104,11 +98,20 @@
   border-radius: 5px;
   resize: none;
   margin-bottom: 18px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.column input:focus,
+.column textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
 }
 
 .column input[id="checkbox"] {
   width: 20px;
   height: 20px;
+  margin-right: 10px;
 }
 
 .column input.inputLargo {
@@ -117,21 +120,49 @@
 
 .inputGroup {
   display: flex;
-  gap: 40px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.posturalInputGroup {
+  display: flex;
+  gap: 15px; /* Espaçamento entre os inputs */
+  margin-top: 10px; /* Espaçamento entre o label e os inputs */
+}
+
+.posturalInputGroup label {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.posturalInputGroup input {
+  width: 80px; /* Largura dos inputs */
+  padding: 8px;
+  margin-left: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.posturalInputGroup input:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
 }
 
 .criar_button {
   width: 180px;
   height: 48px;
   border-radius: 10px;
-  border: 1px solid #39805F;
-  color: #FFF5F6;
-  background-color: #39805F;
-  font-family: 'Poppins', sans-serif;
+  border: 1px solid #39805f;
+  color: #fff5f6;
+  background-color: #39805f;
+  font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
-  letter-spacing: 0em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .criar_button:hover {
@@ -139,19 +170,20 @@
 }
 
 .button_box {
-  width: 100%; /* Alterado para usar uma porcentagem */
   max-width: 1152px;
+  width: 100%;
   height: 10vh;
   display: flex;
-  justify-content: right;
+  justify-content: flex-end;
   align-items: center;
-  gap: 3vh;
+  gap: 20px;
+  margin-top: 20px;
 }
-.box_ficha_toggle{
+
+.box_ficha_toggle {
   max-width: 1118px;
   width: 100%;
-  margin-bottom: 18px;
-  margin-top: 38px;
+  margin: 38px 0 18px;
 }
 
 .toggleButton {
@@ -159,38 +191,38 @@
   width: 100%;
   height: 44px;
   background-color: #98b7a9;
-  color: #000000;
+  color: #000;
   font-size: 20px;
   padding: 9.5px 16px;
-  padding-left: 16px;
-  margin-bottom: 0px;
-  border-radius: 10px 10px 10px 10px;
+  margin-bottom: 0;
+  border-radius: 10px;
   font-weight: 500;
   cursor: pointer;
   border: none;
   outline: none;
   text-align: left;
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   box-sizing: border-box;
-  position: relative; 
+  position: relative;
+  transition: background-color 0.3s ease;
 }
 
 .toggleButton::after {
   font-weight: 600;
-  position: absolute; 
-  right: 16px; 
-  top: 50%; 
-  transform: translateY(-50%); 
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .toggleButton.expand::after {
-  content: "+"; 
+  content: "+";
 }
 
 .toggleButton.minimize::after {
-  content: "-"; 
+  content: "-";
 }
 
 .toggleButton:hover {
@@ -203,62 +235,57 @@
 
 .container_toggle {
   width: 100%;
-  height: 430px;
-  align-items: center;
+  height: auto;
   margin-top: 22px;
 }
 
 .container_toggle h1 {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 24px;
   font-weight: 700;
   line-height: 36px;
-  letter-spacing: 0em;
 }
 
 .infos_box {
   display: flex;
   flex-direction: column;
-  width: 97%;
+  width: 100%;
   border-radius: 20px;
-  border: 0.5px solid #B1B1B1;
-  gap: 10px;
+  border: 0.5px solid #b1b1b1;
+  padding: 20px;
 }
 
 .identificacao {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-left: 28px;
-  margin-top: 32px;
+  margin: 20px 0 0 28px;
 }
 
 .nome_animal {
   font-size: 20px;
   font-weight: 600;
   line-height: 30px;
-  letter-spacing: 0em;
 }
 
 .especie_animal {
-  color: #39805F;
+  color: #39805f;
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
-  letter-spacing: 0em;
 }
 
 .animal-data-box {
   display: flex;
-  gap: 188px;
-  margin-left: 28px;
-  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 20px 28px;
 }
 
 .lista {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 20px;
 }
 
 .infos {
@@ -271,7 +298,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 24px;
-  color: #39805F;
+  color: #39805f;
 }
 
 .infos h6 {
@@ -281,3 +308,81 @@
   color: #404040;
 }
 
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #272727;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  appearance: none;
+  margin-right: 10px;
+  width: 26px; /* Mesmo tamanho do primeiro código */
+  height: 26px; /* Mesmo tamanho do primeiro código */
+  border: 1px solid #B1B1B1; /* Mesma borda do primeiro código */
+  border-radius: 5px; /* Mesmo border-radius */
+  cursor: pointer;
+  accent-color: #39805f; /* Mesma cor de destaque */
+}
+.checkboxLabel input[type="checkbox"]:checked {
+  background-color: #B1B1B1; /* Mesma cor de fundo quando selecionado */
+}
+
+.bilateralInputGroup {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.bilateralInputGroup label {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.bilateralInputGroup input {
+  width: 100px;
+  padding: 8px;
+  margin-left: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.bilateralInputGroup input:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  .form_box {
+    padding: 15px;
+  }
+
+  .box {
+    grid-template-columns: 1fr; /* Uma coluna em telas menores */
+  }
+
+  .animal-data-box {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .button_box {
+    flex-direction: column;
+    gap: 10px;
+    height: auto;
+  }
+
+  .criar_button {
+    width: 100%;
+    max-width: 300px;
+  }
+}
