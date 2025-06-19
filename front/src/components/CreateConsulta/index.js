@@ -352,8 +352,32 @@ function CreateConsulta() {
     }
   };
 
-  const handleClick = (path, id) => {
-    router.push(`${path}?fichaId=${id}&animalId=${animalId}`);
+  const handleClick = (path, id, fichaId) => {
+    router.push(`${path}?consultaId=${id}&animalId=${animalId}&fichaId=${fichaId}`);
+  };
+
+  const rotasPorNome = {
+    "Ficha de sessão": "/updateFichaSessao",
+    "Ficha Anestesiológica": "/updateFichaAnestesiologia",
+    "Ficha de ato cirúrgico": "/updateFichaAtoCirurgico",
+    "Ficha clínica cardiológica": "/updateFichaCardiologica",
+    "Ficha Clínica Médica": "/updateFichaClinicaMedica",
+    "Ficha Clínica Médica (silvestres ou exóticos)": "/updateFichaClinicaMedicaSilvestres",
+    "Ficha dermatológica de retorno": "/updateFichaDermatologicaRetorno",
+    "Ficha clínica dermatológica": "/updateFichaDermatologica",
+    "Ficha de solicitação de citologia": "/updateFichaSolicitacaoCitologia",
+    "Ficha clínico médica de retorno": "/updateFichaMedicaRetorno",
+    "Ficha clínica neurológica": "/updateFichaNeurologica",
+    "Ficha clínica ortopédica": "/updateFichaOrtopedica",
+    "Ficha de Reabilitação Integrativa": "/updateFichaReabilitacao",
+    "Ficha Solicitação de Exame": "/updateFichaSolicitacaoExame",
+    "Ficha de Retorno Clínico de Animais Silvestres e Exóticos" : "/updateFichaRetornoClinicoSil",
+  };
+
+  const handleRoute = (fichaNome, id, fichaId) => {
+    const path = rotasPorNome[fichaNome];
+    
+    router.push(`${path}?consultaId=${id}&animalId=${animalId}&fichaId=${fichaId}`);
   };
 
   const handleDelete = async (id) => {
@@ -682,7 +706,7 @@ function CreateConsulta() {
                       type="button"
                       onClick={() => handleClick("/fichaRetornoClinicoSil", id)}
                     >
-                      Ficha clíniaca médica de retorno silvestre
+                      Ficha clínica médica de retorno silvestre
                     </button>
                     <button
                       className={styles.ficha_button}
@@ -781,15 +805,26 @@ function CreateConsulta() {
                               <div className={styles.fichaContent}>
                                 {formatFichaContent(ficha.conteudo)}
                               </div>
-                              <button
-                                className={styles.voltarButton}
-                                type="button"
-                                onClick={() => handleDelete(ficha.id)}
-                                style={{ marginTop: "15px" }}
-                                aria-label={`Excluir ficha ${ficha.nome || "Ficha sem nome"}`}
-                              >
-                                Excluir ficha
-                              </button>
+                              <div className={styles.fichaActions}>
+                                <button
+                                  className={styles.voltarButton}
+                                  type="button"
+                                  onClick={() => handleDelete(ficha.id)}
+                                  style={{ marginTop: "15px" }}
+                                  aria-label={`Excluir ficha ${ficha.nome || "Ficha sem nome"}`}
+                                >
+                                  Excluir ficha
+                                </button>
+                                    
+                                <button
+                                  className={styles.voltarButton}
+                                  type="button"
+                                  style={{ marginTop: "15px" }}
+                                  onClick={() => handleRoute(ficha.nome, id, ficha.id)}
+                                >
+                                  Editar
+                                </button> 
+                              </div> 
                             </div>
                           )}
                         </div>

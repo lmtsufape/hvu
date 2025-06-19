@@ -240,6 +240,11 @@
   background-color: #f8f9fa;
 }
 
+.fichaActions{
+  display: flex;
+  gap: 10px;
+}
+
 .no_fichas {
   font-style: italic;
   color: #6c757d;

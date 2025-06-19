@@ -5,11 +5,10 @@ import { CancelarWhiteButton } from "../../../WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
-import { createFicha } from '../../../../../services/fichaService';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from "react";
 
-function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, cleanLocalStorage }) {
+function ReabilitacaoIntegrativa({ formData, handleChange, nextStep }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -184,7 +183,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, cleanLocalS
 
                     <div className={styles.column}>
                         <label>Palpação de membros e articulações: </label>
-                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao" value={formData.exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao} onChange={handleChange}/>
+                        <input type="text" name="exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao" value={formData.exameClinicoEspecialOrtpedico.palpacaoMembrosArticulacao} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Palpação de coluna: </label>
@@ -274,7 +273,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, cleanLocalS
                     </div>
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton onClick={cleanLocalStorage} />
+                        < CancelarWhiteButton />
                         < ContinuarFichasGreenButton type="submit" />
                     </div>
                 </form>

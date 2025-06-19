@@ -6,14 +6,15 @@ import VoltarButton from "../../VoltarButton";
 import { CancelarWhiteButton } from "../../WhiteButton";
 import { getCurrentUsuario } from '../../../../services/userService';
 import { getAnimalById } from '../../../../services/animalService';
-import { createFicha } from '../../../../services/fichaService';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
 import FinalizarFichaModal from "../FinalizarFichaModal";
 import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getFichaById } from "../../../../services/fichaService";
+import { updateFicha } from "../../../../services/fichaService";
 
-function fichaRetornoClinicoSil() {
+function updateFichaSessao() {
 
     const [userId, setUserId] = useState(null);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -27,6 +28,8 @@ function fichaRetornoClinicoSil() {
     const [consultaId, setConsultaId] = useState(null);
     const [animalId, setAnimalId] = useState(null);
     const [animal, setAnimal] = useState({});
+    const [fichaId, setFichaId] = useState(null);
+    const [data, setData] = useState([]);
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
      
@@ -34,50 +37,32 @@ function fichaRetornoClinicoSil() {
     const [formData, setFormData] = useState({
         numeroSessao: "",
         sessaoData: "",
-        anamnese: "",
-        exameclinico: "",
-        tratamento: "",
-        exames: [],
-        rg: "",
+        anotacao: "",
         estagiario: "",
-        medicoresponsavel: "",
-        outros_texto: ""
+        rg: ""
     });
-    
-
-    // Carrega os dados do formulário do localStorage 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedFormData = localStorage.getItem("fichaRetornoClinicoSilFormData");
-            if (savedFormData) {
-                setFormData(JSON.parse(savedFormData));
-            }
-        }
-    }, []); 
-
-    // Salva os dados do formulário no localStorage 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem("fichaRetornoClinicoSilFormData", JSON.stringify(formData));
-        }
-    }, [formData]); 
 
     // Obtém o ID da ficha da URL
     useEffect(() => {
     if (router.isReady) {
         const id = router.query.consultaId;
         const animalId = router.query.animalId;
+        const ficha = router.query.fichaId;
         if (id) {
             setConsultaId(id);
         }
         if (animalId) {
             setAnimalId(animalId);
         }
+        if (ficha) {
+            setFichaId(ficha);
+        }
     }
     }, [router.isReady, router.query.consultaId]);
 
    useEffect(() => {
     if (!animalId) return;
+    if (!fichaId) return;
 
     const fetchData = async () => {
         try {
@@ -92,13 +77,21 @@ function fichaRetornoClinicoSil() {
             setTutor(tutorData);
         } catch (error) {
             console.error('Erro ao buscar tutor do animal:', error);
+        } 
+
+        try {
+            const formData = await getFichaById(fichaId);
+            setFormData(JSON.parse(formData.conteudo));
+            setData(formData.dataHora);
+        } catch (error) {
+            console.error('Erro ao buscar dados da ficha:', error);
         } finally {
             setLoading(false);
         }
     };
 
-    fetchData();
-}, [animalId]);
+        fetchData();
+    }, [animalId, fichaId]);
 
 
     useEffect(() => {
@@ -146,40 +139,28 @@ function fichaRetornoClinicoSil() {
         );
     }
 
-    const cleanLocalStorage = () => {
-        localStorage.removeItem("fichaRetornoClinicoSilFormData");
-    }
-
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (event) => {
-        const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
+        const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss"); 
         const fichaData = {
-            nome: "Ficha de Retorno Clínico de Animais Silvestres e Exóticos",  
-            conteudo:{
+            nome: "Ficha de sessão",  
+            conteudo: {
                 numeroSessao: formData.numeroSessao,
                 sessaoData: formData.sessaoData,
-                anamnese: formData.anamnese,
-                exameclinico: formData.exameclinico,
-                tratamento: formData.tratamento,
-                exames: formData.exames,
+                anotacao: formData.anotacao,
                 rg: formData.rg,
-                estagiario: formData.estagiario,
-                medicoresponsavel: formData.medicoresponsavel,
-                outros_texto: formData.outros_texto
+                estagiario: formData.estagiario
             },
             dataHora: dataFormatada // Gera a data atual no formato ISO 8601
         };
 
         try {
             console.log(fichaData)
-            const resultado = await createFicha(fichaData);
-            console.log("Resposta da api", resultado.id);
-            localStorage.setItem('fichaId', resultado.id.toString());
-            localStorage.removeItem("fichaRetornoClinicoSilFormData");
+            await updateFicha(fichaData, fichaId);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
@@ -194,29 +175,16 @@ function fichaRetornoClinicoSil() {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('pt-BR', options);
     };
-
-    const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
-    setFormData(prevState => {
-        const examesAtual = Array.isArray(prevState.exames) ? prevState.exames : [];
-        const exames = checked
-            ? [...examesAtual, value]
-            : examesAtual.filter(item => item !== value);
-        return { ...prevState, exames };
-    });
-};
-
-
     
     return(
         <div className={styles.container}>
             <VoltarButton />
-            <h1>FICHA CLÍNICO MÉDICA DE RETORNO DE ANIMAIS SILVESTRES E EXÓTICOS</h1>
+            <h1>Ficha de sessão</h1>
             <div className={styles.form_box}>
                 <form onSubmit = {handleSubmit}>
                     <div id="flex-grid" className={styles.column}>
                         <div id="flex-column" className={styles.column}>
-                            <label>RG:</label>
+                            <label>Sessão nº:</label>
                             <input id="meia-caixa" type="text" name="numeroSessao" 
                             value={formData.numeroSessao} 
                             onChange={handleChange} />
@@ -302,105 +270,28 @@ function fichaRetornoClinicoSil() {
                     </div>
 
                     <div className={styles.titulo}>
-                        Retorno – Acompanhamento Clínico
+                        Anotação
                     </div>
                     <div className={styles.column}>
-                        <label>Anamnese:</label>
-                        <textarea id="text" name="anamnese" value={formData.anamnese} onChange={handleChange} rows="10" cols="50" />
-                    </div>
-
-                    <div className={styles.column}>
-                        <label>Exame Clínico:</label>
-                        <textarea id="text" name="exameclinico" value={formData.exameclinico} onChange={handleChange} rows="10" cols="50" />
-                    </div>
-
-                    <div className={styles.column}>
-                        <label>Tratamento:</label>
-                        <textarea id="text" name="tratamento" value={formData.tratamento} onChange={handleChange} rows="10" cols="50" />
-                    </div>
-
-                    <div className={styles.titulo}>
-                        Exames Complementares
-                    </div>
-
-                    <div className={styles.checkbox_container}>
-                    <div>
-                        <label><input type="checkbox" name="exames" value="hemograma" onChange={handleCheckboxChange} /> Hemograma</label>
-                        <label><input type="checkbox" name="exames" value="alt_tgp" onChange={handleCheckboxChange} /> ALT/TGP</label>
-                        <label><input type="checkbox" name="exames" value="ast_tgo" onChange={handleCheckboxChange} /> AST/TGO</label>
-                        <label><input type="checkbox" name="exames" value="creatinina" onChange={handleCheckboxChange} /> Creatinina</label>
-                        <label><input type="checkbox" name="exames" value="ureia" onChange={handleCheckboxChange} /> Uréia</label>
-                    </div>
-
-                    <div>
-                        <label><input type="checkbox" name="exames" value="proteinas_totais" onChange={handleCheckboxChange} /> Proteínas Totais</label>
-                        <label><input type="checkbox" name="exames" value="albumina" onChange={handleCheckboxChange} /> Albumina</label>
-                        <label><input type="checkbox" name="exames" value="globulina" onChange={handleCheckboxChange} /> Globulina</label>
-                        <label><input type="checkbox" name="exames" value="fa" onChange={handleCheckboxChange} /> FA</label>
-                        <label><input type="checkbox" name="exames" value="ggt" onChange={handleCheckboxChange} /> GGT</label>
-                    </div>
-
-                    <div>
-                        <label><input type="checkbox" name="exames" value="glicose" onChange={handleCheckboxChange} /> Glicose</label>
-                        <label><input type="checkbox" name="exames" value="triglicerides" onChange={handleCheckboxChange} /> Triglicerídes</label>
-                        <label><input type="checkbox" name="exames" value="colesterol_total" onChange={handleCheckboxChange} /> Colesterol Total</label>
-                        <label><input type="checkbox" name="exames" value="urinalise" onChange={handleCheckboxChange} /> Urinálise</label>
-                    </div>
-
-                    <div>
-                        <label><input type="checkbox" name="exames" value="bilirrubina_total" onChange={handleCheckboxChange} /> Bilirrubina Total e Frações</label>
-                        <label><input type="checkbox" name="exames" value="tricograma" onChange={handleCheckboxChange} /> Tricograma</label>
-                        <label><input type="checkbox" name="exames" value="citologia_cutanea" onChange={handleCheckboxChange} /> Citologia Cutânea</label>
-                    </div>
-
-                    <div>
-                        <label><input type="checkbox" name="exames" value="raspado_cutaneo" onChange={handleCheckboxChange} /> Raspado Cutâneo</label>
-                        <label><input type="checkbox" name="exames" value="citologia_oncologica" onChange={handleCheckboxChange} /> Citologia Oncológica</label>
-                        <label><input type="checkbox" name="exames" value="histopatologico" onChange={handleCheckboxChange} /> Histopatológico</label>
-                    </div>
-
-                    <div>
-                        <label><input type="checkbox" name="exames" value="ultrassonografia" onChange={handleCheckboxChange} /> Ultrassonografia</label>
-                        <label><input type="checkbox" name="exames" value="raio_x" onChange={handleCheckboxChange} /> Raio X</label>
-                        <label>
-                        <input
-                            type="checkbox"
-                            name="exames"
-                            value="outros"
-                            onChange={handleCheckboxChange}
-                            checked={formData.exames.includes("outros")}
-                        /> Outros:
-                        </label>
-                        
-                        {formData.exames.includes("outros") && (
-                        <input
-                            type="text"
-                            name="outros_texto"
-                            value={formData.outros_texto}
-                            onChange={handleChange}
-                            disabled={!formData.exames.includes("outros")}
-                            placeholder="Especifique"
-                        />
-                        )}
-                    </div>
-                    </div>
+                        <textarea id="caixa-alta" name="anotacao" value={formData.anotacao} onChange={handleChange} rows="10" cols="50" />
+                    </div>              
 
                     <div className={styles.column}>
                         <label>Estagiário: </label>
                         <input type="text" name="estagiario" value={formData.estagiario} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
-                        <label>Médico(s) Vetérinario(s) Responsável: </label>
-                        <input type="text" name="medicoresponsavel" value={formData.medicoresponsavel} onChange={handleChange} />
+                        <label>RG: </label>
+                        <input type="text" name="rg" value={formData.rg} onChange={handleChange} />
                     </div>
 
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
+                        < CancelarWhiteButton />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>
                 {showAlert && consultaId && (
-                <Alert message="Ficha criada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
+                <Alert message="Ficha editada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
                 )}
                 {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
             </div>
@@ -408,4 +299,4 @@ function fichaRetornoClinicoSil() {
     )
 }
 
-export default fichaRetornoClinicoSil;
+export default updateFichaSessao;
