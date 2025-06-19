@@ -169,4 +169,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex) {
+        logger.warn("Operação inválida: {}", ex.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                "Operação inválida",
+                ex.getMessage(),
+                Arrays.asList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 }
