@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.config;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.InvalidJsonException;
+import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.NotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import br.edu.ufape.hvu.exception.types.auth.KeycloakAuthenticationException;
@@ -176,6 +177,20 @@ public class GlobalExceptionHandler {
 
         ErrorResponse error = new ErrorResponse(
                 "Operação inválida",
+                ex.getMessage(),
+                Arrays.asList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
+        logger.warn("Regra de negócio violada: {}", ex.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                "Regra de negócio violada",
                 ex.getMessage(),
                 Arrays.asList(ex.getStackTrace()),
                 LocalDateTime.now()
