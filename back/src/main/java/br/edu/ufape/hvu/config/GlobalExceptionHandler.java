@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Objects;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -143,7 +144,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        logger.error("Violação de integridade de dados: {}", ex.getRootCause().getMessage());
+        logger.error("Violação de integridade de dados: {}", Objects.requireNonNull(ex.getRootCause()).getMessage());
 
         ErrorResponse error = new ErrorResponse(
                 "Erro de integridade de dados",
