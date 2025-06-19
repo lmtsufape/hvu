@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
+import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
@@ -924,7 +925,7 @@ public class Facade {
     @Transactional
     public Agendamento saveAgendamento(AgendamentoRequest newInstance, Long idVaga, String idSession) {
         Animal animal = findAnimalById(newInstance.getAnimal().getId(), idSession);
-        Vaga vaga = findVagaById(idVaga);
+        Vaga vaga = vagaServiceInterface.findVagaByIdWithLock(idVaga);
 
         if (vaga.getDataHora().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("A vaga não pode estar no passado.");
@@ -953,11 +954,9 @@ public class Facade {
         return confirmarAgendamento(vaga, agendamento);
     }
 
-
-    @Transactional
     private Agendamento confirmarAgendamento(Vaga vaga, Agendamento agendamento) {
-        if (vaga.getAgendamento() != null ){
-            throw new IllegalStateException("A vaga não está disponível.");
+        if (vagaServiceInterface.existsByIdAndAgendamentoIsNotNull(vaga.getId())) {
+            throw new BusinessException("vaga.ocupada", "A vaga já foi ocupada por outro agendamento.");
         }
 
         vaga.setStatus("Agendado");
