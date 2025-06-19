@@ -35,5 +35,11 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 	           "ORDER BY animal.id, v.data_hora DESC", nativeQuery = true)
 	List<Vaga> findLatestVagaForEachAnimalNotReturn();
 
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@Query("SELECT v FROM Vaga v WHERE v.id = :id")
+	Optional<Vaga> findByIdWithLock(@Param("id") Long id);
+
+
+
 	List<Vaga> findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(LocalDateTime begin, LocalDateTime end, Medico medico);
 }
