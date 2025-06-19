@@ -7,8 +7,9 @@ import styles from "./index.module.css";
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
-import { createFicha } from '../../../../services/fichaService';
 import { getCurrentUsuario } from '../../../../services/userService';
+import { getFichaById } from "../../../../services/fichaService";
+import { updateFicha } from "../../../../services/fichaService";
 
 function ReabilitacaoIntegrativaSteps() {
   const [step, setStep] = useState(1);
@@ -21,6 +22,8 @@ function ReabilitacaoIntegrativaSteps() {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
   const [consultaId, setConsultaId] = useState(null);
+  const [fichaId, setFichaId] = useState(null);
+  const [data, setData] = useState([]);
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -155,9 +158,11 @@ function ReabilitacaoIntegrativaSteps() {
       wuXing:"",
       zangFu:"",
     },
+
     responsavel:"",
     estagiario:"",
     cpf:"",
+
     principios: [],
     constituicaoCorporal: [],
     preferencias: [],
@@ -165,33 +170,36 @@ function ReabilitacaoIntegrativaSteps() {
 
   });
 
-    // Carrega os dados do formulário do localStorage 
-  useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const savedFormData = localStorage.getItem("fichaReabilitacaoFormData");
-          if (savedFormData) {
-              setFormData(JSON.parse(savedFormData));
-          }
-      }
-  }, []); 
-
-  // Salva os dados do formulário no localStorage 
-  useEffect(() => {
-      if (typeof window !== 'undefined') {
-          localStorage.setItem("fichaReabilitacaoFormData", JSON.stringify(formData));
-      }
-  }, [formData]); 
-
   // Obtém o ID da ficha da URL
   useEffect(() => {
     if (router.isReady) {
         const id = router.query.consultaId;
+        const ficha = router.query.fichaId;
         if (id) {
           setConsultaId(id);
-          console.log("ID da ficha:", id);
+        }
+        if (ficha) {
+          setFichaId(ficha);
         }
     }
   }, [router.isReady, router.query.consultaId]);
+
+  useEffect(() => {
+    if (!fichaId) return;
+
+    const fetchData = async () => {
+        try {
+            const formData = await getFichaById(fichaId);
+            setFormData(JSON.parse(formData.conteudo));
+            setData(formData.dataHora);
+        } catch (error) {
+            console.error('Erro ao buscar dados da ficha:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+      fetchData();
+  }, [fichaId]);
 
   useEffect(() => {
       if (typeof window !== 'undefined') {
@@ -335,7 +343,7 @@ const handleSelectChange = (e, index) => {
 
   const handleSubmit = async (event) => {
     setShowErrorAlert(false);
-    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
+    const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss"); 
     const fichaData = {
         nome: "Ficha de Reabilitação Integrativa",  
         conteudo:{
@@ -374,7 +382,6 @@ const handleSelectChange = (e, index) => {
             diagnosticoMTC:formData.diagnosticoMTC,
 
 
-
           responsavel:formData.responsavel,
           estagiario:formData.estagiario,
           cpf:formData.cpf,
@@ -388,19 +395,13 @@ const handleSelectChange = (e, index) => {
     };
 
     try {
-        const resultado = await createFicha(fichaData);
-        localStorage.setItem('fichaId', resultado.id.toString());
-        localStorage.removeItem("fichaReabilitacaoFormData");
+        await updateFicha(fichaData, fichaId);
         setShowAlert(true);
     } catch (error) {
         console.error("Erro ao criar ficha:", error);
         setShowErrorAlert(true);
     }
  };
-
-  const cleanLocalStorage = () => {
-    localStorage.removeItem("fichaReabilitacaoFormData");
-  }
 
  const renderStepContent = () => {
     switch(step) {
@@ -410,7 +411,6 @@ const handleSelectChange = (e, index) => {
             formData={formData} 
             handleChange={handleChange} 
             nextStep={nextStep}
-            cleanLocalStorage={cleanLocalStorage}
           />
         );
       case 2:
@@ -427,7 +427,7 @@ const handleSelectChange = (e, index) => {
         <>
         {showAlert && consultaId &&
         <div className={styles.alert}>
-          <Alert message="Ficha criada com sucesso!" 
+          <Alert message="Ficha editada com sucesso!" 
           show={showAlert} url={`/createConsulta/${consultaId}`} />
         </div>}
         {showErrorAlert && 
