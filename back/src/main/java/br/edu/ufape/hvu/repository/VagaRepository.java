@@ -39,7 +39,7 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 	@Query("SELECT v FROM Vaga v WHERE v.id = :id")
 	Optional<Vaga> findByIdWithLock(@Param("id") Long id);
 
-
+	boolean existsByIdAndAgendamentoIsNotNull(Long id);
 
 	List<Vaga> findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(LocalDateTime begin, LocalDateTime end, Medico medico);
 }
