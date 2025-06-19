@@ -926,7 +926,9 @@ public class Facade {
         Animal animal = findAnimalById(newInstance.getAnimal().getId(), idSession);
         Vaga vaga = findVagaById(idVaga);
 
-        // Validações adicionais aqui, se necessário (ex: se a vaga está no futuro, etc.)
+        if (vaga.getDataHora().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("A vaga não pode estar no passado.");
+        }
 
         Agendamento agendamento = newInstance.convertToEntity();
         agendamento.setAnimal(animal);
