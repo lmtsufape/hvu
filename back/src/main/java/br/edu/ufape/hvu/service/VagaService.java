@@ -3,7 +3,6 @@ package br.edu.ufape.hvu.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import br.edu.ufape.hvu.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,14 @@ public class VagaService implements VagaServiceInterface {
 
 	public Vaga findVagaById(long id) {
 		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Vaga"));
+	}
+
+	public Vaga findVagaByIdWithLock(long id) {
+		return repository.findByIdWithLock(id).orElseThrow(() -> new IdNotFoundException(id, "Vaga"));
+	}
+
+	public boolean existsByIdAndAgendamentoIsNotNull(long id){
+		return repository.existsByIdAndAgendamentoIsNotNull(id);
 	}
 
 	public List<Vaga> getAllVaga(){
