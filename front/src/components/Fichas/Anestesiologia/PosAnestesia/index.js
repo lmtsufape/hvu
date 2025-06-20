@@ -8,6 +8,7 @@ import React, { useState, useEffect } from "react";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 
 export default function PosAnestesia({
@@ -35,10 +36,41 @@ const [farmacosPos, setFarmacosPos] = useState(
 
 
 
+const timePoints = ["T0", "5'", "10'", "15'", "20'", "25'", "30'", "35'", "40'", "45'", "50'", "55'", "60'", "1h10'", "1h20'", "1h30'", "1h40'", "1h50'", "2h", "2h10'", "2h20", "2h30'", "2h40'", "2h50'", "3h", "3h10'", "3h20'", "3h30'", "3h40'", "3h50'", "4h"];
+const parameters = ["Temperatura (T°C)", "FC(mpb)", "FR(mrm)", "PAS(mmHg)", "SPO2(%)", "Fluido(mL/kg/h)", "Resgate Alalgésico(mL)", "Vasopressor(mL)", "% Isoflurano"];
+
+
+const initialData = timePoints.map(time => ({
+  tempo: time,
+  Temperatura: "",
+  FC: "",
+  FR: "",
+  PAS: "",
+  SPO2: "",
+  Fluido: "",
+  Resgate: "",
+  Vasopressor: "",
+  Isoflurano: ""
+}));
+
+const [data, setData] = useState(initialData);
+
+
+const handleInputChange = (idx, param, value) => {
+  setData(prevData => {
+    const updatedData = [...prevData];
+    updatedData[idx][param] = value;
+    return updatedData;
+  });
+};
+
+
+
+
 useEffect(() => {
   setFormData(prev => ({
     ...prev,
-    pos: { ...prev.pos, farmacos: farmacosPos }
+    pos: { ...prev.pos, farmacos: farmacosPos,  parametros: data  }
   }));
 }, [farmacosPos, setFormData]);
 
@@ -639,10 +671,58 @@ return (
     ))}
   </div>
 
+<div>
+  <h5 className="p-2 rounded mt-4 mb-4" style={{ backgroundColor: '#EEF8F3' }}>
+        Parâmetros e Intervenções
+  </h5>
+      
+      <table className={styles.parametrosTabela}>
+        <thead>
+          <tr>
+            <th>Tempo</th>
+            {parameters.map(param => (
+              <th key={param}>{param}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, idx) => (
+            <tr key={idx}>
+              <td>{row.tempo}</td>
+              {parameters.map(param => (
+                <td key={param}>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={row[param]}
+                    onChange={(e) => handleInputChange(idx, param, e.target.value)}
+                  />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-
-
-
+      {/* Gráficos */}
+      <div className="mt-5">
+        {parameters.map((param) => (
+          <div key={param} style={{ width: '100%',marginLeft: '-25px',  height: 300, marginBottom: 50 }}>
+            <ResponsiveContainer>
+              <LineChart data={data}>
+                 <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+                <XAxis dataKey="tempo" />
+                <YAxis domain={[0, 45]} tickCount={10} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey={param} stroke="#8884d8" dot={{ r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        ))}
+      </div>
+    </div>
+  
 
   <label htmlFor="pos-observacoes" className="form-label mb-0 fw-medium">
     Observações e Complicações

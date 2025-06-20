@@ -44,6 +44,7 @@
     "react-select": "^5.7.7",
     "react-toastify": "^10.0.5",
     "reactstrap": "^9.2.0",
+    "recharts": "^2.15.3",
     "styled-components": "^6.0.8",
     "use-image": "^1.1.1",
     "webpack": "^5.89.0"
