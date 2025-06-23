@@ -53,7 +53,6 @@ const useFichaManager = () => {
 };
 
 // Função para limpar conteúdo da ficha (remover campos vazios e indesejados)
-// Função cleanFichaContent (já ajustada anteriormente)
 const cleanFichaContent = (content) => {
   const clean = (obj) => {
     if (Array.isArray(obj)) {
@@ -70,7 +69,6 @@ const cleanFichaContent = (content) => {
     if (obj && typeof obj === "object") {
       const cleaned = {};
       Object.entries(obj).forEach(([key, value]) => {
-        // Ignora chaves indesejadas como "otherExameValue", "opc", "option"
         if (
           key.toLowerCase() !== "otherExameValue" &&
           key.toLowerCase() !== "opc" &&
@@ -91,9 +89,14 @@ const cleanFichaContent = (content) => {
   return clean(content) || {};
 };
 
-// Função formatFichaContent (sem alterações adicionais necessárias)
+// Função para validar string base64
+const isValidBase64 = (str) => str && typeof str === "string" && str.startsWith("data:image/");
+
+// Função para formatar o conteúdo da ficha
 const formatFichaContent = (content) => {
-  if (!content || typeof content !== "object") return null;
+  if (!content || typeof content !== "object") {
+    return <p>Sem conteúdo disponível</p>;
+  }
 
   return Object.entries(content).map(([key, value]) => {
     const formattedKey = key
@@ -101,19 +104,54 @@ const formatFichaContent = (content) => {
       .replace(/^./, (str) => str.toUpperCase())
       .replace(/_/g, " ");
 
-    if (key.toLowerCase() === "opc" || key.toLowerCase() === "option") return null;
+    // Ignorar chaves indesejadas
+    if (key.toLowerCase() === "opc" || key.toLowerCase() === "option") {
+      return null;
+    }
 
-    if (Array.isArray(value) && value.every((item) => typeof item !== "object")) {
+    // Caso especial para "Imagem da Lesão"
+    if (key === "Imagem da Lesão" && value && typeof value === "object") {
+      const imagemBase64 = value["Imagem (base64 ou URL)"];
       return (
-        <p key={key}>
-          <strong>{formattedKey}:</strong> {value.join(", ")}
-        </p>
+        <div key={key} className={styles.fichaField}>
+          <strong>{formattedKey}:</strong>
+          {imagemBase64 && isValidBase64(imagemBase64) ? (
+            <img
+              src={imagemBase64}
+              alt="Imagem da Lesão"
+              style={{ maxWidth: "500px", border: "1px solid #ccc", marginTop: "10px" }}
+            />
+          ) : (
+            <p>Sem imagem disponível</p>
+          )}
+          {/* Opcional: Exibir detalhes de "Linhas Desenhadas", se necessário */}
+          {/* {value["Linhas Desenhadas"] && (
+            <div style={{ marginTop: "10px" }}>
+              <p><strong>Linhas Desenhadas:</strong></p>
+              <p>Tamanho: {value["Linhas Desenhadas"].size}</p>
+              <p>Ferramenta: {value["Linhas Desenhadas"].tool}</p>
+              <p>Cor: {value["Linhas Desenhadas"].color}</p>
+              <p>Pontos: {value["Linhas Desenhadas"].points.join(", ")}</p>
+            </div>
+          )} */}
+        </div>
       );
     }
 
+    // Para arrays simples (ex.: Anamnese)
+    if (Array.isArray(value) && value.every((item) => typeof item !== "object")) {
+      return (
+        <div key={key} className={styles.fichaField}>
+          <strong>{formattedKey}:</strong>
+          {value.length > 0 ? value.join(", ") : "Nenhum item selecionado"}
+        </div>
+      );
+    }
+
+    // Para arrays de objetos (ex.: itens complexos)
     if (Array.isArray(value)) {
       return (
-        <div key={key}>
+        <div key={key} className={styles.fichaField}>
           <strong>{formattedKey}:</strong>
           {value.map((item, idx) => (
             <div key={idx} style={{ marginLeft: "20px" }}>
@@ -126,7 +164,7 @@ const formatFichaContent = (content) => {
                     .replace(/_/g, " ");
                   return (
                     <p key={subKey}>
-                      <strong>{formattedSubKey}:</strong> {String(subValue)}
+                      <strong>{formattedSubKey}:</strong> {String(subValue) || "Não informado"}
                     </p>
                   );
                 })}
@@ -136,21 +174,23 @@ const formatFichaContent = (content) => {
       );
     }
 
+    // Para objetos aninhados (ex.: Características da Lesão, Citologia)
     if (typeof value === "object" && value !== null) {
       return (
-        <div key={key}>
+        <div key={key} className={styles.fichaField}>
           <strong>{formattedKey}:</strong>
           <div style={{ marginLeft: "20px" }}>{formatFichaContent(value)}</div>
         </div>
       );
     }
 
+    // Para valores simples
     return (
-      <p key={key}>
-        <strong>{formattedKey}:</strong> {String(value)}
-      </p>
+      <div key={key} className={styles.fichaField}>
+        <strong>{formattedKey}:</strong> {String(value) || "Não informado"}
+      </div>
     );
-  });
+  }).filter(Boolean); // Remove elementos nulos
 };
 
 function CreateConsulta() {
@@ -204,10 +244,10 @@ function CreateConsulta() {
         );
         const fichasComConteudo = fetchedFichas.map((ficha) => ({
           ...ficha,
-          conteudo: cleanFichaContent(JSON.parse(ficha.conteudo || "{}")), // Limpa o conteúdo aqui
+          conteudo: cleanFichaContent(JSON.parse(ficha.conteudo || "{}")),
         }));
         setFichas(fichasComConteudo);
-        console.log("Fichas processadas:", fichasComConteudo); // Depuração
+        console.log("Fichas processadas:", fichasComConteudo);
       } catch (error) {
         console.error("Erro ao buscar fichas:", error);
         setShowErrorAlert(true);
@@ -371,12 +411,11 @@ function CreateConsulta() {
     "Ficha clínica ortopédica": "/updateFichaOrtopedica",
     "Ficha de Reabilitação Integrativa": "/updateFichaReabilitacao",
     "Ficha Solicitação de Exame": "/updateFichaSolicitacaoExame",
-    "Ficha de Retorno Clínico de Animais Silvestres e Exóticos" : "/updateFichaRetornoClinicoSil",
+    "Ficha de Retorno Clínico de Animais Silvestres e Exóticos": "/updateFichaRetornoClinicoSil",
   };
 
   const handleRoute = (fichaNome, id, fichaId) => {
     const path = rotasPorNome[fichaNome];
-    
     router.push(`${path}?consultaId=${id}&animalId=${animalId}&fichaId=${fichaId}`);
   };
 
@@ -815,7 +854,6 @@ function CreateConsulta() {
                                 >
                                   Excluir ficha
                                 </button>
-                                    
                                 <button
                                   className={styles.voltarButton}
                                   type="button"
@@ -823,8 +861,8 @@ function CreateConsulta() {
                                   onClick={() => handleRoute(ficha.nome, id, ficha.id)}
                                 >
                                   Editar
-                                </button> 
-                              </div> 
+                                </button>
+                              </div>
                             </div>
                           )}
                         </div>

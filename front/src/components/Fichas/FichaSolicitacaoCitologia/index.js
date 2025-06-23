@@ -193,15 +193,38 @@ function FichaSolicitacaoCitologia() {
     }
 
     const handleSaveDrawing = (imagemFinal, linhasDesenhadas) => {
+        console.log("Imagem final recebida:", imagemFinal); // Debug
+        console.log("Linhas desenhadas:", linhasDesenhadas); // Debug
         setFormData(prev => ({
             ...prev,
             imagemLesao: {
-                imagem: imagemFinal,
-                linhasDesenhadas: linhasDesenhadas
+                imagem: imagemFinal, // Base64 da imagem com desenhos
+                linhasDesenhadas: linhasDesenhadas // Array de pontos desenhados
             }
         }));
-        setImagemDesenhada(imagemFinal);
+        setImagemDesenhada(imagemFinal); // Atualiza a imagem exibida no formulário
     };
+
+    const renderImagemLesao = () => {
+        if (imagemDesenhada) {
+            return (
+                <img
+                    src={imagemDesenhada}
+                    alt="Localização das lesões com marcações"
+                    style={{ maxWidth: '500px', border: '1px solid #ccc' }}
+                />
+            );
+        }
+        return (
+            <img
+                src="/images/localizacao_lesao_citologia.png"
+                alt="Localização das lesões"
+                style={{ maxWidth: '500px', border: '1px solid #ccc' }}
+            />
+        );
+    };
+
+
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -271,22 +294,45 @@ function FichaSolicitacaoCitologia() {
             caracteristicasFinal.push(otherValueLesao.trim());
         }
 
+
         const fichaData = {
             nome: "Ficha de solicitação de citologia",
             conteudo: {
-                Anamnese: anamneseFinal,
-                dataColheita: formData.dataColheita,
-                historicoExameFisico: formData.historicoExameFisico,
-                localizacaoLesao: formData.localizacaoLesao,
-                imagemLesao: formData.imagemLesao,
-                caracteristicasLesao: {
-                    ...formData.caracteristicasLesao,
-                    selecionadas: caracteristicasFinal
+                "Anamnese": formData.anamnese, // array de strings ou sintomas
+
+                "Data da Colheita": formData.dataColheita,
+                "Histórico do Exame Físico": formData.historicoExameFisico,
+                "Localização da Lesão": formData.localizacaoLesao,
+
+                "Imagem da Lesão": {
+                    "Imagem (base64 ou URL)": formData.imagemLesao.imagem,
+                    "Linhas Desenhadas": formData.imagemLesao.linhasDesenhadas
                 },
-                citologia: formData.citologia
+
+                "Características da Lesão": {
+                    "Características Selecionadas": formData.caracteristicasLesao.selecionadas,
+                    "Descrição": formData.caracteristicasLesao.descricao,
+                    "Cor": formData.caracteristicasLesao.cor,
+                    "Consistência": formData.caracteristicasLesao.consistencia,
+                    "Bordas": formData.caracteristicasLesao.bordas,
+                    "Ulceração": formData.caracteristicasLesao.ulceracao,
+                    "Dor à Palpação": formData.caracteristicasLesao.dorPalpacao,
+                    "Temperatura Local": formData.caracteristicasLesao.temperaturaLocal,
+                    "Relação com Tecidos Vizinhos": formData.caracteristicasLesao.relacaoTecidosVizinhos
+                },
+
+                "Citologia": {
+                    "Descrição": formData.citologia.descricao,
+                    "Método de Colheita": formData.citologia.metodo,
+                    "Número de Lâminas": formData.citologia.numeroLaminas,
+                    "Resultado": formData.citologia.resultado,
+                    "Conclusão": formData.citologia.conclusao,
+                    "Comentários": formData.citologia.comentarios
+                }
             },
             dataHora: dataFormatada
         };
+
 
         try {
             const resultado = await createFicha(fichaData);
@@ -420,27 +466,14 @@ function FichaSolicitacaoCitologia() {
                     </div>
 
                     <div className={styles.column}>
-                        <label>Descrição das lesões:
-                            <div
-                                onClick={() => setShowDrawingModal(true)}
-                                style={{ cursor: 'pointer', textAlign: 'center' }}
-                            >
-                                {imagemDesenhada ? (
-                                    <img
-                                        src={imagemDesenhada}
-                                        alt="Localização das lesões com marcações"
-                                        style={{ maxWidth: '500px' }}
-                                    />
-                                ) : (
-                                    <img
-                                        src="/images/localizacao_lesao_citologia.png"
-                                        alt="Localização das lesões"
-                                        style={{ maxWidth: '500px' }}
-                                    />
-                                )}
-                                <p style={{ color: 'black' }}>Clique para desenhar sobre a imagem</p>
-                            </div>
-                        </label>
+                        <label>Descrição das lesões:</label>
+                        <div
+                            onClick={() => setShowDrawingModal(true)}
+                            style={{ cursor: 'pointer', textAlign: 'center' }}
+                        >
+                            {renderImagemLesao()}
+                            <p style={{ color: 'black' }}>Clique para desenhar sobre a imagem</p>
+                        </div>
                     </div>
 
                     <DrawingModal
