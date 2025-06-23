@@ -103,6 +103,7 @@ const formatFichaContent = (content) => {
       .replace(/([A-Z])/g, " $1")
       .replace(/^./, (str) => str.toUpperCase())
       .replace(/_/g, " ");
+    
 
     // Ignorar chaves indesejadas
     if (key.toLowerCase() === "opc" || key.toLowerCase() === "option") {
@@ -137,6 +138,36 @@ const formatFichaContent = (content) => {
         </div>
       );
     }
+    if (key.toLowerCase() === "parametros" && Array.isArray(value)) {
+  const valoresComDados = value.filter((item) => {
+    // Mantém apenas os tempos que têm mais que só o tempo preenchido
+    const { tempo, ...resto } = item;
+    return Object.values(resto).some((v) => v !== "" && v !== null && v !== undefined);
+  });
+
+  if (valoresComDados.length === 0) return null;
+
+  return (
+    <div key={key}>
+      <strong>{formattedKey}:</strong>
+      {valoresComDados.map((item, idx) => (
+        <div key={idx} style={{ marginLeft: "20px" }}>
+          {Object.entries(item).map(([subKey, subValue]) => {
+            const formattedSubKey = subKey
+              .replace(/([A-Z])/g, " $1")
+              .replace(/^./, (str) => str.toUpperCase())
+              .replace(/_/g, " ");
+            return (
+              <p key={subKey}>
+                <strong>{formattedSubKey}:</strong> {String(subValue)}
+              </p>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+}
 
     // Para arrays simples (ex.: Anamnese)
     if (Array.isArray(value) && value.every((item) => typeof item !== "object")) {
