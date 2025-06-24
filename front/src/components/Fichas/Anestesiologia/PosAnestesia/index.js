@@ -64,6 +64,19 @@ const handleInputChange = (idx, param, value) => {
   });
 };
 
+// Carregar do localStorage ao montar:
+useEffect(() => {
+  const savedData = localStorage.getItem("posAnestesiaTabela");
+  if (savedData) {
+    setData(JSON.parse(savedData));
+  }
+}, []);
+
+// Sempre que a tabela mudar, salva no localStorage:
+useEffect(() => {
+  localStorage.setItem("posAnestesiaTabela", JSON.stringify(data));
+}, [data]);
+
 
 
 
