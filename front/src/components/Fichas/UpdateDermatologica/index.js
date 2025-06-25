@@ -7,11 +7,11 @@ import styles from "./index.module.css";
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
-import { createFicha } from '../../../../services/fichaService';
 import { getCurrentUsuario } from '../../../../services/userService';
+import { getFichaById } from "../../../../services/fichaService";
+import { updateFicha } from "../../../../services/fichaService";
 
-
-function DermatologicaSteps() {
+function UpdateDermatologicaSteps() {
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState(null);
   const [roles, setRoles] = useState([]);
@@ -25,6 +25,8 @@ function DermatologicaSteps() {
   const [errorMessage, setErrorMessage] = useState(""); // Added state for error message
   const [consultaId, setConsultaId] = useState(null);
   const router = useRouter();
+  const [fichaId, setFichaId] = useState(null);
+  const [data, setData] = useState([]);
 
   const [showOtherInputConviveComAnimais, setShowOtherInputConviveComAnimais] = useState(false);
   const [otherValueConviveComAnimais, setOtherValueConviveComAnimais] = useState("");
@@ -126,55 +128,50 @@ function DermatologicaSteps() {
       { medicacao: "", dose: "", frequencia: "", periodo: ""}
     ],
     medico: "",
-     SolicitacaoDeExame: {
-            hematologiaDiagnostica: [],
-            urinalise: [],
-            parasitologico: [],
-            bioquimicaClinica: [],
-            citologiaHistopatologia: [],
-            imunologicos: [],
-            imaginologia: [],
-            cardiologia: [],
-        },
+    estagiarios: "",
+    SolicitacaoDeExame: {
+      hematologiaDiagnostica: [],
+      urinalise: [],
+      parasitologico: [],
+      bioquimicaClinica: [],
+      citologiaHistopatologia: [],
+      imunologicos: [],
+      imaginologia: [],
+      cardiologia: [],
+    },
   });
-
-  const storageKeyDrawing = () => `dermatologicaDrawingLines_${consultaId || "default"}`;
-  const { tratamentoDermatologico } = formData;
-
-    // Carrega os dados do formulário do localStorage 
-  useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const savedFormData = localStorage.getItem("fichaDermatologicaFormData");
-          
-          if (savedFormData) {
-            const parsedFormData = JSON.parse(savedFormData);
-            setFormData(parsedFormData);
-            const imagem = parsedFormData?.imagemLesao?.imagem;
-            console.log("parsed",parsedFormData)
-            if (imagem) {
-              setImagemDesenhada(imagem);
-            }
-        }  
-      }
-  }, []); 
-
-  // Salva os dados do formulário no localStorage 
-  useEffect(() => {
-      if (typeof window !== 'undefined') {
-          localStorage.setItem("fichaDermatologicaFormData", JSON.stringify(formData));
-      }
-  }, [formData]); 
+  
 
   // Obtém o ID da ficha da URL
   useEffect(() => {
     if (router.isReady) {
-        const id = router.query.fichaId;
+        const id = router.query.consultaId;
+        const ficha = router.query.fichaId;
         if (id) {
           setConsultaId(id);
-          console.log("ID da ficha:", id);
+        }
+        if(ficha){
+          setFichaId(ficha);
         }
     }
   }, [router.isReady, router.query.fichaId]);
+
+  useEffect(() => {
+    if (!fichaId) return;
+
+    const fetchData = async () => {
+        try {
+            const formData = await getFichaById(fichaId);
+            setFormData(JSON.parse(formData.conteudo));
+            setData(formData.dataHora);
+        } catch (error) {
+            console.error('Erro ao buscar dados da ficha:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+      fetchData();
+  }, [fichaId]);
 
   useEffect(() => {
       if (typeof window !== 'undefined') {
@@ -220,12 +217,6 @@ function DermatologicaSteps() {
           </div>
       );
   }
-
-  const cleanLocalStorage = () => {
-    localStorage.removeItem("fichaDermatologicaFormData");
-    localStorage.removeItem(storageKeyDrawing); 
-  }
- 
 
     const handleChangeSelect = (e) => {
       setFormData({
@@ -343,7 +334,6 @@ function DermatologicaSteps() {
       }
     }));
     setImagemDesenhada(imagemFinal); // Atualiza o estado da imagem desenhada
-    localStorage.setItem(storageKeyDrawing, JSON.stringify(linhasDesenhadas));
   };  
 
   const handleCheckboxChange = (event, field) => {
@@ -410,7 +400,7 @@ function DermatologicaSteps() {
 
   const handleSubmit = async (event) => {
     setShowErrorAlert(false);
-    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
+    const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss"); 
     let conviveComAnimaisFinal = [...formData.conviveComAnimais];
     let produtosUtilizadosFinal = [...formData.produtosUtilizados];
 
@@ -479,19 +469,16 @@ function DermatologicaSteps() {
             diagnostico: formData.diagnostico,
             tratamentoDermatologico: formData.tratamentoDermatologico,
             medico: formData.medico,
+            estagiarios: formData.estagiarios,
             SolicitacaoDeExame: formData.SolicitacaoDeExame
 
         },
         dataHora: dataFormatada 
         
     };
-    console.log("Dados enviados para o backend:", JSON.stringify(fichaData, null, 2));
-    
 
     try {
-        const resultado = await createFicha(fichaData);
-        localStorage.setItem('fichaId', resultado.id.toString());
-        localStorage.removeItem("fichaDermatologicaFormData");
+        await updateFicha(fichaData, fichaId);
         localStorage.removeItem('canvasKonva'); 
         setShowAlert(true);
     } catch (error) {
@@ -529,9 +516,6 @@ function DermatologicaSteps() {
             setShowOtherInputProdutosUtilizados={setShowOtherInputProdutosUtilizados}
             otherValueProdutosUtilizados={otherValueProdutosUtilizados}
             setOtherValueProdutosUtilizados={setOtherValueProdutosUtilizados}
-            cleanLocalStorage={cleanLocalStorage}
-            
-
           />
         );
       case 2:
@@ -553,7 +537,7 @@ function DermatologicaSteps() {
         <>
         {showAlert && consultaId &&
         <div className={styles.alert}>
-          <Alert message="Ficha criada com sucesso!" 
+          <Alert message="Ficha editada com sucesso!" 
           show={showAlert} url={`/createConsulta/${consultaId}`} />
         </div>}
         {showErrorAlert && 
@@ -570,10 +554,9 @@ function DermatologicaSteps() {
           handleCheckboxChange={handleCheckboxChange}
           handleSubmit={handleSubmit}
           handleSaveDrawing={handleSaveDrawing}
-          storageKeyDrawing={storageKeyDrawing}
           imagemDesenhada={imagemDesenhada} 
           handleChangeTratamentos={handleChangeTratamentos}
-          tratamentos={tratamentoDermatologico}
+          tratamentos={formData.tratamentoDermatologico}
           adicionarLinhaTratamento={adicionarLinhaTratamento}
           removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
 
@@ -602,4 +585,4 @@ function DermatologicaSteps() {
   );
 }
 
-export default DermatologicaSteps;
+export default UpdateDermatologicaSteps;

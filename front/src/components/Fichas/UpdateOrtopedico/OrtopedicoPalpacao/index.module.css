@@ -1,0 +1,350 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
+
+.container {
+  width: 100%;
+  max-width: 65rem;
+  min-width: 300px;
+  margin: 30px auto;
+  font-family: "Poppins", sans-serif;
+}
+
+.container h1 {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+}
+
+.container h2,
+.titulo {
+  width: 100%;
+  height: auto;
+  background-color: #EEF8F3;
+  color: #000000;
+  font-size: clamp(16px, 4vw, 20px); /* Font size responsivo */
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.form_box {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 20px;
+  padding: 1rem;
+  background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
+  overflow-x: hidden;
+}
+
+.column {
+  flex: 1;
+  min-width: 100px;
+  margin: 0.5rem;
+}
+
+.column label {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #272727;
+}
+
+.column input,
+.column select,
+.column textarea {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem;
+  font-size: clamp(12px, 3vw, 14px);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  margin-bottom: 1ram;
+}
+
+.column input:focus,
+.column select:focus,
+.column textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #3d856371;
+}
+
+.button_box {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin: 20px 1rem;
+  }
+
+  .container h1 {
+    font-size: clamp(18px, 4.5vw, 20px);
+    margin: 20px 0 30px;
+  }
+
+  .form_box {
+    padding: 0.5rem;
+  }
+
+  .button_box {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .form_box {
+    padding: 0.25rem;
+  }
+
+  .button_box {
+    gap: 0.5rem;
+  }
+}
+
+.two_columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.accordionContainer {
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.accordionHeader {
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #272727;
+}
+
+.accordionHeader:hover {
+  color: #39805F;
+}
+
+.accordionContent {
+  margin-top: 10px;
+  padding-left: 10px;
+}
+
+.itemContainer {
+  margin-bottom: 12px;
+  padding-left: 10px;
+}
+
+.labelCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #222;
+}
+
+.labelCheckbox input[type="checkbox"] {
+  cursor: pointer;
+  appearance: none;
+  accent-color: #39805f;
+  border: 1px solid #B1B1B1;
+  border-radius: 5px;
+  width: 19px;
+  height: 20px;
+}
+
+.labelCheckbox input[type="checkbox"]:checked {
+  background-color: #EEF8F3;
+  border: 1px solid #075709;
+}
+
+.label_checkbox_circle input[type="checkbox"] {
+  cursor: pointer;
+  appearance: none;
+  margin-right: 5px;
+  accent-color: #39805f;
+  border: 1px solid #7F7F7F;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.20);
+}
+
+.label_checkbox_circle input[type="checkbox"]:checked {
+  background-color: #98B7A8;
+  border: 1px solid #327053;
+}
+
+.subOptions {
+  margin-left: 20px;
+  margin-top: 5px;
+}
+
+.textInputContainer {
+  margin-top: 5px;
+  padding-left: 20px;
+}
+
+.textInput {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem;
+  font-size: clamp(12px, 3vw, 14px);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  margin-bottom: 1ram;
+}
+
+.box_ficha_toggle{
+  max-width: 1118px;
+  width: 100%;
+  margin-bottom: 18px;
+  margin-top: 38px;
+}
+
+.toggleButton {
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #98b7a9;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px 16px;
+  padding-left: 16px;
+  margin-bottom: 0px;
+  border-radius: 10px 10px 10px 10px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-align: left;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  box-sizing: border-box;
+  position: relative; 
+}
+
+.toggleButton::after {
+  font-weight: 600;
+  position: absolute; 
+  right: 16px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+}
+
+.toggleButton.expand::after {
+  content: "+"; 
+}
+
+.toggleButton.minimize::after {
+  content: "-"; 
+}
+
+.toggleButton:hover {
+  background-color: #d6ece0;
+}
+
+.toggleButton:active {
+  background-color: #c4e2d2;
+}
+
+.container_toggle {
+  width: 100%;
+  height: 430px;
+  align-items: center;
+  margin-top: 22px;
+}
+
+.container_toggle h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+}
+
+.infos_box {
+  display: flex;
+  flex-direction: column;
+  width: 97%;
+  border-radius: 20px;
+  border: 0.5px solid #B1B1B1;
+  gap: 10px;
+}
+
+.identificacao {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 28px;
+  margin-top: 32px;
+}
+
+.nome_animal {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  letter-spacing: 0em;
+}
+
+.especie_animal {
+  color: #39805F;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+}
+
+.animal-data-box {
+  display: flex;
+  gap: 188px;
+  margin-left: 28px;
+  margin-bottom: 32px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.infos {
+  display: flex;
+  flex-direction: column;
+}
+
+.infos p {
+  margin-top: -6px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #39805F;
+}
+
+.infos h6 {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #404040;
+}
+
+
+
