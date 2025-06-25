@@ -2,6 +2,8 @@ import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
 import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
+import { CancelarWhiteButton }         from "@/components/WhiteButton";
+import { ContinuarFichasGreenButton }  from "@/components/GreenButton";
 import React, { useState, useEffect } from "react";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
@@ -51,7 +53,48 @@ const initialData = timePoints.map(time => ({
   Isoflurano: ""
 }));
 
-const [data, setData] = useState(initialData);
+const [data, setData] = useState(() => {
+  // Se formData.pos.parametros existe e tem dados, use-os.
+  // Caso contrário, use os dados iniciais vazios.
+  if (formData.pos?.parametros && Array.isArray(formData.pos.parametros) && formData.pos.parametros.length > 0) {
+    return formData.pos.parametros;
+  }
+  return createInitialData(); // Use a função para criar os dados iniciais
+});
+
+// Função para limpar apenas a tabela de parâmetros
+  const limparTabela = () => {
+    localStorage.removeItem("posAnestesiaTabela");
+    const newInitialData = createInitialData();
+    setData(initialData);
+    
+    // Atualiza o formData para refletir a limpeza
+    setFormData(prev => ({
+      ...prev,
+      pos: {
+        ...prev.pos,
+        parametros: initialData
+      }
+    }));
+  };
+
+  // Handler modificado para limpar a tabela após envio
+  const handleFinalizar = async () => {
+    await handleSubmit(); 
+    limparTabela();
+  };
+
+  // Atualize o useEffect para incluir data nas dependências
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      pos: { 
+        ...prev.pos, 
+        farmacos: farmacosPos,  
+        parametros: data  // Garante que os dados da tabela estão incluídos
+      }
+    }));
+  }, [farmacosPos, data, setFormData]); // Adicione data como dependência
 
 
 const handleInputChange = (idx, param, value) => {
@@ -61,6 +104,19 @@ const handleInputChange = (idx, param, value) => {
     return updatedData;
   });
 };
+
+// Carregar do localStorage ao montar:
+useEffect(() => {
+  const savedData = localStorage.getItem("posAnestesiaTabela");
+  if (savedData) {
+    setData(JSON.parse(savedData));
+  }
+}, []);
+
+// Sempre que a tabela mudar, salva no localStorage:
+useEffect(() => {
+  localStorage.setItem("posAnestesiaTabela", JSON.stringify(data));
+}, [data]);
 
 
 
