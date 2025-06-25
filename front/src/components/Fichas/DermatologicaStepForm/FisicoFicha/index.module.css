@@ -1,3 +1,13 @@
+.form_box {
+  width: 100%;
+  max-width: 100%; /* Garante que o formulário não ultrapasse o contêiner */
+  border-radius: 20px;
+  padding: 1rem; /* Padding relativo */
+  background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
+  overflow-x: hidden; /* Evita overflow horizontal */
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .container {
@@ -34,15 +44,6 @@
   color: #333;
 }
 
-.form_box {
-  width: 100%;
-  max-width: 100%; /* Garante que o formulário não ultrapasse o contêiner */
-  border-radius: 20px;
-  padding: 1rem; /* Padding relativo */
-  background-color: #fff;
-  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);
-  overflow-x: hidden; /* Evita overflow horizontal */
-}
 
 .box{
   display: grid;
@@ -51,9 +52,8 @@
 
 .checkbox_container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Grid responsivo */
-  gap: 0.5rem;
-  margin: 1rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
 }
 
 .checkbox_container label {
@@ -66,23 +66,29 @@
   transition: background 0.3s ease-in-out;
 }
 
-.checkbox_container input[type="checkbox"] {
+.checkbox_container input[type="checkbox"],
+.checkbox_container input[type="radio"] {
   appearance: none;
   margin-right: 0.5rem;
   accent-color: #39805f;
   border: 1px solid #B1B1B1;
-  border-radius: 5px;
-  width: 26px;
+  border-radius: 50%;
+  min-width: 26px;
   height: 26px;
   cursor: pointer;
 }
 
-.checkbox_container input[type="checkbox"]:checked {
+.checkbox_container input[type="checkbox"]:checked,
+.checkbox_container input[type="radio"]:checked {
   background-color: #B1B1B1;
 }
 
 .checkbox_square input[type="checkbox"]{
   border-radius: 5px;
+}
+
+.space_bottom{
+  margin-bottom: 10px;
 }
 
 .options_border{
@@ -97,12 +103,12 @@
 }
 
 .column label {
+  /* display: block; */
   display: flex;
   flex-direction: column;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 5px;
-  color: #272727;
 }
 
 .column input,
@@ -114,13 +120,24 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   resize: none;
+  transition: box-shadow 0.3s ease; /* Adiciona transição suave para o efeito */
 }
 
 .column input:focus,
 .column select:focus,
 .column textarea:focus {
-  outline: none;
-  box-shadow: 0 0 5px 2px #3d856371;
+  outline: none; /* Remove o contorno padrão do navegador */
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2); /* Sombra ao clicar */
+}
+
+.inputs_three_columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+}
+
+.inputs_four_columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
 }
 
 .criar_button {
@@ -135,10 +152,6 @@
   font-weight: 600;
   line-height: 24px;
   letter-spacing: 0em;
-}
-.options_border{
-  border: 1px solid #B1B1B1;
-  border-radius: 5px;
 }
 
 .criar_button:hover {
@@ -176,7 +189,6 @@
   font-weight: 300;
   line-height: 24px;
   color: #C7122F;
-
 }
 /* index.module.css */
 .boxBorder {
@@ -189,7 +201,7 @@
   box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);      
 }
 
- .box_ficha_toggle{
+.box_ficha_toggle{
   max-width: 1118px;
   width: 100%;
   margin-bottom: 18px;
@@ -290,6 +302,13 @@
   letter-spacing: 0em;
 }
 
+.animal-data-box {
+  display: flex;
+  gap: 188px;
+  margin-left: 28px;
+  margin-bottom: 32px;
+}
+
 .lista {
   display: flex;
   flex-direction: column;
@@ -314,11 +333,4 @@
   font-weight: 700;
   line-height: 24px;
   color: #404040;
-}
-
-.animal-data-box {
-  display: flex;
-  gap: 188px;
-  margin-left: 28px;
-  margin-bottom: 32px;
 }

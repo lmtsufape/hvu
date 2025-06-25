@@ -92,6 +92,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
 
                 <form onSubmit={handleSubmit}>
                     <div className={styles.box_ficha_toggle}>
+
                         <button
                             type="button"
                             className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
@@ -241,41 +242,44 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
                             </label>
                         </div>
                     </div>
-                    <div>
-                        <div className={styles.column}>
-                            <label>Mucosas</label>
+                    <div className="row fw-medium mb-2">
+                        <div className="col-3 mb-3 mt-4">Mucosas</div>
+                        <div className="col mt-4 mb-3">
+                            Localização (oculopalpebral, nasal, bucal, vulvar, prepucial ou anal)
                         </div>
 
-                        <p>Localização (oculopalpebral, nasal, bucal, vulvar, prepúcial ou anal)</p>
-                        <div className={styles.checkbox_container}>
-                            {Object.keys(formData.options).map((option) => (
-                                <div key={option}>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            name={option}
-                                            checked={formData.options[option]}
-                                            onChange={handleCheckboxChangeMucosas}
-                                        />
-                                        {option === "roseas" && "Róseas"}
-                                        {option === "roseasPalidas" && "Róseas pálidas"}
-                                        {option === "porcelanicas" && "Porcelânicas"}
-                                        {option === "hiperemicas" && "Hiperêmicas"}
-                                        {option === "cianoticas" && "Cianóticas"}
-                                        {option === "ictaricas" && "Ictéricas"}
-                                        {option === "naoAvaliado" && "Não avaliado"}
-                                    </label>
-                                    {formData.options[option] && (
-                                        <div className={styles.location_input}>
+                        <div>
+                            {Object.keys(formData.options).map((options) => (
+                                <div key={options} className="row align-items-start mb-2">
+                                    <div className={`${styles.checkbox_container} ${styles.checkbox_square} col-3`}>
+                                        <label className="d-flex align-items-center">
                                             <input
-                                                type="text"
-                                                name={option}
-                                                value={formData.mucosas[option]}
-                                                onChange={handleLocationChange}
-                                                placeholder="Digite a localização"
+                                                type="checkbox"
+                                                name={options}
+                                                checked={formData.options[options]}
+                                                onChange={handleCheckboxChangeMucosas}
+                                                className="me-2"
                                             />
-                                        </div>
-                                    )}
+                                            {options === "roseas" && "Róseas"}
+                                            {options === "roseasPalidas" && "Róseas-pálidas"}
+                                            {options === "porcelanicas" && "Porcelânicas"}
+                                            {options === "hiperemicas" && "Hiperêmicas"}
+                                            {options === "cianoticas" && "Cianóticas"}
+                                            {options === "ictaricas" && "Ictéricas"}
+                                            {options === "naoAvaliado" && "Não-avaliado"}
+                                        </label>
+                                    </div>
+
+                                    <div className="col">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name={options}
+                                            value={formData.mucosas[options]}
+                                            onChange={handleLocationChange}
+                                            disabled={!formData.options[options]}
+                                        />
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -284,7 +288,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
                         <div className={styles.column}>
                             <label>Linfonodos</label>
                         </div>
-                        <div className={styles.checkbox_container}>
+                        <div className={`${styles.checkbox_container} ${styles.checkbox_square}`}>
                             {linfonodos.map((linfonodo) => (
                                 <div key={linfonodo.value}>
                                     <label>
