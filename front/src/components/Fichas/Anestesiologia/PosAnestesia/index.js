@@ -811,7 +811,7 @@ return (
  
       <div className={styles.button_box}>
             <VoltarWhiteButton onClick={prevStep} />
-            <FinalizarFichaModal onConfirm={handleFinalizar} />
+            <FinalizarFichaModal onConfirm={handleSubmit} />
       </div>
     </div>
     </div>

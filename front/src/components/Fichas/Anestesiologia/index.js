@@ -126,6 +126,7 @@ export default function AnestesiologiaSteps() {
       const resultado = await createFicha(data);
       localStorage.setItem('fichaId', resultado.id.toString());
       localStorage.removeItem("anestesiologiaFormData");
+      localStorage.removeItem("posAnestesiaTabela");
       setShowAlert(true);
     } catch (err) {
       console.error(err);
@@ -136,6 +137,7 @@ export default function AnestesiologiaSteps() {
 
   const cleanLocalStorage = () => {
     localStorage.removeItem("anestesiologiaFormData");
+    localStorage.removeItem("posAnestesiaTabela");
   }
 
 
