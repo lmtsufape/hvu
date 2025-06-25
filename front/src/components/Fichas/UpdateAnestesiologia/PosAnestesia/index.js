@@ -2,8 +2,6 @@ import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
 import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
-import { CancelarWhiteButton }         from "@/components/WhiteButton";
-import { ContinuarFichasGreenButton }  from "@/components/GreenButton";
 import React, { useState, useEffect } from "react";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
@@ -63,19 +61,6 @@ const handleInputChange = (idx, param, value) => {
     return updatedData;
   });
 };
-
-// Carregar do localStorage ao montar:
-useEffect(() => {
-  const savedData = localStorage.getItem("posAnestesiaTabela");
-  if (savedData) {
-    setData(JSON.parse(savedData));
-  }
-}, []);
-
-// Sempre que a tabela mudar, salva no localStorage:
-useEffect(() => {
-  localStorage.setItem("posAnestesiaTabela", JSON.stringify(data));
-}, [data]);
 
 
 
