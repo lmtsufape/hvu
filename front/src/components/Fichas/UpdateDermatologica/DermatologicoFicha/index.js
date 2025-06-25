@@ -11,7 +11,7 @@ import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
 
 function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxChange, handleSubmit,
-    handleSaveDrawing, storageKeyDrawing, imagemDesenhada, handleChangeTratamentos, tratamentos, adicionarLinhaTratamento,
+    handleSaveDrawing, imagemDesenhada, handleChangeTratamentos, tratamentos, adicionarLinhaTratamento,
     removerUltimaLinhaTratamento, setFormData }) {
 
     const [loading, setLoading] = useState(true);
@@ -275,7 +275,6 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         onSave={handleSaveDrawing}
                         showDrawingModal={showDrawingModal}
                         dimensoesImagem={dimensoesImagem}
-                        storageKeyDrawing={storageKeyDrawing}
                     />
 
                     <div className={styles.column}>
