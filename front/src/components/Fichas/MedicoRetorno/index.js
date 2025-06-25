@@ -39,108 +39,108 @@ function FichaMedicaRetorno() {
       outros: false,
       naoVacinado: false,
       naoInformado: false,
-      },
-  
+    },
 
-      vacinacao: {
-        antiRabica: "",
-        giardia: "",
-        leishmaniose: "",
-        tosseDosCanis: "",
-        polivalenteCanina: "",
-        polivalenteFelina: "",
-        outros: "",
-        naoVacinado: "",
-        naoInformado: "",
 
-      },
+    vacinacao: {
+      antiRabica: "",
+      giardia: "",
+      leishmaniose: "",
+      tosseDosCanis: "",
+      polivalenteCanina: "",
+      polivalenteFelina: "",
+      outros: "",
+      naoVacinado: "",
+      naoInformado: "",
 
-      vermifugacaoDetalhes:{
-        vermifugacao: '',
-        produto: '',
-        data: '',
-      },
-      ectoparasitosDetalhes:{
-        ectoparasitos: '',
-        produto: '',
-        data: '',
-      }
-      ,
-      tpc:"",
-      turgorCutaneo:"",
-      freqCardiaca:"",
-      freqRespiratoria:"",
+    },
 
-      
-      ExameFisico: {
-        alimentacao: "",
-        postura: "",
-        nivelConsciencia: "",
-        temperatura: "",
-        score: "",
-        freqCardiaca: "",
-        freqRespiratoria: "",
-        hidratacao: "",
-        tpc: "",
-        turgor: "",
-        mucosas: "",
-        linfonodosGeral: "",
-        linfonodosLocal: []
-      },
+    vermifugacaoDetalhes: {
+      vermifugacao: '',
+      produto: '',
+      data: '',
+    },
+    ectoparasitosDetalhes: {
+      ectoparasitos: '',
+      produto: '',
+      data: '',
+    }
+    ,
+    tpc: "",
+    turgorCutaneo: "",
+    freqCardiaca: "",
+    freqRespiratoria: "",
 
-      option: {
-          roseas: false,
-          roseasPalidas: false,
-          porcelanicas: false,
-          hiperemicas: false,
-          cianoticas: false,
-          ictaricas: false,
-          naoAvaliado: false
-        },
-    
-        mucosas: {
-          roseas: "",
-          roseasPalidas: "",
-          porcelanicas: "",
-          hiperemicas: "",
-          cianoticas: "",
-          ictaricas: "",
-          naoAvaliado: ""
-        },
 
-        linfonodos: {},
-      /* ------------- passo 2 ------------- */
-      fisicogeral: {},
-      diagnostico: {},
-      plantonistas:"",
-      medicosResponsaveis:"",
+    ExameFisico: {
+      alimentacao: "",
+      postura: "",
+      nivelConsciencia: "",
+      temperatura: "",
+      score: "",
+      freqCardiaca: "",
+      freqRespiratoria: "",
+      hidratacao: "",
+      tpc: "",
+      turgor: "",
+      mucosas: "",
+      linfonodosGeral: "",
+      linfonodosLocal: []
+    },
+
+    option: {
+      roseas: false,
+      roseasPalidas: false,
+      porcelanicas: false,
+      hiperemicas: false,
+      cianoticas: false,
+      ictaricas: false,
+      naoAvaliado: false
+    },
+
+    mucosas: {
+      roseas: "",
+      roseasPalidas: "",
+      porcelanicas: "",
+      hiperemicas: "",
+      cianoticas: "",
+      ictaricas: "",
+      naoAvaliado: ""
+    },
+
+    linfonodos: {},
+    /* ------------- passo 2 ------------- */
+    fisicogeral: {},
+    diagnostico: {},
+    plantonistas: "",
+    medicosResponsaveis: "",
   });
 
   // Carrega os dados do formulário do localStorage 
   useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const savedFormData = localStorage.getItem("fichaMedicaRetornoFormData");
-          if (savedFormData) {
-              setFormData(JSON.parse(savedFormData));
-          }
+    if (typeof window !== 'undefined') {
+      const savedFormData = localStorage.getItem("fichaMedicaRetornoFormData");
+      if (savedFormData) {
+        setFormData(JSON.parse(savedFormData));
       }
-  }, []); 
+    }
+  }, []);
 
   // Salva os dados do formulário no localStorage 
   useEffect(() => {
-      if (typeof window !== 'undefined') {
-          localStorage.setItem("fichaMedicaRetornoFormData", JSON.stringify(formData));
-      }
-  }, [formData]); 
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("fichaMedicaRetornoFormData", JSON.stringify(formData));
+    }
+  }, [formData]);
 
   // Obtém o ID da ficha da URL
   useEffect(() => {
     if (router.isReady) {
-        const id = router.query.fichaId;
-        if (id) {
-          setConsultaId(id);
-          console.log("ID da ficha:", id);
-        }
+      const id = router.query.fichaId;
+      if (id) {
+        setConsultaId(id);
+        console.log("ID da ficha:", id);
+      }
     }
   }, [router.isReady, router.query.fichaId]);
 
@@ -197,16 +197,81 @@ function FichaMedicaRetorno() {
     const fichaData = {
       nome: "Ficha clínico médica de retorno",
       conteudo: {
-        ...formData
+        "Peso": formData.peso,
+        "Anamnese / Histórico Clínico": formData.anamneseHistoricoClinico,
+
+        "Vacinação (Datas)": {
+          "Antirrábica": formData.vacinacao.antiRabica,
+          "Giárdia": formData.vacinacao.giardia,
+          "Leishmaniose": formData.vacinacao.leishmaniose,
+          "Tosse dos Canis": formData.vacinacao.tosseDosCanis,
+          "Polivalente Canina": formData.vacinacao.polivalenteCanina,
+          "Polivalente Felina": formData.vacinacao.polivalenteFelina,
+          "Outros": formData.vacinacao.outros,
+          "Não Vacinado": formData.vacinacao.naoVacinado,
+          "Não Informado": formData.vacinacao.naoInformado
+        },
+
+        "Vermifugação": {
+          "Vermifugação Realizada": formData.vermifugacaoDetalhes.vermifugacao,
+          "Produto Utilizado": formData.vermifugacaoDetalhes.produto,
+          "Data": formData.vermifugacaoDetalhes.data
+        },
+
+        "Controle de Ectoparasitas": {
+          "Ectoparasitas": formData.ectoparasitosDetalhes.ectoparasitos,
+          "Produto Utilizado": formData.ectoparasitosDetalhes.produto,
+          "Data": formData.ectoparasitosDetalhes.data
+        },
+
+        "Sinais Vitais": {
+          "TPC": formData.tpc,
+          "Turgor Cutâneo": formData.turgorCutaneo,
+          "Frequência Cardíaca": formData.freqCardiaca,
+          "Frequência Respiratória": formData.freqRespiratoria
+        },
+
+        "Exame Físico": {
+          "Alimentação": formData.ExameFisico.alimentacao,
+          "Postura": formData.ExameFisico.postura,
+          "Nível de Consciência": formData.ExameFisico.nivelConsciencia,
+          "Temperatura": formData.ExameFisico.temperatura,
+          "Score Corporal": formData.ExameFisico.score,
+          "Frequência Cardíaca": formData.ExameFisico.freqCardiaca,
+          "Frequência Respiratória": formData.ExameFisico.freqRespiratoria,
+          "Hidratação": formData.ExameFisico.hidratacao,
+          "TPC": formData.ExameFisico.tpc,
+          "Turgor": formData.ExameFisico.turgor,
+          "Mucosas (Descrição Geral)": formData.ExameFisico.mucosas,
+          "Linfonodos (Geral)": formData.ExameFisico.linfonodosGeral,
+          "Linfonodos (Locais)": formData.ExameFisico.linfonodosLocal
+        },
+
+        "Mucosas (Descrição)": {
+          "Róseas": formData.mucosas.roseas,
+          "Róseas Pálidas": formData.mucosas.roseasPalidas,
+          "Porcelânicas": formData.mucosas.porcelanicas,
+          "Hiperêmicas": formData.mucosas.hiperemicas,
+          "Cianóticas": formData.mucosas.cianoticas,
+          "Ictéricas": formData.mucosas.ictaricas,
+          "Não Avaliado": formData.mucosas.naoAvaliado
+        },
+
+        "Linfonodos": formData.linfonodos,
+
+        "Avaliação Física Geral": formData.fisicogeral,
+        "Diagnóstico": formData.diagnostico,
+        "Plantonistas": formData.plantonistas,
+        "Médicos Responsáveis": formData.medicosResponsaveis
       },
       dataHora: dataFormatada,
     };
 
     try {
-        const resultado = await createFicha(fichaData);
-        localStorage.setItem('fichaId', resultado.id.toString());
-        localStorage.removeItem("fichaMedicaRetornoFormData");
-        setShowAlert(true);
+      const resultado = await createFicha(fichaData);
+      localStorage.setItem('fichaId', resultado.id.toString());
+      localStorage.removeItem("fichaMedicaRetornoFormData");
+      setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar ficha:", error);
       if (error.response && error.response.data && error.response.data.code) {
@@ -299,13 +364,13 @@ function FichaMedicaRetorno() {
   };
 
   const handleChangeSelect = (e) => {
-      setFormData({
-        ...formData,
-        tipo: {
-          ...formData.tipo,
-          [e.target.name]: e.target.value
-        }
-      });
+    setFormData({
+      ...formData,
+      tipo: {
+        ...formData.tipo,
+        [e.target.name]: e.target.value
+      }
+    });
   };
 
   const handleMucosaLocationChange = (e) => {
@@ -329,12 +394,12 @@ function FichaMedicaRetorno() {
       setFormData(prev => {
         const clone = JSON.parse(JSON.stringify(prev));
         let ref = clone;
-        
+
         for (let i = 0; i < path.length - 1; i++) {
           if (!ref[path[i]]) ref[path[i]] = {};
           ref = ref[path[i]];
         }
-        
+
         ref[path[path.length - 1]] = finalValue;
         return clone;
       });
@@ -352,74 +417,74 @@ function FichaMedicaRetorno() {
 
   const renderStep = () => {
     switch (step) {
-        case 1:
-            return (
-                <ClinicaMedicaRetornoStep1
-                    formData={formData}
-                    handleChange={handleChange}
-                    handleCheckboxChange={handleCheckboxChange}
-                    nextStep={nextStep}
-                    handleCheckboxChangeVacinacao={handleCheckboxChangeVacinacao}
-                    handleLocationChange={handleLocationChange}
-                    handleChangeAtualizaSelect={handleChangeAtualizaSelect}
-                    handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
-                    handleLinfonodoChange={handleLinfonodoChange}
-                    handleCaracteristicaChange={handleCaracteristicaChange}
-                    handleChangeSelect={handleChangeSelect}
-                    handleMucosaLocationChange={handleMucosaLocationChange}
-                    cleanLocalStorage={cleanLocalStorage}
-                />
-            );
-        case 2:
-            return (
-                <ClinicaMedicaRetornoStep2
-                    formData={formData}
-                    setFormData={setFormData}
-                    handleChange={handleChange}
-                    handleCheckboxChange={handleCheckboxChange}
-                    prevStep={prevStep}
-                    handleSubmit={handleSubmit}
-                />
-            );
-        default:
-            return null;
+      case 1:
+        return (
+          <ClinicaMedicaRetornoStep1
+            formData={formData}
+            handleChange={handleChange}
+            handleCheckboxChange={handleCheckboxChange}
+            nextStep={nextStep}
+            handleCheckboxChangeVacinacao={handleCheckboxChangeVacinacao}
+            handleLocationChange={handleLocationChange}
+            handleChangeAtualizaSelect={handleChangeAtualizaSelect}
+            handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
+            handleLinfonodoChange={handleLinfonodoChange}
+            handleCaracteristicaChange={handleCaracteristicaChange}
+            handleChangeSelect={handleChangeSelect}
+            handleMucosaLocationChange={handleMucosaLocationChange}
+            cleanLocalStorage={cleanLocalStorage}
+          />
+        );
+      case 2:
+        return (
+          <ClinicaMedicaRetornoStep2
+            formData={formData}
+            setFormData={setFormData}
+            handleChange={handleChange}
+            handleCheckboxChange={handleCheckboxChange}
+            prevStep={prevStep}
+            handleSubmit={handleSubmit}
+          />
+        );
+      default:
+        return null;
     }
   };
 
   return (
     <div className={styles.container}>
-        {renderStep()}
+      {renderStep()}
 
-        <div className={styles.pagination}>
-            {[1, 2].map((p) => (
-                <button
-                    key={p}
-                    className={styles.pageButton}
-                    onClick={() => setStep(p)}
-                    disabled={p === step}
-                >
-                    {p}
-                </button>
-            ))}
+      <div className={styles.pagination}>
+        {[1, 2].map((p) => (
+          <button
+            key={p}
+            className={styles.pageButton}
+            onClick={() => setStep(p)}
+            disabled={p === step}
+          >
+            {p}
+          </button>
+        ))}
+      </div>
+
+      {showAlert && consultaId && (
+        <div className={styles.alert}>
+          <Alert
+            message="Ficha criada com sucesso!"
+            show={showAlert}
+            url={`/createConsulta/${consultaId}`}
+          />
         </div>
-
-        {showAlert && consultaId && (
-            <div className={styles.alert}>
-                <Alert
-                    message="Ficha criada com sucesso!"
-                    show={showAlert}
-                    url={`/createConsulta/${consultaId}`}
-                />
-            </div>
-        )}
-        {showErrorAlert && (
-            <div className={styles.alert}>
-                <ErrorAlert
-                    message={errorMessage || "Erro ao criar ficha"}
-                    show={showErrorAlert}
-                />
-            </div>
-        )}
+      )}
+      {showErrorAlert && (
+        <div className={styles.alert}>
+          <ErrorAlert
+            message={errorMessage || "Erro ao criar ficha"}
+            show={showErrorAlert}
+          />
+        </div>
+      )}
     </div>
   );
 }

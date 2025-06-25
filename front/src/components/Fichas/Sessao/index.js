@@ -152,16 +152,16 @@ function FichaSessao() {
     const handleSubmit = async (event) => {
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
         const fichaData = {
-            nome: "Ficha de sessão",  
-            conteudo:{
-                numeroSessao: formData.numeroSessao,
-                sessaoData: formData.sessaoData,
-                anotacao: formData.anotacao,
-                rg: formData.rg,
-                estagiario: formData.estagiario
-            },
-            dataHora: dataFormatada // Gera a data atual no formato ISO 8601
-        };
+    nome: "Ficha de sessão",
+    conteudo: {
+        númeroSessão: formData.numeroSessao,
+        sessãoData: formData.sessaoData,
+        anotação: formData.anotacao,
+        rg: formData.rg,
+        estagiário: formData.estagiario
+    },
+    dataHora: dataFormatada
+};
 
         try {
             console.log(fichaData)

@@ -157,22 +157,22 @@ function fichaRetornoClinicoSil() {
 
     const handleSubmit = async (event) => {
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
-        const fichaData = {
-            nome: "Ficha de Retorno Clínico de Animais Silvestres e Exóticos",  
-            conteudo:{
-                numeroSessao: formData.numeroSessao,
-                sessaoData: formData.sessaoData,
-                anamnese: formData.anamnese,
-                exameclinico: formData.exameclinico,
-                tratamento: formData.tratamento,
-                exames: formData.exames,
-                rg: formData.rg,
-                estagiario: formData.estagiario,
-                medicoresponsavel: formData.medicoresponsavel,
-                outros_texto: formData.outros_texto
-            },
-            dataHora: dataFormatada // Gera a data atual no formato ISO 8601
-        };
+       const fichaData = {
+    nome: "Ficha de Retorno Clínico de Animais Silvestres e Exóticos",  
+    conteudo: {
+        númeroSessão: formData.numeroSessao,
+        sessãoData: formData.sessaoData,
+        anamnese: formData.anamnese,
+        exameClínico: formData.exameclinico,
+        tratamento: formData.tratamento,
+        exames: formData.exames,
+        rg: formData.rg,
+        estagiário: formData.estagiario,
+        médicoResponsável: formData.medicoresponsavel,
+        outrosTexto: formData.outros_texto
+    },
+    dataHora: dataFormatada
+};
 
         try {
             console.log(fichaData)

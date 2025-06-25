@@ -164,17 +164,22 @@ function FichaAtoCirurgico() {
     const handleSubmit = async (event) => {
         event?.preventDefault();
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+        const protocolos = formData.protocolos.map(p => ({
+            "Medicação": p.medicacao,
+            "Dose": p.dose,
+            "Frequência": p.frequencia,
+            "Período": p.periodo
+        }));
         const fichaData = {
             nome: "Ficha de ato cirúrgico",
             conteudo: {
-                descricaoAtoCirurgico: formData.descricaoAtoCirurgico,
-                prognostico: formData.prognostico,
-                protocolos: formData.protocolos,
-                reavaliacao: formData.reavaliacao,
-                equipeResponsavel: formData.equipeResponsavel,
-                //data: formData.data,
-                nomeDaCirurgia: formData.nomeDaCirurgia,
-                medicosResponsaveis: formData.medicosResponsaveis,
+                "Descrição do Ato Cirúrgico": formData.descricaoAtoCirurgico,
+                "Prognóstico": formData.prognostico,
+                "Protocolos Terapêuticos": protocolos,
+                "Reavaliação": formData.reavaliacao,
+                "Equipe Responsável": formData.equipeResponsavel,
+                "Nome da Cirurgia": formData.nomeDaCirurgia,
+                "Médicos Responsáveis": formData.medicosResponsaveis
 
             },
             dataHora: dataFormatada
@@ -212,10 +217,10 @@ function FichaAtoCirurgico() {
     const adicionarLinhaTratamento = () => {
         setFormData((prev) => ({
             ...prev,
-            protocolos: [
-                ...prev.protocolos,
-                { medicacao: "", dose: "", frequencia: "", periodo: "" }
-            ]
+             protocolos: [
+            ...prev.protocolos,
+            { medicacao: "", dose: "", frequencia: "", periodo: "" }
+        ]
         }));
     };
 
@@ -330,7 +335,7 @@ function FichaAtoCirurgico() {
                             <label>Nome da Cirurgia</label>
                             <textarea name="nomeDaCirurgia" value={formData.nomeDaCirurgia} onChange={handleChange} />
                         </div>
-                       {/*<div className={styles.column}>
+                        {/*<div className={styles.column}>
                             <label>Data</label>
                             <input
                                 type="date" name="data" value={formData.data} onChange={handleChange}

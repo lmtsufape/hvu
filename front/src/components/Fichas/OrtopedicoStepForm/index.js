@@ -200,94 +200,94 @@ function OrtopedicaSteps() {
     diagnostico: "",
     tratamento: "",
     plantonistas: "",
-    medicosResponsaveis:"",
+    medicosResponsaveis: "",
   });
 
   // Carrega os dados do formulário do localStorage 
   useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const savedFormData = localStorage.getItem("fichaOrtopedicaFormData");
-          if (savedFormData) {
-              setFormData(JSON.parse(savedFormData));
-          }
+    if (typeof window !== 'undefined') {
+      const savedFormData = localStorage.getItem("fichaOrtopedicaFormData");
+      if (savedFormData) {
+        setFormData(JSON.parse(savedFormData));
       }
-  }, []); 
+    }
+  }, []);
 
   // Salva os dados do formulário no localStorage 
   useEffect(() => {
-      if (typeof window !== 'undefined') {
-          localStorage.setItem("fichaOrtopedicaFormData", JSON.stringify(formData));
-      }
-  }, [formData]); 
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("fichaOrtopedicaFormData", JSON.stringify(formData));
+    }
+  }, [formData]);
 
   // Obtém o ID da ficha da URL
   useEffect(() => {
     if (router.isReady) {
-        const id = router.query.fichaId;
-        if (id) {
-          setConsultaId(id);
-          console.log("ID da ficha:", id);
-        }
+      const id = router.query.fichaId;
+      if (id) {
+        setConsultaId(id);
+        console.log("ID da ficha:", id);
+      }
     }
   }, [router.isReady, router.query.fichaId]);
 
   useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const storedToken = localStorage.getItem('token');
-          const storedRoles = JSON.parse(localStorage.getItem('roles'));
-          setToken(storedToken || "");
-          setRoles(storedRoles || []);
-      }
-      }, []);
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('token');
+      const storedRoles = JSON.parse(localStorage.getItem('roles'));
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
+    }
+  }, []);
 
   useEffect(() => {
-      const fetchData = async () => {
-          try {
-              const userData = await getCurrentUsuario();
-              setUserId(userData.usuario.id);
-          } catch (error) {
-              console.error('Erro ao buscar usuário:', error);
-          } finally {
-              setLoading(false); 
-          }
-      };
-      fetchData();
+    const fetchData = async () => {
+      try {
+        const userData = await getCurrentUsuario();
+        setUserId(userData.usuario.id);
+      } catch (error) {
+        console.error('Erro ao buscar usuário:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   if (loading) {
-      return <div className={styles.message}>Carregando dados do usuário...</div>;
+    return <div className={styles.message}>Carregando dados do usuário...</div>;
   }
 
   if (!roles.includes("medico")) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
-          </div>
-      );
-  }    
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
 
   if (!token) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-          </div>
-      );
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+      </div>
+    );
   }
 
   //função para alternar a seleção de um item e limpar os valores dos lados
   const toggleItem = (titulo, key) => {
     const wasSelected = selecionadosGrupoExame.includes(key);
-    
+
     // Atualiza a lista de selecionados
     setSelecionadosGrupoExame(prev =>
       wasSelected ? prev.filter(i => i !== key) : [...prev, key]
     );
-  
+
     // Se estava selecionado e agora está desmarcando, limpa os valores mas mantém a estrutura
     if (wasSelected) {
       setFormData(prev => {
         const newFormData = { ...prev };
-        
+
         // Limpa os valores mas mantém a estrutura
         if (newFormData[titulo] && newFormData[titulo][key]) {
           newFormData[titulo][key] = {
@@ -295,10 +295,10 @@ function OrtopedicaSteps() {
             Esquerdo: ""
           };
         }
-        
+
         return newFormData;
       });
-  
+
       // Limpa os lados visíveis para este item
       setLadosVisiveisGrupoExame(prev => {
         const novo = { ...prev };
@@ -310,7 +310,7 @@ function OrtopedicaSteps() {
   //função para alternar a visibilidade dos lados
   const toggleLadoVisivel = (titulo, key, lado) => {
     const wasVisible = ladosVisiveisGrupoExame[key]?.[lado];
-    
+
     // Atualiza a visibilidade dos lados
     setLadosVisiveisGrupoExame(prev => ({
       ...prev,
@@ -319,24 +319,24 @@ function OrtopedicaSteps() {
         [lado]: !wasVisible,
       },
     }));
-  
+
     // Se estava visível e agora está desativando, limpa o valor mas mantém a estrutura
     if (wasVisible) {
       setFormData(prev => {
         const newFormData = { ...prev };
-        
+
         if (newFormData[titulo]?.[key]) {
           newFormData[titulo][key] = {
             ...newFormData[titulo][key],
             [lado]: ""
           };
         }
-        
+
         return newFormData;
       });
     }
   };
-  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -344,147 +344,156 @@ function OrtopedicaSteps() {
 
   const handleRadioAninhado = (e) => {
     const { name, value } = e.target;
-    const nameParts = name.split('.'); 
+    const nameParts = name.split('.');
     const newFormData = { ...formData };
-  
+
     let temp = newFormData;
     for (let i = 0; i < nameParts.length - 1; i++) {
-      temp = temp[nameParts[i]] = temp[nameParts[i]] || {}; 
+      temp = temp[nameParts[i]] = temp[nameParts[i]] || {};
     }
-    temp[nameParts[nameParts.length - 1]] = value; 
-  
+    temp[nameParts[nameParts.length - 1]] = value;
+
     setFormData(newFormData);
   };
 
   const handleSubmit = async (event) => {
     setShowErrorAlert(false);
-    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
+    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
     const fichaData = {
-        nome: "Ficha clínica ortopédica",  
-        conteudo:{
-            queixaPrincipal: formData.queixaPrincipal,
-            ocorrenciaTrauma: formData.ocorrenciaTrauma,
-            duracaoProblema: formData.duracaoProblema,
-            evolucaoQuadro: formData.evolucaoQuadro,
-            ocorrenciaClaudicacao: formData.ocorrenciaClaudicacao,
-            toleranciaExercicio: formData.toleranciaExercicio,
-            indiciosDor: formData.indiciosDor,
-            acidentesAnteriores: formData.acidentesAnteriores,
-            tratamentosHistorico: formData.tratamentosHistorico,
-            alimentacao: formData.alimentacao,
-            vitaminas: formData.vitaminas,
-            ambiente: formData.ambiente,
-            observacao: formData.observacao,
+      nome: "Ficha clínica ortopédica",
+      conteudo: {
+        "Queixa Principal": formData.queixaPrincipal,
+        "Ocorrência de Trauma": formData.ocorrenciaTrauma,
+        "Duração do Problema": formData.duracaoProblema,
+        "Evolução do Quadro": formData.evolucaoQuadro,
+        "Ocorrência de Claudicação": formData.ocorrenciaClaudicacao,
+        "Tolerância ao Exercício": formData.toleranciaExercicio,
+        "Indícios de Dor": formData.indiciosDor,
+        "Acidentes Anteriores": formData.acidentesAnteriores,
+        "Histórico de Tratamentos": formData.tratamentosHistorico,
+        "Alimentação": formData.alimentacao,
+        "Vitaminas": formData.vitaminas,
+        "Ambiente": formData.ambiente,
+        "Observação": formData.observacao,
 
-            condicaoCorporal: formData.condicaoCorporal,
-            comportamento: formData.comportamento,
-            postura: formData.postura,
-            capacidadePeso: formData.capacidadePeso,
-            tumefacao: formData.tumefacao,
-            assimetriaDesvio: formData.assimetriaDesvio,
-            atrofiaMuscular: formData.atrofiaMuscular,
-            escoriacoesFistulas: formData.escoriacoesFistulas,
-            caracteristicas: formData.caracteristicas,
-            claudicacao: formData.claudicacao,
-            faseApoio: formData.faseApoio,
-            faseElevacao: formData.faseElevacao,
-            anguloArticulacoes: formData.anguloArticulacoes,
-            segundaObservacao: formData.segundaObservacao,
-            marcha: formData.marcha,
+        // Página 2
+        "Condição Corporal": formData.condicaoCorporal,
+        "Comportamento": formData.comportamento,
+        "Postura": formData.postura,
+        "Capacidade de Suporte de Peso": formData.capacidadePeso,
+        "Tumefação": formData.tumefacao,
+        "Assimetria / Desvio": formData.assimetriaDesvio,
+        "Atrofia Muscular": formData.atrofiaMuscular,
+        "Escoriações / Fístulas": formData.escoriacoesFistulas,
+        "Características": formData.caracteristicas,
+        "Claudicação": formData.claudicacao,
+        "Fase de Apoio": formData.faseApoio,
+        "Fase de Elevação": formData.faseElevacao,
+        "Ângulo das Articulações": formData.anguloArticulacoes,
+        "Segunda Observação": formData.segundaObservacao,
+        "Marcha": formData.marcha,
 
-            achadosImagem: formData.achadosImagem,
-            outrosExames: formData.outrosExames,
-            diagnostico: formData.diagnostico,
-            tratamento: formData.tratamento,
-            plantonistas: formData.plantonistas,
-
-            digitosMetacarpos: formData.digitosMetacarpos,
-            carpo: formData.carpo,
-            radioUlna: formData.radioUlna,
-            musculosTendoes: formData.musculosTendoes,
-            umero: formData.umero,
-            ombro: formData.ombro,
-            axilarSubescapular: formData.axilarSubescapular,
-            escapula: formData.escapula,
-            articulacaoCubital: formData.articulacaoCubital,
-            digitosMetatarsos: formData.digitosMetatarsos,
-            tarso: formData.tarso,
-            tibiaFibula: formData.tibiaFibula,
-            articulacaoJoelho: formData.articulacaoJoelho,
-            femur: formData.femur,
-            articulacaoCoxal: formData.articulacaoCoxal,
-            articulacaoSacroiliaca: formData.articulacaoSacroiliaca,
-            pelve: formData.pelve,
-            cabecaEsqueletoAxial: formData.cabecaEsqueletoAxial,
-            medicosResponsaveis: formData.medicosResponsaveis,
+        // Página 3
+        "Dígitos e Metacarpos": formData.digitosMetacarpos,
+        "Carpo": formData.carpo,
+        "Rádio e Ulna": formData.radioUlna,
+        "Músculos e Tendões": formData.musculosTendoes,
+        "Úmero": formData.umero,
+        "Ombro": formData.ombro,
+        "Axilar / Subescapular": formData.axilarSubescapular,
+        "Escápula": formData.escapula,
+        "Articulação Cubital": formData.articulacaoCubital,
+        "Dígitos e Metatarsos": formData.digitosMetatarsos,
+        "Tarso": formData.tarso,
+        "Tíbia e Fíbula": formData.tibiaFibula,
+        "Articulação do Joelho": formData.articulacaoJoelho,
+        "Fêmur": formData.femur,
+        "Articulação Coxal": formData.articulacaoCoxal,
+        "Articulação Sacroilíaca": formData.articulacaoSacroiliaca,
+        "Pelve": formData.pelve,
+        "Cabeça e Esqueleto Axial": {
+          "Crânio": formData.cabecaEsqueletoAxial.cranio,
+          "Maxila": formData.cabecaEsqueletoAxial.maxila,
+          "Ramos Mandibulares": formData.cabecaEsqueletoAxial.ramosMandibulares,
+          "Sínfise Mandibular": formData.cabecaEsqueletoAxial.sinfiseMandibular,
+          "ATM": formData.cabecaEsqueletoAxial.atm,
+          "Coluna Cervical": formData.cabecaEsqueletoAxial.colunaCervical
         },
-        dataHora: dataFormatada 
+
+        "Achados em Imagem": formData.achadosImagem,
+        "Outros Exames": formData.outrosExames,
+        "Diagnóstico": formData.diagnostico,
+        "Tratamento": formData.tratamento,
+        "Plantonistas": formData.plantonistas,
+        "Médicos Responsáveis": formData.medicosResponsaveis
+      },
+      dataHora: dataFormatada
     };
 
     try {
-        const resultado = await createFicha(fichaData);
-        localStorage.setItem('fichaId', resultado.id.toString());
-        localStorage.removeItem("fichaOrtopedicaFormData");
-        setShowAlert(true);
+      const resultado = await createFicha(fichaData);
+      localStorage.setItem('fichaId', resultado.id.toString());
+      localStorage.removeItem("fichaOrtopedicaFormData");
+      setShowAlert(true);
     } catch (error) {
-        console.error("Erro ao criar ficha:", error);
-        setShowErrorAlert(true);
+      console.error("Erro ao criar ficha:", error);
+      setShowErrorAlert(true);
     }
- };
+  };
 
-   const cleanLocalStorage = () => {
+  const cleanLocalStorage = () => {
     localStorage.removeItem("fichaOrtopedicaFormData");
   }
 
- const renderStepContent = () => {
-    switch(step) {
+  const renderStepContent = () => {
+    switch (step) {
       case 1:
         return (
-          <Ortopedica 
-            formData={formData} 
-            handleChange={handleChange} 
+          <Ortopedica
+            formData={formData}
+            handleChange={handleChange}
             nextStep={nextStep}
             cleanLocalStorage={cleanLocalStorage}
           />
         );
       case 2:
-          return (
-              <Ortopedica2
-              formData={formData} 
-              handleChange={handleChange} 
-              nextStep={nextStep}
-              prevStep={prevStep}
-              />
-          );
-      case 3:
-      return (
-        <>
-        {showAlert && consultaId &&
-        <div className={styles.alert}>
-          <Alert message="Ficha criada com sucesso!" 
-          show={showAlert} url={`/createConsulta/${consultaId}`} />
-        </div>}
-        {showErrorAlert && 
-        <div className={styles.alert}>
-          <ErrorAlert message={"Erro ao criar ficha"} 
-          show={showErrorAlert} />
-        </div>}
-
-          <Ortopedica3
-          formData={formData} 
-          handleChange={handleChange}
-          handleRadioAninhado={handleRadioAninhado} 
-          handleSubmit={handleSubmit}
-          prevStep={prevStep}
-          selecionados={selecionadosGrupoExame}
-          ladosVisiveis={ladosVisiveisGrupoExame}
-          toggleItem={toggleItem}
-          toggleLadoVisivel={toggleLadoVisivel}
+        return (
+          <Ortopedica2
+            formData={formData}
+            handleChange={handleChange}
+            nextStep={nextStep}
+            prevStep={prevStep}
           />
-        </>
-      );
+        );
+      case 3:
+        return (
+          <>
+            {showAlert && consultaId &&
+              <div className={styles.alert}>
+                <Alert message="Ficha criada com sucesso!"
+                  show={showAlert} url={`/createConsulta/${consultaId}`} />
+              </div>}
+            {showErrorAlert &&
+              <div className={styles.alert}>
+                <ErrorAlert message={"Erro ao criar ficha"}
+                  show={showErrorAlert} />
+              </div>}
+
+            <Ortopedica3
+              formData={formData}
+              handleChange={handleChange}
+              handleRadioAninhado={handleRadioAninhado}
+              handleSubmit={handleSubmit}
+              prevStep={prevStep}
+              selecionados={selecionadosGrupoExame}
+              ladosVisiveis={ladosVisiveisGrupoExame}
+              toggleItem={toggleItem}
+              toggleLadoVisivel={toggleLadoVisivel}
+            />
+          </>
+        );
     }
- }
+  }
   return (
     <div className={styles.container}>
       {renderStepContent()}

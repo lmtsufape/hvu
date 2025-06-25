@@ -32,15 +32,6 @@ function ClinicaMedicaSteps() {
     queixaPrincipal: "",
     HistoricoMedico: {
       progresso: "",
-      // vacinação: "",
-      // vacinasSelecionadas: [],
-      // vermifugação: "",
-      // produtoVermifugação: "",
-      // dataVacinação: "",
-      // dataVermifugação: "",
-      // ectoparasitas: "",
-      // produtoEctoparasitas: "",
-      // dataEctoparasitas: "",
     },
 
     opc: {
@@ -302,7 +293,85 @@ function ClinicaMedicaSteps() {
     setShowErrorAlert(false);
     const fichaData = {
       nome: "Ficha Clínica Médica",
-      conteudo: { ...formData },
+      conteudo: { 
+        "Queixa Principal": formData.queixaPrincipal,
+
+    "Histórico Médico": {
+      "Progresso": formData.HistoricoMedico.progresso
+    },
+
+    "Vacinação (Datas)": {
+      "Antirrábica": formData.vacinacao.antiRabica,
+      "Giárdia": formData.vacinacao.giardia,
+      "Leishmaniose": formData.vacinacao.leishmaniose,
+      "Tosse dos Canis": formData.vacinacao.tosseDosCanis,
+      "Polivalente Canina": formData.vacinacao.polivalenteCanina,
+      "Polivalente Felina": formData.vacinacao.polivalenteFelina,
+      "Outros": formData.vacinacao.outros,
+      "Não Vacinado": formData.vacinacao.naoVacinado,
+      "Não Informado": formData.vacinacao.naoInformado
+    },
+
+    "Vermifugação": {
+      "Vermifugação Realizada": formData.vermifugacaoDetalhes.vermifugacao,
+      "Produto Utilizado": formData.vermifugacaoDetalhes.produto,
+      "Data": formData.vermifugacaoDetalhes.data
+    },
+
+    "Controle de Ectoparasitas": {
+      "Ectoparasitas": formData.ectoparasitosDetalhes.ectoparasitos,
+      "Produto Utilizado": formData.ectoparasitosDetalhes.produto,
+      "Data": formData.ectoparasitosDetalhes.data
+    },
+
+    "Sinais Vitais": {
+      "TPC": formData.tpc,
+      "Turgor Cutâneo": formData.turgorCutaneo,
+      "Frequência Cardíaca": formData.freqCardiaca,
+      "Frequência Respiratória": formData.freqRespiratoria
+    },
+
+    "Exame Físico": {
+      "Alimentação": formData.ExameFisico.alimentacao,
+      "Postura": formData.ExameFisico.postura,
+      "Temperatura": formData.ExameFisico.temperatura,
+      "Score Corporal": formData.ExameFisico.score,
+      "Frequência Cardíaca": formData.ExameFisico.freqCardiaca,
+      "Frequência Respiratória": formData.ExameFisico.freqRespiratoria,
+      "Hidratação": formData.ExameFisico.hidratacao,
+      "Tempo de Preenchimento Capilar (TPC)": formData.ExameFisico.tpc,
+      "Turgor": formData.ExameFisico.turgor,
+      "Mucosas": formData.ExameFisico.mucosas,
+      "Linfonodos (Geral)": formData.ExameFisico.linfonodosGeral,
+      "Linfonodos (Locais)": formData.ExameFisico.linfonodosLocal
+    },
+
+    "Mucosas (Descrição)": {
+      "Róseas": formData.mucosas.roseas,
+      "Róseas Pálidas": formData.mucosas.roseasPalidas,
+      "Porcelânicas": formData.mucosas.porcelanicas,
+      "Hiperêmicas": formData.mucosas.hiperemicas,
+      "Cianóticas": formData.mucosas.cianoticas,
+      "Ictéricas": formData.mucosas.ictaricas,
+      "Não Avaliado": formData.mucosas.naoAvaliado
+    },
+
+    "Linfonodos": formData.linfonodos,
+
+    "Avaliação Física Geral": formData.fisicogeral,
+
+    "Diagnóstico": formData.diagnostico,
+
+    "Medicações Prescritas": formData.medicacoes.map(m => ({
+      "Medicação": m.medicacao,
+      "Dose": m.dose,
+      "Frequência": m.frequencia,
+      "Período": m.periodo
+    })),
+
+    "Plantonistas": formData.plantonistas,
+    "Médicos Responsáveis": formData.medicosResponsaveis
+  },
       dataHora: moment().format("YYYY-MM-DDTHH:mm:ss")
     };
 

@@ -231,14 +231,14 @@ function FichaSolicitacaoExame() {
     const fichaData = {
       nome: "Ficha Solicitação de Exame",
       conteudo: {
-        HematologiaDiagnóstica: finalFormData.hematologiaDiagnostica,
-        Urinálise: finalFormData.urinalise,
-        Parasitologico: finalFormData.parasitologico,
-        BioquímicaClínica: finalFormData.bioquimicaClinica,
-        CitologiaHistopatologia: finalFormData.citologiaHistopatologia,
-        Imunológicos: finalFormData.imunologicos,
-        Imaginologia: finalFormData.imaginologia,
-        Cardiologia: finalFormData.cardiologia,
+        "Hematologia Diagnóstica": formData.hematologiaDiagnostica,
+        "Urinálise": formData.urinalise,
+        "Parasitológico": formData.parasitologico,
+        "Bioquímica Clínica": formData.bioquimicaClinica,
+        "Citologia / Histopatologia": formData.citologiaHistopatologia,
+        "Imunológicos": formData.imunologicos,
+        "Imaginologia": formData.imaginologia,
+        "Cardiologia": formData.cardiologia
       },
       dataHora: dataFormatada,
     };

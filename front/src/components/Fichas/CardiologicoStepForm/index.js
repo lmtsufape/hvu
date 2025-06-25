@@ -37,48 +37,48 @@ function CardiologicaSteps() {
       outros: false,
       naoVacinado: false,
       naoInformado: false,
-      },
-  
+    },
 
-      vacinacao: {
-        antiRabica: "",
-        giardia: "",
-        leishmaniose: "",
-        tosseDosCanis: "",
-        polivalenteCanina: "",
-        polivalenteFelina: "",
-        outros: "",
-        naoVacinado: "",
-        naoInformado: "",
 
-      },
+    vacinacao: {
+      antiRabica: "",
+      giardia: "",
+      leishmaniose: "",
+      tosseDosCanis: "",
+      polivalenteCanina: "",
+      polivalenteFelina: "",
+      outros: "",
+      naoVacinado: "",
+      naoInformado: "",
+
+    },
     alimentacao: "",
     estiloVida: "",
     contactantes: "",
     sinaisClinicos: [],
-    antecedentesHistorico:"",
+    antecedentesHistorico: "",
 
     // página 2
-    
+
     ExameFisico: {
-    postura: "",
-    nivelConsciencia: "",
-    temperatura: "",
-    score: "",
-    acp: "",
-    pulsoArterial: "",
-    distencaoEPulso: "",
-    respiracao: "",
-    narinasEOutros: "",
-    freqCardiaca: "",
-    freqRespiratoria: "",
-    abdomem: "",
-    hidratacao: "",
-    tpc: "",
-    turgorCutaneo: "",
-    mucosas: "",
-    linfonodosGeral: "",
-    linfonodosLocal: []
+      postura: "",
+      nivelConsciencia: "",
+      temperatura: "",
+      score: "",
+      acp: "",
+      pulsoArterial: "",
+      distencaoEPulso: "",
+      respiracao: "",
+      narinasEOutros: "",
+      freqCardiaca: "",
+      freqRespiratoria: "",
+      abdomem: "",
+      hidratacao: "",
+      tpc: "",
+      turgorCutaneo: "",
+      mucosas: "",
+      linfonodosGeral: "",
+      linfonodosLocal: []
     },
     option: {
       roseas: false,
@@ -107,83 +107,103 @@ function CardiologicaSteps() {
     diagnostico: {},
     medicacoes: [{ medicacao: "", dose: "", frequencia: "", periodo: "" }],
 
-    plantonistas:"",
-    medicosResponsaveis:"",
+    plantonistas: "",
+    medicosResponsaveis: "",
   });
 
-    const { medicacoes } = formData;
-
-    // Carrega os dados do formulário do localStorage 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedFormData = localStorage.getItem("fichaCardiologicaFormData");
-            if (savedFormData) {
-                setFormData(JSON.parse(savedFormData));
-            }
-        }
-    }, []); 
-
-    // Salva os dados do formulário no localStorage 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem("fichaCardiologicaFormData", JSON.stringify(formData));
-        }
-    }, [formData]); 
-
-    // Obtém o ID da ficha da URL
-    useEffect(() => {
-      if (router.isReady) {
-          const id = router.query.fichaId;
-          if (id) {
-            setConsultaId(id);
-            console.log("ID da ficha:", id);
-          }
-      }
-    }, [router.isReady, router.query.fichaId]);
+  const { medicacoes } = formData;
 
   useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const storedToken = localStorage.getItem('token');
-          const storedRoles = JSON.parse(localStorage.getItem('roles'));
-          setToken(storedToken || "");
-          setRoles(storedRoles || []);
+  if (typeof window !== 'undefined') {
+    const savedFormData = localStorage.getItem("fichaCardiologicaFormData");
+    if (savedFormData) {
+      const parsedData = JSON.parse(savedFormData);
+      setFormData(prev => ({
+        ...prev,
+        ...parsedData,
+        ExameFisico: {
+          ...prev.ExameFisico,
+          ...parsedData.ExameFisico
+        },
+        mucosas: {
+          ...prev.mucosas,
+          ...parsedData.mucosas
+        },
+        option: {
+          ...prev.option,
+          ...parsedData.option
+        },
+        linfonodos: {
+          ...prev.linfonodos,
+          ...parsedData.linfonodos
+        }
+      }));
+    }
+  }
+}, []);
+
+
+  // Salva os dados do formulário no localStorage 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("fichaCardiologicaFormData", JSON.stringify(formData));
+    }
+  }, [formData]);
+
+  // Obtém o ID da ficha da URL
+  useEffect(() => {
+    if (router.isReady) {
+      const id = router.query.fichaId;
+      if (id) {
+        setConsultaId(id);
+        console.log("ID da ficha:", id);
       }
-      }, []);
+    }
+  }, [router.isReady, router.query.fichaId]);
 
   useEffect(() => {
-      const fetchData = async () => {
-          try {
-              const userData = await getCurrentUsuario();
-              setUserId(userData.usuario.id);
-          } catch (error) {
-              console.error('Erro ao buscar usuário:', error);
-          } finally {
-              setLoading(false); // Marcar como carregado após buscar os dados
-          }
-      };
-      fetchData();
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('token');
+      const storedRoles = JSON.parse(localStorage.getItem('roles'));
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userData = await getCurrentUsuario();
+        setUserId(userData.usuario.id);
+      } catch (error) {
+        console.error('Erro ao buscar usuário:', error);
+      } finally {
+        setLoading(false); // Marcar como carregado após buscar os dados
+      }
+    };
+    fetchData();
   }, []);
 
   // Verifica se os dados estão carregando
   if (loading) {
-      return <div className={styles.message}>Carregando dados do usuário...</div>;
+    return <div className={styles.message}>Carregando dados do usuário...</div>;
   }
 
   // Verifica se o usuário tem permissão
   if (!roles.includes("medico")) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
-          </div>
-      );
-  }    
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
 
   if (!token) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-          </div>
-      );
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+      </div>
+    );
   }
 
   const handleChange = (event) => {
@@ -196,12 +216,12 @@ function CardiologicaSteps() {
       setFormData(prev => {
         const clone = JSON.parse(JSON.stringify(prev));
         let ref = clone;
-        
+
         for (let i = 0; i < path.length - 1; i++) {
           if (!ref[path[i]]) ref[path[i]] = {};
           ref = ref[path[i]];
         }
-        
+
         ref[path[path.length - 1]] = finalValue;
         return clone;
       });
@@ -212,7 +232,7 @@ function CardiologicaSteps() {
       }));
     }
   };
-  
+
 
   const handleCheckboxChange = (event, field) => {
     const { value, checked } = event.target;
@@ -223,35 +243,99 @@ function CardiologicaSteps() {
         : prev[field].filter((item) => item !== value),
     }));
   };
-  
+
 
   const handleSubmit = async (event) => {
 
-  setShowErrorAlert(false);
+    setShowErrorAlert(false);
 
-  const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
 
-  // Criar uma cópia de formData excluindo os campos 'option' e 'opc'
-  const { option, opc, ...dadosParaEnviar } = formData;
+    // Criar uma cópia de formData excluindo os campos 'option' e 'opc'
+    const { option, opc, ...dadosParaEnviar } = formData;
 
-  const fichaData = {
-    nome: "Ficha clínica cardiológica",
-    conteudo: dadosParaEnviar, // Envia apenas os dados relevantes
-    dataHora: dataFormatada,
+    const fichaData = {
+      nome: "Ficha clínica cardiológica",
+      conteudo: {
+        "Peso": formData.peso,
+
+        "Vacinação": {
+          "Antirrábica": formData.vacinacao.antiRabica,
+          "Giárdia": formData.vacinacao.giardia,
+          "Leishmaniose": formData.vacinacao.leishmaniose,
+          "Tosse dos Canis": formData.vacinacao.tosseDosCanis,
+          "Polivalente Canina": formData.vacinacao.polivalenteCanina,
+          "Polivalente Felina": formData.vacinacao.polivalenteFelina,
+          "Outros": formData.vacinacao.outros,
+          "Não Vacinado": formData.vacinacao.naoVacinado,
+          "Não Informado": formData.vacinacao.naoInformado
+        },
+
+        "Alimentação": formData.alimentacao,
+        "Estilo de Vida": formData.estiloVida,
+        "Contactantes": formData.contactantes,
+        "Sinais Clínicos": formData.sinaisClinicos,
+        "Antecedentes / Histórico": formData.antecedentesHistorico,
+
+        "Exame Físico": {
+          "Postura": formData.ExameFisico.postura,
+          "Nível de Consciência": formData.ExameFisico.nivelConsciencia,
+          "Temperatura": formData.ExameFisico.temperatura,
+          "Score Corporal": formData.ExameFisico.score,
+          "ACPs": formData.ExameFisico.acp,
+          "Pulso Arterial": formData.ExameFisico.pulsoArterial,
+          "Distensão e Pulso": formData.ExameFisico.distencaoEPulso,
+          "Respiração": formData.ExameFisico.respiracao,
+          "Narinas e Outros": formData.ExameFisico.narinasEOutros,
+          "Frequência Cardíaca": formData.ExameFisico.freqCardiaca,
+          "Frequência Respiratória": formData.ExameFisico.freqRespiratoria,
+          "Abdômen": formData.ExameFisico.abdomem,
+          "Hidratação": formData.ExameFisico.hidratacao,
+          "TPC": formData.ExameFisico.tpc,
+          "Turgor Cutâneo": formData.ExameFisico.turgorCutaneo,
+          "Mucosas (geral)": formData.ExameFisico.mucosas,
+          "Linfonodos (geral)": formData.ExameFisico.linfonodosGeral,
+          "Linfonodos (locais)": formData.ExameFisico.linfonodosLocal
+        },
+
+        "Mucosas (detalhado)": {
+          "Róseas": formData.mucosas.roseas,
+          "Róseas Pálidas": formData.mucosas.roseasPalidas,
+          "Porcelânicas": formData.mucosas.porcelanicas,
+          "Hiperêmicas": formData.mucosas.hiperemicas,
+          "Cianóticas": formData.mucosas.cianoticas,
+          "Ictéricas": formData.mucosas.ictaricas,
+          "Não Avaliado": formData.mucosas.naoAvaliado
+        },
+
+        "Linfonodos": formData.linfonodos,
+
+        "Exames Complementares": {
+          "Exames Anteriores": formData.ExamesComplementares.examesAnteriores
+        },
+
+        "Diagnóstico": formData.diagnostico,
+
+        "Medicações": formData.medicacoes,
+
+        "Plantonistas": formData.plantonistas,
+        "Médicos Responsáveis": formData.medicosResponsaveis
+      },
+      dataHora: dataFormatada,
+    };
+
+    try {
+      const resultado = await createFicha(fichaData);
+      localStorage.setItem('fichaId', resultado.id.toString());
+      localStorage.removeItem("fichaCardiologicaFormData");
+      setShowAlert(true);
+    } catch (error) {
+      console.error("Erro ao criar ficha:", error);
+      setShowErrorAlert(true);
+    }
   };
 
-  try {
-    const resultado = await createFicha(fichaData);
-    localStorage.setItem('fichaId', resultado.id.toString());
-    localStorage.removeItem("fichaCardiologicaFormData");
-    setShowAlert(true);
-  } catch (error) {
-    console.error("Erro ao criar ficha:", error);
-    setShowErrorAlert(true);
-  }
-};
-
- const handleCheckboxChangeVacinacao = (e) => {
+  const handleCheckboxChangeVacinacao = (e) => {
     const { name, checked } = e.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -274,20 +358,20 @@ function CardiologicaSteps() {
   };
 
   const handleChangeAtualizaSelect = (e) => {
-  const { name, value } = e.target;
-  const path = name.split(".");
+    const { name, value } = e.target;
+    const path = name.split(".");
 
-  setFormData((prevData) => {
-    const clone = JSON.parse(JSON.stringify(prevData));
-    let ref = clone;
-    for (let i = 0; i < path.length - 1; i++) {
-      if (!ref[path[i]]) ref[path[i]] = {};
-      ref = ref[path[i]];
-    }
-    ref[path[path.length - 1]] = value;
-    return clone;
-  });
-};
+    setFormData((prevData) => {
+      const clone = JSON.parse(JSON.stringify(prevData));
+      let ref = clone;
+      for (let i = 0; i < path.length - 1; i++) {
+        if (!ref[path[i]]) ref[path[i]] = {};
+        ref = ref[path[i]];
+      }
+      ref[path[path.length - 1]] = value;
+      return clone;
+    });
+  };
 
 
   const handleSinalChange = (e, sinalClinico) => {
@@ -358,51 +442,51 @@ function CardiologicaSteps() {
   };
 
   const handleChangeTratamentos = (index, campo, valor) => {
-        setFormData((prev) => {
-          const novosTratamentos = [...prev.medicacoes];
-          novosTratamentos[index][campo] = valor;
-      
-          return {
-            ...prev,
-            medicacoes: novosTratamentos
-          };
-        });
-    }; 
+    setFormData((prev) => {
+      const novosTratamentos = [...prev.medicacoes];
+      novosTratamentos[index][campo] = valor;
+
+      return {
+        ...prev,
+        medicacoes: novosTratamentos
+      };
+    });
+  };
 
   const adicionarLinhaTratamento = () => {
-        setFormData((prev) => ({
-          ...prev,
-          medicacoes: [
-            ...(prev.medicacoes || []),
-            { medicacao: "", dose: "", frequencia: "", periodo: "" }
-          ]
-        }));
-    };
+    setFormData((prev) => ({
+      ...prev,
+      medicacoes: [
+        ...(prev.medicacoes || []),
+        { medicacao: "", dose: "", frequencia: "", periodo: "" }
+      ]
+    }));
+  };
 
   const removerUltimaLinhaTratamento = () => {
-        setFormData((prev) => {
-          const tratamentos = prev.medicacoes;
-          if (tratamentos.length > 1) {
-            return {
-              ...prev,
-              medicacoes: tratamentos.slice(0, -1),
-            };
-          }
-          return prev;
-        });
-    };  
-  
+    setFormData((prev) => {
+      const tratamentos = prev.medicacoes;
+      if (tratamentos.length > 1) {
+        return {
+          ...prev,
+          medicacoes: tratamentos.slice(0, -1),
+        };
+      }
+      return prev;
+    });
+  };
+
   const cleanLocalStorage = () => {
     localStorage.removeItem("fichaCardiologicaFormData");
   }
 
   const renderStepContent = () => {
-    switch(step) {
+    switch (step) {
       case 1:
         return (
-          <Cardiologica 
-            formData={formData} 
-            handleChange={handleChange} 
+          <Cardiologica
+            formData={formData}
+            handleChange={handleChange}
             nextStep={nextStep}
             handleCheckboxChange={handleCheckboxChange}
             cleanLocalStorage={cleanLocalStorage}
@@ -414,42 +498,42 @@ function CardiologicaSteps() {
         return (
           <>
             <Cardiologica2
-            formData={formData} 
-            handleChange={handleChange} 
-            nextStep={nextStep}
-            prevStep={prevStep}
-            handleCheckboxChange={handleCheckboxChange}
-            handleChangeAtualizaSelect={handleChangeAtualizaSelect}
-            handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
-            handleLinfonodoChange={handleLinfonodoChange}
-            handleCaracteristicaChange={handleCaracteristicaChange}
-            handleMucosaLocationChange={handleMucosaLocationChange}
+              formData={formData}
+              handleChange={handleChange}
+              nextStep={nextStep}
+              prevStep={prevStep}
+              handleCheckboxChange={handleCheckboxChange}
+              handleChangeAtualizaSelect={handleChangeAtualizaSelect}
+              handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
+              handleLinfonodoChange={handleLinfonodoChange}
+              handleCaracteristicaChange={handleCaracteristicaChange}
+              handleMucosaLocationChange={handleMucosaLocationChange}
             />
           </>
         );
       case 3:
         return (
           <>
-          {showAlert && consultaId &&
-          <div className={styles.alert}>
-            <Alert message="Ficha criada com sucesso!" 
-            show={showAlert} url={`/createConsulta/${consultaId}`} />
-          </div>}
-          {showErrorAlert && 
-          <div className={styles.alert}>
-            <ErrorAlert message={errorMessage || "Erro ao criar ficha"} 
-            show={showErrorAlert} />
-          </div>}
+            {showAlert && consultaId &&
+              <div className={styles.alert}>
+                <Alert message="Ficha criada com sucesso!"
+                  show={showAlert} url={`/createConsulta/${consultaId}`} />
+              </div>}
+            {showErrorAlert &&
+              <div className={styles.alert}>
+                <ErrorAlert message={errorMessage || "Erro ao criar ficha"}
+                  show={showErrorAlert} />
+              </div>}
 
             <Cardiologica3
-            formData={formData} 
-            handleChange={handleChange} 
-            prevStep={prevStep}
-            handleSubmit={handleSubmit}
-            handleChangeTratamentos={handleChangeTratamentos}
-            adicionarLinhaTratamento={adicionarLinhaTratamento}
-            removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
-            medicacoes={medicacoes}
+              formData={formData}
+              handleChange={handleChange}
+              prevStep={prevStep}
+              handleSubmit={handleSubmit}
+              handleChangeTratamentos={handleChangeTratamentos}
+              adicionarLinhaTratamento={adicionarLinhaTratamento}
+              removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
+              medicacoes={medicacoes}
             />
           </>
         );
