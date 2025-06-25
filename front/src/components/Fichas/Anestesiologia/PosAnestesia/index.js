@@ -55,6 +55,39 @@ const initialData = timePoints.map(time => ({
 
 const [data, setData] = useState(initialData);
 
+// Função para limpar apenas a tabela de parâmetros
+  const limparTabela = () => {
+    localStorage.removeItem("posAnestesiaTabela");
+    setData(initialData);
+    
+    // Atualiza o formData para refletir a limpeza
+    setFormData(prev => ({
+      ...prev,
+      pos: {
+        ...prev.pos,
+        parametros: initialData
+      }
+    }));
+  };
+
+  // Handler modificado para limpar a tabela após envio
+  const handleFinalizar = async () => {
+    await handleSubmit(); 
+    limparTabela();
+  };
+
+  // Atualize o useEffect para incluir data nas dependências
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      pos: { 
+        ...prev.pos, 
+        farmacos: farmacosPos,  
+        parametros: data  // Garante que os dados da tabela estão incluídos
+      }
+    }));
+  }, [farmacosPos, data, setFormData]); // Adicione data como dependência
+
 
 const handleInputChange = (idx, param, value) => {
   setData(prevData => {
