@@ -12,6 +12,7 @@ import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import br.edu.ufape.hvu.repository.AnimalRepository;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
@@ -1399,6 +1400,23 @@ public class Facade {
         return fichaServiceInterface.findFichaById(id);
     }
 
+    public List<Ficha> findFichasByAnimalId(Long animalId) {
+        if (animalId == null) {
+            throw new IllegalArgumentException("O id do animal é inválido.");
+        }
+
+        if (!animalRepository.existsById(animalId)) {
+            throw new ResourceNotFoundException("Animal", "id", animalId);
+        }
+
+        List<Consulta> consultasByAnimalId = consultaServiceInterface.getConsultasByAnimalId(animalId);
+
+        return consultasByAnimalId
+                .stream()
+                .flatMap(consulta -> consulta.getFicha().stream())
+                .toList();
+    }
+
     public List<Ficha> getAllFicha() {
         return fichaServiceInterface.getAllFicha();
     }
@@ -1673,6 +1691,7 @@ public class Facade {
     // CampoLaudoMicroscopia --------------------------------------------------------------
 
     private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
+    private final AnimalRepository animalRepository;
 
     @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
