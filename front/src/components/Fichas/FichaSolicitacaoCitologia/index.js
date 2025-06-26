@@ -65,6 +65,7 @@ function FichaSolicitacaoCitologia() {
 
     // Função para gerar uma chave única no localStorage com base no consultaId
     const getLocalStorageKey = () => `solicitacaoCitologiaFormData_${consultaId || "default"}`;
+    const storageKeyDrawing = () => `citologiaDrawingLines_${consultaId || "default"}`;
 
     // Carrega os dados do formulário e dos campos "Outros" do localStorage
     useEffect(() => {
@@ -106,6 +107,7 @@ function FichaSolicitacaoCitologia() {
                     setOtherValueLesao(parsedData.otherValueLesao || "");
                     setShowOtherInput(parsedData.formData?.anamnese.includes("Outros(s):"));
                     setShowOtherInputLesao(parsedData.formData?.caracteristicasLesao.selecionadas.includes("Outros(s):"));
+                    setImagemDesenhada(parsedData.formData?.imagemLesao.imagem || null);
                 } catch (error) {
                     console.error("Erro ao carregar os dados do localStorage:", error);
                 }
@@ -203,6 +205,7 @@ function FichaSolicitacaoCitologia() {
             }
         }));
         setImagemDesenhada(imagemFinal); // Atualiza a imagem exibida no formulário
+        localStorage.setItem(storageKeyDrawing, JSON.stringify(linhasDesenhadas));
     };
 
     const renderImagemLesao = () => {
@@ -298,37 +301,16 @@ function FichaSolicitacaoCitologia() {
         const fichaData = {
             nome: "Ficha de solicitação de citologia",
             conteudo: {
-                "Anamnese": formData.anamnese, // array de strings ou sintomas
-
-                "Data da Colheita": formData.dataColheita,
-                "Histórico do Exame Físico": formData.historicoExameFisico,
-                "Localização da Lesão": formData.localizacaoLesao,
-
-                "Imagem da Lesão": {
-                    "Imagem (base64 ou URL)": formData.imagemLesao.imagem,
-                    "Linhas Desenhadas": formData.imagemLesao.linhasDesenhadas
+                anamnese: anamneseFinal,
+                dataColheita: formData.dataColheita,
+                historicoExameFisico: formData.historicoExameFisico,
+                localizacaoLesao: formData.localizacaoLesao,
+                imagemLesao: formData.imagemLesao,
+                caracteristicasLesao: {
+                    ...formData.caracteristicasLesao, // Mantém os outros campos
+                    selecionadas: caracteristicasFinal //sobrescreve o campo selecionados
                 },
-
-                "Características da Lesão": {
-                    "Características Selecionadas": formData.caracteristicasLesao.selecionadas,
-                    "Descrição": formData.caracteristicasLesao.descricao,
-                    "Cor": formData.caracteristicasLesao.cor,
-                    "Consistência": formData.caracteristicasLesao.consistencia,
-                    "Bordas": formData.caracteristicasLesao.bordas,
-                    "Ulceração": formData.caracteristicasLesao.ulceracao,
-                    "Dor à Palpação": formData.caracteristicasLesao.dorPalpacao,
-                    "Temperatura Local": formData.caracteristicasLesao.temperaturaLocal,
-                    "Relação com Tecidos Vizinhos": formData.caracteristicasLesao.relacaoTecidosVizinhos
-                },
-
-                "Citologia": {
-                    "Descrição": formData.citologia.descricao,
-                    "Método de Colheita": formData.citologia.metodo,
-                    "Número de Lâminas": formData.citologia.numeroLaminas,
-                    "Resultado": formData.citologia.resultado,
-                    "Conclusão": formData.citologia.conclusao,
-                    "Comentários": formData.citologia.comentarios
-                }
+                citologia: formData.citologia
             },
             dataHora: dataFormatada
         };
@@ -338,7 +320,7 @@ function FichaSolicitacaoCitologia() {
             const resultado = await createFicha(fichaData);
             localStorage.setItem('fichaId', resultado.id.toString());
             localStorage.removeItem(getLocalStorageKey());
-            localStorage.removeItem('canvasKonva');
+            localStorage.removeItem(storageKeyDrawing);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
@@ -348,7 +330,7 @@ function FichaSolicitacaoCitologia() {
 
     const cleanLocalStorage = () => {
         localStorage.removeItem(getLocalStorageKey());
-        localStorage.removeItem('canvasKonva');
+        localStorage.removeItem(storageKeyDrawing);
     };
 
     const formatDate = (dateString) => {
@@ -483,6 +465,8 @@ function FichaSolicitacaoCitologia() {
                         onSave={handleSaveDrawing}
                         showDrawingModal={showDrawingModal}
                         dimensoesImagem={dimensoesImagem}
+                        linhasEditadas={formData.imagemLesao.linhasDesenhadas}
+                        storageKeyDrawing={storageKeyDrawing}
                     />
 
                     <div className={styles.column}>
