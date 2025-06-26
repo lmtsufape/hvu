@@ -36,6 +36,14 @@ public class FichaController {
         return new FichaResponse(facade.findFichaById(id));
     }
 
+    @GetMapping("/ficha/animal/{animalId}")
+    public List<FichaResponse> findFichasByAnimalId(@PathVariable Long animalId) {
+        return facade.findFichasByAnimalId(animalId)
+                .stream()
+                .map(FichaResponse::new)
+                .toList();
+    }
+
     //@PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
     @PatchMapping("ficha/{id}")
     public FichaResponse updateFicha(@PathVariable Long id, @Valid @RequestBody FichaRequest obj) {
