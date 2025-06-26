@@ -423,8 +423,8 @@ function CreateConsulta() {
     }
   };
 
-  const handleClick = (path, id, fichaId) => {
-    router.push(`${path}?consultaId=${id}&animalId=${animalId}&fichaId=${fichaId}`);
+  const handleClick = (path, id) => {
+    router.push(`${path}?fichaId=${id}&animalId=${animalId}`);
   };
 
   const rotasPorNome = {
