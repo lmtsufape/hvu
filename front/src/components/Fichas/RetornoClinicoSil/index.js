@@ -65,7 +65,7 @@ function fichaRetornoClinicoSil() {
     // Obtém o ID da ficha da URL
     useEffect(() => {
     if (router.isReady) {
-        const id = router.query.consultaId;
+        const id = router.query.fichaId;
         const animalId = router.query.animalId;
         if (id) {
             setConsultaId(id);
@@ -74,7 +74,7 @@ function fichaRetornoClinicoSil() {
             setAnimalId(animalId);
         }
     }
-    }, [router.isReady, router.query.consultaId]);
+    }, [router.isReady, router.query.fichaId]);
 
    useEffect(() => {
     if (!animalId) return;

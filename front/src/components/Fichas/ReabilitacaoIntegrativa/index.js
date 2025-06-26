@@ -185,13 +185,13 @@ function ReabilitacaoIntegrativaSteps() {
   // Obtém o ID da ficha da URL
   useEffect(() => {
     if (router.isReady) {
-        const id = router.query.consultaId;
+        const id = router.query.fichaId;
         if (id) {
           setConsultaId(id);
           console.log("ID da ficha:", id);
         }
     }
-  }, [router.isReady, router.query.consultaId]);
+  }, [router.isReady, router.query.fichaId]);
 
   useEffect(() => {
       if (typeof window !== 'undefined') {
