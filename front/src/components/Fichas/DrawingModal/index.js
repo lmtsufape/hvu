@@ -9,7 +9,7 @@ const KonvaCanvas = dynamic(() => import('../KonvaCanvas'), {
 });
 
 
-const DrawingModal = ({ show, onHide, backgroundImage, onSave, showDrawingModal, dimensoesImagem }) => {
+const DrawingModal = ({ show, onHide, backgroundImage, onSave, showDrawingModal, dimensoesImagem, linhasEditadas, storageKeyDrawing }) => {
   return (
     show && (
       <div className={styles.modal_overlay}>
@@ -20,6 +20,8 @@ const DrawingModal = ({ show, onHide, backgroundImage, onSave, showDrawingModal,
             onSave={onSave}
             showDrawingModal={showDrawingModal}
             dimensoesImagem={dimensoesImagem}
+            linhasEditadas={linhasEditadas}
+            storageKeyDrawing={storageKeyDrawing}
           />
         </div>
       </div>

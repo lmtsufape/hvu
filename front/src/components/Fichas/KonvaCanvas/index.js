@@ -6,7 +6,7 @@ import useImage from 'use-image';
 import styles from './index.module.css';
 import Alert from "../../Alert";
 
-const KonvaCanvas = ({ backgroundImage, onSave, showDrawingModal, dimensoesImagem }) => {
+const KonvaCanvas = ({ backgroundImage, onSave, showDrawingModal, dimensoesImagem, linhasEditadas, storageKeyDrawing }) => {
   const stageRef = useRef(null);
   const [linhasDesenhadas, setlinhasDesenhadas] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -66,15 +66,17 @@ const KonvaCanvas = ({ backgroundImage, onSave, showDrawingModal, dimensoesImage
   // e as linhas desenhadas em formato de array
   const handleSave = () => {
     const imagemFinal = stageRef.current.toDataURL();
-    localStorage.setItem('canvasKonva', JSON.stringify(linhasDesenhadas));
     onSave(imagemFinal, linhasDesenhadas);
     setShowAlert(true);
   };
 
   const loadCanvas = () => {
-    const saved = localStorage.getItem('canvasKonva');
+    const saved = localStorage.getItem(storageKeyDrawing);
     if (saved) {
       setlinhasDesenhadas(JSON.parse(saved));
+    }
+    else{
+      setlinhasDesenhadas(linhasEditadas || []);
     }
   };
 
