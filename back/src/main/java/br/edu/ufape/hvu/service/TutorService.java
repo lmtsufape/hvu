@@ -64,4 +64,11 @@ public class TutorService implements TutorServiceInterface {
 			throw new DuplicateAccountException("Tutor", "EMAIL");
 		}
 	}
+
+	public Tutor saveTutorAnonimo() {
+		Tutor tutor = new Tutor();
+		tutor.setAnonimo(true);
+		tutor.setNome("Anônimo");
+		return repository.save(tutor);
+	}
 }

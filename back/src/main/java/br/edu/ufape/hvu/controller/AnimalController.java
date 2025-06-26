@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 
+import br.edu.ufape.hvu.controller.dto.request.PatologistaAnimalRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -107,5 +108,17 @@ public class AnimalController {
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		facade.deleteAnimal(id, principal.getSubject());
 		return "";
+	}
+
+	@PreAuthorize("hasRole('PATOLOGISTA')")
+	@PostMapping("animal/patologista")
+	public AnimalResponse createAnimalByPatologista(
+			@Valid @RequestBody PatologistaAnimalRequest request
+	) {
+		Animal saved = facade.saveAnimalByPatologista(
+				request.getAnimalEntity(),
+				request.getTutorEntity()
+		);
+		return new AnimalResponse(saved);
 	}
 }

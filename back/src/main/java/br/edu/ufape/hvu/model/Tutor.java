@@ -25,5 +25,5 @@ public  class Tutor extends Usuario {
 	@JoinColumn(name = "tutor_id")
 	@ToString.Exclude
 	private List<Animal> animal; 
-
+	private boolean anonimo;
 }

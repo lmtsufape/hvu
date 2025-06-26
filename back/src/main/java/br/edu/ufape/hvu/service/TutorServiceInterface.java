@@ -13,4 +13,5 @@ public interface TutorServiceInterface {
 	void deleteTutor(long id);
 	List<Tutor> getAllTutor();
 	void verificarDuplicidade(String cpf, String email);
+	Tutor saveTutorAnonimo();
 }

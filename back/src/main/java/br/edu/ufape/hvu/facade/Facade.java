@@ -1169,6 +1169,28 @@ public class Facade {
     }
 
     @Transactional
+    public Animal saveAnimalByPatologista(Animal newInstance, Tutor newTutor) {
+        Tutor tutor;
+
+        if (newTutor == null || newTutor.isAnonimo()) {
+            tutor = tutorServiceInterface.saveTutorAnonimo();
+        } else {
+            tutorServiceInterface.verificarDuplicidade(newTutor.getCpf(), newTutor.getEmail());
+            tutor = tutorServiceInterface.saveTutor(newTutor);
+        }
+
+        if (tutor.getAnimal() == null) {
+            tutor.setAnimal(new ArrayList<>());
+        }
+
+        tutor.getAnimal().add(newInstance);
+        Animal animal = animalServiceInterface.saveAnimal(newInstance);
+        tutorServiceInterface.updateTutor(tutor);
+
+        return animal;
+    }
+
+    @Transactional
     public Animal updateAnimal(Long id, AnimalRequest request, String idSession) {
         Animal animal = animalServiceInterface.findAnimalById(id);
         Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
