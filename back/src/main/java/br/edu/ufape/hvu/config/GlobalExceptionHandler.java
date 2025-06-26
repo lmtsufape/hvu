@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.config;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.InvalidJsonException;
+import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.NotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import br.edu.ufape.hvu.exception.types.auth.KeycloakAuthenticationException;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Objects;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -143,7 +145,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        logger.error("Violação de integridade de dados: {}", ex.getRootCause().getMessage());
+        logger.error("Violação de integridade de dados: {}", Objects.requireNonNull(ex.getRootCause()).getMessage());
 
         ErrorResponse error = new ErrorResponse(
                 "Erro de integridade de dados",
@@ -168,4 +170,33 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex) {
+        logger.warn("Operação inválida: {}", ex.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                "Operação inválida",
+                ex.getMessage(),
+                Arrays.asList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
+        logger.warn("Regra de negócio violada: {}", ex.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                "Regra de negócio violada",
+                ex.getMessage(),
+                Arrays.asList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 }
