@@ -12,15 +12,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Getter @Setter @NoArgsConstructor 
-public  class TutorRequest extends UsuarioRequest {
-	private String rg;
-	private List<AnimalRequest> animal;
-	private long id;
+import jakarta.validation.constraints.AssertTrue;
 
+@Getter @Setter @NoArgsConstructor
+public class TutorRequest extends UsuarioRequest {
+	private boolean anonimo;
+
+	@AssertTrue(message = "Campos obrigatórios devem ser preenchidos para tutor não anônimo")
+	public boolean isValid() {
+		if (anonimo) {
+			// Se for anônimo, libera qualquer campo vazio
+			return true;
+		}
+		// Se não for anônimo, todos os campos obrigatórios devem estar preenchidos
+		return getCpf() != null && !getCpf().isBlank()
+				&& getTelefone() != null && !getTelefone().isBlank()
+				&& getNome() != null && !getNome().isBlank()
+				&& getEndereco() != null;
+	}
 
 	public Tutor convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-        return modelMapper.map(this, Tutor.class);
+		return modelMapper.map(this, Tutor.class);
 	}
 }

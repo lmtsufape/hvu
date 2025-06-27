@@ -15,13 +15,13 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public  class TutorResponse extends UsuarioResponse {
 	private String rg;
-	private List<AnimalResponse> animal; 
-
+	private List<AnimalResponse> animal;
+	private boolean anonimo;
 
 
 	public TutorResponse(Tutor obj) {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-		modelMapper.map(obj, this);	
+		modelMapper.map(obj, this);
 	}
 
 }
