@@ -33,67 +33,67 @@ function FichaDermatologicaStep1({
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
 
-    // Função para gerar uma chave única no localStorage com base no consultaId
-    const getLocalStorageKey = () => `fichaDermatologicaStep1FormData_${consultaId || "default"}`;
+    // // Função para gerar uma chave única no localStorage com base no consultaId
+    // const getLocalStorageKey = () => `fichaDermatologicaStep1FormData_${consultaId || "default"}`;
 
-    // Carrega os dados do formulário e dos campos "Outros" do localStorage
-    useEffect(() => {
-        if (typeof window !== 'undefined' && consultaId) {
-            const savedFormData = localStorage.getItem(getLocalStorageKey());
-            if (savedFormData) {
-                try {
-                    const parsedData = JSON.parse(savedFormData);
-                    setFormData(parsedData.formData || {
-                        peso: "",
-                        ambiente: "",
-                        estiloVida: "",
-                        acessoRua: "",
-                        alimentacao: "",
-                        ultimaAdministracao: "",
-                        apresentaEctoparasitas: "",
-                        quandoVistoUltimaVez: "",
-                        banhos: "",
-                        frequenciaBanhos: "",
-                        produtosUtilizados: [],
-                        contatoComSuperfice: [],
-                        conviveComAnimais: [],
-                        contactantesSintomaticos: [],
-                        controleEctoparasitas: [],
-                        queixaPrincipal: "",
-                        tratamentosAtuais: {
-                            confirmacao: "",
-                            tipoTratamento: "",
-                            responsividade: ""
-                        },
-                        prurido: "",
-                        local: [],
-                        intensidade: "",
-                        lambedura: ""
-                    });
-                    setOtherValueProdutosUtilizados(parsedData.otherValueProdutosUtilizados || "");
-                    setOtherValueConviveComAnimais(parsedData.otherValueConviveComAnimais || "");
-                    setShowOtherInputProdutosUtilizados(parsedData.formData?.produtosUtilizados.includes("Outros"));
-                    setShowOtherInputConviveComAnimais(parsedData.formData?.conviveComAnimais.includes("Outros"));
-                } catch (error) {
-                    console.error("Erro ao carregar os dados do localStorage:", error);
-                }
-            }
-        }
-    }, [consultaId, setFormData, setOtherValueProdutosUtilizados, setOtherValueConviveComAnimais, setShowOtherInputProdutosUtilizados, setShowOtherInputConviveComAnimais]);
+    // // Carrega os dados do formulário e dos campos "Outros" do localStorage
+    // useEffect(() => {
+    //     if (typeof window !== 'undefined' && consultaId) {
+    //         const savedFormData = localStorage.getItem(getLocalStorageKey());
+    //         if (savedFormData) {
+    //             try {
+    //                 const parsedData = JSON.parse(savedFormData);
+    //                 setFormData(parsedData.formData || {
+    //                     peso: "",
+    //                     ambiente: "",
+    //                     estiloVida: "",
+    //                     acessoRua: "",
+    //                     alimentacao: "",
+    //                     ultimaAdministracao: "",
+    //                     apresentaEctoparasitas: "",
+    //                     quandoVistoUltimaVez: "",
+    //                     banhos: "",
+    //                     frequenciaBanhos: "",
+    //                     produtosUtilizados: [],
+    //                     contatoComSuperfice: [],
+    //                     conviveComAnimais: [],
+    //                     contactantesSintomaticos: [],
+    //                     controleEctoparasitas: [],
+    //                     queixaPrincipal: "",
+    //                     tratamentosAtuais: {
+    //                         confirmacao: "",
+    //                         tipoTratamento: "",
+    //                         responsividade: ""
+    //                     },
+    //                     prurido: "",
+    //                     local: [],
+    //                     intensidade: "",
+    //                     lambedura: ""
+    //                 });
+    //                 setOtherValueProdutosUtilizados(parsedData.otherValueProdutosUtilizados || "");
+    //                 setOtherValueConviveComAnimais(parsedData.otherValueConviveComAnimais || "");
+    //                 setShowOtherInputProdutosUtilizados(parsedData.formData?.produtosUtilizados.includes("Outros"));
+    //                 setShowOtherInputConviveComAnimais(parsedData.formData?.conviveComAnimais.includes("Outros"));
+    //             } catch (error) {
+    //                 console.error("Erro ao carregar os dados do localStorage:", error);
+    //             }
+    //         }
+    //     }
+    // }, [consultaId, setFormData, setOtherValueProdutosUtilizados, setOtherValueConviveComAnimais, setShowOtherInputProdutosUtilizados, setShowOtherInputConviveComAnimais]);
 
-    // Salva os dados do formulário e dos campos "Outros" no localStorage
-    useEffect(() => {
-        if (typeof window !== 'undefined' && consultaId) {
-            localStorage.setItem(
-                getLocalStorageKey(),
-                JSON.stringify({
-                    formData,
-                    otherValueProdutosUtilizados,
-                    otherValueConviveComAnimais
-                })
-            );
-        }
-    }, [formData, otherValueProdutosUtilizados, otherValueConviveComAnimais, consultaId]);
+    // // Salva os dados do formulário e dos campos "Outros" no localStorage
+    // useEffect(() => {
+    //     if (typeof window !== 'undefined' && consultaId) {
+    //         localStorage.setItem(
+    //             getLocalStorageKey(),
+    //             JSON.stringify({
+    //                 formData,
+    //                 otherValueProdutosUtilizados,
+    //                 otherValueConviveComAnimais
+    //             })
+    //         );
+    //     }
+    // }, [formData, otherValueProdutosUtilizados, otherValueConviveComAnimais, consultaId]);
 
     // Obtém o ID da ficha e animal da URL
     useEffect(() => {
