@@ -12,6 +12,396 @@ import ErrorAlert from "../ErrorAlert";
 import { getFichaById } from "../../../services/fichaService";
 import { deleteFicha } from "../../../services/fichaService";
 
+// Função para verificar se o conteúdo é válido
+const hasContent = (value) =>
+  value !== null && value !== undefined && value !== "" && (!Array.isArray(value) || value.length > 0);
+
+// Função para validar string base64
+const isValidBase64 = (str) => str && typeof str === "string" && str.startsWith("data:image/");
+
+// Configuração das fichas
+const fichaConfig = {
+  "Ficha de ato cirúrgico": [
+    { field: "descricaoAtoCirurgico", label: "Descrição do Ato Cirúrgico", type: "textarea", rows: 4 },
+    { field: "nomeDaCirurgia", label: "Nome da Cirurgia", type: "textarea" },
+    {
+      field: "prognostico",
+      label: "Prognóstico",
+      type: "select",
+      options: [
+        { value: "", label: "Selecione" },
+        { value: "FAVORAVEL", label: "Favorável" },
+        { value: "RESERVADO", label: "Reservado" },
+        { value: "DESFAVORAVEL", label: "Desfavorável" },
+      ],
+    },
+    {
+      field: "protocolos",
+      label: "Protocolos Terapêuticos a serem Instituídos",
+      type: "table",
+      columns: [
+        { key: "medicacao", label: "Medicação" },
+        { key: "dose", label: "Dose" },
+        { key: "frequencia", label: "Frequência" },
+        { key: "periodo", label: "Período" },
+      ],
+    },
+    { field: "reavaliacao", label: "Retorno para Reavaliações", type: "textarea", rows: 4 },
+    { field: "equipeResponsavel", label: "Plantonista(s) Discente(s)", type: "textarea" },
+    { field: "medicosResponsaveis", label: "Médico(s) Veterinário(s) Responsável", type: "textarea" },
+    { field: "data", label: "Data", type: "date", fallbackField: "dataConsulta" },
+  ],
+  "Ficha de solicitação de citologia": [
+    { field: "Anamnese", label: "Anamnese", type: "textarea", rows: 4, transform: (value) => (Array.isArray(value) ? value.join(", ") : value) },
+    { field: "dataColheita", label: "Data da Colheita", type: "date", fallbackField: "data" },
+    { field: "historicoExameFisico", label: "Histórico/Exame Físico", type: "text" },
+    { field: "localizacaoLesao", label: "Localização da Lesão", type: "text" },
+    { field: "imagemLesao.imagem", label: "Imagem da Lesão", type: "image" },
+    { field: "caracteristicasLesao.selecionadas", label: "Características da Lesão", type: "textarea", rows: 4, transform: (value) => value.join(", ") },
+    { field: "caracteristicasLesao.descricao", label: "Descrição da Lesão", type: "text" },
+    { field: "caracteristicasLesao.cor", label: "Cor", type: "text" },
+    { field: "caracteristicasLesao.consistencia", label: "Consistência", type: "text" },
+    { field: "caracteristicasLesao.bordas", label: "Bordas", type: "text" },
+    { field: "caracteristicasLesao.ulceracao", label: "Ulceração", type: "text" },
+    { field: "caracteristicasLesao.dorPalpacao", label: "Dor à Palpação", type: "text" },
+    { field: "caracteristicasLesao.temperaturaLocal", label: "Temperatura Local", type: "text" },
+    { field: "caracteristicasLesao.relacaoTecidosVizinhos", label: "Relação com Tecidos Vizinhos", type: "text" },
+    { field: "citologia.descricao", label: "Descrição Citológica", type: "text" },
+    { field: "citologia.metodo", label: "Método", type: "text" },
+    { field: "citologia.numeroLaminas", label: "Número de Lâminas", type: "text" },
+    { field: "citologia.resultado", label: "Resultado", type: "text" },
+    { field: "citologia.conclusao", label: "Conclusão", type: "text" },
+    { field: "citologia.comentarios", label: "Comentários", type: "textarea", rows: 4 },
+  ],
+  "Ficha clínica neurológica": [
+    { field: "sintomasNeurologicos", label: "Sintomas Neurológicos", type: "textarea", rows: 4 },
+    { field: "examesRealizados", label: "Exames Realizados", type: "textarea", rows: 4 },
+    { field: "diagnostico", label: "Diagnóstico", type: "text" },
+    { field: "dataConsulta", label: "Data da Consulta", type: "date", fallbackField: "data" },
+    { field: "medicoResponsavel", label: "Médico Responsável", type: "text" },
+  ],
+  "Ficha clínica cardiológica": [
+    // Página 1
+    { field: "peso", label: "Peso", type: "text" },
+    {
+      field: "vacinacao",
+      label: "Vacinação",
+      type: "nested",
+      subFields: [
+        { field: "antiRabica", label: "Antirrábica", type: "text" },
+        { field: "giardia", label: "Giardia", type: "text" },
+        { field: "leishmaniose", label: "Leishmaniose", type: "text" },
+        { field: "tosseDosCanis", label: "Tosse dos Canis", type: "text" },
+        { field: "polivalenteCanina", label: "Polivalente Canina", type: "text" },
+        { field: "polivalenteFelina", label: "Polivalente Felina", type: "text" },
+        { field: "outros", label: "Outros", type: "text" },
+        { field: "naoVacinado", label: "Não Vacinado", type: "text" },
+        { field: "naoInformado", label: "Não Informado", type: "text" },
+      ],
+    },
+    { field: "alimentacao", label: "Alimentação", type: "textarea", rows: 4 },
+    { field: "estiloVida", label: "Estilo de Vida", type: "textarea", rows: 4 },
+    { field: "contactantes", label: "Contactantes", type: "textarea", rows: 4 },
+    { field: "sinaisClinicos", label: "Sinais Clínicos", type: "textarea", rows: 4, transform: (value) => (Array.isArray(value) ? value.join(", ") : value) },
+    { field: "antecedentesHistorico", label: "Antecedentes/Histórico", type: "textarea", rows: 4 },
+    // Página 2
+    { field: "ExameFisico.postura", label: "Postura", type: "text" },
+    { field: "ExameFisico.nivelConsciencia", label: "Nível de Consciência", type: "text" },
+    { field: "ExameFisico.temperatura", label: "Temperatura", type: "text" },
+    { field: "ExameFisico.score", label: "Score", type: "text" },
+    { field: "ExameFisico.acp", label: "ACP", type: "text" },
+    { field: "ExameFisico.pulsoArterial", label: "Pulso Arterial", type: "text" },
+    { field: "ExameFisico.distencaoEPulso", label: "Distensão e Pulso", type: "text" },
+    { field: "ExameFisico.respiracao", label: "Respiração", type: "text" },
+    { field: "ExameFisico.narinasEOutros", label: "Narinas e Outros", type: "text" },
+    { field: "ExameFisico.freqCardiaca", label: "Frequência Cardíaca", type: "text" },
+    { field: "ExameFisico.freqRespiratoria", label: "Frequência Respiratória", type: "text" },
+    { field: "ExameFisico.abdomem", label: "Abdômen", type: "text" },
+    { field: "ExameFisico.hidratacao", label: "Hidratação", type: "text" },
+    { field: "ExameFisico.tpc", label: "TPC", type: "text" },
+    { field: "ExameFisico.turgorCutaneo", label: "Turgor Cutâneo", type: "text" },
+    {
+      field: "mucosas",
+      label: "Mucosas",
+      type: "nested",
+      subFields: [
+        { field: "roseas", label: "Roseas", type: "text" },
+        { field: "roseasPalidas", label: "Roseas Pálidas", type: "text" },
+        { field: "porcelanicas", label: "Porcelânicas", type: "text" },
+        { field: "hiperemicas", label: "Hiperêmicas", type: "text" },
+        { field: "cianoticas", label: "Cianóticas", type: "text" },
+        { field: "ictaricas", label: "Ictáricas", type: "text" },
+        { field: "naoAvaliado", label: "Não Avaliado", type: "text" },
+      ],
+    },
+    {
+      field: "linfonodos",
+      label: "Linfonodos",
+      type: "nested",
+      subFields: [], // Dinâmico, pode ser configurado no backend
+    },
+    // Página 3
+    { field: "ExamesComplementares.examesAnteriores", label: "Exames Anteriores", type: "textarea", rows: 4 },
+    { field: "diagnostico", label: "Diagnóstico", type: "nested", subFields: [] }, // Dinâmico
+    {
+      field: "medicacoes",
+      label: "Medicações",
+      type: "table",
+      columns: [
+        { key: "medicacao", label: "Medicação" },
+        { key: "dose", label: "Dose" },
+        { key: "frequencia", label: "Frequência" },
+        { key: "periodo", label: "Período" },
+      ],
+    },
+    { field: "plantonistas", label: "Plantonistas", type: "textarea", rows: 4 },
+    { field: "medicosResponsaveis", label: "Médicos Responsáveis", type: "textarea", rows: 4 },
+  ],
+};
+
+// Componentes reutilizáveis para renderizar campos
+const TextareaField = ({ label, value, rows = 4 }) => (
+  <div className={styles.column}>
+    <label>{label}</label>
+    <textarea value={value || ""} disabled className="form-control" rows={rows} />
+  </div>
+);
+
+const TextField = ({ label, value }) => (
+  <div className={styles.column}>
+    <label>{label}</label>
+    <input type="text" value={value || ""} disabled className="form-control" />
+  </div>
+);
+
+const DateField = ({ label, value }) => (
+  <div className={styles.column}>
+    <label>{label}</label>
+    <input
+      type="text"
+      value={value ? value.split("-").reverse().join("/") : "Não informada"}
+      disabled
+      className="form-control"
+    />
+  </div>
+);
+
+const ImageField = ({ label, value }) =>
+  isValidBase64(value) ? (
+    <div className={styles.column}>
+      <label>{label}</label>
+      <img src={value} alt={label} style={{ maxWidth: "500px", border: "1px solid #ccc" }} />
+    </div>
+  ) : null;
+
+const SelectField = ({ label, value, options }) => (
+  <div className={styles.column}>
+    <label>{label}</label>
+    <select value={value || ""} disabled className="form-control">
+      {options.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
+const TableField = ({ label, value, columns }) => (
+  <div className={styles.column}>
+    <label>{label}</label>
+    <table className={styles.tabela_tratamento}>
+      <thead>
+        <tr>
+          {columns.map((col) => (
+            <th key={col.key}>{col.label}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {(value || []).map((row, index) => (
+          <tr key={index}>
+            {columns.map((col) => (
+              <td key={col.key}>
+                <input type="text" value={row[col.key] || ""} disabled className="form-control" />
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+const NestedField = ({ label, value, subFields }) => {
+  if (!value || Object.keys(value).length === 0) return null;
+  return (
+    <div className={styles.column}>
+      <label>{label}</label>
+      <div style={{ marginLeft: "20px" }}>
+        {subFields.map((subField, index) => {
+          const subValue = getNestedValue(value, subField.field);
+          if (!hasContent(subValue)) return null;
+          return renderField({ ...subField, label: subField.label }, value);
+        })}
+      </div>
+    </div>
+  );
+};
+
+// Função para acessar valores aninhados
+const getNestedValue = (obj, path) => {
+  return path.split(".").reduce((current, key) => current?.[key], obj);
+};
+
+// Função para renderizar um campo com base na configuração
+const renderField = (fieldConfig, content) => {
+  const value = getNestedValue(content, fieldConfig.field) || (fieldConfig.fallbackField && getNestedValue(content, fieldConfig.fallbackField));
+  if (!hasContent(value)) return null;
+
+  const transformedValue = fieldConfig.transform ? fieldConfig.transform(value) : value;
+
+  switch (fieldConfig.type) {
+    case "textarea":
+      return <TextareaField label={fieldConfig.label} value={transformedValue} rows={fieldConfig.rows} />;
+    case "text":
+      return <TextField label={fieldConfig.label} value={transformedValue} />;
+    case "date":
+      return <DateField label={fieldConfig.label} value={transformedValue} />;
+    case "image":
+      return <ImageField label={fieldConfig.label} value={transformedValue} />;
+    case "select":
+      return <SelectField label={fieldConfig.label} value={transformedValue} options={fieldConfig.options} />;
+    case "table":
+      return <TableField label={fieldConfig.label} value={transformedValue} columns={fieldConfig.columns} />;
+    case "nested":
+      return <NestedField label={fieldConfig.label} value={value} subFields={fieldConfig.subFields} />;
+    default:
+      return null;
+  }
+};
+
+// Função para formatar o conteúdo da ficha
+const formatFichaContent = (content, fichaNome) => {
+  if (!content || typeof content !== "object") {
+    console.log("Conteúdo inválido ou ausente para:", fichaNome, content);
+    return <p>Sem conteúdo disponível</p>;
+  }
+
+  const config = fichaConfig[fichaNome] || [];
+  if (config.length === 0) {
+    // Lógica genérica para fichas não configuradas
+    return Object.entries(content)
+      .filter(([key, value]) => {
+        if (key.toLowerCase() === "opc" || key.toLowerCase() === "option") return false;
+        return value !== null && value !== undefined;
+      })
+      .map(([key, value]) => {
+        const formattedKey = key
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase())
+          .replace(/_/g, " ");
+
+        if (key.toLowerCase().includes("data") && value) {
+          return <DateField key={key} label={formattedKey} value={value} />;
+        }
+
+        if (key === "Imagem da Lesão" && value && typeof value === "object") {
+          const imagemBase64 = value["Imagem (base64 ou URL)"];
+          return imagemBase64 && isValidBase64(imagemBase64) ? (
+            <ImageField key={key} label={formattedKey} value={imagemBase64} />
+          ) : null;
+        }
+
+        if (key.toLowerCase() === "parametros" && Array.isArray(value)) {
+          const valoresComDados = value.filter((item) => {
+            const { tempo, ...resto } = item;
+            return Object.values(resto).some((v) => v !== "" && v !== null && v !== undefined);
+          });
+
+          return valoresComDados.length > 0 ? (
+            <div key={key}>
+              <strong>{formattedKey}:</strong>
+              {valoresComDados.map((item, idx) => (
+                <div key={idx} style={{ marginLeft: "20px" }}>
+                  {Object.entries(item).map(([subKey, subValue]) => {
+                    const formattedSubKey = subKey
+                      .replace(/([A-Z])/g, " $1")
+                      .replace(/^./, (str) => str.toUpperCase())
+                      .replace(/_/g, " ");
+                    return (
+                      <p key={subKey}>
+                        <strong>{formattedSubKey}:</strong> {String(subValue)}
+                      </p>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          ) : null;
+        }
+
+        if (Array.isArray(value) && value.every((item) => typeof item !== "object")) {
+          return value.length > 0 ? (
+            <div key={key} className={styles.fichaField}>
+              <strong>{formattedKey}:</strong> {value.join(", ")}
+            </div>
+          ) : null;
+        }
+
+        if (Array.isArray(value)) {
+          return value.length > 0 ? (
+            <div key={key} className={styles.fichaField}>
+              <strong>{formattedKey}:</strong>
+              {value.map((item, idx) => (
+                <div key={idx} style={{ marginLeft: "20px" }}>
+                  {Object.entries(item)
+                    .filter(([subKey]) => subKey.toLowerCase() !== "opc" && subKey.toLowerCase() !== "option")
+                    .map(([subKey, subValue]) => {
+                      const formattedSubKey = subKey
+                        .replace(/([A-Z])/g, " $1")
+                        .replace(/^./, (str) => str.toUpperCase())
+                        .replace(/_/g, " ");
+                      return (
+                        <p key={subKey}>
+                          <strong>{formattedSubKey}:</strong> {String(subValue) || "Não informado"}
+                        </p>
+                      );
+                    })}
+                </div>
+              ))}
+            </div>
+          ) : null;
+        }
+
+        if (typeof value === "object" && value !== null) {
+          const nestedContent = formatFichaContent(value, fichaNome);
+          return nestedContent.props.children.length > 0 ? (
+            <div key={key} className={styles.fichaField}>
+              <strong>{formattedKey}:</strong>
+              <div style={{ marginLeft: "20px" }}>{nestedContent}</div>
+            </div>
+          ) : null;
+        }
+
+        return (
+          <div key={key} className={styles.fichaField}>
+            <strong>{formattedKey}:</strong> {String(value) || "Não informado"}
+          </div>
+        );
+      })
+      .filter(Boolean);
+  }
+
+  return (
+    <div className={styles.form_box}>
+      {config.map((fieldConfig, index) => (
+        <React.Fragment key={index}>{renderField(fieldConfig, content)}</React.Fragment>
+      ))}
+    </div>
+  );
+};
+
 // Hook personalizado para gerenciar fichaIds
 const useFichaManager = () => {
   const [fichaIds, setFichaIds] = useState([]);
@@ -52,7 +442,7 @@ const useFichaManager = () => {
   return { fichaIds, addFichaId, setFichaIds };
 };
 
-// Função para limpar conteúdo da ficha (remover campos vazios e indesejados)
+// Função para limpar conteúdo da ficha
 const cleanFichaContent = (content) => {
   const clean = (obj) => {
     if (Array.isArray(obj)) {
@@ -89,141 +479,7 @@ const cleanFichaContent = (content) => {
   return clean(content) || {};
 };
 
-// Função para validar string base64
-const isValidBase64 = (str) => str && typeof str === "string" && str.startsWith("data:image/");
-
-// Função para formatar o conteúdo da ficha
-const formatFichaContent = (content) => {
-  if (!content || typeof content !== "object") {
-    return <p>Sem conteúdo disponível</p>;
-  }
-
-  return Object.entries(content).map(([key, value]) => {
-    const formattedKey = key
-      .replace(/([A-Z])/g, " $1")
-      .replace(/^./, (str) => str.toUpperCase())
-      .replace(/_/g, " ");
-    
-
-    // Ignorar chaves indesejadas
-    if (key.toLowerCase() === "opc" || key.toLowerCase() === "option") {
-      return null;
-    }
-
-    // Caso especial para "Imagem da Lesão"
-    if (key === "Imagem da Lesão" && value && typeof value === "object") {
-      const imagemBase64 = value["Imagem (base64 ou URL)"];
-      return (
-        <div key={key} className={styles.fichaField}>
-          <strong>{formattedKey}:</strong>
-          {imagemBase64 && isValidBase64(imagemBase64) ? (
-            <img
-              src={imagemBase64}
-              alt="Imagem da Lesão"
-              style={{ maxWidth: "500px", border: "1px solid #ccc", marginTop: "10px" }}
-            />
-          ) : (
-            <p>Sem imagem disponível</p>
-          )}
-          {/* Opcional: Exibir detalhes de "Linhas Desenhadas", se necessário */}
-          {/* {value["Linhas Desenhadas"] && (
-            <div style={{ marginTop: "10px" }}>
-              <p><strong>Linhas Desenhadas:</strong></p>
-              <p>Tamanho: {value["Linhas Desenhadas"].size}</p>
-              <p>Ferramenta: {value["Linhas Desenhadas"].tool}</p>
-              <p>Cor: {value["Linhas Desenhadas"].color}</p>
-              <p>Pontos: {value["Linhas Desenhadas"].points.join(", ")}</p>
-            </div>
-          )} */}
-        </div>
-      );
-    }
-    if (key.toLowerCase() === "parametros" && Array.isArray(value)) {
-  const valoresComDados = value.filter((item) => {
-    // Mantém apenas os tempos que têm mais que só o tempo preenchido
-    const { tempo, ...resto } = item;
-    return Object.values(resto).some((v) => v !== "" && v !== null && v !== undefined);
-  });
-
-  if (valoresComDados.length === 0) return null;
-
-  return (
-    <div key={key}>
-      <strong>{formattedKey}:</strong>
-      {valoresComDados.map((item, idx) => (
-        <div key={idx} style={{ marginLeft: "20px" }}>
-          {Object.entries(item).map(([subKey, subValue]) => {
-            const formattedSubKey = subKey
-              .replace(/([A-Z])/g, " $1")
-              .replace(/^./, (str) => str.toUpperCase())
-              .replace(/_/g, " ");
-            return (
-              <p key={subKey}>
-                <strong>{formattedSubKey}:</strong> {String(subValue)}
-              </p>
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-    // Para arrays simples (ex.: Anamnese)
-    if (Array.isArray(value) && value.every((item) => typeof item !== "object")) {
-      return (
-        <div key={key} className={styles.fichaField}>
-          <strong>{formattedKey}:</strong>
-          {value.length > 0 ? value.join(", ") : "Nenhum item selecionado"}
-        </div>
-      );
-    }
-
-    // Para arrays de objetos (ex.: itens complexos)
-    if (Array.isArray(value)) {
-      return (
-        <div key={key} className={styles.fichaField}>
-          <strong>{formattedKey}:</strong>
-          {value.map((item, idx) => (
-            <div key={idx} style={{ marginLeft: "20px" }}>
-              {Object.entries(item)
-                .filter(([subKey]) => subKey.toLowerCase() !== "opc" && subKey.toLowerCase() !== "option")
-                .map(([subKey, subValue]) => {
-                  const formattedSubKey = subKey
-                    .replace(/([A-Z])/g, " $1")
-                    .replace(/^./, (str) => str.toUpperCase())
-                    .replace(/_/g, " ");
-                  return (
-                    <p key={subKey}>
-                      <strong>{formattedSubKey}:</strong> {String(subValue) || "Não informado"}
-                    </p>
-                  );
-                })}
-            </div>
-          ))}
-        </div>
-      );
-    }
-
-    // Para objetos aninhados (ex.: Características da Lesão, Citologia)
-    if (typeof value === "object" && value !== null) {
-      return (
-        <div key={key} className={styles.fichaField}>
-          <strong>{formattedKey}:</strong>
-          <div style={{ marginLeft: "20px" }}>{formatFichaContent(value)}</div>
-        </div>
-      );
-    }
-
-    // Para valores simples
-    return (
-      <div key={key} className={styles.fichaField}>
-        <strong>{formattedKey}:</strong> {String(value) || "Não informado"}
-      </div>
-    );
-  }).filter(Boolean); // Remove elementos nulos
-};
-
+// O restante do componente CreateConsulta permanece igual
 function CreateConsulta() {
   const router = useRouter();
   const { id } = router.query;
@@ -271,14 +527,19 @@ function CreateConsulta() {
     const fetchFichas = async () => {
       try {
         const fetchedFichas = await Promise.all(
-          fichaIds.map((id) => getFichaById(id))
+          fichaIds.map(async (id) => {
+            const ficha = await getFichaById(id);
+            console.log(`Ficha ID ${id} bruta:`, ficha);
+            return ficha || { id, nome: "Ficha sem dados", conteudo: {} };
+          })
         );
+        console.log("Fichas brutas:", fetchedFichas);
         const fichasComConteudo = fetchedFichas.map((ficha) => ({
           ...ficha,
           conteudo: cleanFichaContent(JSON.parse(ficha.conteudo || "{}")),
         }));
-        setFichas(fichasComConteudo);
         console.log("Fichas processadas:", fichasComConteudo);
+        setFichas(fichasComConteudo);
       } catch (error) {
         console.error("Erro ao buscar fichas:", error);
         setShowErrorAlert(true);
@@ -826,7 +1087,6 @@ function CreateConsulta() {
             )}
           </div>
 
-          {/* Botão Fichas Solicitadas */}
           <div className={styles.box_ficha_toggle}>
             <button
               type="button"
@@ -853,27 +1113,9 @@ function CreateConsulta() {
                             {ficha.nome || `Ficha ${ficha.id}`}
                           </button>
                           {selectedFichaId === ficha.id && (
-                            <div
-                              className={styles.ficha_details}
-                              style={{
-                                border: "1px solid #ccc",
-                                margin: "10px 0",
-                                padding: "10px",
-                                backgroundColor: "#f8f9fa",
-                              }}
-                            >
-                              <p>
-                                <strong>ID:</strong> {ficha.id}
-                              </p>
-                              <p>
-                                <strong>Data de criação:</strong>{" "}
-                                {new Date(ficha.dataHora).toLocaleString()}
-                              </p>
-                              <p>
-                                <strong>Nome:</strong> {ficha.nome || "Sem nome"}
-                              </p>
+                            <div className={styles.ficha_details}>
                               <div className={styles.fichaContent}>
-                                {formatFichaContent(ficha.conteudo)}
+                                {formatFichaContent(ficha.conteudo, ficha.nome)}
                               </div>
                               <div className={styles.fichaActions}>
                                 <button
@@ -890,6 +1132,7 @@ function CreateConsulta() {
                                   type="button"
                                   style={{ marginTop: "15px" }}
                                   onClick={() => handleRoute(ficha.nome, id, ficha.id)}
+                                  aria-label={`Editar ficha ${ficha.nome || "Ficha sem nome"}`}
                                 >
                                   Editar
                                 </button>

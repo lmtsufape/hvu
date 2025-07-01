@@ -298,37 +298,16 @@ function FichaSolicitacaoCitologia() {
         const fichaData = {
             nome: "Ficha de solicitação de citologia",
             conteudo: {
-                "Anamnese": formData.anamnese, // array de strings ou sintomas
-
-                "Data da Colheita": formData.dataColheita,
-                "Histórico do Exame Físico": formData.historicoExameFisico,
-                "Localização da Lesão": formData.localizacaoLesao,
-
-                "Imagem da Lesão": {
-                    "Imagem (base64 ou URL)": formData.imagemLesao.imagem,
-                    "Linhas Desenhadas": formData.imagemLesao.linhasDesenhadas
+                Anamnese: anamneseFinal,
+                dataColheita: formData.dataColheita,
+                historicoExameFisico: formData.historicoExameFisico,
+                localizacaoLesao: formData.localizacaoLesao,
+                imagemLesao: formData.imagemLesao,
+                caracteristicasLesao: {
+                    ...formData.caracteristicasLesao, // Mantém os outros campos
+                    selecionadas: caracteristicasFinal //sobrescreve o campo selecionados
                 },
-
-                "Características da Lesão": {
-                    "Características Selecionadas": formData.caracteristicasLesao.selecionadas,
-                    "Descrição": formData.caracteristicasLesao.descricao,
-                    "Cor": formData.caracteristicasLesao.cor,
-                    "Consistência": formData.caracteristicasLesao.consistencia,
-                    "Bordas": formData.caracteristicasLesao.bordas,
-                    "Ulceração": formData.caracteristicasLesao.ulceracao,
-                    "Dor à Palpação": formData.caracteristicasLesao.dorPalpacao,
-                    "Temperatura Local": formData.caracteristicasLesao.temperaturaLocal,
-                    "Relação com Tecidos Vizinhos": formData.caracteristicasLesao.relacaoTecidosVizinhos
-                },
-
-                "Citologia": {
-                    "Descrição": formData.citologia.descricao,
-                    "Método de Colheita": formData.citologia.metodo,
-                    "Número de Lâminas": formData.citologia.numeroLaminas,
-                    "Resultado": formData.citologia.resultado,
-                    "Conclusão": formData.citologia.conclusao,
-                    "Comentários": formData.citologia.comentarios
-                }
+                citologia: formData.citologia
             },
             dataHora: dataFormatada
         };
