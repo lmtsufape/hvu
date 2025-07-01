@@ -111,9 +111,8 @@ function FichaSolicitacaoCitologia() {
                 const conteudo = (JSON.parse(formData.conteudo));
                 console.log("Dados da ficha:", conteudo);
                 setFormData(conteudo);
-                setImagemDesenhada(conteudo.imagemLesao.imagem); /**/ 
-                console.log("imagem:", imagemDesenhada);/**/
-                setData(formData.dataHora);/**/
+                setImagemDesenhada(conteudo.imagemLesao.imagem); 
+                setData(formData.dataHora);
             } catch (error) {
                 console.error('Erro ao buscar dados da ficha:', error);
             } finally {

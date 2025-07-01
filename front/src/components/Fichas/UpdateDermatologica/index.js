@@ -479,13 +479,31 @@ function UpdateDermatologicaSteps() {
 
     try {
         await updateFicha(fichaData, fichaId);
-        localStorage.removeItem('canvasKonva'); 
         setShowAlert(true);
     } catch (error) {
-        console.error("Erro ao criar ficha:", error);
+        console.error("Erro ao editar ficha:", error);
         setShowErrorAlert(true);
     }
  };
+
+   const renderImagemLesao = () => {
+    if (formData.imagemLesao && formData.imagemLesao.imagem) {
+        return (
+            <img
+                src={formData.imagemLesao.imagem}
+                alt="Localização das lesões com marcações"
+                style={{ maxWidth: '500px', border: '1px solid #ccc' }}
+            />
+        );
+    }
+    return (
+        <img
+            src="/images/localizacao_lesoes.png"
+            alt="Localização das lesões"
+            style={{ maxWidth: '500px', border: '1px solid #ccc' }}
+        />
+    );
+  };
       
   const renderStepContent = () => {
     switch(step) {
@@ -542,7 +560,7 @@ function UpdateDermatologicaSteps() {
         </div>}
         {showErrorAlert && 
         <div className={styles.alert}>
-          <ErrorAlert message={"Erro ao criar ficha"} 
+          <ErrorAlert message={"Erro ao editar ficha"} 
           show={showErrorAlert} />
         </div>}
 
@@ -559,6 +577,7 @@ function UpdateDermatologicaSteps() {
           tratamentos={formData.tratamentoDermatologico}
           adicionarLinhaTratamento={adicionarLinhaTratamento}
           removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
+          renderImagemLesao={renderImagemLesao}
 
           />
         </>

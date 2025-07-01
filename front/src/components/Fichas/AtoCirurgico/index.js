@@ -59,16 +59,6 @@ function FichaAtoCirurgico() {
         }
     }, [formData]);
 
-    useEffect(() => {
-        if (router.isReady) {
-            const id = router.query.fichaId;
-            if (id) {
-                setConsultaId(id);
-                console.log("ID da ficha:", id);
-            }
-        }
-    }, [router.isReady, router.query.fichaId]);
-
     const { protocolos = [] } = formData;
 
     useEffect(() => {
