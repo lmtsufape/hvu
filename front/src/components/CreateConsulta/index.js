@@ -266,6 +266,32 @@ function CreateConsulta() {
     const selectedEspecialidadeId = event.target.value;
     setEspecialidade(selectedEspecialidadeId);
   };
+  
+  useEffect(() => {
+  if (typeof window !== "undefined") {
+    const savedData = localStorage.getItem('consultaFormData');
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        // Atualiza o estado 'consulta' com os dados salvos
+        setConsulta(parsedData);
+      } catch (error) {
+        console.error("Erro ao carregar dados do formulário do localStorage:", error);
+        // Se houver erro, limpa o item inválido
+        localStorage.removeItem('consultaFormData');
+      }
+    }
+  }
+}, []);
+
+useEffect(() => {
+  // Este efeito roda sempre que o estado 'consulta' for atualizado.
+  // A verificação inicial evita salvar o estado padrão vazio na primeira renderização,
+  // embora salvá-lo não seja um grande problema.
+  if (consulta.queixaPrincipal || consulta.pesoAtual || consulta.idadeAtual) {
+      localStorage.setItem('consultaFormData', JSON.stringify(consulta));
+  }
+}, [consulta]);
 
   useEffect(() => {
     const fetchFichas = async () => {
@@ -416,6 +442,10 @@ function CreateConsulta() {
     try {
       console.log("Criando consulta com os dados:", consultaToCreate);
       await createConsulta(consultaToCreate, id);
+      // Limpa os dados salvos do localStorage após o sucesso
+      localStorage.removeItem('consultaFormData');
+      // Também é uma boa ideia limpar os IDs das fichas aqui
+      localStorage.removeItem('fichaIds'); 
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar consulta:", error);
