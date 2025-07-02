@@ -188,6 +188,7 @@ const handleVisualizar = (ficha) => {
                                     type="button"
                                     className={`${styles.toggleButton} ${showFichas ? styles.minimize : styles.expand}`}
                                     onClick={() => setShowFichas((prev) => !prev)}
+                                    style={{ marginBottom: '0.7rem' }}
                                 >
                                     {showFichas ? "Ocultar Fichas Adicionadas" : "Fichas Adicionadas"}
                                 </button>
