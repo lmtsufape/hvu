@@ -40,4 +40,5 @@ public  class Animal  {
 	@ManyToOne
 	@ToString.Exclude
 	private Raca raca;
+	private boolean lapa;
 }

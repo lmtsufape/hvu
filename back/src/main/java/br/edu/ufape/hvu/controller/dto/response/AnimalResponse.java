@@ -24,6 +24,7 @@ public  class AnimalResponse  {
 	private double peso;
 	private String numeroFicha;
 	private RacaResponse raca;
+	private boolean lapa;
 
 
 

@@ -33,6 +33,7 @@ public  class AnimalRequest  {
 	private long id;
 	//@NotBlank(message = "Numero ficha não pode estar em branco")
 	private String numeroFicha;
+	private boolean lapa;
 
 	public Animal convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");

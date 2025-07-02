@@ -1233,6 +1233,10 @@ public class Facade {
         return animalServiceInterface.getAllAnimal();
     }
 
+    public List<Animal> findByLapaFalse() {
+        return animalServiceInterface.findByLapaFalse();
+    }
+
     public List<Animal> getAllAnimalTutor(String userId) {
         Tutor tutor = findTutorByuserId(userId);
         return tutor.getAnimal();

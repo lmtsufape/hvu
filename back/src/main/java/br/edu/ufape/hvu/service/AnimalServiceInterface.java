@@ -11,4 +11,5 @@ public interface AnimalServiceInterface {
 	void deleteAnimal(long id);
 	List<Animal> getAllAnimal();
 	Animal findAnimalByFichaNumber (String fichaNumber);
+	List<Animal> findByLapaFalse();
 }

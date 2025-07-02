@@ -30,7 +30,7 @@ import jakarta.validation.Valid;
 public class AnimalController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+	@PreAuthorize("hasAnyRole('PATOLOGISTA')")
 	@GetMapping("animal")
 	public List<AnimalResponse> getAllAnimal() {
 		return facade.getAllAnimal()
@@ -120,5 +120,14 @@ public class AnimalController {
 				request.getTutorEntity()
 		);
 		return new AnimalResponse(saved);
+	}
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+	@GetMapping("animal/lapaFalse")
+	public List<AnimalResponse> findByLapaFalse() {
+		return facade.findByLapaFalse()
+				.stream()
+				.map(AnimalResponse::new)
+				.toList();
 	}
 }

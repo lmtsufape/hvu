@@ -47,5 +47,9 @@ public class AnimalService implements AnimalServiceInterface {
 				() -> new IdNotFoundException(id, "Animal"));
 		repository.delete(obj);
 	}
+
+	public List<Animal> findByLapaFalse() {
+		return repository.findByLapaFalse();
+	}
 	
 }
