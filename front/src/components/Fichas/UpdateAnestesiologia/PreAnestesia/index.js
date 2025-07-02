@@ -44,6 +44,8 @@ export default function PreAnestesia({
   const [animal, setAnimal] = useState({});
   const [showButtons, setShowButtons] = useState(false);
   const [tutor, setTutor] = useState({});
+  const { id, modo } = router.query; 
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   const submitLocal = (e) => {
     e.preventDefault();
@@ -74,6 +76,13 @@ export default function PreAnestesia({
       }
     }));
   }, [localizacao, setFormData]);
+
+   useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+        }
+    }, [modo]);
 
 
   const [farmacosPre, setFarmacosPre] = useState(
@@ -240,6 +249,7 @@ export default function PreAnestesia({
             <input
               name="pre.cirurgiao"
               value={formData.pre?.cirurgiao || ""}
+              disabled={isReadOnly}
               onChange={handleChange}
               className="form-control"
             />
@@ -258,6 +268,7 @@ export default function PreAnestesia({
                     className="form-check-input me-1"
                     value={ex}
                     checked={formData.pre?.exames?.includes(ex) || false}
+                    disabled={isReadOnly}
                     onChange={(e) => handleCheckboxChange(e, "pre.exames")}
                   />
                   <span className="form-check-label">{ex}</span>
@@ -273,6 +284,7 @@ export default function PreAnestesia({
                 className="form-control"
                 name="pre.examesOutros"
                 value={formData.pre?.examesOutros || ""}
+                disabled={isReadOnly}
                 onChange={handleChange}
               />
             </div>
@@ -289,6 +301,7 @@ export default function PreAnestesia({
                   className="form-control"
                   name="pre.hora"
                   value={formData.pre?.hora || ""}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 />
               </label>
@@ -305,6 +318,7 @@ export default function PreAnestesia({
                   name="pre.estado"
                   value={s}
                   checked={formData.pre?.estado === s}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {s}
               </label>
@@ -321,6 +335,7 @@ export default function PreAnestesia({
                   name="pre.dor"
                   value={d}
                   checked={formData.pre?.dor === d}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {d}
               </label>
@@ -338,6 +353,7 @@ export default function PreAnestesia({
                   className="form-control"
                   name="pre.temperatura"
                   value={formData.pre?.temperatura || ""}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 />
               </label>
@@ -349,6 +365,7 @@ export default function PreAnestesia({
                   className="form-control"
                   name="pre.jejum"
                   value={formData.pre?.jejum || ""}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                   style={{ marginTop: "0.5rem" }}
                 />
@@ -364,6 +381,7 @@ export default function PreAnestesia({
                   className="form-control"
                   name="pre.fc"
                   value={formData.pre?.fc || ""}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 />
               </label>
@@ -375,6 +393,7 @@ export default function PreAnestesia({
                   className="form-control"
                   name="pre.pa"
                   value={formData.pre?.pa || ""}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 />
               </label>
@@ -386,6 +405,7 @@ export default function PreAnestesia({
                   className="form-control"
                   name="pre.fr"
                   value={formData.pre?.fr || ""}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 />
               </label>
@@ -401,6 +421,7 @@ export default function PreAnestesia({
                   name="pre.estado"
                   value={s}
                   checked={formData.pre?.estado === s}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {s}
               </label>
@@ -415,6 +436,7 @@ export default function PreAnestesia({
               className="form-select"
               name="pre.turgor"
               value={formData.pre?.turgor || ""}
+              disabled={isReadOnly}
               onChange={handleChange}
             >
               <option value="">Selecione…</option>
@@ -430,6 +452,7 @@ export default function PreAnestesia({
               className="form-select"
               name="pre.tpc"                     /* grava em formData.pre.tpc */
               value={formData.pre?.tpc || ""}
+              disabled={isReadOnly}
               onChange={handleChange}
             >
               <option value="">Selecione…</option>
@@ -457,6 +480,7 @@ export default function PreAnestesia({
                       name={`pre.mucosas.${mucosa}`}
                       value={mucosa}
                       checked={formData.pre?.mucosas?.includes(mucosa) || false}
+                      disabled={isReadOnly}
                       onChange={(e) => handleCheckboxChange(e, "pre.mucosas")}
                       className="me-2"
                     />
@@ -491,6 +515,7 @@ export default function PreAnestesia({
                     className="form-control"
                     name="pre.hora2"
                     value={formData.pre?.hora2 || ""}
+                    disabled={isReadOnly}
                     onChange={handleChange}
                   />
                 </label>
@@ -515,6 +540,7 @@ export default function PreAnestesia({
                         name="pre.sedacao"
                         value={opt}
                         checked={formData.pre?.sedacao === opt}
+                        disabled={isReadOnly}
                         onChange={handleChange}
                         className="me-1"
                       />
@@ -544,6 +570,7 @@ export default function PreAnestesia({
                         type="text"
                         className="form-control"
                         value={row.farmaco}
+                        disabled={isReadOnly}
                         onChange={(e) => handleFarmacoPreChange(idx, "farmaco", e.target.value)}
                       />
                     </td>
@@ -554,6 +581,7 @@ export default function PreAnestesia({
                         type="text"
                         className="form-control"
                         value={row.dose}
+                        disabled={isReadOnly}
                         onChange={(e) => handleFarmacoPreChange(idx, "dose", e.target.value)}
                       />
                     </td>
@@ -564,6 +592,7 @@ export default function PreAnestesia({
                         type="text"
                         className="form-control"
                         value={row.via}
+                        disabled={isReadOnly}
                         onChange={(e) => handleFarmacoPreChange(idx, "via", e.target.value)}
                       />
                     </td>
@@ -594,6 +623,7 @@ export default function PreAnestesia({
                   className="form-control"
                   name="pre.aines"
                   value={formData.pre?.aines || ""}
+                  disabled={isReadOnly}
                   onChange={handleChange}
 
                 />
@@ -609,6 +639,7 @@ export default function PreAnestesia({
                   className="form-control"
                   name="pre.antibiotico"
                   value={formData.pre?.antibiotico || ""}
+                  disabled={isReadOnly}
                   onChange={handleChange}
 
                 />
@@ -623,18 +654,21 @@ export default function PreAnestesia({
                 className="form-control"
                 name="pre.outros"
                 value={formData.pre?.outros || ""}
+                disabled={isReadOnly}
                 onChange={handleChange}
 
               />
             </div>
           </div>
 
-
+          
           {/* Botões ---------------------------------------------------------- */}
+          {!isReadOnly && (
           <div className={styles.button_box}>
             <CancelarWhiteButton />
             <ContinuarFichasGreenButton type="submit" />
           </div>
+          )}
 
         </form>
       </div>
