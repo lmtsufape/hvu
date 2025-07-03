@@ -28,6 +28,8 @@ function FichaSolicitacaoExame() {
   const [showButtons, setShowButtons] = useState(false);
   const [fichaId, setFichaId] = useState(null);
   const [data, setData] = useState([]);
+  const { id, modo } = router.query; 
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   // Estados para checkboxes e campos "Outros"
   const [formData, setFormData] = useState({
@@ -64,6 +66,14 @@ function FichaSolicitacaoExame() {
     imaginologia: false,
     cardiologia: false,
   });
+
+    useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+        }
+    }, [modo]);
+
 
   // Obtém o ID da ficha e animal da URL
   useEffect(() => {
@@ -371,6 +381,7 @@ function FichaSolicitacaoExame() {
                       type="checkbox"
                       value={item}
                       checked={Array.isArray(formData[field]) && formData[field].includes(item)}
+                      disabled={isReadOnly}
                       onChange={(e) => handleCheckboxChange(e, field)}
                       className="form-control"
                     />
@@ -390,10 +401,12 @@ function FichaSolicitacaoExame() {
             </div>
           ))}
 
+          {!isReadOnly && (
           <div className={styles.button_box}>
             <CancelarWhiteButton />
             <FinalizarFichaModal onConfirm={handleSubmit} />
           </div>
+          )}
         </form>
 
         {showAlert && consultaId && (
