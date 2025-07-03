@@ -102,10 +102,21 @@ function GetConsultaById() {
 
     // Mapeamento de nomes de ficha para rotas
 const rotasPorNome = {
+    "Ficha clínica ortopédica": "/updateFichaOrtopedica",
+    "Ficha clínica cardiológica": "/updateFichaCardiologica",
+    "Ficha Clínica Médica": "/updateFichaClinicaMedica",
+    "Ficha clínico médica de retorno": "/updateFichaMedicaRetorno",
+    "Ficha dermatológica de retorno": "/updateFichaDermatologicaRetorno",
+    "Ficha de solicitação de citologia": "/updateFichaSolicitacaoCitologia",
+    "Ficha clínica dermatológica": "/updateFichaDermatologica",
+    "Ficha de Retorno Clínico de Animais Silvestres e Exóticos": "/updateFichaRetornoClinicoSil",
+    "Ficha clínica neurológica": "/updateFichaNeurologica",
     "Ficha de sessão": "/updateFichaSessao",
+    "Ficha de Reabilitação Integrativa": "/updateFichaReabilitacao",
+    "Ficha Solicitação de Exame": "/updateFichaSolicitacaoExame",
+    "Ficha Clínica Médica (silvestres ou exóticos)": "/updateFichaClinicaMedicaSilvestres",
     "Ficha Anestesiológica": "/updateFichaAnestesiologia",
-    "Ficha de ato cirúrgico": "/updateFichaAtoCirurgico",
-    // ... adicione todas as outras fichas aqui
+    "Ficha de ato cirúrgico": "/updateFichaAtoCirurgico"
 };
 
 const handleVisualizar = (ficha) => {
