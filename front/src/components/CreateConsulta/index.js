@@ -11,6 +11,7 @@ import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 import { getFichaById } from "../../../services/fichaService";
 import { deleteFicha } from "../../../services/fichaService";
+import { getConsultaByAnimal } from "../../../services/consultaService";
 
 // Hook personalizado para gerenciar fichaIds
 const useFichaManager = () => {
@@ -232,6 +233,10 @@ function CreateConsulta() {
   const [showFichas, setShowFichas] = useState(false);
   const [selectedFichaId, setSelectedFichaId] = useState(null);
 
+  const [historicoConsultas, setHistoricoConsultas] = useState([]); // Renomeado para evitar conflito
+  const [loadingHistorico, setLoadingHistorico] = useState(false); // Para controlar o carregamento do histórico
+  const [showHistorico, setShowHistorico] = useState(false); // Para controlar o toggle
+
   const { fichaIds, addFichaId, setFichaIds } = useFichaManager();
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -266,6 +271,39 @@ function CreateConsulta() {
     const selectedEspecialidadeId = event.target.value;
     setEspecialidade(selectedEspecialidadeId);
   };
+
+
+  // Parte responsavel pelo historico clinico do animal
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${day}/${month} às ${hours}:${minutes}`;
+  };
+
+  useEffect(() => {
+    if (!animalId) return; // Só busca se tiver o ID do animal
+
+    const fetchHistorico = async () => {
+      setLoadingHistorico(true);
+      try {
+        const consultasData = await getConsultaByAnimal(animalId);
+        setHistoricoConsultas(consultasData);
+      } catch (error) {
+        console.error("Erro ao buscar histórico de consultas:", error);
+      } finally {
+        setLoadingHistorico(false);
+      }
+    };
+
+     // Só busca o histórico se o toggle estiver aberto
+    if (showHistorico) {
+      fetchHistorico();
+    }
+  }, [animalId, showHistorico]);
+
   
   useEffect(() => {
   if (typeof window !== "undefined") {
@@ -515,6 +553,68 @@ useEffect(() => {
       </div>
 
       <div className={`${styles.boxagendarconsulta} ${styles.container}`}>
+
+
+
+
+        <div className={styles.box_ficha_toggle}>
+            <button
+              type="button"
+              className={`${styles.toggleButton} ${showHistorico ? styles.minimize : styles.expand}`}
+              onClick={() => setShowHistorico((prev) => !prev)}
+            >
+              {showHistorico ? "Ocultar Histórico Clínico" : "Visualizar Histórico Clínico"}
+            </button>
+            {showHistorico && (
+              <div className={styles.ficha_container}>
+                <div className={styles.form_box}>
+                  {loadingHistorico ? (
+                    <p className={styles.message}>Carregando histórico...</p>
+                  ) : historicoConsultas.length === 0 ? (
+                    <p className={styles.message}>Não há consultas registradas para este animal.</p>
+                  ) : (
+                    <ul className={styles.list}>
+                      {historicoConsultas.map((consulta) => (
+                        <li key={consulta.id} className={styles.info_container}>
+                          <div className={styles.agendamentos}>
+                            <div className={styles.agendamentoBox}>
+                              <div>
+                                <h1>Consulta Clínica</h1>
+                                <h2>{formatDate(consulta.dataVaga)}</h2>
+                              </div>
+                              <div>
+                                <h1>Paciente</h1>
+                                <h2>{consulta.animal?.nome}</h2>
+                              </div>
+                              <div>
+                                <h1>Veterinário&#40;a&#41;</h1>
+                                <h2>{consulta.medico?.nome}</h2>
+                              </div>
+                              <div>
+                                <button
+                                  className={styles.acessar_button}
+                                  onClick={() =>
+                                    router.push(`/getConsultaById/${consulta.id}`)
+                                  }
+                                >
+                                  Visualizar
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+
+
+
+
         <form>
           <div className="row">
             <div className={`col ${styles.col}`}>
@@ -902,9 +1002,9 @@ useEffect(() => {
                               <p>
                                 <strong>Nome:</strong> {ficha.nome || "Sem nome"}
                               </p>
-                              <div className={styles.fichaContent}>
+                              {/*<div className={styles.fichaContent}>
                                 {formatFichaContent(ficha.conteudo)}
-                              </div>
+                              </div>*/}
                               <div className={styles.fichaActions}>
                                 <button
                                   className={styles.voltarButton}
