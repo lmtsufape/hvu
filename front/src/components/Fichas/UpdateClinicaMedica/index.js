@@ -28,6 +28,8 @@ function UpdateClinicaMedicaSteps() {
     const router = useRouter();
     const [data, setData] = useState([]);
     const [fichaId, setFichaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
 
   /* dados do formulário (pág. 1 + pág. 2) */
   const [formData, setFormData] = useState({
@@ -219,6 +221,13 @@ function UpdateClinicaMedicaSteps() {
     });
   };
   /* ─────────────────────────────────────────────────── */
+
+  useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+        }
+    }, [modo]);
 
   // Obtém o ID da ficha da URL
   useEffect(() => {

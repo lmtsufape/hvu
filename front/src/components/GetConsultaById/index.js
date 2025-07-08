@@ -5,6 +5,33 @@ import { getConsultaById } from '../../../services/consultaService';
 import VoltarButton from '../VoltarButton';
 import { EditarWhiteButton } from '../WhiteButton';
 
+
+// Função para formatar o conteúdo da ficha (COPIADA DO SEU OUTRO ARQUIVO)
+const formatFichaContent = (content) => {
+    if (!content || typeof content !== 'object') {
+        return <p>Sem conteúdo disponível</p>;
+    }
+    // Se o conteúdo for uma string JSON, precisa ser parseado primeiro.
+    const parsedContent = typeof content === 'string' ? JSON.parse(content) : content;
+
+    return Object.entries(parsedContent).map(([key, value]) => {
+        const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+        if (typeof value === 'object' && value !== null) {
+            return (
+                <div key={key}>
+                    <strong>{formattedKey}:</strong>
+                    <div style={{ marginLeft: '20px' }}>{formatFichaContent(value)}</div>
+                </div>
+            );
+        }
+        return (
+            <p key={key}>
+                <strong>{formattedKey}:</strong> {String(value)}
+            </p>
+        );
+    });
+};
+
 function GetConsultaById() {
     const router = useRouter();
     const { id } = router.query;
@@ -12,6 +39,9 @@ function GetConsultaById() {
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
+
+    const [showFichas, setShowFichas] = useState(false);
+    const [selectedFichaId, setSelectedFichaId] = useState(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -64,6 +94,48 @@ function GetConsultaById() {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('pt-BR', options);
     };
+
+    const toggleFichaDisplay = (fichaId) => {
+        setSelectedFichaId((prevId) => (prevId === fichaId ? null : fichaId));
+    };
+
+
+    // Mapeamento de nomes de ficha para rotas
+const rotasPorNome = {
+    "Ficha clínica ortopédica": "/updateFichaOrtopedica",
+    "Ficha clínica cardiológica": "/updateFichaCardiologica",
+    "Ficha Clínica Médica": "/updateFichaClinicaMedica",
+    "Ficha clínico médica de retorno": "/updateFichaMedicaRetorno",
+    "Ficha dermatológica de retorno": "/updateFichaDermatologicaRetorno",
+    "Ficha de solicitação de citologia": "/updateFichaSolicitacaoCitologia",
+    "Ficha clínica dermatológica": "/updateFichaDermatologica",
+    "Ficha de Retorno Clínico de Animais Silvestres e Exóticos": "/updateFichaRetornoClinicoSil",
+    "Ficha clínica neurológica": "/updateFichaNeurologica",
+    "Ficha de sessão": "/updateFichaSessao",
+    "Ficha de Reabilitação Integrativa": "/updateFichaReabilitacao",
+    "Ficha Solicitação de Exame": "/updateFichaSolicitacaoExame",
+    "Ficha Clínica Médica (silvestres ou exóticos)": "/updateFichaClinicaMedicaSilvestres",
+    "Ficha Anestesiológica": "/updateFichaAnestesiologia",
+    "Ficha de ato cirúrgico": "/updateFichaAtoCirurgico"
+};
+
+const handleVisualizar = (ficha) => {
+    const basePath = rotasPorNome[ficha.nome];
+    if (basePath) {
+        const consultaId = id;
+        const animalId = consulta?.animal?.id;
+        // Redireciona para a página de edição, adicionando o ID da ficha e o modo de visualização
+        const urlCorreta = `${basePath}?fichaId=${ficha.id}&animalId=${animalId}&consultaId=${consultaId}&modo=visualizar`;
+        console.log("Redirecionando para:", urlCorreta); // Bom para depuração
+        router.push(urlCorreta);
+    } else {
+        console.error(`Rota de visualização não encontrada para a ficha: ${ficha.nome}`);
+        alert(`Visualização para "${ficha.nome}" não implementada.`);
+    }
+};
+
+    // Extrai as fichas do objeto de consulta para facilitar o uso
+    const fichasDados = consulta.ficha || [];
 
     return (
         <div className={styles.container}>
@@ -120,6 +192,42 @@ function GetConsultaById() {
                                     </div>
                                 </div>
                             </div>
+
+                            
+                            <div className={styles.box_ficha_toggle}>
+                                <button
+                                    type="button"
+                                    className={`${styles.toggleButton} ${showFichas ? styles.minimize : styles.expand}`}
+                                    onClick={() => setShowFichas((prev) => !prev)}
+                                    style={{ marginBottom: '0.7rem' }}
+                                >
+                                    {showFichas ? "Ocultar Fichas Adicionadas" : "Fichas Adicionadas"}
+                                </button>
+                                {showFichas && (
+                                    <div className={styles.ficha_container}>
+                                        <div className={styles.form_box}>
+                                            <div className={styles.box_ficha_buttons}>
+                                                {fichasDados.length > 0 ? (
+                                                    fichasDados.map((ficha) => (
+                                                        <div key={ficha.id} className={styles.ficha_item}>
+                                                            <button
+                                                                key={ficha.id}
+                                                                className={styles.ficha_button} // Use o estilo de botão que preferir
+                                                                onClick={() => handleVisualizar(ficha)}
+                                                            >
+                                                                Visualizar {ficha.nome}
+                                                            </button>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <p className={styles.no_fichas}>Nenhuma ficha associada a esta consulta.</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
                             <div className={styles.botao}>
                                 <EditarWhiteButton page={"updateConsulta"} id={consulta.id}/>
                             </div>

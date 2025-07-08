@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
@@ -28,12 +28,21 @@ function AtendimentoCardiologico({
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log("Formulário válido. Dados prontos para envio:", formData);
         nextStep();
     };
+
+    useEffect(() => {
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+            }
+        }, [modo]);
+
     useEffect(() => {
         if (router.isReady) {
             const id = router.query.fichaId;
@@ -164,6 +173,7 @@ function AtendimentoCardiologico({
                             type="text"
                             name="peso"
                             value={formData.peso}
+                            disabled={isReadOnly}
                             onChange={handleChange}
                             style={{
                                 width: "310px", // Define uma largura menor
@@ -186,6 +196,7 @@ function AtendimentoCardiologico({
                                 type="checkbox"
                                 name={opc}
                                 checked={formData.opc[opc]}
+                                disabled={isReadOnly}
                                 onChange={handleCheckboxChangeVacinacao}
                                 className="me-2"
                             />
@@ -227,6 +238,7 @@ function AtendimentoCardiologico({
                                     name="alimentacao"
                                     value={opt}
                                     checked={formData.alimentacao === opt}
+                                    disabled={isReadOnly}
                                     onChange={handleChange}
                                 /> {opt}
                             </label>
@@ -244,6 +256,7 @@ function AtendimentoCardiologico({
                                     name="estiloVida"
                                     value={opt}
                                     checked={formData.estiloVida === opt}
+                                    disabled={isReadOnly}
                                     onChange={handleChange}
                                 /> {opt}
                             </label>
@@ -259,6 +272,7 @@ function AtendimentoCardiologico({
                             max="100"
                             name="contactantes"
                             value={formData?.contactantes || ""}
+                            disabled={isReadOnly}
                             onChange={handleChange}
                             className="form-control" />
                     </div>
@@ -282,6 +296,7 @@ function AtendimentoCardiologico({
                                     type="checkbox"
                                     value={item}
                                     checked={formData["sinaisClinicos"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "sinaisClinicos")}
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
@@ -293,15 +308,18 @@ function AtendimentoCardiologico({
                         <label>Antecedentes familiares / Histórico de doenças e tratamentos / Respostas (anterior e atual)</label>
                             <textarea name="antecedentesHistorico" 
                             value={formData.antecedentesHistorico} 
+                            disabled={isReadOnly}
                             onChange={handleChange} rows="4" cols="50" />
                         
 
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
                         < ContinuarFichasGreenButton type="submit" />
                     </div>
+                    )}
                 </form>
             </div>
         </div>

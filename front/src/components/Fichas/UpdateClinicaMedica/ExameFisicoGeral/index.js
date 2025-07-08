@@ -63,6 +63,15 @@ export default function Step1ClinicaMedica({
   const [showButtons, setShowButtons] = useState(false);
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
+  const { id, modo } = router.query; 
+  const [isReadOnly, setIsReadOnly] = useState(false);
+
+   useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+        }
+    }, [modo]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -192,6 +201,7 @@ export default function Step1ClinicaMedica({
               <textarea
                 name="queixaPrincipal"
                 value={formData.queixaPrincipal}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 rows={4}
                 className="form-control"
@@ -211,6 +221,7 @@ export default function Step1ClinicaMedica({
               <textarea
                 name="HistoricoMedico.progresso"
                 value={formData.HistoricoMedico.progresso}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 rows={4}
                 className="form-control"
@@ -237,6 +248,7 @@ export default function Step1ClinicaMedica({
                         type="checkbox"
                         name={opc}
                         checked={formData.opc[opc]}
+                        disabled={isReadOnly}
                         onChange={handleCheckboxChangeVacinacao}
                         className="me-2"
                       />
@@ -271,7 +283,7 @@ export default function Step1ClinicaMedica({
           <div className={styles.box}>
             <div className={styles.column}>
               <label className="form-label fw-medium">Controle de ectoparasitos:
-                <select name="ectoparasitosDetalhes.ectoparasitos" value={formData.ectoparasitosDetalhes.ectoparasitos} onChange={handleChange}>
+                <select name="ectoparasitosDetalhes.ectoparasitos" value={formData.ectoparasitosDetalhes.ectoparasitos} disabled={isReadOnly} onChange={handleChange}>
                   <option value="">Selecione</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -306,7 +318,7 @@ export default function Step1ClinicaMedica({
             </div>
             <div className={styles.column}>
               <label className="form-label fw-medium" >Vermifugação:
-                <select name="vermifugacaoDetalhes.vermifugacao" value={formData.vermifugacaoDetalhes.vermifugacao} onChange={handleChange}>
+                <select name="vermifugacaoDetalhes.vermifugacao" value={formData.vermifugacaoDetalhes.vermifugacao} disabled={isReadOnly} onChange={handleChange}>
                   <option value="">Selecione</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -341,7 +353,7 @@ export default function Step1ClinicaMedica({
           </div>
           <div className={styles.column}>
             <label className="form-label fw-medium">Observações:
-              <input type="text" name="observacoes" value={formData.observacoes} onChange={handleChange}
+              <input type="text" name="observacoes" value={formData.observacoes} disabled={isReadOnly} onChange={handleChange}
                 className="form-control" />
             </label>
           </div>
@@ -359,6 +371,7 @@ export default function Step1ClinicaMedica({
                   name="ExameFisico.alimentacao"
                   value={opt}
                   checked={formData.ExameFisico.alimentacao === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -385,6 +398,7 @@ export default function Step1ClinicaMedica({
                   name="ExameFisico.postura"
                   value={opt}
                   checked={formData.ExameFisico.postura === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -406,6 +420,7 @@ export default function Step1ClinicaMedica({
                   name="ExameFisico.nivelConsciencia"
                   value={opt}
                   checked={formData.ExameFisico.nivelConsciencia === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -425,6 +440,7 @@ export default function Step1ClinicaMedica({
                   name="ExameFisico.score"
                   value={opt}
                   checked={formData.ExameFisico.score === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -445,6 +461,7 @@ export default function Step1ClinicaMedica({
                   name="ExameFisico.hidratacao"
                   value={opt}
                   checked={formData.ExameFisico.hidratacao === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -462,6 +479,7 @@ export default function Step1ClinicaMedica({
                 max="100"
                 name="ExameFisico.temperatura"
                 value={formData.ExameFisico.temperatura || ""}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 className="form-control" />
             </div>
@@ -470,14 +488,14 @@ export default function Step1ClinicaMedica({
           <div className={styles.box}>
             <div className={styles.column}>
               <label className="form-label fw-medium">Frequência cardíaca (BPM):
-                <input type="text" name="freqCardiaca" value={formData.freqCardiaca} onChange={handleChange}
+                <input type="text" name="freqCardiaca" value={formData.freqCardiaca} disabled={isReadOnly} onChange={handleChange}
                   className="form-control"
                 />
               </label>
             </div>
             <div className={styles.column}>
               <label className="form-label fw-medium">Frequência Respiratória (RPM):
-                <input type="text" name="freqRespiratoria" value={formData.freqRespiratoria} onChange={handleChange}
+                <input type="text" name="freqRespiratoria" value={formData.freqRespiratoria} disabled={isReadOnly} onChange={handleChange}
                   className="form-control"
                 />
               </label>
@@ -490,6 +508,7 @@ export default function Step1ClinicaMedica({
                 id="turgorCutaneo"
                 name="turgorCutaneo"
                 value={formData.turgorCutaneo}
+                disabled={isReadOnly}
                 onChange={handleChangeAtualizaSelect}
                 className="form-control"
               >
@@ -505,6 +524,7 @@ export default function Step1ClinicaMedica({
                 id="tpc"
                 name="tpc"
                 value={formData.tpc}
+                disabled={isReadOnly}
                 onChange={handleChangeAtualizaSelect}
                 className="form-control"
               >
@@ -531,6 +551,7 @@ export default function Step1ClinicaMedica({
                         type="checkbox"
                         name={option}
                         checked={formData.option[option]}
+                        disabled={isReadOnly}
                         onChange={handleCheckboxChangeMucosas}
                         className="me-2"
                       />
@@ -572,6 +593,7 @@ export default function Step1ClinicaMedica({
                       type="checkbox"
                       name={linfonodo.value}
                       checked={linfonodo.value in formData.linfonodos}
+                      disabled={isReadOnly}
                       onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
                     />
 
@@ -601,10 +623,12 @@ export default function Step1ClinicaMedica({
 
 
           {/* BOTÕES ---------------------------------------------------------- */}
+           {!isReadOnly && (
           <div className={styles.button_box}>
             <CancelarWhiteButton />
             <ContinuarFichasGreenButton type="submit" />
           </div>
+           )}
 
         </form>
       </div>

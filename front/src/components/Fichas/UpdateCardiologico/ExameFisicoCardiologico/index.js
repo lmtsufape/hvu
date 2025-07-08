@@ -28,7 +28,15 @@ function AtendimentoCardiologico({
   const [animal, setAnimal] = useState(null);
   const [tutor, setTutor] = useState({ nome: '' });
   const router = useRouter();
-  const { id } = router.query;
+  const { id, modo } = router.query; 
+  const [isReadOnly, setIsReadOnly] = useState(false);
+
+  useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+        }
+    }, [modo]);
 
   useEffect(() => {
     if (id) {
@@ -179,6 +187,8 @@ function AtendimentoCardiologico({
                     name="ExameFisico.postura"
                     value={opt}
                     checked={formData.ExameFisico.postura === opt}
+                    isabled={isReadOnly}
+                    disabled={isReadOnly}
                     onChange={handlePosturaChange}
                   /> {opt}
                 </label>
@@ -209,6 +219,7 @@ function AtendimentoCardiologico({
                   name="ExameFisico.nivelConsciencia"
                   value={opt}
                   checked={formData.ExameFisico.nivelConsciencia === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -226,6 +237,7 @@ function AtendimentoCardiologico({
                   name="ExameFisico.score"
                   value={opt}
                   checked={formData.ExameFisico.score === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -241,6 +253,7 @@ function AtendimentoCardiologico({
               max="100"
               name="ExameFisico.temperatura"
               value={formData.ExameFisico.temperatura || ""}
+              disabled={isReadOnly}
               onChange={handleChange}
               className="form-control"
             />
@@ -257,6 +270,7 @@ function AtendimentoCardiologico({
                   name="ExameFisico.hidratacao"
                   value={opt}
                   checked={formData.ExameFisico.hidratacao === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -269,6 +283,7 @@ function AtendimentoCardiologico({
               type="text"
               name="ExameFisico.narinasEOutros"
               value={formData.ExameFisico.narinasEOutros || ""}
+              disabled={isReadOnly}
               onChange={handleChange}
               className="form-control"
             />
@@ -279,6 +294,7 @@ function AtendimentoCardiologico({
               type="text"
               name="ExameFisico.abdomem"
               value={formData.ExameFisico.abdomem || ""}
+              disabled={isReadOnly}
               onChange={handleChange}
               className="form-control"
             />
@@ -291,6 +307,7 @@ function AtendimentoCardiologico({
                 type="text"
                 name="ExameFisico.acp"
                 value={formData.ExameFisico.acp}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 className="form-control"
               />
@@ -301,6 +318,7 @@ function AtendimentoCardiologico({
                 type="text"
                 name="ExameFisico.pulsoArterial"
                 value={formData.ExameFisico.pulsoArterial}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 className="form-control"
               />
@@ -313,6 +331,7 @@ function AtendimentoCardiologico({
                 type="text"
                 name="ExameFisico.freqCardiaca"
                 value={formData.ExameFisico.freqCardiaca}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 className="form-control"
               />
@@ -323,6 +342,7 @@ function AtendimentoCardiologico({
                 type="text"
                 name="ExameFisico.freqRespiratoria"
                 value={formData.ExameFisico.freqRespiratoria}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 className="form-control"
               />
@@ -335,6 +355,7 @@ function AtendimentoCardiologico({
                 id="turgorCutaneo"
                 name="ExameFisico.turgorCutaneo"
                 value={formData.ExameFisico.turgorCutaneo}
+                disabled={isReadOnly}
                 onChange={handleChangeAtualizaSelect}
                 className="form-control"
               >
@@ -349,6 +370,7 @@ function AtendimentoCardiologico({
                 id="tpc"
                 name="ExameFisico.tpc"
                 value={formData.ExameFisico.tpc}
+                disabled={isReadOnly}
                 onChange={handleChangeAtualizaSelect}
                 className="form-control"
               >
@@ -375,6 +397,7 @@ function AtendimentoCardiologico({
                         type="checkbox"
                         name={option}
                         checked={formData.option[option]}
+                        disabled={isReadOnly}
                         onChange={handleCheckboxChangeMucosas}
                         className="me-2"
                       />
@@ -416,6 +439,7 @@ function AtendimentoCardiologico({
                       type="checkbox"
                       name={linfonodo.value}
                       checked={linfonodo.value in formData.linfonodos}
+                      disabled={isReadOnly}
                       onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
                     />
                     {linfonodo.label}
@@ -428,6 +452,7 @@ function AtendimentoCardiologico({
                             type="checkbox"
                             name={caracteristica.value}
                             checked={formData.linfonodos[linfonodo.value]?.includes(caracteristica.value) || false}
+                            disabled={isReadOnly}
                             onChange={(e) => handleCaracteristicaChange(e, linfonodo.value)}
                           />
                           {caracteristica.label}
@@ -439,11 +464,12 @@ function AtendimentoCardiologico({
               ))}
             </div>
           </div>
-
+          {!isReadOnly && (
           <div className={styles.button_box}>
             <VoltarWhiteButton onClick={prevStep} />
             <ContinuarFichasGreenButton type="submit" />
           </div>
+          )}
         </form>
       </div>
     </div>
