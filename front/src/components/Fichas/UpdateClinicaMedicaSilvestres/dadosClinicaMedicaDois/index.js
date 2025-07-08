@@ -73,6 +73,15 @@ export default function Step2ClinicaMedica({
   const [showOtherExameInput, setShowOtherExameInput] = useState(
     formData.examesComplementares?.includes("Outros(s):") || false
   );
+  const { id, modo } = router.query; 
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  
+  useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+        }
+    }, [modo]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -276,6 +285,7 @@ export default function Step2ClinicaMedica({
                     rows={4}
                     className="form-control"
                     value={formData.fisicogeral?.[sys.key] || ""}
+                    disabled={isReadOnly}
                     onChange={handleChange}
                   />
                 </div>
@@ -294,6 +304,7 @@ export default function Step2ClinicaMedica({
                       type="checkbox"
                       value={exame.label}
                       checked={examesComplementares.includes(exame.label)}
+                      disabled={isReadOnly}
                       onChange={handleExameChange}
                       className="form-control"
                     />
@@ -314,10 +325,12 @@ export default function Step2ClinicaMedica({
           </div>
 
           {/* ================= BOTÕES FINAIS ================= */}
+          {!isReadOnly && (
           <div className={styles.button_box}>
             <VoltarWhiteButton onClick={prevStep} />
             <ContinuarFichasGreenButton type="submit" />
           </div>
+          )}
         </form>
       </div>
     </div>
