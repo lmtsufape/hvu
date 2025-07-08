@@ -117,3 +117,95 @@
     letter-spacing: 0em;
     text-align: center;
 }
+
+.box_ficha_buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ficha_item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ficha_button {
+  width: 100%;
+  height: 44px;
+  background-color: #98b7a9;
+  color: #000000;
+  font-size: 14px;
+  padding: 9.5px 16px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.ficha_button:hover {
+  background-color: #327053;
+}
+
+.ficha_button.selected {
+  background-color: #327053;
+  color: white;
+  font-weight: bold;
+}
+
+.ficha_details {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+}
+
+.fichaActions{
+  display: flex;
+  gap: 10px;
+}
+
+.no_fichas {
+  font-style: italic;
+  color: #6c757d;
+  margin: 10px 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+
+.ficha_container {
+  margin-top: 0; /* Removido margin-top para tocar no botão */
+  padding: 0 15px 15px 15px; /* Removido padding superior, mantido lateral e inferior */
+  border: 1px solid #ddd;
+  border-top: none; /* Remove a borda superior para continuidade com o botão */
+  border-radius: 0 0 5px 5px; /* Bordas arredondadas apenas na parte inferior */
+  background-color: #fff;
+}
+
+.toggleButton {
+  max-width: 100%;
+  width: 100%;
+  height: 44px;
+  background-color: #98b7a9;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px 16px;
+  padding-left: 16px;
+  border-radius: 10px 10px 0 0; /* Ajustado para continuidade com ficha_container */
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #ddd; /* Adicionado para combinar com ficha_container */
+  border-bottom: none; /* Remove a borda inferior para continuidade */
+  outline: none;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  position: relative;
+}

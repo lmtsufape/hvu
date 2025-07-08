@@ -25,6 +25,10 @@ function updateFichaSessao() {
     const [loading, setLoading] = useState(true);
 
     const router = useRouter();
+
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+
     const [consultaId, setConsultaId] = useState(null);
     const [animalId, setAnimalId] = useState(null);
     const [animal, setAnimal] = useState({});
@@ -33,6 +37,13 @@ function updateFichaSessao() {
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
      
+
+    useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+        }
+    }, [modo]);
 
     const [formData, setFormData] = useState({
         numeroSessao: "",
@@ -186,13 +197,15 @@ function updateFichaSessao() {
                         <div id="flex-column" className={styles.column}>
                             <label>Sessão nº:</label>
                             <input id="meia-caixa" type="text" name="numeroSessao" 
-                            value={formData.numeroSessao} 
+                            value={formData.numeroSessao}
+                            disabled={isReadOnly}
                             onChange={handleChange} />
                         </div>
                         <div id="flex-column" className={styles.column}>
                             <label>Data:</label>
                             <input id="meia-caixa" type="date" name="sessaoData" 
                             value={formData.sessaoData} 
+                            disabled={isReadOnly}
                             onChange={handleChange}/>
                         </div>
                     </div>
@@ -273,22 +286,24 @@ function updateFichaSessao() {
                         Anotação
                     </div>
                     <div className={styles.column}>
-                        <textarea id="caixa-alta" name="anotacao" value={formData.anotacao} onChange={handleChange} rows="10" cols="50" />
+                        <textarea id="caixa-alta" name="anotacao" value={formData.anotacao} disabled={isReadOnly} onChange={handleChange} rows="10" cols="50" />
                     </div>              
 
                     <div className={styles.column}>
                         <label>Estagiário: </label>
-                        <input type="text" name="estagiario" value={formData.estagiario} onChange={handleChange} />
+                        <input type="text" name="estagiario" value={formData.estagiario} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>RG: </label>
-                        <input type="text" name="rg" value={formData.rg} onChange={handleChange} />
+                        <input type="text" name="rg" value={formData.rg} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
+                    )}
                 </form>
                 {showAlert && consultaId && (
                 <Alert message="Ficha editada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />

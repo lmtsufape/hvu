@@ -28,6 +28,8 @@ function UpdateAtoCirurgico() {
     const [data, setData] = useState([]);
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
 
 
     const [formData, setFormData] = useState({
@@ -56,6 +58,13 @@ function UpdateAtoCirurgico() {
     }, [router.isReady, router.query.fichaId]);
 
     const { protocolos = [] } = formData;
+
+    useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+        }
+    }, [modo]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -314,18 +323,19 @@ function UpdateAtoCirurgico() {
                     <div className={styles.column}>
                         <textarea id="caixa-alta" name="descricaoAtoCirurgico"
                             value={formData.descricaoAtoCirurgico}
+                            disabled={isReadOnly}
                             onChange={handleChange} />
                     </div>
 
                     <div className={styles.grid}>
                         <div className={styles.column}>
                             <label>Nome da Cirurgia</label>
-                            <textarea name="nomeDaCirurgia" value={formData.nomeDaCirurgia} onChange={handleChange} />
+                            <textarea name="nomeDaCirurgia" value={formData.nomeDaCirurgia} disabled={isReadOnly} onChange={handleChange} />
                         </div>
                         <div className={styles.column}>
                             <label>Data</label>
                             <input
-                                type="date" name="data" value={formData.data} onChange={handleChange}
+                                type="date" name="data" value={formData.data} disabled={isReadOnly} onChange={handleChange}
 
                             />
                         </div>
@@ -337,7 +347,7 @@ function UpdateAtoCirurgico() {
 
                     <div className={styles.column}>
                         <label>Prognóstico</label>
-                        <select id="meia-caixa" name="prognostico" value={formData.prognostico} onChange={handleChange}>
+                        <select id="meia-caixa" name="prognostico" value={formData.prognostico} disabled={isReadOnly} onChange={handleChange}>
                             <option value="">Selecione</option>
                             <option value="FAVORAVEL">Favorável</option>
                             <option value="RESERVADO">Reservado</option>
@@ -363,6 +373,7 @@ function UpdateAtoCirurgico() {
                                             <input
                                                 type="text"
                                                 value={linha.medicacao}
+                                                disabled={isReadOnly}
                                                 onChange={(e) => handleChangeTratamentos(index, "medicacao", e.target.value)}
                                             />
                                         </td>
@@ -370,6 +381,7 @@ function UpdateAtoCirurgico() {
                                             <input
                                                 type="text"
                                                 value={linha.dose}
+                                                disabled={isReadOnly}
                                                 onChange={(e) => handleChangeTratamentos(index, "dose", e.target.value)}
                                             />
                                         </td>
@@ -377,6 +389,7 @@ function UpdateAtoCirurgico() {
                                             <input
                                                 type="text"
                                                 value={linha.frequencia}
+                                                disabled={isReadOnly}
                                                 onChange={(e) => handleChangeTratamentos(index, "frequencia", e.target.value)}
                                             />
                                         </td>
@@ -384,6 +397,7 @@ function UpdateAtoCirurgico() {
                                             <input
                                                 type="text"
                                                 value={linha.periodo}
+                                                disabled={isReadOnly}
                                                 onChange={(e) => handleChangeTratamentos(index, "periodo", e.target.value)}
                                             />
                                         </td>
@@ -392,7 +406,7 @@ function UpdateAtoCirurgico() {
                             </tbody>
                         </table>
                         <div className={styles.bolha_container}>
-                            <div className={styles.bolha} onClick={adicionarLinhaTratamento}>
+                            <div className={styles.bolha} disabled={isReadOnly} onClick={adicionarLinhaTratamento}>
                                 +
                             </div>
                             <div className={`${styles.bolha} ${styles.bolha_remover_linha}`} onClick={removerUltimaLinhaTratamento}>
@@ -403,21 +417,23 @@ function UpdateAtoCirurgico() {
 
                     <div className={styles.column}>
                         <label>Retorno para reavaliações</label>
-                        <textarea name="reavaliacao" value={formData.reavaliacao} onChange={handleChange} rows="4" cols="50" />
+                        <textarea name="reavaliacao" value={formData.reavaliacao} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>
                         <label>Plantonista(s) discente(s): </label>
-                        <textarea name="equipeResponsavel" value={formData.equipeResponsavel} onChange={handleChange} />
+                        <textarea name="equipeResponsavel" value={formData.equipeResponsavel} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Médico(s) Veterinário(s) Responsável:</label>
-                        <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} onChange={handleChange} />
+                        <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
+                    )}
                 </form>
                 {showAlert && consultaId && (
                     <Alert message="Ficha editada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
