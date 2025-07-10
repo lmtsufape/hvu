@@ -50,6 +50,9 @@
   font-weight: 500;
   margin-bottom: 8px;
   color: #272727;
+  margin-left: 10px;
+  margin-right: 10px;
+
 }
 
 .column input,
@@ -70,6 +73,11 @@
 .column textarea:focus {
   outline: none;
   box-shadow: 0 0 5px 2px #3d856371;
+}
+
+.two_columns{
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .button_box {

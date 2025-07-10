@@ -6,6 +6,7 @@ import FinalizarFichaModal from "../../FinalizarFichaModal";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
+import { is } from "date-fns/locale";
 
 function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, handleSubmit, prevStep, setFormData,
   selecionados, ladosVisiveis, toggleItem, toggleLadoVisivel, }) {
@@ -16,6 +17,15 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
   const [showButtons, setShowButtons] = useState(false);
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
+  const { id, modo } = router.query; 
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  
+  useEffect(() => {
+  // Se o modo for 'visualizar', define o estado para somente leitura
+     if (modo === 'visualizar') {
+        setIsReadOnly(true);
+          }
+     }, [modo]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -141,6 +151,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
             <label>Outros exames:
               <input type="text" name="outrosExames"
                 value={formData.outrosExames}
+                disabled={isReadOnly}
                 onChange={handleChange} />
             </label>
           </div>
@@ -161,6 +172,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="carpo"
@@ -179,6 +191,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="radioUlna"
@@ -193,6 +206,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="musculosTendoes"
@@ -224,6 +238,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="umero"
@@ -238,6 +253,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
             </div>
             <div>
@@ -263,6 +279,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="axilarSubescapular"
@@ -277,6 +294,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="escapula"
@@ -294,6 +312,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="articulacaoCubital"
@@ -315,6 +334,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
             </div>
           </div>
@@ -322,6 +342,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
             <label>Achados exames de imagem:
               <textarea type="text" name="achadosImagem"
                 value={formData.achadosImagem}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 rows="4" cols="50" />
             </label>
@@ -330,6 +351,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
             <label>Outros exames:
               <input type="text" name="outrosExames"
                 value={formData.outrosExames}
+                disabled={isReadOnly}
                 onChange={handleChange} />
             </label>
           </div>
@@ -351,6 +373,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="tarso"
@@ -369,6 +392,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="tibiaFibula"
@@ -383,6 +407,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="articulacaoJoelho"
@@ -412,6 +437,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="femur"
@@ -426,6 +452,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
             </div>
             <div>
@@ -454,6 +481,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="articulacaoSacroiliaca"
@@ -468,6 +496,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="pelve"
@@ -485,6 +514,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
               <GrupoExame
                 titulo="cabecaEsqueletoAxial"
@@ -504,6 +534,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 ladosVisiveis={ladosVisiveis}
                 toggleItem={toggleItem}
                 toggleLadoVisivel={toggleLadoVisivel}
+                isReadOnly={isReadOnly}
               />
             </div>
           </div>
@@ -511,6 +542,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
             <label>Diagnótico:
               <input type="text" name="diagnotico"
                 value={formData.diagnotico}
+                disabled={isReadOnly}
                 onChange={handleChange} />
             </label>
           </div>
@@ -518,6 +550,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
             <label>Tratamento:
               <textarea type="text" name="tratamento"
                 value={formData.tratamento}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 rows="4" cols="50" />
             </label>
@@ -526,6 +559,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
             <label>Plantonista(s) discente(s):
               <input type="text" name="plantonistas"
                 value={formData.plantonistas}
+                disabled={isReadOnly}
                 onChange={handleChange} />
             </label>
           </div>
@@ -533,14 +567,17 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
             <label>Médico(s) Veterinário(s) Responsável:
               <input type="text" name="medicosResponsaveis"
                 value={formData.medicosResponsaveis}
+                disabled={isReadOnly}
                 onChange={handleChange} />
             </label>
           </div>
 
+          {!isReadOnly && (
           <div className={styles.button_box}>
             < VoltarWhiteButton onClick={prevStep} />
             < FinalizarFichaModal onConfirm={handleSubmit} />
           </div>
+          )}
         </form>
       </div>
     </div>
@@ -548,7 +585,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
 }
 
 function GrupoExame({ titulo, label, itens, formData, selecionados,
-  ladosVisiveis, toggleItem, toggleLadoVisivel, handleRadioAninhado }) {
+  ladosVisiveis, toggleItem, toggleLadoVisivel, handleRadioAninhado, isReadOnly }) {
   const [aberto, setAberto] = useState(false);
 
   const handleToggleItem = (key) => {
@@ -576,6 +613,7 @@ function GrupoExame({ titulo, label, itens, formData, selecionados,
                 <input
                   type="checkbox"
                   checked={selecionados.includes(key)}
+                  disabled={isReadOnly}
                   onChange={() => handleToggleItem(key)}
                 />
                 {label}
@@ -590,6 +628,7 @@ function GrupoExame({ titulo, label, itens, formData, selecionados,
                           id="checkbox_circle"
                           type="checkbox"
                           checked={ladosVisiveis[key]?.[lado] ?? false}
+                          disabled={isReadOnly}
                           onChange={() => handleToggleLadoVisivel(key, lado)}
                         />
                         {lado}
