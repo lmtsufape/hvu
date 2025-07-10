@@ -181,7 +181,7 @@ function AtendimentoOrtopedico({ formData, handleChange, nextStep, prevStep }) {
 
                     <h2>Marcha</h2>
 
-                    <div className={styles.column}><label>marcha:</label>
+                    <div className={styles.column}><label>Tipo:</label>
                         <select name="marcha" value={formData.marcha} onChange={handleChange} >
                             <option value="">Selecione</option>
                             <option value="anteSe">Ante-si</option>

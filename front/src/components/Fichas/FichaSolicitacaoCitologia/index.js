@@ -596,7 +596,7 @@ function FichaSolicitacaoCitologia() {
                                 onChange={handleChange}
                             >
                                 <option value="">Selecione</option>
-                                <option value="elevada">elevada</option>
+                                <option value="elevada">Elevada</option>
                                 <option value="Normal">Normal</option>
                             </select>
                         </div>
@@ -608,7 +608,7 @@ function FichaSolicitacaoCitologia() {
                                 onChange={handleChange}
                             >
                                 <option value="">Selecione</option>
-                                <option value="Móvel">móvel</option>
+                                <option value="Móvel">Móvel</option>
                                 <option value="Fixo">Fixo</option>
                             </select>
                         </div>
