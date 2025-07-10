@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
+import { is } from "date-fns/locale";
 
 function FichaNeurologica({ formData, handleChange, nextStep, handleCheckboxChange }) {
 
@@ -23,6 +24,15 @@ function FichaNeurologica({ formData, handleChange, nextStep, handleCheckboxChan
       const [showButtons, setShowButtons] = useState(false);
       const [tutor, setTutor] = useState({});
       const [consultaId, setConsultaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+                                        
+    useEffect(() => {
+    // Se o modo for 'visualizar', define o estado para somente leitura
+         if (modo === 'visualizar') {
+            setIsReadOnly(true);
+             }
+        }, [modo]);
     
       useEffect(() => {
         if (router.isReady) {
@@ -152,12 +162,12 @@ function FichaNeurologica({ formData, handleChange, nextStep, handleCheckboxChan
 
                     <div className={styles.column}>
                         <label>Nível de consciência ( Troco encefálico e córtex - SARA):
-                            <textarea name="nivelConsciencia" value={formData.nivelConsciencia} onChange={handleChange} rows="4" cols="50" />
+                            <textarea name="nivelConsciencia" value={formData.nivelConsciencia} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
                     <div className={styles.column}>
                         <label>Resultados dos exames realizados:
-                            <textarea name="resultadoExame" value={formData.resultadoExame} onChange={handleChange} rows="4" cols="50" />
+                            <textarea name="resultadoExame" value={formData.resultadoExame} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
 
@@ -175,6 +185,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, handleCheckboxChan
                                     type="checkbox"
                                     value={item}
                                     checked={formData["postura"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "postura")}
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
@@ -196,6 +207,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, handleCheckboxChan
                                     type="checkbox"
                                     value={item}
                                     checked={formData["descricaoLocomocao"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "descricaoLocomocao")}
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
@@ -214,6 +226,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, handleCheckboxChan
                                     type="checkbox"
                                     value={item}
                                     checked={formData["tipoAtaxia"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "tipoAtaxia")}
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
@@ -222,17 +235,19 @@ function FichaNeurologica({ formData, handleChange, nextStep, handleCheckboxChan
 
                     <div className={styles.column}>
                         <label>Andar compulsivo?</label>
-                        <select id="meia-caixa" name="andarCompulsivo" value={formData.andarCompulsivo} onChange={handleChange} >
+                        <select id="meia-caixa" name="andarCompulsivo" value={formData.andarCompulsivo} disabled={isReadOnly} onChange={handleChange} >
                             <option value="">Selecione</option>
                             <option value="Sim">Sim</option>
                             <option value="Não">Não</option>
                         </select>
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
                         < ContinuarFichasGreenButton type="submit" />
                     </div>
+                    )}
                 </form>
             </div>
         </div>
