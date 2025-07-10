@@ -54,6 +54,15 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+                                  
+    useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+            if (modo === 'visualizar') {
+               setIsReadOnly(true);
+             }
+          }, [modo]);
 
     useEffect(() => {
         if (router.isReady) {
@@ -112,6 +121,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                         <button
                             type="button"
                             className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
+                            disabled={isReadOnly}
                             onClick={() => setShowButtons((prev) => !prev)}
                         >
                             Dados do animal
@@ -191,6 +201,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.ameaca}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('ameaca')}
                                 />
                                 Ameaça (II, VII, córtex, cerebelo)
@@ -198,10 +209,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.ameaca && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.ameaca.Esq" value={formData.nervosCranianos.ameaca.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.ameaca.Esq" value={formData.nervosCranianos.ameaca.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.ameaca.Dir" value={formData.nervosCranianos.ameaca.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.ameaca.Dir" value={formData.nervosCranianos.ameaca.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -211,6 +222,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.tamanhoSimetria}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('tamanhoSimetria')}
                                 />
                                 Tamanho e simetria pupilar (II, III)
@@ -218,10 +230,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.tamanhoSimetria && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.tamanhoSimetria.Esq" value={formData.nervosCranianos.tamanhoSimetria.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.tamanhoSimetria.Esq" value={formData.nervosCranianos.tamanhoSimetria.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.tamanhoSimetria.Dir" value={formData.nervosCranianos.tamanhoSimetria.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.tamanhoSimetria.Dir" value={formData.nervosCranianos.tamanhoSimetria.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -231,6 +243,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.reflexoPupilar}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('reflexoPupilar')}
                                 />
                                 Reflexo pupilar fotomotor (II, IIIPS)
@@ -238,10 +251,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.reflexoPupilar && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.reflexoPupilar.Esq" value={formData.nervosCranianos.reflexoPupilar.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.reflexoPupilar.Esq" value={formData.nervosCranianos.reflexoPupilar.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.reflexoPupilar.Dir" value={formData.nervosCranianos.reflexoPupilar.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.reflexoPupilar.Dir" value={formData.nervosCranianos.reflexoPupilar.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -251,6 +264,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.posturaOcular}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('posturaOcular')}
                                 />
                                 Posição ocular (VIII, III, IV, VI)
@@ -258,10 +272,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.posturaOcular && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.posturaOcular.Esq" value={formData.nervosCranianos.posturaOcular.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.posturaOcular.Esq" value={formData.nervosCranianos.posturaOcular.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.posturaOcular.Dir" value={formData.nervosCranianos.posturaOcular.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.posturaOcular.Dir" value={formData.nervosCranianos.posturaOcular.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -271,6 +285,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.reflexoOculocefalico}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('reflexoOculocefalico')}
                                 />
                                 Reflexo oculocefálico (VIII, III, IV, VI)
@@ -278,10 +293,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.reflexoOculocefalico && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.reflexoOculocefalico.Esq" value={formData.nervosCranianos.reflexoOculocefalico.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.reflexoOculocefalico.Esq" value={formData.nervosCranianos.reflexoOculocefalico.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.reflexoOculocefalico.Dir" value={formData.nervosCranianos.reflexoOculocefalico.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.reflexoOculocefalico.Dir" value={formData.nervosCranianos.reflexoOculocefalico.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -291,6 +306,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.nistagmoPatologico}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('nistagmoPatologico')}
                                 />
                                 Nistagmo patológico (VIII)
@@ -298,10 +314,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.nistagmoPatologico && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.nistagmoPatologico.Esq" value={formData.nervosCranianos.nistagmoPatologico.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.nistagmoPatologico.Esq" value={formData.nervosCranianos.nistagmoPatologico.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.nistagmoPatologico.Dir" value={formData.nervosCranianos.nistagmoPatologico.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.nistagmoPatologico.Dir" value={formData.nervosCranianos.nistagmoPatologico.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -311,6 +327,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.reflexoPalpebral}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('reflexoPalpebral')}
                                 />
                                 Reflexo palpebral
@@ -318,10 +335,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.reflexoPalpebral && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.reflexoPalpebral.Esq" value={formData.nervosCranianos.reflexoPalpebral.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.reflexoPalpebral.Esq" value={formData.nervosCranianos.reflexoPalpebral.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.reflexoPalpebral.Dir" value={formData.nervosCranianos.reflexoPalpebral.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.reflexoPalpebral.Dir" value={formData.nervosCranianos.reflexoPalpebral.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -331,6 +348,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.sensibilidadeNasal}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('sensibilidadeNasal')}
                                 />
                                 Sensibilidade nasal (V, córtex)
@@ -338,10 +356,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.sensibilidadeNasal && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.sensibilidadeNasal.Esq" value={formData.nervosCranianos.sensibilidadeNasal.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.sensibilidadeNasal.Esq" value={formData.nervosCranianos.sensibilidadeNasal.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.sensibilidadeNasal.Dir" value={formData.nervosCranianos.sensibilidadeNasal.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.sensibilidadeNasal.Dir" value={formData.nervosCranianos.sensibilidadeNasal.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -351,6 +369,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.historicoDisfoniaDisfagia}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('historicoDisfoniaDisfagia')}
                                 />
                                 Histórico disfonia, disfagia (IX, X)
@@ -358,10 +377,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.historicoDisfoniaDisfagia && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.historicoDisfoniaDisfagia.Esq" value={formData.nervosCranianos.historicoDisfoniaDisfagia.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.historicoDisfoniaDisfagia.Esq" value={formData.nervosCranianos.historicoDisfoniaDisfagia.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.historicoDisfoniaDisfagia.Dir" value={formData.nervosCranianos.historicoDisfoniaDisfagia.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.historicoDisfoniaDisfagia.Dir" value={formData.nervosCranianos.historicoDisfoniaDisfagia.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -371,6 +390,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.simetriaLingua}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('simetriaLingua')}
                                 />
                                 Simetria de língua (XII)
@@ -378,10 +398,10 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.simetriaLingua && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.simetriaLingua.Esq" value={formData.nervosCranianos.simetriaLingua.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.simetriaLingua.Esq" value={formData.nervosCranianos.simetriaLingua.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.simetriaLingua.Dir" value={formData.nervosCranianos.simetriaLingua.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.simetriaLingua.Dir" value={formData.nervosCranianos.simetriaLingua.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -391,6 +411,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.estrabismoPosicional}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('estrabismoPosicional')}
                                 />
                                 Estrabismo posicional
@@ -398,36 +419,57 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.estrabismoPosicional && (
                                 <div className={styles.bilateralInputGroup}>
                                     <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.estrabismoPosicional.Esq" value={formData.nervosCranianos.estrabismoPosicional.Esq} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.estrabismoPosicional.Esq" value={formData.nervosCranianos.estrabismoPosicional.Esq} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>Direito:
-                                        <input type="text" name="nervosCranianos.estrabismoPosicional.Dir" value={formData.nervosCranianos.estrabismoPosicional.Dir} onChange={handleChange} />
+                                        <input type="text" name="nervosCranianos.estrabismoPosicional.Dir" value={formData.nervosCranianos.estrabismoPosicional.Dir} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
                         </div>
                         <div className={styles.checkboxGroup}>
                             <label className={styles.checkboxLabel}>
+                                <div className={styles.checkboxWrapper}>
                                 <input
                                     type="checkbox"
                                     checked={fields.simetriaFace}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('simetriaFace')}
                                 />
-                                Simetria da face<br />
+                                <span className={styles.checkboxTitle}>Simetria da face</span>
+                                </div>
+                                <div className={styles.checkboxDetails}>
                                 Mm. Temporal/masseter (V)<br />
                                 Mm. Expressão facial (VII)
+                                </div>
                             </label>
+
                             {fields.simetriaFace && (
                                 <div className={styles.bilateralInputGroup}>
-                                    <label>Esquerdo:
-                                        <input type="text" name="nervosCranianos.simetriaFace.Esq" value={formData.nervosCranianos.simetriaFace.Esq} onChange={handleChange} />
-                                    </label>
-                                    <label>Direito:
-                                        <input type="text" name="nervosCranianos.simetriaFace.Dir" value={formData.nervosCranianos.simetriaFace.Dir} onChange={handleChange} />
-                                    </label>
+                                <label>
+                                    Esquerdo:
+                                    <input
+                                    type="text"
+                                    name="nervosCranianos.simetriaFace.Esq"
+                                    value={formData.nervosCranianos.simetriaFace.Esq}
+                                    disabled={isReadOnly}
+                                    onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    Direito:
+                                    <input
+                                    type="text"
+                                    name="nervosCranianos.simetriaFace.Dir"
+                                    value={formData.nervosCranianos.simetriaFace.Dir}
+                                    disabled={isReadOnly}
+                                    onChange={handleChange}
+                                    />
+                                </label>
                                 </div>
                             )}
-                        </div>
+                            </div>
+
                     </div>
 
                     <div className={styles.titulo}>Reações posturais (Circular)</div>
@@ -438,6 +480,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.propriocepcaoConsciente}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('propriocepcaoConsciente')}
                                 />
                                 Propriocepção consciente
@@ -445,16 +488,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.propriocepcaoConsciente && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reacoesPosturais.propriocepcaoConsciente.MTD" value={formData.reacoesPosturais.propriocepcaoConsciente.MTD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.propriocepcaoConsciente.MTD" value={formData.reacoesPosturais.propriocepcaoConsciente.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reacoesPosturais.propriocepcaoConsciente.MTE" value={formData.reacoesPosturais.propriocepcaoConsciente.MTE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.propriocepcaoConsciente.MTE" value={formData.reacoesPosturais.propriocepcaoConsciente.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reacoesPosturais.propriocepcaoConsciente.MPD" value={formData.reacoesPosturais.propriocepcaoConsciente.MPD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.propriocepcaoConsciente.MPD" value={formData.reacoesPosturais.propriocepcaoConsciente.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reacoesPosturais.propriocepcaoConsciente.MPE" value={formData.reacoesPosturais.propriocepcaoConsciente.MPE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.propriocepcaoConsciente.MPE" value={formData.reacoesPosturais.propriocepcaoConsciente.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -464,6 +507,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.saltitar}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('saltitar')}
                                 />
                                 Saltitar
@@ -471,16 +515,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.saltitar && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reacoesPosturais.saltitar.MTD" value={formData.reacoesPosturais.saltitar.MTD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.saltitar.MTD" value={formData.reacoesPosturais.saltitar.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reacoesPosturais.saltitar.MTE" value={formData.reacoesPosturais.saltitar.MTE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.saltitar.MTE" value={formData.reacoesPosturais.saltitar.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reacoesPosturais.saltitar.MPD" value={formData.reacoesPosturais.saltitar.MPD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.saltitar.MPD" value={formData.reacoesPosturais.saltitar.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reacoesPosturais.saltitar.MPE" value={formData.reacoesPosturais.saltitar.MPE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.saltitar.MPE" value={formData.reacoesPosturais.saltitar.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -490,6 +534,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.posicionamentoTatil}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('posicionamentoTatil')}
                                 />
                                 Posicionamento tátil
@@ -497,16 +542,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.posicionamentoTatil && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reacoesPosturais.posicionamentoTatil.MTD" value={formData.reacoesPosturais.posicionamentoTatil.MTD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.posicionamentoTatil.MTD" value={formData.reacoesPosturais.posicionamentoTatil.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reacoesPosturais.posicionamentoTatil.MTE" value={formData.reacoesPosturais.posicionamentoTatil.MTE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.posicionamentoTatil.MTE" value={formData.reacoesPosturais.posicionamentoTatil.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reacoesPosturais.posicionamentoTatil.MPD" value={formData.reacoesPosturais.posicionamentoTatil.MPD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.posicionamentoTatil.MPD" value={formData.reacoesPosturais.posicionamentoTatil.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reacoesPosturais.posicionamentoTatil.MPE" value={formData.reacoesPosturais.posicionamentoTatil.MPE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.posicionamentoTatil.MPE" value={formData.reacoesPosturais.posicionamentoTatil.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -516,6 +561,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.hemiestacao}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('hemiestacao')}
                                 />
                                 Hemiestação
@@ -523,16 +569,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.hemiestacao && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reacoesPosturais.hemiestacao.MTD" value={formData.reacoesPosturais.hemiestacao.MTD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.hemiestacao.MTD" value={formData.reacoesPosturais.hemiestacao.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reacoesPosturais.hemiestacao.MTE" value={formData.reacoesPosturais.hemiestacao.MTE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.hemiestacao.MTE" value={formData.reacoesPosturais.hemiestacao.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reacoesPosturais.hemiestacao.MPD" value={formData.reacoesPosturais.hemiestacao.MPD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.hemiestacao.MPD" value={formData.reacoesPosturais.hemiestacao.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reacoesPosturais.hemiestacao.MPE" value={formData.reacoesPosturais.hemiestacao.MPE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.hemiestacao.MPE" value={formData.reacoesPosturais.hemiestacao.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -542,6 +588,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.hemilocomocao}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('hemilocomocao')}
                                 />
                                 Hemilocomoção
@@ -549,16 +596,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.hemilocomocao && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reacoesPosturais.hemilocomocao.MTD" value={formData.reacoesPosturais.hemilocomocao.MTD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.hemilocomocao.MTD" value={formData.reacoesPosturais.hemilocomocao.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reacoesPosturais.hemilocomocao.MTE" value={formData.reacoesPosturais.hemilocomocao.MTE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.hemilocomocao.MTE" value={formData.reacoesPosturais.hemilocomocao.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reacoesPosturais.hemilocomocao.MPD" value={formData.reacoesPosturais.hemilocomocao.MPD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.hemilocomocao.MPD" value={formData.reacoesPosturais.hemilocomocao.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reacoesPosturais.hemilocomocao.MPE" value={formData.reacoesPosturais.hemilocomocao.MPE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.hemilocomocao.MPE" value={formData.reacoesPosturais.hemilocomocao.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -568,6 +615,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.carrinhoDeMao}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('carrinhoDeMao')}
                                 />
                                 Carrinho de mão (com e sem visão)
@@ -575,16 +623,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.carrinhoDeMao && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reacoesPosturais.carrinhoDeMao.MTD" value={formData.reacoesPosturais.carrinhoDeMao.MTD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.carrinhoDeMao.MTD" value={formData.reacoesPosturais.carrinhoDeMao.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reacoesPosturais.carrinhoDeMao.MTE" value={formData.reacoesPosturais.carrinhoDeMao.MTE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.carrinhoDeMao.MTE" value={formData.reacoesPosturais.carrinhoDeMao.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reacoesPosturais.carrinhoDeMao.MPD" value={formData.reacoesPosturais.carrinhoDeMao.MPD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.carrinhoDeMao.MPD" value={formData.reacoesPosturais.carrinhoDeMao.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reacoesPosturais.carrinhoDeMao.MPE" value={formData.reacoesPosturais.carrinhoDeMao.MPE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.carrinhoDeMao.MPE" value={formData.reacoesPosturais.carrinhoDeMao.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -594,6 +642,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.correcaoTatil}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('correcaoTatil')}
                                 />
                                 Correção tátil (com e sem visão)
@@ -601,16 +650,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.correcaoTatil && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reacoesPosturais.correcaoTatil.MTD" value={formData.reacoesPosturais.correcaoTatil.MTD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.correcaoTatil.MTD" value={formData.reacoesPosturais.correcaoTatil.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reacoesPosturais.correcaoTatil.MTE" value={formData.reacoesPosturais.correcaoTatil.MTE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.correcaoTatil.MTE" value={formData.reacoesPosturais.correcaoTatil.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reacoesPosturais.correcaoTatil.MPD" value={formData.reacoesPosturais.correcaoTatil.MPD} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.correcaoTatil.MPD" value={formData.reacoesPosturais.correcaoTatil.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reacoesPosturais.correcaoTatil.MPE" value={formData.reacoesPosturais.correcaoTatil.MPE} onChange={handleChange} />
+                                        <input type="text" name="reacoesPosturais.correcaoTatil.MPE" value={formData.reacoesPosturais.correcaoTatil.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -625,6 +674,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.tonoMuscular}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('tonoMuscular')}
                                 />
                                 Tono muscular
@@ -632,16 +682,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.tonoMuscular && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.tonoMuscular.MTD" value={formData.reflexosSegmentares.tonoMuscular.MTD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.tonoMuscular.MTD" value={formData.reflexosSegmentares.tonoMuscular.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.tonoMuscular.MTE" value={formData.reflexosSegmentares.tonoMuscular.MTE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.tonoMuscular.MTE" value={formData.reflexosSegmentares.tonoMuscular.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.tonoMuscular.MPD" value={formData.reflexosSegmentares.tonoMuscular.MPD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.tonoMuscular.MPD" value={formData.reflexosSegmentares.tonoMuscular.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.tonoMuscular.MPE" value={formData.reflexosSegmentares.tonoMuscular.MPE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.tonoMuscular.MPE" value={formData.reflexosSegmentares.tonoMuscular.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -651,6 +701,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.patelar}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('patelar')}
                                 />
                                 Patelar (Nervo femoral)
@@ -658,16 +709,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.patelar && (
                                 <div className={styles.posturalInputGroup}>
                                 <label>MTD:
-                                    <input type="text" name="reflexosSegmentares.patelar.MTD" value={formData.reflexosSegmentares.patelar.MTD} onChange={handleChange} />
+                                    <input type="text" name="reflexosSegmentares.patelar.MTD" value={formData.reflexosSegmentares.patelar.MTD} disabled={isReadOnly} onChange={handleChange} />
                                 </label>
                                 <label>MTE:
-                                    <input type="text" name="reflexosSegmentares.patelar.MTE" value={formData.reflexosSegmentares.patelar.MTE} onChange={handleChange} />
+                                    <input type="text" name="reflexosSegmentares.patelar.MTE" value={formData.reflexosSegmentares.patelar.MTE} disabled={isReadOnly} onChange={handleChange} />
                                 </label>
                                 <label>MPD:
-                                    <input type="text" name="reflexosSegmentares.patelar.MPD" value={formData.reflexosSegmentares.patelar.MPD} onChange={handleChange} />
+                                    <input type="text" name="reflexosSegmentares.patelar.MPD" value={formData.reflexosSegmentares.patelar.MPD} disabled={isReadOnly} onChange={handleChange} />
                                 </label>
                                 <label>MPE:
-                                    <input type="text" name="reflexosSegmentares.patelar.MPE" value={formData.reflexosSegmentares.patelar.MPE} onChange={handleChange} />
+                                    <input type="text" name="reflexosSegmentares.patelar.MPE" value={formData.reflexosSegmentares.patelar.MPE} disabled={isReadOnly} onChange={handleChange} />
                                 </label>
                             </div>
                             )}
@@ -677,6 +728,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.flexor}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('flexor')}
                                 />
                                 Flexor (Nervo ciático)
@@ -684,16 +736,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.flexor && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.flexor.MTD" value={formData.reflexosSegmentares.flexor.MTD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.flexor.MTD" value={formData.reflexosSegmentares.flexor.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.flexor.MTE" value={formData.reflexosSegmentares.flexor.MTE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.flexor.MTE" value={formData.reflexosSegmentares.flexor.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.flexor.MPD" value={formData.reflexosSegmentares.flexor.MPD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.flexor.MPD" value={formData.reflexosSegmentares.flexor.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.flexor.MPE" value={formData.reflexosSegmentares.flexor.MPE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.flexor.MPE" value={formData.reflexosSegmentares.flexor.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -703,6 +755,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.perineal}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('perineal')}
                                 />
                                 Perineal (Nervo pudendo)
@@ -710,16 +763,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.perineal && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.perineal.MTD" value={formData.reflexosSegmentares.perineal.MTD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.perineal.MTD" value={formData.reflexosSegmentares.perineal.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.perineal.MTE" value={formData.reflexosSegmentares.perineal.MTE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.perineal.MTE" value={formData.reflexosSegmentares.perineal.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.perineal.MPD" value={formData.reflexosSegmentares.perineal.MPD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.perineal.MPD" value={formData.reflexosSegmentares.perineal.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.perineal.MPE" value={formData.reflexosSegmentares.perineal.MPE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.perineal.MPE" value={formData.reflexosSegmentares.perineal.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -729,6 +782,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.reflexoCutaneo}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('reflexoCutaneo')}
                                 />
                                 Reflexo cutâneo
@@ -736,16 +790,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.reflexoCutaneo && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MTD" value={formData.reflexosSegmentares.reflexoCutaneo.MTD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MTD" value={formData.reflexosSegmentares.reflexoCutaneo.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MTE" value={formData.reflexosSegmentares.reflexoCutaneo.MTE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MTE" value={formData.reflexosSegmentares.reflexoCutaneo.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MPD" value={formData.reflexosSegmentares.reflexoCutaneo.MPD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MPD" value={formData.reflexosSegmentares.reflexoCutaneo.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MPE" value={formData.reflexosSegmentares.reflexoCutaneo.MPE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MPE" value={formData.reflexosSegmentares.reflexoCutaneo.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -755,6 +809,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.reflexoToracicoLateral}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('reflexoToracicoLateral')}
                                 />
                                 Reflexo torácico lateral
@@ -762,16 +817,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.reflexoToracicoLateral && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MTD" value={formData.reflexosSegmentares.reflexoToracicoLateral.MTD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MTD" value={formData.reflexosSegmentares.reflexoToracicoLateral.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MTE" value={formData.reflexosSegmentares.reflexoToracicoLateral.MTE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MTE" value={formData.reflexosSegmentares.reflexoToracicoLateral.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MPD" value={formData.reflexosSegmentares.reflexoToracicoLateral.MPD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MPD" value={formData.reflexosSegmentares.reflexoToracicoLateral.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MPE" value={formData.reflexosSegmentares.reflexoToracicoLateral.MPE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MPE" value={formData.reflexosSegmentares.reflexoToracicoLateral.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -781,6 +836,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.tonoDaCalda}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('tonoDaCalda')}
                                 />
                                 Tono da cauda
@@ -788,16 +844,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.tonoDaCalda && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MTD" value={formData.reflexosSegmentares.tonoDaCalda.MTD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MTD" value={formData.reflexosSegmentares.tonoDaCalda.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MTE" value={formData.reflexosSegmentares.tonoDaCalda.MTE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MTE" value={formData.reflexosSegmentares.tonoDaCalda.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MPD" value={formData.reflexosSegmentares.tonoDaCalda.MPD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MPD" value={formData.reflexosSegmentares.tonoDaCalda.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MPE" value={formData.reflexosSegmentares.tonoDaCalda.MPE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MPE" value={formData.reflexosSegmentares.tonoDaCalda.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -807,6 +863,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                                 <input
                                     type="checkbox"
                                     checked={fields.miccao}
+                                    disabled={isReadOnly}
                                     onChange={() => handleFieldToggle('miccao')}
                                 />
                                 Micção
@@ -814,16 +871,16 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             {fields.miccao && (
                                 <div className={styles.posturalInputGroup}>
                                     <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.miccao.MTD" value={formData.reflexosSegmentares.miccao.MTD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.miccao.MTD" value={formData.reflexosSegmentares.miccao.MTD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.miccao.MTE" value={formData.reflexosSegmentares.miccao.MTE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.miccao.MTE" value={formData.reflexosSegmentares.miccao.MTE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.miccao.MPD" value={formData.reflexosSegmentares.miccao.MPD} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.miccao.MPD" value={formData.reflexosSegmentares.miccao.MPD} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                     <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.miccao.MPE" value={formData.reflexosSegmentares.miccao.MPE} onChange={handleChange} />
+                                        <input type="text" name="reflexosSegmentares.miccao.MPE" value={formData.reflexosSegmentares.miccao.MPE} disabled={isReadOnly} onChange={handleChange} />
                                     </label>
                                 </div>
                             )}
@@ -836,6 +893,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                         <input type="text"
                             name="avaliacaoSensitiva.palpacaoEpaxial"
                             value={formData.avaliacaoSensitiva.palpacaoEpaxial}
+                            disabled={isReadOnly}
                             onChange={handleChange}
                             className={styles.inputLargo} />
                     </div>
@@ -844,6 +902,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                         <input type="text"
                             name="avaliacaoSensitiva.dorCervical"
                             value={formData.avaliacaoSensitiva.dorCervical}
+                            disabled={isReadOnly}
                             onChange={handleChange}
                             className={styles.inputLargo} />
                     </div>
@@ -852,14 +911,17 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                         <input type="text"
                             name="avaliacaoSensitiva.sensibilidadeDosMembros"
                             value={formData.avaliacaoSensitiva.sensibilidadeDosMembros}
+                            disabled={isReadOnly}
                             onChange={handleChange}
                             className={styles.inputLargo} />
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         <VoltarWhiteButton onClick={prevStep} />
                         <ContinuarFichasGreenButton type="submit" />
                     </div>
+                    )}
                 </form>
             </div>
         </div>

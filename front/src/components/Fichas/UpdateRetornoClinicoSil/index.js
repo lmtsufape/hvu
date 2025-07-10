@@ -46,6 +46,15 @@ function updateFichaRetornoClinicoSil() {
         medicoresponsavel: "",
         outros_texto: ""
     });
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+                  
+    useEffect(() => {
+    // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+              }
+        }, [modo]);
 
     // Obtém o ID da ficha da URL
     useEffect(() => {
@@ -209,12 +218,14 @@ function updateFichaRetornoClinicoSil() {
                             <label>RG:</label>
                             <input id="meia-caixa" type="text" name="numeroSessao" 
                             value={formData.numeroSessao} 
+                            disabled={isReadOnly}
                             onChange={handleChange} />
                         </div>
                         <div id="flex-column" className={styles.column}>
                             <label>Data:</label>
                             <input id="meia-caixa" type="date" name="sessaoData" 
                             value={formData.sessaoData} 
+                            disabled={isReadOnly}
                             onChange={handleChange}/>
                         </div>
                     </div>
@@ -296,17 +307,17 @@ function updateFichaRetornoClinicoSil() {
                     </div>
                     <div className={styles.column}>
                         <label>Anamnese:</label>
-                        <textarea id="text" name="anamnese" value={formData.anamnese} onChange={handleChange} rows="10" cols="50" />
+                        <textarea id="text" name="anamnese" value={formData.anamnese} disabled={isReadOnly} onChange={handleChange} rows="10" cols="50" />
                     </div>
 
                     <div className={styles.column}>
                         <label>Exame Clínico:</label>
-                        <textarea id="text" name="exameclinico" value={formData.exameclinico} onChange={handleChange} rows="10" cols="50" />
+                        <textarea id="text" name="exameclinico" value={formData.exameclinico} disabled={isReadOnly} onChange={handleChange} rows="10" cols="50" />
                     </div>
 
                     <div className={styles.column}>
                         <label>Tratamento:</label>
-                        <textarea id="text" name="tratamento" value={formData.tratamento} onChange={handleChange} rows="10" cols="50" />
+                        <textarea id="text" name="tratamento" value={formData.tratamento} disabled={isReadOnly} onChange={handleChange} rows="10" cols="50" />
                     </div>
 
                     <div className={styles.titulo}>
@@ -315,48 +326,49 @@ function updateFichaRetornoClinicoSil() {
 
                     <div className={styles.checkbox_container}>
                     <div>
-                        <label><input type="checkbox" name="exames" value="hemograma" onChange={handleCheckboxChange} /> Hemograma</label>
-                        <label><input type="checkbox" name="exames" value="alt_tgp" onChange={handleCheckboxChange} /> ALT/TGP</label>
-                        <label><input type="checkbox" name="exames" value="ast_tgo" onChange={handleCheckboxChange} /> AST/TGO</label>
-                        <label><input type="checkbox" name="exames" value="creatinina" onChange={handleCheckboxChange} /> Creatinina</label>
-                        <label><input type="checkbox" name="exames" value="ureia" onChange={handleCheckboxChange} /> Uréia</label>
+                        <label><input type="checkbox" name="exames" value="hemograma" disabled={isReadOnly} onChange={handleCheckboxChange} /> Hemograma</label>
+                        <label><input type="checkbox" name="exames" value="alt_tgp" disabled={isReadOnly} onChange={handleCheckboxChange} /> ALT/TGP</label>
+                        <label><input type="checkbox" name="exames" value="ast_tgo" disabled={isReadOnly} onChange={handleCheckboxChange} /> AST/TGO</label>
+                        <label><input type="checkbox" name="exames" value="creatinina" disabled={isReadOnly} onChange={handleCheckboxChange} /> Creatinina</label>
+                        <label><input type="checkbox" name="exames" value="ureia" disabled={isReadOnly} onChange={handleCheckboxChange} /> Uréia</label>
                     </div>
 
                     <div>
-                        <label><input type="checkbox" name="exames" value="proteinas_totais" onChange={handleCheckboxChange} /> Proteínas Totais</label>
-                        <label><input type="checkbox" name="exames" value="albumina" onChange={handleCheckboxChange} /> Albumina</label>
-                        <label><input type="checkbox" name="exames" value="globulina" onChange={handleCheckboxChange} /> Globulina</label>
-                        <label><input type="checkbox" name="exames" value="fa" onChange={handleCheckboxChange} /> FA</label>
-                        <label><input type="checkbox" name="exames" value="ggt" onChange={handleCheckboxChange} /> GGT</label>
+                        <label><input type="checkbox" name="exames" value="proteinas_totais" disabled={isReadOnly} onChange={handleCheckboxChange} /> Proteínas Totais</label>
+                        <label><input type="checkbox" name="exames" value="albumina" disabled={isReadOnly} onChange={handleCheckboxChange} /> Albumina</label>
+                        <label><input type="checkbox" name="exames" value="globulina" disabled={isReadOnly} onChange={handleCheckboxChange} /> Globulina</label>
+                        <label><input type="checkbox" name="exames" value="fa" disabled={isReadOnly} onChange={handleCheckboxChange} /> FA</label>
+                        <label><input type="checkbox" name="exames" value="ggt" disabled={isReadOnly} onChange={handleCheckboxChange} /> GGT</label>
                     </div>
 
                     <div>
-                        <label><input type="checkbox" name="exames" value="glicose" onChange={handleCheckboxChange} /> Glicose</label>
-                        <label><input type="checkbox" name="exames" value="triglicerides" onChange={handleCheckboxChange} /> Triglicerídes</label>
-                        <label><input type="checkbox" name="exames" value="colesterol_total" onChange={handleCheckboxChange} /> Colesterol Total</label>
-                        <label><input type="checkbox" name="exames" value="urinalise" onChange={handleCheckboxChange} /> Urinálise</label>
+                        <label><input type="checkbox" name="exames" value="glicose" disabled={isReadOnly} onChange={handleCheckboxChange} /> Glicose</label>
+                        <label><input type="checkbox" name="exames" value="triglicerides" disabled={isReadOnly} onChange={handleCheckboxChange} /> Triglicerídes</label>
+                        <label><input type="checkbox" name="exames" value="colesterol_total" disabled={isReadOnly} onChange={handleCheckboxChange} /> Colesterol Total</label>
+                        <label><input type="checkbox" name="exames" value="urinalise" disabled={isReadOnly} onChange={handleCheckboxChange} /> Urinálise</label>
                     </div>
 
                     <div>
-                        <label><input type="checkbox" name="exames" value="bilirrubina_total" onChange={handleCheckboxChange} /> Bilirrubina Total e Frações</label>
-                        <label><input type="checkbox" name="exames" value="tricograma" onChange={handleCheckboxChange} /> Tricograma</label>
-                        <label><input type="checkbox" name="exames" value="citologia_cutanea" onChange={handleCheckboxChange} /> Citologia Cutânea</label>
+                        <label><input type="checkbox" name="exames" value="bilirrubina_total" disabled={isReadOnly} onChange={handleCheckboxChange} /> Bilirrubina Total e Frações</label>
+                        <label><input type="checkbox" name="exames" value="tricograma" disabled={isReadOnly} onChange={handleCheckboxChange} /> Tricograma</label>
+                        <label><input type="checkbox" name="exames" value="citologia_cutanea" disabled={isReadOnly} onChange={handleCheckboxChange} /> Citologia Cutânea</label>
                     </div>
 
                     <div>
-                        <label><input type="checkbox" name="exames" value="raspado_cutaneo" onChange={handleCheckboxChange} /> Raspado Cutâneo</label>
-                        <label><input type="checkbox" name="exames" value="citologia_oncologica" onChange={handleCheckboxChange} /> Citologia Oncológica</label>
-                        <label><input type="checkbox" name="exames" value="histopatologico" onChange={handleCheckboxChange} /> Histopatológico</label>
+                        <label><input type="checkbox" name="exames" value="raspado_cutaneo" disabled={isReadOnly} onChange={handleCheckboxChange} /> Raspado Cutâneo</label>
+                        <label><input type="checkbox" name="exames" value="citologia_oncologica" disabled={isReadOnly} onChange={handleCheckboxChange} /> Citologia Oncológica</label>
+                        <label><input type="checkbox" name="exames" value="histopatologico" disabled={isReadOnly} onChange={handleCheckboxChange} /> Histopatológico</label>
                     </div>
 
                     <div>
-                        <label><input type="checkbox" name="exames" value="ultrassonografia" onChange={handleCheckboxChange} /> Ultrassonografia</label>
-                        <label><input type="checkbox" name="exames" value="raio_x" onChange={handleCheckboxChange} /> Raio X</label>
+                        <label><input type="checkbox" name="exames" value="ultrassonografia" disabled={isReadOnly} onChange={handleCheckboxChange} /> Ultrassonografia</label>
+                        <label><input type="checkbox" name="exames" value="raio_x" disabled={isReadOnly} onChange={handleCheckboxChange} /> Raio X</label>
                         <label>
                         <input
                             type="checkbox"
                             name="exames"
                             value="outros"
+                            disabled={isReadOnly}
                             onChange={handleCheckboxChange}
                             checked={formData.exames.includes("outros")}
                         /> Outros:
@@ -377,17 +389,19 @@ function updateFichaRetornoClinicoSil() {
 
                     <div className={styles.column}>
                         <label>Estagiário: </label>
-                        <input type="text" name="estagiario" value={formData.estagiario} onChange={handleChange} />
+                        <input type="text" name="estagiario" value={formData.estagiario} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Médico(s) Vetérinario(s) Responsável: </label>
-                        <input type="text" name="medicoresponsavel" value={formData.medicoresponsavel} onChange={handleChange} />
+                        <input type="text" name="medicoresponsavel" value={formData.medicoresponsavel} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
+                    )}
                 </form>
                 {showAlert && consultaId && (
                 <Alert message="Ficha editada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />

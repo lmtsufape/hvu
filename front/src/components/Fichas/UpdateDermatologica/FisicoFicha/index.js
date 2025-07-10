@@ -41,6 +41,15 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+                  
+        useEffect(() => {
+                  // Se o modo for 'visualizar', define o estado para somente leitura
+                  if (modo === 'visualizar') {
+                      setIsReadOnly(true);
+                  }
+              }, [modo]);
 
     useEffect(() => {
         if (router.isReady) {
@@ -172,6 +181,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
                                 id="postura"
                                 name="postura"
                                 value={formData.tipo.postura}
+                                disabled={isReadOnly}
                                 onChange={handleChangeSelect}
                             >
                                 <option value="">Selecione</option>
@@ -190,6 +200,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
                                         type="text"
                                         name="outrosDetalhes"
                                         value={formData.tipo.outrosDetalhes}
+                                        disabled={isReadOnly}
                                         onChange={handleChangeSelect}
                                         placeholder="Digite a postura"
                                     />
@@ -199,7 +210,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
 
                         <div className={styles.column}>
                             <label>Nível de consciência:
-                                <select name="nivelDeConsciencia" value={formData.nivelDeConsciencia} onChange={handleChange}>
+                                <select name="nivelDeConsciencia" value={formData.nivelDeConsciencia} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Alerta">Alerta</option>
                                     <option value="Deprimido">Deprimido</option>
@@ -211,7 +222,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
 
                         <div className={styles.column}>
                             <label>Score corporal:
-                                <select name="scoreCorporal" value={formData.scoreCorporal} onChange={handleChange}>
+                                <select name="scoreCorporal" value={formData.scoreCorporal} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Caquetico">Caquetico</option>
                                     <option value="Magro">Magro</option>
@@ -225,19 +236,19 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
 
                         <div className={styles.column}>
                             <label>Temperatura:
-                                <input type="text" name="temperatura" value={formData.temperatura} onChange={handleChange} placeholder="Digite a temperatura" />
+                                <input type="text" name="temperatura" value={formData.temperatura} disabled={isReadOnly} onChange={handleChange} placeholder="Digite a temperatura" />
                             </label>
                         </div>
 
 
                         <div className={styles.column}>
                             <label>Turgor cutâneo:
-                                <input type="text" name="turgorCutaneo" value={formData.TurgorCutaneo} onChange={handleChange} placeholder="Turgor cutâneo" />
+                                <input type="text" name="turgorCutaneo" value={formData.TurgorCutaneo} disabled={isReadOnly} onChange={handleChange} placeholder="Turgor cutâneo" />
                             </label>
                         </div>
                         <div className={styles.column}>
                             <label>TPC:
-                                <input type="text" name="tpc" value={formData.tpc} onChange={handleChange} placeholder="Digite o TPC" />
+                                <input type="text" name="tpc" value={formData.tpc} disabled={isReadOnly} onChange={handleChange} placeholder="Digite o TPC" />
                             </label>
                         </div>
                     </div>
@@ -255,6 +266,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
                                             type="checkbox"
                                             name={option}
                                             checked={formData.options[option]}
+                                            disabled={isReadOnly}
                                             onChange={handleCheckboxChangeMucosas}
                                         />
                                         {option === "roseas" && "Róseas"}
@@ -271,6 +283,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
                                                 type="text"
                                                 name={option}
                                                 value={formData.mucosas[option]}
+                                                disabled={isReadOnly}
                                                 onChange={handleLocationChange}
                                                 placeholder="Digite a localização"
                                             />
@@ -292,6 +305,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
                                             type="checkbox"
                                             name={linfonodo.value}
                                             checked={linfonodo.value in formData.linfonodos}
+                                            disabled={isReadOnly}
                                             onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
                                         />
 
@@ -306,6 +320,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
                                                         type="checkbox"
                                                         name={caracteristica.value}
                                                         checked={formData.linfonodos[linfonodo.value]?.includes(caracteristica.value) || false}
+                                                        disabled={isReadOnly}
                                                         onChange={(e) => handleCaracteristicaChange(e, linfonodo.value)}
                                                     />
                                                     {caracteristica.label}
@@ -320,16 +335,18 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
 
                     <div className={styles.column}>
                         <label>Alterações clínicas diversas:
-                            <textarea type="text" name="alteracoesClinicas" value={formData.alteracoesClinicas} onChange={handleChange} rows="4" cols="50" />
+                            <textarea type="text" name="alteracoesClinicas" value={formData.alteracoesClinicas} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
 
 
+
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         <VoltarWhiteButton onClick={prevStep} />
                         <ContinuarFichasGreenButton type="submit" />
                     </div>
-
+                    )}
                 </form>
             </div>
         </div>

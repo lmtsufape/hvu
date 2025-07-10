@@ -37,6 +37,15 @@ export default function Step3ClinicaMedica({
   const [showButtons, setShowButtons] = useState(false);
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
+  const { id, modo } = router.query; 
+  const [isReadOnly, setIsReadOnly] = useState(false);
+      
+  useEffect(() => {
+          // Se o modo for 'visualizar', define o estado para somente leitura
+          if (modo === 'visualizar') {
+              setIsReadOnly(true);
+          }
+      }, [modo]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -181,6 +190,7 @@ export default function Step3ClinicaMedica({
                       className="form-control"
                       placeholder="Informe o peso em kg"
                       value={formData.diagnostico?.[field.key] || ""}
+                      disabled={isReadOnly}
                       onChange={handleChange}
                     />
                   ) : (
@@ -190,6 +200,7 @@ export default function Step3ClinicaMedica({
                       name={`diagnostico.${field.key}`}
                       className="form-control"
                       value={formData.diagnostico?.[field.key] || ""}
+                      disabled={isReadOnly}
                       onChange={handleChange}
                     />
                   )}
@@ -217,6 +228,7 @@ export default function Step3ClinicaMedica({
                         <input
                           type="text"
                           value={linha.medicacao}
+                          disabled={isReadOnly}
                           onChange={(e) => handleChangeTratamentos(index, "medicacao", e.target.value)}
                           className="form-control"
                         />
@@ -225,6 +237,7 @@ export default function Step3ClinicaMedica({
                         <input
                           type="text"
                           value={linha.dose}
+                          disabled={isReadOnly}
                           onChange={(e) => handleChangeTratamentos(index, "dose", e.target.value)}
                           className="form-control"
                         />
@@ -233,6 +246,7 @@ export default function Step3ClinicaMedica({
                         <input
                           type="text"
                           value={linha.frequencia}
+                          disabled={isReadOnly}
                           onChange={(e) => handleChangeTratamentos(index, "frequencia", e.target.value)}
                           className="form-control"
                         />
@@ -241,6 +255,7 @@ export default function Step3ClinicaMedica({
                         <input
                           type="text"
                           value={linha.periodo}
+                          disabled={isReadOnly}
                           onChange={(e) => handleChangeTratamentos(index, "periodo", e.target.value)}
                           className="form-control"
                         />
@@ -261,22 +276,24 @@ export default function Step3ClinicaMedica({
           </div>
           <div className={styles.column}>
             <label>Plantonista(s) discente(s): </label>
-            <textarea name="plantonistas" value={formData.plantonistas} onChange={handleChange}
+            <textarea name="plantonistas" value={formData.plantonistas} disabled={isReadOnly} onChange={handleChange}
               className="form-control" />
 
           </div>
           <div className={styles.column}>
             <label>Médico(s) Veterinário(s) Responsável:</label>
-            <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} onChange={handleChange}
+            <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} disabled={isReadOnly} onChange={handleChange}
               className="form-control" />
           </div>
 
 
           {/* ================= BOTÕES FINAIS ================= */}
+          {!isReadOnly && (
           <div className={styles.button_box}>
             <VoltarWhiteButton onClick={prevStep} />
             < FinalizarFichaModal onConfirm={handleSubmit} />
           </div>
+          )}
         </form>
       </div>
     </div>

@@ -70,6 +70,15 @@ function FichaNeurologica({ formData, handleChange, prevStep, handleCheckboxChan
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+                              
+    useEffect(() => {
+      // Se o modo for 'visualizar', define o estado para somente leitura
+            if (modo === 'visualizar') {
+               setIsReadOnly(true);
+             }
+          }, [modo]);
 
     useEffect(() => {
         if (router.isReady) {
@@ -209,6 +218,7 @@ function FichaNeurologica({ formData, handleChange, prevStep, handleCheckboxChan
                                             type="checkbox"
                                             value={item}
                                             checked={formData.diagnosticoAnatomico.localLesao.includes(item)}
+                                            disabled={isReadOnly}
                                             onChange={(e) => handleCheckboxChange(e, "diagnosticoAnatomico.localLesao")}
                                             ref={el => item === "Medula espinhal" ? registerErrorRef('medulaEspinhal', el) : null}
                                         />
@@ -223,6 +233,7 @@ function FichaNeurologica({ formData, handleChange, prevStep, handleCheckboxChan
                                                         type="checkbox"
                                                         value={subitem}
                                                         checked={formData.diagnosticoAnatomico.subniveisMedula?.includes(subitem) || false}
+                                                        disabled={isReadOnly}
                                                         onChange={(e) => handleCheckboxChange(e, "diagnosticoAnatomico.subniveisMedula")}
                                                     />
                                                     {subitem}
@@ -242,46 +253,50 @@ function FichaNeurologica({ formData, handleChange, prevStep, handleCheckboxChan
                         <label>Nervo periferico:
                             <input type="text" name="diagnosticoAnatomico.nervoPeriferico"
                                 value={formData.diagnosticoAnatomico.nervoPeriferico}
+                                disabled={isReadOnly}
                                 onChange={handleChange} />
                         </label>
                     </div>
                     <div className={styles.column}>
                         <label>Suspeita(s) clínica(s):
-                            <textarea name="diagnosticoAnatomico.suspeitasClinicas" value={formData.diagnosticoAnatomico.suspeitasClinicas} onChange={handleChange} rows="4" cols="50" />
+                            <textarea name="diagnosticoAnatomico.suspeitasClinicas" value={formData.diagnosticoAnatomico.suspeitasClinicas} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
                     <div className={styles.column}>
                         <label>Exame(s) complementare(s):
-                            <textarea name="diagnosticoAnatomico.examesComplementares" value={formData.diagnosticoAnatomico.examesComplementares} onChange={handleChange} rows="4" cols="50" />
+                            <textarea name="diagnosticoAnatomico.examesComplementares" value={formData.diagnosticoAnatomico.examesComplementares} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
                     <div className={styles.column}>
                         <label>Prognóstico:
-                            <textarea name="diagnosticoAnatomico.prognostico" value={formData.diagnosticoAnatomico.prognostico} onChange={handleChange} rows="4" cols="50" />
+                            <textarea name="diagnosticoAnatomico.prognostico" value={formData.diagnosticoAnatomico.prognostico} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
                     <div className={styles.column}>
                         <label>Diagnóstico:
-                            <textarea name="diagnosticoAnatomico.diagnostico" value={formData.diagnosticoAnatomico.diagnostico} onChange={handleChange} rows="4" cols="50" />
+                            <textarea name="diagnosticoAnatomico.diagnostico" value={formData.diagnosticoAnatomico.diagnostico} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
                     <div className={styles.column}>
                         <label>Tratamento:
-                            <textarea name="diagnosticoAnatomico.tratamento" value={formData.diagnosticoAnatomico.tratamento} onChange={handleChange} rows="4" cols="50" />
+                            <textarea name="diagnosticoAnatomico.tratamento" value={formData.diagnosticoAnatomico.tratamento} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
                     <div className={styles.column}>
                         <label>Plantonista(s) discentes:
                             <input type="text" name="plantonistasDiscentes"
                                 value={formData.plantonistasDiscentes}
+                                disabled={isReadOnly}
                                 onChange={handleChange} />
                         </label>
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < VoltarWhiteButton onClick={prevStep} />
                         < FinalizarFichaModal onConfirm={localHandleSubmit} />
                     </div>
+                    )}
                 </form>
             </div>
         </div>

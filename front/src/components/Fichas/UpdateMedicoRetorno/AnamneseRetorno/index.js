@@ -60,6 +60,18 @@ export default function ClinicaMedicaRetornoStep1({
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
 
+
+const { id, modo } = router.query; 
+const [isReadOnly, setIsReadOnly] = useState(false);
+                          
+useEffect(() => {
+// Se o modo for 'visualizar', define o estado para somente leitura
+      if (modo === 'visualizar') {
+         setIsReadOnly(true);
+       }
+    }, [modo]);
+
+
   useEffect(() => {
     if (router.isReady) {
       const id = router.query.fichaId;
@@ -186,6 +198,7 @@ export default function ClinicaMedicaRetornoStep1({
               type="text"
               name="peso"
               value={formData.peso}
+              disabled={isReadOnly}
               onChange={handleChange}
               style={{
                 width: "310px", // Define uma largura menor
@@ -199,6 +212,7 @@ export default function ClinicaMedicaRetornoStep1({
               <textarea
                 name="anamneseHistoricoClinico"
                 value={formData.anamneseHistoricoClinico}
+                disabled={isReadOnly}
                 onChange={handleChange}
                 rows="4"
                 cols="50"
@@ -220,6 +234,7 @@ export default function ClinicaMedicaRetornoStep1({
                         type="checkbox"
                         name={opc}
                         checked={formData.opc[opc]}
+                        disabled={isReadOnly}
                         onChange={handleCheckboxChangeVacinacao}
                         className="me-2"
                       />
@@ -252,7 +267,7 @@ export default function ClinicaMedicaRetornoStep1({
           <div className={styles.box}>
             <div className={styles.column}>
               <label className="form-label fw-medium">Controle de ectoparasitos:
-                <select name="ectoparasitosDetalhes.ectoparasitos" value={formData.ectoparasitosDetalhes.ectoparasitos} onChange={handleChange}>
+                <select name="ectoparasitosDetalhes.ectoparasitos" value={formData.ectoparasitosDetalhes.ectoparasitos} disabled={isReadOnly} onChange={handleChange}>
                   <option value="">Selecione</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -267,6 +282,7 @@ export default function ClinicaMedicaRetornoStep1({
                       type="text"
                       name="ectoparasitosDetalhes.produto"
                       value={formData.ectoparasitosDetalhes.produto}
+                      disabled={isReadOnly}
                       onChange={handleChange}
                       className="form-control"
                     />
@@ -278,6 +294,7 @@ export default function ClinicaMedicaRetornoStep1({
                       type="date"
                       name="ectoparasitosDetalhes.data"
                       value={formData.ectoparasitosDetalhes.data}
+                      disabled={isReadOnly}
                       onChange={handleChange}
                       className="form-control"
                     />
@@ -287,7 +304,7 @@ export default function ClinicaMedicaRetornoStep1({
             </div>
             <div className={styles.column}>
               <label className="form-label fw-medium" >Vermifugação:
-                <select name="vermifugacaoDetalhes.vermifugacao" value={formData.vermifugacaoDetalhes.vermifugacao} onChange={handleChange}>
+                <select name="vermifugacaoDetalhes.vermifugacao" value={formData.vermifugacaoDetalhes.vermifugacao} disabled={isReadOnly} onChange={handleChange}>
                   <option value="">Selecione</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -301,6 +318,7 @@ export default function ClinicaMedicaRetornoStep1({
                       type="text"
                       name="vermifugacaoDetalhes.produto"
                       value={formData.vermifugacaoDetalhes.produto}
+                      disabled={isReadOnly}
                       onChange={handleChange}
                       className="form-control"
                     />
@@ -311,6 +329,7 @@ export default function ClinicaMedicaRetornoStep1({
                       type="date"
                       name="vermifugacaoDetalhes.data"
                       value={formData.vermifugacaoDetalhes.data}
+                      disabled={isReadOnly}
                       onChange={handleChange}
                       className="form-control"
                     />
@@ -330,6 +349,7 @@ export default function ClinicaMedicaRetornoStep1({
                   name="ExameFisico.alimentacao"
                   value={opt}
                   checked={formData.ExameFisico.alimentacao === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -348,6 +368,7 @@ export default function ClinicaMedicaRetornoStep1({
                   name="ExameFisico.postura"
                   value={opt}
                   checked={formData.ExameFisico.postura === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -365,6 +386,7 @@ export default function ClinicaMedicaRetornoStep1({
                   name="ExameFisico.nivelConsciencia"
                   value={opt}
                   checked={formData.ExameFisico.nivelConsciencia === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -382,6 +404,7 @@ export default function ClinicaMedicaRetornoStep1({
                   name="ExameFisico.score"
                   value={opt}
                   checked={formData.ExameFisico.score === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -398,6 +421,7 @@ export default function ClinicaMedicaRetornoStep1({
               max="100"
               name="ExameFisico.temperatura"
               value={formData.ExameFisico.temperatura || ""}
+              disabled={isReadOnly}
               onChange={handleChange}
               className="form-control" />
           </div>
@@ -413,6 +437,7 @@ export default function ClinicaMedicaRetornoStep1({
                   name="ExameFisico.hidratacao"
                   value={opt}
                   checked={formData.ExameFisico.hidratacao === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                 /> {opt}
               </label>
@@ -422,13 +447,13 @@ export default function ClinicaMedicaRetornoStep1({
           <div className={styles.box}>
             <div className={styles.column}>
               <label className="form-label fw-medium">Frequência cardíaca (BPM):
-                <input type="text" name="freqCardiaca" value={formData.freqCardiaca} onChange={handleChange}
+                <input type="text" name="freqCardiaca" value={formData.freqCardiaca} disabled={isReadOnly} onChange={handleChange}
                 />
               </label>
             </div>
             <div className={styles.column}>
               <label className="form-label fw-medium">Frequência Respiratória (RPM):
-                <input type="text" name="freqRespiratoria" value={formData.freqRespiratoria} onChange={handleChange}
+                <input type="text" name="freqRespiratoria" value={formData.freqRespiratoria} disabled={isReadOnly} onChange={handleChange}
                 />
               </label>
             </div>
@@ -438,6 +463,7 @@ export default function ClinicaMedicaRetornoStep1({
                 id="turgorCutaneo"
                 name="turgorCutaneo"
                 value={formData.turgorCutaneo}
+                disabled={isReadOnly}
                 onChange={handleChangeAtualizaSelect}
               >
                 <option value="">Selecione</option>
@@ -452,6 +478,7 @@ export default function ClinicaMedicaRetornoStep1({
                 id="tpc"
                 name="tpc"
                 value={formData.tpc}
+                disabled={isReadOnly}
                 onChange={handleChangeAtualizaSelect}
               >
                 <option value="">Selecione</option>
@@ -477,6 +504,7 @@ export default function ClinicaMedicaRetornoStep1({
                         type="checkbox"
                         name={option}
                         checked={formData.option[option]}
+                        disabled={isReadOnly}
                         onChange={handleCheckboxChangeMucosas}
                         className="me-2"
                       />
@@ -517,6 +545,7 @@ export default function ClinicaMedicaRetornoStep1({
                       type="checkbox"
                       name={linfonodo.value}
                       checked={linfonodo.value in formData.linfonodos}
+                      disabled={isReadOnly}
                       onChange={(e) => handleLinfonodoChange(e, linfonodo.value)}
                     />
 
@@ -531,6 +560,7 @@ export default function ClinicaMedicaRetornoStep1({
                             type="checkbox"
                             name={caracteristica.value}
                             checked={formData.linfonodos[linfonodo.value]?.includes(caracteristica.value) || false}
+                            disabled={isReadOnly}
                             onChange={(e) => handleCaracteristicaChange(e, linfonodo.value)}
                           />
                           {caracteristica.label}
@@ -542,11 +572,13 @@ export default function ClinicaMedicaRetornoStep1({
               ))}
             </div>
           </div>
-
+          
+          {!isReadOnly && (
           <div className={styles.button_box}>
             <CancelarWhiteButton />
             <ContinuarFichasGreenButton type="submit" />
           </div>
+          )}
         </form>
       </div>
     </div>
