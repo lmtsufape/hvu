@@ -848,6 +848,35 @@ useEffect(() => {
                     <button
                       className={styles.ficha_button}
                       type="button"
+                      onClick={() => handleClick("/fichaClinicaMedica", id)}
+                    >
+                      Ficha clínica médica
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaMedicaRetorno", id)}
+                    >
+                      Ficha clínica médica de retorno
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaClinicaMedicaSilvestres", id)}
+                    >
+                      Ficha clínica médica silvestres ou exóticos
+                    </button>
+
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
+                      onClick={() => handleClick("/fichaRetornoClinicoSil", id)}
+                    >
+                      Ficha clínica médica de retorno silvestre ou exóticos
+                    </button>
+                    <button
+                      className={styles.ficha_button}
+                      type="button"
                       onClick={() => handleClick("/fichaAtoCirurgico", id)}
                     >
                       Ficha de ato cirúrgico
@@ -873,20 +902,7 @@ useEffect(() => {
                     >
                       Ficha ortopédica
                     </button>
-                    <button
-                      className={styles.ficha_button}
-                      type="button"
-                      onClick={() => handleClick("/fichaClinicaMedica", id)}
-                    >
-                      Ficha clínica médica
-                    </button>
-                    <button
-                      className={styles.ficha_button}
-                      type="button"
-                      onClick={() => handleClick("/fichaMedicaRetorno", id)}
-                    >
-                      Ficha clínica médica de retorno
-                    </button>
+                
                     <button
                       className={styles.ficha_button}
                       type="button"
@@ -901,13 +917,7 @@ useEffect(() => {
                     >
                       Ficha dermatológica de retorno
                     </button>
-                    <button
-                      className={styles.ficha_button}
-                      type="button"
-                      onClick={() => handleClick("/fichaRetornoClinicoSil", id)}
-                    >
-                      Ficha clínica médica de retorno silvestre
-                    </button>
+
                     <button
                       className={styles.ficha_button}
                       type="button"
@@ -934,7 +944,7 @@ useEffect(() => {
                       type="button"
                       onClick={() => handleClick("/fichaSolicitacaoCitologia", id)}
                     >
-                      Ficha de solicitação de citologia
+                      Ficha de solicitação de citológia
                     </button>
                     <button
                       className={styles.ficha_button}
@@ -943,13 +953,7 @@ useEffect(() => {
                     >
                       Ficha de solicitação de exame
                     </button>
-                    <button
-                      className={styles.ficha_button}
-                      type="button"
-                      onClick={() => handleClick("/fichaClinicaMedicaSilvestres", id)}
-                    >
-                      Ficha Clínica Médica (silvestres ou exóticos)
-                    </button>
+                    
                   </div>
                 </div>
               </div>

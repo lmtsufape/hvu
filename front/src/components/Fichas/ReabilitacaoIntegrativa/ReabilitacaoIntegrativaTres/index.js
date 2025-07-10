@@ -258,10 +258,10 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                     <label>Principíos:</label>
                     <div className={styles.checkbox_container}>
                         <label>
-                            <input type="checkbox" name="principios" value="yin" checked={formData.principios?.includes("yin")} onChange={handlePrincipiosChange} /> yin
+                            <input type="checkbox" name="principios" value="yin" checked={formData.principios?.includes("yin")} onChange={handlePrincipiosChange} /> Yin
                         </label>
                         <label>
-                            <input type="checkbox" name="principios" value="yang" checked={formData.principios?.includes("yang")} onChange={handlePrincipiosChange} /> yang
+                            <input type="checkbox" name="principios" value="yang" checked={formData.principios?.includes("yang")} onChange={handlePrincipiosChange} /> Yang
                         </label>
                         <label>
                             <input type="checkbox" name="principios" value="frio" checked={formData.principios?.includes("frio")} onChange={handlePrincipiosChange} /> Frio
@@ -304,7 +304,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                         <input type="text" name="responsavel" value={formData.responsavel} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
-                        <label>Estagiarios/ Nome :</label>
+                        <label>Estagiários/ Nome :</label>
                         <input type="text" name="estagiario" value={formData.estagiario} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
