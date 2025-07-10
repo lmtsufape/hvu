@@ -43,6 +43,15 @@ function FichaDermatologicaRetorno() {
         peso: "",
         medicoResponsavel: "",
     });
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+                      
+    useEffect(() => {
+              // Se o modo for 'visualizar', define o estado para somente leitura
+              if (modo === 'visualizar') {
+                  setIsReadOnly(true);
+              }
+          }, [modo]);
 
     // Obtém o ID da ficha da URL
     useEffect(() => {
@@ -267,6 +276,7 @@ function FichaDermatologicaRetorno() {
                         <label>peso:</label>
                         <input id="meia-caixa" type="text" name="peso" 
                         value={formData.peso} 
+                        disabled={isReadOnly}
                         onChange={handleChange} />
                     </div>
                     </div>
@@ -274,16 +284,19 @@ function FichaDermatologicaRetorno() {
                     <div className={styles.column}>
                         <label>Anamnese/Histórico clínico </label>
                         <textarea name="anamnese" value={formData.anamnese} 
+                        disabled={isReadOnly}
                         onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>
                         <label>Tratamentos realizados (Início/Término/Resposta terapêutica) </label>
                         <textarea name="tratamentos" value={formData.tratamentos} 
+                        disabled={isReadOnly}
                         onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>
                         <label>Resultados dos exames realizados </label>
                         <textarea name="resultados" value={formData.resultados} 
+                        disabled={isReadOnly}
                         onChange={handleChange} rows="4" cols="50" />
                     </div>
 
@@ -294,30 +307,36 @@ function FichaDermatologicaRetorno() {
                     <div className={styles.column}>
                         <label>Locais afetados </label>
                         <textarea name="locaisAfetados" value={formData.locaisAfetados} 
+                        disabled={isReadOnly}
                         onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>
                         <label>Conduta terapêutica </label>
                         <textarea name="condutaTerapeutica" value={formData.condutaTerapeutica} 
+                        disabled={isReadOnly}
                         onChange={handleChange} rows="4" cols="50" />
                     </div>
                     
                     <div className={styles.column}>
                         <label>Médico(s) Veterinário(s) Responsável: </label>
                         <textarea name="medicoResponsavel" value={formData.medicoResponsavel} 
+                        disabled={isReadOnly}
                         onChange={handleChange} />
                         
                     </div>
                     <div className={styles.column}>
                         <label>Plantonista(s) discente(s): </label>
                         <textarea name="estagiarios" value={formData.estagiarios} 
+                        disabled={isReadOnly}
                         onChange={handleChange} />
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
+                    )}
                 </form>
                 {showAlert && consultaId &&
                 <div className={styles.alert}>
