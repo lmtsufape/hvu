@@ -26,6 +26,9 @@ public class DatabaseSeeder {
     private final FotoSeeder fotoSeeder;
     private final OrgaoSeeder orgaoSeeder;
     private final FichaSeeder fichaSeeder;
+    private final SecretarioSeeder secretarioSeeder;
+    private final PatologistaSeeder patologistaSeeder;
+    private final AdminLapaSeeder adminLapaSeeder;
 
     @Value("${common.seeders}")
     private boolean seeders;
@@ -53,6 +56,9 @@ public class DatabaseSeeder {
         cronogramaSeeder.init();
         fotoSeeder.init();
         orgaoSeeder.init();
+        secretarioSeeder.init();
+        patologistaSeeder.init();
+        adminLapaSeeder.init();
 
     }
 }
