@@ -27,6 +27,16 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+          
+    useEffect(() => {
+              // Se o modo for 'visualizar', define o estado para somente leitura
+              if (modo === 'visualizar') {
+                  setIsReadOnly(true);
+              }
+          }, [modo]);
+    
 
     useEffect(() => {
         if (router.isReady) {
@@ -181,13 +191,14 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                     <div className={styles.box}>
                         <div className={styles.column}>
                             <label>Peso:
-                                <input type="text" name="peso" value={formData.peso} onChange={handleChange} placeholder="Digite o peso" />
+                                <input type="text" name="peso" value={formData.peso} disabled={isReadOnly} onChange={handleChange} placeholder="Digite o peso" />
                             </label>
                         </div>
                         <div className={styles.column}>
                             <label>Ambiente:
                                 <select name="ambiente"
                                     value={formData.ambiente}
+                                    disabled={isReadOnly}
                                     onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Casa">Casa</option>
@@ -199,7 +210,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         </div>
                         <div className={styles.column}>
                             <label>Estilo de vida:
-                                <select name="estiloVida" value={formData.estiloVida} onChange={handleChange}>
+                                <select name="estiloVida" value={formData.estiloVida} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Domiciliado">Domiciliado</option>
                                     <option value="Extradomiciliado">Extradomiciliado</option>
@@ -208,7 +219,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         </div>
                         <div className={styles.column}>
                             <label>Acesso à rua:
-                                <select name="acessoRua" value={formData.acessoRua} onChange={handleChange}>
+                                <select name="acessoRua" value={formData.acessoRua} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Livre">Livre</option>
                                     <option value="Controlado">Controlado</option>
@@ -219,7 +230,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
 
                         <div className={styles.column}>
                             <label>Alimentação:
-                                <select name="alimentacao" value={formData.alimentacao} onChange={handleChange}>
+                                <select name="alimentacao" value={formData.alimentacao} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Ração">Ração</option>
                                     <option value="Ração + Dieta Caseira">Ração + Dieta Caseira</option>
@@ -229,12 +240,12 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         </div>
                         <div className={styles.column}>
                             <label>Última administração:
-                                <input type="date" name="ultimaAdministracao" value={formData.ultimaAdministracao} onChange={handleChange} placeholder="Digite a data" />
+                                <input type="date" name="ultimaAdministracao" value={formData.ultimaAdministracao} disabled={isReadOnly} onChange={handleChange} placeholder="Digite a data" />
                             </label>
                         </div>
                         <div className={styles.column}>
                             <label>Apresenta ectoparasitas:
-                                <select name="apresentaEctoparasitas" value={formData.apresentaEctoparasitas} onChange={handleChange}>
+                                <select name="apresentaEctoparasitas" value={formData.apresentaEctoparasitas} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Não">Não</option>
                                     <option value="Pulgas">Pulgas</option>
@@ -244,7 +255,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         </div>
                         <div className={styles.column}>
                             <label>Quando visto pela última vez:
-                                <select name="quandoVistoUltimaVez" value={formData.quandoVistoUltimaVez} onChange={handleChange}>
+                                <select name="quandoVistoUltimaVez" value={formData.quandoVistoUltimaVez} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Menos de 1 mês">Menos de 1 mês</option>
                                     <option value="Mais de 1 mês">Mais de 1 mês</option>
@@ -254,7 +265,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         </div>
                         <div className={styles.column}>
                             <label>Banhos:
-                                <select name="banhos" value={formData.banhos} onChange={handleChange}>
+                                <select name="banhos" value={formData.banhos} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Casa">Casa</option>
                                     <option value="Pet shop">Pet Shop</option>
@@ -264,7 +275,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         </div>
                         <div className={styles.column}>
                             <label>Frequência de banhos:
-                                <select name="frequenciaBanhos" value={formData.frequenciaBanhos} onChange={handleChange}>
+                                <select name="frequenciaBanhos" value={formData.frequenciaBanhos} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Semanal">Semanal</option>
                                     <option value="Quinzenal">Quinzenal</option>
@@ -288,6 +299,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                     type="checkbox"
                                     value={item}
                                     checked={formData.produtosUtilizados.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChangeOutros(e, "produtosUtilizados", setShowOtherInputProdutosUtilizados, setOtherValueProdutosUtilizados)}
                                 /> {item}
                             </label>
@@ -298,6 +310,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValueProdutosUtilizados}
+                            disabled={isReadOnly}
                             onChange={(e) => setOtherValueProdutosUtilizados(e.target.value)}
                         />
                     )}
@@ -315,6 +328,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                     type="checkbox"
                                     value={item}
                                     checked={formData["contatoComSuperfice"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "contatoComSuperfice")}
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
@@ -331,6 +345,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                         type="checkbox"
                                         value={item}
                                         checked={formData.conviveComAnimais.includes(item)}
+                                        disabled={isReadOnly}
                                         onChange={(e) => handleCheckboxChangeOutros(e, "conviveComAnimais", setShowOtherInputConviveComAnimais, setOtherValueConviveComAnimais)}
                                     /> {item}
                                 </label>
@@ -357,6 +372,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                     type="checkbox"
                                     value={item}
                                     checked={formData["contactantesSintomaticos"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "contactantesSintomaticos")}
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
@@ -375,6 +391,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                     type="checkbox"
                                     value={item}
                                     checked={formData["controleEctoparasitas"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "controleEctoparasitas")}
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
@@ -383,7 +400,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
 
                     <div className={styles.column}>
                         <label>Queixa principal(Início/ Aspecto/ Evolução):
-                            <textarea type="text" name="queixaPrincipal" value={formData.queixaPrincipal} onChange={handleChange} rows="4" cols="50" />
+                            <textarea type="text" name="queixaPrincipal" value={formData.queixaPrincipal} disabled={isReadOnly} onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
 
@@ -392,6 +409,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         <div className={styles.column}>
                             <label>Tratamentos atuais:
                                 <select name="tratamentosAtuais.confirmacao" value={formData.tratamentosAtuais?.confirmacao || ""}
+                                disabled={isReadOnly}
                                     onChange={handleTratamentoChange}>
                                     <option value="">Selecione</option>
                                     <option value="Sim">Sim</option>
@@ -405,6 +423,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                 <div className={`${styles.column} ${styles.subField}`}>
                                     <label>Tipo de tratamento:
                                         <select name="tratamentosAtuais.tipoTratamento" value={formData.tratamentosAtuais?.tipoTratamento || ""}
+                                        disabled={isReadOnly}
                                             onChange={handleChange}>
                                             <option value="">Selecione</option>
                                             <option value="Tópico">Tópico</option>
@@ -417,6 +436,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                         <div className={styles.column}>
                                             <label>Responsividade:
                                                 <select name="tratamentosAtuais.responsividade" value={formData.tratamentosAtuais?.responsividade || ""}
+                                                disabled={isReadOnly}
                                                     onChange={handleChange}>
                                                     <option value="">Selecione</option>
                                                     <option value="Responsivo">Responsivo</option>
@@ -433,7 +453,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
 
                         <div className={styles.column}>
                             <label>Prurido:
-                                <select name="prurido" value={formData.prurido} onChange={handleChange}>
+                                <select name="prurido" value={formData.prurido} disabled={isReadOnly} onChange={handleChange}>
                                     <option value="">Selecione</option>
                                     <option value="Sim">Sim</option>
                                     <option value="Nao">Não</option>
@@ -457,6 +477,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                                     type="checkbox"
                                     value={item}
                                     checked={formData["local"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "local")}
                                 /> {item.replace(/([A-Z])/g, ' $1').trim()}
                             </label>
@@ -465,7 +486,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         <div className={styles.box}>
                     <div className={styles.column}>
                         <label>Intensidade:
-                            <select name="intensidade" value={formData.intensidade} onChange={handleChange}>
+                            <select name="intensidade" value={formData.intensidade} disabled={isReadOnly} onChange={handleChange}>
                                 <option value="">Selecione</option>
                                 <option value="Leve">Leve</option>
                                 <option value="Moderado">Moderado</option>
@@ -476,7 +497,7 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
 
                     <div className={styles.column}>
                         <label>Lambedura de patas:
-                            <select name="lambedura" value={formData.lambedura} onChange={handleChange}>
+                            <select name="lambedura" value={formData.lambedura} disabled={isReadOnly} onChange={handleChange}>
                                 <option value="">Selecione</option>
                                 <option value="Sim">Sim</option>
                                 <option value="Não">Não</option>
@@ -484,10 +505,12 @@ function FichaDermatologicaStep1({ formData, handleChange, nextStep, handleCheck
                         </label>
                     </div>
                     </div>
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
                         < ContinuarFichasGreenButton type="submit" />
                     </div>
+                    )}
                 </form>
             </div>
         </div>
