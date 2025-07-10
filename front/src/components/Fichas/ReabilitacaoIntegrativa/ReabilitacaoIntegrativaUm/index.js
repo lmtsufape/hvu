@@ -237,11 +237,11 @@ function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, cleanLocalS
                         <input type="text" name="exameClinicoEspecialNeurologico.nervosCranianos" value={formData.exameClinicoEspecialNeurologico.nervosCranianos} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
-                        <label>Reaçoes Posturais: </label>
+                        <label>Reações Posturais: </label>
                         <input type="text" name="exameClinicoEspecialNeurologico.reacoesPosturais" value={formData.exameClinicoEspecialNeurologico.reacoesPosturais} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
-                        <label>Reflecões Segmentares: </label>
+                        <label>Refleções Segmentares: </label>
                         <input type="text" name="exameClinicoEspecialNeurologico.reflexoesSegmentares" value={formData.exameClinicoEspecialNeurologico.reflexoesSegmentares} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>

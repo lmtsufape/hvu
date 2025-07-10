@@ -273,7 +273,7 @@ function AtendimentoCardiologico({
                             "Síncope", "Espirro/Espirro reverso", "Perda aguda de visão",
                             "Aumento de volume abdominal", "Edema periférico", "Paralisia",
                             "Polifagia", "Polidipsia", "Oligodipsia", "Anúria",
-                            "Dispinéia", " Pré-síncope",
+                            "Dispnéia", " Pré-síncope",
                             "Tosse", "Epistaxe", "Cianose",
                             "Paresia", "Poliúria", "Oligúria",
                             "Adipisia", "Sem alterações",
