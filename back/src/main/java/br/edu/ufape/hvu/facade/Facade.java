@@ -11,8 +11,10 @@ import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
+import br.edu.ufape.hvu.exception.TipoAnimalInvalidoException;
 import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import br.edu.ufape.hvu.model.enums.TipoAnimal;
 import br.edu.ufape.hvu.repository.AnimalRepository;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
@@ -1157,12 +1159,28 @@ public class Facade {
     // Animal--------------------------------------------------------------
     private final AnimalServiceInterface animalServiceInterface;
 
+    private void validarTipoAnimal(String role, TipoAnimal tipoAnimal) {
+        if ("TUTOR".equals(role) && tipoAnimal != TipoAnimal.HVU) {
+            throw new TipoAnimalInvalidoException("Tutores só podem cadastrar animais com tipoAnimal = 'HVU'");
+        }
+        if ("PATOLOGISTA".equals(role) && tipoAnimal != TipoAnimal.LAPA) {
+            throw new TipoAnimalInvalidoException("Patologistas só podem cadastrar animais com tipoAnimal = 'LAPA'");
+        }
+    }
+
     @Transactional
     public Animal saveAnimal(Animal newInstance, String idSession) {
         Tutor tutor = findTutorByuserId(idSession);
         if (tutor == null) {
             throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
         }
+
+        if (newInstance.getTipoAnimal() == null) {
+            newInstance.setTipoAnimal(TipoAnimal.HVU);
+        }
+
+        validarTipoAnimal("TUTOR", newInstance.getTipoAnimal());
+
         racaServiceInterface.findRacaById(newInstance.getRaca().getId());
         Animal animal = animalServiceInterface.saveAnimal(newInstance);
         tutor.getAnimal().add(animal);
@@ -1172,8 +1190,13 @@ public class Facade {
 
     @Transactional
     public Animal saveAnimalByPatologista(Animal newInstance, Tutor newTutor) {
-        Tutor tutor;
+        if (newInstance.getTipoAnimal() == null) {
+            newInstance.setTipoAnimal(TipoAnimal.LAPA);
+        }
 
+        validarTipoAnimal("PATOLOGISTA", newInstance.getTipoAnimal());
+
+        Tutor tutor;
         if (newTutor == null || newTutor.isAnonimo()) {
             tutor = tutorServiceInterface.saveTutorAnonimo();
         } else {
@@ -1233,10 +1256,6 @@ public class Facade {
         return animalServiceInterface.getAllAnimal();
     }
 
-    public List<Animal> findByLapaFalse() {
-        return animalServiceInterface.findByLapaFalse();
-    }
-
     public List<Animal> getAllAnimalTutor(String userId) {
         Tutor tutor = findTutorByuserId(userId);
         return tutor.getAnimal();
@@ -1258,6 +1277,10 @@ public class Facade {
         }
 
         animalServiceInterface.deleteAnimal(id);
+    }
+
+    public List<Animal> findAnimalsByTipoAnimal(TipoAnimal tipo) {
+        return animalServiceInterface.findAnimalsByTipoAnimal(tipo);
     }
 
     // Especie--------------------------------------------------------------

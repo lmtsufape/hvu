@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AnimalRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Animal;
+import br.edu.ufape.hvu.model.enums.TipoAnimal;
 
 @Service
 @RequiredArgsConstructor
@@ -48,8 +49,8 @@ public class AnimalService implements AnimalServiceInterface {
 		repository.delete(obj);
 	}
 
-	public List<Animal> findByLapaFalse() {
-		return repository.findByLapaFalse();
+	public List<Animal> findAnimalsByTipoAnimal(TipoAnimal tipo) {
+		return repository.findByTipoAnimal(tipo);
 	}
 	
 }

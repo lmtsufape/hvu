@@ -16,8 +16,8 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
     @Query("SELECT a FROM Animal a where a.numeroFicha = :numeroFicha")
     Animal findAnimalByFicha(@Param("numeroFicha") String numeroFicha);
 
-    @Query("SELECT a FROM Animal a WHERE a.lapa = false")
-    List<Animal> findByLapaFalse();
+    @Query("SELECT a FROM Animal a WHERE a.tipoAnimal = :tipo")
+    List<Animal> findByTipoAnimal(@Param("tipo") br.edu.ufape.hvu.model.enums.TipoAnimal tipo);
 
 
 }

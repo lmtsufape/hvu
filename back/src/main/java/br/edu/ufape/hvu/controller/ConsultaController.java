@@ -21,7 +21,8 @@ import br.edu.ufape.hvu.controller.dto.response.ConsultaResponse;
 @RequiredArgsConstructor
 public class ConsultaController {
 	private final Facade facade;
-	
+
+
 	@GetMapping("consulta")
 	public List<ConsultaResponse> getAllConsulta() {
 		return facade.getAllConsulta()

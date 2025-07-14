@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.response;
 
 import java.time.LocalDate;
 
+import br.edu.ufape.hvu.model.enums.TipoAnimal;
 import org.modelmapper.ModelMapper;
 
 import br.edu.ufape.hvu.config.SpringApplicationContext;
@@ -24,8 +25,7 @@ public  class AnimalResponse  {
 	private double peso;
 	private String numeroFicha;
 	private RacaResponse raca;
-	private boolean lapa;
-
+	private TipoAnimal tipoAnimal;
 
 
 	public AnimalResponse(Animal obj) {

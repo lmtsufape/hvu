@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller;
 import java.util.List;
 
 import br.edu.ufape.hvu.controller.dto.request.PatologistaAnimalRequest;
+import br.edu.ufape.hvu.model.enums.TipoAnimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -122,12 +123,8 @@ public class AnimalController {
 		return new AnimalResponse(saved);
 	}
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
-	@GetMapping("animal/lapaFalse")
-	public List<AnimalResponse> findByLapaFalse() {
-		return facade.findByLapaFalse()
-				.stream()
-				.map(AnimalResponse::new)
-				.toList();
+	@GetMapping("/animal/{tipo}")
+	public List<Animal> getAnimalsByTipoAnimal(@PathVariable TipoAnimal tipo) {
+		return facade.findAnimalsByTipoAnimal(tipo);
 	}
 }
