@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 public class PatologistaController {
     private final Facade facade;
 
-    @PreAuthorize("hasRole('ADMIN-LAPA')")
+    @PreAuthorize("hasRole('ADMIN_LAPA')")
     @GetMapping("patologista")
     public List<PatologistaResponse> getAllPatologista() {
         return facade.getAllPatologista()
@@ -35,13 +35,13 @@ public class PatologistaController {
                 .toList();
     }
 
-    @PreAuthorize("hasRole('ADMIN-LAPA')")
+    @PreAuthorize("hasRole('ADMIN_LAPA')")
     @PostMapping("patologista")
     public PatologistaResponse createPatologista(@Valid @RequestBody PatologistaRequest newObj) {
         return new PatologistaResponse(facade.savePatologista(newObj, newObj.getSenha()));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN-LAPA', 'PATOLOGISTA')")
+    @PreAuthorize("hasAnyRole('ADMIN_LAPA', 'PATOLOGISTA')")
     @GetMapping("patologista/{id}")
     public PatologistaResponse getPatologistaById(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -49,7 +49,7 @@ public class PatologistaController {
         return new PatologistaResponse(facade.findPatologistaById(id, principal.getSubject()));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN-LAPA', 'PATOLOGISTA')")
+    @PreAuthorize("hasAnyRole('ADMIN_LAPA', 'PATOLOGISTA')")
     @PatchMapping("patologista/{id}")
     public PatologistaResponse updatePatologista(@PathVariable Long id, @Valid @RequestBody PatologistaRequest obj) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -57,7 +57,7 @@ public class PatologistaController {
         return new PatologistaResponse(facade.updatePatologista(id, obj, principal.getSubject()));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN-LAPA', 'PATOLOGISTA')")
+    @PreAuthorize("hasAnyRole('ADMIN_LAPA', 'PATOLOGISTA')")
     @DeleteMapping("patologista/{id}")
     public String deletePatologista(@PathVariable Long id) {
         facade.deletePatologista(id);
