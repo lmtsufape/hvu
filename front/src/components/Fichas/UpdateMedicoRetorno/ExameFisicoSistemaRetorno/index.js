@@ -45,6 +45,16 @@ export default function ClinicaMedicaRetornoStep2({
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
 
+  const { id, modo } = router.query; 
+  const [isReadOnly, setIsReadOnly] = useState(false);
+                          
+  useEffect(() => {
+  // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+           setIsReadOnly(true);
+         }
+      }, [modo]);
+
   useEffect(() => {
     if (router.isReady) {
       const id = router.query.fichaId;
@@ -177,6 +187,7 @@ export default function ClinicaMedicaRetornoStep2({
                     name={`fisicogeral.${sys.key}`}               /* dot-notation */
                     rows={4}
                     value={formData.fisicogeral?.[sys.key] || ""}
+                    disabled={isReadOnly}
                     onChange={handleChange}
                   />
                 </div>
@@ -198,6 +209,7 @@ export default function ClinicaMedicaRetornoStep2({
                     rows={4}
                     name={`diagnostico.${field.key}`}
                     value={formData.diagnostico?.[field.key] || ""}
+                    disabled={isReadOnly}
                     onChange={handleChange}
                   />
                 </div>
@@ -206,16 +218,19 @@ export default function ClinicaMedicaRetornoStep2({
           </div>
           <div className={styles.column}>
             <label>Plantonista(s) discente(s): </label>
-            <textarea name="plantonistas" value={formData.plantonistas} onChange={handleChange} />
+            <textarea name="plantonistas" value={formData.plantonistas} disabled={isReadOnly} onChange={handleChange} />
           </div>
           <div className={styles.column}>
             <label>Médico(s) Veterinário(s) Responsável:</label>
-            <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} onChange={handleChange} />
+            <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} disabled={isReadOnly} onChange={handleChange} />
           </div>
+
+          {!isReadOnly && (
           <div className={styles.button_box}>
             <VoltarWhiteButton onClick={prevStep} />
             <FinalizarFichaModal onConfirm={handleSubmit} />
           </div>
+          )}
         </form>
 
       </div>

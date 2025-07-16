@@ -32,8 +32,8 @@ function FichaDermatologicaRetorno() {
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
     const [formData, setFormData] = useState({
-        Anamnese: "",
-        tratamento: "",
+        anamnese: "",
+        tratamentos: "",
         resultados: "",
         locaisAfetados: "",
         condutaTerapeutica: "",
@@ -146,8 +146,8 @@ function FichaDermatologicaRetorno() {
         const fichaData = {
             nome: "Ficha dermatológica de retorno",  
             conteudo:{
-                anamnese: formData.Anamnese,
-                tratamento: formData.tratamentos,
+                anamnese: formData.anamnese,
+                tratamentos: formData.tratamentos,
                 resultados: formData.resultados,
                 locaisAfetados: formData.locaisAfetados,
                 condutaTerapeutica: formData.condutaTerapeutica,
@@ -277,7 +277,7 @@ function FichaDermatologicaRetorno() {
 
                     <div className={styles.column}>
                         <label>Anamnese/Histórico clínico </label>
-                        <textarea name="Anamnese" value={formData.Anamnese} 
+                        <textarea name="anamnese" value={formData.anamnese} 
                         onChange={handleChange} rows="4" cols="50" />
                     </div>
                     <div className={styles.column}>

@@ -138,32 +138,75 @@ function DermatologicaSteps() {
         },
   });
 
+  const { tratamentoDermatologico } = formData || {};
+
   const storageKeyDrawing = () => `dermatologicaDrawingLines_${consultaId || "default"}`;
-  const { tratamentoDermatologico } = formData;
+  const getLocalStorageKey = () => `fichaDermatologicaStep1FormData_${consultaId || "default"}`;
 
-    // Carrega os dados do formulário do localStorage 
+  // Carrega os dados do formulário e dos campos "Outros" do localStorage
   useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const savedFormData = localStorage.getItem("fichaDermatologicaFormData");
-          
+      if (typeof window !== 'undefined' && consultaId) {
+          const savedFormData = localStorage.getItem(getLocalStorageKey());
           if (savedFormData) {
-            const parsedFormData = JSON.parse(savedFormData);
-            setFormData(parsedFormData);
-            const imagem = parsedFormData?.imagemLesao?.imagem;
-            console.log("parsed",parsedFormData)
-            if (imagem) {
-              setImagemDesenhada(imagem);
-            }
-        }  
+              try {
+                  const parsedData = JSON.parse(savedFormData);
+                  setFormData(parsedData.formData || {
+                      peso: "",
+                      ambiente: "",
+                      estiloVida: "",
+                      acessoRua: "",
+                      alimentacao: "",
+                      ultimaAdministracao: "",
+                      apresentaEctoparasitas: "",
+                      quandoVistoUltimaVez: "",
+                      banhos: "",
+                      frequenciaBanhos: "",
+                      produtosUtilizados: [],
+                      contatoComSuperfice: [],
+                      conviveComAnimais: [],
+                      contactantesSintomaticos: [],
+                      controleEctoparasitas: [],
+                      queixaPrincipal: "",
+                      tratamentosAtuais: {
+                          confirmacao: "",
+                          tipoTratamento: "",
+                          responsividade: ""
+                      },
+                      prurido: "",
+                      local: [],
+                      intensidade: "",
+                      lambedura: ""
+                  });
+                  setOtherValueProdutosUtilizados(parsedData.otherValueProdutosUtilizados || "");
+                  setOtherValueConviveComAnimais(parsedData.otherValueConviveComAnimais || "");
+                  setShowOtherInputProdutosUtilizados(parsedData.formData?.produtosUtilizados.includes("Outros"));
+                  setShowOtherInputConviveComAnimais(parsedData.formData?.conviveComAnimais.includes("Outros"));
+                  setImagemDesenhada(parsedData.formData?.imagemLesao?.imagem || null);
+              } catch (error) {
+                  console.error("Erro ao carregar os dados do localStorage:", error);
+              }
+          }
       }
-  }, []); 
+  }, [consultaId, setFormData, setOtherValueProdutosUtilizados, setOtherValueConviveComAnimais, setShowOtherInputProdutosUtilizados, setShowOtherInputConviveComAnimais]);
 
-  // Salva os dados do formulário no localStorage 
+  // Salva os dados do formulário e dos campos "Outros" no localStorage
   useEffect(() => {
-      if (typeof window !== 'undefined') {
-          localStorage.setItem("fichaDermatologicaFormData", JSON.stringify(formData));
+      if (typeof window !== 'undefined' && consultaId) {
+          localStorage.setItem(
+              getLocalStorageKey(),
+              JSON.stringify({
+                  formData,
+                  otherValueProdutosUtilizados,
+                  otherValueConviveComAnimais
+              })
+          );
       }
-  }, [formData]); 
+  }, [formData, otherValueProdutosUtilizados, otherValueConviveComAnimais, consultaId]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log("Dados do formulário atualizados:", formData);
+    }}, [formData]);
 
   // Obtém o ID da ficha da URL
   useEffect(() => {
@@ -222,7 +265,7 @@ function DermatologicaSteps() {
   }
 
   const cleanLocalStorage = () => {
-    localStorage.removeItem("fichaDermatologicaFormData");
+    localStorage.removeItem(getLocalStorageKey());
     localStorage.removeItem(storageKeyDrawing); 
   }
  
@@ -491,14 +534,33 @@ function DermatologicaSteps() {
     try {
         const resultado = await createFicha(fichaData);
         localStorage.setItem('fichaId', resultado.id.toString());
-        localStorage.removeItem("fichaDermatologicaFormData");
-        localStorage.removeItem('canvasKonva'); 
+        localStorage.removeItem(getLocalStorageKey());
+        localStorage.removeItem(storageKeyDrawing); 
         setShowAlert(true);
     } catch (error) {
         console.error("Erro ao criar ficha:", error);
         setShowErrorAlert(true);
     }
  };
+
+  const renderImagemLesao = () => {
+    if (imagemDesenhada) {
+        return (
+            <img
+                src={imagemDesenhada}
+                alt="Localização das lesões com marcações"
+                style={{ maxWidth: '500px', border: '1px solid #ccc' }}
+            />
+        );
+    }
+    return (
+        <img
+            src="/images/localizacao_lesoes.png"
+            alt="Localização das lesões"
+            style={{ maxWidth: '500px', border: '1px solid #ccc' }}
+        />
+    );
+  };
       
   const renderStepContent = () => {
     switch(step) {
@@ -563,7 +625,6 @@ function DermatologicaSteps() {
         </div>}
 
           <Dermatologica3
-          setFormData={setFormData}
           formData={formData} 
           handleChange={handleChange} 
           prevStep={prevStep}
@@ -576,6 +637,7 @@ function DermatologicaSteps() {
           tratamentos={tratamentoDermatologico}
           adicionarLinhaTratamento={adicionarLinhaTratamento}
           removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
+          renderImagemLesao={renderImagemLesao}
 
           />
         </>

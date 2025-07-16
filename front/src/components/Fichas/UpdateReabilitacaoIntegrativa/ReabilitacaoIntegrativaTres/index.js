@@ -17,6 +17,15 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+          
+    useEffect(() => {
+    // Se o modo for 'visualizar', define o estado para somente leitura
+        if (modo === 'visualizar') {
+            setIsReadOnly(true);
+              }
+         }, [modo]);
 
     useEffect(() => {
         if (router.isReady) {
@@ -143,23 +152,23 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
 
                     <div className={styles.column}>
                         <label>Sensibilidade pontos Mu: </label>
-                        <input type="text" name="sensibilidadePontosMu" value={formData.sensibilidadePontosMu} onChange={handleChange} />
+                        <input type="text" name="sensibilidadePontosMu" value={formData.sensibilidadePontosMu} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Sensibilidade pontos Shu: </label>
-                        <input type="text" name="sensibilidadePontosShu" value={formData.sensibilidadePontosShu} onChange={handleChange} />
+                        <input type="text" name="sensibilidadePontosShu" value={formData.sensibilidadePontosShu} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Sensibilidade/ dor corporal: </label>
-                        <input type="text" name="sensibilidadeDorCorporal" value={formData.sensibilidadeDorCorporal} onChange={handleChange} />
+                        <input type="text" name="sensibilidadeDorCorporal" value={formData.sensibilidadeDorCorporal} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Pulso: </label>
-                        <input type="text" name="pulso" value={formData.pulso} onChange={handleChange} />
+                        <input type="text" name="pulso" value={formData.pulso} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Língua: </label>
-                        <input type="text" name="lingua" value={formData.lingua} onChange={handleChange} />
+                        <input type="text" name="lingua" value={formData.lingua} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
                     <div className={styles.image_container}>
@@ -177,46 +186,46 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
 
                     <div className={styles.column}>
                         <label>Historico Ancestral: </label>
-                        <input type="text" name="perguntasAdicionaisMTC.historicoAncestral" value={formData.perguntasAdicionaisMTC.historicoAncestral} onChange={handleChange} />
+                        <input type="text" name="perguntasAdicionaisMTC.historicoAncestral" value={formData.perguntasAdicionaisMTC.historicoAncestral} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Comportamento: </label>
-                        <input type="text" name="perguntasAdicionaisMTC.comportamento" value={formData.perguntasAdicionaisMTC.comportamento} onChange={handleChange} />
+                        <input type="text" name="perguntasAdicionaisMTC.comportamento" value={formData.perguntasAdicionaisMTC.comportamento} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
 
                     <label>Preferências:</label>
                     <div className={styles.checkbox_container}>
                         <label>
-                            <input type="checkbox" name="preferencias" value="sol" checked={formData.preferencias?.includes("sol")} onChange={handlePreferenciasChange} /> Sol
+                            <input type="checkbox" name="preferencias" value="sol" checked={formData.preferencias?.includes("sol")} disabled={isReadOnly} onChange={handlePreferenciasChange} /> Sol
                         </label>
                         <label>
-                            <input type="checkbox" name="preferencias" value="dormeEncolhido" checked={formData.preferencias?.includes("dormeEncolhido")} onChange={handlePreferenciasChange} /> Dorme encolhido
+                            <input type="checkbox" name="preferencias" value="dormeEncolhido" checked={formData.preferencias?.includes("dormeEncolhido")} disabled={isReadOnly} onChange={handlePreferenciasChange} /> Dorme encolhido
                         </label>
                         <label>
-                            <input type="checkbox" name="preferencias" value="alimentosQuentes" checked={formData.preferencias?.includes("alimentosQuentes")} onChange={handlePreferenciasChange} /> Alimentos quentes
+                            <input type="checkbox" name="preferencias" value="alimentosQuentes" checked={formData.preferencias?.includes("alimentosQuentes")} disabled={isReadOnly} onChange={handlePreferenciasChange} /> Alimentos quentes
                         </label>
                         <label>
-                            <input type="checkbox" name="preferencias" value="sombra" checked={formData.preferencias?.includes("sombra")} onChange={handlePreferenciasChange} /> Sombra
+                            <input type="checkbox" name="preferencias" value="sombra" checked={formData.preferencias?.includes("sombra")} disabled={isReadOnly} onChange={handlePreferenciasChange} /> Sombra
                         </label>
                         <label>
-                            <input type="checkbox" name="preferencias" value="alimentosFrios" checked={formData.preferencias?.includes("alimentosFrios")} onChange={handlePreferenciasChange} /> Alimentos frios
+                            <input type="checkbox" name="preferencias" value="alimentosFrios" checked={formData.preferencias?.includes("alimentosFrios")} disabled={isReadOnly} onChange={handlePreferenciasChange} /> Alimentos frios
                         </label>
                         <label>
-                            <input type="checkbox" name="preferencias" value="dormeEsparramado" checked={formData.preferencias?.includes("dormeEsparramado")} onChange={handlePreferenciasChange} /> Dorme esparramado, <br></br> barriga no chão
+                            <input type="checkbox" name="preferencias" value="dormeEsparramado" checked={formData.preferencias?.includes("dormeEsparramado")} disabled={isReadOnly} onChange={handlePreferenciasChange} /> Dorme esparramado, <br></br> barriga no chão
                         </label>
                     </div>
                     <div className={styles.box}>
                         <div className={styles.column}>
                             <label>Latido/ Miado:</label>
-                            <select name="perguntasAdicionaisMTC.latidoMiado" value={formData.perguntasAdicionaisMTC.latidoMiado} onChange={handleChange} >
+                            <select name="perguntasAdicionaisMTC.latidoMiado" value={formData.perguntasAdicionaisMTC.latidoMiado} disabled={isReadOnly} onChange={handleChange} >
                                 <option value="">Selecione</option>
                                 <option value="forte">Forte</option>
                                 <option value="fraco">Fraco</option>
                             </select>
                         </div>
                         <div className={styles.column}><label>Sono:</label>
-                            <select name="perguntasAdicionaisMTC.sono" value={formData.perguntasAdicionaisMTC.sono} onChange={handleChange} >
+                            <select name="perguntasAdicionaisMTC.sono" value={formData.perguntasAdicionaisMTC.sono} disabled={isReadOnly} onChange={handleChange} >
                                 <option value="">Selecione</option>
                                 <option value="forte">Agitado</option>
                                 <option value="fraco">Tranquilo</option>
@@ -226,7 +235,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                             <label>Constituição Corporal/ Miado:</label>
                             <select
                                 value={formData.constituicaoCorporal?.[0] || ''}
-                                onChange={(e) => handleSelectChange(e, 0)}
+                                disabled={isReadOnly} onChange={(e) => handleSelectChange(e, 0)}
                             >
                                 <option value="">Selecione</option>
                                 <option value="forte">Forte</option>
@@ -234,7 +243,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                             </select>
                             <select
                                 value={formData.constituicaoCorporal?.[1] || ''}
-                                onChange={(e) => handleSelectChange(e, 1)}
+                                disabled={isReadOnly} onChange={(e) => handleSelectChange(e, 1)}
                             >
                                 <option value="">Selecione</option>
                                 <option value="quenteAoToque">Quente ao Toque</option>
@@ -245,46 +254,46 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                     </div>
                     <div className={styles.column}>
                         <label>Alguma época/ clima os sinais clínicos pioram? : </label>
-                        <input type="text" name="perguntasAdicionaisMTC.descricao" value={formData.perguntasAdicionaisMTC.descricao} onChange={handleChange} />
+                        <input type="text" name="perguntasAdicionaisMTC.descricao" value={formData.perguntasAdicionaisMTC.descricao} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
                     <h2>Diagnóstico MTC</h2>
                     <div className={styles.column}>
                         <label>Órgãos envolvimento/ substâncias envolvidas: </label>
-                        <input type="text" name="diagnosticoMTC.orgaosSubstacias" value={formData.diagnosticoMTC.orgaosSubstacias} onChange={handleChange} />
+                        <input type="text" name="diagnosticoMTC.orgaosSubstacias" value={formData.diagnosticoMTC.orgaosSubstacias} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
 
                     <label>Principíos:</label>
                     <div className={styles.checkbox_container}>
                         <label>
-                            <input type="checkbox" name="principios" value="yin" checked={formData.principios?.includes("yin")} onChange={handlePrincipiosChange} /> yin
+                            <input type="checkbox" name="principios" value="yin" checked={formData.principios?.includes("yin")} disabled={isReadOnly} onChange={handlePrincipiosChange} /> Yin
                         </label>
                         <label>
-                            <input type="checkbox" name="principios" value="yang" checked={formData.principios?.includes("yang")} onChange={handlePrincipiosChange} /> yang
+                            <input type="checkbox" name="principios" value="yang" checked={formData.principios?.includes("yang")} disabled={isReadOnly} onChange={handlePrincipiosChange} /> Yang
                         </label>
                         <label>
-                            <input type="checkbox" name="principios" value="frio" checked={formData.principios?.includes("frio")} onChange={handlePrincipiosChange} /> Frio
+                            <input type="checkbox" name="principios" value="frio" checked={formData.principios?.includes("frio")} disabled={isReadOnly} onChange={handlePrincipiosChange} /> Frio
                         </label>
                         <label>
-                            <input type="checkbox" name="principios" value="quente" checked={formData.principios?.includes("quente")} onChange={handlePrincipiosChange} /> Quente
+                            <input type="checkbox" name="principios" value="quente" checked={formData.principios?.includes("quente")} disabled={isReadOnly} onChange={handlePrincipiosChange} /> Quente
                         </label>
                         <label>
-                            <input type="checkbox" name="principios" value="interno" checked={formData.principios?.includes("interno")} onChange={handlePrincipiosChange} /> Interno
+                            <input type="checkbox" name="principios" value="interno" checked={formData.principios?.includes("interno")} disabled={isReadOnly} onChange={handlePrincipiosChange} /> Interno
                         </label>
                         <label>
-                            <input type="checkbox" name="principios" value="externo" checked={formData.principios?.includes("externo")} onChange={handlePrincipiosChange} /> Externo
+                            <input type="checkbox" name="principios" value="externo" checked={formData.principios?.includes("externo")} disabled={isReadOnly} onChange={handlePrincipiosChange} /> Externo
                         </label>
                     </div>
 
 
                     <div className={styles.column}>
                         <label>WU XING :</label>
-                        <input type="text" name="diagnosticoMTC.wuXing" value={formData.diagnosticoMTC.wuXing} onChange={handleChange} />
+                        <input type="text" name="diagnosticoMTC.wuXing" value={formData.diagnosticoMTC.wuXing} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>ZANG FU :</label>
-                        <input type="text" name="diagnosticoMTC.zangFu" value={formData.diagnosticoMTC.zangFu} onChange={handleChange} />
+                        <input type="text" name="diagnosticoMTC.zangFu" value={formData.diagnosticoMTC.zangFu} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
                     <div className={styles.image_container}>
@@ -301,24 +310,26 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                     {/*dados*/}
                     <div className={styles.column}>
                         <label>Médica(o) Veterinária(o) responsável :</label>
-                        <input type="text" name="responsavel" value={formData.responsavel} onChange={handleChange} />
+                        <input type="text" name="responsavel" value={formData.responsavel} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Estagiarios/ Nome :</label>
-                        <input type="text" name="estagiario" value={formData.estagiario} onChange={handleChange} />
+                        <input type="text" name="estagiario" value={formData.estagiario} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>CPF :</label>
-                        <input type="text" name="cpf" value={formData.cpf} onChange={handleChange} />
+                        <input type="text" name="cpf" value={formData.cpf} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
                     {/*aqui vai ficar a seguda imagem*/}
 
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < VoltarWhiteButton onClick={prevStep} />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
+                    )}
                 </form>
             </div>
         </div>

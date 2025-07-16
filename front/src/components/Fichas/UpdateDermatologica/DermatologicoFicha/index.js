@@ -5,14 +5,13 @@ import VoltarButton from "../../../VoltarButton";
 import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
 import DrawingModal from "@/components/Fichas/DrawingModal";
-import SolicitacaoDeExameAninhar from "@/components/Fichas/SolicitacaoDeExameAninhar";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
 
 function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxChange, handleSubmit,
-    handleSaveDrawing, imagemDesenhada, handleChangeTratamentos, tratamentos, adicionarLinhaTratamento,
-    removerUltimaLinhaTratamento, setFormData }) {
+    handleSaveDrawing, storageKeyDrawing, handleChangeTratamentos, tratamentos, adicionarLinhaTratamento,
+    removerUltimaLinhaTratamento, renderImagemLesao }) {
 
     const [loading, setLoading] = useState(true);
     const router = useRouter();
@@ -21,6 +20,15 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+              
+        useEffect(() => {
+                  // Se o modo for 'visualizar', define o estado para somente leitura
+                  if (modo === 'visualizar') {
+                      setIsReadOnly(true);
+                  }
+              }, [modo]);
 
     useEffect(() => {
         if (router.isReady) {
@@ -158,6 +166,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         <label>Ectoparasitas:
                             <select name="ectoparasitas"
                                 value={formData.ectoparasitas}
+                                disabled={isReadOnly}
                                 onChange={handleChange}>
                                 <option value="">Selecione</option>
                                 <option value="Sim">Sim</option>
@@ -167,7 +176,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                     </div>
                     <div className={styles.column}>
                         <label>Descamação:
-                            <select name="descamacao" value={formData.descamacao} onChange={handleChange}>
+                            <select name="descamacao" value={formData.descamacao} disabled={isReadOnly} onChange={handleChange}>
                                 <option value="">Selecione</option>
                                 <option value="Farinácea">Farinácea</option>
                                 <option value="Furfurácea">Furfurácea</option>
@@ -178,7 +187,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                     </div>
                     <div className={styles.column}>
                         <label>Untuosidade:
-                            <select name="untuosidade" value={formData.untuosidade} onChange={handleChange}>
+                            <select name="untuosidade" value={formData.untuosidade} disabled={isReadOnly} onChange={handleChange}>
                                 <option value="">Selecione</option>
                                 <option value="Presente">Presente</option>
                                 <option value="Ausente">Ausente</option>
@@ -199,6 +208,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                     type="checkbox"
                                     value={item}
                                     checked={formData["pelagem"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "pelagem")}
                                 /> {item}
                             </label>
@@ -219,6 +229,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                     type="checkbox"
                                     value={item}
                                     checked={formData["condutoAuditivoDireito"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "condutoAuditivoDireito")}
                                 /> {item}
                             </label>
@@ -239,33 +250,22 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                     type="checkbox"
                                     value={item}
                                     checked={formData["condutoAuditivoEsquerdo"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "condutoAuditivoEsquerdo")}
                                 /> {item}
                             </label>
                         ))}
                     </div>
+
                     <div className={styles.column}>
-                        <label>Localização/Descrição das lesões:
-                            <div
-                                onClick={() => setShowDrawingModal(true)}
-                                style={{ cursor: 'pointer', textAlign: 'center' }}
-                            >
-                                {imagemDesenhada ? (
-                                    <img
-                                        src={imagemDesenhada}
-                                        alt="Localização das lesões com marcações"
-                                        style={{ maxWidth: '500px' }}
-                                    />
-                                ) : (
-                                    <img
-                                        src="/images/localizacao_lesoes.png"
-                                        alt="Localização das lesões"
-                                        style={{ maxWidth: '500px' }}
-                                    />
-                                )}
-                                <p style={{ color: 'black' }}>Clique para desenhar sobre a imagem</p>
-                            </div>
-                        </label>
+                        <label>Descrição das lesões:</label>
+                        <div
+                            onClick={() => setShowDrawingModal(true)}
+                            style={{ cursor: 'pointer', textAlign: 'center' }}
+                        >
+                            {renderImagemLesao()}
+                            <p style={{ color: 'black' }}>Clique para desenhar sobre a imagem</p>
+                        </div>
                     </div>
 
                     <DrawingModal
@@ -275,6 +275,8 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         onSave={handleSaveDrawing}
                         showDrawingModal={showDrawingModal}
                         dimensoesImagem={dimensoesImagem}
+                        linhasEditadas={formData.imagemLesao.linhasDesenhadas}
+                        storageKeyDrawing={storageKeyDrawing}
                     />
 
                     <div className={styles.column}>
@@ -290,6 +292,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                     type="checkbox"
                                     value={item}
                                     checked={formData["formacoesSolidas"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "formacoesSolidas")}
                                 /> {item}
                             </label>
@@ -309,6 +312,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                     type="checkbox"
                                     value={item}
                                     checked={formData["alteracoesDeCor"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "alteracoesDeCor")}
                                 /> {item}
                             </label>
@@ -328,6 +332,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                     type="checkbox"
                                     value={item}
                                     checked={formData["colecoesLiquidas"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "colecoesLiquidas")}
                                 /> {item}
                             </label>
@@ -347,6 +352,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                     type="checkbox"
                                     value={item}
                                     checked={formData["alteracoesEspessura"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "alteracoesEspessura")}
                                 /> {item}
                             </label>
@@ -355,7 +361,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                     <div className={styles.box}>
                     <div className={styles.column}>
                         <label>Perdas Teciduais e Reparações:
-                            <select name="perdasTeciduais" value={formData.perdasTeciduais} onChange={handleChange}>
+                            <select name="perdasTeciduais" value={formData.perdasTeciduais} disabled={isReadOnly} onChange={handleChange}>
                                 <option value="">Selecione</option>
                                 <option value="Disqueratose">Disqueratose</option>
                                 <option value="Hipotricose">Hipotricose</option>
@@ -375,7 +381,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                     <div className={styles.column}>
                         <label>Descrição lesional(Locais afetados):
                             <textarea type="text" name="descricaoLesional" value={formData.descricaoLesional}
-                                onChange={handleChange} rows="4" cols="100" />
+                                disabled={isReadOnly} onChange={handleChange} rows="4" cols="100" />
                         </label>
                     </div>
                     <div className={styles.column}>
@@ -397,6 +403,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                     type="checkbox"
                                     value={item}
                                     checked={formData["criteriosFavrot"]?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "criteriosFavrot")}
                                 /> {item}
                             </label>
@@ -406,6 +413,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         <label>Obs:
                             <textarea type="text" name="observacao"
                                 value={formData.observacao}
+                                disabled={isReadOnly}
                                 onChange={handleChange} rows="4" cols="50" />
                         </label>
                     </div>
@@ -415,6 +423,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         <label>Definitivo:
                             <input type="text" name="diagnostico.definitivo"
                                 value={formData.diagnostico.definitivo}
+                                disabled={isReadOnly}
                                 onChange={handleChange} />
                         </label>
                     </div>
@@ -422,6 +431,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         <label>Observações:
                             <input type="text" name="diagnostico.observacoes"
                                 value={formData.diagnostico.observacoes}
+                                disabled={isReadOnly}
                                 onChange={handleChange} />
                         </label>
                     </div>
@@ -429,6 +439,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         <label>Prognóstico:
                             <input type="text" name="diagnostico.prognostico"
                                 value={formData.diagnostico.prognostico}
+                                disabled={isReadOnly}
                                 onChange={handleChange} />
                         </label>
                     </div>
@@ -451,6 +462,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                             <input
                                                 type="text"
                                                 value={linha.medicacao}
+                                                disabled={isReadOnly}
                                                 onChange={(e) => handleChangeTratamentos(index, "medicacao", e.target.value)}
                                             />
                                         </td>
@@ -458,6 +470,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                             <input
                                                 type="text"
                                                 value={linha.dose}
+                                                disabled={isReadOnly}
                                                 onChange={(e) => handleChangeTratamentos(index, "dose", e.target.value)}
                                             />
                                         </td>
@@ -465,6 +478,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                             <input
                                                 type="text"
                                                 value={linha.frequencia}
+                                                disabled={isReadOnly}
                                                 onChange={(e) => handleChangeTratamentos(index, "frequencia", e.target.value)}
                                             />
                                         </td>
@@ -472,6 +486,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                                             <input
                                                 type="text"
                                                 value={linha.periodo}
+                                                disabled={isReadOnly}
                                                 onChange={(e) => handleChangeTratamentos(index, "periodo", e.target.value)}
                                             />
                                         </td>
@@ -493,6 +508,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         <label>Médico veterinário:
                             <input type="text" name="medico"
                                 value={formData.medico}
+                                disabled={isReadOnly}
                                 onChange={handleChange} />
                         </label>
                     </div>
@@ -500,14 +516,17 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         <label>Estágiarios:
                             <textarea type="text" name="estagiarios"
                                 value={formData.estagiarios}
+                                disabled={isReadOnly}
                                 onChange={handleChange} />
                         </label>
                     </div>
-
+                    
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < VoltarWhiteButton onClick={prevStep} />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
+                    )}
                 </form>
             </div>
         </div>

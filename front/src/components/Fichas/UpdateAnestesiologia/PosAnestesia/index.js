@@ -26,6 +26,8 @@ const [animalId, setAnimalId] = useState(null);
 const [animal, setAnimal] = useState({});
 const [showButtons, setShowButtons] = useState(false);
 const [tutor , setTutor] = useState({});
+const { id, modo } = router.query; 
+const [isReadOnly, setIsReadOnly] = useState(false);
 
  
 const [farmacosPos, setFarmacosPos] = useState(
@@ -83,6 +85,13 @@ const [data, setData] = useState(() => {
     await handleSubmit(); 
     limparTabela();
   };
+
+  useEffect(() => {
+          // Se o modo for 'visualizar', define o estado para somente leitura
+          if (modo === 'visualizar') {
+              setIsReadOnly(true);
+          }
+      }, [modo]);
 
   // Atualize o useEffect para incluir data nas dependências
   useEffect(() => {
@@ -326,6 +335,7 @@ return (
               className="form-control"
               name="pos.inducao.hora"
               value={formData.pos?.inducao?.hora || ""}
+              disabled={isReadOnly}
               onChange={handleChange}
             />
           </label>
@@ -350,6 +360,7 @@ return (
                   name="pos.inducao.intubacao"
                   value={opt}
                   checked={formData.pos?.inducao?.intubacao === opt}
+                  disabled={isReadOnly}
                   onChange={handleChange}
                   className="me-1"
                 />
@@ -378,6 +389,7 @@ return (
                   type="text"
                   className="form-control"
                   value={row.farmaco}
+                  disabled={isReadOnly}
                   onChange={(e) =>
                     handleFarmacoPosChange(idx, "farmaco", e.target.value)}
                 />
@@ -388,6 +400,7 @@ return (
                   type="text"
                   className="form-control"
                   value={row.dose}
+                  disabled={isReadOnly}
                   onChange={(e) =>
                     handleFarmacoPosChange(idx, "dose", e.target.value)}
                 />
@@ -398,6 +411,7 @@ return (
                   type="text"
                   className="form-control"
                   value={row.via}
+                  disabled={isReadOnly}
                   onChange={(e) =>
                     handleFarmacoPosChange(idx, "via", e.target.value)}
                 />
@@ -429,6 +443,7 @@ return (
             className="form-control"
             name="pos.sondaEndotraqueal"       
             value={formData.pos?.sondaEndotraqueal || ""}
+            disabled={isReadOnly}
             onChange={handleChange}
           />
         </div>
@@ -443,6 +458,7 @@ return (
             className="form-control"
             name="pos.fluidoterapia"
             value={formData.pos?.fluidoterapia || ""}
+            disabled={isReadOnly}
             onChange={handleChange}
           />
         </div>
@@ -456,6 +472,7 @@ return (
           className="form-control"
           name="pos.outros"
           value={formData.pos?.outros || ""}
+          disabled={isReadOnly}
           onChange={handleChange}
         />
       </div>
@@ -486,6 +503,7 @@ return (
                   type="text"
                   className="form-control"
                   value={row.farmaco}
+                  disabled={isReadOnly}
                   onChange={e =>
                     handleFarmacoPosAnestesicoChange(idx, "farmaco", e.target.value)}
                 />
@@ -495,6 +513,7 @@ return (
                   type="text"
                   className="form-control"
                   value={row.dose}
+                  disabled={isReadOnly}
                   onChange={e =>
                     handleFarmacoPosAnestesicoChange(idx, "dose", e.target.value)}
                 />
@@ -504,6 +523,7 @@ return (
                   type="text"
                   className="form-control"
                   value={row.via}
+                  disabled={isReadOnly}
                   onChange={e =>
                     handleFarmacoPosAnestesicoChange(idx, "via", e.target.value)}
                 />
@@ -513,6 +533,7 @@ return (
                   type="time"
                   className="form-control"
                   value={row.hora}
+                  disabled={isReadOnly}
                   onChange={e =>
                     handleFarmacoPosAnestesicoChange(idx, "hora", e.target.value)}
                 />
@@ -546,6 +567,7 @@ return (
             className="form-control"
             name="pos.recuperacao.horaInicio"
             value={formData.pos?.recuperacao?.horaInicio || ""}
+            disabled={isReadOnly}
             onChange={handleChange}
           />
         </label>
@@ -560,6 +582,7 @@ return (
             className="form-control"
             name="pos.recuperacao.horaFim"
             value={formData.pos?.recuperacao?.horaFim || ""}
+            disabled={isReadOnly}
             onChange={handleChange}
           />
         </label>
@@ -614,6 +637,7 @@ return (
               name="pos.recuperacao.suporteOxigenio"
               value={opt}
               checked={formData.pos?.recuperacao?.suporteOxigenio === opt}
+              disabled={isReadOnly}
               onChange={handleChange}
               className="me-1"
             />
@@ -635,6 +659,7 @@ return (
           className="form-control"
           name="pos.extubacao3.horaExtubacao"
           value={formData.pos?.extubacao3?.horaExtubacao || ""}
+          disabled={isReadOnly}
           onChange={handleChange}
         />
       </label>
@@ -661,6 +686,7 @@ return (
             name="pos.extubacao3.respiracao"
             value={opt}
             checked={formData.pos?.extubacao3?.respiracao === opt}
+            disabled={isReadOnly}
             onChange={handleChange}
             className="me-1"
           />
@@ -682,6 +708,7 @@ return (
         className="form-control"
         name="pos.procedimento.horaInicio"
         value={formData.pos?.procedimento?.horaInicio || ""}
+        disabled={isReadOnly}
         onChange={handleChange}
       />
     </label>
@@ -696,6 +723,7 @@ return (
         className="form-control"
         name="pos.procedimento.horaFim"
         value={formData.pos?.procedimento?.horaFim || ""}
+        disabled={isReadOnly}
         onChange={handleChange}
       />
     </label>
@@ -717,6 +745,7 @@ return (
           name="pos.procedimento.equipo"
           value={opt}
           checked={formData.pos?.procedimento?.equipo === opt}
+          disabled={isReadOnly}
           onChange={handleChange}
           className="me-1"
         />
@@ -749,6 +778,7 @@ return (
                     type="number"
                     className="form-control"
                     value={row[param]}
+                    disabled={isReadOnly}
                     onChange={(e) => handleInputChange(idx, param, e.target.value)}
                   />
                 </td>
@@ -788,6 +818,7 @@ return (
     className="form-control"
     rows={4}                         
     value={formData.pos?.observacoes || ""}
+    disabled={isReadOnly}
     onChange={handleChange}
   />
 
@@ -800,6 +831,7 @@ return (
     className="form-control mb-0"
     rows={1}                                 
     value={formData.pos?.medicoResponsavel || ""}
+    disabled={isReadOnly}
     onChange={handleChange}
   />
 
@@ -812,15 +844,17 @@ return (
     className="form-control"
     rows={1}                                  
     value={formData.pos?.plantonistas || ""}
+    disabled={isReadOnly}
     onChange={handleChange}
   />
 
   </div>
- 
+      {!isReadOnly && (
       <div className={styles.button_box}>
             <VoltarWhiteButton onClick={prevStep} />
             <FinalizarFichaModal onConfirm={handleSubmit} />
       </div>
+      )}
     </div>
     </div>
   );

@@ -25,6 +25,8 @@ function UpdateCardiologicaSteps() {
   const [fichaId, setFichaId] = useState(null);
   const [data, setData] = useState([]);
   const router = useRouter();
+  const { id, modo } = router.query; 
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   const [formData, setFormData] = useState({
 

@@ -22,6 +22,15 @@ function AtendimentoOrtopedico({ formData, handleChange, nextStep }) {
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+                                            
+    useEffect(() => {
+    // Se o modo for 'visualizar', define o estado para somente leitura
+         if (modo === 'visualizar') {
+            setIsReadOnly(true);
+             }
+        }, [modo]);
 
     useEffect(() => {
         if (router.isReady) {
@@ -147,62 +156,64 @@ function AtendimentoOrtopedico({ formData, handleChange, nextStep }) {
                     <h2>Histórico</h2>
                     <div className={styles.column}>
                         <label>Queixa principal: </label>
-                        <input type="text" name="queixaPrincipal" value={formData.queixaPrincipal} onChange={handleChange} />
+                        <input type="text" name="queixaPrincipal" value={formData.queixaPrincipal} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Ocorrência de trauma: </label>
-                        <input type="text" name="ocorrenciaTrauma" value={formData.ocorrenciaTrauma} onChange={handleChange} />
+                        <input type="text" name="ocorrenciaTrauma" value={formData.ocorrenciaTrauma} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Duração do problema: </label>
-                        <input type="text" name="duracaoProblema" value={formData.duracaoProblema} onChange={handleChange} />
+                        <input type="text" name="duracaoProblema" value={formData.duracaoProblema} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Evolução do quadro: </label>
-                        <input type="text" name="evolucaoQuadro" value={formData.evolucaoQuadro} onChange={handleChange} />
+                        <input type="text" name="evolucaoQuadro" value={formData.evolucaoQuadro} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Ocorrência de claudicação (frio/quente, ocasional/frequente/constante, caminhada/ subida/
                             salto, influência do clima e evolução): </label>
-                        <input type="text" name="ocorrenciaClaudicacao" value={formData.ocorrenciaClaudicacao} onChange={handleChange} />
+                        <input type="text" name="ocorrenciaClaudicacao" value={formData.ocorrenciaClaudicacao} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Tolerância ao exercício: </label>
-                        <input type="text" name="toleranciaExercicio" value={formData.toleranciaExercicio} onChange={handleChange} />
+                        <input type="text" name="toleranciaExercicio" value={formData.toleranciaExercicio} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Indícios de dor: </label>
-                        <input type="text" name="indiciosDor" value={formData.indiciosDor} onChange={handleChange} />
+                        <input type="text" name="indiciosDor" value={formData.indiciosDor} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Acidentes/doenças anteriores: </label>
-                        <input type="text" name="acidentesAnteriores" value={formData.acidentesAnteriores} onChange={handleChange} />
+                        <input type="text" name="acidentesAnteriores" value={formData.acidentesAnteriores} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Tratamentos: </label>
-                        <input type="text" name="Tratamentos" value={formData.Tratamentos} onChange={handleChange} />
+                        <input type="text" name="Tratamentos" value={formData.Tratamentos} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Alimentação (tipo, quantidade, frequência): </label>
-                        <input type="text" name="Alimentacao" value={formData.Alimentacao} onChange={handleChange} />
+                        <input type="text" name="Alimentacao" value={formData.Alimentacao} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Vitaminas/minerais (quantidade, período): </label>
-                        <input type="text" name="vitaminas" value={formData.vitaminas} onChange={handleChange} />
+                        <input type="text" name="vitaminas" value={formData.vitaminas} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Ambiente: </label>
-                        <input type="text" name="ambiente" value={formData.ambiente} onChange={handleChange} />
+                        <input type="text" name="ambiente" value={formData.ambiente} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Obs: </label>
-                        <input type="text" name="observacao" value={formData.observacao} onChange={handleChange} />
+                        <input type="text" name="observacao" value={formData.observacao} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
                         < ContinuarFichasGreenButton type="submit" />
                     </div>
+                    )}
                 </form>
             </div>
         </div>

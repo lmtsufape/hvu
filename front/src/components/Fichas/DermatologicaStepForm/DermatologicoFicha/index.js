@@ -5,14 +5,13 @@ import VoltarButton from "../../../VoltarButton";
 import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
 import DrawingModal from "@/components/Fichas/DrawingModal";
-import SolicitacaoDeExameAninhar from "@/components/Fichas/SolicitacaoDeExameAninhar";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
 
 function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxChange, handleSubmit,
-    handleSaveDrawing, storageKeyDrawing, imagemDesenhada, handleChangeTratamentos, tratamentos, adicionarLinhaTratamento,
-    removerUltimaLinhaTratamento, setFormData }) {
+    handleSaveDrawing, storageKeyDrawing, handleChangeTratamentos, tratamentos, adicionarLinhaTratamento,
+    removerUltimaLinhaTratamento, renderImagemLesao }) {
 
     const [loading, setLoading] = useState(true);
     const router = useRouter();
@@ -244,28 +243,16 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                             </label>
                         ))}
                     </div>
+
                     <div className={styles.column}>
-                        <label>Localização/Descrição das lesões:
-                            <div
-                                onClick={() => setShowDrawingModal(true)}
-                                style={{ cursor: 'pointer', textAlign: 'center' }}
-                            >
-                                {imagemDesenhada ? (
-                                    <img
-                                        src={imagemDesenhada}
-                                        alt="Localização das lesões com marcações"
-                                        style={{ maxWidth: '500px' }}
-                                    />
-                                ) : (
-                                    <img
-                                        src="/images/localizacao_lesoes.png"
-                                        alt="Localização das lesões"
-                                        style={{ maxWidth: '500px' }}
-                                    />
-                                )}
-                                <p style={{ color: 'black' }}>Clique para desenhar sobre a imagem</p>
-                            </div>
-                        </label>
+                        <label>Descrição das lesões:</label>
+                        <div
+                            onClick={() => setShowDrawingModal(true)}
+                            style={{ cursor: 'pointer', textAlign: 'center' }}
+                        >
+                            {renderImagemLesao()}
+                            <p style={{ color: 'black' }}>Clique para desenhar sobre a imagem</p>
+                        </div>
                     </div>
 
                     <DrawingModal
@@ -275,6 +262,7 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         onSave={handleSaveDrawing}
                         showDrawingModal={showDrawingModal}
                         dimensoesImagem={dimensoesImagem}
+                        linhasEditadas={formData.imagemLesao.linhasDesenhadas}
                         storageKeyDrawing={storageKeyDrawing}
                     />
 

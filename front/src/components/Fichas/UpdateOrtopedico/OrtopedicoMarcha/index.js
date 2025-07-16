@@ -22,6 +22,15 @@ function AtendimentoOrtopedico({ formData, handleChange, nextStep, prevStep }) {
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+
+    useEffect(() => {
+        // Se o modo for 'visualizar', define o estado para somente leitura
+            if (modo === 'visualizar') {
+                setIsReadOnly(true);
+                }
+            }, [modo]);
 
     useEffect(() => {
         if (router.isReady) {
@@ -148,41 +157,41 @@ function AtendimentoOrtopedico({ formData, handleChange, nextStep, prevStep }) {
                     <h2>Inspeção visual</h2>
                     <div className={styles.column}>
                         <label>Condição corporal: </label>
-                        <input type="text" name="condicaoCorporal" value={formData.condicaoCorporal} onChange={handleChange} />
+                        <input type="text" name="condicaoCorporal" value={formData.condicaoCorporal} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Comportamento: </label>
-                        <input type="text" name="comportamento" value={formData.comportamento} onChange={handleChange} />
+                        <input type="text" name="comportamento" value={formData.comportamento} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Postura: </label>
-                        <input type="text" name="postura" value={formData.postura} onChange={handleChange} />
+                        <input type="text" name="postura" value={formData.postura} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Capacidade de sustentar o peso: </label>
-                        <input type="text" name="capacidadePeso" value={formData.capacidadePeso} onChange={handleChange} />
+                        <input type="text" name="capacidadePeso" value={formData.capacidadePeso} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Tumefação: </label>
-                        <input type="text" name="tumefacao" value={formData.tumefacao} onChange={handleChange} />
+                        <input type="text" name="tumefacao" value={formData.tumefacao} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Assimetrias, desvios: </label>
-                        <input type="text" name="assimetriaDesvio" value={formData.assimetriaDesvio} onChange={handleChange} />
+                        <input type="text" name="assimetriaDesvio" value={formData.assimetriaDesvio} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Atrofia muscular: </label>
-                        <input type="text" name="atrofiaMuscular" value={formData.atrofiaMuscular} onChange={handleChange} />
+                        <input type="text" name="atrofiaMuscular" value={formData.atrofiaMuscular} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Escoriações, fístulas: </label>
-                        <input type="text" name="escoriacoesFistulas" value={formData.escoriacoesFistulas} onChange={handleChange} />
+                        <input type="text" name="escoriacoesFistulas" value={formData.escoriacoesFistulas} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
                     <h2>Marcha</h2>
 
                     <div className={styles.column}><label>marcha:</label>
-                        <select name="marcha" value={formData.marcha} onChange={handleChange} >
+                        <select name="marcha" value={formData.marcha} disabled={isReadOnly} onChange={handleChange} >
                             <option value="">Selecione</option>
                             <option value="anteSe">Ante-si</option>
                             <option value="contraSe">Contra-se</option>
@@ -196,33 +205,35 @@ function AtendimentoOrtopedico({ formData, handleChange, nextStep, prevStep }) {
 
                     <div className={styles.column}>
                         <label>Características: </label>
-                        <input type="text" name="caracteristicas" value={formData.caracteristicas} onChange={handleChange} />
+                        <input type="text" name="caracteristicas" value={formData.caracteristicas} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Claudicação (tipo e grau): </label>
-                        <input type="text" name="claudicacao" value={formData.claudicacao} onChange={handleChange} />
+                        <input type="text" name="claudicacao" value={formData.claudicacao} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Fase de apoio: </label>
-                        <input type="text" name="faseApoio" value={formData.faseApoio} onChange={handleChange} />
+                        <input type="text" name="faseApoio" value={formData.faseApoio} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Fase de elevação: </label>
-                        <input type="text" name="faseElevacao" value={formData.faseElevacao} onChange={handleChange} />
+                        <input type="text" name="faseElevacao" value={formData.faseElevacao} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Ângulo das articulações: </label>
-                        <input type="text" name="anguloArticulacoes" value={formData.anguloArticulacoes} onChange={handleChange} />
+                        <input type="text" name="anguloArticulacoes" value={formData.anguloArticulacoes} disabled={isReadOnly} onChange={handleChange} />
                     </div>
                     <div className={styles.column}>
                         <label>Obs: </label>
-                        <input type="text" name="segundaObservacao" value={formData.segundaObservacao} onChange={handleChange} />
+                        <input type="text" name="segundaObservacao" value={formData.segundaObservacao} disabled={isReadOnly} onChange={handleChange} />
                     </div>
 
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < VoltarWhiteButton onClick={prevStep} />
                         < ContinuarFichasGreenButton type="submit" />
                     </div>
+                    )}
                 </form>
             </div>
         </div>

@@ -70,6 +70,16 @@ function FichaSolicitacaoCitologia() {
         }
     });
 
+    const { id, modo } = router.query; 
+    const [isReadOnly, setIsReadOnly] = useState(false);
+                          
+    useEffect(() => {
+              // Se o modo for 'visualizar', define o estado para somente leitura
+              if (modo === 'visualizar') {
+                  setIsReadOnly(true);
+              }
+            }, [modo]);
+
     useEffect(() => {
         if (router.isReady) {
             const id = router.query.consultaId;
@@ -111,9 +121,8 @@ function FichaSolicitacaoCitologia() {
                 const conteudo = (JSON.parse(formData.conteudo));
                 console.log("Dados da ficha:", conteudo);
                 setFormData(conteudo);
-                setImagemDesenhada(conteudo.imagemLesao.imagem); /**/ 
-                console.log("imagem:", imagemDesenhada);/**/
-                setData(formData.dataHora);/**/
+                setImagemDesenhada(conteudo.imagemLesao.imagem); 
+                setData(formData.dataHora);
             } catch (error) {
                 console.error('Erro ao buscar dados da ficha:', error);
             } finally {
@@ -375,6 +384,7 @@ function FichaSolicitacaoCitologia() {
                                 type="date"
                                 name="dataColheita"
                                 value={formData.dataColheita}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
@@ -386,6 +396,7 @@ function FichaSolicitacaoCitologia() {
                             type="text"
                             name="historicoExameFisico"
                             value={formData.historicoExameFisico}
+                            disabled={isReadOnly}
                             onChange={handleChange}
                         />
                     </div>
@@ -396,6 +407,7 @@ function FichaSolicitacaoCitologia() {
                             type="text"
                             name="localizacaoLesao"
                             value={formData.localizacaoLesao}
+                            disabled={isReadOnly}
                             onChange={handleChange}
                         />
                     </div>
@@ -415,6 +427,7 @@ function FichaSolicitacaoCitologia() {
                         show={showDrawingModal}
                         onHide={() => setShowDrawingModal(false)}
                         backgroundImage="/images/localizacao_lesao_citologia.png"
+                        disabled={isReadOnly}
                         onSave={handleSaveDrawing}
                         showDrawingModal={showDrawingModal}
                         dimensoesImagem={dimensoesImagem}
@@ -430,6 +443,7 @@ function FichaSolicitacaoCitologia() {
                                     type="checkbox"
                                     value={item}
                                     checked={formData.anamnese?.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "anamnese", setShowOtherInput, setOtherValue)}
                                 />
                                 {item}
@@ -441,6 +455,7 @@ function FichaSolicitacaoCitologia() {
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValue}
+                            disabled={isReadOnly}
                             onChange={(e) => setOtherValue(e.target.value)}
                             className="form-control"
                         />
@@ -457,6 +472,7 @@ function FichaSolicitacaoCitologia() {
                                     type="checkbox"
                                     value={item}
                                     checked={formData.caracteristicasLesao?.selecionadas.includes(item)}
+                                    disabled={isReadOnly}
                                     onChange={(e) => handleCheckboxChange(e, "caracteristicasLesao", setShowOtherInputLesao, setOtherValueLesao)}
                                 />
                                 {item}
@@ -470,6 +486,7 @@ function FichaSolicitacaoCitologia() {
                             type="text"
                             placeholder="Digite aqui..."
                             value={otherValueLesao}
+                            disabled={isReadOnly}
                             onChange={(e) => setOtherValueLesao(e.target.value)}
                             className="form-control"
                         />
@@ -483,6 +500,7 @@ function FichaSolicitacaoCitologia() {
                                 type="text"
                                 name="caracteristicasLesao.descricao"
                                 value={formData.caracteristicasLesao?.descricao}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
@@ -493,6 +511,7 @@ function FichaSolicitacaoCitologia() {
                                 type="text"
                                 name="caracteristicasLesao.cor"
                                 value={formData.caracteristicasLesao?.cor}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                                 className="form-control"
                             />
@@ -505,6 +524,7 @@ function FichaSolicitacaoCitologia() {
                                 type="text"
                                 name="caracteristicasLesao.consistencia"
                                 value={formData.caracteristicasLesao?.consistencia}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
@@ -515,6 +535,7 @@ function FichaSolicitacaoCitologia() {
                                 type="text"
                                 name="caracteristicasLesao.bordas"
                                 value={formData.caracteristicasLesao?.bordas}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
@@ -526,6 +547,7 @@ function FichaSolicitacaoCitologia() {
                             <select
                                 name="caracteristicasLesao.ulceracao"
                                 value={formData.caracteristicasLesao?.ulceracao}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             >
                                 <option value="">Selecione</option>
@@ -539,6 +561,7 @@ function FichaSolicitacaoCitologia() {
                             <select
                                 name="caracteristicasLesao.dorPalpacao"
                                 value={formData.caracteristicasLesao?.dorPalpacao}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             >
                                 <option value="">Selecione</option>
@@ -552,6 +575,7 @@ function FichaSolicitacaoCitologia() {
                             <select
                                 name="caracteristicasLesao.temperaturaLocal"
                                 value={formData.caracteristicasLesao?.temperaturaLocal}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             >
                                 <option value="">Selecione</option>
@@ -565,6 +589,7 @@ function FichaSolicitacaoCitologia() {
                             <select
                                 name="caracteristicasLesao.relacaoTecidosVizinhos"
                                 value={formData.caracteristicasLesao?.relacaoTecidosVizinhos}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             >
                                 <option value="">Selecione</option>
@@ -582,6 +607,7 @@ function FichaSolicitacaoCitologia() {
                                 type="text"
                                 name="citologia.descricao"
                                 value={formData.citologia?.descricao}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
@@ -591,6 +617,7 @@ function FichaSolicitacaoCitologia() {
                                 type="text"
                                 name="citologia.metodo"
                                 value={formData.citologia?.metodo}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
@@ -600,6 +627,7 @@ function FichaSolicitacaoCitologia() {
                                 type="number"
                                 name="citologia.numeroLaminas"
                                 value={formData.citologia?.numeroLaminas}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
@@ -609,6 +637,7 @@ function FichaSolicitacaoCitologia() {
                                 type="text"
                                 name="citologia.resultado"
                                 value={formData.citologia?.resultado}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
@@ -618,6 +647,7 @@ function FichaSolicitacaoCitologia() {
                                 type="text"
                                 name="citologia.conclusao"
                                 value={formData.citologia?.conclusao}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
@@ -626,15 +656,18 @@ function FichaSolicitacaoCitologia() {
                             <input
                                 name="citologia.comentarios"
                                 value={formData.citologia?.comentarios}
+                                disabled={isReadOnly}
                                 onChange={handleChange}
                             />
                         </div>
 
                     </div>
+                    {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
+                    )}
                 </form>
 
                 {showAlert && consultaId &&
