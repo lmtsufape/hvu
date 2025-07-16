@@ -51,6 +51,10 @@ public class Facade {
 
     @Transactional
     public Tutor saveTutor(Tutor newInstance, String password) throws ResponseStatusException {
+        if (newInstance.isAnonimo()) {
+            throw new RuntimeException("Não é permitido salvar um tutor como anônimo por este método.");
+        }
+
         tutorServiceInterface.verificarDuplicidade(newInstance.getCpf(), newInstance.getEmail());
         String userKcId = null;
         keycloakService.createUser(newInstance.getCpf(), newInstance.getEmail(), password, "tutor");
@@ -1173,7 +1177,6 @@ public class Facade {
     @Transactional
     public Animal saveAnimalByPatologista(Animal newInstance, Tutor newTutor) {
         Tutor tutor;
-
         if (newTutor == null || newTutor.isAnonimo()) {
             tutor = tutorServiceInterface.saveTutorAnonimo();
         } else {
