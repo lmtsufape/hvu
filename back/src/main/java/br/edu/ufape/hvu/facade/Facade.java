@@ -10,9 +10,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
+import br.edu.ufape.hvu.exception.OrigemAnimalInvalidaException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import br.edu.ufape.hvu.repository.AnimalRepository;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
@@ -1161,12 +1163,28 @@ public class Facade {
     // Animal--------------------------------------------------------------
     private final AnimalServiceInterface animalServiceInterface;
 
+    private void validarOrigemAnimal(String role, OrigemAnimal origemAnimal) {
+        if ("TUTOR".equals(role) && origemAnimal != OrigemAnimal.HVU) {
+            throw new OrigemAnimalInvalidaException("Tutores só podem cadastrar animais com origem 'HVU'");
+        }
+        if ("PATOLOGISTA".equals(role) && origemAnimal != OrigemAnimal.LAPA) {
+            throw new OrigemAnimalInvalidaException("Patologistas só podem cadastrar animais com origem 'LAPA'");
+        }
+    }
+
     @Transactional
     public Animal saveAnimal(Animal newInstance, String idSession) {
         Tutor tutor = findTutorByuserId(idSession);
         if (tutor == null) {
             throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
         }
+
+        if (newInstance.getOrigemAnimal() == null) {
+            newInstance.setOrigemAnimal(OrigemAnimal.HVU);
+        }
+
+        validarOrigemAnimal("TUTOR", newInstance.getOrigemAnimal());
+
         racaServiceInterface.findRacaById(newInstance.getRaca().getId());
         Animal animal = animalServiceInterface.saveAnimal(newInstance);
         tutor.getAnimal().add(animal);
@@ -1176,6 +1194,12 @@ public class Facade {
 
     @Transactional
     public Animal saveAnimalByPatologista(Animal newInstance, Tutor newTutor) {
+        if (newInstance.getOrigemAnimal() == null) {
+            newInstance.setOrigemAnimal(OrigemAnimal.LAPA);
+        }
+
+        validarOrigemAnimal("PATOLOGISTA", newInstance.getOrigemAnimal());
+
         Tutor tutor;
         if (newTutor == null || newTutor.isAnonimo()) {
             tutor = tutorServiceInterface.saveTutorAnonimo();
@@ -1257,6 +1281,10 @@ public class Facade {
         }
 
         animalServiceInterface.deleteAnimal(id);
+    }
+
+    public List<Animal> findAnimalsByOrigemAnimal(OrigemAnimal origem) {
+        return animalServiceInterface.findAnimalsByOrigemAnimal(origem);
     }
 
     // Especie--------------------------------------------------------------
