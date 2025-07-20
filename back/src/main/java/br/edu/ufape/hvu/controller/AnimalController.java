@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller;
 import java.util.List;
 
 import br.edu.ufape.hvu.controller.dto.request.PatologistaAnimalRequest;
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -23,36 +24,36 @@ import br.edu.ufape.hvu.model.Animal;
 import jakarta.validation.Valid;
 
 
- 
+
 @RestController
 @RequestMapping("/api/v1/")
 @RequiredArgsConstructor
 public class AnimalController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+	@PreAuthorize("hasAnyRole('PATOLOGISTA')")
 	@GetMapping("animal")
 	public List<AnimalResponse> getAllAnimal() {
 		return facade.getAllAnimal()
-			.stream()
-			.map(AnimalResponse::new)
-			.toList();
+				.stream()
+				.map(AnimalResponse::new)
+				.toList();
 	}
-	
+
 	@GetMapping("animal/retorno")
 	public List<AnimalResponse> findAnimaisWithReturn() {
 		return facade.findAnimaisWithReturn()
-			.stream()
-			.map(AnimalResponse::new)
-			.toList();
+				.stream()
+				.map(AnimalResponse::new)
+				.toList();
 	}
 
 	@GetMapping("animal/semRetorno")
 	public List<AnimalResponse> findAnimaisWithoutReturn() {
 		return facade.findAnimaisWithoutReturn()
-			.stream()
-			.map(AnimalResponse::new)
-			.toList();
+				.stream()
+				.map(AnimalResponse::new)
+				.toList();
 	}
 
 
@@ -66,11 +67,11 @@ public class AnimalController {
 	public List<AnimalResponse> getAllAnimalTutor() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		
+
 		return facade.getAllAnimalTutor(principal.getSubject())
-			.stream()
-			.map(AnimalResponse::new)
-			.toList();
+				.stream()
+				.map(AnimalResponse::new)
+				.toList();
 	}
 
 	@GetMapping("animal/numeroficha/{fichaNumero}")
@@ -86,7 +87,7 @@ public class AnimalController {
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
 	}
-	
+
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -120,5 +121,10 @@ public class AnimalController {
 				request.getTutorEntity()
 		);
 		return new AnimalResponse(saved);
+	}
+
+	@GetMapping("/animal/origem/{origem}")
+	public List<Animal> getAnimalsByOrigemAnimal(@PathVariable OrigemAnimal origem) {
+		return facade.findAnimalsByOrigemAnimal(origem);
 	}
 }

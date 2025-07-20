@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.controller.dto.request;
 
 import java.time.LocalDate;
 
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
@@ -33,6 +34,7 @@ public  class AnimalRequest  {
 	private long id;
 	//@NotBlank(message = "Numero ficha não pode estar em branco")
 	private String numeroFicha;
+	private OrigemAnimal origemAnimal;
 
 	public Animal convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
