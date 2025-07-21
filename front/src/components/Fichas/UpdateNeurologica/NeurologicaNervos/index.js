@@ -40,6 +40,28 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
         tonoDaCalda: false,
         miccao: false,
     });
+    useEffect(() => {
+        // Cria um novo objeto para o estado 'fields'
+        const novosFields = {};
+        for (const key in fields) {
+            // Encontra a seção correspondente no formData (ex: 'nervosCranianos')
+            let secaoNoFormData;
+            if (formData.nervosCranianos && formData.nervosCranianos[key]) {
+                secaoNoFormData = formData.nervosCranianos[key];
+            } else if (formData.reacoesPosturais && formData.reacoesPosturais[key]) {
+                secaoNoFormData = formData.reacoesPosturais[key];
+            } else if (formData.reflexosSegmentares && formData.reflexosSegmentares[key]) {
+                secaoNoFormData = formData.reflexosSegmentares[key];
+            }
+            if (secaoNoFormData && (secaoNoFormData.Esq || secaoNoFormData.Dir || secaoNoFormData.MTD)) {
+                novosFields[key] = true;
+            } else {
+                novosFields[key] = fields[key];
+            }
+        }
+        setFields(novosFields);
+
+    }, [formData]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
