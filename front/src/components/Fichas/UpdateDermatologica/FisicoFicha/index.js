@@ -243,7 +243,7 @@ function FichaDermatologicaStep2({ formData, handleChange, nextStep, prevStep, h
 
                         <div className={styles.column}>
                             <label>Turgor cutâneo:
-                                <input type="text" name="turgorCutaneo" value={formData.TurgorCutaneo} disabled={isReadOnly} onChange={handleChange} placeholder="Turgor cutâneo" />
+                                <input type="text" name="turgorCutaneo" value={formData.turgorCutaneo} disabled={isReadOnly} onChange={handleChange} placeholder="Turgor cutâneo" />
                             </label>
                         </div>
                         <div className={styles.column}>
