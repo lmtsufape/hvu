@@ -101,6 +101,24 @@ export default function Step2ClinicaMedica({
   }, [router.isReady, router.query.fichaId, router.query.animalId]);
 
   useEffect(() => {
+  const defaultExameLabels = EXAMES_COMPLEMENTARES.map(e => e.label);
+  const savedExames = formData.examesComplementares || [];
+  
+  const otherValue = savedExames.find(exame => !defaultExameLabels.includes(exame));
+  
+  if (otherValue) {
+    const standardExames = savedExames.filter(exame => defaultExameLabels.includes(exame));
+    setExamesComplementares([...standardExames, "Outros(s):"]);
+    setOtherExameValue(otherValue);
+    setShowOtherExameInput(true);
+  } else {
+    setExamesComplementares(savedExames);
+    setOtherExameValue("");
+    setShowOtherExameInput(false);
+  }
+}, [formData.examesComplementares]);
+
+  useEffect(() => {
     if (!animalId) {
       console.log("animalId não definido, saindo do useEffect");
       setLoading(false);
@@ -138,26 +156,23 @@ export default function Step2ClinicaMedica({
   };
 
   // Função para lidar com mudanças nos checkboxes dos Exames Complementares
-  const handleExameChange = (event) => {
-    const { value, checked } = event.target;
+ const handleExameChange = (event) => {
+  const { value, checked } = event.target;
 
-    setShowOtherExameInput((prev) => (value === "Outros(s):" ? checked : prev));
+  // Atualiza a lista de exames marcados
+  const updatedExames = checked
+    ? [...examesComplementares, value]
+    : examesComplementares.filter((item) => item !== value);
+  
+  setExamesComplementares(updatedExames);
 
-    if (value === "Outros(s):" && !checked) {
+  if (value === "Outros(s):") {
+    setShowOtherExameInput(checked);
+    if (!checked) {
       setOtherExameValue("");
     }
-
-    const updatedExames = checked
-      ? [...examesComplementares, value]
-      : examesComplementares.filter((item) => item !== value);
-    setExamesComplementares(updatedExames);
-
-    // Atualiza formData apenas com examesComplementares, sem otherExameValue
-    setFormData((prev) => ({
-      ...prev,
-      examesComplementares: updatedExames,
-    }));
-  };
+  }
+};
 
   // Função para lidar com mudanças no campo "Outros"
   const handleOtherExameChange = (event) => {
@@ -316,6 +331,7 @@ export default function Step2ClinicaMedica({
                     type="text"
                     placeholder="Digite aqui..."
                     value={otherExameValue}
+                    disabled={isReadOnly}
                     onChange={handleOtherExameChange}
                     className="form-control"
                   />
