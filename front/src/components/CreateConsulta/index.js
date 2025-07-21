@@ -944,7 +944,7 @@ useEffect(() => {
                       type="button"
                       onClick={() => handleClick("/fichaSolicitacaoCitologia", id)}
                     >
-                      Ficha de solicitação de citológia
+                      Ficha de solicitação de citologia
                     </button>
                     <button
                       className={styles.ficha_button}

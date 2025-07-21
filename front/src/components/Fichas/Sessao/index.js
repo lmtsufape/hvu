@@ -187,7 +187,7 @@ function FichaSessao() {
     return(
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Ficha de sessão</h1>
+            <h1>Ficha de Sessão</h1>
             <div className={styles.form_box}>
                 <form onSubmit = {handleSubmit}>
                     <div id="flex-grid" className={styles.column}>
