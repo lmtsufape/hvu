@@ -526,9 +526,10 @@ export default function PreAnestesia({
               </div>
             </div>
             
-            <div className={styles.colum}>
-            <table className="table table-bordered">
-              <thead className="table-light text-center">
+            <div className={styles.column}>
+
+            <table className={styles.tabela_tratamento}>
+            <thead>
                 <tr>
                   <th style={{ width: "55%" }}>Fármaco</th>
                   <th style={{ width: "25%" }}>Dose/Volume</th>
