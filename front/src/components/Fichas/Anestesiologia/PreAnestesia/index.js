@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 /* listas fixas */
 const EXAMES = ["Ht", "Pt", "Alb", "Plaq", "FA", "Leuc", "ALT", "Creat"];
 const ESTADOS = ["Alerta", "Tranquilo", "Deprimido", "Excitado", "Agressivo"];
-const DORES = ["Sem dor", "Leve", "Moderada", "Severa"];
+const DORES = ["Sem dor", "Leve", "Moderada", "Intensa"];
 const DESIDRATACAO = ["Normal", "6 a 8%", "8 a 10%", "Acima de 10%"];
 const MUCOSAS = ["Róseas", "Róseas pálidas", "Porcelanas", "Hiperêmicas", "Cianóticas", "Ictéricas", "Não avaliado"];
 const SEDACAO = ["Nenhuma", "Leve", "Moderada", "Intenso"];
