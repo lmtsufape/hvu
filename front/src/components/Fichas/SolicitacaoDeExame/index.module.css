@@ -28,6 +28,29 @@
   font-weight: 500;
 }
 
+.button_box {
+  display: flex;
+  justify-content: center; /* ou flex-end, como preferir */
+  gap: 15px; /* Espaçamento entre os botões */
+  margin-top: 30px;
+}
+
+.pdf_button {
+  background-color: #2b6cc0; /* Vermelho */
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 .dados_ocultos {
   width: 100%;
   height: auto;
