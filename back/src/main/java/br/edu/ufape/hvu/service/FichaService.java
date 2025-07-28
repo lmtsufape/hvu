@@ -28,6 +28,14 @@ public class FichaService implements FichaServiceInterface {
         return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Ficha"));
     }
 
+    public List<Ficha> findFichasByAgendamentoId(long agendamentoId) {
+        return repository.findByAgendamentoId(agendamentoId);
+    }
+
+    public List<Ficha> findFichasByAnimalId(long animalId) {
+        return repository.findByAgendamentoAnimalId(animalId);
+    }
+
     public List<Ficha> getAllFicha(){
         return repository.findAll();
     }
