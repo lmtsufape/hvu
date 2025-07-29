@@ -13,12 +13,14 @@ import br.edu.ufape.hvu.controller.dto.request.*;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.repository.AnimalRepository;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
@@ -818,22 +820,13 @@ public class Facade {
         Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
 
         Consulta consulta = consultaServiceInterface.saveConsulta(newInstance);
+
         vagaDaConsulta.setStatus("Finalizado");
         agendamentoVaga.setStatus("Finalizado");
 
-        if (newInstance.getFicha() != null) {
-            List<Ficha> fichas = new ArrayList<>();
-
-            for (Ficha f : newInstance.getFicha()) {
-                Ficha fichaBuscada = fichaServiceInterface.findFichaById(f.getId());
-                fichas.add(fichaBuscada);
-            }
-
-            consulta.setFicha(fichas);
-        }
-
         vagaDaConsulta.setAgendamento(agendamentoVaga);
         vagaDaConsulta.setConsulta(consulta);
+
         updateVaga(vagaDaConsulta);
         updateAgendamento(agendamentoVaga);
 
@@ -1409,38 +1402,65 @@ public class Facade {
 
     @Transactional
     public Ficha saveFicha(Ficha newInstance) {
+        Long agendamentoId = (newInstance.getAgendamento() != null)
+                ? newInstance.getAgendamento().getId()
+                : null;
+
+        if (agendamentoId == null || agendamentoId <= 0) {
+            throw new IllegalArgumentException("Ficha deve estar vinculada a um agendamento válido.");
+        }
+
+        if (!agendamentoRepository.existsById(agendamentoId)) {
+            throw new ResourceNotFoundException("Agendamento", "id", agendamentoId);
+        }
+
         return fichaServiceInterface.saveFicha(newInstance);
     }
 
     @Transactional
     public Ficha updateFicha(FichaRequest obj, Long id) {
-        Ficha oldObject = findFichaById(id);
+        if (obj == null) {
+            throw new IllegalArgumentException("FichaRequest não pode ser nulo.");
+        }
 
-        // Aplica os dados atualizados no objeto existente
-        obj.applyToEntity(oldObject);
+        if (obj.getAgendamento() == null) {
+            throw new IllegalArgumentException("Ficha deve estar vinculada a um agendamento.");
+        }
 
-        return fichaServiceInterface.updateFicha(oldObject);
+        Long agendamentoId = obj.getAgendamento().getId();
+        if (!agendamentoRepository.existsById(agendamentoId)) {
+            throw new ResourceNotFoundException("Agendamento", "id", agendamentoId);
+        }
+
+        Ficha existingFicha = findFichaById(id);
+        obj.applyToEntity(existingFicha);
+        return fichaServiceInterface.updateFicha(existingFicha);
     }
 
     public Ficha findFichaById(long id) {
         return fichaServiceInterface.findFichaById(id);
     }
 
-    public List<Ficha> findFichasByAnimalId(Long animalId) {
-        if (animalId == null) {
-            throw new IllegalArgumentException("O id do animal é inválido.");
+    public List<Ficha> findFichasByAgendamentoId(Long agendamentoId) {
+        if (agendamentoId == null || agendamentoId <= 0) {
+            throw new IllegalArgumentException("O id do agendamento é inválido.");
+        }
+        if (!agendamentoRepository.existsById(agendamentoId)) {
+            throw new ResourceNotFoundException("Agendamento", "id", agendamentoId);
         }
 
+        return fichaServiceInterface.findFichasByAgendamentoId(agendamentoId);
+    }
+
+    public List<Ficha> findFichasByAnimalId(Long animalId) {
+        if (animalId == null || animalId <= 0) {
+            throw new IllegalArgumentException("O id do animal é inválido.");
+        }
         if (!animalRepository.existsById(animalId)) {
             throw new ResourceNotFoundException("Animal", "id", animalId);
         }
 
-        List<Consulta> consultasByAnimalId = consultaServiceInterface.getConsultasByAnimalId(animalId);
-
-        return consultasByAnimalId
-                .stream()
-                .flatMap(consulta -> consulta.getFicha().stream())
-                .toList();
+        return fichaServiceInterface.findFichasByAnimalId(animalId);
     }
 
     public List<Ficha> getAllFicha() {
@@ -1718,6 +1738,7 @@ public class Facade {
 
     private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
     private final AnimalRepository animalRepository;
+    private final AgendamentoRepository agendamentoRepository;
 
     @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {

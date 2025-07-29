@@ -1,11 +1,8 @@
 package br.edu.ufape.hvu.controller.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 import br.edu.ufape.hvu.controller.dto.request.EspecialidadeRequest;
 import org.modelmapper.ModelMapper;
-
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Consulta;
 import lombok.Getter;
@@ -23,7 +20,6 @@ public class ConsultaResponse {
 	private AnimalResponse animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	private List<FichaResponse> ficha;
 	private String queixaPrincipal;
 	private String alteracoesClinicasDiversas;
 	private String suspeitasClinicas;

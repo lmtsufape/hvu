@@ -1,9 +1,6 @@
 package br.edu.ufape.hvu.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -12,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
-
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -42,6 +38,5 @@ public  class Consulta  {
 	private Animal animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	@OneToMany
-	private List<Ficha> ficha = new ArrayList<>();
+
 }

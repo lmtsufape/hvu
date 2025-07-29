@@ -1,7 +1,5 @@
 package br.edu.ufape.hvu.model;
 
-import br.edu.ufape.hvu.model.enums.TipoFicha;
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +16,6 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
@@ -34,4 +31,8 @@ public class Ficha {
     private String conteudo;
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
+    @ManyToOne
+    @JoinColumn(name = "agendamento_id")
+    private Agendamento agendamento;
+
 }

@@ -8,19 +8,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDateTime;
 import java.util.Map;
-
 
 @Getter @Setter @NoArgsConstructor
 public  class FichaRequest {
     private long id;
     private String nome;
     private Map<String, Object> conteudo;
-
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
+    private AgendamentoRequest agendamento;
 
     public Ficha convertToEntity() {
         Ficha ficha = new Ficha();
