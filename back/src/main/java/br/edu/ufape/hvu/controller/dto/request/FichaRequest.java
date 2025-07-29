@@ -34,6 +34,10 @@ public  class FichaRequest {
             throw new InvalidJsonException("Erro ao converter o campo 'conteudo' para JSON válido.", e);
         }
 
+        if (this.agendamento != null) {
+            ficha.setAgendamento(this.agendamento.convertToEntity());
+        }
+
         return ficha;
     }
 
@@ -47,6 +51,10 @@ public  class FichaRequest {
             ficha.setConteudo(conteudoJson);
         } catch (JsonProcessingException e) {
             throw new InvalidJsonException("Erro ao converter o campo 'conteudo' para JSON válido.", e);
+        }
+
+        if (this.agendamento != null) {
+            ficha.setAgendamento(this.agendamento.convertToEntity());
         }
     }
 }
