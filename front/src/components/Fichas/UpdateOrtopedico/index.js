@@ -261,6 +261,59 @@ function OrtopedicaSteps() {
       fetchData();
   }, []);
 
+  useEffect(() => {
+    // Não executa se o formData ainda não foi carregado de uma ficha existente
+    if (!fichaId || Object.keys(formData).length === 0) {
+      return;
+    }
+
+    console.log("Sincronizando UI com os dados da ficha carregada...");
+
+    const novosLadosVisiveis = {};
+    const novosSelecionados = [];
+
+    const gruposDePalpacao = [
+      "digitosMetacarpos", "carpo", "radioUlna", "musculosTendoes", "umero", "ombro", 
+      "axilarSubescapular", "escapula", "articulacaoCubital", "digitosMetatarsos", "tarso", 
+      "tibiaFibula", "articulacaoJoelho", "femur", "articulacaoCoxal", "articulacaoSacroiliaca", 
+      "pelve", "cabecaEsqueletoAxial"
+    ];
+
+    gruposDePalpacao.forEach(grupoTitulo => {
+      const grupoData = formData[grupoTitulo];
+      if (typeof grupoData === 'object' && grupoData !== null) {
+        for (const itemKey in grupoData) {
+          const itemData = grupoData[itemKey];
+          
+          // Verifica se o item tem algum dado preenchido
+          if (itemData && (itemData.Direito || itemData.Esquerdo)) {
+            
+            // Adiciona a chave do item (ex: 'flexaoCarpo') aos selecionados
+            if (!novosSelecionados.includes(itemKey)) {
+              novosSelecionados.push(itemKey);
+            }
+
+            // Verifica os lados (Direito/Esquerdo) e se têm valor
+            if (typeof itemData === 'object' && itemData !== null) {
+              novosLadosVisiveis[itemKey] = {};
+              if (itemData.Direito) {
+                novosLadosVisiveis[itemKey].Direito = true;
+              }
+              if (itemData.Esquerdo) {
+                novosLadosVisiveis[itemKey].Esquerdo = true;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // ATUALIZA O ESTADO DA UI
+    setSelecionadosGrupoExame(novosSelecionados);
+    setLadosVisiveisGrupoExame(novosLadosVisiveis);
+
+  }, [formData, fichaId]);
+
   if (loading) {
       return <div className={styles.message}>Carregando dados do usuário...</div>;
   }

@@ -369,3 +369,184 @@
 .bolha:hover {
   background-color: #a5a5a5;
 }
+
+
+
+@media (max-width: 700px) {
+
+  /* --- GERAL E CONTAINER --- */
+  .container {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .container h1 {
+    font-size: 20px; /* Reduz o título principal */
+    margin-bottom: 20px;
+  }
+
+  .boxBorder {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+  }
+
+  /* --- DADOS DO ANIMAL (TOGGLE) --- */
+  .box_ficha_toggle {
+    margin-top: 20px;
+  }
+
+  .toggleButton {
+    font-size: 18px; /* Reduz a fonte do botão toggle */
+  }
+
+  .container_toggle {
+    height: auto; /* Altura automática para o conteúdo caber */
+    margin-top: 15px;
+  }
+
+  .animal-data-box {
+    flex-direction: column; /* Empilha as colunas de informações */
+    gap: 0; /* Remove o espaçamento entre as colunas empilhadas */
+    margin-left: 15px;
+  }
+
+  .lista {
+    gap: 20px; /* Reduz o espaçamento entre os itens da lista */
+    margin-bottom: 20px;
+  }
+
+  .infos p {
+    font-size: 16px; /* Ajusta o tamanho da fonte das informações */
+  }
+
+  .infos h6 {
+    font-size: 14px; /* Ajusta o tamanho da fonte dos rótulos */
+  }
+
+  /* --- FORMULÁRIO --- */
+  .row {
+    flex-direction: column; /* Empilha as colunas dos inputs */
+  }
+
+  .row .col,
+  .row .col-md-3,
+  .row .col-md-6,
+  .row .col-md-9 {
+    width: 100%; /* Faz cada coluna ocupar a largura total */
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 15px; /* Adiciona espaço entre os campos empilhados */
+  }
+
+  /* --- CHECKBOXES E RADIOS --- */
+  .checkbox_container {
+    grid-template-columns: 1fr; /* Uma coluna para checkboxes e radios */
+    gap: 5px;
+  }
+
+  .checkbox_container label {
+    padding: 0.4rem;
+  }
+
+  .tabela_tratamento thead tr,
+  .tabela_tratamento tbody tr {
+    display: flex;
+    width: 100%;
+    gap: 1px; /* <--- ESTE É O VALOR A SER ALTERADO */
+  }
+
+  .tabela_tratamento th:not(:first-child),
+  .tabela_tratamento td:not(:first-child) {
+    padding-left: 5px; /* Adiciona um espaço de 5px à esquerda de cada coluna, exceto a primeira */
+  }
+
+
+  /* Garante que os checkboxes de mucosas fiquem alinhados */
+  .checkbox_square {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  /* Coluna 1: Fármaco (Largura Reduzida) */
+  .tabela_tratamento th:nth-child(1),
+  .tabela_tratamento td:nth-child(1) {
+    width: 31% !important; /* Força a largura para 30% */
+    text-align: center; 
+  }
+
+  /* Coluna 2: Dose/Volume (Largura Aumentada) */
+  .tabela_tratamento th:nth-child(2),
+  .tabela_tratamento td:nth-child(2) {
+    width: 42% !important;
+    text-align: center; /* Aumentado de 25% para 30% */
+  }
+
+/* Coluna 3: Via (Largura Aumentada) */
+.tabela_tratamento th:nth-child(3),
+.tabela_tratamento td:nth-child(3) {
+  width: 19%; /* Aumentado de 20% para 25% */
+  text-align: center; 
+}
+  /* --- TABELA DE FÁRMACOS --- */
+  .tabela_tratamento {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px; /* Mantém o espaço vertical entre as linhas */
+}
+
+  .tabela_tratamento thead, .tabela_tratamento tbody, .tabela_tratamento tr {
+    display: block;
+    
+  }
+
+  .tabela_tratamento tr {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tabela_tratamento th, .tabela_tratamento td {
+    display: inline-block;
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .tabela_tratamento th {
+    font-size: 14px;
+  }
+
+  .tabela_tratamento td {
+    width: 33%; /* Divide o espaço igualmente */
+  }
+
+  .tabela_tratamento input {
+  width: 100%;
+  height: 42px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+  }
+
+  .bolha_container {
+    margin-right: 5px; /* Ajusta a posição dos botões de adicionar/remover */
+  }
+
+  /* --- BOTÕES DE AÇÃO --- */
+  .button_box {
+    flex-direction: column-reverse; /* Empilha os botões */
+    height: auto;
+    padding-top: 20px;
+    gap: 15px;
+    align-items: stretch; /* Faz os botões ocuparem a mesma largura */
+  }
+
+  /* Força os botões a terem largura total */
+  .button_box > button, .button_box > div > button {
+    width: 100%;
+    margin: 0;
+  }
+}

@@ -181,7 +181,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, nextStep, prevStep })
                         <input type="text" name="sistemaDigestorio.ConsumoDeAgua" value={formData.sistemaDigestorio.ConsumoDeAgua} onChange={handleChange} />
                     </div>
 
-                    <h2>Sistema  Cardiorespiratório</h2>
+                    <h2>Sistema  Cardiorrespiratório</h2>
                     <div className={styles.column}>
                         <label>Respiração: </label>
                         <input type="text" name="sistemaCardiorespiratorio.respiracao" value={formData.sistemaCardiorespiratorio.respiracao} onChange={handleChange} />

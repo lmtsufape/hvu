@@ -62,7 +62,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
   return (
     <div className={styles.container}>
       <VoltarButton onClick={prevStep} />
-      <h1>Ficha de atendimento ortopédico</h1>
+      <h1>Ficha de Atendimento Ortopédico</h1>
 
       <div className={styles.form_box}>
         <form onSubmit={handleSubmit}>

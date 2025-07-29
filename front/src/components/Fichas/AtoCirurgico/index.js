@@ -229,7 +229,7 @@ function FichaAtoCirurgico() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Ficha de ato cirúrgico </h1>
+            <h1>Ficha de Ato Cirúrgico </h1>
 
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>

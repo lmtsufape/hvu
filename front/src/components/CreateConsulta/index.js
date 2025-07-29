@@ -261,6 +261,7 @@ function CreateConsulta() {
     animal: { id: null },
     dataVaga: "",
     fichaIds: fichaIds,
+    obito: false, // Adicionando campo obito
   });
   const [vagaData, setVagaData] = useState({});
   const { especialidades, error: especialidadesError } = EspecialidadeList();
@@ -432,6 +433,16 @@ useEffect(() => {
     const { value } = event.target;
     setConsulta({ ...consulta, proximaConsulta: value === "true" });
   };
+
+  const handleObitoChange = (event) => {
+  const value = event.target.value === 'true';
+    setConsulta(prevConsulta => ({
+      ...prevConsulta,
+      obito: value
+    }));
+  };
+
+  
 
   const validateFields = (consulta) => {
     const errors = {};
@@ -833,6 +844,44 @@ useEffect(() => {
             </div>
           </div>
 
+          <div className={styles.espacodosforms}>
+          <div className="row">
+            <div className={`col ${styles.col_radio}`}>
+              <label htmlFor="obito" className="form-label">
+                Óbito?
+              </label>
+              <div>
+                <input
+                  type="radio"
+                  className={`form-check-input ${styles.checkbox}`}
+                  id="obito_sim"
+                  name="obito"
+                  value="true"
+                  checked={consulta.obito === true}
+                  onChange={handleObitoChange}
+                />
+                <label htmlFor="obito_sim" className={styles.input}>
+                  Sim
+                </label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  className={`form-check-input ${styles.checkbox}`}
+                  id="obito_nao"
+                  name="obito"
+                  value="false"
+                  checked={consulta.obito === false}
+                  onChange={handleObitoChange}
+                />
+                <label htmlFor="obito_nao" className={styles.input}>
+                  Não
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
           <div className={styles.box_ficha_toggle}>
             <button
               type="button"
@@ -944,7 +993,7 @@ useEffect(() => {
                       type="button"
                       onClick={() => handleClick("/fichaSolicitacaoCitologia", id)}
                     >
-                      Ficha de solicitação de citológia
+                      Ficha de solicitação de citologia
                     </button>
                     <button
                       className={styles.ficha_button}

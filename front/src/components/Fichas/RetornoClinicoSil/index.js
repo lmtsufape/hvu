@@ -211,7 +211,7 @@ function fichaRetornoClinicoSil() {
     return(
         <div className={styles.container}>
             <VoltarButton />
-            <h1>FICHA CLÍNICO MÉDICA DE RETORNO DE ANIMAIS SILVESTRES E EXÓTICOS</h1>
+            <h1>Ficha Clínica Médica de Retorno Silvestres ou Exóticos</h1>
             <div className={styles.form_box}>
                 <form onSubmit = {handleSubmit}>
                     <div id="flex-grid" className={styles.column}>

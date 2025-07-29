@@ -20,7 +20,7 @@
     "font-awesome": "^4.7.0",
     "fortawesome": "^0.0.1-security",
     "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.1",
+    "jspdf": "^2.5.2",
     "konva": "^9.3.20",
     "moment": "^2.29.4",
     "next": "^13.5.6",

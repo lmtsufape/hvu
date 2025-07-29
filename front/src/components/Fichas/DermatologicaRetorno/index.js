@@ -189,7 +189,7 @@ function FichaDermatologicaRetorno() {
     return(
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Ficha clínica dermatológica de retorno </h1>
+            <h1>Ficha Clínica Dermatológica de Retorno </h1>
             <div className={styles.form_box}>
                 <form onSubmit={handleSubmit}>
                     <div className={styles.box_ficha_toggle}>

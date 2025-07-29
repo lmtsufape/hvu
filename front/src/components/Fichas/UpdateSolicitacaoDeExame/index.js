@@ -91,7 +91,7 @@ function FichaSolicitacaoExame() {
             setFichaId(ficha);
         }
     }
-  }, [router.isReady, router.query.consultaId]);
+  }, [router.isReady, router.query.consultaId, router.query.animalId, router.query.fichaId]);
 
    useEffect(() => {
     if (!animalId) return;
@@ -112,18 +112,69 @@ function FichaSolicitacaoExame() {
             console.error('Erro ao buscar tutor do animal:', error);
         } 
 
-        try {
-            const formData = await getFichaById(fichaId);
-            const conteudo = (JSON.parse(formData.conteudo));
-            setFormData(conteudo.formData || {});
-            console.log('Conteúdo da ficha:', conteudo);
-            setOtherValues(conteudo.otherValues || {});
-            setData(formData.dataHora);
-        } catch (error) {
-            console.error('Erro ao buscar dados da ficha:', error);
-        } finally {
-            setLoading(false);
+      try {
+        const fichaDataFromApi = await getFichaById(fichaId);
+        const conteudo = JSON.parse(fichaDataFromApi.conteudo);
+        console.log("Conteúdo da ficha bruta da API:", conteudo);
+
+        const newFormData = {};
+        const newOtherValues = {};
+        const newShowOtherInputs = {};
+
+        const apiToStateMap = {
+          'HematologiaDiagnóstica': 'hematologiaDiagnostica',
+          'Urinálise': 'urinalise',
+          'Parasitologico': 'parasitologico',
+          'BioquímicaClínica': 'bioquimicaClinica',
+          'CitologiaHistopatologia': 'citologiaHistopatologia',
+          'Imunológicos': 'imunologicos',
+          'Imaginologia': 'imaginologia',
+          'Cardiologia': 'cardiologia',
+        };
+
+        for (const apiField in conteudo) {
+          const stateField = apiToStateMap[apiField];
+          if (stateField) {
+            let items = conteudo[apiField];
+            let otherValue = '';
+            let hasOther = false;
+
+            if (Array.isArray(items)) {
+              const outrosIndex = items.indexOf("Outros(s):");
+              if (outrosIndex !== -1) {
+                hasOther = true;
+                newShowOtherInputs[stateField] = true;
+                const filteredItems = items.filter(item => item !== "Outros(s):");
+                if (filteredItems.length > 0) {
+                    otherValue = filteredItems[filteredItems.length - 1];
+                    items = filteredItems.filter(item => item !== otherValue);
+                } else {
+                    items = [];
+                }
+              } else {
+                newShowOtherInputs[stateField] = false;
+                otherValue = '';
+              }
+            }
+
+            newFormData[stateField] = items || [];
+            newOtherValues[stateField] = otherValue;
+            if (hasOther) {
+              newFormData[stateField].push("Outros(s):");
+            }
+          }
         }
+
+        setFormData(newFormData);
+        setOtherValues(newOtherValues);
+        setShowOtherInputs(newShowOtherInputs);
+        setData(fichaDataFromApi.dataHora);
+
+      } catch (error) {
+        console.error("Erro ao buscar dados da ficha:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
         fetchData();
@@ -202,14 +253,14 @@ function FichaSolicitacaoExame() {
     const fichaData = {
       nome: "Ficha Solicitação de Exame",
       conteudo: {
-        hematologiaDiagnóstica: finalFormData.hematologiaDiagnostica,
-        urinálise: finalFormData.urinalise,
-        parasitologico: finalFormData.parasitologico,
-        bioquímicaClínica: finalFormData.bioquimicaClinica,
-        citologiaHistopatologia: finalFormData.citologiaHistopatologia,
-        imunológicos: finalFormData.imunologicos,
-        imaginologia: finalFormData.imaginologia,
-        cardiologia: finalFormData.cardiologia,
+        HematologiaDiagnóstica: finalFormData.hematologiaDiagnostica,
+        Urinálise: finalFormData.urinalise,
+        Parasitologico: finalFormData.parasitologico,
+        BioquímicaClínica: finalFormData.bioquimicaClinica,
+        CitologiaHistopatologia: finalFormData.citologiaHistopatologia,
+        Imunológicos: finalFormData.imunologicos,
+        Imaginologia: finalFormData.imaginologia,
+        Cardiologia: finalFormData.cardiologia,
       },
       dataHora: dataFormatada,
     };
@@ -394,6 +445,7 @@ function FichaSolicitacaoExame() {
                     placeholder="Digite aqui..."
                     value={otherValues[field]}
                     onChange={(e) => handleOtherInputChange(field, e.target.value)}
+                    disabled={isReadOnly}
                     className="form-control"
                   />
                 )}

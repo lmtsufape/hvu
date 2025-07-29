@@ -122,7 +122,7 @@ export default function ClinicaMedicaRetornoStep1({
   return (
     <div className={styles.container}>
       <VoltarButton />
-      <h1>Ficha clínico médica de retorno</h1>
+      <h1>Ficha Clínica Médica de Retorno</h1>
       <div className={styles.form_box}>
         <form onSubmit={handleSubmit}>
           <div className={styles.box_ficha_toggle}>
@@ -242,7 +242,7 @@ export default function ClinicaMedicaRetornoStep1({
                         onChange={handleCheckboxChangeVacinacao}
                         className="me-2"
                       />
-                      {opc === "antiRabica" && "Anti-Rábica"}
+                      {opc === "antiRabica" && "Antirábica"}
                       {opc === "giardia" && "Giardia"}
                       {opc === "leishmaniose" && "Leishmaniose"}
                       {opc === "tosseDosCanis" && "Tose dos Canis"}

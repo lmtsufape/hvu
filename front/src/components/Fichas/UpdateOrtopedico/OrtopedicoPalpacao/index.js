@@ -69,6 +69,43 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
     return new Date(dateString).toLocaleDateString('pt-BR', options);
   };
 
+  useEffect(() => {
+    const novosLadosVisiveis = {};
+    const novosSelecionados = [];
+    for (const grupoTitulo in formData) {
+      const grupoData = formData[grupoTitulo]; 
+      if (typeof grupoData === 'object' && grupoData !== null) {
+        for (const itemKey in grupoData) {
+          const itemData = grupoData[itemKey];
+          if (itemData) {
+            novosSelecionados.push(itemKey);
+            if (typeof itemData === 'object' && itemData !== null) {
+              novosLadosVisiveis[itemKey] = {}; 
+              if (itemData.Direito) {
+                novosLadosVisiveis[itemKey].Direito = true;
+              }
+              if (itemData.Esquerdo) {
+                novosLadosVisiveis[itemKey].Esquerdo = true;
+              }
+            }
+          }
+        }
+      }
+    }
+    if (setFormData) {
+        setFormData(prev => ({
+            ...prev,
+            _initialState: {
+                selecionados: novosSelecionados,
+                ladosVisiveis: novosLadosVisiveis
+            }
+        }));
+    }
+
+
+  }, [formData]); // Roda sempre que o formData for carregado/atualizado
+
+
   return (
     <div className={styles.container}>
       <VoltarButton onClick={prevStep} />
@@ -587,6 +624,13 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
 function GrupoExame({ titulo, label, itens, formData, selecionados,
   ladosVisiveis, toggleItem, toggleLadoVisivel, handleRadioAninhado, isReadOnly }) {
   const [aberto, setAberto] = useState(false);
+
+  useEffect(() => {
+    const temItemSelecionado = itens.some(item => selecionados.includes(item.key));
+    if (temItemSelecionado) {
+      setAberto(true);
+    }
+  }, [selecionados, itens]);
 
   const handleToggleItem = (key) => {
     toggleItem(titulo, key);
