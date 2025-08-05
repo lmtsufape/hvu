@@ -934,6 +934,10 @@ public class Facade {
         Animal animal = findAnimalById(newInstance.getAnimal().getId(), idSession);
         Vaga vaga = vagaServiceInterface.findVagaByIdWithLock(idVaga);
 
+        if (animal.getOrigemAnimal() != OrigemAnimal.HVU) {
+            throw new IllegalArgumentException("Só é permitido agendar animais com origem HVU.");
+        }
+
         if (vaga.getDataHora().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("A vaga não pode estar no passado.");
         }
