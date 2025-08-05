@@ -26,6 +26,7 @@ public  class AnimalResponse  {
 	private String numeroFicha;
 	private RacaResponse raca;
 	private OrigemAnimal origemAnimal;
+	private boolean obito;
 
 
 	public AnimalResponse(Animal obj) {
