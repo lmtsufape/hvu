@@ -42,4 +42,5 @@ public  class Animal  {
 	@ToString.Exclude
 	private Raca raca;
 	private OrigemAnimal origemAnimal;
+	private boolean obito;
 }

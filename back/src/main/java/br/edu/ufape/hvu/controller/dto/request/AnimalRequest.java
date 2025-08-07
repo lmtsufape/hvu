@@ -35,6 +35,7 @@ public  class AnimalRequest  {
 	//@NotBlank(message = "Numero ficha não pode estar em branco")
 	private String numeroFicha;
 	private OrigemAnimal origemAnimal;
+	private boolean obito;
 
 	public Animal convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
