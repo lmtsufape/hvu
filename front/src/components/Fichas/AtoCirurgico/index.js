@@ -25,6 +25,7 @@ function FichaAtoCirurgico() {
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
+    const [agendamentoId, setAgendamentoId] = useState(null);
 
 
     const [formData, setFormData] = useState({
@@ -88,8 +89,12 @@ function FichaAtoCirurgico() {
         if (router.isReady) {
             const id = router.query.fichaId;
             const animalId = router.query.animalId;
+            const aId = router.query.agendamentoId; // Obtém o ID do agendamento da UR
             if (id) {
                 setConsultaId(id);
+            }
+            if (aId) {
+                setAgendamentoId(aId);
             }
             if (animalId) {
                 setAnimalId(animalId);
@@ -167,7 +172,10 @@ function FichaAtoCirurgico() {
                 medicosResponsaveis: formData.medicosResponsaveis,
 
             },
-            dataHora: dataFormatada
+            dataHora: dataFormatada,
+            agendamento: {
+                id: Number(agendamentoId)
+            }
         };
 
         console.log("Ficha enviada:", fichaData);
