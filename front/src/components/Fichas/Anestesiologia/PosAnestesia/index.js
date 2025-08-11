@@ -26,6 +26,7 @@ const [animalId, setAnimalId] = useState(null);
 const [animal, setAnimal] = useState({});
 const [showButtons, setShowButtons] = useState(false);
 const [tutor , setTutor] = useState({});
+const [agendamentoId, setAgendamentoId] = useState(null);
 
  
 const [farmacosPos, setFarmacosPos] = useState(
@@ -138,8 +139,12 @@ useEffect(() => {
     if (router.isReady) {
         const id = router.query.fichaId;
         const animalId = router.query.animalId;
+        const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
         if (id) {
         setConsultaId(id);
+        }
+        if (animalId) {
+            setAnimalId(animalId);
         }
         if (animalId) {
             setAnimalId(animalId);
