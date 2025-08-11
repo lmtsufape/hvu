@@ -29,6 +29,7 @@ function FichaSessao() {
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
+    const [agendamentoId, setAgendamentoId] = useState(null);
      
 
     const [formData, setFormData] = useState({
@@ -61,8 +62,12 @@ function FichaSessao() {
     if (router.isReady) {
         const id = router.query.fichaId;
         const animalId = router.query.animalId;
+        const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
         if (id) {
-        setConsultaId(id);
+            setConsultaId(id); // Armazena o ID da consulta
+        }
+        if (aId) {
+            setAgendamentoId(aId); // Armazena o ID do agendamento
         }
         if (animalId) {
             setAnimalId(animalId);
@@ -152,7 +157,7 @@ function FichaSessao() {
     const handleSubmit = async (event) => {
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
         const fichaData = {
-            nome: "Ficha de sessão",  
+            nome: "Ficha de sessão", 
             conteudo:{
                 numeroSessao: formData.numeroSessao,
                 sessaoData: formData.sessaoData,
@@ -160,7 +165,10 @@ function FichaSessao() {
                 rg: formData.rg,
                 estagiario: formData.estagiario
             },
-            dataHora: dataFormatada // Gera a data atual no formato ISO 8601
+            dataHora: dataFormatada,
+            agendamento: {
+                id: Number(agendamentoId)
+            }
         };
 
         try {
