@@ -10,6 +10,7 @@ import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { createFicha } from '../../../../../services/fichaService';
 import { useRouter } from 'next/router';
+import { set } from "date-fns";
 
 /* ---------- listas estáticas ---------- */
 const FISICO_SISTEMA = [
@@ -57,13 +58,18 @@ export default function Step2ClinicaMedica({
   const [showButtons, setShowButtons] = useState(false);
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   useEffect(() => {
     if (router.isReady) {
       const id = router.query.fichaId;
       const animalId = router.query.animalId;
+      const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
       if (id) {
         setConsultaId(id);
+      }
+      if (aId) {
+        setAgendamentoId(aId); // Define o ID do agendamento
       }
       if (animalId) {
         setAnimalId(animalId);
