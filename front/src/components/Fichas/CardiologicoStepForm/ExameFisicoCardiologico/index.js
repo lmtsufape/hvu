@@ -29,6 +29,7 @@ function AtendimentoCardiologico({
   const [tutor, setTutor] = useState({ nome: '' });
   const router = useRouter();
   const { id } = router.query;
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -86,6 +87,7 @@ function AtendimentoCardiologico({
     handleChange({ target: { name: "ExameFisico.posturaOutras", value: "" } });
     console.log("Formulário válido. Dados prontos para envio:", formData);
     nextStep();
+     
   };
 
   return (

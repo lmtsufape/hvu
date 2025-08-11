@@ -29,6 +29,7 @@ function AtendimentoCardiologico({
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
+    const [agendamentoId, setAgendamentoId] = useState(null);
 
     const handleSubmit = (event) => {
         event.preventDefault();
