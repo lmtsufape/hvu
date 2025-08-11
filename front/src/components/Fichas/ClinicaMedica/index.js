@@ -25,6 +25,7 @@ function ClinicaMedicaSteps() {
     const prevStep = () => setStep(step - 1);
     const [consultaId, setConsultaId] = useState(null);
     const router = useRouter();
+    const [agendamentoId, setAgendamentoId] = useState(null);
 
   /* dados do formulário (pág. 1 + pág. 2) */
   const [formData, setFormData] = useState({
@@ -238,9 +239,13 @@ function ClinicaMedicaSteps() {
   useEffect(() => {
     if (router.isReady) {
         const id = router.query.fichaId;
+        const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
         if (id) {
         setConsultaId(id);
         console.log("ID da ficha:", id);
+        }
+        if (aId) {
+          setAgendamentoId(aId); // Define o ID do agendamento
         }
     }
   }, [router.isReady, router.query.fichaId]);
@@ -303,7 +308,11 @@ function ClinicaMedicaSteps() {
     const fichaData = {
       nome: "Ficha Clínica Médica",
       conteudo: { ...formData },
-      dataHora: moment().format("YYYY-MM-DDTHH:mm:ss")
+      dataHora: moment().format("YYYY-MM-DDTHH:mm:ss"),
+      agendamento: {
+                id: Number(agendamentoId)
+            }
+
     };
 
     console.log("➡️  Enviando para a API:", fichaData);
