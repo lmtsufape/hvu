@@ -32,7 +32,8 @@ function FichaSolicitacaoCitologia() {
     const [fichaId, setFichaId] = useState(null);
     const [data, setData] = useState([]);
     const router = useRouter();
-
+    
+    const [agendamentoId, setAgendamentoId] = useState(null);
 
     const [animalId, setAnimalId] = useState(null);
     const [animal, setAnimal] = useState({});
@@ -85,12 +86,17 @@ function FichaSolicitacaoCitologia() {
             const id = router.query.consultaId;
             const animalId = router.query.animalId;
             const ficha = router.query.fichaId;
+            const aId = router.query.agendamentoId; 
             if (id) {
                 setConsultaId(id);
             }
             if (animalId) {
                 setAnimalId(animalId);
             }
+            if (aId) {
+            setAgendamentoId(aId); // Armazena o ID do agendamento
+             }
+
             if (ficha) {
                 setFichaId(ficha);
             }
@@ -267,7 +273,10 @@ function FichaSolicitacaoCitologia() {
                 },
                 citologia: formData.citologia
             },
-            dataHora: dataFormatada
+            dataHora: dataFormatada,
+             agendamento: {
+                id: Number(agendamentoId)
+            }
         };
 
         try {
