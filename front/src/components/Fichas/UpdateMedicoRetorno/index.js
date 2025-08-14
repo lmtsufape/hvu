@@ -27,6 +27,7 @@ function FichaMedicaRetorno() {
   const [consultaId, setConsultaId] = useState(null);
   const [fichaId, setFichaId] = useState(null);
   const [data, setData] = useState([]);
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   const [formData, setFormData] = useState({
     // página 1
@@ -124,11 +125,15 @@ function FichaMedicaRetorno() {
     if (router.isReady) {
         const id = router.query.consultaId;
         const ficha = router.query.fichaId;
+        const aId = router.query.agendamentoId;
         if (id) {
           setConsultaId(id);
         }
         if (ficha) {
           setFichaId(ficha);
+        }
+        if (aId) {
+          setAgendamentoId(aId);
         }
     }
   }, [router.isReady, router.query.fichaId]);
@@ -206,6 +211,7 @@ function FichaMedicaRetorno() {
         ...formData
       },
       dataHora: dataFormatada,
+      agendamento: { id: Number(agendamentoId) }
     };
 
     try {
