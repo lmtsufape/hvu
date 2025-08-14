@@ -30,6 +30,7 @@ function UpdateClinicaMedicaSteps() {
     const [fichaId, setFichaId] = useState(null);
     const { id, modo } = router.query; 
     const [isReadOnly, setIsReadOnly] = useState(false);
+    const [agendamentoId, setAgendamentoId] = useState(null);
 
   /* dados do formulário (pág. 1 + pág. 2) */
   const [formData, setFormData] = useState({
@@ -234,11 +235,15 @@ function UpdateClinicaMedicaSteps() {
     if (router.isReady) {
         const id = router.query.fichaId;
         const ficha = router.query.fichaId;
+        const aId = router.query.agendamentoId;
         if (id) {
           setConsultaId(id);
         }
         if (ficha) {
           setFichaId(ficha);
+        }
+        if (aId) {
+          setAgendamentoId(aId);
         }
     }
   }, [router.isReady, router.query.fichaId]);
@@ -318,7 +323,8 @@ function UpdateClinicaMedicaSteps() {
     const fichaData = {
       nome: "Ficha Clínica Médica",
       conteudo: { ...formData },
-      dataHora: moment(data).format("YYYY-MM-DDTHH:mm:ss")
+      dataHora: moment(data).format("YYYY-MM-DDTHH:mm:ss"),
+      agendamento: { id: Number(agendamentoId) }
     };
 
     console.log("➡️  Enviando para a API:", fichaData);
