@@ -25,6 +25,7 @@ function ReabilitacaoIntegrativaSteps() {
   const [fichaId, setFichaId] = useState(null);
   const [data, setData] = useState([]);
   const router = useRouter();
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   const [formData, setFormData] = useState({
 
@@ -175,11 +176,15 @@ function ReabilitacaoIntegrativaSteps() {
     if (router.isReady) {
         const id = router.query.consultaId;
         const ficha = router.query.fichaId;
+        const aId = router.query.agendamentoId;
         if (id) {
           setConsultaId(id);
         }
         if (ficha) {
           setFichaId(ficha);
+        }
+        if (aId) {
+          setAgendamentoId(aId);
         }
     }
   }, [router.isReady, router.query.consultaId]);
@@ -391,7 +396,8 @@ const handleSelectChange = (e, index) => {
         preferencias:formData.preferencias,
             
         },
-        dataHora: dataFormatada 
+        dataHora: dataFormatada,
+        agendamento: { id: Number(agendamentoId) }
     };
 
     try {
