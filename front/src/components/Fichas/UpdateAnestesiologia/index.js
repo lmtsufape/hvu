@@ -22,6 +22,7 @@ export default function AnestesiologiaSteps() {
   const [fichaId, setFichaId] = useState(null);
   const [data, setData] = useState([]);
   const router = useRouter();
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   /* auth */
   const [loading, setLoading] = useState(true);
@@ -73,8 +74,12 @@ export default function AnestesiologiaSteps() {
     if (router.isReady) {
         const id = router.query.consultaId;
         const ficha = router.query.fichaId;
+        const aId = router.query.agendamentoId;
         if (id) {
           setConsultaId(id);
+        }
+        if (aId) {
+          setAgendamentoId(aId);
         }
         if (ficha) {
           setFichaId(ficha);
@@ -127,7 +132,8 @@ export default function AnestesiologiaSteps() {
     const fichaData = {
       nome: "Ficha Anestesiológica",
       conteudo: { ...formData },
-      dataHora: moment(data).format("YYYY-MM-DDTHH:mm:ss")
+      dataHora: moment(data).format("YYYY-MM-DDTHH:mm:ss"),
+      agendamento: {id: Number(agendamentoId)}
     };
 
     try {
