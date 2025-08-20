@@ -4,11 +4,34 @@ import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { getLaudoNecropsiaById } from '../../../../../../services/laudoNecropsiaService';
 import { EditarWhiteButton } from '@/components/WhiteButton';
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function GetLaudoNecropsiaById() {
     const router = useRouter();
     const { id } = router.query;
     const [laudo, setLaudo] = useState({});
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         if (id) {

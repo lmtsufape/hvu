@@ -3,10 +3,33 @@ import Link from 'next/link';
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css"
 import { useRouter } from "next/router";
+import { getToken, getRoles } from "../../../../../services/userService";
 
 function GerenciaVeterinario() {
 
     const router = useRouter();
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     const handleMenuAnteriorClick = () => {
         router.push('/lapa/administrationPage/');

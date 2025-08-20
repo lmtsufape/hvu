@@ -60,7 +60,6 @@ function CreatePatologista() {
         }
       }, []);
 
-    // Verifica se o usuário tem permissão
     if (!roles.includes("admin_lapa")) {
         return (
             <div className={styles.container}>
@@ -75,7 +74,7 @@ function CreatePatologista() {
             <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
           </div>
         );
-      }
+    }
 
     const handleEspecialidadeSelection = (event) => {
         const especialidadeId = parseInt(event.target.value);

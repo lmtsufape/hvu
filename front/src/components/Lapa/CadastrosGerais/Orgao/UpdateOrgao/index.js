@@ -8,6 +8,7 @@ import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
 import FotosList from "@/hooks/useFotoList";
 import AreaList from "@/hooks/useAreaList";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function UpdateOrgao() {
     const router = useRouter();
@@ -28,6 +29,28 @@ function UpdateOrgao() {
 
     const { fotos } = FotosList();
     const { areas } = AreaList();
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
     
     useEffect(() => {
         if (id) {

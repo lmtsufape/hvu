@@ -12,6 +12,7 @@ import CampoLaudoList from "@/hooks/useCampoLaudoList";
 import EstagiarioList from "@/hooks/useEstagiarioList";
 import FotosList from "@/hooks/useFotoList";
 import LaudoMicroscopiaList from "@/hooks/useLaudoMicroscopiaList";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function CreateLaudoNecropsia() {
     const router = useRouter();
@@ -42,6 +43,29 @@ function CreateLaudoNecropsia() {
 
     // Microscopia
     const { campoMicroscopiaOptions = [], error: microscopiaError } = LaudoMicroscopiaList();
+
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     const handleCampoLaudoChange = (event, index) => {
         const selectedCampoId = parseInt(event.target.value);

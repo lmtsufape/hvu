@@ -6,6 +6,7 @@ import { deleteAnimal, getAllAnimal } from '../../../../../../services/animalSer
 import VoltarButton from '../../../VoltarButton';
 import ExcluirButton from '../../../../ExcluirButton';
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function GerenciarAnimais() {
     const [animais, setAnimais] = useState([]);
@@ -15,6 +16,28 @@ function GerenciarAnimais() {
     const [deletedAnimalId, setDeletedAnimalId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         const fetchData = async () => {

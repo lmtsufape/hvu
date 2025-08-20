@@ -60,3 +60,18 @@ export async function createUsuario(usuarioData) {
     }
   }
 
+export function getToken() {
+  if (typeof window === "undefined") {
+    return ""; 
+  }
+  return localStorage.getItem("token") || "";
+}
+
+export function getRoles() {
+  if (typeof window === "undefined") {
+    return [];
+  }
+  const storedRoles = localStorage.getItem("roles");
+  return storedRoles ? JSON.parse(storedRoles) : [];
+}
+

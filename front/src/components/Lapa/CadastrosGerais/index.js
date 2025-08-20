@@ -2,9 +2,32 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from "./index.module.css";
+import { getToken, getRoles } from "../../../../services/userService";
 
 function TelaAdministracao() {
     const router = useRouter();
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     return (
         <div className={styles.container}>
