@@ -16,7 +16,7 @@ import br.edu.ufape.hvu.controller.dto.response.LaudoNecropsiaResponse;
 public class LaudoNecropsiaController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("laudoNecropsia")
 	public List<LaudoNecropsiaResponse> getAllLaudoNecropsia() {
 		return facade.getAllLaudoNecropsia()
@@ -25,25 +25,25 @@ public class LaudoNecropsiaController {
 				.toList();
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("laudoNecropsia")
 	public LaudoNecropsiaResponse createLaudoNecropsia(@Valid @RequestBody LaudoNecropsiaRequest newObj) {
 		return new LaudoNecropsiaResponse(facade.saveLaudoNecropsia(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("laudoNecropsia/{id}")
 	public LaudoNecropsiaResponse getLaudoNecropsiaById(@PathVariable Long id) {
 		return new LaudoNecropsiaResponse(facade.findLaudoNecropsiaById(id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@PatchMapping("laudoNecropsia/{id}")
 	public LaudoNecropsiaResponse updateLaudoNecropsia(@PathVariable Long id, @Valid @RequestBody LaudoNecropsiaRequest obj) {
 		return new LaudoNecropsiaResponse(facade.updateLaudoNecropsia(obj, id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@DeleteMapping("laudoNecropsia/{id}")
 	public String deleteLaudoNecropsia(@PathVariable Long id) {
 		facade.deleteLaudoNecropsia(id);

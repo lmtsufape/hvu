@@ -17,7 +17,7 @@ import br.edu.ufape.hvu.controller.dto.response.EspecialidadeResponse;
 public class EspecialidadeController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('SECRETARIO','MEDICO', 'ADMIN_LAPA')")
+	@PreAuthorize("hasAnyRole('SECRETARIO','MEDICO', 'ADMIN_LAPA', 'PATOLOGISTA')")
 	@GetMapping("especialidade")
 	public List<EspecialidadeResponse> getAllEspecialidade() {
 		return facade.getAllEspecialidade()
@@ -26,25 +26,25 @@ public class EspecialidadeController {
 			.toList();
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@PostMapping("especialidade")
 	public EspecialidadeResponse createEspecialidade(@Valid @RequestBody EspecialidadeRequest newObj) {
 		return new EspecialidadeResponse(facade.saveEspecialidade(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('SECRETARIO','MEDICO', 'ADMIN_LAPA' )")
+	@PreAuthorize("hasAnyRole('SECRETARIO','MEDICO', 'ADMIN_LAPA', 'PATOLOGISTA')")
 	@GetMapping("especialidade/{id}")
 	public EspecialidadeResponse getEspecialidadeById(@PathVariable Long id) {
 		return new EspecialidadeResponse(facade.findEspecialidadeById(id));
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@PatchMapping("especialidade/{id}")
 	public EspecialidadeResponse updateEspecialidade(@PathVariable Long id, @Valid @RequestBody EspecialidadeRequest obj) {
 		return new EspecialidadeResponse(facade.updateEspecialidade(obj, id));
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@DeleteMapping("especialidade/{id}")
 	public String deleteEspecialidade(@PathVariable Long id) {
 		facade.deleteEspecialidade(id);
