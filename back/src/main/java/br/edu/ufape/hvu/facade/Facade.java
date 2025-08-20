@@ -1332,6 +1332,19 @@ public class Facade {
 
     @Transactional
     public Area saveArea(Area newInstance) {
+        List<Especie> especies = newInstance.getEspecie()
+                .stream()
+                .map(e -> {
+                    Especie especie = especieServiceInterface.findEspecieById(e.getId());
+                    if (especie == null) {
+                        throw new IdNotFoundException(e.getId(), "Especie");
+                    }
+                    return especie;
+                })
+                .toList();
+
+        newInstance.setEspecie(especies);
+
         return areaServiceInterface.saveArea(newInstance);
     }
 

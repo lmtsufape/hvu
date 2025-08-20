@@ -100,7 +100,7 @@ function CreateEspecie() {
                     </button>
                 </div>
             </form>
-            {<Alert message="Espécie criada com sucesso!" show={showAlert} url={`/gerenciarEspecies`} />}
+            {<Alert message="Espécie criada com sucesso!" show={showAlert} url={`/lapa/gerenciarEspecies`} />}
             {showErrorAlert && <ErrorAlert message="Erro ao criar especie, tente novamente." show={showErrorAlert} />}
         </div>
     );
