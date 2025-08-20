@@ -29,6 +29,7 @@ function fichaRetornoClinicoSil() {
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
+    const [agendamentoId, setAgendamentoId] = useState(null);
      
 
     const [formData, setFormData] = useState({
@@ -67,8 +68,12 @@ function fichaRetornoClinicoSil() {
     if (router.isReady) {
         const id = router.query.fichaId;
         const animalId = router.query.animalId;
+         const aId = router.query.agendamentoId; 
         if (id) {
             setConsultaId(id);
+        }
+        if (aId) {
+            setAgendamentoId(aId); 
         }
         if (animalId) {
             setAnimalId(animalId);
@@ -171,7 +176,10 @@ function fichaRetornoClinicoSil() {
                 medicoresponsavel: formData.medicoresponsavel,
                 outros_texto: formData.outros_texto
             },
-            dataHora: dataFormatada // Gera a data atual no formato ISO 8601
+            dataHora: dataFormatada, // Gera a data atual no formato ISO 8601
+            agendamento: {
+                id: Number(agendamentoId)
+            }
         };
 
         try {

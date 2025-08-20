@@ -45,6 +45,7 @@ export default function PreAnestesia({
   const [animal, setAnimal] = useState({});
   const [showButtons, setShowButtons] = useState(false);
   const [tutor, setTutor] = useState({});
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   const submitLocal = (e) => {
     e.preventDefault();
@@ -93,8 +94,12 @@ export default function PreAnestesia({
     if (router.isReady) {
       const id = router.query.fichaId;
       const animalId = router.query.animalId;
+      const aId = router.query.agendamentoId;
       if (id) {
         setConsultaId(id);
+      }
+      if (aId) {
+        setAgendamentoId(aId);
       }
       if (animalId) {
         setAnimalId(animalId);

@@ -22,6 +22,7 @@ function CardiologicaSteps() {
   const prevStep = () => setStep(step - 1);
   const [consultaId, setConsultaId] = useState(null);
   const router = useRouter();
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   const [formData, setFormData] = useState({
 
@@ -134,9 +135,13 @@ function CardiologicaSteps() {
     useEffect(() => {
       if (router.isReady) {
           const id = router.query.fichaId;
+          const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
           if (id) {
             setConsultaId(id);
             console.log("ID da ficha:", id);
+          }
+          if (aId) {
+            setAgendamentoId(aId);
           }
       }
     }, [router.isReady, router.query.fichaId]);
@@ -238,6 +243,9 @@ function CardiologicaSteps() {
     nome: "Ficha clínica cardiológica",
     conteudo: dadosParaEnviar, // Envia apenas os dados relevantes
     dataHora: dataFormatada,
+     agendamento: {
+                id: Number(agendamentoId)
+            }
   };
 
   try {

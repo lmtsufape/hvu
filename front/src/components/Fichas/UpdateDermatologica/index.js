@@ -27,6 +27,7 @@ function UpdateDermatologicaSteps() {
   const router = useRouter();
   const [fichaId, setFichaId] = useState(null);
   const [data, setData] = useState([]);
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   const [showOtherInputConviveComAnimais, setShowOtherInputConviveComAnimais] = useState(false);
   const [otherValueConviveComAnimais, setOtherValueConviveComAnimais] = useState("");
@@ -147,11 +148,15 @@ function UpdateDermatologicaSteps() {
     if (router.isReady) {
         const id = router.query.consultaId;
         const ficha = router.query.fichaId;
+        const aId = router.query.agendamentoId;
         if (id) {
           setConsultaId(id);
         }
         if(ficha){
           setFichaId(ficha);
+        }
+        if (aId) {
+          setAgendamentoId(aId);
         }
     }
   }, [router.isReady, router.query.fichaId]);
@@ -473,7 +478,8 @@ function UpdateDermatologicaSteps() {
             SolicitacaoDeExame: formData.SolicitacaoDeExame
 
         },
-        dataHora: dataFormatada 
+        dataHora: dataFormatada,
+        agendamento: {id: Number(agendamentoId)}
         
     };
 

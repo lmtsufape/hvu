@@ -29,6 +29,7 @@ export default function AnestesiologiaSteps() {
   const [showOK,  setShowOK]  = useState(false);
   const [showErr, setShowErr] = useState(false);
   const [errMsg,  setErrMsg]  = useState("");
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   /* form */
   const [formData, setFormData] = useState({
@@ -85,8 +86,12 @@ export default function AnestesiologiaSteps() {
   useEffect(() => {
     if (router.isReady) {
         const id = router.query.fichaId;
+        const aId = router.query.agendamentoId;
         if (id) {
           setConsultaId(id);
+        }
+        if (aId) {
+          setAgendamentoId(aId);
         }
     }
   }, [router.isReady, router.query.fichaId]);
@@ -117,7 +122,10 @@ export default function AnestesiologiaSteps() {
     const data = {
       nome: "Ficha Anestesiológica",
       conteudo: { ...formData },
-      dataHora: moment().format("YYYY-MM-DDTHH:mm:ss")
+      dataHora: moment().format("YYYY-MM-DDTHH:mm:ss"),
+       agendamento: {
+                id: Number(agendamentoId)
+            }
     };
 
     console.log("Enviando para API:", data);

@@ -24,6 +24,7 @@ function OrtopedicaSteps() {
   const [ladosVisiveisGrupoExame, setLadosVisiveisGrupoExame] = useState({});
   const [consultaId, setConsultaId] = useState(null);
   const router = useRouter();
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   const [formData, setFormData] = useState({
 
@@ -224,9 +225,13 @@ function OrtopedicaSteps() {
   useEffect(() => {
     if (router.isReady) {
         const id = router.query.fichaId;
+        const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
         if (id) {
           setConsultaId(id);
           console.log("ID da ficha:", id);
+        }
+        if (aId) {
+          setAgendamentoId(aId); // Define o ID do agendamento
         }
     }
   }, [router.isReady, router.query.fichaId]);
@@ -418,7 +423,10 @@ function OrtopedicaSteps() {
             cabecaEsqueletoAxial: formData.cabecaEsqueletoAxial,
             medicosResponsaveis: formData.medicosResponsaveis,
         },
-        dataHora: dataFormatada 
+        dataHora: dataFormatada,
+        agendamento: {
+                id: Number(agendamentoId)
+            }
     };
 
     try {

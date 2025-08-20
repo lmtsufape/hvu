@@ -68,13 +68,18 @@ export default function Step1ClinicaMedica({
   const [showButtons, setShowButtons] = useState(false);
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   useEffect(() => {
     if (router.isReady) {
       const id = router.query.fichaId;
       const animalId = router.query.animalId;
+      const aId = router.query.agendamentoId;
       if (id) {
         setConsultaId(id);
+      }
+      if (aId){
+        setAgendamentoId(aId);
       }
       if (animalId) {
         setAnimalId(animalId);

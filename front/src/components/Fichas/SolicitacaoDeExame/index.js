@@ -29,6 +29,7 @@ function FichaSolicitacaoExame() {
   const [animal, setAnimal] = useState({});
   const [tutor, setTutor] = useState({});
   const [showButtons, setShowButtons] = useState(false);
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   // Estados para checkboxes e campos "Outros"
   const [formData, setFormData] = useState({
@@ -128,8 +129,12 @@ function FichaSolicitacaoExame() {
     if (router.isReady) {
       const id = router.query.fichaId;
       const animalId = router.query.animalId;
+      const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
       if (id) {
         setConsultaId(id);
+      }
+      if (aId) {
+        setAgendamentoId(aId); // Define o ID do agendamento  
       }
       if (animalId) {
         setAnimalId(animalId);
@@ -333,6 +338,9 @@ const handleGeneratePDF = () => {
         Cardiologia: finalFormData.cardiologia,
       },
       dataHora: dataFormatada,
+      agendamento: {
+                id: Number(agendamentoId)
+            }
     };
 
     try {

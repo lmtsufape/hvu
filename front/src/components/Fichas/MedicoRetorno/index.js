@@ -24,6 +24,7 @@ function FichaMedicaRetorno() {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
   const [consultaId, setConsultaId] = useState(null);
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   const [formData, setFormData] = useState({
     // página 1
@@ -137,9 +138,13 @@ function FichaMedicaRetorno() {
   useEffect(() => {
     if (router.isReady) {
         const id = router.query.fichaId;
+        const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
         if (id) {
           setConsultaId(id);
           console.log("ID da ficha:", id);
+        }
+        if (aId) {
+          setAgendamentoId(aId); // Define o ID do agendamento
         }
     }
   }, [router.isReady, router.query.fichaId]);
@@ -200,6 +205,9 @@ function FichaMedicaRetorno() {
         ...formData
       },
       dataHora: dataFormatada,
+      agendamento: {
+          id: Number(agendamentoId)
+      }
     };
 
     try {

@@ -29,6 +29,7 @@ function UpdateClinicaMedicaSilvestresSteps() {
     const [fichaId, setFichaId] = useState(null);
     const [data, setData] = useState([]);
     const router = useRouter();
+    const [agendamentoId, setAgendamentoId] = useState(null);
 
   /* dados do formulário (pág. 1 + pág. 2) */
   const [formData, setFormData] = useState({
@@ -224,13 +225,17 @@ function UpdateClinicaMedicaSilvestresSteps() {
   // Obtém o ID da ficha da URL
   useEffect(() => {
     if (router.isReady) {
-        const id = router.query.fichaId;
+        const id = router.query.consultaId;
         const ficha = router.query.fichaId;
+        const aId = router.query.agendamentoId;
         if (id) {
           setConsultaId(id);
         }
         if (ficha) {
           setFichaId(ficha);
+        }
+        if (aId) {
+          setAgendamentoId(aId);
         }
     }
   }, [router.isReady, router.query.fichaId]);
@@ -311,7 +316,8 @@ function UpdateClinicaMedicaSilvestresSteps() {
     const fichaData = {
       nome: "Ficha Clínica Médica (silvestres ou exóticos)",
       conteudo: { ...formData },
-      dataHora: dataFormatada
+      dataHora: dataFormatada,
+      agendamento: {id: Number(agendamentoId)}
     };
 
     console.log("➡️  Enviando para a API:", fichaData);

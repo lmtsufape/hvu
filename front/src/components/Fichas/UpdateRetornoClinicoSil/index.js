@@ -32,6 +32,7 @@ function updateFichaRetornoClinicoSil() {
     const [tutor , setTutor] = useState({});
     const [fichaId, setFichaId] = useState(null);
     const [data, setData] = useState([]);
+    const [agendamentoId, setAgendamentoId] = useState(null);
      
 
     const [formData, setFormData] = useState({
@@ -62,6 +63,7 @@ function updateFichaRetornoClinicoSil() {
             const id = router.query.consultaId;
             const animalId = router.query.animalId;
             const ficha = router.query.fichaId;
+            const aId = router.query.agendamentoId;
             if (id) {
                 setConsultaId(id);
             }
@@ -70,6 +72,9 @@ function updateFichaRetornoClinicoSil() {
             }
             if (ficha) {
                 setFichaId(ficha);
+            }
+            if (aId) {
+                setAgendamentoId(aId);
             }
         }
     }, [router.isReady, router.query.consultaId]);
@@ -174,7 +179,8 @@ function updateFichaRetornoClinicoSil() {
                 medicoresponsavel: formData.medicoresponsavel,
                 outros_texto: formData.outros_texto
             },
-            dataHora: dataFormatada 
+            dataHora: dataFormatada,
+            agendamento: { id: Number(agendamentoId) }
         };
 
         try {

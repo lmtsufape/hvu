@@ -27,6 +27,7 @@ function UpdateCardiologicaSteps() {
   const router = useRouter();
   const { id, modo } = router.query; 
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   const [formData, setFormData] = useState({
 
@@ -123,11 +124,15 @@ function UpdateCardiologicaSteps() {
       if (router.isReady) {
           const id = router.query.consultaId;
           const ficha = router.query.fichaId;
+          const aId = router.query.agendamentoId;
           if (id) {
             setConsultaId(id);
           }
           if (ficha) {
             setFichaId(ficha);
+          }
+          if (aId) {
+            setAgendamentoId(aId);
           }
       }
     }, [router.isReady, router.query.consultaId]);
@@ -247,6 +252,7 @@ function UpdateCardiologicaSteps() {
     nome: "Ficha clínica cardiológica",
     conteudo: dadosParaEnviar, // Envia apenas os dados relevantes
     dataHora: dataFormatada,
+    agendamento: { id: Number(agendamentoId) }
   };
 
   try {

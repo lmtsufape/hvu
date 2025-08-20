@@ -30,6 +30,7 @@ function FichaSolicitacaoExame() {
   const [data, setData] = useState([]);
   const { id, modo } = router.query; 
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   // Estados para checkboxes e campos "Outros"
   const [formData, setFormData] = useState({
@@ -81,6 +82,7 @@ function FichaSolicitacaoExame() {
         const id = router.query.consultaId;
         const animalId = router.query.animalId;
         const ficha = router.query.fichaId;
+        const aId = router.query.agendamentoId;
         if (id) {
             setConsultaId(id);
         }
@@ -89,6 +91,9 @@ function FichaSolicitacaoExame() {
         }
         if (ficha) {
             setFichaId(ficha);
+        }
+        if (aId) {
+            setAgendamentoId(aId);
         }
     }
   }, [router.isReady, router.query.consultaId, router.query.animalId, router.query.fichaId]);
@@ -263,6 +268,9 @@ function FichaSolicitacaoExame() {
         Cardiologia: finalFormData.cardiologia,
       },
       dataHora: dataFormatada,
+      agendamento: {
+          id: Number(agendamentoId)
+      }
     };
 
     try {

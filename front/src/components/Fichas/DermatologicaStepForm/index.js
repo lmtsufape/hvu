@@ -30,6 +30,7 @@ function DermatologicaSteps() {
   const [otherValueConviveComAnimais, setOtherValueConviveComAnimais] = useState("");
   const [showOtherInputProdutosUtilizados, setShowOtherInputProdutosUtilizados] = useState(false);
   const [otherValueProdutosUtilizados, setOtherValueProdutosUtilizados] = useState("");
+  const [agendamentoId, setAgendamentoId] = useState(null);
   const [formData, setFormData] = useState({
 
     // página 1
@@ -212,9 +213,13 @@ function DermatologicaSteps() {
   useEffect(() => {
     if (router.isReady) {
         const id = router.query.fichaId;
+        const aId = router.query.agendamentoId; 
         if (id) {
           setConsultaId(id);
           console.log("ID da ficha:", id);
+        }
+        if (aId) {
+          setAgendamentoId(aId); 
         }
     }
   }, [router.isReady, router.query.fichaId]);
@@ -525,7 +530,10 @@ function DermatologicaSteps() {
             SolicitacaoDeExame: formData.SolicitacaoDeExame
 
         },
-        dataHora: dataFormatada 
+        dataHora: dataFormatada,
+        agendamento: {
+              id: Number(agendamentoId)
+           }
         
     };
     console.log("Dados enviados para o backend:", JSON.stringify(fichaData, null, 2));

@@ -22,6 +22,8 @@ function NeurologicaSteps() {
   const prevStep = () => setStep(step - 1);
   const [consultaId, setConsultaId] = useState(null);
   const router = useRouter();
+  const [agendamentoId, setAgendamentoId] = useState(null);
+       
 
   console.log("userId:", userId);
   const [formData, setFormData] = useState({
@@ -195,9 +197,13 @@ function NeurologicaSteps() {
     useEffect(() => {
         if (router.isReady) {
             const id = router.query.fichaId;
+            const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
             if (id) {
                 setConsultaId(id);
                 console.log("ID da ficha:", id);
+            }
+            if (aId) {
+                setAgendamentoId(aId); // Define o ID do agendamento
             }
         }
     }, [router.isReady, router.query.fichaId]);
@@ -322,7 +328,10 @@ function NeurologicaSteps() {
             diagnosticoAnatomico:formData.diagnosticoAnatomico,
             plantonistasDiscentes: formData.plantonistasDiscentes,
         },
-        dataHora: dataFormatada 
+        dataHora: dataFormatada,
+        agendamento: {
+            id: Number(agendamentoId)
+        }
     };
 
     try {

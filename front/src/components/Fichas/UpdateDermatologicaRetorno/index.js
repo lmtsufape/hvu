@@ -28,7 +28,7 @@ function FichaDermatologicaRetorno() {
     const [data, setData] = useState([]);
     const [consultaId, setConsultaId] = useState(null);
     const router = useRouter();
-
+    const [agendamentoId, setAgendamentoId] = useState(null);
     const [animalId, setAnimalId] = useState(null);
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
@@ -59,6 +59,7 @@ function FichaDermatologicaRetorno() {
         const id = router.query.consultaId;
         const animalId = router.query.animalId;
         const ficha = router.query.fichaId;
+        const agendamentoId = router.query.agendamentoId;
         if (id) {
             setConsultaId(id);
         }
@@ -67,6 +68,9 @@ function FichaDermatologicaRetorno() {
         }
         if (ficha) {
             setFichaId(ficha);
+        }
+        if (agendamentoId) {
+            setAgendamentoId(agendamentoId);
         }
     }
     }, [router.isReady, router.query.consultaId]);
@@ -163,7 +167,8 @@ function FichaDermatologicaRetorno() {
                 medicoResponsavel: formData.medicoResponsavel,
                 
             },
-            dataHora: dataFormatada 
+            dataHora: dataFormatada,
+            agendamento: { id: Number(agendamentoId) }
         };
 
         try {

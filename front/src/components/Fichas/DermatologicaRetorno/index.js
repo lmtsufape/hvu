@@ -31,6 +31,7 @@ function FichaDermatologicaRetorno() {
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
+    const [agendamentoId, setAgendamentoId] = useState(null);
     const [formData, setFormData] = useState({
         anamnese: "",
         tratamentos: "",
@@ -64,9 +65,14 @@ function FichaDermatologicaRetorno() {
       if (router.isReady) {
           const id = router.query.fichaId;
           const animalId = router.query.animalId;
+           const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
           if (id) {
           setConsultaId(id);
           }
+          if (aId) {
+              setAgendamentoId(aId); // Define o ID do agendamento
+          }
+
           if (animalId) {
               setAnimalId(animalId);
           }
@@ -156,7 +162,10 @@ function FichaDermatologicaRetorno() {
                 medicoResponsavel: formData.medicoResponsavel,
                 
             },
-            dataHora: dataFormatada 
+            dataHora: dataFormatada,
+            agendamento: {
+                id: Number(agendamentoId)
+            }
         };
 
         try {

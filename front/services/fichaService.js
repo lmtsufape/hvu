@@ -27,6 +27,20 @@ export async function getFichaById(fichaId) {
     }
 }
 
+export async function getFichasByAnimalId(animalId) {
+    if (!animalId) {
+        console.warn("getFichasByAnimalId chamado sem um animalId.");
+        return [];
+    }
+    try {
+        const response = await api.get(`/ficha/animal/${animalId}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Erro ao buscar fichas para o animal com id ${animalId}:`, error.response?.data || error.message);
+        throw error;
+    }
+}
+
 export async function updateFicha(formData, fichaId) {
     try {
         const response = await api.patch(`/ficha/${fichaId}`, formData);

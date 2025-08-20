@@ -503,7 +503,7 @@ useEffect(() => {
   };
 
   const handleClick = (path, id) => {
-    router.push(`${path}?fichaId=${id}&animalId=${animalId}`);
+    router.push(`${path}?fichaId=${id}&animalId=${animalId}&agendamentoId=${id}`);
   };
 
   const rotasPorNome = {
