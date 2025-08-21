@@ -7,6 +7,7 @@ import { CancelarWhiteButton } from "../../../../WhiteButton";
 import { createEspecie } from "../../../../../../services/especieService";
 import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function CreateEspecie() {
     const router = useRouter();
@@ -19,6 +20,28 @@ function CreateEspecie() {
     const [especie, setEspecie] = useState({
         nome: ""
     });
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     const handleEspecieChange = (event) => {
         const { name, value } = event.target;
@@ -77,7 +100,7 @@ function CreateEspecie() {
                     </button>
                 </div>
             </form>
-            {<Alert message="Espécie criada com sucesso!" show={showAlert} url={`/gerenciarEspecies`} />}
+            {<Alert message="Espécie criada com sucesso!" show={showAlert} url={`/lapa/gerenciarEspecies`} />}
             {showErrorAlert && <ErrorAlert message="Erro ao criar especie, tente novamente." show={showErrorAlert} />}
         </div>
     );

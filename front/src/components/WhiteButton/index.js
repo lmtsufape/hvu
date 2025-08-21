@@ -6,6 +6,7 @@ const text_white_button = {
 	login: "Login",
 	adicionar_animal: "Adicionar animal",
 	adicionar_medico: "Adicionar veterinário(a)",
+	adicionar_patologista: "Adicionar patologista",
 	adicionar_raca: "Adicionar raça",
 	cadastro: "Cadastre-se",
 	cancelar: "Cancelar",
@@ -71,6 +72,20 @@ export function AdicionarMedicoWhiteButton() {
 	return (
 		<button className={styles.white_button} onClick={handlAdicionarClick}>
 			{text_white_button.adicionar_medico}
+		</button>
+	);
+}
+
+export function AdicionarPatologistaWhiteButton() {
+	const router = useRouter();
+
+	const handlAdicionarClick = () => {
+		router.push("/lapa/gerenciarPatologistas/createPatologista");
+	};
+
+	return (
+		<button className={styles.white_button} onClick={handlAdicionarClick}>
+			{text_white_button.adicionar_patologista}
 		</button>
 	);
 }

@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css";
 import FichaSolicitacaoServicoList from "@/hooks/useFichaSolicitacaoList";
 import VoltarButton from "@/components/Lapa/VoltarButton";
-
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 
 function NovoLaudo() {
@@ -37,6 +37,28 @@ function NovoLaudo() {
       foto: "",
       estagiario: ""
     })
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();

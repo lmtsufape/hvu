@@ -241,6 +241,15 @@ public class KeycloakService implements KeycloakServiceInterface {
         }
     }
 
+    @Override
+    public boolean hasRoleAdminLapa(String accessToken) {
+        try {
+            return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("admin_lapa"));
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de admin_lapa.", e);
+        }
+    }
+
 
     //Esquecer senha
     public void sendResetPasswordEmail(String email) throws KeycloakAuthenticationException {

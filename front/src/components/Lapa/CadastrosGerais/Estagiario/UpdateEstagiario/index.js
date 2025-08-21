@@ -6,6 +6,7 @@ import { CancelarWhiteButton } from "../../../../WhiteButton";
 import { updateEstagiario, getEstagiarioById } from "../../../../../../services/estagiarioService";
 import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function UpdateEstagiario() {
     const router = useRouter();
@@ -23,6 +24,28 @@ function UpdateEstagiario() {
         obrigatorio: false,
         ativo: false
     });
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         if (id) {

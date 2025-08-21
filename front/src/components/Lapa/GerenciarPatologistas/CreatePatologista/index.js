@@ -1,21 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import InputMask from "react-input-mask";
 import styles from "./index.module.css";
-import VoltarButton from "../VoltarButton";
-import { CancelarWhiteButton } from "../../WhiteButton";
-import { createMedico } from "../../../../services/medicoService";
-import { postRegister } from "../../../../common/postRegister";
-import { postLogin } from "../../../../common/postLogin";
+import VoltarButton from "../../../VoltarButton";
+import { CancelarWhiteButton } from "../../../WhiteButton";
+import { createPatologista } from "../../../../../services/patologistaService";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import axios from "axios";
-import Alert from "../../Alert";
-import ErrorAlert from "../../ErrorAlert";
+import Alert from "../../../Alert";
+import ErrorAlert from "../../../ErrorAlert";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-function CreateMedicoLAPA() {
+function CreatePatologista() {
     const router = useRouter();
 
-    
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
@@ -25,7 +24,7 @@ function CreateMedicoLAPA() {
     const [cityStateLoading, setCityStateLoading] = useState(false);
     const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
 
-    const [medico, setMedico] = useState({
+    const [patologista, setPatologista] = useState({
         nome: "",
         email: "",
         senha: "",
@@ -44,6 +43,39 @@ function CreateMedicoLAPA() {
         especialidade: []
     });
 
+    console.log("patologista:", patologista);
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+      }, []);
+
+    if (!roles.includes("admin_lapa")) {
+        return (
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
+        );
+    }
+
+    if (!token) {
+        return (
+          <div className={styles.container}>
+            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+          </div>
+        );
+    }
+
     const handleEspecialidadeSelection = (event) => {
         const especialidadeId = parseInt(event.target.value);
         if (!selectedEspecialidades.find(espec => espec.id === especialidadeId)) {
@@ -54,108 +86,140 @@ function CreateMedicoLAPA() {
         }
     };
 
-    const handleMedicoChange = (event) => {
+    const handlePatologistaChange = (event) => {
         const { name, value } = event.target;
-        setMedico({ ...medico, [name]: value });
+        setPatologista({ ...patologista, [name]: value });
     };
 
     const handleEnderecoChange = (event) => {
         const { name, value } = event.target;
-        setMedico({
-            ...medico,
+        setPatologista({
+            ...patologista,
             endereco: {
-                ...medico.endereco,
+                ...patologista.endereco,
                 [name]: value
             }
         });
     };
 
-    const handleCreateMedico = async () => {
-        const validationErrors = validateFields(medico);
+    const handleCreatePatologista = async () => {
+        event.preventDefault();
+
+       {/*} const validationErrors = validateFields(patologista);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
-        }
+        } */}
 
-        const MedicoToCreate = {
-            nome: medico.nome,
-            email: medico.email,
-            senha: medico.senha,
-            cpf: medico.cpf,
-            telefone: medico.telefone,
-            crmv: medico.crmv,
+        const PatologistaToCreate = {
+            nome: patologista.nome,
+            email: patologista.email,
+            senha: patologista.senha,
+            cpf: patologista.cpf,
+            telefone: patologista.telefone,
+            crmv: patologista.crmv,
             endereco: {
-                cep: medico.endereco.cep,
-                rua: medico.endereco.rua,
-                estado: medico.endereco.estado,
-                cidade: medico.endereco.cidade,
-                numero: medico.endereco.numero,
-                bairro: medico.endereco.bairro
+                cep: patologista.endereco.cep,
+                rua: patologista.endereco.rua,
+                estado: patologista.endereco.estado,
+                cidade: patologista.endereco.cidade,
+                numero: patologista.endereco.numero,
+                bairro: patologista.endereco.bairro
             },
             especialidade: selectedEspecialidades.map(espec => ({ id: espec.id }))
         };
 
-        console.log("MedicoToCreate:", MedicoToCreate);
+        console.log("PatologistaToCreate:", PatologistaToCreate);
 
         try {
-            const token = localStorage.getItem("token");
-            const responseRegister = await postRegister(medico.email, medico.nome, medico.senha, "medico");
-            console.log(responseRegister);
-            await postLogin(medico.email, medico.senha);
-            await createMedico(MedicoToCreate);
+            await createPatologista(PatologistaToCreate);
             localStorage.setItem("token", token);
             setShowAlert(true);
         } catch (error) {
-            console.error("Erro ao criar médico:", error);
+            console.error("Erro ao criar patologista:", error);
             setShowErrorAlert(true);
         }
     };
 
-    const validateFields = (medico) => {
+    const isValidCPF = (cpf) => {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf.length !== 11) return false;
+
+        // Elimina CPFs inválidos conhecidos
+        if (/^(\d)\1+$/.test(cpf)) return false;
+
+        // Valida 1o digito
+        let add = 0;
+        for (let i = 0; i < 9; i++) {
+            add += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+        let rev = 11 - (add % 11);
+        if (rev === 10 || rev === 11) rev = 0;
+        if (rev !== parseInt(cpf.charAt(9))) return false;
+
+        // Valida 2o digito
+        add = 0;
+        for (let i = 0; i < 10; i++) {
+            add += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+        rev = 11 - (add % 11);
+        if (rev === 10 || rev === 11) rev = 0;
+        if (rev !== parseInt(cpf.charAt(10))) return false;
+
+        return true;
+    };
+
+    const validateFields = (patologista) => {
         const errors = {};
-        if (!medico.nome) {
+        if (!patologista.nome) {
             errors.nome = "Campo obrigatório";
         }
-        if (!medico.email) {
+        if (!patologista.email) {
             errors.email = "Campo obrigatório";
         }
-        if (!/\S+@\S+\.\S+/.test(medico.email)) {
+        if (!/\S+@\S+\.\S+/.test(patologista.email)) {
             errors.email = "E-mail inválido";
         }
-        if (!medico.senha) {
+        if (!patologista.senha) {
             errors.senha = "Campo obrigatório";
+        } else if (patologista.senha.length < 8) {
+            errors.senha = "A senha deve ter pelo menos 8 caracteres.";
         }
-        if (!medico.cpf) {
+        if (!patologista.cpf) {
             errors.cpf = "Campo obrigatório";
+        } else if (!isValidCPF(patologista.cpf)) {
+            errors.cpf = "CPF inválido";
         }
-        if (!medico.telefone) {
+        if (!patologista.telefone) {
             errors.telefone = "Campo obrigatório";
         }
-        if (!medico.crmv) {
+        if (!patologista.crmv) {
             errors.crmv = "Campo obrigatório";
         }
-        if (!medico.confirmarSenha) {
+        if (!patologista.confirmarSenha) {
             errors.confirmarSenha = "Campo obrigatório";
+        } else if (patologista.confirmarSenha !== patologista.senha) {
+            errors.confirmarSenha = "As senhas não coincidem.";
         }
         if (selectedEspecialidades.length === 0) {
             errors.especialidade = "Selecione pelo menos uma especialidade.";
         }
-        if (!medico.endereco.cep) {
+        if (!patologista.endereco.cep) {
             errors.cep = "Campo obrigatório";
         }
-        if (!medico.endereco.rua) {
+        if (!patologista.endereco.rua) {
             errors.rua = "Campo obrigatório";
         }
-        if (!medico.endereco.estado) {
+        if (!patologista.endereco.estado) {
             errors.estado = "Campo obrigatório";
         }
-        if (!medico.endereco.cidade) {
+        if (!patologista.endereco.cidade) {
             errors.cidade = "Campo obrigatório";
         }
-        if (!medico.endereco.numero) {
+        if (!patologista.endereco.numero) {
             errors.numero = "Campo obrigatório";
         }
-        if (!medico.endereco.bairro) {
+        if (!patologista.endereco.bairro) {
             errors.bairro = "Campo obrigatório";
         }
 
@@ -165,10 +229,10 @@ function CreateMedicoLAPA() {
     const handleCEPChange = async (event) => {
         let cep = event.target.value;
         cep = cep.replace(/\D/g, ""); // Remove todos os caracteres não numéricos
-        setMedico({
-            ...medico,
+        setPatologista({
+            ...patologista,
             endereco: {
-                ...medico.endereco,
+                ...patologista.endereco,
                 cep: cep
             }
         });
@@ -177,10 +241,11 @@ function CreateMedicoLAPA() {
                 setCityStateLoading(true);
                 const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
                 const { localidade, uf, logradouro, bairro } = response.data;
-                setMedico({
-                    ...medico,
+                setPatologista({
+                    ...patologista,
                     endereco: {
-                        ...medico.endereco,
+                        ...patologista.endereco,
+                        cep: cep,
                         cidade: localidade,
                         estado: uf,
                         rua: logradouro,
@@ -194,31 +259,37 @@ function CreateMedicoLAPA() {
             }
         }
     };
-    
-    
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
 
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Cadastro do&#40;a&#41; médico&#40;a&#41; veterinário&#40;a&#41;</h1>
+            <h1>Cadastro de Patologista</h1>
 
-            <form className={styles.inputs_container}>
+            <form className={styles.inputs_container} onSubmit={handleCreatePatologista}>
 
                 <div className={styles.boxcadastro}>
                     <div className={styles.cadastrotutor}>
                         <div className={styles.titulo}>Profissional</div>
-                        {renderMedicoInput("Nome Completo", "Digite o nome completo", "nome", medico.nome, handleMedicoChange, "text", errors.nome)}
+                        {renderPatologistaInput("Nome Completo", "Digite o nome completo", "nome", patologista.nome, handlePatologistaChange, "text", errors.nome)}
                         <div className="row">
                             <div className={`col ${styles.col}`}>
-                                {renderMedicoInput("E-mail", "Digite o email", "email", medico.email, handleMedicoChange, "email", errors.email)}
-                                {renderMedicoInput("CPF", "Digite o CPF", "cpf", medico.cpf, handleMedicoChange, "text", errors.cpf, "999.999.999-99")}
-                                {renderMedicoInput("Crie uma senha", "Digite uma senha", "senha", medico.senha, handleMedicoChange, "password", errors.senha)}
-                                {renderMedicoInput("Confirmar senha", "Confirme a senha", "confirmarSenha", medico.confirmarSenha, handleMedicoChange, "password", errors.confirmarSenha)}
+                                {renderPatologistaInput("E-mail", "Digite o email", "email", patologista.email, handlePatologistaChange, "email", errors.email)}
+                                {renderPatologistaInput("CPF", "Digite o CPF", "cpf", patologista.cpf, handlePatologistaChange, "text", errors.cpf, "999.999.999-99")}
+                                {renderPatologistaInput("Crie uma senha", "Digite uma senha", "senha", patologista.senha, handlePatologistaChange, "password", errors.senha, null, showPassword, togglePasswordVisibility)}
+                                {renderPatologistaInput("Confirmar senha", "Confirme a senha", "confirmarSenha", patologista.confirmarSenha, handlePatologistaChange, "password", errors.confirmarSenha, null, showConfirmPassword, toggleConfirmPasswordVisibility)}
                             </div>
                             <div className={`col ${styles.col}`}>
-                                {renderMedicoInput("Telefone", "Digite o telefone", "telefone", medico.telefone, handleMedicoChange, "tel", errors.telefone, "(99) 99999-9999")}
-                                {renderMedicoInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", medico.crmv, handleMedicoChange, "text", errors.crmv)}
-                                
+                                {renderPatologistaInput("Telefone", "Digite o telefone", "telefone", patologista.telefone, handlePatologistaChange, "tel", errors.telefone, "(99) 99999-9999")}
+                                {renderPatologistaInput("CRMV", "Conselho Federal de Medicina Veterinária", "crmv", patologista.crmv, handlePatologistaChange, "text", errors.crmv)}
+
                                 <div className="mb-3">
                                     <label htmlFor="especialidade" className="form-label">Especialidade <span className={styles.obrigatorio}>*</span></label>
                                     <select
@@ -255,20 +326,20 @@ function CreateMedicoLAPA() {
                     </div>
                 </div>
 
-                {medico.endereco && (
+                {patologista.endereco && (
                     <div className={styles.boxcadastro}>
                         <div className={styles.titulo}>Endereço</div>
                         <div className="mb-3">
                             <div className="row">
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("CEP", "cep", medico.endereco.cep, handleCEPChange, "Digite o CEP", "text", errors.cep, "99999-999")}
-                                    {renderEnderecoInput("Rua", "rua", medico.endereco.rua, handleEnderecoChange, "", "text", errors.rua)}
-                                    {renderEnderecoInput("Cidade", "cidade", medico.endereco.cidade, handleEnderecoChange, "", "text", errors.cidade)}
+                                    {renderEnderecoInput("CEP", "cep", patologista.endereco.cep, handleCEPChange, "Digite o CEP", "text", errors.cep, "99999-999")}
+                                    {renderEnderecoInput("Rua", "rua", patologista.endereco.rua, handleEnderecoChange, "", "text", errors.rua)}
+                                    {renderEnderecoInput("Cidade", "cidade", patologista.endereco.cidade, handleEnderecoChange, "", "text", errors.cidade)}
                                 </div>
                                 <div className={`col ${styles.col}`}>
-                                    {renderEnderecoInput("Número", "numero", medico.endereco.numero, handleEnderecoChange, "Digite o número do endereço", "text", errors.numero)}
-                                    {renderEnderecoInput("Bairro", "bairro", medico.endereco.bairro, handleEnderecoChange, "", "text", errors.bairro)}
-                                    {renderEnderecoInput("Estado", "estado", medico.endereco.estado, handleEnderecoChange, "", "text", errors.estado)}
+                                    {renderEnderecoInput("Número", "numero", patologista.endereco.numero, handleEnderecoChange, "Digite o número do endereço", "text", errors.numero)}
+                                    {renderEnderecoInput("Bairro", "bairro", patologista.endereco.bairro, handleEnderecoChange, "", "text", errors.bairro)}
+                                    {renderEnderecoInput("Estado", "estado", patologista.endereco.estado, handleEnderecoChange, "", "text", errors.estado)}
                                 </div>
                             </div>
                         </div>
@@ -277,39 +348,45 @@ function CreateMedicoLAPA() {
 
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />
-                    <button type="button" className={styles.criar_button} onClick={handleCreateMedico}>
+                    <button type="submit" className={styles.criar_button} onClick={handleCreatePatologista}>
                         {cityStateLoading ? "Aguarde..." : "Cadastrar"}
                     </button>
                 </div>
 
             </form>
-            {<Alert message="Veterinário(a) cadastrado(a) com sucesso!" show={showAlert} url={`/lapa/telaprincipallaudos`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao cadastrar veterinário(a), tente novamente." show={showErrorAlert} />}
+            {<Alert message="Patologista cadastrado(a) com sucesso!" show={showAlert} url={`/lapa/gerenciarPatologistas/getAllPatologista`} />}
+            {showErrorAlert && <ErrorAlert message="Erro ao cadastrar patologista, tente novamente." show={showErrorAlert} />}
         </div>
     );
 }
 
-function renderMedicoInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask) {
+function renderPatologistaInput(label, placeholder, name, value, onChange, type = "text", errorMessage = null, mask = null, showPassword = false, togglePasswordVisibility = null) {
     const InputComponent = mask ? InputMask : 'input';
 
     return (
         <div className="mb-3">
             <label htmlFor={name} className="form-label">{label} <span className={styles.obrigatorio}>*</span></label>
-            <InputComponent
-                mask={mask}
-                type={type}
-                className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
-                name={name}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-            />
+            <div className="input-group">
+                <InputComponent
+                    mask={mask}
+                    type={showPassword ? 'text' : type}
+                    className={`form-control ${styles.input} ${errorMessage ? "is-invalid" : ""}`}
+                    name={name}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
+                />
+                {type === 'password' && (
+                    <span className="input-group-text" onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
+                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                    </span>
+                )}
+            </div>
             {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }
 
-// Substitua a renderização das mensagens de erro nos inputs de endereço por classes Bootstrap
 function renderEnderecoInput(label, name, value, onChange, placeholder, type = "text", errorMessage = null, mask) {
     const InputComponent = mask ? InputMask : 'input';
     const inputProps = mask ? { mask } : {};
@@ -331,4 +408,4 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
     );
 }
 
-export default CreateMedicoLAPA;
+export default CreatePatologista;

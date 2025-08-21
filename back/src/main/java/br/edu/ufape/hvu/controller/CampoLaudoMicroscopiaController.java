@@ -16,7 +16,7 @@ import java.util.List;
 public class CampoLaudoMicroscopiaController {
     private final Facade facade;
 
-    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
     @GetMapping("campoLaudoMicroscopia")
     public List<CampoLaudoMicroscopiaResponse> getAllCampoLaudoMicroscopia() {
         return facade.getAllCampoLaudoMicroscopia()
@@ -25,25 +25,25 @@ public class CampoLaudoMicroscopiaController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
     @PostMapping("campoLaudoMicroscopia")
     public CampoLaudoMicroscopiaResponse createCampoLaudoMicroscopia(@Valid @RequestBody CampoLaudoMicroscopiaRequest newObj) {
         return new CampoLaudoMicroscopiaResponse(facade.saveCampoLaudoMicroscopia(newObj.convertToEntity()));
     }
 
-    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
     @GetMapping("campoLaudoMicroscopia/{id}")
     public CampoLaudoMicroscopiaResponse getCampoLaudoMicroscopiaById(@PathVariable Long id) {
         return new CampoLaudoMicroscopiaResponse(facade.findCampoLaudoMicroscopiaById(id));
     }
 
-    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
     @PatchMapping("campoLaudoMicroscopia/{id}")
     public CampoLaudoMicroscopiaResponse updateCampoLaudoMicroscopia(@PathVariable Long id, @Valid @RequestBody CampoLaudoMicroscopiaRequest obj) {
         return new CampoLaudoMicroscopiaResponse(facade.updateCampoLaudoMicroscopia(obj, id));
     }
 
-    @PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
     @DeleteMapping("campoLaudoMicroscopia/{id}")
     public String deleteCampoLaudoMicroscopia(@PathVariable Long id) {
         facade.deleteCampoLaudoMicroscopia(id);

@@ -18,7 +18,6 @@ public  class PatologistaRequest extends UsuarioRequest {
     private String crmv;
     @NotNull
     private List<EspecialidadeRequest> especialidade;
-    @NotNull
     private InstituicaoRequest instituicao;
 
 

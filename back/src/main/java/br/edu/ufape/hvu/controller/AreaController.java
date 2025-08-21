@@ -16,7 +16,7 @@ import br.edu.ufape.hvu.controller.dto.response.AreaResponse;
 public class AreaController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("area")
 	public List<AreaResponse> getAllArea() {
 		return facade.getAllArea()
@@ -25,25 +25,25 @@ public class AreaController {
 			.toList();
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("area")
 	public AreaResponse createArea(@Valid @RequestBody AreaRequest newObj) {
 		return new AreaResponse(facade.saveArea(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("area/{id}")
 	public AreaResponse getAreaById(@PathVariable Long id) {
 		return new AreaResponse(facade.findAreaById(id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@PatchMapping("area/{id}")
 	public AreaResponse updateArea(@PathVariable Long id, @Valid @RequestBody AreaRequest obj) {
 		return new AreaResponse(facade.updateArea(obj, id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@DeleteMapping("area/{id}")
 	public String deleteArea(@PathVariable Long id) {
 		facade.deleteArea(id);

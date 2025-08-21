@@ -24,7 +24,7 @@ public class RacaController {
 			.toList();
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@PostMapping("raca")
 	public RacaResponse createRaca(@Valid @RequestBody RacaRequest newObj) {
 		return new RacaResponse(facade.saveRaca(newObj.convertToEntity()));
@@ -35,7 +35,7 @@ public class RacaController {
 		return new RacaResponse(facade.findRacaById(id));
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("raca/especie/{EspecieId}")
 	public List<RacaResponse> findByEspecie(@PathVariable Long EspecieId) {
 		return facade.findByEspecie(EspecieId)
@@ -44,13 +44,13 @@ public class RacaController {
 			.toList();
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@PatchMapping("raca/{id}")
 	public RacaResponse updateRaca(@PathVariable Long id, @Valid @RequestBody RacaRequest obj) {
 		return new RacaResponse(facade.updateRaca(obj, id));
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@DeleteMapping("raca/{id}")
 	public String deleteRaca(@PathVariable Long id) {
 		facade.deleteRaca(id);

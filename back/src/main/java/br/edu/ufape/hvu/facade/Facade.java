@@ -463,7 +463,7 @@ public class Facade {
         Patologista oldPatologista = patologistaService.findPatologistaById(id); // lança EntityNotFoundException se não existir
         Patologista patologistaAtualizado = request.convertToEntity();
 
-        if(!keycloakService.hasRoleSecretario(idSession) && !patologistaAtualizado.getUserId().equals(idSession)){
+        if(!keycloakService.hasRoleAdminLapa(idSession) && !patologistaAtualizado.getUserId().equals(idSession)){
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
 
@@ -479,7 +479,7 @@ public class Facade {
 
     public Patologista findPatologistaById(long id, String idSession) {
         Patologista patologista = patologistaService.findPatologistaById(id);
-        if(!keycloakService.hasRoleSecretario(idSession) && !patologista.getUserId().equals(idSession)){
+        if(!keycloakService.hasRoleAdminLapa(idSession) && !patologista.getUserId().equals(idSession)){
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
         return patologistaService.findPatologistaById(id);
@@ -1332,6 +1332,19 @@ public class Facade {
 
     @Transactional
     public Area saveArea(Area newInstance) {
+        List<Especie> especies = newInstance.getEspecie()
+                .stream()
+                .map(e -> {
+                    Especie especie = especieServiceInterface.findEspecieById(e.getId());
+                    if (especie == null) {
+                        throw new IdNotFoundException(e.getId(), "Especie");
+                    }
+                    return especie;
+                })
+                .toList();
+
+        newInstance.setEspecie(especies);
+
         return areaServiceInterface.saveArea(newInstance);
     }
 

@@ -15,7 +15,7 @@ import br.edu.ufape.hvu.controller.dto.response.CampoLaudoResponse;
 public class CampoLaudoController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("campoLaudo")
 	public List<CampoLaudoResponse> getAllCampoLaudo() {
 		return facade.getAllCampoLaudo()
@@ -24,25 +24,25 @@ public class CampoLaudoController {
 			.toList();
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("campoLaudo")
 	public CampoLaudoResponse createCampoLaudo(@Valid @RequestBody CampoLaudoRequest newObj) {
 		return new CampoLaudoResponse(facade.saveCampoLaudo(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("campoLaudo/{id}")
 	public CampoLaudoResponse getCampoLaudoById(@PathVariable Long id) {
 		return new CampoLaudoResponse(facade.findCampoLaudoById(id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@PatchMapping("campoLaudo/{id}")
 	public CampoLaudoResponse updateCampoLaudo(@PathVariable Long id, @Valid @RequestBody CampoLaudoRequest obj) {
 		return new CampoLaudoResponse(facade.updateCampoLaudo(obj, id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@DeleteMapping("campoLaudo/{id}")
 	public String deleteCampoLaudo(@PathVariable Long id) {
 		facade.deleteCampoLaudo(id);
