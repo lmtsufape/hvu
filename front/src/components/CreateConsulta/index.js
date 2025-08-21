@@ -229,6 +229,8 @@ function CreateConsulta() {
   const router = useRouter();
   const { id } = router.query;
 
+   const [agendamentoId, setAgendamentoId] = useState(null);
+
   const [showButtons, setShowButtons] = useState(false);
   const [showFichas, setShowFichas] = useState(false);
   const [selectedFichaId, setSelectedFichaId] = useState(null);
@@ -379,10 +381,18 @@ useEffect(() => {
     if (id) {
       const fetchData = async () => {
         try {
-          const vagaJson = await getVagaById(id);
-          setVagaData(vagaJson);
-          setAnimalId(vagaJson.agendamento.animal.id);
-          setMedicoId(vagaJson.medico.id);
+                const vagaJson = await getVagaById(id);
+                setVagaData(vagaJson);
+
+                // Extrai os IDs do objeto da vaga e os salva nos estados
+                if (vagaJson.agendamento) {
+                    setAnimalId(vagaJson.agendamento.animal.id);
+                    setAgendamentoId(vagaJson.agendamento.id); // <-- AQUI ESTÁ A CORREÇÃO
+                }
+                if (vagaJson.medico) {
+                    setMedicoId(vagaJson.medico.id);
+                }
+
         } catch (error) {
           console.error("Erro ao buscar vaga:", error);
           setShowErrorAlert(true);
@@ -526,7 +536,7 @@ useEffect(() => {
 
   const handleRoute = (fichaNome, id, fichaId) => {
     const path = rotasPorNome[fichaNome];
-    router.push(`${path}?consultaId=${id}&animalId=${animalId}&fichaId=${fichaId}`);
+    router.push(`${path}?consultaId=${id}&animalId=${animalId}&fichaId=${fichaId}&agendamentoId=${agendamentoId}`);
   };
 
   const handleDelete = async (id) => {
