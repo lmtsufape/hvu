@@ -99,9 +99,13 @@ function GerenciarTutores() {
                             <div className={styles.info_box}>
                                 <h6>Nome</h6>
                                 <p>{tutor.nome}</p>
-                                <h6>CPF</h6>
-                                <p>{tutor.cpf}</p>
                             </div>
+
+                            <div className={styles.info_box}>
+                                <h6>CPF</h6>
+                                <p>{tutor.nome != "Anônimo" ? tutor.cpf : "Não informado"}</p>
+                            </div>
+                            
                             <div className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}
