@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 public class MedicoController {
 	private final Facade facade;
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("medico")
 	public List<MedicoResponse> getAllMedico() {
 		return facade.getAllMedico()
