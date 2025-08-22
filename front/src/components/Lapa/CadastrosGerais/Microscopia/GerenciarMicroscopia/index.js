@@ -86,14 +86,18 @@ function GerenciarMicroscopia() {
                 <ul className={styles.list}>
                     {filteredMicroscopias.map(microscopia => (
                         <li key={microscopia.id} className={styles.info_container}>
-                            <div className={styles.info_box}>
-                                <h6>Descrição</h6>
-                                <p>{microscopia.descricao}</p>
-                                <h6>Processamento</h6>
-                                <p>{microscopia.processamento}</p>
-                                <h6>Órgão</h6>
-                                <p>{microscopia.orgao.id}</p>
-                            </div>
+                                <div className={styles.info_box}>
+                                    <h6>Descrição</h6>
+                                    <p>{microscopia.descricao}</p>
+                                </div>
+                                <div className={styles.info_box}>
+                                    <h6>Processamento</h6>
+                                    <p>{microscopia.processamento}</p>
+                                </div>
+                                <div className={styles.info_box}>
+                                    <h6>Órgão</h6>
+                                    <p>{microscopia.orgao.nome}</p>
+                                </div>
                             <div className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}
