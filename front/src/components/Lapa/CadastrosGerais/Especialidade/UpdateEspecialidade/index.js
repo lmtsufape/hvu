@@ -113,7 +113,7 @@ function UpdateEspecialidade() {
                     </button>
                 </div>
             </form>
-            {<Alert message="Informações da especialidade editadas com sucesso!" show={showAlert} url={`/gerenciarEspecialidades`} />}
+            {<Alert message="Informações da especialidade editadas com sucesso!" show={showAlert} url={`/lapa/gerenciarEspecialidades`} />}
             {showErrorAlert && <ErrorAlert message="Erro ao editar informações da especialidade, tente novamente." show={showErrorAlert} />}
         </div>
     );

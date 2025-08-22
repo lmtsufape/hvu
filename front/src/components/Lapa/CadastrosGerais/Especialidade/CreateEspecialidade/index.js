@@ -101,7 +101,7 @@ function CreateEspecialidade() {
                     </button>
                 </div>
             </form>
-            {<Alert message="Especialidade criada com sucesso!" show={showAlert} url={`/gerenciarEspecialidades`} />}
+            {<Alert message="Especialidade criada com sucesso!" show={showAlert} url={`/lapa/gerenciarEspecialidades`} />}
             {showErrorAlert && <ErrorAlert message="Erro ao cadastrar especialidade, tente novamente." show={showErrorAlert} />}
         </div>
     );
