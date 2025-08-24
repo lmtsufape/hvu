@@ -1,7 +1,7 @@
 import React from 'react';
 import { Header03 } from '@/components/Lapa/Header';
 import { SubHeaderGeral } from '@/components/Lapa/SubHeader';
-import GetFichaSolicitacaoById from '@/components/Lapa/GetFichaByID';
+import GetLaudoNecropsiaById from '@/components/Lapa/CadastrosGerais/Laudo/GetLaudoByID';
 import Footer from '@/components/Lapa/Footer';
 
 function GetFichaByIdPage() {
@@ -9,7 +9,7 @@ function GetFichaByIdPage() {
         <div>
             < Header03 />
             < SubHeaderGeral />
-            < GetFichaSolicitacaoById />
+            < GetLaudoNecropsiaById />
             < Footer />
         </div>
     );
