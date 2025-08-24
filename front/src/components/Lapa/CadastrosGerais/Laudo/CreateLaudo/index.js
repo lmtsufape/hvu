@@ -29,7 +29,6 @@ function CreateLaudoNecropsia() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
-    // Ficha de Solicitação de Serviços
     const [filteredFichas, setFilteredFichas] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchError, setSearchError] = useState(false);
@@ -38,10 +37,8 @@ function CreateLaudoNecropsia() {
 
     const { fichas, error: fichasError } = FichaSolicitacaoServicoList();
 
-    // Campo Laudo
     const { campoLaudo, error: campoLaudoError } = CampoLaudoList();
 
-    // Microscopia
     const { campoMicroscopiaOptions, error: microscopiaError } = LaudoMicroscopiaList();
 
     const roles = getRoles();
@@ -94,7 +91,6 @@ function CreateLaudoNecropsia() {
         }));
     };
 
-    // Microscopia
     const handleMicroscopiaChange = (event, index) => {
         const selectedMicroscopiaId = parseInt(event.target.value);
         setLaudo(prevData => {
@@ -118,7 +114,6 @@ function CreateLaudoNecropsia() {
         }));
     };
 
-    // Estagiário
     const [selectedEstagiarioId, setSelectedEstagiarioId] = useState("");
 
     const { estagiarios = [], error: estagiariosError } = EstagiarioList();
@@ -133,7 +128,6 @@ function CreateLaudoNecropsia() {
         }));
     };
 
-    // Foto
     const [selectedFotoId, setSelectedFotoId] = useState("");
 
     const { fotos = [], error: fotosError } = FotosList();
@@ -178,9 +172,10 @@ function CreateLaudoNecropsia() {
             campoLaudo: laudo.campoLaudo.map(campo => ({ id: campo.id })),
             estagiario: [{ id: selectedEstagiarioId }],
             foto: [{ id: selectedFotoId }],
-            campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id })) // Corrigido
+            campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id })) 
         };
 
+        console.log("laudoToSend:", laudoToSend)
         try {
             await createLaudoNecropsia(laudoToSend);
             setShowAlert(true);

@@ -159,7 +159,7 @@ const handleSubmit = async (event) => {
     dataHoraObito: formatDate(fichaDeSolicitacaoData.dataHoraObito),
     dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
   };
-
+console.log(fichaToCreate)
   try {
     await createFichaSolicitacao(fichaToCreate);
     setShowAlert(true);
