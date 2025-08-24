@@ -50,7 +50,7 @@ function CreateFichaForm() {
     historico: '',
     caracteristicasAdicionais: '',
     tutor: { id: null },
-    animal: { id: null },
+    animal: { id: null, origemAnimal: null },
     medico: { id: null },
   });
 
@@ -80,21 +80,25 @@ function CreateFichaForm() {
     setFichaDeSolicitacaoData(prev => ({
       ...prev,
       tutor: { id: tutor.id },
-      animal: { id: null }
+      animal: { id: null, origemAnimal: null }
     }));
     setFilteredAnimals(tutor.animal || []);
     setShowModal(false);
     setSearchTerm(tutor.nome);
+    setSelectedAnimal(null);
   };
 
-  const handleAnimalSelection = (event) => {
-    const animalId = parseInt(event.target.value);
-    setSelectedAnimal(animalId);
-    setFichaDeSolicitacaoData(prev => ({
-      ...prev,
-      animal: { id: animalId }
-    }));
-  };
+const handleAnimalSelection = (e) => {
+  const animalId = e.target.value;
+  const animal = filteredAnimals.find(a => a.id === animalId);
+  setSelectedAnimal(animalId);
+
+  setFichaDeSolicitacaoData(prev => ({
+    ...prev,
+    animal: { id: animalId, origemAnimal: animal?.origemAnimal || null }
+  }));
+};
+
 
   // Pesquisa de médicos
   const handleMedicoSearch = (event) => {
@@ -150,38 +154,34 @@ function CreateFichaForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
-  if (!validateForm()) return;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!validateForm()) return;
 
-  const fichaToCreate = {
-    ...fichaDeSolicitacaoData,
-    dataHoraObito: formatDate(fichaDeSolicitacaoData.dataHoraObito),
-    dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
-  };
+    const fichaToCreate = {
+      ...fichaDeSolicitacaoData,
+      dataHoraObito: formatDate(fichaDeSolicitacaoData.dataHoraObito),
+      dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
+    };
 console.log(fichaToCreate)
-  try {
-    await createFichaSolicitacao(fichaToCreate);
-    setShowAlert(true);
-    resetForm();
-  } catch (error) {
-    console.error(error);
-
-    // Se o backend retornou um 400 com mensagem específica
-    if (error.response && error.response.status === 400) {
-      const backendMessage = error.response.data?.message || "";
-      if (backendMessage.includes("animal já possui outra ficha")) {
-        setShowErrorAlert(true);
-        setErrorMessage("Erro: O animal selecionado já possui outra ficha.");
-        return;
+    try {
+      await createFichaSolicitacao(fichaToCreate);
+      setShowAlert(true);
+      resetForm();
+    } catch (error) {
+      console.error(error);
+      if (error.response && error.response.status === 400) {
+        const backendMessage = error.response.data?.message || "";
+        if (backendMessage.includes("animal já possui outra ficha")) {
+          setShowErrorAlert(true);
+          setErrorMessage("Erro: O animal selecionado já possui outra ficha.");
+          return;
+        }
       }
+      setShowErrorAlert(true);
+      setErrorMessage("Erro ao criar ficha de solicitação, tente novamente.");
     }
-
-    // Mensagem genérica para outros erros
-    setShowErrorAlert(true);
-    setErrorMessage("Erro ao criar ficha de solicitação, tente novamente.");
-  }
-};
+  };
 
   const resetForm = () => {
     setFichaDeSolicitacaoData({
@@ -195,7 +195,7 @@ console.log(fichaToCreate)
       historico: '',
       caracteristicasAdicionais: '',
       tutor: { id: null },
-      animal: { id: null },
+      animal: { id: null, origemAnimal: null },
       medico: { id: null },
     });
     setSelectedTutor(null);
@@ -213,8 +213,87 @@ console.log(fichaToCreate)
   return (
     <div className={styles.container}>
       <VoltarButton />
-      <h1>Informações Obrigatórias da Ficha de Solicitação de Serviço - Necropsia/Laudo</h1>
+      <h1>Ficha de Solicitação de Serviço - Necropsia/Laudo</h1>
+
       <form className={styles.form_box} onSubmit={handleSubmit}>
+        <div className="row">
+          <h2>Identificação do Tutor</h2>
+          <div className="col">
+            <label htmlFor="search" className="form-label">Pesquisar Tutor</label>
+            <div className="input-group">
+              <input
+                type="text"
+                className={`form-control ${searchError ? 'is-invalid' : ''}`}
+                placeholder="Digite o ID ou nome do tutor"
+                value={searchTerm}
+                onChange={handleSearch}
+              />
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => setShowModal(true)}
+              >
+                Buscar
+              </button>
+            </div>
+            {searchError && <div className="invalid-feedback">Por favor, digite um termo de pesquisa válido.</div>}
+          </div>
+        </div>
+
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Selecione o Tutor</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {filteredTutores.length > 0 ? (
+              <ul className="list-group">
+                {filteredTutores.map(tutor => (
+                  <li
+                    key={tutor.id}
+                    className="list-group-item"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleTutorSelection(tutor)}
+                  >
+                    <strong>Nome:</strong> {tutor.nome}<br />
+                    <strong>Email:</strong> {tutor.email || 'N/A'}<br />
+                    <strong>Telefone:</strong> {tutor.telefone || 'N/A'}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Nenhum tutor encontrado.</p>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>Fechar</Button>
+          </Modal.Footer>
+        </Modal>
+
+        <div className="row">
+          <h2>Identificação do Animal</h2>
+          <div className="col">
+            <label htmlFor="animal" className="form-label">Animal</label>
+            <select
+              className="form-select"
+              name="animal"
+              value={selectedAnimal || ''}
+              onChange={handleAnimalSelection}
+            >
+              <option value="">Selecione um animal</option>
+              {filteredAnimals.map(animal => (
+                <option key={animal.id} value={animal.id}>
+                  {animal.nome} {animal.origemAnimal ? `(${animal.origemAnimal})` : ''}
+                </option>
+              ))}
+            </select>
+            {errors.animal && <div className="invalid-feedback">{errors.animal}</div>}
+{fichaDeSolicitacaoData.animal?.origemAnimal && (
+  <p>Origem do Animal: {fichaDeSolicitacaoData.animal.origemAnimal}</p>
+)}
+
+          </div>
+        </div>
+
         <div className="row">
           <h2>Informações sobre o Material</h2>
           <div className="col">
@@ -246,24 +325,21 @@ console.log(fichaToCreate)
             {errors.estadoConservacao && <div className="invalid-feedback">{errors.estadoConservacao}</div>}
           </div>
           <div className="col">
-              <label htmlFor="eutanasia" className="form-label">Eutanásia</label>
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="eutanasia"
-                  checked={fichaDeSolicitacaoData.eutanasia}
-                  onChange={handleFichaDeSolicitacaoChange}
-                />
-                <label className="form-check-label" htmlFor="eutanasia">
-                  Realizada
-                </label>
-              </div>
+            <label htmlFor="eutanasia" className="form-label">Eutanásia</label>
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                name="eutanasia"
+                checked={fichaDeSolicitacaoData.eutanasia}
+                onChange={handleFichaDeSolicitacaoChange}
+              />
+              <label className="form-check-label" htmlFor="eutanasia">Realizada</label>
             </div>
+          </div>
         </div>
 
         <div className="row">
-        <h1></h1>
           <div className="col">
             <label htmlFor="historico" className="form-label">Histórico</label>
             <input
@@ -299,105 +375,52 @@ console.log(fichaToCreate)
             {errors.fichaClinica && <div className="invalid-feedback">{errors.fichaClinica}</div>}
           </div>
         </div>
+
         <div className="row">
-            <h1></h1>
-            <div className="col">
-              <label htmlFor="dataRecebimento" className="form-label">Data de Recebimento</label>
-              <input
-                type="datetime-local"
-                className={`form-control ${errors.dataRecebimento ? "is-invalid" : ""}`}
-                id= "dataRecebimento"
-                name="dataRecebimento"
-                value={fichaDeSolicitacaoData.dataRecebimento}
-                onChange={handleFichaDeSolicitacaoChange}
-              />
-              {errors.dataRecebimento && <div className="invalid-feedback">{errors.dataRecebimento}</div>}
-            </div>
-            <div className="col">
-              <label htmlFor="acondicionamento" className="form-label">Acondicionamento</label>
-              <select
-                className={`form-select ${errors.acondicionamento ? "is-invalid" : ""}`}
-                name="acondicionamento"
-                value={fichaDeSolicitacaoData.acondicionamento}
-                onChange={handleFichaDeSolicitacaoChange}
-              >
-                <option value="">Selecione o tipo de acondicionamento</option>
-                <option value="CONGELADO">Congelado</option>
-                <option value="RESFRIADO">Resfriado</option>
-                <option value="NATURAL">Natural</option>
-              </select>
-              {errors.acondicionamento && <div className="invalid-feedback">{errors.acondicionamento}</div>}
-            </div>
-            <div className="col">
-              <label htmlFor="tipoServico" className="form-label">Tipo de Serviço</label>
-              <select
-                className={`form-select ${errors.tipoServico ? "is-invalid" : ""}`}
-                name="tipoServico"
-                value={fichaDeSolicitacaoData.tipoServico}
-                onChange={handleFichaDeSolicitacaoChange}
-              >
-                <option value="">Selecione o tipo de Serviço</option>
-                <option value="NECROPSIA">Necropsia</option>
-                <option value="MICROSCOPIA">Microscopia</option>
-                <option value="NECROPSIA_COM_MICROSCOPIA">Necropsia com Microscopia</option>
-              </select>
-              {errors.tipoServico && <div className="invalid-feedback">{errors.tipoServico}</div>}
-            </div>
-          </div>
-                       
-
-       <div className="row">
-          <h2>Identificação do Tutor</h2>
           <div className="col">
-            <label htmlFor="search" className="form-label">Pesquisar Tutor</label>
-            <div className="input-group">
-              <input
-                type="text"
-                className={`form-control ${searchError ? 'is-invalid' : ''}`}
-                placeholder="Digite o ID ou nome do tutor"
-                value={searchTerm}
-                onChange={handleSearch}
-              />
-              <button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Buscar</button>
-            </div>
-            {searchError && <div className="invalid-feedback">Por favor, digite um termo de pesquisa válido.</div>}
+            <label htmlFor="dataRecebimento" className="form-label">Data de Recebimento</label>
+            <input
+              type="datetime-local"
+              className={`form-control ${errors.dataRecebimento ? "is-invalid" : ""}`}
+              id="dataRecebimento"
+              name="dataRecebimento"
+              value={fichaDeSolicitacaoData.dataRecebimento}
+              onChange={handleFichaDeSolicitacaoChange}
+            />
+            {errors.dataRecebimento && <div className="invalid-feedback">{errors.dataRecebimento}</div>}
           </div>
-        </div>
-
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
-          <Modal.Header closeButton><Modal.Title>Selecione o Tutor</Modal.Title></Modal.Header>
-          <Modal.Body>
-            {filteredTutores.length > 0 ? (
-              <ul className="list-group">
-                {filteredTutores.map(tutor => (
-                  <li key={tutor.id} className="list-group-item" style={{ cursor: 'pointer' }} onClick={() => handleTutorSelection(tutor)}>
-                    <strong>Nome:</strong> {tutor.nome}<br />
-                    <strong>Email:</strong> {tutor.email || 'N/A'}<br />
-                    <strong>Telefone:</strong> {tutor.telefone || 'N/A'}
-                  </li>
-                ))}
-              </ul>
-            ) : (<p>Nenhum tutor encontrado.</p>)}
-          </Modal.Body>
-          <Modal.Footer><Button variant="secondary" onClick={() => setShowModal(false)}>Fechar</Button></Modal.Footer>
-        </Modal>
-
-        {/* Animal */}
-        <div className="row">
-          <h2>Identificação do Animal</h2>
           <div className="col">
-            <label htmlFor="animal" className="form-label">Animal</label>
-            <select className="form-select" name="animal" value={selectedAnimal || ''} onChange={handleAnimalSelection}>
-              <option value="">Selecione um animal</option>
-              {filteredAnimals.map(animal => (
-                <option key={animal.id} value={animal.id}>{animal.nome}</option>
-              ))}
+            <label htmlFor="acondicionamento" className="form-label">Acondicionamento</label>
+            <select
+              className={`form-select ${errors.acondicionamento ? "is-invalid" : ""}`}
+              name="acondicionamento"
+              value={fichaDeSolicitacaoData.acondicionamento}
+              onChange={handleFichaDeSolicitacaoChange}
+            >
+              <option value="">Selecione o tipo de acondicionamento</option>
+              <option value="CONGELADO">Congelado</option>
+              <option value="RESFRIADO">Resfriado</option>
+              <option value="NATURAL">Natural</option>
             </select>
-            {errors.animal && <div className="invalid-feedback">{errors.animal}</div>}
+            {errors.acondicionamento && <div className="invalid-feedback">{errors.acondicionamento}</div>}
+          </div>
+          <div className="col">
+            <label htmlFor="tipoServico" className="form-label">Tipo de Serviço</label>
+            <select
+              className={`form-select ${errors.tipoServico ? "is-invalid" : ""}`}
+              name="tipoServico"
+              value={fichaDeSolicitacaoData.tipoServico}
+              onChange={handleFichaDeSolicitacaoChange}
+            >
+              <option value="">Selecione o tipo de Serviço</option>
+              <option value="NECROPSIA">Necropsia</option>
+              <option value="MICROSCOPIA">Microscopia</option>
+              <option value="NECROPSIA_COM_MICROSCOPIA">Necropsia com Microscopia</option>
+            </select>
+            {errors.tipoServico && <div className="invalid-feedback">{errors.tipoServico}</div>}
           </div>
         </div>
 
-        {/* Médico */}
         <div className="row">
           <h2>Identificação do Veterinário</h2>
           <div className="col">
@@ -424,12 +447,19 @@ console.log(fichaToCreate)
         </div>
 
         <Modal show={showMedicoModal} onHide={() => setShowMedicoModal(false)}>
-          <Modal.Header closeButton><Modal.Title>Selecione o Médico Veterinário</Modal.Title></Modal.Header>
+          <Modal.Header closeButton>
+            <Modal.Title>Selecione o Médico Veterinário</Modal.Title>
+          </Modal.Header>
           <Modal.Body>
             {filteredMedicos.length > 0 ? (
               <ul className="list-group">
                 {filteredMedicos.map(medico => (
-                  <li key={medico.id} className="list-group-item" style={{ cursor: 'pointer' }} onClick={() => handleMedicoSelection(medico)}>
+                  <li
+                    key={medico.id}
+                    className="list-group-item"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleMedicoSelection(medico)}
+                  >
                     <strong>Nome:</strong> {medico.nome} <br />
                     <strong>Email:</strong> {medico.email} <br />
                     <strong>Telefone:</strong> {medico.telefone} <br />
@@ -437,9 +467,13 @@ console.log(fichaToCreate)
                   </li>
                 ))}
               </ul>
-            ) : (<p>Nenhum médico veterinário encontrado.</p>)}
+            ) : (
+              <p>Nenhum médico veterinário encontrado.</p>
+            )}
           </Modal.Body>
-          <Modal.Footer><Button variant="secondary" onClick={() => setShowMedicoModal(false)}>Fechar</Button></Modal.Footer>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowMedicoModal(false)}>Fechar</Button>
+          </Modal.Footer>
         </Modal>
 
         <div className={styles.button_container}>
@@ -447,10 +481,15 @@ console.log(fichaToCreate)
         </div>
       </form>
 
-      <Alert message="Ficha de Solicitação cadastrada com sucesso!" show={showAlert} url='/lapa/telaprincipallaudos/laudosEmAndamento' />
+      <Alert
+        message="Ficha de Solicitação cadastrada com sucesso!"
+        show={showAlert}
+        url='/lapa/telaprincipallaudos/laudosEmAndamento'
+      />
       {showErrorAlert && <ErrorAlert message={errorMessage} show={showErrorAlert} />}
     </div>
   );
+
 }
 
 export default CreateFichaForm;
