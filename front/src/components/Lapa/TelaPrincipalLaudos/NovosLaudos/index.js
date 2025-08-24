@@ -7,6 +7,7 @@ import TutorList from "@/hooks/useTutorList";
 import MedicoList from "@/hooks/useMedicoList";
 import VoltarButton from "../../VoltarButton";
 import Alert from "@/components/Alert";
+import ErrorAlert from "@/components/ErrorAlert";
 import { Modal, Button } from 'react-bootstrap';
 import { getToken, getRoles } from "../../../../../services/userService";
 
@@ -36,6 +37,7 @@ function CreateFichaForm() {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [fichaDeSolicitacaoData, setFichaDeSolicitacaoData] = useState({
     fichaClinica: '',
@@ -148,25 +150,38 @@ function CreateFichaForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!validateForm()) return;
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  if (!validateForm()) return;
 
-    const fichaToCreate = {
-      ...fichaDeSolicitacaoData,
-      dataHoraObito: formatDate(fichaDeSolicitacaoData.dataHoraObito),
-      dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
-    };
-
-    try {
-      await createFichaSolicitacao(fichaToCreate);
-      setShowAlert(true);
-      resetForm();
-    } catch (error) {
-      console.error(error);
-      setShowErrorAlert(true);
-    }
+  const fichaToCreate = {
+    ...fichaDeSolicitacaoData,
+    dataHoraObito: formatDate(fichaDeSolicitacaoData.dataHoraObito),
+    dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
   };
+
+  try {
+    await createFichaSolicitacao(fichaToCreate);
+    setShowAlert(true);
+    resetForm();
+  } catch (error) {
+    console.error(error);
+
+    // Se o backend retornou um 400 com mensagem específica
+    if (error.response && error.response.status === 400) {
+      const backendMessage = error.response.data?.message || "";
+      if (backendMessage.includes("animal já possui outra ficha")) {
+        setShowErrorAlert(true);
+        setErrorMessage("Erro: O animal selecionado já possui outra ficha.");
+        return;
+      }
+    }
+
+    // Mensagem genérica para outros erros
+    setShowErrorAlert(true);
+    setErrorMessage("Erro ao criar ficha de solicitação, tente novamente.");
+  }
+};
 
   const resetForm = () => {
     setFichaDeSolicitacaoData({
@@ -308,8 +323,8 @@ function CreateFichaForm() {
               >
                 <option value="">Selecione o tipo de acondicionamento</option>
                 <option value="CONGELADO">Congelado</option>
-                <option value="REFRIGERADO">Refrigerado</option>
-                <option value="AMBIENTE">Ambiente</option>
+                <option value="RESFRIADO">Resfriado</option>
+                <option value="NATURAL">Natural</option>
               </select>
               {errors.acondicionamento && <div className="invalid-feedback">{errors.acondicionamento}</div>}
             </div>
@@ -433,6 +448,7 @@ function CreateFichaForm() {
       </form>
 
       <Alert message="Ficha de Solicitação cadastrada com sucesso!" show={showAlert} url='/lapa/telaprincipallaudos/laudosEmAndamento' />
+      {showErrorAlert && <ErrorAlert message={errorMessage} show={showErrorAlert} />}
     </div>
   );
 }
