@@ -36,13 +36,13 @@ function CreateLaudoNecropsia() {
     const [selectedFicha, setSelectedFicha] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
-    const { fichas = [], error: fichasError } = FichaSolicitacaoServicoList();
+    const { fichas, error: fichasError } = FichaSolicitacaoServicoList();
 
     // Campo Laudo
-    const { campoLaudo = [], error: campoLaudoError } = CampoLaudoList();
+    const { campoLaudo, error: campoLaudoError } = CampoLaudoList();
 
     // Microscopia
-    const { campoMicroscopiaOptions = [], error: microscopiaError } = LaudoMicroscopiaList();
+    const { campoMicroscopiaOptions, error: microscopiaError } = LaudoMicroscopiaList();
 
     const roles = getRoles();
     const token= getToken();
@@ -199,7 +199,8 @@ function CreateLaudoNecropsia() {
 
         if (term) {
             const filtered = fichas.filter(ficha =>
-                ficha.id.toString().includes(term) || ficha.codigoPatologia.toLowerCase().includes(term.toLowerCase())
+                ficha.id.toString().includes(term) || 
+                (ficha.codigoPatologia && ficha.codigoPatologia.toLowerCase().includes(term.toLowerCase()))
             );
             setFilteredFichas(filtered);
             setSearchError(filtered.length === 0);
@@ -268,11 +269,10 @@ function CreateLaudoNecropsia() {
                                         value={campo.id}
                                         onChange={(e) => handleCampoLaudoChange(e, index)}
                                     >
-                                        <option value="">Selecione a Macroscopia</option>
                                         {campoLaudo.map(campo => (
-                                            <option key={campo.id} value={campo.id}>
-                                                {campo.descricao}
-                                            </option>
+                                        <option key={campo.id} value={campo.id}>
+                                            {campo.descricao}
+                                        </option>
                                         ))}
                                     </select>
                                     <button
@@ -341,7 +341,7 @@ function CreateLaudoNecropsia() {
                                         <option value="">Selecione a Microscopia</option>
                                         {campoMicroscopiaOptions.map(option => (
                                             <option key={option.id} value={option.id}>
-                                                {option.descricao}
+                                                {option.descricao} {option.orgao ? `(${option.orgao.nome})` : ""}
                                             </option>
                                         ))}
                                     </select>

@@ -2,23 +2,23 @@ import { useState, useEffect } from 'react';
 import { getAllLaudoMicroscopia } from '../../services/laudoMicroscopiaService';
 
 const LaudoMicroscopiaList = () => {
-    const [laudoMicroscopias, setLaudoMicroscopias] = useState([]);
+    const [campoMicroscopiaOptions, setCampoMicroscopiaOptions] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const getLaudoMicroscopias = async () => {
+        const getMicroscopias = async () => {
             try {
                 const data = await getAllLaudoMicroscopia();
-                setLaudoMicroscopias(data);
+                setCampoMicroscopiaOptions(data);
             } catch (err) {
                 setError(err);
             }
         };
 
-        getLaudoMicroscopias();
+        getMicroscopias();
     }, []);
 
-    return { laudoMicroscopias, error };
+    return { campoMicroscopiaOptions, error };
 };
 
 export default LaudoMicroscopiaList;
