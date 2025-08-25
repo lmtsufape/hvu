@@ -68,6 +68,12 @@ function FichaSolicitacaoExame() {
     cardiologia: false,
   });
 
+  const [histopatologicoExtra, setHistopatologicoExtra] = useState({
+    aspecto: "",
+    local: ""
+    });
+  
+
     useEffect(() => {
         // Se o modo for 'visualizar', define o estado para somente leitura
         if (modo === 'visualizar') {
@@ -162,6 +168,18 @@ function FichaSolicitacaoExame() {
               }
             }
 
+            if (stateField === 'citologiaHistopatologia') {
+                        const histopatologicoIndex = items.findIndex(item => typeof item === 'object' && item !== null && item.nome === 'Histopatológico');
+                        if (histopatologicoIndex !== -1) {
+                            const histopatologicoObj = items[histopatologicoIndex];
+                            setHistopatologicoExtra({
+                                aspecto: histopatologicoObj.aspecto || "",
+                                local: histopatologicoObj.local || ""
+                            });
+                            items[histopatologicoIndex] = 'Histopatológico';
+                        }
+                    }
+
             newFormData[stateField] = items || [];
             newOtherValues[stateField] = otherValue;
             if (hasOther) {
@@ -230,6 +248,9 @@ function FichaSolicitacaoExame() {
     if (value === "Outros(s):" && !checked) {
       setOtherValues((prev) => ({ ...prev, [field]: "" }));
     }
+     if (value === "Histopatológico" && field === "citologiaHistopatologia" && !checked) {
+    setHistopatologicoExtra({ aspecto: "", local: "" });
+    }
 
     setFormData((prev) => {
       const updatedField = checked
@@ -254,6 +275,19 @@ function FichaSolicitacaoExame() {
         finalFormData[field].push(otherValues[field].trim());
       }
     });
+
+    const citoArray = finalFormData.citologiaHistopatologia;
+    const histopatologicoIndex = citoArray.indexOf("Histopatológico");
+
+    // Verifica se "Histopatológico" está selecionado
+    if (histopatologicoIndex !== -1) {
+        // Substitui a string "Histopatológico" por um objeto com os detalhes
+        citoArray[histopatologicoIndex] = {
+            nome: "Histopatológico", // Mantém o nome para fácil identificação
+            aspecto: histopatologicoExtra.aspecto.trim(),
+            local: histopatologicoExtra.local.trim()
+        };
+    }
 
     const fichaData = {
       nome: "Ficha Solicitação de Exame",
@@ -431,35 +465,71 @@ function FichaSolicitacaoExame() {
               options: ["Eletrocardiograma", "Ecocardiograma", "Outros(s):"],
             },
           ].map(({ title, field, options }) => (
-            <div key={field}>
-              <h2>{title}</h2>
-              <div className={styles.checkbox_container}>
-                {options.map((item) => (
-                  <label key={item}>
-                    <input
-                      type="checkbox"
-                      value={item}
-                      checked={Array.isArray(formData[field]) && formData[field].includes(item)}
-                      disabled={isReadOnly}
-                      onChange={(e) => handleCheckboxChange(e, field)}
-                      className="form-control"
-                    />
-                    {item}
-                  </label>
-                ))}
-                {showOtherInputs[field] && (
+          <div key={field}>
+            <h2>{title}</h2>
+            <div className={styles.checkbox_container}>
+              {options.map((item) => (
+                <label key={item}>
                   <input
-                    type="text"
-                    placeholder="Digite aqui..."
-                    value={otherValues[field]}
-                    onChange={(e) => handleOtherInputChange(field, e.target.value)}
-                    disabled={isReadOnly}
+                    type="checkbox"
+                    value={item}
+                    checked={formData[field].includes(item)}
+                    onChange={(e) => handleCheckboxChange(e, field)}
                     className="form-control"
                   />
-                )}
-              </div>
+                  {item}
+                </label>
+              ))}
+
+              {/* Input "Outros(s):" */}
+              {showOtherInputs[field] && (
+                <input
+                  type="text"
+                  placeholder="Digite aqui..."
+                  value={otherValues[field]}
+                  onChange={(e) => handleOtherInputChange(field, e.target.value)}
+                  className="form-control"
+                />
+              )}
+
+              {field === "citologiaHistopatologia" &&
+              formData.citologiaHistopatologia.includes("Histopatológico") && (
+                <div className={styles.extraInputs}>
+                  <div className={styles.extraInputGroup}>
+                    <label className={styles.extraLabel}>Aspecto</label>
+                    <input
+                      type="text"
+                      value={histopatologicoExtra.aspecto}
+                      onChange={(e) =>
+                        setHistopatologicoExtra((prev) => ({
+                          ...prev,
+                          aspecto: e.target.value,
+                        }))
+                      }
+                      className="form-control"
+                      placeholder="Descreva o aspecto"
+                    />
+                  </div>
+                  <div className={styles.extraInputGroup}>
+                    <label className={styles.extraLabel}>Local</label>
+                    <input
+                      type="text"
+                      value={histopatologicoExtra.local}
+                      onChange={(e) =>
+                        setHistopatologicoExtra((prev) => ({
+                          ...prev,
+                          local: e.target.value,
+                        }))
+                      }
+                      className="form-control"
+                      placeholder="Informe o local"
+                    />
+                  </div>
+                </div>
+            )}
             </div>
-          ))}
+          </div>
+        ))}
 
           {!isReadOnly && (
           <div className={styles.button_box}>
