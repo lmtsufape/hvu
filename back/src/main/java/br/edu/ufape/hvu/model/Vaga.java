@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.model;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,13 +17,12 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-public  class Vaga  {
+public class Vaga  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
@@ -34,18 +32,17 @@ public  class Vaga  {
 	private String status;
 	@ManyToOne
 	@ToString.Exclude
-	private Especialidade especialidade; 
+	private Especialidade especialidade;
 	@ManyToOne
 	@ToString.Exclude
-	private Medico medico; 
+	private Medico medico;
 	@OneToOne
 	@ToString.Exclude
-	private Consulta consulta; 
+	private Consulta consulta;
 	@OneToOne
 	@ToString.Exclude
 	private Agendamento agendamento; 
 	@ManyToOne
 	@ToString.Exclude
-	private TipoConsulta tipoConsulta; 
-
+	private TipoConsulta tipoConsulta;
 }

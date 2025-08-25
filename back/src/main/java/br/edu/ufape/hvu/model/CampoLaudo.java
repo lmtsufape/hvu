@@ -8,14 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-public  class CampoLaudo  {
+public class CampoLaudo  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
@@ -24,6 +22,4 @@ public  class CampoLaudo  {
 	@ManyToOne
 	@ToString.Exclude
 	private Orgao orgao;
-
-
 }

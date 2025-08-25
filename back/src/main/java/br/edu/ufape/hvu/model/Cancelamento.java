@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.model;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,5 +41,4 @@ public class Cancelamento {
 	@OneToOne
 	@ToString.Exclude
 	private Vaga vaga;
-
 }

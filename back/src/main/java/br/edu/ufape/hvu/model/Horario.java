@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.model;
 
 import java.time.LocalTime;
-
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import lombok.AllArgsConstructor;

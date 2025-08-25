@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.model;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,14 +16,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-public  class TipoConsulta  {
+public class TipoConsulta  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
@@ -33,6 +30,5 @@ public  class TipoConsulta  {
 	@OneToMany
 	@JoinColumn(name = "tipoConsulta_id")
 	@ToString.Exclude
-	private List<Cronograma> cronograma; 
-
+	private List<Cronograma> cronograma;
 }
