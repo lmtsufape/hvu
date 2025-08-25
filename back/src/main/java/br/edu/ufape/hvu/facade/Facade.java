@@ -20,7 +20,7 @@ import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
@@ -95,17 +95,20 @@ public class Facade {
     }
 
     public Tutor findTutorById(long id, String idSession) {
-        Tutor tutor = tutorServiceInterface.findTutorById(id);
+        if (keycloakService.hasRoleSecretario(idSession)) {
+            return tutorServiceInterface.findTutorById(id);
+        }
 
-        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !tutor.getUserId().equals(idSession)){
-            throw new ForbiddenOperationException("Você não tem permição de acessar esse tutor ou alterar os dados do mesmo.");
+        Tutor tutor = tutorServiceInterface.findTutorById(id);
+        if (!tutor.getUserId().equals(idSession)) {
+            throw new ForbiddenOperationException("Você não é responsável por este animal");
         }
 
         return tutor;
     }
 
-    public Tutor findTutorByuserId(String userId) {
-        return tutorServiceInterface.findTutorByuserId(userId);
+    public Tutor findTutorByUserId(String userId) {
+        return tutorServiceInterface.findTutorByUserId(userId);
     }
 
     public Tutor findTutorByanimalId(long animalId) {
@@ -136,10 +139,10 @@ public class Facade {
     private final CancelamentoServiceInterface cancelamentoServiceInterface;
 
     @Transactional
-    public Cancelamento cancelarAgendamento(Cancelamento newInstance) {
-        Agendamento agendamento = findAgendamentoById(newInstance.getAgendamento().getId());
+    public Cancelamento cancelarAgendamento(Cancelamento newInstance, String idSession) {
+        Agendamento agendamento = findAgendamentoById(newInstance.getAgendamento().getId(), idSession);
         agendamento.setStatus("Cancelado");
-        Vaga vaga = getVagaByAgendamento(agendamento.getId());
+        Vaga vaga = getVagaByAgendamento(agendamento.getId(), idSession);
         vaga.setStatus("Disponivel");
         vaga.setAgendamento(null);
         newInstance.setDataVaga(vaga.getDataHora());
@@ -149,11 +152,11 @@ public class Facade {
     }
 
     @Transactional
-    public Cancelamento cancelarVaga(Cancelamento newInstance) {
-        Vaga vaga = findVagaById(newInstance.getVaga().getId());
+    public Cancelamento cancelarVaga(Cancelamento newInstance, String idSession) {
+        Vaga vaga = findVagaById(newInstance.getVaga().getId(), idSession);
         vaga.setStatus("Cancelado");
         if(vaga.getAgendamento() != null) {
-            Agendamento agendamento = findAgendamentoById(vaga.getAgendamento().getId());
+            Agendamento agendamento = findAgendamentoById(vaga.getAgendamento().getId(), idSession);
             agendamento.setStatus("Cancelado");
         }
         vaga.setAgendamento(null);
@@ -259,44 +262,68 @@ public class Facade {
             throw new IllegalArgumentException("Usuário ou ID da sessão inválidos.");
         }
 
-        Usuario usuarioAtualizado = request.convertToEntity();
-        Usuario usuarioExistente = usuarioServiceInterface.findUsuarioById(id, idSession);
+        // Valida autorização
+        Usuario usuarioExistente = findUsuarioById(id, idSession);
 
+        Usuario usuarioAtualizado = request.convertToEntity();
         modelMapper.typeMap(Usuario.class, Usuario.class)
                 .addMappings(mapper -> mapper.skip(Usuario::setId))
                 .map(usuarioAtualizado, usuarioExistente);
 
-        try {
-            Usuario newUsuario = usuarioServiceInterface.updateUsuario(usuarioExistente, idSession);
-            keycloakService.updateUser(newUsuario.getUserId(), newUsuario.getEmail());
-            return newUsuario;
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao atualizar o usuário: " + e.getMessage());
-        }
+        Usuario newUsuario = usuarioServiceInterface.updateUsuario(usuarioExistente, idSession);
+        keycloakService.updateUser(newUsuario.getUserId(), newUsuario.getEmail());
+
+        return newUsuario;
     }
 
     public Usuario findUsuarioById(long id, String idSession) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID do usuário inválido.");
         }
-        return usuarioServiceInterface.findUsuarioById(id, idSession);
+
+        Usuario usuario = usuarioServiceInterface.findUsuarioById(id);
+        if (usuario.getUserId().equals(idSession)) {
+            return usuario;
+        }
+
+        if (keycloakService.hasRoleSecretario(idSession)) {
+            if (usuario instanceof Medico || usuario instanceof Tutor) {
+                return usuario;
+            }
+        } else if (keycloakService.hasRoleAdminLapa(idSession) && usuario instanceof Patologista) {
+            return usuario;
+        }
+
+        throw new ForbiddenOperationException("Você não tem acesso para visualizar este usuário.");
     }
 
-    public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
+    public Usuario findUsuarioByUserId(String userId) throws IdNotFoundException {
         if (userId == null || userId.isBlank()) {
             throw new IllegalArgumentException("userId não pode ser vazio.");
         }
-        return usuarioServiceInterface.findUsuarioByuserId(userId);
-    }
-
-    public List<Usuario> getAllUsuario() {
-        return usuarioServiceInterface.getAllUsuario();
+        return usuarioServiceInterface.findUsuarioByUserId(userId);
     }
 
     @Transactional
-    public void deleteUsuario(long id) {
+    public void deleteUsuario(long id, String idSession) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID inválido para exclusão.");
+        }
+
+        Usuario usuario = usuarioServiceInterface.findUsuarioById(id);
+        boolean podeExcluir = false;
+
+        if (keycloakService.hasRoleSecretario(idSession)) {
+            if (usuario.getUserId().equals(idSession) || usuario instanceof Medico || usuario instanceof Tutor) {
+                podeExcluir = true;
+            }
+        }
+        else if (keycloakService.hasRoleAdminLapa(idSession) && (usuario.getUserId().equals(idSession) || usuario instanceof Patologista)) {
+            podeExcluir = true;
+        }
+
+        if (!podeExcluir) {
+            throw new ForbiddenOperationException("Você não tem permissão para excluir este usuário.");
         }
         usuarioServiceInterface.deleteUsuario(id);
     }
@@ -384,11 +411,12 @@ public class Facade {
         }
 
         Medico oldMedico = medicoService.findMedicoById(id); // lança EntityNotFoundException se não existir
-        Medico medicoAtualizado = request.convertToEntity();
 
-        if(!keycloakService.hasRoleSecretario(idSession) && !medicoAtualizado.getUserId().equals(idSession)){
+        if(!keycloakService.hasRoleSecretario(idSession) && !oldMedico.getUserId().equals(idSession)){
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
         }
+
+        Medico medicoAtualizado = request.convertToEntity();
 
         // Atualiza instituição, se necessário
         if (request.getInstituicao() != null) {
@@ -398,7 +426,6 @@ public class Facade {
         modelMapper.typeMap(Medico.class, Medico.class)
                 .addMappings(mapper -> mapper.skip(Medico::setId))
                 .map(medicoAtualizado, oldMedico);
-
 
         Medico newMedico = medicoService.updateMedico(oldMedico);
         keycloakService.updateUser(newMedico.getUserId(), newMedico.getEmail());
@@ -413,8 +440,8 @@ public class Facade {
         return medicoService.findMedicoById(id);
     }
 
-    public List<Medico> getAllMedico() {
-        return medicoService.getAllMedico();
+    public List<Medico> findAllMedico() {
+        return medicoService.findAllMedico();
     }
 
     @Transactional
@@ -432,6 +459,9 @@ public class Facade {
         return medicoService.findByEspecialidade(especialidade);
     }
 
+    private Medico findMedicoByUserId(String idSession) {
+        return medicoServiceInterface.findByUserId(idSession);
+    }
 
     // Patologista--------------------------------------------------------------
     private final PatologistaServiceInterface patologistaService;
@@ -461,16 +491,16 @@ public class Facade {
         }
 
         Patologista oldPatologista = patologistaService.findPatologistaById(id); // lança EntityNotFoundException se não existir
-        Patologista patologistaAtualizado = request.convertToEntity();
 
-        if(!keycloakService.hasRoleSecretario(idSession) && !patologistaAtualizado.getUserId().equals(idSession)){
+        if(!keycloakService.hasRoleAdminLapa(idSession) && !oldPatologista.getUserId().equals(idSession)){
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
+
+        Patologista patologistaAtualizado = request.convertToEntity();
 
         modelMapper.typeMap(Patologista.class, Patologista.class)
                 .addMappings(mapper -> mapper.skip(Patologista::setId))
                 .map(patologistaAtualizado, oldPatologista);
-
 
         Patologista newPatologista = patologistaService.updatePatologista(oldPatologista);
         keycloakService.updateUser(newPatologista.getUserId(), newPatologista.getEmail());
@@ -479,10 +509,12 @@ public class Facade {
 
     public Patologista findPatologistaById(long id, String idSession) {
         Patologista patologista = patologistaService.findPatologistaById(id);
-        if(!keycloakService.hasRoleSecretario(idSession) && !patologista.getUserId().equals(idSession)){
+
+        if (!keycloakService.hasRoleAdminLapa(idSession) && !patologista.getUserId().equals(idSession)){
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
-        return patologistaService.findPatologistaById(id);
+
+        return patologista;
     }
 
     public List<Patologista> getAllPatologista() {
@@ -581,6 +613,29 @@ public class Facade {
 
     private final VagaServiceInterface vagaServiceInterface;
 
+    public List<Vaga> findAllVaga(String idSession) {
+        if (keycloakService.hasRoleSecretario(idSession)) {
+            return vagaServiceInterface.findAllVaga();
+        }
+
+        if (keycloakService.hasRoleMedico(idSession)) {
+            Medico medico = medicoServiceInterface.findByUserId(idSession);
+            return vagaServiceInterface.findVagasByMedicoId(medico.getId());
+        }
+
+        return findVagasForTutor(idSession);
+    }
+
+    private List<Vaga> findVagasForTutor(String idSession) {
+        Tutor tutor = tutorServiceInterface.findTutorByUserId(idSession);
+
+        List<Long> animalIds = tutor.getAnimal().stream()
+                .map(Animal::getId)
+                .toList();
+
+        return vagaServiceInterface.findVagasForTutor(animalIds);
+    }
+
     @Transactional
     public Vaga saveVaga(Vaga newInstance) {
         newInstance.setStatus(String.valueOf(StatusAgendamentoEVaga.Disponivel));
@@ -588,7 +643,7 @@ public class Facade {
     }
 
     @Transactional
-    public Vaga updateVaga(Vaga transientObject) {
+    private Vaga updateVaga(Vaga transientObject) {
         return vagaServiceInterface.updateVaga(transientObject);
     }
 
@@ -620,30 +675,77 @@ public class Facade {
         return updateVaga(oldObject);
     }
 
-    public Vaga findVagaById(long id) {
-        return vagaServiceInterface.findVagaById(id);
+    public Vaga findVagaById(long id, String idSession) {
+        Vaga vaga = vagaServiceInterface.findVagaById(id);
+
+        if (keycloakService.hasRoleSecretario(idSession)) {
+            return vaga;
+        }
+
+        if (keycloakService.hasRoleMedico(idSession)) {
+            Medico medico = medicoServiceInterface.findByUserId(idSession);
+            if (vaga.getMedico().equals(medico)) {
+                return vaga;
+            }
+            throw new ForbiddenOperationException("Você não tem acesso a esta vaga.");
+        }
+
+        Tutor tutor = tutorServiceInterface.findTutorByUserId(idSession);
+        if (vaga.getAgendamento() == null || tutor.getAnimal().contains(vaga.getAgendamento().getAnimal())) {
+            return vaga;
+        }
+
+        throw new ForbiddenOperationException("Você não tem acesso a esta vaga.");
     }
 
-    public List<Vaga> getAllVaga() {
-        return vagaServiceInterface.getAllVaga();
+    public List<Vaga> findVagasByData(LocalDate data, String idSession) {
+        List<Vaga> vagas = vagaServiceInterface.findVagasByData(data);
+
+        if (keycloakService.hasRoleSecretario(idSession)) {
+            return vagas;
+        }
+
+        if (keycloakService.hasRoleMedico(idSession)) {
+            Medico medico = medicoServiceInterface.findByUserId(idSession);
+            return vagas.stream()
+                    .filter(v -> v.getMedico().equals(medico))
+                    .toList();
+        }
+
+        Tutor tutor = tutorServiceInterface.findTutorByUserId(idSession);
+        return vagas.stream()
+                .filter(v -> v.getAgendamento() == null ||
+                        tutor.getAnimal().contains(v.getAgendamento().getAnimal()))
+                .toList();
     }
 
-    public List<Vaga> findVagaByData(LocalDate data){
-        return vagaServiceInterface.findVagasByData(data);
+    public List<Vaga> findVagaBetweenInicialAndFinalDate(LocalDate dataInicial, LocalDate dataFinal, String idSession) {
+        List<Vaga> vagas = vagaServiceInterface.findVagaBetweenInicialAndFinalDate(dataInicial, dataFinal);
+
+        if (keycloakService.hasRoleSecretario(idSession)) {
+            return vagas;
+        }
+
+        if (keycloakService.hasRoleMedico(idSession)) {
+            Medico medico = medicoServiceInterface.findByUserId(idSession);
+            return vagas.stream()
+                    .filter(v -> v.getMedico().equals(medico))
+                    .toList();
+        }
+
+        Tutor tutor = tutorServiceInterface.findTutorByUserId(idSession);
+        return vagas.stream()
+                .filter(v -> v.getAgendamento() == null || tutor.getAnimal().contains(v.getAgendamento().getAnimal()))
+                .toList();
     }
 
-    public List<Vaga> findVagaBetweenInicialAndFinalDate(LocalDate dataInicial, LocalDate dataFinal){
-        return vagaServiceInterface.findVagaBetweenInicialAndFinalDate(dataInicial,dataFinal);
-    }
-
-
-    public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico, String idSession){
+    public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico, String idSession) {
         Medico medico = findMedicoById(IdMedico, idSession);
 
         return vagaServiceInterface.findVagasAndAgendamentoByMedico(data, medico);
     }
 
-    public List<Animal> findAnimaisWithReturn(){
+    public List<Animal> findAnimaisWithReturn() {
         List<Vaga> vagas = vagaServiceInterface.findLatestVagaForEachAnimal();
 
         return vagas.stream()
@@ -688,23 +790,26 @@ public class Facade {
         return diasDesdeUltimaConsulta > 30; // Retorna verdadeiro se expirou
     }
 
-    public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(Long id){
+    public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(Long id, String idSession) {
+        Animal animal = animalServiceInterface.findAnimalById(id);
+
+        Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
+        if(!tutor.getUserId().equals(idSession) && !keycloakService.hasRoleSecretario(idSession)) {
+            throw new ForbiddenOperationException("Este não é o seu animal");
+        }
+
         // verifica se animal já tem uma consulta em aberto -> "Bloqueado"
         List<Agendamento> allAgendamentos = getAllAgendamento();
-        Animal animal = animalServiceInterface.findAnimalById(id);
-        if(animal == null){
-            throw new IdNotFoundException(id, "Animal");
-        }
         boolean consultaEmAberto = allAgendamentos.stream()
                 .anyMatch(agendamento -> agendamento.getAnimal() != null &&
                         agendamento.getAnimal().getId() == animal.getId() &&
                         !agendamento.getStatus().equals("Finalizado") && !agendamento.getStatus().equals("Cancelado"));
 
-        if(consultaEmAberto){
+        if (consultaEmAberto) {
             return "Bloqueado";
-        }else if(isAnimalWithRetorno(animal.getId()) || !isRetornoExpirado(animal.getId())){
+        } else if (isAnimalWithRetorno(animal.getId()) || !isRetornoExpirado(animal.getId())) {
             return "Retorno";
-        }else{
+        } else {
             return "Primeira Consulta";
         }
     }
@@ -714,7 +819,7 @@ public class Facade {
         return findAnimaisWithReturn().contains(animal);
     }
 
-    public List<Vaga> findVagaByDataAndTurno(LocalDate data, String turno){
+    public List<Vaga> findVagaByDataAndTurno(LocalDate data, String turno) {
         return vagaServiceInterface.findVagasByDataAndTurno(data, turno);
     }
 
@@ -728,8 +833,8 @@ public class Facade {
         return vagaServiceInterface.findVagaByEspecialidade(especialidade);
     }
 
-    public Vaga getVagaByAgendamento(long idAgendamento) {
-        Agendamento agendamento = findAgendamentoById(idAgendamento);
+    public Vaga getVagaByAgendamento(long idAgendamento, String idSession) {
+        Agendamento agendamento = findAgendamentoById(idAgendamento, idSession);
         return vagaServiceInterface.findVagaByAgendamento(agendamento);
     }
 
@@ -766,7 +871,7 @@ public class Facade {
 
     @Transactional
     private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao, String idSession) {
-        List<Vaga> vagasByData = findVagaByData(data);
+        List<Vaga> vagasByData = findVagasByData(data, idSession);
         List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
         vagasByData.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
         vagasByDataAndTurno.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
@@ -809,6 +914,14 @@ public class Facade {
         return detalheBuilder.toString().trim();
     }
 
+    private boolean existsVagaByMedicoIdAndAnimalId(Long medicoId, Long animalId) {
+        Medico medico = medicoServiceInterface.findMedicoById(medicoId);
+        Animal animal = animalServiceInterface.findAnimalById(animalId);
+
+        return vagaServiceInterface.findVagasByMedicoId(medicoId).stream()
+                .anyMatch(vaga -> vaga.getMedico().equals(medico) &&
+                        vaga.getAgendamento().getAnimal().equals(animal));
+    }
 
     // Consulta--------------------------------------------------------------
 
@@ -972,7 +1085,7 @@ public class Facade {
     @Transactional
     public Agendamento processUpdateAgendamento(AgendamentoRequest transientObject, Long id, String userId) {
 
-        Agendamento oldObject = findAgendamentoById(id);
+        Agendamento oldObject = findAgendamentoById(id, userId);
 
         if (transientObject.getAnimal() != null) {
             oldObject.setAnimal(findAnimalById(transientObject.getAnimal().getId(), userId));
@@ -990,10 +1103,14 @@ public class Facade {
 
     // Reagenda um agendamento para uma nova vaga
     @Transactional
-    public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga){
-        Agendamento agendamento = findAgendamentoById(idAgendamento);
-        Vaga vagaAntiga = getVagaByAgendamento(agendamento.getId());
-        Vaga novaVaga = findVagaById(idVaga);
+    public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga, String idSession){
+        if (!keycloakService.hasRoleSecretario(idSession) || !keycloakService.hasRoleTutor(idSession)) {
+            throw new ForbiddenOperationException("Você não é responsável por este agendamento.");
+        }
+
+        Agendamento agendamento = findAgendamentoById(idAgendamento, idSession);
+        Vaga vagaAntiga = getVagaByAgendamento(agendamento.getId(), idSession);
+        Vaga novaVaga = findVagaById(idVaga, idSession);
 
         // cancelando vaga anterior, que é a vaga antiga que precisa ser reagendada
         if (vagaAntiga != null){
@@ -1024,7 +1141,27 @@ public class Facade {
         return agendamento;
     }
 
-    public Agendamento findAgendamentoById(long id) {
+    public Agendamento findAgendamentoById(long id, String idSession) {
+        if (!keycloakService.hasRoleSecretario(idSession)) {
+            Agendamento agendamento = agendamentoServiceInterface.findAgendamentoById(id);
+            Animal animal = agendamento.getAnimal();
+
+            if (!keycloakService.hasRoleMedico(idSession)) {
+                Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
+
+                if(!tutor.getUserId().equals(idSession)) {
+                    throw new ForbiddenOperationException("Este não é o seu animal");
+                }
+            }
+
+            Vaga vaga = vagaServiceInterface.findVagaByAgendamento(agendamento);
+            Medico medico = vaga.getMedico();
+
+            if(!medico.getUserId().equals(idSession)) {
+                throw new ForbiddenOperationException("Você não é o médico responsável por este agendamento.");
+            }
+        }
+
         return agendamentoServiceInterface.findAgendamentoById(id);
     }
 
@@ -1033,12 +1170,21 @@ public class Facade {
     }
 
     public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String idSession){
+        if (!keycloakService.hasRoleMedico(idSession) || !keycloakService.hasRoleSecretario(idSession)) {
+            throw new AccessDeniedException("Acesso Negado");
+        }
+
         Medico medico = findMedicoById(medicoId, idSession);
-        return agendamentoServiceInterface.findAgendamentosByMedicoId(medico, idSession);
+
+        if (keycloakService.hasRoleMedico(idSession) && !medico.getUserId().equals(idSession)) {
+                throw new ForbiddenOperationException("Você não é o médico responsável por estes agendamentos.");
+            }
+
+        return agendamentoServiceInterface.findAgendamentosByMedicoId(medico);
     }
 
     public List<Agendamento> findAgendamentosByTutorId(String userId) {
-        Tutor tutor = findTutorByuserId(userId);
+        Tutor tutor = findTutorByUserId(userId);
 
         List<Animal> animals = tutor.getAnimal(); // Supondo que você tem um método getAnimais()
 
@@ -1156,7 +1302,7 @@ public class Facade {
 
     @Transactional
     public Animal saveAnimal(Animal newInstance, String idSession) {
-        Tutor tutor = findTutorByuserId(idSession);
+        Tutor tutor = findTutorByUserId(idSession);
         if (tutor == null) {
             throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
         }
@@ -1192,11 +1338,16 @@ public class Facade {
     public Animal updateAnimal(Long id, AnimalRequest request, String idSession) {
         Animal animal = animalServiceInterface.findAnimalById(id);
         Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
+        Medico medico = findMedicoByUserId(idSession);
 
         if (!keycloakService.hasRoleSecretario(idSession) &&
                 !keycloakService.hasRoleMedico(idSession) &&
                 !tutor.getUserId().equals(idSession)) {
-            throw new ForbiddenOperationException("Este não é o seu animal");
+            throw new ForbiddenOperationException("Você não é responsável por este animal");
+        }
+
+        if (keycloakService.hasRoleMedico(idSession) && !existsVagaByMedicoIdAndAnimalId(medico.getId(), animal.getId())) {
+            throw new ForbiddenOperationException("Você não é o médico responsável por este animal");
         }
 
         // Atualiza raça, se fornecida
@@ -1213,16 +1364,25 @@ public class Facade {
         return animalServiceInterface.updateAnimal(animal);
     }
 
-    public Animal findAnimalById(long id, String idSession) {
+    public Animal findAnimalById(long animalId, String idSession) {
         // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
-        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession)){
-            Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
+        if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession)) {
+            Tutor tutor = tutorServiceInterface.findTutorByanimalId(animalId);
 
-            if(!tutor.getUserId().equals(idSession)) {
+            if (!tutor.getUserId().equals(idSession)) {
                 throw new ForbiddenOperationException("Este não é o seu animal");
             }
         }
-        return animalServiceInterface.findAnimalById(id);
+
+        if (keycloakService.hasRoleMedico(idSession)) {
+            Medico medico = findMedicoByUserId(idSession);
+
+            if (!existsVagaByMedicoIdAndAnimalId(medico.getId(), animalId)) {
+                throw new ForbiddenOperationException("Você não é o médico responsável por este animal");
+            }
+        }
+
+        return animalServiceInterface.findAnimalById(animalId);
     }
 
     public List<Animal> getAllAnimal() {
@@ -1230,7 +1390,7 @@ public class Facade {
     }
 
     public List<Animal> getAllAnimalTutor(String userId) {
-        Tutor tutor = findTutorByuserId(userId);
+        Tutor tutor = findTutorByUserId(userId);
         return tutor.getAnimal();
     }
 
