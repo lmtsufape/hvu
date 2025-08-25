@@ -26,7 +26,7 @@ function FormularioLogin() {
             try{
                 await postLogin(login, senha);
                 const userData = await getCurrentUsuario();
-                if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("medico")){
+                if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("patologista")) {
                     router.push('/lapa/telaprincipallaudos');
                 }
             }catch(error){
