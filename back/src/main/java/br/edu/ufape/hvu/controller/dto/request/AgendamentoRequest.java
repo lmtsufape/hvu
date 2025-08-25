@@ -1,16 +1,13 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
 import org.modelmapper.ModelMapper;
-
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Agendamento;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDateTime;
-
 
 @Getter @Setter @NoArgsConstructor 
 public  class AgendamentoRequest  {
@@ -20,15 +17,10 @@ public  class AgendamentoRequest  {
 	private AnimalRequest animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-	
-
 
 	public Agendamento convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-		Agendamento obj = modelMapper.map(this, Agendamento.class);
-		return obj;
+        return modelMapper.map(this, Agendamento.class);
 	}
-
-
 
 }
