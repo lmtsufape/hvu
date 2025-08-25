@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -29,7 +28,7 @@ public class MedicoController {
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("medico")
 	public List<MedicoResponse> getAllMedico() {
-		return facade.getAllMedico()
+		return facade.findAllMedico()
 			.stream()
 			.map(MedicoResponse::new)
 			.toList();
@@ -40,7 +39,8 @@ public class MedicoController {
 	public MedicoResponse createMedico(@Valid @RequestBody MedicoRequest newObj) {
         return new MedicoResponse(facade.saveMedico(newObj, newObj.getSenha()));
     }
-	
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("medico/{id}")
 	public MedicoResponse getMedicoById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,13 +56,14 @@ public class MedicoController {
 		return new MedicoResponse(facade.updateMedico(id, obj, principal.getSubject()));
 	}
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("medico/{id}")
 	public String deleteMedico(@PathVariable Long id) {
 		facade.deleteMedico(id);
 		return "";
 	}
 
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("medico/instituicao/{InstituicaoId}")
 	public List<MedicoResponse> findByInstituicao(@PathVariable Long InstituicaoId){
 		return facade.findByInstituicao(InstituicaoId)
@@ -71,6 +72,7 @@ public class MedicoController {
 				.toList();
 	}
 
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("medico/especialidade/{EspecialidadeId}")
 	public List<MedicoResponse> findByEspecialidade(@PathVariable Long EspecialidadeId){
 		return facade.findByEspeciallidade(EspecialidadeId)
@@ -78,4 +80,5 @@ public class MedicoController {
 				.map(MedicoResponse::new)
 				.toList();
 	}
+
 }

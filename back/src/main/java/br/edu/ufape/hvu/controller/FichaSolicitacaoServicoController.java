@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,8 +13,6 @@ import br.edu.ufape.hvu.model.FichaSolicitacaoServico;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.FichaSolicitacaoServicoRequest;
 import br.edu.ufape.hvu.controller.dto.response.FichaSolicitacaoServicoResponse;
-
-
  
 @RestController
 @RequestMapping("/api/v1/")
@@ -24,7 +21,7 @@ import br.edu.ufape.hvu.controller.dto.response.FichaSolicitacaoServicoResponse;
 public class FichaSolicitacaoServicoController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("fichaSolicitacaoServico")
 	public List<FichaSolicitacaoServicoResponse> getAllFichaSolicitacaoServico() {
 		return facade.getAllFichaSolicitacaoServico()
@@ -33,7 +30,7 @@ public class FichaSolicitacaoServicoController {
 			.toList();
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("fichaSolicitacaoServico")
 	public FichaSolicitacaoServicoResponse createFichaSolicitacaoServico(@Valid @RequestBody FichaSolicitacaoServicoRequest newObj) {
 		FichaSolicitacaoServico fichaSolicitacaoServico = newObj.convertToEntity();
@@ -42,13 +39,13 @@ public class FichaSolicitacaoServicoController {
 		return new FichaSolicitacaoServicoResponse(savedFicha);
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("fichaSolicitacaoServico/{id}")
 	public FichaSolicitacaoServicoResponse getFichaSolicitacaoServicoById(@PathVariable Long id) {
 		return new FichaSolicitacaoServicoResponse(facade.findFichaSolicitacaoServicoById(id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@PatchMapping("fichaSolicitacaoServico/{id}")
 	public FichaSolicitacaoServicoResponse updateFichaSolicitacaoServico(@PathVariable Long id, @Valid @RequestBody FichaSolicitacaoServicoRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,12 +53,11 @@ public class FichaSolicitacaoServicoController {
 		return new FichaSolicitacaoServicoResponse(facade.updateFichaSolicitacaoServico(obj, id, principal.getSubject()));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@DeleteMapping("fichaSolicitacaoServico/{id}")
 	public String deleteFichaSolicitacaoServico(@PathVariable Long id) {
 		facade.deleteFichaSolicitacaoServico(id);
 		return "";
 	}
-	
 
 }

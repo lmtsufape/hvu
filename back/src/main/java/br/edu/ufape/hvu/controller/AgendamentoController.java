@@ -22,7 +22,7 @@ import br.edu.ufape.hvu.controller.dto.response.AgendamentoResponse;
 public class AgendamentoController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("agendamento")
 	public List<AgendamentoResponse> getAllAgendamento() {
 		return facade.getAllAgendamento()
@@ -32,6 +32,7 @@ public class AgendamentoController {
 	}
 
 	// Listar agendamentos por ordem de horário
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("agendamento/ordemdehorario")
 	public List<AgendamentoResponse> getAllAgendamentosOrdemDehorario() {
 		return facade.getAllAgendamento().stream()
@@ -39,13 +40,15 @@ public class AgendamentoController {
 				.sorted(Comparator.comparing(AgendamentoResponse::getDataVaga).reversed()).toList();
 	}
 
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@PostMapping("agendamento/vaga/{idVaga}")
 	public AgendamentoResponse createAgendamento(@Valid @RequestBody AgendamentoRequest newObj, @PathVariable Long idVaga) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		return new AgendamentoResponse(facade.saveAgendamento(newObj, idVaga, principal.getSubject()));
 	}
-	
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@PostMapping("agendamento/especial")
 	public AgendamentoResponse createAgendamentoEspecial(@Valid @RequestBody AgendamentoEspecialRequest newObj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -53,23 +56,28 @@ public class AgendamentoController {
 		return new AgendamentoResponse(facade.createAgendamentoEspecial(newObj, principal.getSubject()));
 	}
 
-
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@GetMapping("agendamento/{id}")
 	public AgendamentoResponse getAgendamentoById(@PathVariable Long id) {
-		return new AgendamentoResponse(facade.findAgendamentoById(id));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+
+		return new AgendamentoResponse(facade.findAgendamentoById(id, principal.getSubject()));
 	}
-	
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("agendamento/medico/{id}")
 	public List<AgendamentoResponse> getAgendamentosByMedicoId(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 
-		return facade.findAgendamentosByMedicoId(id,principal.getSubject())
+		return facade.findAgendamentosByMedicoId(id, principal.getSubject())
 				.stream()
 				.map(AgendamentoResponse::new)
 				.toList();
 	}
 
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("agendamento/tutor")
 	public List<AgendamentoResponse> findAgendamentosByTutorId() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -81,14 +89,18 @@ public class AgendamentoController {
 				.toList();
 	}
 
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@GetMapping("agendamento/datasnaopodeagendar/{tutorId}")
-	public List<LocalDateTime> retornaDatasQueTutorNaoPodeAgendar(@PathVariable String tutorId){
-	return facade.retornaVagaQueTutorNaoPodeAgendar(tutorId);
+	public List<LocalDateTime> retornaDatasQueTutorNaoPodeAgendar(@PathVariable String tutorId) {
+	    return facade.retornaVagaQueTutorNaoPodeAgendar(tutorId);
 	}
 
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@PatchMapping("agendamento/reagendamento/{idAgendamento}/{idVaga}")
 	public Agendamento reagendarAgendamento(@PathVariable Long idAgendamento, @PathVariable Long idVaga) {
-		return facade.reagendarAgendamento(idAgendamento,idVaga);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+		return facade.reagendarAgendamento(idAgendamento, idVaga, principal.getSubject());
 	}
 
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
@@ -98,7 +110,8 @@ public class AgendamentoController {
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		return new AgendamentoResponse(facade.processUpdateAgendamento(obj, id, principal.getSubject()));
 	}
-	
+
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("agendamento/{id}")
 	public String deleteAgendamento(@PathVariable Long id) {
 		facade.deleteAgendamento(id);
