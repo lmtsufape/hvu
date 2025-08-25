@@ -325,10 +325,16 @@ export default function Step2ClinicaMedica({
 
           </div>
           <div className={styles.column}>
-            <label>Médico(s) Veterinário(s) Responsável:</label>
-            <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} disabled={isReadOnly} onChange={handleChange}
-              className="form-control" />
-          </div>
+              <label>Médico Veterinário Responsável:</label>
+              <input
+                type="text"
+                name="medicosResponsaveis"
+                value={formData.medicosResponsaveis || ''} 
+                readOnly
+                className="form-control"
+                style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+              />
+            </div>
 
 
           {/* ================= BOTÕES FINAIS ================= */}
