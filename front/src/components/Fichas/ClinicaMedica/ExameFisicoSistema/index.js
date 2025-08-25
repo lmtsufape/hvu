@@ -60,6 +60,19 @@ export default function Step2ClinicaMedica({
   const [consultaId, setConsultaId] = useState(null);
   const [agendamentoId, setAgendamentoId] = useState(null);
 
+  const [nomeMedico, setNomeMedico] = useState("Carregando...");
+  useEffect(() => {
+    if (router.isReady) {
+      const medicoFromQuery = router.query.medico;
+      
+      if (medicoFromQuery) {
+        setNomeMedico(decodeURIComponent(medicoFromQuery));
+      } else {
+        setNomeMedico("Médico não informado");
+      }
+    }
+  }, [router.isReady, router.query.medico]);
+
   useEffect(() => {
     if (router.isReady) {
       const id = router.query.fichaId;
@@ -316,16 +329,22 @@ export default function Step2ClinicaMedica({
 
           </div>
           <div className={styles.column}>
-            <label>Médico(s) Veterinário(s) Responsável:</label>
-            <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} onChange={handleChange}
-              className="form-control" />
+            <label>Médico Veterinário Responsável:</label>
+            <input
+              type="text"
+              name="medicosResponsaveis"
+              value={formData.medicosResponsaveis || ''} 
+              readOnly
+              className="form-control"
+              style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+            />
           </div>
 
 
           {/* ================= BOTÕES FINAIS ================= */}
           <div className={styles.button_box}>
             <VoltarWhiteButton onClick={prevStep} />
-            < FinalizarFichaModal onConfirm={handleSubmit} />
+            < FinalizarFichaModal onConfirm={() => handleSubmit(nomeMedico)} />
           </div>
         </form>
       </div>
