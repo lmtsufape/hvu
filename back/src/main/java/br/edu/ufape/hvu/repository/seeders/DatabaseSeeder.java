@@ -1,6 +1,5 @@
 package br.edu.ufape.hvu.repository.seeders;
 
-
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,10 +7,10 @@ import org.springframework.stereotype.Component;
 
 @Component @RequiredArgsConstructor
 public class DatabaseSeeder {
-    final private AgendamentoSeeder agendamentoSeeder;
-    final private AnimalSeeder animalSeeder;
-    final private EspecialidadeSeeder especialidadeSeeder;
-    final private VagaSeeder vagaSeeder;
+    private final AgendamentoSeeder agendamentoSeeder;
+    private final AnimalSeeder animalSeeder;
+    private final EspecialidadeSeeder especialidadeSeeder;
+    private final VagaSeeder vagaSeeder;
     private final UsuarioSeeder usuarioSeeder;
     private final InstituicaoSeeder instituicaoSeeder;
     private final MedicoSeeder medicoSeeder;

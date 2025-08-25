@@ -7,16 +7,13 @@ import br.edu.ufape.hvu.repository.RacaRepository;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Component @RequiredArgsConstructor
 public class AnimalSeeder {
-    final private AnimalRepository animalRepository;
-    final private RacaRepository racaRepository;
-
+    private final AnimalRepository animalRepository;
+    private final RacaRepository racaRepository;
 
     public void init(){
         if(animalRepository.count() > 0){
@@ -36,7 +33,7 @@ public class AnimalSeeder {
             animal.setNumeroFicha(faker.idNumber().valid());
             animal.setRaca(racas.get(0));
             animalRepository.save(animal);
-
         }
     }
+
 }
