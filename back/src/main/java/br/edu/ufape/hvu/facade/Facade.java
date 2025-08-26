@@ -604,6 +604,10 @@ public class Facade {
         return avisoServiceInterface.getAllAviso();
     }
 
+    public List<Aviso> findAvisosHabilitados() {
+        return avisoServiceInterface.findAvisosHabilitados();
+    }
+
     @Transactional
     public void deleteAviso(long id) {
         avisoServiceInterface.deleteAviso(id);
@@ -1150,7 +1154,7 @@ public class Facade {
                 Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
 
                 if(!tutor.getUserId().equals(idSession)) {
-                    throw new ForbiddenOperationException("Este não é o seu animal");
+                    throw new ForbiddenOperationException("Você não é o tutor responsável por este agendamento.");
                 }
             }
 
@@ -1183,8 +1187,12 @@ public class Facade {
         return agendamentoServiceInterface.findAgendamentosByMedicoId(medico);
     }
 
-    public List<Agendamento> findAgendamentosByTutorId(String userId) {
-        Tutor tutor = findTutorByUserId(userId);
+    public List<Agendamento> findAgendamentosByTutorUserId(String idSession) {
+        Tutor tutor = findTutorByUserId(idSession);
+
+        if(!tutor.getUserId().equals(idSession)) {
+            throw new ForbiddenOperationException("Este não é o responsável por este agendamento");
+        }
 
         List<Animal> animals = tutor.getAnimal(); // Supondo que você tem um método getAnimais()
 

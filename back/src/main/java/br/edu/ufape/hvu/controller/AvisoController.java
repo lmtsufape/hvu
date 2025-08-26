@@ -15,10 +15,17 @@ import java.util.List;
 public class AvisoController {
     private final Facade facade;
 
-    @PreAuthorize("hasRole('SECRETARIO')")
     @GetMapping("aviso")
     public List<AvisoResponse> getAllAviso() {
         return facade.getAllAviso()
+                .stream()
+                .map(AvisoResponse::new)
+                .toList();
+    }
+
+    @GetMapping("aviso/habilitados")
+    public List<AvisoResponse> getAvisosHabilitados() {
+        return facade.findAvisosHabilitados()
                 .stream()
                 .map(AvisoResponse::new)
                 .toList();

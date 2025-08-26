@@ -28,6 +28,10 @@ public class AvisoService implements AvisoServiceInterface {
         return repository.findAll();
     }
 
+    public List<Aviso> findAvisosHabilitados() {
+        return repository.findByHabilitadoTrue();
+    }
+
     public void deleteAviso(long id){
         Aviso obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Aviso"));
         repository.delete(obj);
