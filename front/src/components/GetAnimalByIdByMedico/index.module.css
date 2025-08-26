@@ -2,8 +2,8 @@
 
 .container {
     width: 1200;
-    height: 500px;
-    margin-bottom: 200px;
+    height: 550px;
+    margin-bottom: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -93,7 +93,7 @@
 .botao {
     display: flex;
     float: right;
-    margin-top: -78px;
+    margin-bottom: 50px;
     margin-right: 28px;
     gap: 32px;
 }

@@ -177,7 +177,7 @@ function FichaMedicaRetorno() {
     return <div className={styles.message}>Carregando dados do usuário...</div>;
   }
 
-  if (!roles.includes("medico")) {
+  if (!roles.includes("medico") && !roles.includes("patologista")) {
     return (
       <div className={styles.container}>
         <h3 className={styles.message}>
