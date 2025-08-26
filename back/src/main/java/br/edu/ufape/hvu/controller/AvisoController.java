@@ -15,6 +15,7 @@ import java.util.List;
 public class AvisoController {
     private final Facade facade;
 
+    @PreAuthorize("hasRole('SECRETARIO')")
     @GetMapping("aviso")
     public List<AvisoResponse> getAllAviso() {
         return facade.getAllAviso()
