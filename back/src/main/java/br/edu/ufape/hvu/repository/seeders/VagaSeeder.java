@@ -1,6 +1,7 @@
 package br.edu.ufape.hvu.repository.seeders;
 
 import br.edu.ufape.hvu.model.*;
+import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import br.edu.ufape.hvu.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,15 +26,13 @@ public class VagaSeeder {
         List<Agendamento> agendamentos = agendamentoRepository.findAll();
 
         Vaga vaga = new Vaga();
-        vaga.setDataHora(LocalDateTime.now());
+        vaga.setDataHora(agendamentos.get(0).getDataVaga());
         vaga.setMedico(medicos.get(0));
         vaga.setAgendamento(agendamentos.get(0));
         vaga.setEspecialidade(especialidades.get(0));
         vaga.setTipoConsulta(tipoConsultas.get(0));
-        vaga.setStatus("Disponível");
-
+        vaga.setStatus(String.valueOf(StatusAgendamentoEVaga.Agendado));
         vagaRepository.save(vaga);
-
     }
 }
 

@@ -77,13 +77,13 @@ public class AgendamentoController {
 				.toList();
 	}
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasRole('TUTOR')")
 	@GetMapping("agendamento/tutor")
 	public List<AgendamentoResponse> findAgendamentosByTutorId() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 			
-		return facade.findAgendamentosByTutorId(principal.getSubject())
+		return facade.findAgendamentosByTutorUserId(principal.getSubject())
 				.stream()
 				.map(AgendamentoResponse::new)
 				.toList();

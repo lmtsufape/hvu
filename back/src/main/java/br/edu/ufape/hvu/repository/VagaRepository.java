@@ -46,11 +46,11 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 
     @Query("""
     SELECT v FROM Vaga v
-    WHERE v.agendamento IS NULL
-    OR v.agendamento.animal.id IN :animalIds
+    LEFT JOIN v.agendamento a
+    LEFT JOIN a.animal an
+    WHERE a IS NULL OR an.id IN :animalIds
     """)
     List<Vaga> findVagasForTutor(@Param("animalIds") List<Long> animalIds);
 
     List<Vaga> findVagasByMedicoId(Long medicoId);
-
 }
