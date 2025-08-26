@@ -8,20 +8,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-public  class Foto  {
+public class Foto  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private long id;
 	private String titulo;
 	private String foto_path;
-
 }

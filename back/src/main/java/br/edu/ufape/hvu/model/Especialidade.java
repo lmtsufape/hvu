@@ -13,19 +13,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-public  class Especialidade  {
+public class Especialidade  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private long id;
 	private String nome;
 	private String descricao;
-
 }

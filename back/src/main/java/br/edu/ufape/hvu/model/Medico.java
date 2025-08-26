@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.model;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
@@ -13,14 +12,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @SuppressWarnings("serial")
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(callSuper=false)
 @ToString
-public  class Medico extends Usuario {
+public class Medico extends Usuario {
 	private String crmv;
 	@ManyToMany
 	@JoinColumn(name = "medico_id")
@@ -30,5 +27,4 @@ public  class Medico extends Usuario {
 	@JoinColumn(name = "instituicao_id")
 	@ToString.Exclude
 	private Instituicao instituicao;
-
 }

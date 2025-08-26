@@ -1,7 +1,5 @@
 package br.edu.ufape.hvu.service;
 
-import java.util.List;
-import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.UsuarioRepository;
@@ -18,21 +16,15 @@ public class UsuarioService implements UsuarioServiceInterface {
 	}
 
 	public Usuario updateUsuario(Usuario transientObject, String idSession) {
-		getUsuarioValidado(transientObject.getId(), idSession);
 		return repository.save(transientObject);
 	}
 
-	public Usuario findUsuarioById(long id, String idSession) {
-		return getUsuarioValidado(id, idSession);
+	public Usuario findUsuarioById(long id) {
+		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Usuario"));
 	}
 	
-	public Usuario findUsuarioByuserId(String userId) throws IdNotFoundException {
-		return repository.findByuserId(userId)
-				.orElseThrow(() -> new IdNotFoundException(userId, "Usuario"));
-	}
-
-	public List<Usuario> getAllUsuario(){
-		return repository.findAll();
+	public Usuario findUsuarioByUserId(String userId) throws IdNotFoundException {
+		return repository.findByUserId(userId).orElseThrow(() -> new IdNotFoundException(userId, "Usuario"));
 	}
 
 	public void deleteUsuario(long id){
@@ -40,12 +32,4 @@ public class UsuarioService implements UsuarioServiceInterface {
 		repository.delete(obj);
 	}
 
-	// Funcção auxiliar para validar usuario
-	public Usuario getUsuarioValidado ( long id, String idSession){
-		Usuario user = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Usuario"));
-		if(user.getUserId() == null || !idSession.equals(user.getUserId())){
-			throw new ForbiddenOperationException("Está não é sua conta");
-		}
-		return user;
-	}
 }

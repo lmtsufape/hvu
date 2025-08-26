@@ -13,14 +13,13 @@ import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TutorRequest;
 import br.edu.ufape.hvu.controller.dto.response.TutorResponse;
 
- 
 @RestController
 @RequestMapping("/api/v1/")
 @RequiredArgsConstructor
 public class TutorController {
 	private final Facade facade;
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("tutor")
 	public List<TutorResponse> getAllTutor() {
 		return facade.getAllTutor()
@@ -35,26 +34,30 @@ public class TutorController {
 		Tutor o = newObj.convertToEntity();
 		return new TutorResponse(facade.saveTutor(o, password));
 	}
-	
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@GetMapping("tutor/{id}")
 	public TutorResponse getTutorById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		return new TutorResponse(facade.findTutorById(id, principal.getSubject()));
 	}
-	
+
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("tutor/animal/{id}")
 	public TutorResponse getTutorByAnimalId(@PathVariable Long id) {
 		return new TutorResponse(facade.findTutorByanimalId(id));
 	}
 
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
 	@PatchMapping("tutor/{id}")
 	public TutorResponse updateTutor(@PathVariable Long id, @Valid @RequestBody TutorRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		return new TutorResponse(facade.updateTutor(id, obj, principal.getSubject()));
     }
-	
+
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("tutor/{id}")
 	public String deleteTutor(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,4 +65,5 @@ public class TutorController {
 		facade.deleteTutor(id, principal.getSubject());
 		return "";
 	}
+
 }

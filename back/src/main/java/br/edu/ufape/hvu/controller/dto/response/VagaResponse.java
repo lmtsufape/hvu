@@ -1,16 +1,13 @@
 package br.edu.ufape.hvu.controller.dto.response;
 
 import java.time.LocalDateTime;
-
 import org.modelmapper.ModelMapper;
-
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Vaga;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-
 
 @Getter @Setter @NoArgsConstructor
 public  class VagaResponse  {
@@ -23,7 +20,6 @@ public  class VagaResponse  {
 	private TipoConsultaResponse tipoConsulta; 
 	private AgendamentoResponse agendamento;
 	private MedicoResponse medico;
-
 
 	public VagaResponse(Vaga obj) {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");

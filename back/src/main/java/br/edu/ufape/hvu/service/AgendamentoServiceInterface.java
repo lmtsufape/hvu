@@ -12,7 +12,7 @@ public interface AgendamentoServiceInterface {
 	Agendamento updateAgendamento(Agendamento u);
 	void deleteAgendamento(long id);
 	List<Agendamento> getAllAgendamento();
-	List<Agendamento> findAgendamentosByMedicoId(Medico medico, String token);
+	List<Agendamento> findAgendamentosByMedicoId(Medico medico);
 	List<Agendamento> findAgendamentosByAnimal(Animal animal);
 
 

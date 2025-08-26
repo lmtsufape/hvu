@@ -1,9 +1,9 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
 import br.edu.ufape.hvu.model.Animal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -13,15 +13,14 @@ import br.edu.ufape.hvu.model.Consulta;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ConsultaRequest;
 import br.edu.ufape.hvu.controller.dto.response.ConsultaResponse;
-
-
  
 @RestController
 @RequestMapping("/api/v1/")
 @RequiredArgsConstructor
 public class ConsultaController {
 	private final Facade facade;
-	
+
+    @PreAuthorize("hasRole('MEDICO')")
 	@GetMapping("consulta")
 	public List<ConsultaResponse> getAllConsulta() {
 		return facade.getAllConsulta()
@@ -30,6 +29,7 @@ public class ConsultaController {
 			.toList();
 	}
 
+    @PreAuthorize("hasRole('MEDICO')")
 	@PostMapping("consulta/{id}")
 	public ConsultaResponse createConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest newObj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -41,12 +41,14 @@ public class ConsultaController {
 
 		return new ConsultaResponse(facade.saveConsulta(id, consulta));
 	}
-	
+
+    @PreAuthorize("hasRole('MEDICO')")
 	@GetMapping("consulta/{id}")
 	public ConsultaResponse getConsultaById(@PathVariable Long id) {
 		return new ConsultaResponse(facade.findConsultaById(id));
 	}
 
+    @PreAuthorize("hasRole('MEDICO')")
 	@GetMapping("consulta/numeroficha/{numeroficha}")
 	public List<ConsultaResponse> getConsultasByAnimalNumeroFicha (@PathVariable String numeroficha) {
 		List<Consulta> consutas = facade.getConsultasByAnimalFichaNumero(numeroficha);
@@ -56,6 +58,7 @@ public class ConsultaController {
 				.toList();
 	}
 
+    @PreAuthorize("hasRole('MEDICO')")
 	@GetMapping("consulta/animalid/{id}")
 	public List<ConsultaResponse> getConsultaByAnimalId(@PathVariable Long id){
 		List<Consulta> consultas = facade.getConsultaByAnimalId(id);
@@ -63,7 +66,8 @@ public class ConsultaController {
 				.map(ConsultaResponse::new)
 				.toList();
 	}
-	
+
+    @PreAuthorize("hasRole('MEDICO')")
 	@PatchMapping("consulta/{id}")
 	public ConsultaResponse updateConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -71,10 +75,12 @@ public class ConsultaController {
 
 		return new ConsultaResponse(facade.updateConsulta(obj, id, principal.getSubject()));
 	}
-	
+
+    @PreAuthorize("hasRole('MEDICO')")
 	@DeleteMapping("consulta/{id}")
 	public String deleteConsulta(@PathVariable Long id) {
 		facade.deleteConsulta(id);
 		return "";
 	}
+
 }

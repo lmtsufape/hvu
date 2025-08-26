@@ -1,16 +1,12 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
-
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Usuario;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 @Getter @Setter @NoArgsConstructor
 public class UsuarioRequest {

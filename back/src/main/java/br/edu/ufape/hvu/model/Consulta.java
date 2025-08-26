@@ -15,7 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-public  class Consulta  {
+public class Consulta  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
@@ -38,5 +38,4 @@ public  class Consulta  {
 	private Animal animal;
 	@DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
 	private LocalDateTime dataVaga;
-
 }

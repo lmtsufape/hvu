@@ -1,7 +1,5 @@
 package br.edu.ufape.hvu.service;
 
-
-
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.exception.types.auth.KeycloakAuthenticationException;
 import jakarta.annotation.PostConstruct;
@@ -21,24 +19,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.Collections;
 import java.util.List;
 
 @Service @RequiredArgsConstructor
 public class KeycloakService implements KeycloakServiceInterface {
     private Keycloak keycloak;
-
-
     private final String realm = "lmts";
-
     @Value("${common.docker}")
     private String keycloakServerUrl;
-
     private final String clientSecret = "mesAECIaCcLkTmJB0riLGmqA14bSCTuH";
-
     private final String clientId = "create_user";
-
 
     @PostConstruct
     @Override
@@ -131,7 +122,6 @@ public class KeycloakService implements KeycloakServiceInterface {
         }
     }
 
-
     @Override
     public void createUser(String username, String email, String password, String role) throws  KeycloakAuthenticationException {
         try {
@@ -183,8 +173,6 @@ public class KeycloakService implements KeycloakServiceInterface {
         user.setEmailVerified(true);
         keycloak.realm(realm).users().get(userId).update(user);
     }
-
-
 
     private static UserRepresentation getUserRepresentation(String username, String email, String password) {
         CredentialRepresentation credential = new CredentialRepresentation();
@@ -241,6 +229,35 @@ public class KeycloakService implements KeycloakServiceInterface {
         }
     }
 
+    @Override
+    public boolean hasRolePatologista(String accessToken) {
+        try {
+            return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("patologista"));
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de patologista.",
+                    e);
+        }
+    }
+
+    @Override
+    public boolean hasRoleAdminLapa(String accessToken) {
+        try {
+            return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("admin_lapa"));
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de admin lapa.",
+                    e);
+        }
+    }
+
+    @Override
+    public boolean hasRoleTutor(String accessToken) {
+        try {
+            return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("tutor"));
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de tutor.",
+                    e);
+        }
+    }
 
     //Esquecer senha
     public void sendResetPasswordEmail(String email) throws KeycloakAuthenticationException {

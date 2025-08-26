@@ -30,5 +30,5 @@ public class AuthController {
         facade.forgetPassword(email.convertToString());
         return ResponseEntity.ok("Email de redefinição de senha enviado com sucesso.");
     }
-}
 
+}

@@ -15,5 +15,5 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
 	List<Medico> findByInstituicaoAndDeletedFalse (Instituicao instituicao);
 	List<Medico> findByEspecialidadeAndDeletedFalse(Especialidade especialidade);
 	List<Medico> findByDeletedFalse();
-
+    Medico findByUserId(String userId);
 }

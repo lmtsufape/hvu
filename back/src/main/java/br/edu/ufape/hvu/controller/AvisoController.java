@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -16,9 +15,18 @@ import java.util.List;
 public class AvisoController {
     private final Facade facade;
 
+    @PreAuthorize("hasRole('SECRETARIO')")
     @GetMapping("aviso")
     public List<AvisoResponse> getAllAviso() {
         return facade.getAllAviso()
+                .stream()
+                .map(AvisoResponse::new)
+                .toList();
+    }
+
+    @GetMapping("aviso/habilitados")
+    public List<AvisoResponse> getAvisosHabilitados() {
+        return facade.findAvisosHabilitados()
                 .stream()
                 .map(AvisoResponse::new)
                 .toList();
@@ -30,6 +38,7 @@ public class AvisoController {
         return new AvisoResponse(facade.saveAviso(newObj.convertToEntity()));
     }
 
+    @PreAuthorize("hasRole('SECRETARIO')")
     @GetMapping("aviso/{id}")
     public AvisoResponse getAvisoById(@PathVariable Long id) {
         return new AvisoResponse(facade.findAvisoById(id));
@@ -47,4 +56,5 @@ public class AvisoController {
         facade.deleteAviso(id);
         return "";
     }
+
 }

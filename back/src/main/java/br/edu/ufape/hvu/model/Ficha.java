@@ -34,5 +34,4 @@ public class Ficha {
     @ManyToOne
     @JoinColumn(name = "agendamento_id")
     private Agendamento agendamento;
-
 }

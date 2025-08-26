@@ -43,11 +43,17 @@ public class MedicoService implements MedicoServiceInterface {
 		return medico;
 	}
 
-	public List<Medico> getAllMedico(){
-		return repository.findByDeletedFalse();
-	}
-	
-	public void deleteMedico(long id){
+    public Medico findByUserId(String userId) {
+        return repository.findByUserId(userId);
+    }
+
+    public List<Medico> findAllMedico() {
+        return repository.findByDeletedFalse().stream()
+                .filter(medico -> medico.getClass().equals(Medico.class))
+                .toList();
+    }
+
+    public void deleteMedico(long id){
 		Medico obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Medico"));
 		repository.delete(obj);
 	}

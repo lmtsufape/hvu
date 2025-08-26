@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.model;
 
 import java.io.Serializable;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,15 +16,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @SuppressWarnings("serial")
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 @ToString
-public  class Usuario implements Serializable {
+public class Usuario implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
@@ -36,10 +33,7 @@ public  class Usuario implements Serializable {
 	private String nome;
 	private String userId;
 	private Boolean deleted = false;
-	@OneToOne(cascade = CascadeType.ALL,
-		orphanRemoval = true		
-	)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@ToString.Exclude
 	private Endereco endereco;
-
 }

@@ -1,14 +1,13 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.EnderecoRequest;
 import br.edu.ufape.hvu.controller.dto.response.EnderecoResponse;
-
  
 @RestController
 @RequestMapping("/api/v1/")
@@ -16,6 +15,9 @@ import br.edu.ufape.hvu.controller.dto.response.EnderecoResponse;
 public class EnderecoController {
 	private final Facade facade;
 
+    // TODO - criar relação para reconhecer usuário do endereço
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'ADMIN_LAPA')")
 	@GetMapping("endereco")
 	public List<EnderecoResponse> getAllEndereco() {
 		return facade.getAllEndereco()
@@ -28,23 +30,22 @@ public class EnderecoController {
 	public EnderecoResponse createEndereco(@Valid @RequestBody EnderecoRequest newObj) {
 		return new EnderecoResponse(facade.saveEndereco(newObj.convertToEntity()));
 	}
-	
+
 	@GetMapping("endereco/{id}")
 	public EnderecoResponse getEnderecoById(@PathVariable Long id) {
 		return new EnderecoResponse(facade.findEnderecoById(id));
 	}
-	
+
 	@PatchMapping("endereco/{id}")
 	public EnderecoResponse updateEndereco(@PathVariable Long id, @Valid @RequestBody EnderecoRequest obj) {
 			return new EnderecoResponse(facade.updateEndereco(obj, id));
 	}
-	
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'ADMIN_LAPA')")
 	@DeleteMapping("endereco/{id}")
 	public String deleteEndereco(@PathVariable Long id) {
 		facade.deleteEndereco(id);
 		return "";
-		
 	}
-	
 
 }

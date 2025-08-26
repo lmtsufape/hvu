@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ import br.edu.ufape.hvu.controller.dto.response.EtapaResponse;
 public class EtapaController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("etapa")
 	public List<EtapaResponse> getAllEtapa() {
 		return facade.getAllEtapa()
@@ -25,30 +24,29 @@ public class EtapaController {
 			.toList();
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("etapa")
 	public EtapaResponse createEtapa(@Valid @RequestBody EtapaRequest newObj) {
 		return new EtapaResponse(facade.saveEtapa(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("etapa/{id}")
 	public EtapaResponse getEtapaById(@PathVariable Long id) {
 		return new EtapaResponse(facade.findEtapaById(id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@PatchMapping("etapa/{id}")
 	public EtapaResponse updateEtapa(@PathVariable Long id, @Valid @RequestBody EtapaRequest obj) {
 		return new EtapaResponse(facade.updateEtapa(obj, id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@DeleteMapping("etapa/{id}")
 	public String deleteEtapa(@PathVariable Long id) {
 		facade.deleteEtapa(id);
 		return "";
 	}
-	
 
 }

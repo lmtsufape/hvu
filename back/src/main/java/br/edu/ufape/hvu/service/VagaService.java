@@ -14,6 +14,10 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 public class VagaService implements VagaServiceInterface {
 	private final VagaRepository repository;
 
+    public List<Vaga> findAllVaga(){
+        return repository.findAll();
+    }
+
 	public Vaga saveVaga(Vaga newInstance) {
 		return repository.save(newInstance);
 	}
@@ -32,10 +36,6 @@ public class VagaService implements VagaServiceInterface {
 
 	public boolean existsByIdAndAgendamentoIsNotNull(long id){
 		return repository.existsByIdAndAgendamentoIsNotNull(id);
-	}
-
-	public List<Vaga> getAllVaga(){
-		return repository.findAll();
 	}
 	
 	public List<Vaga> findVagasByData(LocalDate data) {
@@ -96,4 +96,11 @@ public class VagaService implements VagaServiceInterface {
 		return repository.findByAgendamento(agendamento);
 	}
 
+    public List<Vaga> findVagasForTutor(List<Long> animalIds) {
+        return repository.findVagasForTutor(animalIds);
+    }
+
+    public List<Vaga> findVagasByMedicoId(Long id) {
+        return repository.findVagasByMedicoId(id);
+    }
 }

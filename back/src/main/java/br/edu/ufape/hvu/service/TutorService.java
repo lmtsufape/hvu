@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,15 +31,15 @@ public class TutorService implements TutorServiceInterface {
 	}
 	
 	public Tutor findTutorByanimalId(long animalId) {
-		Tutor tutor = repository.findByanimalId(animalId);
+		Tutor tutor = repository.findByAnimalId(animalId);
 		if (tutor == null) {
 			throw new IdNotFoundException(animalId, "Tutor vinculado ao animal");
 		}
 		return tutor;
 	}
 	
-	public Tutor findTutorByuserId(String userId) {
-		Tutor tutor = repository.findByuserId(userId);
+	public Tutor findTutorByUserId(String userId) {
+		Tutor tutor = repository.findByUserId(userId);
 		if (tutor == null) {
 			throw new IdNotFoundException(userId, "Tutor com userId");
 		}

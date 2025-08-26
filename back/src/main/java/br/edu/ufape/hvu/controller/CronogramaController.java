@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -19,8 +18,6 @@ import br.edu.ufape.hvu.controller.dto.request.CronogramaRequest;
 import br.edu.ufape.hvu.controller.dto.response.CronogramaResponse;
 import br.edu.ufape.hvu.facade.Facade;
 import jakarta.validation.Valid;
-
-
  
 @RestController
 @RequestMapping("/api/v1/")
@@ -28,7 +25,7 @@ import jakarta.validation.Valid;
 public class CronogramaController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("cronograma")
 	public List<CronogramaResponse> getAllCronograma() {
 		return facade.getAllCronograma()
@@ -43,12 +40,13 @@ public class CronogramaController {
 		return new CronogramaResponse(facade.saveCronograma(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("cronograma/{id}")
 	public CronogramaResponse getCronogramaById(@PathVariable Long id) {
 		return new CronogramaResponse(facade.findCronogramaById(id));
 	}
-	
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("cronograma/medico/{id}")
 	public List<CronogramaResponse> getCronogramaByMedicoId(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -57,7 +55,8 @@ public class CronogramaController {
 					.map(CronogramaResponse::new)
 					.toList();
 	}
-	
+
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("cronograma/especialidade/{id}")
 	public List<CronogramaResponse> getCronogramaByEspecialidadeId(@PathVariable Long id) {
 		return facade.findCronogramaByEspecialidadeId(id).stream()
@@ -81,4 +80,5 @@ public class CronogramaController {
 		facade.deleteCronograma(id);
 		return "";
 	}
+
 }

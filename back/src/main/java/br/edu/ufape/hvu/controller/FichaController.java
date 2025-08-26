@@ -15,7 +15,7 @@ import br.edu.ufape.hvu.controller.dto.response.FichaResponse;
 public class FichaController {
     private final Facade facade;
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
+    @PreAuthorize("hasRole('MEDICO')")
     @GetMapping("ficha")
     public List<FichaResponse> getAllFicha() {
         return facade.getAllFicha()
@@ -24,19 +24,19 @@ public class FichaController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
+    @PreAuthorize("hasRole('MEDICO')")
     @PostMapping("ficha")
     public FichaResponse createFicha(@Valid @RequestBody FichaRequest newObj) {
         return new FichaResponse(facade.saveFicha(newObj.convertToEntity()));
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
+    @PreAuthorize("hasRole('MEDICO')")
     @GetMapping("ficha/{id}")
     public FichaResponse getFichaById(@PathVariable Long id) {
         return new FichaResponse(facade.findFichaById(id));
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
+    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
     @GetMapping("ficha/animal/{animalId}")
     public List<FichaResponse> findFichasByAnimalId(@PathVariable Long animalId) {
         return facade.findFichasByAnimalId(animalId)
@@ -45,7 +45,7 @@ public class FichaController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
+    @PreAuthorize("hasRole('MEDICO')")
     @GetMapping("ficha/agendamento/{agendamentoId}")
     public List<FichaResponse> findFichasByAgendamentoId(@PathVariable Long agendamentoId) {
         return facade.findFichasByAgendamentoId(agendamentoId)
@@ -54,16 +54,17 @@ public class FichaController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
+    @PreAuthorize("hasRole('MEDICO')")
     @PatchMapping("ficha/{id}")
     public FichaResponse updateFicha(@PathVariable Long id, @Valid @RequestBody FichaRequest obj) {
         return new FichaResponse(facade.updateFicha(obj, id));
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO','MEDICO')")
+    @PreAuthorize("hasRole('MEDICO')")
     @DeleteMapping("ficha/{id}")
     public String deleteFicha(@PathVariable Long id) {
         facade.deleteFicha(id);
         return "";
     }
+
 }

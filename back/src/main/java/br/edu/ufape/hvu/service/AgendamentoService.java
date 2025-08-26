@@ -30,11 +30,8 @@ public class AgendamentoService implements AgendamentoServiceInterface {
 		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Agendamento"));
 	}
 
-	public List<Agendamento> findAgendamentosByMedicoId(Medico medico, String medicoToken){
+	public List<Agendamento> findAgendamentosByMedicoId(Medico medico){
 		try {
-			if(!medico.getUserId().equals(medicoToken)){
-				throw new AccessDeniedException("Medico não correspodente");
-			}
 			return repository.findAgendamentosByMedicoId(medico.getId());
 		} catch (RuntimeException ex) {
 			throw new ServiceException("Erro ao buscar os Agendamentos", ex);

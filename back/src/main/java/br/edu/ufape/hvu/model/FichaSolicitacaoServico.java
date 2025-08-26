@@ -3,7 +3,6 @@ package br.edu.ufape.hvu.model;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import br.edu.ufape.hvu.model.enums.Acondicionamento;
 import br.edu.ufape.hvu.model.enums.EstadoConservacao;
 import br.edu.ufape.hvu.model.enums.TipoMaterial;

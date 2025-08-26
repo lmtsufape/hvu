@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ import br.edu.ufape.hvu.controller.dto.response.OrgaoResponse;
 public class OrgaoController {
 	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("orgao")
 	public List<OrgaoResponse> getAllOrgao() {
 		return facade.getAllOrgao()
@@ -25,30 +24,29 @@ public class OrgaoController {
 			.toList();
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("orgao")
 	public OrgaoResponse createOrgao(@Valid @RequestBody OrgaoRequest newObj) {
 		return new OrgaoResponse(facade.saveOrgao(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("orgao/{id}")
 	public OrgaoResponse getOrgaoById(@PathVariable Long id) {
 		return new OrgaoResponse(facade.findOrgaoById(id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@PatchMapping("orgao/{id}")
 	public OrgaoResponse updateOrgao(@PathVariable Long id, @Valid @RequestBody OrgaoRequest obj) {
 		return new OrgaoResponse(facade.updateOrgao(obj, id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@DeleteMapping("orgao/{id}")
 	public String deleteOrgao(@PathVariable Long id) {
 		facade.deleteOrgao(id);
 		return "";
 	}
-	
 
 }
