@@ -1251,7 +1251,7 @@ public class Facade {
 
     public Animal findAnimalById(long id, String idSession) {
         // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
-        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession)){
+        if(!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !keycloakService.hasRolePatologista(idSession)){
             Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
 
             if(!tutor.getUserId().equals(idSession)) {
@@ -1277,7 +1277,7 @@ public class Facade {
     @Transactional
     public void deleteAnimal(long id, String userId) {
         // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
-        if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId)){
+        if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId) && !keycloakService.hasRolePatologista(userId)){
             Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
 
             if(!tutor.getUserId().equals(userId)) {

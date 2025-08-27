@@ -85,9 +85,9 @@ function GerenciarTutores() {
 
             <div className={styles.navbar_container}>
                 <SearchBar placeholder={`Buscar por nome`} onSearchChange={setSearchTerm} />
-                <button className={styles.adicionar_tutor_button} onClick={handleAddTutorClick}>
+               {/*} <button className={styles.adicionar_tutor_button} onClick={handleAddTutorClick}>
                     Adicionar Tutor
-                </button>
+                </button>*/}
             </div>
 
             {filteredTutores.length === 0 ? (

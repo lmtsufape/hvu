@@ -11,7 +11,7 @@ import { getToken, getRoles } from "../../../../../../services/userService";
 
 function GerenciarAnimais() {
     const [animais, setAnimais] = useState([]);
-    const [tutores, setTutores] = useState({}); // armazenar tutor por animalId
+    const [tutores, setTutores] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -47,7 +47,6 @@ function GerenciarAnimais() {
                 const animaisData = await getAllAnimal();
                 setAnimais(animaisData);
 
-                // Buscar tutores de cada animal
                 const tutoresData = {};
                 for (const animal of animaisData) {
                     try {
@@ -84,7 +83,7 @@ function GerenciarAnimais() {
     );
 
     const handleAddAnimalClick = () => {
-        setIsModalOpen(true);
+        router.push("/lapa/tipoTutor")
     };
 
     const confirmRedirect = () => {
