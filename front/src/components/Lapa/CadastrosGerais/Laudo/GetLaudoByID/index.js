@@ -116,21 +116,29 @@ function GetLaudoNecropsiaById() {
 
                                     <div className={styles.item_box}>
                                         <h6>Estagiário(a)</h6>
-                                        {laudo.estagiario && laudo.estagiario.map((est) => (
-                                            <div key={est.id}>
-                                                {est.nome} - CPF: {est.cpf} - Período: {est.periodo}
-                                            </div>
-                                        ))}
+                                        {laudo.estagiario && laudo.estagiario.length > 0 ? (
+                                            laudo.estagiario.map((est) => (
+                                                <div key={est.id}>
+                                                    {est.nome} - CPF: {est.cpf} - Período: {est.periodo}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>Nenhum estagiário selecionado</p>
+                                        )}
                                     </div>
 
                                     <div className={styles.item_box}>
                                         <h6>Fotos</h6>
-                                        {laudo.foto && laudo.foto.map((f) => (
-                                            <div key={f.id}>
-                                                <strong>{f.titulo}</strong> <br />
-                                                <img src={`/uploads/${f.foto_path}`} alt={f.titulo} width={100} />
-                                            </div>
-                                        ))}
+                                        {laudo.foto && laudo.foto.length > 0 ? (
+                                            laudo.foto.map((f) => (
+                                                <div key={f.id}>
+                                                    <strong>{f.titulo}</strong> <br />
+                                                    <img src={`/uploads/${f.foto_path}`} alt={f.titulo} width={100} />
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>Nenhuma foto disponível</p>
+                                        )}
                                     </div>
                                 </div>
                             </li>

@@ -166,12 +166,11 @@ function CreateLaudoNecropsia() {
         }
 
         const laudoToSend = {
-            id: laudo.id,
             conclusao: laudo.conclusao,
             fichaSolicitacaoServico: { id: laudo.fichaSolicitacaoServico.id },
             campoLaudo: laudo.campoLaudo.map(campo => ({ id: campo.id })),
             estagiario: [{ id: selectedEstagiarioId }],
-            foto: [{ id: selectedFotoId }],
+            foto: selectedFotoId ? [{ id: selectedFotoId }] : [],
             campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id })) 
         };
 
@@ -234,7 +233,7 @@ function CreateLaudoNecropsia() {
                                     type="text"
                                     className={`form-control ${searchError ? 'is-invalid' : ''}`}
                                     id="search"
-                                    placeholder="Digite o ID ou Código Patologia"
+                                    placeholder="Digite o Código Patologia"
                                     value={searchTerm}
                                     onChange={handleSearch}
                                 />
@@ -360,7 +359,7 @@ function CreateLaudoNecropsia() {
                             </div>
                         </div>
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="conclusao" className="form-label">Diagnóstico do Patologista <span className={styles.obrigatorio}>*</span></label>
+                            <label htmlFor="conclusao" className="form-label">Conclusão<span className={styles.obrigatorio}>*</span></label>
                             <textarea
                                 className={`form-control ${styles.input} ${errors.conclusao ? "is-invalid" : ""}`}
                                 name="conclusao"
@@ -388,7 +387,7 @@ function CreateLaudoNecropsia() {
                 <Modal.Body>
                     {filteredFichas.length > 0 ? (
                         filteredFichas.map(ficha => (
-                            <div key={ficha.id} onClick={() => handleFichaSelection(ficha)}>
+                            <div key={ficha.id} className={styles.term} onClick={() => handleFichaSelection(ficha)}>
                                 {ficha.codigoPatologia}
                             </div>
                         ))
