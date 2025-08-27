@@ -96,6 +96,21 @@ export default function AnestesiologiaSteps() {
     }
   }, [router.isReady, router.query.fichaId]);
 
+  useEffect(() => {
+      if (router.isReady) {
+        const medicoFromQuery = router.query.medico;
+        if (medicoFromQuery) {
+          const nomeMedico = decodeURIComponent(medicoFromQuery);
+
+          // 2. ATUALIZA o formData com o nome do médico vindo da URL.
+          setFormData(prevData => ({
+            ...prevData,
+            medicosResponsaveis: nomeMedico 
+          }));
+        }
+      }
+    }, [router.isReady, router.query.medico]);
+
   /* auth */
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -118,7 +133,8 @@ export default function AnestesiologiaSteps() {
   if (!roles.includes("medico")) return <p>Acesso negado – sem permissão.</p>;
 
   /* submit final */
-  const handleSubmit = async () => {
+  const handleSubmit = async (nomeDoMedicoResponsavel) => {
+    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
     const data = {
       nome: "Ficha Anestesiológica",
       conteudo: { ...formData },

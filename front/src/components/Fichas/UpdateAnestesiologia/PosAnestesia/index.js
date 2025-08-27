@@ -822,18 +822,20 @@ return (
     onChange={handleChange}
   />
 
+<div className="mb-3">
 <label htmlFor="pos-medicoResp" className="form-label mb-0 fw-medium">
     Médico(s) / Veterinário(s) Responsável:
   </label>
-  <textarea
-    id="pos-medicoResp"
-    name="pos.medicoResponsavel"
-    className="form-control mb-0"
-    rows={1}                                 
-    value={formData.pos?.medicoResponsavel || ""}
-    disabled={isReadOnly}
-    onChange={handleChange}
-  />
+   <input
+    type="text"
+    name="medicosResponsaveis"
+    value={formData.medicosResponsaveis || ''} 
+    readOnly
+    className="form-control"
+    style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+    />
+  </div>
+  </div>
 
   <label htmlFor="pos-plantonistas" className="form-label mb-0 lb-0 fw-medium">
     Plantonista(s) discente(s):
@@ -855,7 +857,6 @@ return (
             <FinalizarFichaModal onConfirm={handleSubmit} />
       </div>
       )}
-    </div>
     </div>
   );
 }
