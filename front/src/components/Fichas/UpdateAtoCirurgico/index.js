@@ -429,9 +429,19 @@ function UpdateAtoCirurgico() {
                         <label>Plantonista(s) discente(s): </label>
                         <textarea name="equipeResponsavel" value={formData.equipeResponsavel} disabled={isReadOnly} onChange={handleChange} />
                     </div>
-                    <div className={styles.column}>
-                        <label>Médico(s) Veterinário(s) Responsável:</label>
-                        <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} disabled={isReadOnly} onChange={handleChange} />
+                    
+                    <div className="mb-3">
+                    <label htmlFor="pos-medicoResp" className="form-label mb-0 fw-medium">
+                        Médico(s) / Veterinário(s) Responsável:
+                    </label>
+                    <input
+                        type="text"
+                        name="medicosResponsaveis"
+                        value={formData.medicosResponsaveis || ''} 
+                        readOnly
+                        className="form-control"
+                        style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+                        />
                     </div>
 
                     {!isReadOnly && (
