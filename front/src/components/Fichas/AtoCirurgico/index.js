@@ -43,6 +43,34 @@ function FichaAtoCirurgico() {
 
     const [consultaId, setConsultaId] = useState(null);
 
+    const [nomeMedico, setNomeMedico] = useState("Carregando...");
+    useEffect(() => {
+        if (router.isReady) {
+        const medicoFromQuery = router.query.medico;
+
+        if (medicoFromQuery) {
+            setNomeMedico(decodeURIComponent(medicoFromQuery));
+        } else {
+            setNomeMedico("Médico não informado");
+        }
+        }
+    }, [router.isReady, router.query.medico]);
+
+      useEffect(() => {
+      if (router.isReady) {
+        const medicoFromQuery = router.query.medico;
+        if (medicoFromQuery) {
+          const nomeMedico = decodeURIComponent(medicoFromQuery);
+
+          // Atualiza o formData com o nome do médico vindo da URL.
+          setFormData(prevData => ({
+            ...prevData,
+            medicosResponsaveis: nomeMedico 
+          }));
+        }
+      }
+    }, [router.isReady, router.query.medico]);
+
     // Carrega os dados do formulário do localStorage 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -156,7 +184,7 @@ function FichaAtoCirurgico() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (nomeDoMedicoResponsavel, event) => {
         event?.preventDefault();
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
         const fichaData = {
@@ -169,7 +197,7 @@ function FichaAtoCirurgico() {
                 equipeResponsavel: formData.equipeResponsavel,
                 //data: formData.data,
                 nomeDaCirurgia: formData.nomeDaCirurgia,
-                medicosResponsaveis: formData.medicosResponsaveis,
+                medicosResponsaveis: nomeDoMedicoResponsavel 
 
             },
             dataHora: dataFormatada,
@@ -415,14 +443,24 @@ function FichaAtoCirurgico() {
                         <label>Plantonista(s) discente(s): </label>
                         <textarea name="equipeResponsavel" value={formData.equipeResponsavel} onChange={handleChange} />
                     </div>
-                    <div className={styles.column}>
-                        <label>Médico(s) Veterinário(s) Responsável:</label>
-                        <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} onChange={handleChange} />
+
+                    <div className="mb-3">
+                    <label htmlFor="pos-medicoResp" className="form-label mb-0 fw-medium">
+                        Médico(s) / Veterinário(s) Responsável:
+                    </label>
+                    <input
+                        type="text"
+                        name="medicosResponsaveis"
+                        value={formData.medicosResponsaveis || ''} 
+                        readOnly
+                        className="form-control"
+                        style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+                        />
                     </div>
 
                     <div className={styles.button_box}>
                         < CancelarWhiteButton onClick={cleanLocalStorage} />
-                        < FinalizarFichaModal onConfirm={handleSubmit} />
+                        < FinalizarFichaModal onConfirm={()=>handleSubmit(nomeMedico)} />
                     </div>
                 </form>
                 {showAlert && consultaId && (

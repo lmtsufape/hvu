@@ -77,6 +77,19 @@ const [data, setData] = useState(initialData);
     limparTabela();
   };
 
+  const [nomeMedico, setNomeMedico] = useState("Carregando...");
+  useEffect(() => {
+    if (router.isReady) {
+      const medicoFromQuery = router.query.medico;
+
+      if (medicoFromQuery) {
+        setNomeMedico(decodeURIComponent(medicoFromQuery));
+      } else {
+        setNomeMedico("Médico não informado");
+      }
+    }
+  }, [router.isReady, router.query.medico]);
+
   // Atualize o useEffect para incluir data nas dependências
   useEffect(() => {
     setFormData(prev => ({
@@ -788,17 +801,20 @@ return (
     onChange={handleChange}
   />
 
+<div className="mb-3">
 <label htmlFor="pos-medicoResp" className="form-label mb-0 fw-medium">
     Médico(s) / Veterinário(s) Responsável:
   </label>
-  <textarea
-    id="pos-medicoResp"
-    name="pos.medicoResponsavel"
-    className="form-control mb-0"
-    rows={1}                                 
-    value={formData.pos?.medicoResponsavel || ""}
-    onChange={handleChange}
-  />
+   <input
+    type="text"
+    name="medicosResponsaveis"
+    value={formData.medicosResponsaveis || ''} 
+    readOnly
+    className="form-control"
+    style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+    />
+  </div>
+  </div>
 
   <label htmlFor="pos-plantonistas" className="form-label mb-0 lb-0 fw-medium">
     Plantonista(s) discente(s):
@@ -816,9 +832,8 @@ return (
  
       <div className={styles.button_box}>
             <VoltarWhiteButton onClick={prevStep} />
-            <FinalizarFichaModal onConfirm={handleSubmit} />
+            <FinalizarFichaModal onConfirm={()=>handleSubmit(nomeMedico)} />
       </div>
-    </div>
     </div>
   );
 }
