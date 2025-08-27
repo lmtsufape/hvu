@@ -67,6 +67,11 @@ function FichaSolicitacaoExame() {
     cardiologia: false,
   });
 
+  const [histopatologicoExtra, setHistopatologicoExtra] = useState({
+  aspecto: "",
+  local: ""
+  });
+
   // Função para gerar uma chave única no localStorage com base no fichaId
   const getLocalStorageKey = () => `solicitacaoExameFormData_${consultaId || "default"}`;
 
@@ -301,6 +306,10 @@ const handleGeneratePDF = () => {
       setOtherValues((prev) => ({ ...prev, [field]: "" }));
     }
 
+     if (value === "Histopatológico" && field === "citologiaHistopatologia" && !checked) {
+    setHistopatologicoExtra({ aspecto: "", local: "" });
+    }
+
     setFormData((prev) => {
       const updatedField = checked
         ? [...prev[field], value]
@@ -325,6 +334,20 @@ const handleGeneratePDF = () => {
       }
     });
 
+    const citoArray = finalFormData.citologiaHistopatologia;
+    const histopatologicoIndex = citoArray.indexOf("Histopatológico");
+
+    // Verifica se "Histopatológico" está selecionado
+    if (histopatologicoIndex !== -1) {
+        // Substitui a string "Histopatológico" por um objeto com os detalhes
+        citoArray[histopatologicoIndex] = {
+            nome: "Histopatológico", // Mantém o nome para fácil identificação
+            aspecto: histopatologicoExtra.aspecto.trim(),
+            local: histopatologicoExtra.local.trim()
+        };
+    }
+
+
     const fichaData = {
       nome: "Ficha Solicitação de Exame",
       conteudo: {
@@ -342,6 +365,8 @@ const handleGeneratePDF = () => {
                 id: Number(agendamentoId)
             }
     };
+
+    console.log("Dados a serem enviados para a API:", JSON.stringify(fichaData, null, 2));
 
     try {
       const resultado = await createFicha(fichaData);
@@ -509,35 +534,72 @@ const handleGeneratePDF = () => {
               options: ["Eletrocardiograma", "Ecocardiograma", "Outros(s):"],
             },
           ].map(({ title, field, options }) => (
-            <div key={field}>
-              <h2>{title}</h2>
-              <div className={styles.checkbox_container}>
-                {options.map((item) => (
-                  <label key={item}>
-                    <input
-                      type="checkbox"
-                      value={item}
-                      checked={formData[field].includes(item)}
-                      onChange={(e) => handleCheckboxChange(e, field)}
-                      className="form-control"
-                    />
-                    {item}
-                  </label>
-                ))}
-                {showOtherInputs[field] && (
+          <div key={field}>
+            <h2>{title}</h2>
+            <div className={styles.checkbox_container}>
+              {options.map((item) => (
+                <label key={item}>
                   <input
-                    type="text"
-                    placeholder="Digite aqui..."
-                    value={otherValues[field]}
-                    onChange={(e) => handleOtherInputChange(field, e.target.value)}
+                    type="checkbox"
+                    value={item}
+                    checked={formData[field].includes(item)}
+                    onChange={(e) => handleCheckboxChange(e, field)}
                     className="form-control"
                   />
-                )}
-              </div>
-            </div>
-          ))}
-          
+                  {item}
+                </label>
+              ))}
 
+              {/* Input "Outros(s):" */}
+              {showOtherInputs[field] && (
+                <input
+                  type="text"
+                  placeholder="Digite aqui..."
+                  value={otherValues[field]}
+                  onChange={(e) => handleOtherInputChange(field, e.target.value)}
+                  className="form-control"
+                />
+              )}
+
+              {field === "citologiaHistopatologia" &&
+              formData.citologiaHistopatologia.includes("Histopatológico") && (
+                <div className={styles.extraInputs}>
+                  <div className={styles.extraInputGroup}>
+                    <label className={styles.extraLabel}>Aspecto</label>
+                    <input
+                      type="text"
+                      value={histopatologicoExtra.aspecto}
+                      onChange={(e) =>
+                        setHistopatologicoExtra((prev) => ({
+                          ...prev,
+                          aspecto: e.target.value,
+                        }))
+                      }
+                      className="form-control"
+                      placeholder="Descreva o aspecto"
+                    />
+                  </div>
+                  <div className={styles.extraInputGroup}>
+                    <label className={styles.extraLabel}>Local</label>
+                    <input
+                      type="text"
+                      value={histopatologicoExtra.local}
+                      onChange={(e) =>
+                        setHistopatologicoExtra((prev) => ({
+                          ...prev,
+                          local: e.target.value,
+                        }))
+                      }
+                      className="form-control"
+                      placeholder="Informe o local"
+                    />
+                  </div>
+                </div>
+            )}
+            </div>
+          </div>
+        ))}
+          
           <div className={styles.button_box}>
             <CancelarWhiteButton onClick={cleanLocalStorage} />
             <button type="button" onClick={handleGeneratePDF} className={styles.pdf_button}>

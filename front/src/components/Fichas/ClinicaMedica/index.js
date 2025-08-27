@@ -217,6 +217,21 @@ function ClinicaMedicaSteps() {
     });
   };
   /* ─────────────────────────────────────────────────── */
+  useEffect(() => {
+      if (router.isReady) {
+        const medicoFromQuery = router.query.medico;
+        if (medicoFromQuery) {
+          const nomeMedico = decodeURIComponent(medicoFromQuery);
+          
+          // 2. ATUALIZA o formData com o nome do médico vindo da URL.
+          setFormData(prevData => ({
+            ...prevData,
+            medicosResponsaveis: nomeMedico 
+          }));
+        }
+      }
+    }, [router.isReady, router.query.medico]);
+
 
   // Carrega os dados do formulário do localStorage 
   useEffect(() => {
@@ -303,8 +318,9 @@ function ClinicaMedicaSteps() {
   }));
 };
   /* envio final */
-  const handleSubmit = async () => {
+  const handleSubmit = async (nomeDoMedicoResponsavel) => {
     setShowErrorAlert(false);
+    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
     const fichaData = {
       nome: "Ficha Clínica Médica",
       conteudo: { ...formData },

@@ -144,7 +144,7 @@ function HistoricoFichasAnimal() {
                       onClick={() => {
                         const basePath = rotasPorNome[ficha.nome];
                         if (basePath) {
-                          const url = `${basePath}?fichaId=${ficha.id}&animalId=${animalId}&agendamentoId=${agendamento.id}&modo=visualizar`;
+                          const url = `${basePath}?fichaId=${ficha.id}&animalId=${animalId}&agendamentoId=${vaga.id}&modo=visualizar`; //passar id do agendamento e nao da vaga
                           router.push(url);
                         } else {
                           alert(`A visualização para "${ficha.nome}" ainda não foi implementada.`);
