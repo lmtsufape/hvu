@@ -7,6 +7,7 @@ import ExcluirButton from '@/components/ExcluirButton';
 import ErrorAlert from '@/components/ErrorAlert';
 import { getAllFichaSolicitacao, deleteFichaSolicitacao } from "../../../../../services/fichaSolicitacaoService";
 import { EditarWhiteButton } from '@/components/WhiteButton';
+import { getToken, getRoles } from "../../../../../services/userService";
 
 function LaudosEmAndamento() {
     const [fichas, setFichas] = useState([]);
@@ -14,8 +15,29 @@ function LaudosEmAndamento() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [deletedFichaId, setDeletedFichaId] = useState(null);
-
     const router = useRouter();
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         const fetchData = async () => {

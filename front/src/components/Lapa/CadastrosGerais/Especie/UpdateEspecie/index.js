@@ -6,6 +6,7 @@ import { CancelarWhiteButton } from "../../../../WhiteButton";
 import { updateEspecie, getEspecieById } from "../../../../../../services/especieService";
 import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function UpdateEspecie() {
     const router = useRouter();
@@ -17,6 +18,29 @@ function UpdateEspecie() {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const [especie, setEspecie] = useState({});
+
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         if (id) {

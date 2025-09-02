@@ -12,7 +12,7 @@ function GerenciarEspecies() {
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
-    const [deletedEspecieId, setDeletedEspecieId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
+    const [deletedEspecieId, setDeletedEspecieId] = useState(null); 
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true); 
@@ -36,18 +36,16 @@ function GerenciarEspecies() {
             } catch (error) {
                 console.error('Erro ao buscar espécies:', error);
             } finally {
-                setLoading(false); // Marcar como carregado após buscar os dados
+                setLoading(false); 
             }
         };
         fetchData();
-    }, [deletedEspecieId]); // Adicione deletedEspecieId como uma dependência
+    }, [deletedEspecieId]); 
 
-    // Verifica se os dados estão carregando
     if (loading) {
         return <div className={styles.message}>Carregando dados do usuário...</div>;
     }
 
-    // Verifica se o usuário tem permissão
     if (!roles.includes("secretario")) {
         return (
             <div className={styles.container}>

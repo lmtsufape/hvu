@@ -10,10 +10,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
+import br.edu.ufape.hvu.exception.OrigemAnimalInvalidaException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import br.edu.ufape.hvu.repository.AnimalRepository;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
@@ -510,7 +512,7 @@ public class Facade {
     public Patologista findPatologistaById(long id, String idSession) {
         Patologista patologista = patologistaService.findPatologistaById(id);
 
-        if (!keycloakService.hasRoleAdminLapa(idSession) && !patologista.getUserId().equals(idSession)){
+        if (!keycloakService.hasRoleAdminLapa(idSession) && !patologista.getUserId().equals(idSession)) {
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
 
@@ -1042,6 +1044,10 @@ public class Facade {
         Animal animal = findAnimalById(newInstance.getAnimal().getId(), idSession);
         Vaga vaga = vagaServiceInterface.findVagaByIdWithLock(idVaga);
 
+        if (animal.getOrigemAnimal() != OrigemAnimal.HVU) {
+            throw new IllegalArgumentException("Só é permitido agendar animais com origem HVU.");
+        }
+
         if (vaga.getDataHora().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("A vaga não pode estar no passado.");
         }
@@ -1308,12 +1314,28 @@ public class Facade {
     // Animal--------------------------------------------------------------
     private final AnimalServiceInterface animalServiceInterface;
 
+    private void validarOrigemAnimal(String role, OrigemAnimal origemAnimal) {
+        if ("TUTOR".equals(role) && origemAnimal != OrigemAnimal.HVU) {
+            throw new OrigemAnimalInvalidaException("Tutores só podem cadastrar animais com origem 'HVU'");
+        }
+        if ("PATOLOGISTA".equals(role) && origemAnimal != OrigemAnimal.LAPA) {
+            throw new OrigemAnimalInvalidaException("Patologistas só podem cadastrar animais com origem 'LAPA'");
+        }
+    }
+
     @Transactional
     public Animal saveAnimal(Animal newInstance, String idSession) {
         Tutor tutor = findTutorByUserId(idSession);
         if (tutor == null) {
             throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
         }
+
+        if (newInstance.getOrigemAnimal() == null) {
+            newInstance.setOrigemAnimal(OrigemAnimal.HVU);
+        }
+
+        validarOrigemAnimal("TUTOR", newInstance.getOrigemAnimal());
+
         racaServiceInterface.findRacaById(newInstance.getRaca().getId());
         Animal animal = animalServiceInterface.saveAnimal(newInstance);
         tutor.getAnimal().add(animal);
@@ -1323,6 +1345,12 @@ public class Facade {
 
     @Transactional
     public Animal saveAnimalByPatologista(Animal newInstance, Tutor newTutor) {
+        if (newInstance.getOrigemAnimal() == null) {
+            newInstance.setOrigemAnimal(OrigemAnimal.LAPA);
+        }
+
+        validarOrigemAnimal("PATOLOGISTA", newInstance.getOrigemAnimal());
+
         Tutor tutor;
         if (newTutor == null || newTutor.isAnonimo()) {
             tutor = tutorServiceInterface.saveTutorAnonimo();
@@ -1420,6 +1448,10 @@ public class Facade {
         animalServiceInterface.deleteAnimal(id);
     }
 
+    public List<Animal> findAnimalsByOrigemAnimal(OrigemAnimal origem) {
+        return animalServiceInterface.findAnimalsByOrigemAnimal(origem);
+    }
+
     // Especie--------------------------------------------------------------
 
     private final EspecieServiceInterface especieServiceInterface;
@@ -1461,6 +1493,19 @@ public class Facade {
 
     @Transactional
     public Area saveArea(Area newInstance) {
+        List<Especie> especies = newInstance.getEspecie()
+                .stream()
+                .map(e -> {
+                    Especie especie = especieServiceInterface.findEspecieById(e.getId());
+                    if (especie == null) {
+                        throw new IdNotFoundException(e.getId(), "Especie");
+                    }
+                    return especie;
+                })
+                .toList();
+
+        newInstance.setEspecie(especies);
+
         return areaServiceInterface.saveArea(newInstance);
     }
 

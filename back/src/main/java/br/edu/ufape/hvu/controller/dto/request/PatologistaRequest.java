@@ -10,13 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
-public  class PatologistaRequest extends UsuarioRequest {
+public class PatologistaRequest extends UsuarioRequest {
     private long id;
     @NotNull( message = "Crmv não pode estar em branco")
     private String crmv;
     @NotNull
     private List<EspecialidadeRequest> especialidade;
-    @NotNull
     private InstituicaoRequest instituicao;
 
     @Override

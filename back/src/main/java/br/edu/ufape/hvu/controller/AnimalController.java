@@ -20,6 +20,8 @@ import br.edu.ufape.hvu.controller.dto.response.AnimalResponse;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.model.Animal;
 import jakarta.validation.Valid;
+
+
  
 @RestController
 @RequestMapping("/api/v1/")
@@ -27,7 +29,7 @@ import jakarta.validation.Valid;
 public class AnimalController {
 	private final Facade facade;
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("animal")
 	public List<AnimalResponse> getAllAnimal() {
 		return facade.getAllAnimal()
@@ -35,8 +37,7 @@ public class AnimalController {
 			.map(AnimalResponse::new)
 			.toList();
 	}
-
-    @PreAuthorize("hasRole('SECRETARIO')")
+	
 	@GetMapping("animal/retorno")
 	public List<AnimalResponse> findAnimaisWithReturn() {
 		return facade.findAnimaisWithReturn()
@@ -45,7 +46,6 @@ public class AnimalController {
 			.toList();
 	}
 
-    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("animal/semRetorno")
 	public List<AnimalResponse> findAnimaisWithoutReturn() {
 		return facade.findAnimaisWithoutReturn()
@@ -54,13 +54,10 @@ public class AnimalController {
 			.toList();
 	}
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
+
 	@GetMapping("animal/retorno/{id}")
 	public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt principal = (Jwt) authentication.getPrincipal();
-
-		return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id, principal.getSubject());
+		return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id);
 	}
 
 	@PreAuthorize("hasRole('TUTOR')")
@@ -75,7 +72,6 @@ public class AnimalController {
 			.toList();
 	}
 
-    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("animal/numeroficha/{fichaNumero}")
 	public AnimalResponse getAnimaisByNumeroficha(@PathVariable String fichaNumero) {
 		Animal animals = facade.getAnimalByFichaNumber(fichaNumero);
@@ -89,8 +85,7 @@ public class AnimalController {
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
 	}
-
-    @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO')")
+	
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -106,7 +101,6 @@ public class AnimalController {
 		return new AnimalResponse(facade.updateAnimal(id, obj, principal.getSubject()));
 	}
 
-    @PreAuthorize("hasRole('TUTOR')")
 	@DeleteMapping("animal/{id}")
 	public String deleteAnimal(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -117,12 +111,13 @@ public class AnimalController {
 
 	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("animal/patologista")
-	public AnimalResponse createAnimalByPatologista(@Valid @RequestBody PatologistaAnimalRequest request) {
+	public AnimalResponse createAnimalByPatologista(
+			@Valid @RequestBody PatologistaAnimalRequest request
+	) {
 		Animal saved = facade.saveAnimalByPatologista(
 				request.getAnimalEntity(),
 				request.getTutorEntity()
 		);
 		return new AnimalResponse(saved);
 	}
-
 }
