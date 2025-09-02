@@ -282,8 +282,14 @@ export default function Step3ClinicaMedica({
           </div>
           <div className={styles.column}>
             <label>Médico(s) Veterinário(s) Responsável:</label>
-            <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} disabled={isReadOnly} onChange={handleChange}
-              className="form-control" />
+            <input
+            type="text"
+            name="medicosResponsaveis"
+            value={formData.medicosResponsaveis || ''} 
+            readOnly
+            className="form-control"
+            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+            />
           </div>
 
 

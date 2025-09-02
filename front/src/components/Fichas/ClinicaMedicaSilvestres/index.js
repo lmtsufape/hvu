@@ -251,6 +251,21 @@ function ClinicaMedicaSilvestresSteps() {
     }
   }, [router.isReady, router.query.fichaId]);
 
+  useEffect(() => {
+      if (router.isReady) {
+        const medicoFromQuery = router.query.medico;
+        if (medicoFromQuery) {
+          const nomeMedico = decodeURIComponent(medicoFromQuery);
+
+          // 2. ATUALIZA o formData com o nome do médico vindo da URL.
+          setFormData(prevData => ({
+            ...prevData,
+            medicosResponsaveis: nomeMedico 
+          }));
+        }
+      }
+    }, [router.isReady, router.query.medico]);
+
   /* carregar token/roles e verificar usuário */
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -304,7 +319,8 @@ function ClinicaMedicaSilvestresSteps() {
   }));
 };
   /* envio final */
-  const handleSubmit = async () => {
+  const handleSubmit = async (nomeDoMedicoResponsavel) => {
+    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
     setShowErrorAlert(false);
     const fichaData = {
       nome: "Ficha Clínica Médica (silvestres ou exóticos)",
