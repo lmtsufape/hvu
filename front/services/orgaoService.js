@@ -29,21 +29,11 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
-  
-  // Função para atualizar 
-  export async function Orgao(orgaoId, orgaoData) {
-    try {
-      const response = await api.patch(`/orgao/${orgaoId}`, orgaoData);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
 
   // Função para atualizar 
   export async function updateOrgao(laudoOrgaoId, laudoOrgaoData) {
     try {
-      const response = await api.patch(`/Orgao/${laudoOrgaoId}`, laudoOrgaoData);
+      const response = await api.patch(`/orgao/${laudoOrgaoId}`, laudoOrgaoData);
       return response.data;
     } catch (error) {
       throw error;

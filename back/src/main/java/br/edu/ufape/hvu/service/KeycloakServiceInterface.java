@@ -25,4 +25,6 @@ public interface KeycloakServiceInterface {
     boolean hasRoleMedico(String accessToken);
 
     boolean hasRoleAdminLapa(String accessToken);
+
+    boolean hasRolePatologista(String accessToken);
 }

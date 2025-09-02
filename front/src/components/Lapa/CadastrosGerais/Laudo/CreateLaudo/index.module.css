@@ -239,3 +239,12 @@
   letter-spacing: 0em;
   text-align: center;
 }
+
+.term {
+  cursor: pointer;
+  transition: text-decoration 0.2s;
+}
+
+.term:hover {
+  text-decoration: underline; 
+}

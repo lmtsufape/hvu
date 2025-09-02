@@ -10,7 +10,7 @@ import ErrorAlert from "../../../../ErrorAlert";
 import OrgaosList from "@/hooks/useOrgaoList";
 import { getToken, getRoles } from "../../../../../../services/userService";
 
-function CreateMicroscopia() { // Nome do componente atualizado
+function CreateMicroscopia() {
     const router = useRouter();
     const { orgaos, error } = OrgaosList();
 
@@ -19,31 +19,41 @@ function CreateMicroscopia() { // Nome do componente atualizado
     const [errors, setErrors] = useState({});
     const [microscopia, setMicroscopia] = useState({
         descricao: "",
-        processamento: "", // Novo campo adicionado
+        processamento: "",
         orgao: { id: null }
     });
+
     const roles = getRoles();
-    const token= getToken();
+    const token = getToken();
 
     if (!token) {
         return (
-        <div className={styles.container}>
-            <h3 className={styles.message}>
-                Acesso negado: Faça login para acessar esta página.
-            </h3>
-        </div>
+            <div className={styles.container}>
+                <h3 className={styles.message}>
+                    Acesso negado: Faça login para acessar esta página.
+                </h3>
+            </div>
         );
     }
 
     if (!roles.includes("patologista")) {
         return (
-        <div className={styles.container}>
-            <h3 className={styles.message}>
-                Acesso negado: Você não tem permissão para acessar esta página.
-            </h3>
-        </div>
+            <div className={styles.container}>
+                <h3 className={styles.message}>
+                    Acesso negado: Você não tem permissão para acessar esta página.
+                </h3>
+            </div>
         );
     }
+
+    const processamentoOptions = [
+        "CLIVAGEM",
+        "EMBLOCAMENTO",
+        "MICROTOMIA",
+        "DESPARAFINIZACAO",
+        "COLORACAO",
+        "PERDAMATERIAL"
+    ];
 
     const handleMicroscopiaChange = (event) => {
         const { name, value } = event.target;
@@ -51,21 +61,15 @@ function CreateMicroscopia() { // Nome do componente atualizado
     };
 
     const handleOrgaoChange = (event) => {
-        const selectedId = event.target.value;
+        const selectedId = Number(event.target.value); // garante que seja número
         setMicroscopia({ ...microscopia, orgao: { id: selectedId } });
     };
 
     const validateForm = () => {
         const errors = {};
-        if (!microscopia.descricao) {
-            errors.descricao = "Campo obrigatório";
-        }
-        if (!microscopia.processamento) {
-            errors.processamento = "Campo obrigatório"; // Validação para processamento
-        }
-        if (!microscopia.orgao.id) {
-            errors.orgao = "Selecione um órgão";
-        }
+        if (!microscopia.descricao) errors.descricao = "Campo obrigatório";
+        if (!microscopia.processamento) errors.processamento = "Campo obrigatório";
+        if (!microscopia.orgao.id) errors.orgao = "Selecione um órgão";
         return errors;
     };
 
@@ -76,7 +80,7 @@ function CreateMicroscopia() { // Nome do componente atualizado
             return;
         }
         try {
-            await createCampoLaudoMicroscopia(microscopia); // Serviço atualizado
+            await createCampoLaudoMicroscopia(microscopia);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar microscopia:", error);
@@ -107,22 +111,37 @@ function CreateMicroscopia() { // Nome do componente atualizado
                                 value={microscopia.descricao}
                                 onChange={handleMicroscopiaChange}
                             />
-                            {errors.descricao && <div className={`invalid-feedback ${styles.error_message}`}>{errors.descricao}</div>}
+                            {errors.descricao && (
+                                <div className={`invalid-feedback ${styles.error_message}`}>
+                                    {errors.descricao}
+                                </div>
+                            )}
                         </div>
+
                         <div className={`col ${styles.col}`}>
                             <label htmlFor="processamento" className="form-label">
-                                Processamento <span className={styles.obrigatorio}>*</span> 
+                                Processamento <span className={styles.obrigatorio}>*</span>
                             </label>
-                            <input
-                                type="text"
-                                placeholder="Digite o processamento da microscopia"
-                                className={`form-control ${styles.input} ${errors.processamento ? "is-invalid" : ""}`}
+                            <select
+                                className={`form-select ${styles.input} ${errors.processamento ? "is-invalid" : ""}`}
                                 name="processamento"
                                 value={microscopia.processamento}
                                 onChange={handleMicroscopiaChange}
-                            />
-                            {errors.processamento && <div className={`invalid-feedback ${styles.error_message}`}>{errors.processamento}</div>}
+                            >
+                                <option value="" disabled>Selecione o processamento</option>
+                                {processamentoOptions.map((proc) => (
+                                    <option key={proc} value={proc}>
+                                        {proc.charAt(0) + proc.slice(1).toLowerCase()}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.processamento && (
+                                <div className={`invalid-feedback ${styles.error_message}`}>
+                                    {errors.processamento}
+                                </div>
+                            )}
                         </div>
+
                         <div className={`col ${styles.col}`}>
                             <label htmlFor="orgao" className="form-label">
                                 Órgão <span className={styles.obrigatorio}>*</span>
@@ -130,18 +149,25 @@ function CreateMicroscopia() { // Nome do componente atualizado
                             <select
                                 className={`form-select ${styles.input} ${errors.orgao ? "is-invalid" : ""}`}
                                 name="orgao"
+                                value={microscopia.orgao.id || ""}
                                 onChange={handleOrgaoChange}
-                                defaultValue=""
                             >
                                 <option value="" disabled>Selecione um órgão</option>
-                                {orgaos.map(orgao => (
-                                    <option key={orgao.id} value={orgao.id}>{orgao.nome}</option>
+                                {orgaos.map((orgao) => (
+                                    <option key={orgao.id} value={orgao.id}>
+                                        {orgao.nome}
+                                    </option>
                                 ))}
                             </select>
-                            {errors.orgao && <div className={`invalid-feedback ${styles.error_message}`}>{errors.orgao}</div>}
+                            {errors.orgao && (
+                                <div className={`invalid-feedback ${styles.error_message}`}>
+                                    {errors.orgao}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
+
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />
                     <button type="button" className={styles.criar_button} onClick={handleSubmit}>
@@ -149,8 +175,20 @@ function CreateMicroscopia() { // Nome do componente atualizado
                     </button>
                 </div>
             </form>
-            {showAlert && <Alert message="Microscopia criada com sucesso!" show={showAlert} url={`/lapa/gerenciarMicroscopias`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao cadastrar microscopia, tente novamente." show={showErrorAlert} />}
+
+            {showAlert && (
+                <Alert
+                    message="Microscopia criada com sucesso!"
+                    show={showAlert}
+                    url={`/lapa/gerenciarMicroscopias`}
+                />
+            )}
+            {showErrorAlert && (
+                <ErrorAlert
+                    message="Erro ao cadastrar microscopia, tente novamente."
+                    show={showErrorAlert}
+                />
+            )}
         </div>
     );
 }

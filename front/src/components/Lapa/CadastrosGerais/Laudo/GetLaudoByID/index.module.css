@@ -78,6 +78,14 @@
     color: #404040;
 }
 
+.item_box p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    color: #39805F;
+}
+
 .item_box div {
     font-family: 'Poppins', sans-serif;
     font-size: 18px;

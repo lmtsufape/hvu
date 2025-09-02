@@ -49,7 +49,7 @@ function GetAllConsultas() {
   }
 
   // Verifica se o usuário tem permissão
-  if (!roles.includes("medico")) {
+  if (!roles.includes("medico") && !roles.includes("patologista")) {
     return (
       <div className={styles.container}>
         <h3 className={styles.message}>

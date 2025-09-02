@@ -250,6 +250,15 @@ public class KeycloakService implements KeycloakServiceInterface {
         }
     }
 
+    @Override
+    public boolean hasRolePatologista(String accessToken) {
+        try {
+            return keycloak.realm(realm).users().get(accessToken).roles().realmLevel().listEffective().stream().anyMatch(role -> role.getName().equals("patologista"));
+        } catch (Exception e) {
+            throw new KeycloakAuthenticationException("Erro ao verificar se o usuário tem a role de patologista.", e);
+        }
+    }
+
 
     //Esquecer senha
     public void sendResetPasswordEmail(String email) throws KeycloakAuthenticationException {

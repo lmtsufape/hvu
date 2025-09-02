@@ -74,7 +74,7 @@ function GetConsultaById() {
     }
 
     // Verifica se o usuário tem permissão
-    if (!roles.includes("medico")) {
+    if (!roles.includes("medico") && !roles.includes("patologista")) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
@@ -229,7 +229,7 @@ const handleVisualizar = (ficha) => {
                             </div>
 
                             <div className={styles.botao}>
-                                <EditarWhiteButton page={"updateConsulta"} id={consulta.id}/>
+                               { roles.includes("medico") && ( <EditarWhiteButton page={"updateConsulta"} id={consulta.id}/> )}
                             </div>
                         </div>
                     </li>

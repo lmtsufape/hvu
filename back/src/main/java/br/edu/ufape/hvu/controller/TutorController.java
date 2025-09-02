@@ -20,7 +20,7 @@ import br.edu.ufape.hvu.controller.dto.response.TutorResponse;
 public class TutorController {
 	private final Facade facade;
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'PATOLOGISTA')")
 	@GetMapping("tutor")
 	public List<TutorResponse> getAllTutor() {
 		return facade.getAllTutor()
@@ -35,7 +35,7 @@ public class TutorController {
 		Tutor o = newObj.convertToEntity();
 		return new TutorResponse(facade.saveTutor(o, password));
 	}
-	
+
 	@GetMapping("tutor/{id}")
 	public TutorResponse getTutorById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
