@@ -17,6 +17,7 @@ import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import br.edu.ufape.hvu.repository.AnimalRepository;
+import br.edu.ufape.hvu.repository.OrgaoRepository;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
@@ -1437,7 +1438,7 @@ public class Facade {
     @Transactional
     public void deleteAnimal(long id, String userId) {
         // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
-        if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId)){
+        if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId) && !keycloakService.hasRolePatologista(userId)){
             Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
 
             if(!tutor.getUserId().equals(userId)) {
@@ -1952,24 +1953,48 @@ public class Facade {
     private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
     private final AnimalRepository animalRepository;
     private final AgendamentoRepository agendamentoRepository;
+    private final OrgaoRepository orgaoRepository;
 
     @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
+        if (newInstance.getOrgao() != null && newInstance.getOrgao().getId() != 0) {
+            Orgao orgao = orgaoRepository.findById(newInstance.getOrgao().getId())
+                    .orElseThrow(() -> new IdNotFoundException(newInstance.getOrgao().getId(), "Orgao"));
+            newInstance.setOrgao(orgao);  // agora é um objeto gerenciado
+        }
+
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
     }
+
 
     @Transactional
     public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopiaRequest obj, Long id) {
         CampoLaudoMicroscopia oldObject = findCampoLaudoMicroscopiaById(id);
 
+        // Garantir que o Orgao seja gerenciado
+        if (obj.getOrgao() != null && obj.getOrgao().getId() != 0) {
+            Orgao orgaoReal = orgaoRepository.findById(obj.getOrgao().getId())
+                    .orElseThrow(() -> new IdNotFoundException(obj.getOrgao().getId(), "Orgao"));
+            oldObject.setOrgao(orgaoReal);
+        }
+
+        // Mapear o restante dos campos, pulando Orgao
         TypeMap<CampoLaudoMicroscopiaRequest, CampoLaudoMicroscopia> typeMapper = modelMapper
-                .typeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class)
-                .addMappings(mapper -> mapper.skip(CampoLaudoMicroscopia::setId));
+                .getTypeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class);
+        if (typeMapper == null) {
+            typeMapper = modelMapper.createTypeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class);
+        }
+        typeMapper.addMappings(mapper -> {
+            mapper.skip(CampoLaudoMicroscopia::setId);
+            mapper.skip(CampoLaudoMicroscopia::setOrgao); // Já setado manualmente
+        });
 
         typeMapper.map(obj, oldObject);
 
         return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(oldObject);
     }
+
+
 
     public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {
         return campoLaudoMicroscopiaServiceInterface.findCampoLaudoMicroscopiaById(id);

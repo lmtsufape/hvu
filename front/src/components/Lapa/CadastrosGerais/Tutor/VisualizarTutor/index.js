@@ -1,68 +1,136 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import styles from './VisualizarTutor.module.css'; 
-import VoltarButton from '@/components/Lapa/VoltarButton';
-import { getTutorById } from '../../../../../../services/tutorService'; 
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import styles from "./VisualizarTutor.module.css";
+import VoltarButton from "../../../VoltarButton";
+import { getTutorById } from "../../../../../../services/tutorService";
 
-const VisualizarTutor = () => {
-    const router = useRouter();
-    const { id } = router.query;
-    const [tutor, setTutor] = useState(null);
+function VisualizarTutor() {
+  const router = useRouter();
+  const { id } = router.query;
+  const [usuario, setUsuario] = useState({});
+  const [token, setToken] = useState("");
+  const [erro, setErro] = useState("");
 
-    useEffect(() => {
-        if (id) {
-            const fetchData = async () => {
-                try {
-                    const tutorData = await getTutorById(id);
-                    setTutor(tutorData);
-                } catch (error) {
-                    console.error('Erro ao buscar tutor:', error);
-                }
-            };
-            fetchData();
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken || "");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (id) {
+      const fetchData = async () => {
+        try {
+          const usuarioData = await getTutorById(id);
+          setUsuario(usuarioData);
+          setErro("");
+        } catch (error) {
+          if (error.response.status === 404) {
+            setErro("Página não encontrada (Erro 404)");
+          } else if (error.response.status === 403) {
+            setErro("Acesso negado (Erro 403)");
+          } else {
+            setErro("Erro ao buscar perfil");
+          }
+          console.error("Erro ao buscar usuário:", error);
         }
-    }, [id]);
+      };
+      fetchData();
+    }
+  }, [id]);
 
+  if (erro) {
     return (
-        <div className={styles.container}>
-            <VoltarButton />
-            <h1>Detalhes do Tutor</h1>
-            
-            {tutor ? (
-                <div className={styles.infoContainer}>
-                    <div className={styles.infoBox}>
-                        <h6>Nome</h6>
-                        <p>{tutor.nome}</p>
-                    </div>
-                    <div className={styles.infoBox}>
-                        <h6>CPF</h6>
-                        <p>{tutor.cpf}</p>
-                    </div>
-                    <div className={styles.infoBox}>
-                        <h6>Email</h6>
-                        <p>{tutor.email}</p>
-                    </div>
-                    <div className={styles.infoBox}>
-                        <h6>Telefone</h6>
-                        <p>{tutor.telefone}</p>
-                    </div>
-                    <div className={styles.infoBox}>
-                        <h6>RG</h6>
-                        <p>{tutor.rg}</p>
-                    </div>
-                    <div className={styles.infoBox}>
-                        <h6>Endereço</h6>
-                        <p>{tutor.endereco.rua}, {tutor.endereco.numero}, {tutor.endereco.bairro}</p>
-                        <p>{tutor.endereco.cidade} - {tutor.endereco.estado}</p>
-                        <p>CEP: {tutor.endereco.cep}</p>
-                    </div>
-                </div>
-            ) : (
-                <p>Dados do tutor não disponíveis.</p>
-            )}
-
-        </div>
+      <div className={styles.container}>
+        <h3 className={styles.message}>
+          Acesso negado: Você não tem permissão para acessar esta página.
+        </h3>
+      </div>
     );
-};
+  }
+
+  if (!token || erro) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>
+          Acesso negado: Faça login para acessar esta página.
+        </h3>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.container}>
+      <VoltarButton />
+      <h1>Informações do&#40;a&#41; tutor&#40;a&#41;</h1>
+      <div className={styles.container_box}>
+        <ul style={{ paddingLeft: "1rem" }}>
+          {usuario && (
+            <div className={styles.list_container}>
+              <li key={usuario.id} className={styles.list_box}>
+                <div className={styles.tutor}>
+                  <div className={styles.item_box}>
+                    <h6>Nome</h6>
+                    <div>{usuario.nome}</div>
+                  </div>
+
+                  <div className={styles.item_container}>
+                    <div className={styles.item_box}>
+                      <h6>E-mail</h6>
+                      <div>{usuario.email}</div>
+                    </div>
+                    <div className={styles.item_box}>
+                      <h6>Telefone</h6>
+                      <div>{usuario.telefone}</div>
+                    </div>
+
+                    <div className={styles.item_box}>
+                      <h6>CPF</h6>
+                      <div>{usuario.cpf}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.title_endereco}>Endereço</div>
+
+                {usuario.endereco && (
+                  <div className={styles.tutor}>
+                    <div className={styles.item_container}>
+                      <div className={styles.item_box}>
+                        <h6>Rua</h6>
+                        <div>{usuario.endereco.rua}</div>
+                      </div>
+                      <div className={styles.item_box}>
+                        <h6>Bairro</h6>
+                        <div>{usuario.endereco.bairro}</div>
+                      </div>
+                      <div className={styles.item_box}>
+                        <h6>Número</h6>
+                        <div>{usuario.endereco.numero}</div>
+                      </div>
+                      <div className={styles.item_box}>
+                        <h6>CEP</h6>
+                        <div>{usuario.endereco.cep}</div>
+                      </div>
+                      <div className={styles.item_box}>
+                        <h6>Cidade</h6>
+                        <div>{usuario.endereco.cidade}</div>
+                      </div>
+                      <div className={styles.item_box}>
+                        <h6>Estado</h6>
+                        <div>{usuario.endereco.estado}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </li>
+            </div>
+          )}
+        </ul>
+      </div>
+    </div>
+  );
+}
 
 export default VisualizarTutor;

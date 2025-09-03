@@ -15,7 +15,6 @@
     "autoprefixer": "^10.4.16",
     "axios": "^1.5.1",
     "bootstrap": "^5.3.3",
-    "caniuse-lite": "^1.0.30001566",
     "date-fns": "^2.30.0",
     "font-awesome": "^4.7.0",
     "fortawesome": "^0.0.1-security",

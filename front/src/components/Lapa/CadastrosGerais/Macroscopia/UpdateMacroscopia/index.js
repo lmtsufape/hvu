@@ -109,7 +109,7 @@ function UpdateCampoLaudo() {
                     </button>
                 </div>
             </form>
-            {showAlert && <Alert message="Informações da Macroscopia editadas com sucesso!" show={showAlert} url={`/gerenciarCampoLaudo`} />}
+            {showAlert && <Alert message="Informações da Macroscopia editadas com sucesso!" show={showAlert} url={`/lapa/gerenciarMacroscopias`} />}
             {showErrorAlert && <ErrorAlert message="Erro ao editar informações da Macroscopia, tente novamente." show={showErrorAlert} />}
         </div>
     );

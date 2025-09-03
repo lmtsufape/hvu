@@ -17,9 +17,7 @@ public class AnimalRequest  {
 	private String nome;
 	@NotBlank(message = "Sexo não pode estar em branco")
 	private String sexo;
-	@NotBlank(message = "Alergias não pode estar em branco")
 	private String alergias;
-	@NotNull
 	private LocalDate dataNascimento;
 	//@NotBlank(message = "Imagens não pode estar em branco")
 	private String imagem;

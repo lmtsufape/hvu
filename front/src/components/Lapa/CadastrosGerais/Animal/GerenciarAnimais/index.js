@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import SearchBar from '../../../../SearchBar';
 import { deleteAnimal, getAllAnimal } from '../../../../../../services/animalService';
+import { getTutorByAnimal } from '../../../../../../services/tutorService';
 import VoltarButton from '../../../VoltarButton';
 import ExcluirButton from '../../../../ExcluirButton';
 import ErrorAlert from "../../../../ErrorAlert";
@@ -10,6 +11,7 @@ import { getToken, getRoles } from "../../../../../../services/userService";
 
 function GerenciarAnimais() {
     const [animais, setAnimais] = useState([]);
+    const [tutores, setTutores] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -17,25 +19,25 @@ function GerenciarAnimais() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
     const roles = getRoles();
-    const token= getToken();
+    const token = getToken();
 
     if (!token) {
         return (
-        <div className={styles.container}>
-            <h3 className={styles.message}>
-                Acesso negado: Faça login para acessar esta página.
-            </h3>
-        </div>
+            <div className={styles.container}>
+                <h3 className={styles.message}>
+                    Acesso negado: Faça login para acessar esta página.
+                </h3>
+            </div>
         );
     }
 
     if (!roles.includes("patologista")) {
         return (
-        <div className={styles.container}>
-            <h3 className={styles.message}>
-                Acesso negado: Você não tem permissão para acessar esta página.
-            </h3>
-        </div>
+            <div className={styles.container}>
+                <h3 className={styles.message}>
+                    Acesso negado: Você não tem permissão para acessar esta página.
+                </h3>
+            </div>
         );
     }
 
@@ -44,8 +46,19 @@ function GerenciarAnimais() {
             try {
                 const animaisData = await getAllAnimal();
                 setAnimais(animaisData);
+
+                const tutoresData = {};
+                for (const animal of animaisData) {
+                    try {
+                        const tutor = await getTutorByAnimal(animal.id);
+                        tutoresData[animal.id] = tutor;
+                    } catch {
+                        tutoresData[animal.id] = null;
+                    }
+                }
+                setTutores(tutoresData);
             } catch (error) {
-                console.error('Erro ao buscar animais:', error);
+                console.error('Erro ao buscar animais ou tutores:', error);
             }
         };
         fetchData();
@@ -65,17 +78,17 @@ function GerenciarAnimais() {
         }
     };
 
-    const filteredAnimais = animais.filter(animal => {
-        return animal.nome.toLowerCase().includes(searchTerm.toLowerCase());
-    });
+    const filteredAnimais = animais.filter(animal => 
+        animal.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const handleAddAnimalClick = () => {
-        setIsModalOpen(true); // Abre o modal
+        router.push("/lapa/tipoTutor")
     };
 
     const confirmRedirect = () => {
         setIsModalOpen(false);
-        router.push('/lapa/createTutor'); // Atualize o caminho conforme necessário
+        router.push('/lapa/createTutor');
     };
 
     return (
@@ -100,12 +113,12 @@ function GerenciarAnimais() {
                                 <h6>Nome</h6>
                                 <p>{animal.nome}</p>
                                 <h6>Nome do Tutor</h6>
-                                <p>{animal.tutor ? animal.tutor.nome : 'Tutor não disponível'}</p>
+                                <p>{tutores[animal.id]?.nome || 'Tutor não disponível'}</p>
                             </div>
                             <div className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}
-                                    onClick={() => router.push(`/lapa/getAnimalById/${animal.id}`)}
+                                    onClick={() => router.push(`/getAnimalByIdByMedico/${animal.id}`)}
                                 >
                                     Visualizar
                                 </button>
@@ -115,6 +128,7 @@ function GerenciarAnimais() {
                     ))}
                 </ul>
             )}
+
             {showAlert && <ErrorAlert message="Animal excluído com sucesso!" show={showAlert} />}
             {showErrorAlert && <ErrorAlert message="Este animal não pode ser excluído." show={showErrorAlert} />}
 
@@ -122,9 +136,7 @@ function GerenciarAnimais() {
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
                         <h2>Você será redirecionado para a área de criação de Tutor.</h2>
-                        <p></p>
                         <p>Crie um tutor e depois o animal (que será associado a ele) e depois volte para área de "Cadastros gerais" para continuar.</p>
-                        <p></p>
                         <div className={styles.buttonGroup}>
                             <button className={styles.modalButton} onClick={confirmRedirect}>Confirmar</button>
                             <button className={styles.modalButton} onClick={() => setIsModalOpen(false)}>Cancelar</button>

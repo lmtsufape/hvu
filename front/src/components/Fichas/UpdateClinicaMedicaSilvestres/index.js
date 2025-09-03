@@ -276,7 +276,7 @@ function UpdateClinicaMedicaSilvestresSteps() {
 
   if (loading)                     return <p>Carregando…</p>;
   if (!token)                      return <p>Acesso negado – faça login.</p>;
-  if (!roles.includes("medico"))   return <p>Acesso negado – sem permissão.</p>;
+  if (!roles.includes("medico") && !roles.includes("patologista"))   return <p>Acesso negado – sem permissão.</p>;
 
   const handleCheckboxChangeVacinacao = (e) => {
     const { name, checked } = e.target;

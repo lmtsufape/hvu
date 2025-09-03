@@ -29,6 +29,7 @@ import jakarta.validation.Valid;
 public class AnimalController {
 	private final Facade facade;
 
+    // TODO patologista
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("animal")
 	public List<AnimalResponse> getAllAnimal() {
@@ -54,7 +55,7 @@ public class AnimalController {
 			.toList();
 	}
 
-
+    // TODO patologista
 	@GetMapping("animal/retorno/{id}")
 	public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(@PathVariable Long id) {
 		return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id);
