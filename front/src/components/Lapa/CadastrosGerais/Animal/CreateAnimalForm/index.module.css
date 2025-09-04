@@ -11,6 +11,76 @@
   margin-bottom: 50px;
 }
 
+.form_box {
+  display: block;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 30px;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 90px;
+  border-radius: 20px;
+  border: 0.5px solid #b1b1b1;
+  font-family: "Poppins", sans-serif;
+  font-style: normal;
+}
+
+.selectedTutorInfo {
+  background-color: white;
+  border: 0.5px solid #b1b1b1;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 20px;
+  font-family: "Poppins", sans-serif;
+}
+
+.selectedTutorInfo h4 {
+  margin-bottom: 15px;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.tutorDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tutorDetails p {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #000000;
+}
+
+.tutorDetails strong {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  color: #000000;
+}
+
+.changeTutorButton {
+  margin-top: 15px;
+  width: 180px;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px;
+  font-size: 16px;
+  color: white;
+  background-color: #327053;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.changeTutorButton:hover {
+  background-color: #5b977b;
+}
+
 .input {
   font-family: "Poppins", sans-serif;
   font-size: 14px;
@@ -33,55 +103,6 @@
   color: #000000;
 }
 
-.col select option {
-  font-family: "Poppins", sans-serif;
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 20px;
-  color: #000000;
-}
-
-.form_box {
-  display: block;
-  justify-content: center;
-  align-items: center;
-
-  background-color: white;
-
-  padding: 30px;
-  margin: auto;
-  margin-top: 20px;
-  margin-bottom: 90px;
-
-  border-radius: 20px;
-  border: 0.5px solid #b1b1b1;
-
-  font-family: "Poppins", sans-serif;
-  font-style: normal;
-}
-
-.form_box div {
-  margin-bottom: 8px;
-}
-
-.container h1 {
-  font-family: "Poppins", sans-serif;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 36px;
-  letter-spacing: 0em;
-  text-align: center;
-  margin-top: 50px;
-}
-
-.box_button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 30px;
-  margin-top: -20px;
-}
-
 .button {
   width: 180px;
   height: 48px;
@@ -95,14 +116,6 @@
 
 .button:hover {
   background-color: #5b977b;
-}
-
-.button_container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 50px;
-  margin-bottom: 0px;
-  gap: 3%;
 }
 
 .cadastrar_button {
@@ -122,21 +135,15 @@
   background-color: #5b977b;
 }
 
-.form-select-disabled {
-  background-color: #f8f9fa;
-  color: #6c757d;
-  cursor: not-allowed;
-}
-
-.obrigatorio {
-  color: #c7122f;
-}
-
 .error_message {
   margin-top: -0.2em;
   font-family: "Poppins", sans-serif;
   font-size: 12px;
   font-weight: 300;
   line-height: 24px;
+  color: #c7122f;
+}
+
+.obrigatorio {
   color: #c7122f;
 }

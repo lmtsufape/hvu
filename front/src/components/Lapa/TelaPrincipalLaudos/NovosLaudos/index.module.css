@@ -35,6 +35,20 @@
   font-style: normal;
 }
 
+.hist_button {
+  all: unset;
+  cursor: pointer;     
+  color: #327053;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  text-decoration: none; 
+  padding: 0;           
+}
+
+.hist_button:hover {
+  text-decoration: underline; /* sublinha ao passar o mouse */
+}
+
 .form_box div {
   margin-bottom: 8px;
 }
