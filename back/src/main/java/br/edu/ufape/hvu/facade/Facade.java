@@ -1193,7 +1193,7 @@ public class Facade {
     }
 
     public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String idSession){
-        if (!keycloakService.hasRoleMedico(idSession) || !keycloakService.hasRoleSecretario(idSession)) {
+        if (!keycloakService.hasRoleMedico(idSession) && !keycloakService.hasRoleSecretario(idSession)) {
             throw new AccessDeniedException("Acesso Negado");
         }
 
