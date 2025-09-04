@@ -1,8 +1,8 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AnimalRepository;
@@ -46,6 +46,10 @@ public class AnimalService implements AnimalServiceInterface {
 		Animal obj = repository.findById(id).orElseThrow(
 				() -> new IdNotFoundException(id, "Animal"));
 		repository.delete(obj);
+	}
+
+	public List<Animal> findAnimalsByOrigemAnimal(OrigemAnimal origem) {
+		return repository.findByOrigemAnimal(origem);
 	}
 	
 }

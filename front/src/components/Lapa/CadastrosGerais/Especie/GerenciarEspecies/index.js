@@ -6,14 +6,37 @@ import { getAllEspecie, deleteEspecie } from '../../../../../../services/especie
 import VoltarButton from '../../../VoltarButton';
 import ExcluirButton from '../../../../ExcluirButton';
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function GerenciarEspecies() {
     const [especies, setEspecies] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
-    const [deletedEspecieId, setDeletedEspecieId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
+    const [deletedEspecieId, setDeletedEspecieId] = useState(null); 
     const router = useRouter();
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,13 +48,13 @@ function GerenciarEspecies() {
             }
         };
         fetchData();
-    }, [deletedEspecieId]); // Adicione deletedEspecieId como uma dependência
+    }, [deletedEspecieId]); 
 
     const handleDeleteEspecie = async (especieId) => {
         try {
             await deleteEspecie(especieId);
             setEspecies(especies.filter(especie => especie.id !== especieId));
-            setDeletedEspecieId(especieId); // Atualiza o estado para acionar a recuperação da lista
+            setDeletedEspecieId(especieId); 
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir espécie:', error);

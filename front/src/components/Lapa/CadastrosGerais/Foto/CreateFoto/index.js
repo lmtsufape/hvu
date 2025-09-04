@@ -7,6 +7,7 @@ import { CancelarWhiteButton } from "../../../../WhiteButton";
 import { createFoto } from "../../../../../../services/fotoService";
 import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function CreateFoto() {
     const router = useRouter();
@@ -16,6 +17,28 @@ function CreateFoto() {
     const [errors, setErrors] = useState({});
     const [titulo, setTitulo] = useState('');
     const [foto, setFoto] = useState(null);
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     const handleFileChange = (event) => {
         setFoto(event.target.files[0]);

@@ -94,3 +94,13 @@ import api from '../common/http-common-back';
       throw error;
     }
   }
+
+// Função para excluir
+export async function createAnimalByPatologista(animalData) {
+  try {
+    const response = await api.post(`/animal/patologista`, animalData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

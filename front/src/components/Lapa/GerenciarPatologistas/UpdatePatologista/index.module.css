@@ -9,10 +9,6 @@
     align-items: center;
 }
 
-.obrigatorio {
-    color: red;
-  }
-
 .container h1 {
     font-family: 'Poppins', sans-serif;
     font-size: 24px;
@@ -32,32 +28,6 @@
     align-items: center;
 }
 
-.checkbox {
-    display: inline-block;
-    width: 17px;
-    height: 17px;
-    background-color: white;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    margin-right: 5px;
-}
-
-.checkbox:focus {
-    border: 1px solid #ccc;
-    box-shadow: 0 0 5px 2px #3d856371;
-}
-
-.checkbox:checked {
-    background-color: #327053;
-    border: 1px solid #ccc;
-    box-shadow: #327053;
-}
-
-.input_space {
-    display: flex;
-    gap: 5px;
-}
-
 .button_box {
     width: 1152px;
     height: 80px;
@@ -70,7 +40,7 @@
 
 .criar_button {
     width: 180px;
-    height: 56px;
+    height: 48px;
     border-radius: 10px;
     border: 1px solid #39805F;
     color: #FFF5F6;
@@ -109,17 +79,8 @@
     margin-bottom: 10px;
 }
 
-.errorMessage {
-    color: #ff3333; /* Vermelho */
-    font-size: 0.85rem; /* Tamanho da fonte */
-    font-family: 'Poppins', sans-serif;
-    font-weight: 300;
-    letter-spacing: 0em;
-    text-align: left;
-}
-
 .input {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', sans-serif;;
     font-size: 14px;
     font-weight: 300;
     line-height: 20px;
@@ -133,7 +94,7 @@
 }
 
 .input::placeholder {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', sans-serif;;
     font-size: 14px;
     font-weight: 300;
     line-height: 20px;
@@ -141,23 +102,85 @@
 }
 
 .col select option {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', sans-serif;;
     font-size: 14px;
     font-weight: 300;
     line-height: 20px;
     color: #000000;
 }
 
-.obrigatorio {
-    color: #C7122F;
-  }
-  
-  .error_message {
+/* Estilo para o ícone do olho */
+.input-group-append button {
+    border: 1px solid #ced4da; /* Cor e largura da borda */
+    border-left: 0; /* Remover a borda à esquerda */
+    border-radius: 0 0.25rem 0.25rem 0; /* Bordas arredondadas */
+    background-color: #fff; /* Cor de fundo */
+    padding: 0.375rem 0.75rem; /* Espaçamento interno */
+}
+
+/* Cor do ícone */
+.input-group-append button svg {
+    color: #6c757d; /* Cor do ícone */
+    height: 1.25rem; /* Altura do ícone */
+}
+
+/* Cor do ícone quando ativo */
+.input-group-append button.active svg {
+    color: #007bff; /* Cor do ícone quando ativo */
+}
+
+/* Estilo para o campo de senha */
+.input-group .form-control-password {
+    border-right: 0; /* Remover a borda à direita */
+}
+
+.checkbox {
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    background-color: white;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.checkbox:focus {
+    border: 1px solid #ccc;
+    box-shadow: 0 0 5px 2px #3d856371;
+}
+
+.checkbox:checked {
+    background-color: #327053;
+    border: 1px solid #ccc;
+    box-shadow: #327053;
+}
+
+.input_space {
+    margin-top: -40px;
+    display: flex;
+    gap: 5px;
+}
+
+.error_message {
     margin-top: -0.2em;
     font-family: 'Poppins', sans-serif;
     font-size: 12px;
     font-weight: 300;
     line-height: 24px;
     color: #C7122F;
-  }
-  
+}
+
+.message {
+    min-height: 300px;
+    margin-top: 56px; 
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: center;
+}
+

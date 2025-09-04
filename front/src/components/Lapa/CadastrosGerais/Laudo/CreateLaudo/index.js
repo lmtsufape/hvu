@@ -12,6 +12,7 @@ import CampoLaudoList from "@/hooks/useCampoLaudoList";
 import EstagiarioList from "@/hooks/useEstagiarioList";
 import FotosList from "@/hooks/useFotoList";
 import LaudoMicroscopiaList from "@/hooks/useLaudoMicroscopiaList";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function CreateLaudoNecropsia() {
     const router = useRouter();
@@ -28,20 +29,40 @@ function CreateLaudoNecropsia() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
-    // Ficha de Solicitação de Serviços
     const [filteredFichas, setFilteredFichas] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchError, setSearchError] = useState(false);
     const [selectedFicha, setSelectedFicha] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
-    const { fichas = [], error: fichasError } = FichaSolicitacaoServicoList();
+    const { fichas, error: fichasError } = FichaSolicitacaoServicoList();
 
-    // Campo Laudo
-    const { campoLaudo = [], error: campoLaudoError } = CampoLaudoList();
+    const { campoLaudo, error: campoLaudoError } = CampoLaudoList();
 
-    // Microscopia
-    const { campoMicroscopiaOptions = [], error: microscopiaError } = LaudoMicroscopiaList();
+    const { campoMicroscopiaOptions, error: microscopiaError } = LaudoMicroscopiaList();
+
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     const handleCampoLaudoChange = (event, index) => {
         const selectedCampoId = parseInt(event.target.value);
@@ -70,7 +91,6 @@ function CreateLaudoNecropsia() {
         }));
     };
 
-    // Microscopia
     const handleMicroscopiaChange = (event, index) => {
         const selectedMicroscopiaId = parseInt(event.target.value);
         setLaudo(prevData => {
@@ -94,7 +114,6 @@ function CreateLaudoNecropsia() {
         }));
     };
 
-    // Estagiário
     const [selectedEstagiarioId, setSelectedEstagiarioId] = useState("");
 
     const { estagiarios = [], error: estagiariosError } = EstagiarioList();
@@ -109,7 +128,6 @@ function CreateLaudoNecropsia() {
         }));
     };
 
-    // Foto
     const [selectedFotoId, setSelectedFotoId] = useState("");
 
     const { fotos = [], error: fotosError } = FotosList();
@@ -148,15 +166,15 @@ function CreateLaudoNecropsia() {
         }
 
         const laudoToSend = {
-            id: laudo.id,
             conclusao: laudo.conclusao,
             fichaSolicitacaoServico: { id: laudo.fichaSolicitacaoServico.id },
             campoLaudo: laudo.campoLaudo.map(campo => ({ id: campo.id })),
             estagiario: [{ id: selectedEstagiarioId }],
-            foto: [{ id: selectedFotoId }],
-            campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id })) // Corrigido
+            foto: selectedFotoId ? [{ id: selectedFotoId }] : [],
+            campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id })) 
         };
 
+        console.log("laudoToSend:", laudoToSend)
         try {
             await createLaudoNecropsia(laudoToSend);
             setShowAlert(true);
@@ -175,7 +193,8 @@ function CreateLaudoNecropsia() {
 
         if (term) {
             const filtered = fichas.filter(ficha =>
-                ficha.id.toString().includes(term) || ficha.codigoPatologia.toLowerCase().includes(term.toLowerCase())
+                ficha.id.toString().includes(term) || 
+                (ficha.codigoPatologia && ficha.codigoPatologia.toLowerCase().includes(term.toLowerCase()))
             );
             setFilteredFichas(filtered);
             setSearchError(filtered.length === 0);
@@ -214,7 +233,7 @@ function CreateLaudoNecropsia() {
                                     type="text"
                                     className={`form-control ${searchError ? 'is-invalid' : ''}`}
                                     id="search"
-                                    placeholder="Digite o ID ou Código Patologia"
+                                    placeholder="Digite o Código Patologia"
                                     value={searchTerm}
                                     onChange={handleSearch}
                                 />
@@ -244,11 +263,10 @@ function CreateLaudoNecropsia() {
                                         value={campo.id}
                                         onChange={(e) => handleCampoLaudoChange(e, index)}
                                     >
-                                        <option value="">Selecione a Macroscopia</option>
                                         {campoLaudo.map(campo => (
-                                            <option key={campo.id} value={campo.id}>
-                                                {campo.descricao}
-                                            </option>
+                                        <option key={campo.id} value={campo.id}>
+                                            {campo.descricao}
+                                        </option>
                                         ))}
                                     </select>
                                     <button
@@ -317,7 +335,7 @@ function CreateLaudoNecropsia() {
                                         <option value="">Selecione a Microscopia</option>
                                         {campoMicroscopiaOptions.map(option => (
                                             <option key={option.id} value={option.id}>
-                                                {option.descricao}
+                                                {option.descricao} {option.orgao ? `(${option.orgao.nome})` : ""}
                                             </option>
                                         ))}
                                     </select>
@@ -341,7 +359,7 @@ function CreateLaudoNecropsia() {
                             </div>
                         </div>
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="conclusao" className="form-label">Diagnóstico do Patologista <span className={styles.obrigatorio}>*</span></label>
+                            <label htmlFor="conclusao" className="form-label">Conclusão<span className={styles.obrigatorio}>*</span></label>
                             <textarea
                                 className={`form-control ${styles.input} ${errors.conclusao ? "is-invalid" : ""}`}
                                 name="conclusao"
@@ -369,7 +387,7 @@ function CreateLaudoNecropsia() {
                 <Modal.Body>
                     {filteredFichas.length > 0 ? (
                         filteredFichas.map(ficha => (
-                            <div key={ficha.id} onClick={() => handleFichaSelection(ficha)}>
+                            <div key={ficha.id} className={styles.term} onClick={() => handleFichaSelection(ficha)}>
                                 {ficha.codigoPatologia}
                             </div>
                         ))

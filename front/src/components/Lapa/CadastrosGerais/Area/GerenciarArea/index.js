@@ -6,6 +6,7 @@ import { getAllArea, deleteArea } from '../../../../../../services/areaService';
 import VoltarButton from '../../../VoltarButton';
 import ExcluirButton from '../../../../ExcluirButton';
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function GerenciarAreaList() {
     const [area, setAreas] = useState([]);
@@ -13,27 +14,50 @@ function GerenciarAreaList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
-    const [deletedAreaId, setDeletedAreaId] = useState(null); // Estado para controlar o ID da area excluída recentemente
+    const [deletedAreaId, setDeletedAreaId] = useState(null); 
     const router = useRouter();
+
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const areasData = await getAllArea();
-                console.log(areasData); // Verifique se a estrutura dos dados é a esperada
+                console.log(areasData); 
                 setAreas(areasData);
             } catch (error) {
                 console.error('Erro ao buscar áreas:', error);
             }
         };
         fetchData();
-    }, [deletedAreaId]); // Adicione deletedAreaId como uma dependência
+    }, [deletedAreaId]); 
 
     const handleDeleteArea = async (areaId) => {
         try {
             await deleteArea(areaId);
             setAreas(area.filter(area => area.id !== areaId));
-            setDeletedAreaId(areaId); // Atualiza o estado para acionar a recuperação da lista
+            setDeletedAreaId(areaId); 
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir a área:', error);
@@ -47,7 +71,6 @@ function GerenciarAreaList() {
         setFiltro(event.target.value);
     };
 
-    // Função para filtrar as raças com base na opção selecionada
     const filteredAreas = area.filter(area => {
         return area.tituloArea.toLowerCase().includes(searchTerm.toLowerCase());
     });

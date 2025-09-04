@@ -78,6 +78,14 @@
     color: #404040;
 }
 
+.item_box p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    color: #39805F;
+}
+
 .item_box div {
     font-family: 'Poppins', sans-serif;
     font-size: 18px;
@@ -108,5 +116,19 @@
     justify-content: right;
     margin-bottom: 48px;
     gap: 32px;
+}
+
+.message {
+    min-height: 300px;
+    margin-top: 56px; 
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: center;
 }
 

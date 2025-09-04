@@ -19,7 +19,7 @@ import br.edu.ufape.hvu.controller.dto.response.TutorResponse;
 public class TutorController {
 	private final Facade facade;
 
-    @PreAuthorize("hasRole('SECRETARIO')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("tutor")
 	public List<TutorResponse> getAllTutor() {
 		return facade.getAllTutor()

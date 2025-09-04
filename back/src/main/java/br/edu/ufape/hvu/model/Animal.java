@@ -1,6 +1,7 @@
 package br.edu.ufape.hvu.model;
 
 import java.time.LocalDate;
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,4 +37,6 @@ public class Animal  {
 	@ManyToOne
 	@ToString.Exclude
 	private Raca raca;
+	private OrigemAnimal origemAnimal;
+	private boolean obito;
 }
