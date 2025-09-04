@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 public class CronogramaController {
 	private final Facade facade;
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("cronograma")
 	public List<CronogramaResponse> getAllCronograma() {
 		return facade.getAllCronograma()

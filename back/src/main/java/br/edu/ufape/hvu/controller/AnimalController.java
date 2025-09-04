@@ -107,7 +107,7 @@ public class AnimalController {
 		return new AnimalResponse(facade.updateAnimal(id, obj, principal.getSubject()));
 	}
 
-    @PreAuthorize("hasRole('TUTOR')")
+    @PreAuthorize("hasAnyRole('TUTOR', 'PATOLOGISTA')")
 	@DeleteMapping("animal/{id}")
 	public String deleteAnimal(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
