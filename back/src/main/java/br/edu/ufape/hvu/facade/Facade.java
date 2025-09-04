@@ -1357,18 +1357,25 @@ public class Facade {
     }
 
     private Tutor determinarTutor(AnimalByPatologistaRequest request) {
-        if (request.isAnonimo()) return tutorServiceInterface.getOrCreateAnonymousTutor();
-        if (request.getTutorId() != null) return tutorServiceInterface.findTutorById(request.getTutorId());
-        if (request.getTutor() != null) {
-            tutorServiceInterface.verificarDuplicidade(
-                    request.getTutor().getCpf(),
-                    request.getTutor().getEmail()
-            );
-            return tutorServiceInterface.saveTutor(request.getTutor().convertToEntity());
-        }
-        throw new IllegalArgumentException("É necessário informar tutorId, um novo tutor ou marcar como anônimo");
-    }
+        int count = 0;
+        if (request.getTutor() != null) count++;
+        if (request.getTutorId() != null) count++;
+        if (request.isAnonimo()) count++;
 
+        if (count != 1) {
+            throw new IllegalArgumentException("Você deve enviar uma das opções: tutor, tutorId ou anonimo");
+        }
+
+        if (request.isAnonimo()) return tutorServiceInterface.getOrCreateAnonymousTutor();
+
+        if (request.getTutorId() != null) return tutorServiceInterface.findTutorById(request.getTutorId());
+
+        tutorServiceInterface.verificarDuplicidade(
+                request.getTutor().getCpf(),
+                request.getTutor().getEmail()
+        );
+        return tutorServiceInterface.saveTutor(request.getTutor().convertToEntity());
+    }
 
     @Transactional
     public Animal saveAnimalByPatologista(AnimalByPatologistaRequest request) {
@@ -1381,6 +1388,9 @@ public class Facade {
 
         Tutor tutor = determinarTutor(request);
 
+        if (tutor.getAnimais() == null) {
+            tutor.setAnimais(new ArrayList<>());
+        }
         tutor.getAnimais().add(animal);
         Animal savedAnimal = animalServiceInterface.saveAnimal(animal);
 
