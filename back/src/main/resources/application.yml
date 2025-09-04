@@ -17,7 +17,7 @@ spring:
           lob:
            non_contextual_creation: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
   security:
     oauth2:

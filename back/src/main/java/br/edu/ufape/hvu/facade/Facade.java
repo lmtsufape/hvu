@@ -115,7 +115,7 @@ public class Facade {
     }
 
     public Tutor findTutorByanimalId(long animalId) {
-        return tutorServiceInterface.findTutorByanimalId(animalId);
+        return tutorServiceInterface.findTutorByAnimalId(animalId);
     }
 
     public List<Tutor> getAllTutor() {
@@ -636,7 +636,7 @@ public class Facade {
     private List<Vaga> findVagasForTutor(String idSession) {
         Tutor tutor = tutorServiceInterface.findTutorByUserId(idSession);
 
-        List<Long> animalIds = tutor.getAnimal().stream()
+        List<Long> animalIds = tutor.getAnimais().stream()
                 .map(Animal::getId)
                 .toList();
 
@@ -698,7 +698,7 @@ public class Facade {
         }
 
         Tutor tutor = tutorServiceInterface.findTutorByUserId(idSession);
-        if (vaga.getAgendamento() == null || tutor.getAnimal().contains(vaga.getAgendamento().getAnimal())) {
+        if (vaga.getAgendamento() == null || tutor.getAnimais().contains(vaga.getAgendamento().getAnimal())) {
             return vaga;
         }
 
@@ -722,7 +722,7 @@ public class Facade {
         Tutor tutor = tutorServiceInterface.findTutorByUserId(idSession);
         return vagas.stream()
                 .filter(v -> v.getAgendamento() == null ||
-                        tutor.getAnimal().contains(v.getAgendamento().getAnimal()))
+                        tutor.getAnimais().contains(v.getAgendamento().getAnimal()))
                 .toList();
     }
 
@@ -742,7 +742,7 @@ public class Facade {
 
         Tutor tutor = tutorServiceInterface.findTutorByUserId(idSession);
         return vagas.stream()
-                .filter(v -> v.getAgendamento() == null || tutor.getAnimal().contains(v.getAgendamento().getAnimal()))
+                .filter(v -> v.getAgendamento() == null || tutor.getAnimais().contains(v.getAgendamento().getAnimal()))
                 .toList();
     }
 
@@ -800,12 +800,12 @@ public class Facade {
     public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(Long id, String idSession) {
         Animal animal = animalServiceInterface.findAnimalById(id);
 
-        Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
-        if(!tutor.getUserId().equals(idSession) && !keycloakService.hasRoleSecretario(idSession)) {
+        Tutor tutor = tutorServiceInterface.findTutorByAnimalId(animal.getId());
+        if (!tutor.getUserId().equals(idSession) && !keycloakService.hasRoleSecretario(idSession)) {
             throw new ForbiddenOperationException("Este não é o seu animal");
         }
 
-        // verifica se animal já tem uma consulta em aberto -> "Bloqueado"
+        // verifica se animal já tem uma consulta em aberto
         List<Agendamento> allAgendamentos = getAllAgendamento();
         boolean consultaEmAberto = allAgendamentos.stream()
                 .anyMatch(agendamento -> agendamento.getAnimal() != null &&
@@ -1158,7 +1158,7 @@ public class Facade {
             Animal animal = agendamento.getAnimal();
 
             if (!keycloakService.hasRoleMedico(idSession)) {
-                Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
+                Tutor tutor = tutorServiceInterface.findTutorByAnimalId(animal.getId());
 
                 if(!tutor.getUserId().equals(idSession)) {
                     throw new ForbiddenOperationException("Você não é o tutor responsável por este agendamento.");
@@ -1201,10 +1201,10 @@ public class Facade {
             throw new ForbiddenOperationException("Este não é o responsável por este agendamento");
         }
 
-        List<Animal> animals = tutor.getAnimal(); // Supondo que você tem um método getAnimais()
+        List<Animal> animais = tutor.getAnimais(); // Supondo que você tem um método getAnimais()
 
         List<Agendamento> agendamentos = new ArrayList<>();
-        for (Animal animal : animals) {
+        for (Animal animal : animais) {
             List<Agendamento> agendamentosForAnimal = agendamentoServiceInterface.findAgendamentosByAnimal(animal);
             agendamentos.addAll(agendamentosForAnimal);
         }
@@ -1216,7 +1216,7 @@ public class Facade {
         Tutor tutor = tutorServiceInterface.findTutorById(Long.parseLong(id));
 
         List<Agendamento> agendamentosTutor = new ArrayList<>();
-        for (Animal animal : tutor.getAnimal()) {
+        for (Animal animal : tutor.getAnimais()) {
             List<Agendamento> agendamentosForAnimal = agendamentoServiceInterface.findAgendamentosByAnimal(animal);
             agendamentosTutor.addAll(agendamentosForAnimal);
         }
@@ -1339,42 +1339,48 @@ public class Facade {
 
         racaServiceInterface.findRacaById(newInstance.getRaca().getId());
         Animal animal = animalServiceInterface.saveAnimal(newInstance);
-        tutor.getAnimal().add(animal);
+        tutor.getAnimais().add(animal);
         tutorServiceInterface.updateTutor(tutor);
         return animal;
     }
 
+    private Tutor determinarTutor(AnimalByPatologistaRequest request) {
+        if (request.isAnonimo()) return tutorServiceInterface.getOrCreateAnonymousTutor();
+        if (request.getTutorId() != null) return tutorServiceInterface.findTutorById(request.getTutorId());
+        if (request.getTutor() != null) {
+            tutorServiceInterface.verificarDuplicidade(
+                    request.getTutor().getCpf(),
+                    request.getTutor().getEmail()
+            );
+            return tutorServiceInterface.saveTutor(request.getTutor().convertToEntity());
+        }
+        throw new IllegalArgumentException("É necessário informar tutorId, um novo tutor ou marcar como anônimo");
+    }
+
+
     @Transactional
-    public Animal saveAnimalByPatologista(Animal newInstance, Tutor newTutor) {
-        if (newInstance.getOrigemAnimal() == null) {
-            newInstance.setOrigemAnimal(OrigemAnimal.LAPA);
+    public Animal saveAnimalByPatologista(AnimalByPatologistaRequest request) {
+        Animal animal = request.getAnimal().convertToEntity();
+
+        if (animal.getOrigemAnimal() == null) {
+            animal.setOrigemAnimal(OrigemAnimal.LAPA);
         }
+        validarOrigemAnimal("PATOLOGISTA", animal.getOrigemAnimal());
 
-        validarOrigemAnimal("PATOLOGISTA", newInstance.getOrigemAnimal());
+        Tutor tutor = determinarTutor(request);
 
-        Tutor tutor;
-        if (newTutor == null || newTutor.isAnonimo()) {
-            tutor = tutorServiceInterface.saveTutorAnonimo();
-        } else {
-            tutorServiceInterface.verificarDuplicidade(newTutor.getCpf(), newTutor.getEmail());
-            tutor = tutorServiceInterface.saveTutor(newTutor);
-        }
+        tutor.getAnimais().add(animal);
+        Animal savedAnimal = animalServiceInterface.saveAnimal(animal);
 
-        if (tutor.getAnimal() == null) {
-            tutor.setAnimal(new ArrayList<>());
-        }
-
-        tutor.getAnimal().add(newInstance);
-        Animal animal = animalServiceInterface.saveAnimal(newInstance);
         tutorServiceInterface.updateTutor(tutor);
 
-        return animal;
+        return savedAnimal;
     }
 
     @Transactional
     public Animal updateAnimal(Long id, AnimalRequest request, String idSession) {
         Animal animal = animalServiceInterface.findAnimalById(id);
-        Tutor tutor = tutorServiceInterface.findTutorByanimalId(animal.getId());
+        Tutor tutor = tutorServiceInterface.findTutorByAnimalId(animal.getId());
         Medico medico = findMedicoByUserId(idSession);
 
         if (!keycloakService.hasRoleSecretario(idSession) &&
@@ -1404,7 +1410,7 @@ public class Facade {
     public Animal findAnimalById(long animalId, String idSession) {
         // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
         if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession)) {
-            Tutor tutor = tutorServiceInterface.findTutorByanimalId(animalId);
+            Tutor tutor = tutorServiceInterface.findTutorByAnimalId(animalId);
 
             if (!tutor.getUserId().equals(idSession)) {
                 throw new ForbiddenOperationException("Este não é o seu animal");
@@ -1428,7 +1434,7 @@ public class Facade {
 
     public List<Animal> getAllAnimalTutor(String userId) {
         Tutor tutor = findTutorByUserId(userId);
-        return tutor.getAnimal();
+        return tutor.getAnimais();
     }
 
     public Animal getAnimalByFichaNumber(String fichaNumero){
@@ -1439,7 +1445,7 @@ public class Facade {
     public void deleteAnimal(long id, String userId) {
         // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
         if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId) && !keycloakService.hasRolePatologista(userId)){
-            Tutor tutor = tutorServiceInterface.findTutorByanimalId(id);
+            Tutor tutor = tutorServiceInterface.findTutorByAnimalId(id);
 
             if(!tutor.getUserId().equals(userId)) {
                 throw new ForbiddenOperationException("Este não é o seu animal");
@@ -1449,8 +1455,16 @@ public class Facade {
         animalServiceInterface.deleteAnimal(id);
     }
 
-    public List<Animal> findAnimalsByOrigemAnimal(OrigemAnimal origem) {
-        return animalServiceInterface.findAnimalsByOrigemAnimal(origem);
+    public List<Animal> findAnimalsByOrigemAnimal(OrigemAnimal origem, String userId) {
+        if (keycloakService.hasRolePatologista(userId)) {
+            return animalServiceInterface.findAnimalsByOrigemAnimal(origem);
+        }
+
+        if ((keycloakService.hasRoleSecretario(userId) && origem == OrigemAnimal.HVU)) {
+            return animalServiceInterface.findAnimalsByOrigemAnimal(origem);
+        }
+
+        throw new ForbiddenOperationException("Você não tem acesso a animais dessa origem");
     }
 
     // Especie--------------------------------------------------------------
