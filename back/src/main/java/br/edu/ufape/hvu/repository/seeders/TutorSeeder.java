@@ -8,7 +8,6 @@ import br.edu.ufape.hvu.repository.TutorRepository;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Locale;
 
@@ -38,7 +37,7 @@ public class TutorSeeder {
         tutor.setDeleted(false);
         tutor.setCpf(faker.idNumber().valid());
         tutor.setEndereco(endereco);
-        tutor.setAnimal(animais);
+        tutor.setAnimais(animais);
         tutor.setRg(faker.idNumber().valid());
         tutor.setUserId("6008c99e-7907-441f-b212-cec0d2b0687e");
         return tutor;

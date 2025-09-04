@@ -75,52 +75,6 @@ function HistoricoFichasAnimal() {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const consultasData = await getConsultaByAnimal(id);
-        setConsultas(consultasData);
-      } catch (error) {
-        console.error("Erro ao buscar consultas:", error);
-      } finally {
-        setLoading(false); // Marcar como carregado após buscar os dados
-      }
-    };
-    if (id) {
-      fetchData();
-    }
-  }, [id]);
-
-  // Verifica se os dados estão carregando
-  if (loading) {
-    return <div className={styles.message}>Carregando dados do usuário...</div>;
-  }
-
-  // Verifica se o usuário tem permissão
-  if (!roles.includes("medico") && !roles.includes("patologista")) {
-    return (
-      <div className={styles.container}>
-        <h3 className={styles.message}>
-          Acesso negado: Você não tem permissão para acessar esta página.
-        </h3>
-      </div>
-    );
-  }
-
-  if (!token) {
-    return (
-      <div className={styles.container}>
-        <h3 className={styles.message}>
-          Acesso negado: Faça login para acessar esta página.
-        </h3>
-      </div>
-    );
-  }
-
-  const handleSearchChange = (term) => {
-    setSearchTerm(term);
-  };
-
   const formatDate = (dateString) => {
     if (!dateString) return "Data não informada";
     const date = new Date(dateString);
