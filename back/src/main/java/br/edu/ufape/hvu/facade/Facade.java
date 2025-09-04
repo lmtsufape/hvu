@@ -763,10 +763,10 @@ public class Facade {
     public List<Animal> findAnimaisWithoutReturn(){
         List<Vaga> vagas = vagaServiceInterface.findLatestVagaForEachAnimalNotReturn();
 
-        List<Animal> allAnimais = getAllAnimal();
+        List<Animal> allAnimais = animalServiceInterface.findAnimalsByOrigemAnimal(OrigemAnimal.HVU);
         List<Agendamento> allAgendamento = getAllAgendamento();
         List<Animal> animalNoReturn = allAnimais.stream()
-                .filter(animal->allAgendamento.stream()
+                .filter(animal -> allAgendamento.stream()
                         .noneMatch(agendamento -> agendamento.getAnimal().equals(animal)))
                 .collect(Collectors.toList());
 
@@ -1049,6 +1049,10 @@ public class Facade {
             throw new IllegalArgumentException("Só é permitido agendar animais com origem HVU.");
         }
 
+        if (animal.isObito()) {
+            throw new IllegalArgumentException("Não é permitido agendar animais que tiveram óbito.");
+        }
+
         if (vaga.getDataHora().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("A vaga não pode estar no passado.");
         }
@@ -1060,6 +1064,14 @@ public class Facade {
 
     @Transactional
     public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject, String idSession) {
+        if (newObject.getAnimal().getOrigemAnimal() != OrigemAnimal.HVU) {
+            throw new IllegalArgumentException("Só é permitido agendar animais com origem HVU.");
+        }
+
+        if (newObject.getAnimal().isObito()) {
+            throw new IllegalArgumentException("Não é permitido agendar animais que tiveram óbito.");
+        }
+
         Vaga vaga = new Vaga();
         Agendamento agendamento = new Agendamento();
 
@@ -1383,14 +1395,20 @@ public class Facade {
         Tutor tutor = tutorServiceInterface.findTutorByAnimalId(animal.getId());
         Medico medico = findMedicoByUserId(idSession);
 
-        if (!keycloakService.hasRoleSecretario(idSession) &&
-                !keycloakService.hasRoleMedico(idSession) &&
-                !tutor.getUserId().equals(idSession)) {
+        boolean isPatologista = keycloakService.hasRolePatologista(idSession);
+        boolean isMedico = keycloakService.hasRoleMedico(idSession);
+        boolean isTutor = keycloakService.hasRoleTutor(idSession);
+
+        if (isTutor && !tutor.getUserId().equals(idSession)) {
             throw new ForbiddenOperationException("Você não é responsável por este animal");
         }
 
-        if (keycloakService.hasRoleMedico(idSession) && !existsVagaByMedicoIdAndAnimalId(medico.getId(), animal.getId())) {
+        if (isMedico && !existsVagaByMedicoIdAndAnimalId(medico.getId(), animal.getId())) {
             throw new ForbiddenOperationException("Você não é o médico responsável por este animal");
+        }
+
+        if (!isPatologista && !animal.getOrigemAnimal().equals(OrigemAnimal.HVU)) {
+            throw new ForbiddenOperationException("Você só pode editar animais de origem HVU");
         }
 
         // Atualiza raça, se fornecida
@@ -1437,19 +1455,29 @@ public class Facade {
         return tutor.getAnimais();
     }
 
-    public Animal getAnimalByFichaNumber(String fichaNumero){
-        return animalServiceInterface.findAnimalByFichaNumber(fichaNumero);
+    public Animal getAnimalByFichaNumber(String fichaNumero) {
+        Animal animal = animalServiceInterface.findAnimalByFichaNumber(fichaNumero);
+
+        if (!animal.getOrigemAnimal().equals(OrigemAnimal.HVU)) {
+            throw new ForbiddenOperationException("Você não tem acesso a animais dessa origem");
+        }
+
+        return animal;
     }
 
     @Transactional
     public void deleteAnimal(long id, String userId) {
-        // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
-        if(!keycloakService.hasRoleSecretario(userId) && !keycloakService.hasRoleMedico(userId) && !keycloakService.hasRolePatologista(userId)){
-            Tutor tutor = tutorServiceInterface.findTutorByAnimalId(id);
+        Tutor tutor = tutorServiceInterface.findTutorByAnimalId(id);
+        Animal animal = animalServiceInterface.findAnimalById(id);
 
-            if(!tutor.getUserId().equals(userId)) {
-                throw new ForbiddenOperationException("Este não é o seu animal");
-            }
+        boolean isPatologista = keycloakService.hasRolePatologista(userId);
+        if (isPatologista && !animal.getOrigemAnimal().equals(OrigemAnimal.LAPA)) {
+            throw new ForbiddenOperationException("Você não tem permissão para deletar este animal");
+        }
+
+        boolean isTutor = keycloakService.hasRoleTutor(userId);
+        if(isTutor && !tutor.getUserId().equals(userId)) {
+            throw new ForbiddenOperationException("Você não tem permissão para deletar este animal");
         }
 
         animalServiceInterface.deleteAnimal(id);
