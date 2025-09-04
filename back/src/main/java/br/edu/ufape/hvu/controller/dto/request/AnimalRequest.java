@@ -34,7 +34,6 @@ public class AnimalRequest  {
 
 	public Animal convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-		Animal obj = modelMapper.map(this, Animal.class);
-		return obj;
+        return modelMapper.map(this, Animal.class);
 	}
 }

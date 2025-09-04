@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.ArrayList;
-import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
