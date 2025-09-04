@@ -7,10 +7,10 @@ public interface TutorServiceInterface {
 	Tutor saveTutor(Tutor o);
 	Tutor findTutorById(long id);
 	Tutor findTutorByUserId(String userId);
-	Tutor findTutorByanimalId(long animalId);
+	Tutor findTutorByAnimalId(long animalId);
 	Tutor updateTutor(Tutor u);
 	void deleteTutor(long id);
 	List<Tutor> getAllTutor();
 	void verificarDuplicidade(String cpf, String email);
-	Tutor saveTutorAnonimo();
+    Tutor getOrCreateAnonymousTutor();
 }

@@ -21,6 +21,6 @@ public class Tutor extends Usuario {
 	@OneToMany
 	@JoinColumn(name = "tutor_id")
 	@ToString.Exclude
-	private List<Animal> animal;
+	private List<Animal> animais;
 	private boolean anonimo;
 }
