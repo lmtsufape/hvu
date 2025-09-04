@@ -91,7 +91,7 @@ public class AnimalController {
 		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
 	}
 
-    @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO')")
+    @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 public class MedicoController {
 	private final Facade facade;
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("medico")
 	public List<MedicoResponse> getAllMedico() {
 		return facade.findAllMedico()
@@ -40,7 +40,7 @@ public class MedicoController {
         return new MedicoResponse(facade.saveMedico(newObj, newObj.getSenha()));
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'PATOLOGISTA')")
 	@GetMapping("medico/{id}")
 	public MedicoResponse getMedicoById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

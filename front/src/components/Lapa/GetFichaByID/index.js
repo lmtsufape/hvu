@@ -100,11 +100,11 @@ function GetFichaSolicitacaoById() {
                                     <div className={styles.item_container}>                                     
                                         <div className={styles.item_box}>
                                             <h6>Histórico</h6>
-                                            <div>{ficha.historico}</div>
+                                            <div>{ficha.historico ? ficha.historico : 'Não informado'}</div>
                                         </div>
                                         <div className={styles.item_box}>
                                             <h6>Características Adicionais</h6>
-                                            <div>{ficha.caracteristicasAdicionais}</div>
+                                            <div>{ficha.caracteristicasAdicionais ? ficha.caracteristicasAdicionais : 'Não informado'}</div>
                                         </div>
                                         <div className={styles.item_box}>
                                             <h6>Ficha Clínica</h6>

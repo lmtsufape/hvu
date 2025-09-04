@@ -87,7 +87,7 @@ function HistoricoFichasAnimal() {
   };
 
   if (loading) { return <div className={styles.message}>Carregando histórico do paciente...</div>; }
-  if (!token || !roles.includes("medico")) { return <div className={styles.container}><h3 className={styles.message}>Acesso negado.</h3></div>; }
+  if (!token || (!roles.includes("medico") && !roles.includes("patologista"))) { return <div className={styles.container}><h3 className={styles.message}>Acesso negado.</h3></div>; }
 
   const filteredAgendamentos = Array.from(agendamentosComFichas.values())
     .filter(agendamento => {

@@ -27,6 +27,7 @@ function GetAnimalByIdByMedico() {
             const fetchData = async () => {
                 try {
                     const animalData = await getAnimalById(id);
+                    console.log("animalData", animalData)
                     setAnimal(animalData);
                 } catch (error) {
                     console.error('Erro ao buscar animal:', error);

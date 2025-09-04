@@ -82,23 +82,23 @@ function CreateFichaForm() {
       tutor: { id: tutor.id },
       animal: { id: null, origemAnimal: null }
     }));
-    setFilteredAnimals(tutor.animal || []);
+
+    setFilteredAnimals(tutor.animais || []);
     setShowModal(false);
     setSearchTerm(tutor.nome);
     setSelectedAnimal(null);
   };
 
-const handleAnimalSelection = (e) => {
-  const animalId = e.target.value;
-  const animal = filteredAnimals.find(a => a.id === animalId);
-  setSelectedAnimal(animalId);
+  const handleAnimalSelection = (e) => {
+    const animalId = parseInt(e.target.value, 10); 
+    const animal = filteredAnimals.find(a => a.id === animalId);
+    setSelectedAnimal(animalId);
 
-  setFichaDeSolicitacaoData(prev => ({
-    ...prev,
-    animal: { id: animalId, origemAnimal: animal?.origemAnimal || null }
-  }));
-};
-
+    setFichaDeSolicitacaoData(prev => ({
+      ...prev,
+      animal: { id: animalId, origemAnimal: animal?.origemAnimal || null }
+    }));
+  };
 
   // Pesquisa de médicos
   const handleMedicoSearch = (event) => {
@@ -287,10 +287,11 @@ console.log(fichaToCreate)
               ))}
             </select>
             {errors.animal && <div className="invalid-feedback">{errors.animal}</div>}
-{fichaDeSolicitacaoData.animal?.origemAnimal && (
-  <p>Origem do Animal: {fichaDeSolicitacaoData.animal.origemAnimal}</p>
-)}
-
+            {fichaDeSolicitacaoData.animal?.origemAnimal === "HVU" && (
+              <button className={styles.hist_button} onClick={() => router.push(`/getAllConsultas/${fichaDeSolicitacaoData.animal.id}`)}>
+                Visualizar histórico
+              </button>
+            )}
           </div>
         </div>
 
@@ -342,8 +343,7 @@ console.log(fichaToCreate)
         <div className="row">
           <div className="col">
             <label htmlFor="historico" className="form-label">Histórico</label>
-            <input
-              type="text"
+            <textarea
               className={`form-control ${errors.historico ? "is-invalid" : ""}`}
               name="historico"
               placeholder="Insira o Histórico"
