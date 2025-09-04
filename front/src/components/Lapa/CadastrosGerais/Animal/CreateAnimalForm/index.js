@@ -12,6 +12,7 @@ import Alert from "@/components/Alert"
 import ErrorAlert from "@/components/ErrorAlert"
 import CreateTutorForm from "../../../../CreateTutorEnderecoForm/createTutorForm"
 import CreateEnderecoForm from "../../../../CreateTutorEnderecoForm/createEnderecoForm"
+import TutorSelector from "../../../TutorSelector"
 
 function CreateAnimalForm() {
   const router = useRouter()
@@ -31,6 +32,9 @@ function CreateAnimalForm() {
   const [showErrorAlert, setShowErrorAlert] = useState(false)
 
   const [laiChecked, setLaiChecked] = useState(false)
+
+  const [showTutorSelector, setShowTutorSelector] = useState(false)
+  const [selectedTutor, setSelectedTutor] = useState(null)
 
   const [animalData, setAnimalData] = useState({
     nome: "",
@@ -82,6 +86,14 @@ function CreateAnimalForm() {
   })
 
   useEffect(() => {
+    if (tipo === "existente" && !selectedTutor) {
+      setShowTutorSelector(true)
+    } else {
+      setShowTutorSelector(false)
+    }
+  }, [tipo, selectedTutor])
+
+  useEffect(() => {
     if (especies.length > 0 && selectedEspecie === null) {
       setSelectedEspecie(null)
       setSelectedRaca(null)
@@ -90,6 +102,16 @@ function CreateAnimalForm() {
       setSelectedRaca(null)
     }
   }, [especies, racas, selectedEspecie, selectedRaca])
+
+  const handleTutorSelect = (tutor) => {
+    setSelectedTutor(tutor)
+    setShowTutorSelector(false)
+  }
+
+  const handleBackToTutorSelection = () => {
+    setSelectedTutor(null)
+    setShowTutorSelector(true)
+  }
 
   const formatDate = (data) => {
     if (!data) return "" // Retorna vazio se não houver data
@@ -267,8 +289,18 @@ function CreateAnimalForm() {
             },
           }
         } else if (tipo === "existente") {
-          console.log("Funcionalidade de tutor existente ainda não implementada")
-          return
+          if (!selectedTutor) {
+            console.error("Nenhum tutor selecionado")
+            return
+          }
+
+          requestData = {
+            animal: animalToCreate,
+            tutor: {
+              id: selectedTutor.id,
+              anonimo: false,
+            },
+          }
         }
 
         console.log("Dados da requisição:", requestData)
@@ -359,10 +391,42 @@ function CreateAnimalForm() {
     }
   }
 
+  if (showTutorSelector) {
+    return <TutorSelector onTutorSelect={handleTutorSelect} onBack={() => router.back()} />
+  }
+
   return (
     <div className={styles.container}>
       <VoltarButton />
       <h1>{getTitulo()}</h1>
+
+      {tipo === "existente" && selectedTutor && (
+        <div className={styles.selectedTutorInfo}>
+          <h4>Tutor Selecionado:</h4>
+          <div className={styles.tutorDetails}>
+            <p>
+              <strong>Nome:</strong> {selectedTutor.nome}
+            </p>
+            <p>
+              <strong>CPF:</strong> {selectedTutor.cpf}
+            </p>
+            {selectedTutor.telefone && (
+              <p>
+                <strong>Telefone:</strong> {selectedTutor.telefone}
+              </p>
+            )}
+            {selectedTutor.email && (
+              <p>
+                <strong>Email:</strong> {selectedTutor.email}
+              </p>
+            )}
+            <button onClick={handleBackToTutorSelection} className={styles.changeTutorButton}>
+              Alterar Tutor
+            </button>
+          </div>
+        </div>
+      )}
+
       <form className={styles.form_box} onSubmit={handleSubmit}>
         <div className="row">
           <div className={`col ${styles.col}`}>

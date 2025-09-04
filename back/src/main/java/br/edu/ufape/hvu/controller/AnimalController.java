@@ -91,7 +91,7 @@ public class AnimalController {
 		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
 	}
 
-    @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO')")
+    @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -99,7 +99,7 @@ public class AnimalController {
 		return new AnimalResponse(facade.findAnimalById(id, principal.getSubject()));
 	}
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR', 'PATOLOGISTA')")
 	@PatchMapping("animal/{id}")
 	public AnimalResponse updateAnimal(@PathVariable Long id, @Valid @RequestBody AnimalRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -150,27 +150,15 @@ function CreateLaudoNecropsia() {
         }));
     };
 
-    const validateForm = () => {
-        const errors = {};
-        if (!laudo.conclusao) {
-            errors.conclusao = "Campo obrigatório";
-        }
-        return errors;
-    };
 
     const handleLaudoCreate = async () => {
-        const validationErrors = validateForm();
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return;
-        }
 
         const laudoToSend = {
             conclusao: laudo.conclusao,
             fichaSolicitacaoServico: { id: laudo.fichaSolicitacaoServico.id },
             campoLaudo: laudo.campoLaudo.map(campo => ({ id: campo.id })),
-            estagiario: [{ id: selectedEstagiarioId }],
-            foto: selectedFotoId ? [{ id: selectedFotoId }] : [],
+            estagiario: selectedEstagiarioId ? [{ id: parseInt(selectedEstagiarioId) }] : [],
+            foto: selectedFotoId ? [{ id: parseInt(selectedFotoId) }] : [],
             campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id })) 
         };
 
@@ -263,6 +251,7 @@ function CreateLaudoNecropsia() {
                                         value={campo.id}
                                         onChange={(e) => handleCampoLaudoChange(e, index)}
                                     >
+                                        <option disabled value="">Selecione a Microscopia</option>
                                         {campoLaudo.map(campo => (
                                         <option key={campo.id} value={campo.id}>
                                             {campo.descricao}
@@ -312,7 +301,7 @@ function CreateLaudoNecropsia() {
                                 value={selectedFotoId}
                                 onChange={handleFotoChange}
                             >
-                                <option value="">Selecione a Foto</option>
+                                <option value="" disabled>Selecione a Foto</option>
                                 {fotos.map(foto => (
                                     <option key={foto.id} value={foto.id}>
                                         {foto.titulo}
@@ -332,7 +321,7 @@ function CreateLaudoNecropsia() {
                                         value={microscopia.id}
                                         onChange={(e) => handleMicroscopiaChange(e, index)}
                                     >
-                                        <option value="">Selecione a Microscopia</option>
+                                        <option disabled value="">Selecione a Microscopia</option>
                                         {campoMicroscopiaOptions.map(option => (
                                             <option key={option.id} value={option.id}>
                                                 {option.descricao} {option.orgao ? `(${option.orgao.nome})` : ""}
@@ -359,14 +348,13 @@ function CreateLaudoNecropsia() {
                             </div>
                         </div>
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="conclusao" className="form-label">Conclusão<span className={styles.obrigatorio}>*</span></label>
+                            <label htmlFor="conclusao" className="form-label">Conclusão</label>
                             <textarea
                                 className={`form-control ${styles.input} ${errors.conclusao ? "is-invalid" : ""}`}
                                 name="conclusao"
                                 value={laudo.conclusao}
                                 onChange={handleLaudoChange}
                             />
-                            {errors.conclusao && <div className={`invalid-feedback ${styles.error_message}`}>{errors.conclusao}</div>}
                         </div>
                     </div>
                     <div className={styles.button_box}>

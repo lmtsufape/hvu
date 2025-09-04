@@ -35,7 +35,7 @@ public class TutorController {
 		return new TutorResponse(facade.saveTutor(o, password));
 	}
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR', 'PATOLOGISTA')")
 	@GetMapping("tutor/{id}")
 	public TutorResponse getTutorById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,7 +43,7 @@ public class TutorController {
 		return new TutorResponse(facade.findTutorById(id, principal.getSubject()));
 	}
 
-    @PreAuthorize("hasRole('SECRETARIO')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("tutor/animal/{id}")
 	public TutorResponse getTutorByAnimalId(@PathVariable Long id) {
 		return new TutorResponse(facade.findTutorByanimalId(id));

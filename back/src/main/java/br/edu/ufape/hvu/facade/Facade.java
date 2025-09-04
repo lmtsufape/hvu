@@ -1409,7 +1409,7 @@ public class Facade {
 
     public Animal findAnimalById(long animalId, String idSession) {
         // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
-        if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession)) {
+        if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !keycloakService.hasRolePatologista(idSession)) {
             Tutor tutor = tutorServiceInterface.findTutorByAnimalId(animalId);
 
             if (!tutor.getUserId().equals(idSession)) {
