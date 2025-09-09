@@ -1,214 +1,274 @@
-import React, { useState } from "react";
-import { useRouter } from "next/router";
-import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "./index.module.css";
-import { createFichaSolicitacao } from "../../../../../services/fichaSolicitacaoService";
-import TutorList from "@/hooks/useTutorList";
-import MedicoList from "@/hooks/useMedicoList";
-import VoltarButton from "../../VoltarButton";
-import Alert from "@/components/Alert";
-import ErrorAlert from "@/components/ErrorAlert";
-import { Modal, Button } from 'react-bootstrap';
-import { getToken, getRoles } from "../../../../../services/userService";
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter } from "next/router"
+import "bootstrap/dist/css/bootstrap.min.css"
+import styles from "./index.module.css"
+import { createFichaSolicitacao } from "../../../../../services/fichaSolicitacaoService"
+import TutorList from "@/hooks/useTutorList"
+import MedicoList from "@/hooks/useMedicoList"
+import VoltarButton from "../../VoltarButton"
+import Alert from "@/components/Alert"
+import ErrorAlert from "@/components/ErrorAlert"
+import { Modal, Button } from "react-bootstrap"
+import { getToken, getRoles } from "../../../../../services/userService"
 
 function CreateFichaForm() {
-  const router = useRouter();
-  const roles = getRoles();
-  const token = getToken();
+  const router = useRouter()
+  const roles = getRoles()
+  const token = getToken()
 
-  const [showModal, setShowModal] = useState(false);
-  const [showMedicoModal, setShowMedicoModal] = useState(false);
+  const FORM_STORAGE_KEY = "ficha-solicitacao-form-data"
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchError, setSearchError] = useState(false);
-  const [searchTermMedico, setSearchTermMedico] = useState('');
-  const [searchErrorMedico, setSearchErrorMedico] = useState(false);
+  const [showModal, setShowModal] = useState(false)
+  const [showMedicoModal, setShowMedicoModal] = useState(false)
 
-  const { tutores } = TutorList();
-  const { medicos } = MedicoList();
+  const [searchTerm, setSearchTerm] = useState("")
+  const [searchError, setSearchError] = useState(false)
+  const [searchTermMedico, setSearchTermMedico] = useState("")
+  const [searchErrorMedico, setSearchErrorMedico] = useState(false)
 
-  const [filteredTutores, setFilteredTutores] = useState([]);
-  const [filteredMedicos, setFilteredMedicos] = useState([]);
-  const [filteredAnimals, setFilteredAnimals] = useState([]);
+  const { tutores } = TutorList()
+  const { medicos } = MedicoList()
 
-  const [selectedTutor, setSelectedTutor] = useState(null);
-  const [selectedAnimal, setSelectedAnimal] = useState(null);
-  const [selectedMedico, setSelectedMedico] = useState(null);
+  const [filteredTutores, setFilteredTutores] = useState([])
+  const [filteredMedicos, setFilteredMedicos] = useState([])
+  const [filteredAnimals, setFilteredAnimals] = useState([])
 
-  const [showAlert, setShowAlert] = useState(false);
-  const [showErrorAlert, setShowErrorAlert] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [selectedTutor, setSelectedTutor] = useState(null)
+  const [selectedAnimal, setSelectedAnimal] = useState(null)
+  const [selectedMedico, setSelectedMedico] = useState(null)
+
+  const [showAlert, setShowAlert] = useState(false)
+  const [showErrorAlert, setShowErrorAlert] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
 
   const [fichaDeSolicitacaoData, setFichaDeSolicitacaoData] = useState({
-    fichaClinica: '',
-    tipoServico: '',
-    dataHoraObito: '',
-    dataRecebimento: '',
-    estadoConservacao: '',
-    acondicionamento: '',
+    fichaClinica: "",
+    tipoServico: "",
+    dataHoraObito: "",
+    dataRecebimento: "",
+    estadoConservacao: "",
+    acondicionamento: "",
     eutanasia: false,
-    historico: '',
-    caracteristicasAdicionais: '',
+    historico: "",
+    caracteristicasAdicionais: "",
     tutor: { id: null },
     animal: { id: null, origemAnimal: null },
     medico: { id: null },
-  });
+  })
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({})
 
-  // Pesquisa de tutores
+  useEffect(() => {
+    const savedData = localStorage.getItem(FORM_STORAGE_KEY)
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData)
+        setFichaDeSolicitacaoData(parsedData.formData || fichaDeSolicitacaoData)
+        setSelectedTutor(parsedData.selectedTutor || null)
+        setSelectedAnimal(parsedData.selectedAnimal || null)
+        setSelectedMedico(parsedData.selectedMedico || null)
+        setSearchTerm(parsedData.searchTerm || "")
+        setSearchTermMedico(parsedData.searchTermMedico || "")
+
+        if (parsedData.selectedTutor && tutores.length > 0) {
+          const tutor = tutores.find((t) => t.id === parsedData.selectedTutor)
+          if (tutor) {
+            setFilteredAnimals(tutor.animais || [])
+          }
+        }
+      } catch (error) {
+        console.error("Error loading saved form data:", error)
+        localStorage.removeItem(FORM_STORAGE_KEY)
+      }
+    }
+  }, [tutores])
+
+  const saveFormData = () => {
+    const dataToSave = {
+      formData: fichaDeSolicitacaoData,
+      selectedTutor,
+      selectedAnimal,
+      selectedMedico,
+      searchTerm,
+      searchTermMedico,
+      timestamp: new Date().getTime(),
+    }
+    localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(dataToSave))
+  }
+
+  useEffect(() => {
+    saveFormData()
+  }, [fichaDeSolicitacaoData, selectedTutor, selectedAnimal, selectedMedico, searchTerm, searchTermMedico])
+
+  const clearSavedData = () => {
+    localStorage.removeItem(FORM_STORAGE_KEY)
+  }
+
   const handleSearch = (event) => {
-    const term = event.target.value;
-    setSearchTerm(term);
+    const term = event.target.value
+    setSearchTerm(term)
 
     if (term) {
-      const filtered = tutores.filter(t => 
-        t.id.toString().includes(term) || t.nome.toLowerCase().includes(term.toLowerCase())
-      );
-      setFilteredTutores(filtered);
-      setSearchError(false);
+      const filtered = tutores.filter(
+        (t) => t.id.toString().includes(term) || t.nome.toLowerCase().includes(term.toLowerCase()),
+      )
+      setFilteredTutores(filtered)
+      setSearchError(false)
     } else {
-      setFilteredTutores([]);
-      setSearchError(true);
+      setFilteredTutores([])
+      setSearchError(true)
     }
-  };
+  }
 
   const handleTutorSelection = (tutor) => {
-    if (!tutor || !tutor.id) return;
+    if (!tutor || !tutor.id) return
 
-    setSelectedTutor(tutor.id);
-    setFichaDeSolicitacaoData(prev => ({
+    setSelectedTutor(tutor.id)
+    setFichaDeSolicitacaoData((prev) => ({
       ...prev,
       tutor: { id: tutor.id },
-      animal: { id: null, origemAnimal: null }
-    }));
+      animal: { id: null, origemAnimal: null },
+    }))
 
-    setFilteredAnimals(tutor.animais || []);
-    setShowModal(false);
-    setSearchTerm(tutor.nome);
-    setSelectedAnimal(null);
-  };
+    setFilteredAnimals(tutor.animais || [])
+    setShowModal(false)
+    setSearchTerm(tutor.nome)
+    setSelectedAnimal(null)
+  }
 
   const handleAnimalSelection = (e) => {
-    const animalId = parseInt(e.target.value, 10); 
-    const animal = filteredAnimals.find(a => a.id === animalId);
-    setSelectedAnimal(animalId);
+    const animalId = Number.parseInt(e.target.value, 10)
+    const animal = filteredAnimals.find((a) => a.id === animalId)
+    setSelectedAnimal(animalId)
 
-    setFichaDeSolicitacaoData(prev => ({
+    setFichaDeSolicitacaoData((prev) => ({
       ...prev,
-      animal: { id: animalId, origemAnimal: animal?.origemAnimal || null }
-    }));
-  };
+      animal: { id: animalId, origemAnimal: animal?.origemAnimal || null },
+    }))
+  }
 
-  // Pesquisa de médicos
   const handleMedicoSearch = (event) => {
-    const term = event.target.value;
-    setSearchTermMedico(term);
+    const term = event.target.value
+    setSearchTermMedico(term)
 
     if (term) {
-      const filtered = medicos.filter(m =>
-        m.id.toString().includes(term) || m.nome.toLowerCase().includes(term.toLowerCase())
-      );
-      setFilteredMedicos(filtered);
-      setSearchErrorMedico(false);
+      const filtered = medicos.filter(
+        (m) => m.id.toString().includes(term) || m.nome.toLowerCase().includes(term.toLowerCase()),
+      )
+      setFilteredMedicos(filtered)
+      setSearchErrorMedico(false)
     } else {
-      setFilteredMedicos([]);
+      setFilteredMedicos([])
     }
-  };
+  }
 
   const handleMedicoSelection = (medico) => {
-    setSelectedMedico(medico.id);
-    setFichaDeSolicitacaoData(prev => ({
+    setSelectedMedico(medico.id)
+    setFichaDeSolicitacaoData((prev) => ({
       ...prev,
-      medico: { id: medico.id }
-    }));
-    setShowMedicoModal(false);
-    setSearchTermMedico(medico.nome);
-  };
+      medico: { id: medico.id },
+    }))
+    setShowMedicoModal(false)
+    setSearchTermMedico(medico.nome)
+  }
 
   const handleFichaDeSolicitacaoChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    const newValue = type === "checkbox" ? checked : value;
+    const { name, value, type, checked } = event.target
+    const newValue = type === "checkbox" ? checked : value
 
-    setFichaDeSolicitacaoData(prev => ({
+    setFichaDeSolicitacaoData((prev) => ({
       ...prev,
-      [name]: newValue
-    }));
-  };
+      [name]: newValue,
+    }))
+  }
 
-  const formatDate = (date) => date ? new Date(date).toISOString() : "";
+  const formatDate = (date) => (date ? new Date(date).toISOString() : "")
 
   const validateForm = () => {
-    const newErrors = {};
-    if (!fichaDeSolicitacaoData.fichaClinica) newErrors.fichaClinica = "Ficha Clínica é obrigatória.";
-    if (!fichaDeSolicitacaoData.tipoServico) newErrors.tipoServico = "Tipo de Serviço é obrigatório.";
-    if (!fichaDeSolicitacaoData.dataHoraObito) newErrors.dataHoraObito = "Data e Hora do Óbito são obrigatórias.";
-    if (!fichaDeSolicitacaoData.dataRecebimento) newErrors.dataRecebimento = "Data de Recebimento é obrigatória.";
-    if (!fichaDeSolicitacaoData.estadoConservacao) newErrors.estadoConservacao = "Estado de Conservação é obrigatório.";
-    if (!fichaDeSolicitacaoData.acondicionamento) newErrors.acondicionamento = "Acondicionamento é obrigatório.";
-    if (!fichaDeSolicitacaoData.tutor.id) newErrors.tutor = "Selecione um Tutor.";
-    if (!fichaDeSolicitacaoData.animal.id) newErrors.animal = "Selecione um Animal.";
-    if (!fichaDeSolicitacaoData.medico.id) newErrors.medico = "Selecione um Médico.";
+    const newErrors = {}
+    if (!fichaDeSolicitacaoData.fichaClinica) newErrors.fichaClinica = "Ficha Clínica é obrigatória."
+    if (!fichaDeSolicitacaoData.tipoServico) newErrors.tipoServico = "Tipo de Serviço é obrigatório."
+    if (!fichaDeSolicitacaoData.dataHoraObito) newErrors.dataHoraObito = "Data e Hora do Óbito são obrigatórias."
+    if (!fichaDeSolicitacaoData.dataRecebimento) newErrors.dataRecebimento = "Data de Recebimento é obrigatória."
+    if (!fichaDeSolicitacaoData.estadoConservacao) newErrors.estadoConservacao = "Estado de Conservação é obrigatório."
+    if (!fichaDeSolicitacaoData.acondicionamento) newErrors.acondicionamento = "Acondicionamento é obrigatório."
+    if (!fichaDeSolicitacaoData.tutor.id) newErrors.tutor = "Selecione um Tutor."
+    if (!fichaDeSolicitacaoData.animal.id) newErrors.animal = "Selecione um Animal."
+    if (!fichaDeSolicitacaoData.medico.id) newErrors.medico = "Selecione um Médico."
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!validateForm()) return;
+    event.preventDefault()
+    if (!validateForm()) return
 
     const fichaToCreate = {
       ...fichaDeSolicitacaoData,
       dataHoraObito: formatDate(fichaDeSolicitacaoData.dataHoraObito),
       dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
-    };
-console.log(fichaToCreate)
+    }
+    console.log(fichaToCreate)
     try {
-      await createFichaSolicitacao(fichaToCreate);
-      setShowAlert(true);
-      resetForm();
+      await createFichaSolicitacao(fichaToCreate)
+      clearSavedData()
+      setShowAlert(true)
+      resetForm()
     } catch (error) {
-      console.error(error);
+      console.error(error)
       if (error.response && error.response.status === 400) {
-        const backendMessage = error.response.data?.message || "";
+        const backendMessage = error.response.data?.message || ""
         if (backendMessage.includes("animal já possui outra ficha")) {
-          setShowErrorAlert(true);
-          setErrorMessage("Erro: O animal selecionado já possui outra ficha.");
-          return;
+          setShowErrorAlert(true)
+          setErrorMessage("Erro: O animal selecionado já possui outra ficha.")
+          return
         }
       }
-      setShowErrorAlert(true);
-      setErrorMessage("Erro ao criar ficha de solicitação, tente novamente.");
+      setShowErrorAlert(true)
+      setErrorMessage("Erro ao criar ficha de solicitação, tente novamente.")
     }
-  };
+  }
 
   const resetForm = () => {
     setFichaDeSolicitacaoData({
-      fichaClinica: '',
-      tipoServico: '',
-      dataHoraObito: '',
-      dataRecebimento: '',
-      estadoConservacao: '',
-      acondicionamento: '',
+      fichaClinica: "",
+      tipoServico: "",
+      dataHoraObito: "",
+      dataRecebimento: "",
+      estadoConservacao: "",
+      acondicionamento: "",
       eutanasia: false,
-      historico: '',
-      caracteristicasAdicionais: '',
+      historico: "",
+      caracteristicasAdicionais: "",
       tutor: { id: null },
       animal: { id: null, origemAnimal: null },
       medico: { id: null },
-    });
-    setSelectedTutor(null);
-    setSelectedAnimal(null);
-    setSelectedMedico(null);
-    setFilteredAnimals([]);
-    setSearchTerm('');
-    setSearchTermMedico('');
-    setErrors({});
-  };
+    })
+    setSelectedTutor(null)
+    setSelectedAnimal(null)
+    setSelectedMedico(null)
+    setFilteredAnimals([])
+    setSearchTerm("")
+    setSearchTermMedico("")
+    setErrors({})
+    clearSavedData()
+  }
 
-  if (!token) return <div className={styles.container}><h3>Acesso negado: Faça login para acessar esta página.</h3></div>;
-  if (!roles.includes("patologista")) return <div className={styles.container}><h3>Acesso negado: Você não tem permissão para acessar esta página.</h3></div>;
+  if (!token)
+    return (
+      <div className={styles.container}>
+        <h3>Acesso negado: Faça login para acessar esta página.</h3>
+      </div>
+    )
+  if (!roles.includes("patologista"))
+    return (
+      <div className={styles.container}>
+        <h3>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    )
 
   return (
     <div className={styles.container}>
@@ -219,20 +279,18 @@ console.log(fichaToCreate)
         <div className="row">
           <h2>Identificação do Tutor</h2>
           <div className="col">
-            <label htmlFor="search" className="form-label">Pesquisar Tutor</label>
+            <label htmlFor="search" className="form-label">
+              Pesquisar Tutor
+            </label>
             <div className="input-group">
               <input
                 type="text"
-                className={`form-control ${searchError ? 'is-invalid' : ''}`}
+                className={`form-control ${searchError ? "is-invalid" : ""}`}
                 placeholder="Digite o ID ou nome do tutor"
                 value={searchTerm}
                 onChange={handleSearch}
               />
-              <button
-                type="button"
-                className="btn btn-outline-secondary"
-                onClick={() => setShowModal(true)}
-              >
+              <button type="button" className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>
                 Buscar
               </button>
             </div>
@@ -247,16 +305,18 @@ console.log(fichaToCreate)
           <Modal.Body>
             {filteredTutores.length > 0 ? (
               <ul className="list-group">
-                {filteredTutores.map(tutor => (
+                {filteredTutores.map((tutor) => (
                   <li
                     key={tutor.id}
                     className="list-group-item"
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: "pointer" }}
                     onClick={() => handleTutorSelection(tutor)}
                   >
-                    <strong>Nome:</strong> {tutor.nome}<br />
-                    <strong>Email:</strong> {tutor.email || 'N/A'}<br />
-                    <strong>Telefone:</strong> {tutor.telefone || 'N/A'}
+                    <strong>Nome:</strong> {tutor.nome}
+                    <br />
+                    <strong>Email:</strong> {tutor.email || "N/A"}
+                    <br />
+                    <strong>Telefone:</strong> {tutor.telefone || "N/A"}
                   </li>
                 ))}
               </ul>
@@ -265,30 +325,34 @@ console.log(fichaToCreate)
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>Fechar</Button>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              Fechar
+            </Button>
           </Modal.Footer>
         </Modal>
 
         <div className="row">
           <h2>Identificação do Animal</h2>
           <div className="col">
-            <label htmlFor="animal" className="form-label">Animal</label>
-            <select
-              className="form-select"
-              name="animal"
-              value={selectedAnimal || ''}
-              onChange={handleAnimalSelection}
-            >
+            <label htmlFor="animal" className="form-label">
+              Animal
+            </label>
+            <select className="form-select" name="animal" value={selectedAnimal || ""} onChange={handleAnimalSelection}>
               <option value="">Selecione um animal</option>
-              {filteredAnimals.map(animal => (
+              {filteredAnimals.map((animal) => (
                 <option key={animal.id} value={animal.id}>
-                  {animal.nome} {animal.origemAnimal ? `(${animal.origemAnimal})` : ''}
+                  {animal.nome} {animal.origemAnimal ? `(${animal.origemAnimal})` : ""}
                 </option>
               ))}
             </select>
             {errors.animal && <div className="invalid-feedback">{errors.animal}</div>}
             {fichaDeSolicitacaoData.animal?.origemAnimal === "HVU" && (
-              <button className={styles.hist_button} onClick={() => router.push(`/getAllConsultas/${fichaDeSolicitacaoData.animal.id}`)}>
+              <button
+                className={styles.hist_button}
+                onClick={() =>
+                  window.open(`/getAllConsultas/${fichaDeSolicitacaoData.animal.id}`, "_blank", "noopener,noreferrer")
+                }
+              >
                 Visualizar histórico
               </button>
             )}
@@ -298,7 +362,9 @@ console.log(fichaToCreate)
         <div className="row">
           <h2>Informações sobre o Material</h2>
           <div className="col">
-            <label htmlFor="dataHoraObito" className="form-label">Data e Hora do Óbito</label>
+            <label htmlFor="dataHoraObito" className="form-label">
+              Data e Hora do Óbito
+            </label>
             <input
               type="datetime-local"
               className={`form-control ${errors.dataHoraObito ? "is-invalid" : ""}`}
@@ -310,7 +376,9 @@ console.log(fichaToCreate)
             {errors.dataHoraObito && <div className="invalid-feedback">{errors.dataHoraObito}</div>}
           </div>
           <div className="col">
-            <label htmlFor="estadoConservacao" className="form-label">Estado de Conservação</label>
+            <label htmlFor="estadoConservacao" className="form-label">
+              Estado de Conservação
+            </label>
             <select
               className={`form-select ${errors.estadoConservacao ? "is-invalid" : ""}`}
               id="estadoConservacao"
@@ -326,7 +394,9 @@ console.log(fichaToCreate)
             {errors.estadoConservacao && <div className="invalid-feedback">{errors.estadoConservacao}</div>}
           </div>
           <div className="col">
-            <label htmlFor="eutanasia" className="form-label">Eutanásia</label>
+            <label htmlFor="eutanasia" className="form-label">
+              Eutanásia
+            </label>
             <div className="form-check">
               <input
                 className="form-check-input"
@@ -335,14 +405,18 @@ console.log(fichaToCreate)
                 checked={fichaDeSolicitacaoData.eutanasia}
                 onChange={handleFichaDeSolicitacaoChange}
               />
-              <label className="form-check-label" htmlFor="eutanasia">Realizada</label>
+              <label className="form-check-label" htmlFor="eutanasia">
+                Realizada
+              </label>
             </div>
           </div>
         </div>
 
         <div className="row">
           <div className="col">
-            <label htmlFor="historico" className="form-label">Histórico</label>
+            <label htmlFor="historico" className="form-label">
+              Histórico
+            </label>
             <textarea
               className={`form-control ${errors.historico ? "is-invalid" : ""}`}
               name="historico"
@@ -352,7 +426,9 @@ console.log(fichaToCreate)
             />
           </div>
           <div className="col">
-            <label htmlFor="caracteristicasAdicionais" className="form-label">Características Adicionais</label>
+            <label htmlFor="caracteristicasAdicionais" className="form-label">
+              Características Adicionais
+            </label>
             <input
               type="text"
               className={`form-control ${errors.caracteristicasAdicionais ? "is-invalid" : ""}`}
@@ -363,7 +439,9 @@ console.log(fichaToCreate)
             />
           </div>
           <div className="col">
-            <label htmlFor="fichaClinica" className="form-label">Ficha Clínica</label>
+            <label htmlFor="fichaClinica" className="form-label">
+              Ficha Clínica
+            </label>
             <input
               type="text"
               className={`form-control ${errors.fichaClinica ? "is-invalid" : ""}`}
@@ -378,7 +456,9 @@ console.log(fichaToCreate)
 
         <div className="row">
           <div className="col">
-            <label htmlFor="dataRecebimento" className="form-label">Data de Recebimento</label>
+            <label htmlFor="dataRecebimento" className="form-label">
+              Data de Recebimento
+            </label>
             <input
               type="datetime-local"
               className={`form-control ${errors.dataRecebimento ? "is-invalid" : ""}`}
@@ -390,7 +470,9 @@ console.log(fichaToCreate)
             {errors.dataRecebimento && <div className="invalid-feedback">{errors.dataRecebimento}</div>}
           </div>
           <div className="col">
-            <label htmlFor="acondicionamento" className="form-label">Acondicionamento</label>
+            <label htmlFor="acondicionamento" className="form-label">
+              Acondicionamento
+            </label>
             <select
               className={`form-select ${errors.acondicionamento ? "is-invalid" : ""}`}
               name="acondicionamento"
@@ -405,7 +487,9 @@ console.log(fichaToCreate)
             {errors.acondicionamento && <div className="invalid-feedback">{errors.acondicionamento}</div>}
           </div>
           <div className="col">
-            <label htmlFor="tipoServico" className="form-label">Tipo de Serviço</label>
+            <label htmlFor="tipoServico" className="form-label">
+              Tipo de Serviço
+            </label>
             <select
               className={`form-select ${errors.tipoServico ? "is-invalid" : ""}`}
               name="tipoServico"
@@ -424,25 +508,25 @@ console.log(fichaToCreate)
         <div className="row">
           <h2>Identificação do Veterinário</h2>
           <div className="col">
-            <label htmlFor="searchMedico" className="form-label">Pesquisar Veterinário</label>
+            <label htmlFor="searchMedico" className="form-label">
+              Pesquisar Veterinário
+            </label>
             <div className="input-group">
               <input
                 type="text"
-                className={`form-control ${searchErrorMedico ? 'is-invalid' : ''}`}
+                className={`form-control ${searchErrorMedico ? "is-invalid" : ""}`}
                 id="searchMedico"
                 placeholder="Digite o ID ou nome do médico"
                 value={searchTermMedico}
                 onChange={handleMedicoSearch}
               />
-              <button
-                className="btn btn-outline-secondary"
-                type="button"
-                onClick={() => setShowMedicoModal(true)}
-              >
+              <button className="btn btn-outline-secondary" type="button" onClick={() => setShowMedicoModal(true)}>
                 Buscar
               </button>
             </div>
-            {searchErrorMedico && <div className="invalid-feedback">Por favor, digite um termo de pesquisa válido.</div>}
+            {searchErrorMedico && (
+              <div className="invalid-feedback">Por favor, digite um termo de pesquisa válido.</div>
+            )}
           </div>
         </div>
 
@@ -453,11 +537,11 @@ console.log(fichaToCreate)
           <Modal.Body>
             {filteredMedicos.length > 0 ? (
               <ul className="list-group">
-                {filteredMedicos.map(medico => (
+                {filteredMedicos.map((medico) => (
                   <li
                     key={medico.id}
                     className="list-group-item"
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: "pointer" }}
                     onClick={() => handleMedicoSelection(medico)}
                   >
                     <strong>Nome:</strong> {medico.nome} <br />
@@ -472,24 +556,30 @@ console.log(fichaToCreate)
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowMedicoModal(false)}>Fechar</Button>
+            <Button variant="secondary" onClick={() => setShowMedicoModal(false)}>
+              Fechar
+            </Button>
           </Modal.Footer>
         </Modal>
 
         <div className={styles.button_container}>
-          <button className={styles.cadastrar_button} type="submit">Cadastrar</button>
+          <button className={styles.cadastrar_button} type="submit">
+            Cadastrar
+          </button>
+          <button type="button" className="btn btn-secondary ms-2" onClick={resetForm}>
+            Limpar Formulário
+          </button>
         </div>
       </form>
 
       <Alert
         message="Ficha de Solicitação cadastrada com sucesso!"
         show={showAlert}
-        url='/lapa/telaprincipallaudos/laudosEmAndamento'
+        url="/lapa/telaprincipallaudos/laudosEmAndamento"
       />
       {showErrorAlert && <ErrorAlert message={errorMessage} show={showErrorAlert} />}
     </div>
-  );
-
+  )
 }
 
-export default CreateFichaForm;
+export default CreateFichaForm
