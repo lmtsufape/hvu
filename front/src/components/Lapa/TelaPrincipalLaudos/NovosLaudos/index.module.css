@@ -46,7 +46,7 @@
 }
 
 .hist_button:hover {
-  text-decoration: underline; /* sublinha ao passar o mouse */
+  text-decoration: underline; 
 }
 
 .form_box div {

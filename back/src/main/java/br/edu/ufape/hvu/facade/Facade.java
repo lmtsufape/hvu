@@ -437,7 +437,7 @@ public class Facade {
 
     public Medico findMedicoById(long id, String idSession) {
         Medico medico = medicoService.findMedicoById(id);
-        if(!keycloakService.hasRoleSecretario(idSession) && !medico.getUserId().equals(idSession)){
+        if(!keycloakService.hasRoleSecretario(idSession) && !medico.getUserId().equals(idSession) && !keycloakService.hasRolePatologista(idSession)){
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
         }
         return medicoService.findMedicoById(id);
@@ -513,7 +513,7 @@ public class Facade {
     public Patologista findPatologistaById(long id, String idSession) {
         Patologista patologista = patologistaService.findPatologistaById(id);
 
-        if (!keycloakService.hasRoleAdminLapa(idSession) && !patologista.getUserId().equals(idSession)) {
+        if (!keycloakService.hasRoleAdminLapa(idSession) && !patologista.getUserId().equals(idSession) && !keycloakService.hasRolePatologista(idSession)) {
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
 
