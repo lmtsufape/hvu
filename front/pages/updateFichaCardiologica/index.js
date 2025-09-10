@@ -4,12 +4,22 @@ import { SubHeader } from "../../src/components/SubHeader";
 import Footer from "@/components/Footer";
 import "@/styles/styles.css";
 import UpdateCardiologicoStepForm from "@/components/Fichas/UpdateCardiologico";
+import { SubHeaderGeral } from "../../src/components/Lapa/SubHeader";
+import { getRoles } from "../../services/userService";
 
 function UpdateCardiologicoPage() {
+    const role = getRoles();
+    
     return(
         <div className="divPai">
             < Header03 />
-            < SubHeader />
+            
+            {role.includes("medico") ? (
+                <SubHeader />
+            ) : role.includes("patologista") ? (
+                <SubHeaderGeral />
+            ) : null}
+    
             <div className="flexStyle">
                 <UpdateCardiologicoStepForm />
             </div>
