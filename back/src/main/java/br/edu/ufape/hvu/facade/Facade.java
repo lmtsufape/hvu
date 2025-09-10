@@ -98,7 +98,7 @@ public class Facade {
     }
 
     public Tutor findTutorById(long id, String idSession) {
-        if (keycloakService.hasRoleSecretario(idSession)) {
+        if (keycloakService.hasRoleSecretario(idSession) && keycloakService.hasRolePatologista(idSession)) {
             return tutorServiceInterface.findTutorById(id);
         }
 
