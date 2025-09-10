@@ -71,6 +71,8 @@ function CreateCampoLaudo() {
             setErrors(errors);
             return;
         }
+
+        console.log(campoLaudo)
         try {
             await createCampoLaudo(campoLaudo);
             setShowAlert(true);

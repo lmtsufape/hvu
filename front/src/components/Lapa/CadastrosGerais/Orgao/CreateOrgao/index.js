@@ -79,9 +79,6 @@ function CreateOrgão() {
         if (!orgao.nome) {
             errors.nome = "Campo obrigatório";
         }
-        if (!orgao.foto.id) {
-            errors.foto = "Campo obrigatório";
-        }
         if (!orgao.area[0].id) {
             errors.area = "Campo obrigatório";
         }
@@ -137,7 +134,7 @@ function CreateOrgão() {
                     <div className="row">
                         <label className="form-label"></label>
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="foto" className="form-label">Selecionar Foto <span className={styles.obrigatorio}>*</span></label>
+                            <label htmlFor="foto" className="form-label">Selecionar Foto</label>
                             <select
                                 onChange={handleFotoChange}
                                 className={`form-select ${styles.input} ${errors.foto ? "is-invalid" : ""}`}

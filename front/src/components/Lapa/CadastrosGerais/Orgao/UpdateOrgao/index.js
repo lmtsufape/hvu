@@ -86,9 +86,6 @@ function UpdateOrgao() {
     if (!orgao.nome) {
       errors.nome = "Campo obrigatório";
     }
-    if (!orgao.foto.id) {
-      errors.foto = "Campo obrigatório";
-    }
     if (!orgao.area || !orgao.area[0] || !orgao.area[0].id) {
       errors.area = "Campo obrigatório";
     }
@@ -169,7 +166,7 @@ function UpdateOrgao() {
           <div className="row">
             <div className={`col ${styles.col}`}>
               <label className="form-label">
-                Selecionar Foto <span className={styles.obrigatorio}>*</span>
+                Selecionar Foto
               </label>
               {fotos.length > 0 && (
                 <select

@@ -1593,6 +1593,11 @@ public class Facade {
 
     @Transactional
     public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
+        Orgao orgao = orgaoRepository.findById(newInstance.getOrgao().getId())
+                .orElseThrow(() -> new RuntimeException("Órgão não encontrado"));
+
+        newInstance.setOrgao(orgao);
+
         return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
     }
 
@@ -1947,21 +1952,30 @@ public class Facade {
 
     @Transactional
     public Orgao saveOrgao(Orgao newInstance) {
+        if (newInstance.getFoto() != null) {
+            if (newInstance.getFoto().getId() == 0) {
+                newInstance.setFoto(null);
+            }
+        }
+
         return OrgaoServiceInterface.saveOrgao(newInstance);
     }
 
     @Transactional
     public Orgao updateOrgao(OrgaoRequest transientObject, Long id) {
-        //Orgao o = obj.convertToEntity();
         Orgao oldObject = OrgaoServiceInterface.findOrgaoById(id);
-
 
         TypeMap<OrgaoRequest, Orgao> typeMapper = modelMapper
                 .typeMap(OrgaoRequest.class, Orgao.class)
                 .addMappings(mapper -> mapper.skip(Orgao::setId));
 
-
         typeMapper.map(transientObject, oldObject);
+
+        if (transientObject.getFoto() == null) {
+            oldObject.setFoto(null);
+        } else if (oldObject.getFoto() != null && oldObject.getFoto().getId() == 0) {
+            oldObject.setFoto(null);
+        }
 
         return OrgaoServiceInterface.updateOrgao(oldObject);
     }
@@ -2009,44 +2023,40 @@ public class Facade {
 
     @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
-        if (newInstance.getOrgao() != null && newInstance.getOrgao().getId() != 0) {
-            Orgao orgao = orgaoRepository.findById(newInstance.getOrgao().getId())
-                    .orElseThrow(() -> new IdNotFoundException(newInstance.getOrgao().getId(), "Orgao"));
-            newInstance.setOrgao(orgao);  // agora é um objeto gerenciado
+        if (newInstance.getOrgao() != null && newInstance.getOrgao().getId() > 0) {
+            long orgaoId = newInstance.getOrgao().getId();
+
+            Orgao orgao = orgaoRepository.findById(orgaoId)
+                    .orElseThrow(() -> new IdNotFoundException(orgaoId, "Orgao"));
+
+            newInstance.setOrgao(orgao);
+        } else {
+            newInstance.setOrgao(null);
         }
 
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
     }
 
 
+
     @Transactional
     public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopiaRequest obj, Long id) {
         CampoLaudoMicroscopia oldObject = findCampoLaudoMicroscopiaById(id);
 
-        // Garantir que o Orgao seja gerenciado
-        if (obj.getOrgao() != null && obj.getOrgao().getId() != 0) {
-            Orgao orgaoReal = orgaoRepository.findById(obj.getOrgao().getId())
-                    .orElseThrow(() -> new IdNotFoundException(obj.getOrgao().getId(), "Orgao"));
+        if (obj.getOrgao() != null && obj.getOrgao().getId() > 0) {
+            long orgaoId = obj.getOrgao().getId();
+            Orgao orgaoReal = orgaoRepository.findById(orgaoId)
+                    .orElseThrow(() -> new IdNotFoundException(orgaoId, "Orgao"));
             oldObject.setOrgao(orgaoReal);
+        } else {
+            oldObject.setOrgao(null);
         }
 
-        // Mapear o restante dos campos, pulando Orgao
-        TypeMap<CampoLaudoMicroscopiaRequest, CampoLaudoMicroscopia> typeMapper = modelMapper
-                .getTypeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class);
-        if (typeMapper == null) {
-            typeMapper = modelMapper.createTypeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class);
-        }
-        typeMapper.addMappings(mapper -> {
-            mapper.skip(CampoLaudoMicroscopia::setId);
-            mapper.skip(CampoLaudoMicroscopia::setOrgao); // Já setado manualmente
-        });
-
-        typeMapper.map(obj, oldObject);
+        oldObject.setDescricao(obj.getDescricao());
+        oldObject.setProcessamento(obj.getProcessamento());
 
         return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(oldObject);
     }
-
-
 
     public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {
         return campoLaudoMicroscopiaServiceInterface.findCampoLaudoMicroscopiaById(id);

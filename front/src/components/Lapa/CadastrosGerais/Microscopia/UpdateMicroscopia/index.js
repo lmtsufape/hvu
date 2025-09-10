@@ -218,7 +218,7 @@ function UpdateMicroscopia() {
         <Alert
           message="Informações da Microscopia editadas com sucesso!"
           show={showAlert}
-          url={`/lapa/gerenciarMicroscopia`}
+          url={`/lapa/gerenciarMicroscopias`}
         />
       )}
       {showErrorAlert && (
