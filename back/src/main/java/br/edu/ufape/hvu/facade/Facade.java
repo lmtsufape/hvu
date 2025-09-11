@@ -98,7 +98,7 @@ public class Facade {
     }
 
     public Tutor findTutorById(long id, String idSession) {
-        if (keycloakService.hasRoleSecretario(idSession) && keycloakService.hasRolePatologista(idSession)) {
+        if (keycloakService.hasRoleSecretario(idSession) || keycloakService.hasRolePatologista(idSession)) {
             return tutorServiceInterface.findTutorById(id);
         }
 
@@ -513,7 +513,7 @@ public class Facade {
     public Patologista findPatologistaById(long id, String idSession) {
         Patologista patologista = patologistaService.findPatologistaById(id);
 
-        if (!keycloakService.hasRoleAdminLapa(idSession) && !patologista.getUserId().equals(idSession) && !keycloakService.hasRolePatologista(idSession)) {
+        if (!keycloakService.hasRoleAdminLapa(idSession) && !keycloakService.hasRolePatologista(idSession)) {
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
 
@@ -1590,12 +1590,11 @@ public class Facade {
 
     // CampoLaudo--------------------------------------------------------------
     private final CampoLaudoServiceInterface campoLaudoServiceInterface;
+    private final OrgaoServiceInterface orgaoServiceInterface;
 
     @Transactional
     public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
-        Orgao orgao = orgaoRepository.findById(newInstance.getOrgao().getId())
-                .orElseThrow(() -> new RuntimeException("Órgão não encontrado"));
-
+        Orgao orgao = orgaoServiceInterface.findOrgaoById(newInstance.getOrgao().getId());
         newInstance.setOrgao(orgao);
 
         return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
@@ -1953,9 +1952,7 @@ public class Facade {
     @Transactional
     public Orgao saveOrgao(Orgao newInstance) {
         if (newInstance.getFoto() != null) {
-            if (newInstance.getFoto().getId() == 0) {
-                newInstance.setFoto(null);
-            }
+            newInstance.setFoto(null);
         }
 
         return OrgaoServiceInterface.saveOrgao(newInstance);
@@ -2024,11 +2021,7 @@ public class Facade {
     @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
         if (newInstance.getOrgao() != null && newInstance.getOrgao().getId() > 0) {
-            long orgaoId = newInstance.getOrgao().getId();
-
-            Orgao orgao = orgaoRepository.findById(orgaoId)
-                    .orElseThrow(() -> new IdNotFoundException(orgaoId, "Orgao"));
-
+            Orgao orgao = orgaoServiceInterface.findOrgaoById(newInstance.getOrgao().getId());
             newInstance.setOrgao(orgao);
         } else {
             newInstance.setOrgao(null);
@@ -2037,16 +2030,12 @@ public class Facade {
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
     }
 
-
-
     @Transactional
     public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopiaRequest obj, Long id) {
         CampoLaudoMicroscopia oldObject = findCampoLaudoMicroscopiaById(id);
 
         if (obj.getOrgao() != null && obj.getOrgao().getId() > 0) {
-            long orgaoId = obj.getOrgao().getId();
-            Orgao orgaoReal = orgaoRepository.findById(orgaoId)
-                    .orElseThrow(() -> new IdNotFoundException(orgaoId, "Orgao"));
+            Orgao orgaoReal = orgaoServiceInterface.findOrgaoById(obj.getOrgao().getId());
             oldObject.setOrgao(orgaoReal);
         } else {
             oldObject.setOrgao(null);
@@ -2057,6 +2046,7 @@ public class Facade {
 
         return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(oldObject);
     }
+
 
     public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {
         return campoLaudoMicroscopiaServiceInterface.findCampoLaudoMicroscopiaById(id);
