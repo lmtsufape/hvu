@@ -22,7 +22,6 @@ public class DatabaseSeeder {
     private final CronogramaSeeder cronogramaSeeder;
     private final EstagiarioSeeder estagiarioSeeder;
     private final TutorSeeder tutorSeeder;
-    private final FotoSeeder fotoSeeder;
     private final OrgaoSeeder orgaoSeeder;
     private final FichaSeeder fichaSeeder;
     private final SecretarioSeeder secretarioSeeder;
@@ -53,7 +52,6 @@ public class DatabaseSeeder {
         fichaSeeder.init();
         consultaSeeder.init();
         cronogramaSeeder.init();
-        fotoSeeder.init();
         orgaoSeeder.init();
         secretarioSeeder.init();
         patologistaSeeder.init();
