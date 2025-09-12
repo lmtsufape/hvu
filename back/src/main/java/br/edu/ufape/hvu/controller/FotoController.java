@@ -40,12 +40,18 @@ public class FotoController {
         List<FotoResponse> fotos = facade.findllFotos()
                 .stream()
                 .map(FotoResponse::new)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(fotos);
     }
 
+    @GetMapping("/info/{id}")
+    public ResponseEntity<FotoResponse> getFotoMetadata(@PathVariable long id) {
+        Foto foto = facade.findFotoById(id);
+        return ResponseEntity.ok(new FotoResponse(foto));
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getFotoById(@PathVariable long id) {
+    public ResponseEntity<byte[]> getFotoFileById(@PathVariable long id) {
         byte[] fileData = facade.loadFotoFile(id);
         Foto foto = facade.findFotoById(id);
 
