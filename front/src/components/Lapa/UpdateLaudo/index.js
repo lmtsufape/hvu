@@ -206,7 +206,7 @@ function UpdateLaudoForm() {
       await updateLaudoNecropsia(id, laudoToSend)
       setShowAlert(true)
       setTimeout(() => {
-        router.push("/lapa/gerenciarLaudos")
+        router.push(`/lapa/getLaudoById/${id}`)
       }, 2000)
     } catch (error) {
       console.error("Erro ao atualizar laudo de necropsia:", error)
