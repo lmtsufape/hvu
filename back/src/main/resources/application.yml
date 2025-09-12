@@ -55,7 +55,7 @@ app:
     upload-fotos:
       path: ./uploads/fotos/
       max-size: 5MB
-      allowed-types: image/png,image/jpeg,image/jpg
+      allowed-types: image/png,image/jpeg,image/jpg,image/webp
 
 ---
 spring:
@@ -76,4 +76,4 @@ spring:
       upload-fotos:
         path: /app/uploads/fotos/
         max-size: 5MB
-        allowed-types: image/png,image/jpeg,image/jpg
+        allowed-types: image/png,image/jpeg,image/jpg,image/webp
