@@ -50,6 +50,13 @@ common:
   back: http://localhost:8081/,https://lmtsteste03.ufape.edu.br/
   docker: http://keycloak:8080/  # Mudar para http://keycloak:8080/ se for rodar com docker
 
+app:
+  files:
+    upload-fotos:
+      path: ./uploads/fotos/
+      max-size: 5MB
+      allowed-types: image/png,image/jpeg,image/jpg,image/webp
+
 ---
 spring:
   config:
@@ -64,3 +71,9 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://keycloak:8080/realms/lmts/protocol/openid-connect/certs
+  app:
+    files:
+      upload-fotos:
+        path: /app/uploads/fotos/
+        max-size: 5MB
+        allowed-types: image/png,image/jpeg,image/jpg,image/webp
