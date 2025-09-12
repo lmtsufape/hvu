@@ -129,6 +129,21 @@ function fichaRetornoClinicoSil() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+          if (router.isReady) {
+            const medicoFromQuery = router.query.medico;
+            if (medicoFromQuery) {
+              const nomeMedico = decodeURIComponent(medicoFromQuery);
+    
+              // ATUALIZA o formData com o nome do médico vindo da URL.
+              setFormData(prevData => ({
+                ...prevData,
+                medicosResponsaveis: nomeMedico 
+              }));
+            }
+          }
+        }, [router.isReady, router.query.medico]);
+
     // Verifica se os dados estão carregando
     if (loading) {
         return <div className={styles.message}>Carregando dados do usuário...</div>;
@@ -160,7 +175,8 @@ function fichaRetornoClinicoSil() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (event) => {
+ const handleSubmit = async (nomeDoMedicoResponsavel) => {
+    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
         const fichaData = {
             nome: "Ficha de Retorno Clínico de Animais Silvestres e Exóticos",  
@@ -173,7 +189,7 @@ function fichaRetornoClinicoSil() {
                 exames: formData.exames,
                 rg: formData.rg,
                 estagiario: formData.estagiario,
-                medicoresponsavel: formData.medicoresponsavel,
+                medicosResponsaveis: formData.medicosResponsaveis,
                 outros_texto: formData.outros_texto
             },
             dataHora: dataFormatada, // Gera a data atual no formato ISO 8601
@@ -399,7 +415,14 @@ function fichaRetornoClinicoSil() {
                     </div>
                     <div className={styles.column}>
                         <label>Médico(s) Vetérinario(s) Responsável: </label>
-                        <input type="text" name="medicoresponsavel" value={formData.medicoresponsavel} onChange={handleChange} />
+                        <input
+                            type="text"
+                            name="medicosResponsaveis"
+                            value={formData.medicosResponsaveis || ''} 
+                            readOnly
+                            className="form-control"
+                            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+                            />
                     </div>
 
                     <div className={styles.button_box}>

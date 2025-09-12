@@ -176,7 +176,7 @@ function updateFichaRetornoClinicoSil() {
                 exames: formData.exames,
                 rg: formData.rg,
                 estagiario: formData.estagiario,
-                medicoresponsavel: formData.medicoresponsavel,
+                medicosResponsaveis: formData.medicosResponsaveis,
                 outros_texto: formData.outros_texto
             },
             dataHora: dataFormatada,
@@ -399,7 +399,14 @@ function updateFichaRetornoClinicoSil() {
                     </div>
                     <div className={styles.column}>
                         <label>Médico(s) Vetérinario(s) Responsável: </label>
-                        <input type="text" name="medicoresponsavel" value={formData.medicoresponsavel} disabled={isReadOnly} onChange={handleChange} />
+                        <input
+                            type="text"
+                            name="medicosResponsaveis"
+                            value={formData.medicosResponsaveis || ''} 
+                            readOnly
+                            className="form-control"
+                            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+                            />
                     </div>
 
                     {!isReadOnly && (
