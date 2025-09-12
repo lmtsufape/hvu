@@ -66,7 +66,7 @@ function GerenciarTutores() {
     };
 
     const filteredTutores = tutores.filter(tutor => {
-        return tutor.nome.toLowerCase().includes(searchTerm.toLowerCase());
+        return tutor.nome?.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
     const handleAddTutorClick = () => {

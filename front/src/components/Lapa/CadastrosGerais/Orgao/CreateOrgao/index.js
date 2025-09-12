@@ -52,8 +52,15 @@ function CreateOrgão() {
     }
     
     const handleOrgaoChange = (event) => {
-        const { name, value, type, checked } = event.target;
-        setOrgao({ ...orgao, [name]: type === 'checkbox' ? checked : value });
+        const { name, checked } = event.target;
+
+        if (name === "sexoMacho") {
+            setOrgao({ ...orgao, sexoMacho: checked, sexoFemea: checked ? false : orgao.sexoFemea });
+        } else if (name === "sexoFemea") {
+            setOrgao({ ...orgao, sexoFemea: checked, sexoMacho: checked ? false : orgao.sexoMacho });
+        } else {
+            setOrgao({ ...orgao, [name]: event.target.value });
+        }
     };
 
     const handleFotoChange = (event) => {
@@ -78,9 +85,6 @@ function CreateOrgão() {
         const errors = {};
         if (!orgao.nome) {
             errors.nome = "Campo obrigatório";
-        }
-        if (!orgao.foto.id) {
-            errors.foto = "Campo obrigatório";
         }
         if (!orgao.area[0].id) {
             errors.area = "Campo obrigatório";
@@ -119,7 +123,6 @@ function CreateOrgão() {
                                 onChange={handleImageChange}
                                 className={`form-control ${styles.input}`}
                             />
-                            {image && <p>{image.name}</p>}
                         </div>
                         <div className={`col ${styles.col}`}>
                             <label htmlFor="nome" className="form-label">Nome <span className={styles.obrigatorio}>*</span></label>
@@ -137,7 +140,7 @@ function CreateOrgão() {
                     <div className="row">
                         <label className="form-label"></label>
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="foto" className="form-label">Selecionar Foto <span className={styles.obrigatorio}>*</span></label>
+                            <label htmlFor="foto" className="form-label">Selecionar Foto</label>
                             <select
                                 onChange={handleFotoChange}
                                 className={`form-select ${styles.input} ${errors.foto ? "is-invalid" : ""}`}

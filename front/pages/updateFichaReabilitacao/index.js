@@ -4,13 +4,23 @@ import { SubHeader } from "../../src/components/SubHeader";
 import Footer from "@/components/Footer";
 import "@/styles/styles.css";
 import UpdateReabilitacaoIntegrativa from "@/components/Fichas/UpdateReabilitacaoIntegrativa";
+import { SubHeaderGeral } from "../../src/components/Lapa/SubHeader";
+import { getRoles } from "../../services/userService";
 
 
 function UpdateReabilitacaoIntegrativaPage() {
+    const role = getRoles();
+    
     return(
         <div className="divPai">
             < Header03 />
-            < SubHeader />
+            
+            {role.includes("medico") ? (
+                <SubHeader />
+            ) : role.includes("patologista") ? (
+                <SubHeaderGeral />
+            ) : null}
+
             <div className="flexStyle">
                 <UpdateReabilitacaoIntegrativa /> 
             </div>

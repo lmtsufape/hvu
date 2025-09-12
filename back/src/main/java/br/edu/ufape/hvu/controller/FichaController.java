@@ -15,7 +15,7 @@ import br.edu.ufape.hvu.controller.dto.response.FichaResponse;
 public class FichaController {
     private final Facade facade;
 
-    @PreAuthorize("hasRole('MEDICO')")
+    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
     @GetMapping("ficha")
     public List<FichaResponse> getAllFicha() {
         return facade.getAllFicha()
@@ -30,7 +30,7 @@ public class FichaController {
         return new FichaResponse(facade.saveFicha(newObj.convertToEntity()));
     }
 
-    @PreAuthorize("hasRole('MEDICO')")
+    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
     @GetMapping("ficha/{id}")
     public FichaResponse getFichaById(@PathVariable Long id) {
         return new FichaResponse(facade.findFichaById(id));
@@ -45,7 +45,7 @@ public class FichaController {
                 .toList();
     }
 
-    @PreAuthorize("hasRole('MEDICO')")
+    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
     @GetMapping("ficha/agendamento/{agendamentoId}")
     public List<FichaResponse> findFichasByAgendamentoId(@PathVariable Long agendamentoId) {
         return facade.findFichasByAgendamentoId(agendamentoId)

@@ -71,6 +71,8 @@ function CreateCampoLaudo() {
             setErrors(errors);
             return;
         }
+
+        console.log(campoLaudo)
         try {
             await createCampoLaudo(campoLaudo);
             setShowAlert(true);
@@ -87,7 +89,7 @@ function CreateCampoLaudo() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Adicionar Campo de Laudo</h1>
+            <h1>Adicionar Macroscopia</h1>
             <form className={styles.inputs_container}>
                 <div className={styles.inputs_box}>
                     <div className="row">

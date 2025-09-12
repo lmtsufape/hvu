@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .container {
   display: block;
   width: 80%;
   max-width: 1500px;
   min-width: 300px;
-  min-height: 600px; 
+  min-height: 600px;
   margin: auto;
   margin-top: 70px;
   margin-bottom: 50px;
@@ -29,24 +29,10 @@
 
   border-radius: 16px;
   box-shadow: 0px 0px 14px 0px #00000026;
-  border: 0.5px solid #B1B1B1;
+  border: 0.5px solid #b1b1b1;
 
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-style: normal;
-}
-
-.hist_button {
-  all: unset;
-  cursor: pointer;     
-  color: #327053;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  text-decoration: none; 
-  padding: 0;           
-}
-
-.hist_button:hover {
-  text-decoration: underline; 
 }
 
 .form_box div {
@@ -54,7 +40,7 @@
 }
 
 .container h1 {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 24px;
   font-weight: 700;
   line-height: 36px;
@@ -68,15 +54,14 @@
   width: 100%;
   max-width: 1500px;
   min-width: 300px;
-  min-height: 60px; 
+  min-height: 60px;
   margin: auto;
   margin-top: 7px;
   margin-bottom: 50px;
-  
 }
 
-.cardTitle{
-  font-family: 'Poppins', sans-serif;
+.cardTitle {
+  font-family: "Poppins", sans-serif;
   font-size: 20px;
   font-weight: 600;
   line-height: 24px;
@@ -84,13 +69,19 @@
 }
 
 .container h2 {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 20px;
   font-weight: 500;
   line-height: 24px;
   text-align: center;
   letter-spacing: 0em;
   margin-top: 50px;
+}
+
+.button_box {
+  display: flex;
+  gap: 16px;
+  align-items: center;
 }
 
 .box_button {
@@ -109,7 +100,7 @@
   font-size: 16px;
   color: white;
   background-color: #327053;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .button:hover {
@@ -134,7 +125,7 @@
   font-size: 16px;
   color: white;
   background-color: #327053;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .cadastrar_button:hover {
@@ -147,7 +138,6 @@
   cursor: not-allowed;
 }
 
-
 .input_space {
   display: flex;
   justify-content: center;
@@ -159,7 +149,7 @@
 }
 
 .input {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 14px;
   font-weight: 300;
   line-height: 20px;
@@ -186,29 +176,79 @@
   box-shadow: #327053;
 }
 
-.tutor-details {
-  border: 1px solid #ddd;
-  padding: 10px;
+.macroscopia_field {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.macroscopia_select {
+  background-color: #e0f7e0;
+  margin-right: 10px;
+  width: 70%;
+}
+
+.macroscopia_button {
+  width: 30%;
+}
+
+.add_button {
+  background-color: #5b977b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
   border-radius: 5px;
-  background-color: #f9f9f9;
+  font-size: 16px;
+}
+
+.add_button:hover {
+  background-color: #327053;
+}
+
+.macroscopia_section {
   margin-top: 20px;
 }
 
-.tutor-details p {
-  margin: 0;
-  padding: 5px 0;
+.macroscopia_label {
+  margin-bottom: 0px;
+}
+
+.add_button_container {
+  margin-top: 20px;
+}
+
+.add_button {
+  background-color: #327053;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.add_button:hover {
+  background-color: #5b977b;
 }
 
 .message {
-    min-height: 300px;
-    margin-top: 56px; 
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 30px;
-    letter-spacing: 0em;
-    text-align: center;
+  min-height: 300px;
+  margin-top: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
+}
+
+.term {
+  cursor: pointer;
+  transition: text-decoration 0.2s;
+}
+
+.term:hover {
+  text-decoration: underline;
 }

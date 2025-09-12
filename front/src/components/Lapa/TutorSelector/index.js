@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import styles from "./index.module.css"
 import useTutorList from "../../../hooks/useTutorList"
+import VoltarButton from "../VoltarButton"
 
 function TutorSelector({ onTutorSelect, onBack }) {
   const { tutores, error: hookError } = useTutorList()
@@ -21,12 +22,15 @@ function TutorSelector({ onTutorSelect, onBack }) {
   }, [searchTerm, tutores])
 
   const filterTutores = () => {
+    // Filtra apenas tutores não anônimos
+    const tutoresNaoAnonimos = tutores.filter((tutor) => tutor.anonimo === false)
+
     if (!searchTerm) {
-      setFilteredTutores(tutores)
+      setFilteredTutores(tutoresNaoAnonimos)
       return
     }
 
-    const filtered = tutores.filter(
+    const filtered = tutoresNaoAnonimos.filter(
       (tutor) =>
         tutor.nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         tutor.cpf?.includes(searchTerm) ||
@@ -62,14 +66,12 @@ function TutorSelector({ onTutorSelect, onBack }) {
 
   return (
     <div className={styles.container}>
+      <VoltarButton/>
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Selecionar Tutor Existente</h1>
           <p className={styles.subtitle}>Escolha um tutor para vincular ao novo animal</p>
         </div>
-        <button onClick={onBack} className={styles.backButton}>
-          Voltar
-        </button>
       </div>
 
       <div className={styles.searchContainer}>

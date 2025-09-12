@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 public class PatologistaController {
     private final Facade facade;
 
-    @PreAuthorize("hasRole('ADMIN_LAPA')")
+    @PreAuthorize("hasAnyRole('ADMIN_LAPA', 'PATOLOGISTA')")
     @GetMapping("patologista")
     public List<PatologistaResponse> getAllPatologista() {
         return facade.getAllPatologista()

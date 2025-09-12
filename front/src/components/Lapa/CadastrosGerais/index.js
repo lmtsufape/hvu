@@ -82,14 +82,14 @@ function TelaAdministracao() {
                     <Image src="/macroscopias.svg" alt="Laudos" width={62} height={62} />
                     <h6>Gerenciar Microscopias</h6>
                 </button>
-                <button className={styles.button} onClick={() => router.push('/lapa/gerenciarLaudos')}>
+             {/*   <button className={styles.button} onClick={() => router.push('/lapa/gerenciarLaudos')}>
                     <Image src="/laudos.svg" alt="Laudos" width={62} height={62} />
                     <h6>Gerenciar Laudos de Necropsias</h6>
                 </button>
                 <button className={styles.button} onClick={() => router.push('/lapa/gerenciarLaudosMicroscopias')}>
                     <Image src="/laudos.svg" alt="Laudos" width={62} height={62} />
                     <h6>Gerenciar Laudos de Histopatologias</h6>
-                </button>
+                </button> */}
             </div>
 
         </div>
