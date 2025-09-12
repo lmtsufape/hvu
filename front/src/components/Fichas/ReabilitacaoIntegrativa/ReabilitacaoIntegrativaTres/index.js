@@ -18,6 +18,20 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
 
+    const [nomeMedico, setNomeMedico] = useState("Carregando...");
+      useEffect(() => {
+        if (router.isReady) {
+          const medicoFromQuery = router.query.medico;
+    
+          if (medicoFromQuery) {
+            setNomeMedico(decodeURIComponent(medicoFromQuery));
+          } else {
+            setNomeMedico("Médico não informado");
+          }
+        }
+      }, [router.isReady, router.query.medico]);
+    
+
     useEffect(() => {
         if (router.isReady) {
             const id = router.query.fichaId;
@@ -299,9 +313,16 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                     </div>
 
                     {/*dados*/}
-                    <div className={styles.column}>
-                        <label>Médica(o) Veterinária(o) responsável :</label>
-                        <input type="text" name="responsavel" value={formData.responsavel} onChange={handleChange} />
+                     <div className={styles.column}>
+                        <label>Médico(s) Veterinário(s) Responsável:</label>
+                        <input
+                        type="text"
+                        name="medicosResponsaveis"
+                        value={formData.medicosResponsaveis || ''} 
+                        readOnly
+                        className="form-control"
+                        style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+                        />
                     </div>
                     <div className={styles.column}>
                         <label>Estagiários/ Nome :</label>
