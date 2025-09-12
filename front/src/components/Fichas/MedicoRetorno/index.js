@@ -172,6 +172,21 @@ function FichaMedicaRetorno() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+      if (router.isReady) {
+        const medicoFromQuery = router.query.medico;
+        if (medicoFromQuery) {
+          const nomeMedico = decodeURIComponent(medicoFromQuery);
+
+          // ATUALIZA o formData com o nome do médico vindo da URL.
+          setFormData(prevData => ({
+            ...prevData,
+            medicosResponsaveis: nomeMedico 
+          }));
+        }
+      }
+    }, [router.isReady, router.query.medico]);
+
   if (loading) {
     return <div className={styles.message}>Carregando dados do usuário...</div>;
   }
@@ -196,8 +211,8 @@ function FichaMedicaRetorno() {
     );
   }
 
-  const handleSubmit = async (event) => {
-    event?.preventDefault(); // Usa encadeamento opcional para evitar erro
+  const handleSubmit = async (nomeDoMedicoResponsavel) => {
+    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
     const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
     const fichaData = {
       nome: "Ficha clínico médica de retorno",
