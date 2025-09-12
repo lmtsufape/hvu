@@ -17,6 +17,20 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
 
+  
+  const [nomeMedico, setNomeMedico] = useState("Carregando...");
+    useEffect(() => {
+      if (router.isReady) {
+        const medicoFromQuery = router.query.medico;
+  
+        if (medicoFromQuery) {
+          setNomeMedico(decodeURIComponent(medicoFromQuery));
+        } else {
+          setNomeMedico("Médico não informado");
+        }
+      }
+    }, [router.isReady, router.query.medico]);
+
   useEffect(() => {
     if (router.isReady) {
       const id = router.query.fichaId;
@@ -530,11 +544,15 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
             </label>
           </div>
           <div className={styles.column}>
-            <label>Médico(s) Veterinário(s) Responsável:
-              <input type="text" name="medicosResponsaveis"
-                value={formData.medicosResponsaveis}
-                onChange={handleChange} />
-            </label>
+            <label>Médico(s) Veterinário(s) Responsável:</label>
+            <input
+            type="text"
+            name="medicosResponsaveis"
+            value={formData.medicosResponsaveis || ''} 
+            readOnly
+            className="form-control"
+            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+            />
           </div>
 
           <div className={styles.button_box}>

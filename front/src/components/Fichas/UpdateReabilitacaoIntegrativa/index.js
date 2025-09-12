@@ -387,7 +387,7 @@ const handleSelectChange = (e, index) => {
             diagnosticoMTC:formData.diagnosticoMTC,
 
 
-          responsavel:formData.responsavel,
+          medicosResponsaveis: formData.medicosResponsaveis,
           estagiario:formData.estagiario,
           cpf:formData.cpf,
 

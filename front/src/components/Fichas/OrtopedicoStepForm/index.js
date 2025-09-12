@@ -259,6 +259,21 @@ function OrtopedicaSteps() {
       fetchData();
   }, []);
 
+  useEffect(() => {
+        if (router.isReady) {
+          const medicoFromQuery = router.query.medico;
+          if (medicoFromQuery) {
+            const nomeMedico = decodeURIComponent(medicoFromQuery);
+  
+            // ATUALIZA o formData com o nome do médico vindo da URL.
+            setFormData(prevData => ({
+              ...prevData,
+              medicosResponsaveis: nomeMedico 
+            }));
+          }
+        }
+      }, [router.isReady, router.query.medico]);
+
   if (loading) {
       return <div className={styles.message}>Carregando dados do usuário...</div>;
   }
@@ -361,7 +376,8 @@ function OrtopedicaSteps() {
     setFormData(newFormData);
   };
 
-  const handleSubmit = async (event) => {
+   const handleSubmit = async (nomeDoMedicoResponsavel) => {
+    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
     setShowErrorAlert(false);
     const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
     const fichaData = {
