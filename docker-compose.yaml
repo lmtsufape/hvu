@@ -18,6 +18,8 @@ services:
     depends_on:
       - backend-db
       - keycloak
+    volumes:
+      - hvu-uploads:/app/uploads
 
   backend-db:
     image: postgres:16.0
@@ -90,6 +92,8 @@ volumes:
   pg-data:
     driver: local
   keycloak-pg-data:
+    driver: local
+  hvu-uploads:
     driver: local
 
 networks:

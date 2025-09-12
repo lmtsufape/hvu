@@ -25,6 +25,7 @@ import org.modelmapper.TypeMap;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
@@ -1802,40 +1803,30 @@ public class Facade {
 
     // Foto--------------------------------------------------------------
 
-
     private final FotoServiceInterface fotoServiceInterface;
 
-    @Transactional
-    public Foto saveFoto(Foto newInstance) {
-        return fotoServiceInterface.saveFoto(newInstance);
+    public Foto saveFoto(MultipartFile file, String title) {
+        return fotoServiceInterface.save(file, title);
     }
 
-    @Transactional
-    public Foto updateFoto(FotoRequest obj, Long id) {
-        //Foto o = obj.convertToEntity();
-        Foto oldObject = findFotoById(id);
-
-        TypeMap<FotoRequest, Foto> typeMapper = modelMapper
-                .typeMap(FotoRequest.class, Foto.class)
-                .addMappings(mapper -> mapper.skip(Foto::setId));
-
-
-        typeMapper.map(obj, oldObject);
-
-        return fotoServiceInterface.updateFoto(oldObject);
+    public Foto replaceFoto(long id, MultipartFile newFile, String newTitle) {
+        return fotoServiceInterface.replaceFile(id, newFile, newTitle);
     }
 
-    public Foto findFotoById(Long id) {
-        return fotoServiceInterface.findFotoById(id);
+    public Foto findFotoById(long id) {
+        return fotoServiceInterface.findById(id);
     }
 
-    public List<Foto> getAllFoto() {
-        return fotoServiceInterface.getAllFoto();
+    public byte[] loadFotoFile(long id) {
+        return fotoServiceInterface.loadFile(id);
     }
 
-    @Transactional
+    public List<Foto> findllFotos() {
+        return fotoServiceInterface.findAll();
+    }
+
     public void deleteFoto(long id) {
-        fotoServiceInterface.deleteFoto(id);
+        fotoServiceInterface.delete(id);
     }
 
     // Instituicao--------------------------------------------------------------
