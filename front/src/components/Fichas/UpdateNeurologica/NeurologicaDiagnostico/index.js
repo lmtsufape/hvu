@@ -290,6 +290,17 @@ function FichaNeurologica({ formData, handleChange, prevStep, handleCheckboxChan
                                 onChange={handleChange} />
                         </label>
                     </div>
+                    <div className={styles.column}>
+                        <label>Médico(s) Veterinário(s) Responsável:</label>
+                        <input
+                        type="text"
+                        name="medicosResponsaveis"
+                        value={formData.medicosResponsaveis || ''} 
+                        readOnly
+                        className="form-control"
+                        style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+                        />
+                    </div>
 
                     {!isReadOnly && (
                     <div className={styles.button_box}>

@@ -173,7 +173,8 @@ function NeurologicaSteps() {
         diagnostico:"",
         tratamento:"",
     },
-    plantonistasDiscentes:""
+    plantonistasDiscentes:"",
+    medicosResponsaveis:""
   });
 
     // Carrega os dados do formulário do localStorage 
@@ -230,6 +231,22 @@ function NeurologicaSteps() {
       };
       fetchData();
   }, []);
+
+    useEffect(() => {
+        if (router.isReady) {
+          const medicoFromQuery = router.query.medico;
+          if (medicoFromQuery) {
+            const nomeMedico = decodeURIComponent(medicoFromQuery);
+  
+            // ATUALIZA o formData com o nome do médico vindo da URL.
+            setFormData(prevData => ({
+              ...prevData,
+              medicosResponsaveis: nomeMedico 
+            }));
+          }
+        }
+      }, [router.isReady, router.query.medico]);
+  
 
   // Verifica se os dados estão carregando
   if (loading) {
@@ -307,7 +324,8 @@ function NeurologicaSteps() {
     };
   
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (nomeDoMedicoResponsavel) => {
+    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
     setShowErrorAlert(false);
     const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
     const fichaData = {
@@ -327,6 +345,7 @@ function NeurologicaSteps() {
 
             diagnosticoAnatomico:formData.diagnosticoAnatomico,
             plantonistasDiscentes: formData.plantonistasDiscentes,
+            medicosResponsaveis: formData.medicosResponsaveis
         },
         dataHora: dataFormatada,
         agendamento: {
