@@ -91,6 +91,7 @@ function FichaSolicitacaoExame() {
             imunologicos: [],
             imaginologia: [],
             cardiologia: [],
+            medicosResponsaveis: nomeMedico 
           });
           setOtherValues(parsedData.otherValues || {
             hematologiaDiagnostica: "",
@@ -186,6 +187,21 @@ function FichaSolicitacaoExame() {
     console.log("Estado atual do formData:", formData);
     console.log("Estado atual do otherValues:", otherValues);
   }, [formData, otherValues]); // Este useEffect será executado sempre que formData ou otherValues mudarem
+
+    useEffect(() => {
+                if (router.isReady) {
+                  const medicoFromQuery = router.query.medico;
+                  if (medicoFromQuery) {
+                    const nomeMedico = decodeURIComponent(medicoFromQuery);
+          
+                    // ATUALIZA o formData com o nome do médico vindo da URL.
+                    setFormData(prevData => ({
+                      ...prevData,
+                      medicosResponsaveis: nomeMedico 
+                    }));
+                  }
+                }
+              }, [router.isReady, router.query.medico]);
 
 const handleGeneratePDF = () => {
     const input = formBoxRef.current;
@@ -322,16 +338,20 @@ const handleGeneratePDF = () => {
     setOtherValues((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async () => {
-    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+  const handleSubmit = async (nomeDoMedicoResponsavel) => {
+    
 
     // Substitui "Outros(s):" pelos valores digitados nos campos "Outros"
-    const finalFormData = { ...formData };
+    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
+    const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss");
+
     Object.keys(finalFormData).forEach((field) => {
+       if (Array.isArray(finalFormData[field]) && finalFormData[field].includes("Outros(s):")) {
       if (finalFormData[field].includes("Outros(s):") && otherValues[field].trim() !== "") {
         finalFormData[field] = finalFormData[field].filter((item) => item !== "Outros(s):");
         finalFormData[field].push(otherValues[field].trim());
       }
+    }
     });
 
     const citoArray = finalFormData.citologiaHistopatologia;
@@ -359,6 +379,7 @@ const handleGeneratePDF = () => {
         Imunológicos: finalFormData.imunologicos,
         Imaginologia: finalFormData.imaginologia,
         Cardiologia: finalFormData.cardiologia,
+        medicosResponsaveis: formData.medicosResponsaveis
       },
       dataHora: dataFormatada,
       agendamento: {
@@ -599,13 +620,25 @@ const handleGeneratePDF = () => {
             </div>
           </div>
         ))}
+
+        <div className={styles.column}>
+            <label>Médico(s) Vetérinario(s) Responsável: </label>
+            <input
+            type="text"
+            name="medicosResponsaveis"
+            value={formData.medicosResponsaveis || ''} 
+            readOnly
+            className="form-control"
+            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+           />
+        </div>
           
           <div className={styles.button_box}>
             <CancelarWhiteButton onClick={cleanLocalStorage} />
             <button type="button" onClick={handleGeneratePDF} className={styles.pdf_button}>
                 Gerar PDF
             </button>
-            <FinalizarFichaModal onConfirm={handleSubmit} />
+            < FinalizarFichaModal onConfirm={handleSubmit} />
           </div>
         </form>
 

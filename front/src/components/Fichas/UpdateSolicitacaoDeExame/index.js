@@ -141,6 +141,7 @@ function FichaSolicitacaoExame() {
           'Imunológicos': 'imunologicos',
           'Imaginologia': 'imaginologia',
           'Cardiologia': 'cardiologia',
+          'medicosResponsaveis': 'medicosResponsaveis'
         };
 
         for (const apiField in conteudo) {
@@ -300,6 +301,7 @@ function FichaSolicitacaoExame() {
         Imunológicos: finalFormData.imunologicos,
         Imaginologia: finalFormData.imaginologia,
         Cardiologia: finalFormData.cardiologia,
+        medicosResponsaveis: formData.medicosResponsaveis
       },
       dataHora: dataFormatada,
       agendamento: {
@@ -530,6 +532,17 @@ function FichaSolicitacaoExame() {
             </div>
           </div>
         ))}
+        <div className={styles.column}>
+            <label>Médico(s) Vetérinario(s) Responsável: </label>
+            <input
+            type="text"
+            name="medicosResponsaveis"
+            value={formData.medicosResponsaveis || ''} 
+            readOnly
+            className="form-control"
+            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+           />
+        </div>
 
           {!isReadOnly && (
           <div className={styles.button_box}>

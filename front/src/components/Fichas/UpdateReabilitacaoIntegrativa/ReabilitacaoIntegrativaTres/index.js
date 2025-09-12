@@ -309,8 +309,15 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
 
                     {/*dados*/}
                     <div className={styles.column}>
-                        <label>Médica(o) Veterinária(o) responsável :</label>
-                        <input type="text" name="responsavel" value={formData.responsavel} disabled={isReadOnly} onChange={handleChange} />
+                        <label>Médico(s) Veterinário(s) Responsável:</label>
+                            <input
+                            type="text"
+                            name="medicosResponsaveis"
+                            value={formData.medicosResponsaveis || ''} 
+                            readOnly
+                            className="form-control"
+                            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+                            />
                     </div>
                     <div className={styles.column}>
                         <label>Estagiarios/ Nome :</label>

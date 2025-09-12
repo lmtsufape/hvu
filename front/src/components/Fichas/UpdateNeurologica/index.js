@@ -175,7 +175,8 @@ function NeurologicaSteps() {
         diagnostico:"",
         tratamento:"",
     },
-    plantonistasDiscentes:""
+    plantonistasDiscentes:"",
+    medicosResponsaveis:""
   });
 
     // Obtém o ID da ficha da URL
