@@ -169,7 +169,8 @@ function updateFichaSessao() {
                 sessaoData: formData.sessaoData,
                 anotacao: formData.anotacao,
                 rg: formData.rg,
-                estagiario: formData.estagiario
+                estagiario: formData.estagiario,
+                medicosResponsaveis: formData.medicosResponsaveis
             }),
             dataHora: dataFormatada,
             agendamento: {
@@ -304,6 +305,17 @@ function updateFichaSessao() {
                     <div className={styles.column}>
                         <label>RG: </label>
                         <input type="text" name="rg" value={formData.rg} disabled={isReadOnly} onChange={handleChange} />
+                    </div>
+                    <div className={styles.column}>
+                        <label>Médico(s) Vetérinario(s) Responsável: </label>
+                        <input
+                            type="text"
+                            name="medicosResponsaveis"
+                            value={formData.medicosResponsaveis || ''} 
+                            readOnly
+                            className="form-control"
+                            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+                            />
                     </div>
 
                     {!isReadOnly && (
