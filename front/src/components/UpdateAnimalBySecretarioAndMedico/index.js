@@ -350,7 +350,7 @@ function UpdateAnimalBySecretarioAndMedico() {
         )}
       </ul>
     </form>
-    {<Alert message="Informações do animal editadas com sucesso!" show={showAlert} url={url} />}
+    {<Alert message="Informações do animal editadas com sucesso!" show={showAlert} url={`/getAnimalByIdByMedico/${id}`} />}
     {showErrorAlert && <ErrorAlert message="Erro ao editar informações do animal, tente novamente." show={showErrorAlert} />}
     </div>
   );

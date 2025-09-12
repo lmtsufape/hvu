@@ -112,7 +112,7 @@ function CreateFichaForm() {
 
     if (term) {
       const filtered = tutores.filter(
-        (t) => t.id.toString().includes(term) || t.nome.toLowerCase().includes(term.toLowerCase()),
+        (t) => t.id.toString().includes(term) || (t.nome?.toLowerCase().includes(term.toLowerCase()))
       )
       setFilteredTutores(filtered)
       setSearchError(false)
@@ -155,7 +155,7 @@ function CreateFichaForm() {
 
     if (term) {
       const filtered = medicos.filter(
-        (m) => m.id.toString().includes(term) || m.nome.toLowerCase().includes(term.toLowerCase()),
+        (m) => m.id.toString().includes(term) || (m.nome?.toLowerCase().includes(term.toLowerCase()))
       )
       setFilteredMedicos(filtered)
       setSearchErrorMedico(false)

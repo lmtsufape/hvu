@@ -9,7 +9,7 @@ export default function Text() {
 
             <h1 className={styles.titulo}>Laboratório de Anatomia e Patologia Animal</h1>
         
-            <p className={styles.paragrafo}>Adiministração de Laudos</p>
+            <p className={styles.paragrafo}>Administração de Laudos</p>
         </div>
     );
 }

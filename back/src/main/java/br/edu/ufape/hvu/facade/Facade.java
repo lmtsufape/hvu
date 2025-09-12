@@ -536,6 +536,15 @@ public class Facade {
 
     @Transactional
     public Raca saveRaca(Raca newInstance) {
+        Long especieId = newInstance.getEspecie().getId();
+
+        if (especieId == null) {
+            throw new RuntimeException("Espécie não informada");
+        }
+
+        Especie especie = especieServiceInterface.findEspecieById(especieId);
+        newInstance.setEspecie(especie);
+
         return racaServiceInterface.saveRaca(newInstance);
     }
 
@@ -1564,16 +1573,21 @@ public class Facade {
 
     @Transactional
     public Area updateArea(AreaRequest transientObject, Long id) {
-        //Area o = obj.convertToEntity();
         Area oldObject = findAreaById(id);
 
-        TypeMap<AreaRequest, Area> typeMapper = modelMapper
-                .typeMap(AreaRequest.class, Area.class)
-                .addMappings(mapper -> mapper.skip(Area::setId));
+        oldObject.setTituloArea(transientObject.getTituloArea());
 
-        typeMapper.map(transientObject, oldObject);
+        if (transientObject.getEspecie() != null) {
+            List<Especie> especies = transientObject.getEspecie().stream()
+                    .map(e -> especieServiceInterface.findEspecieById(e.getId())) // buscar cada espécie do DB
+                    .collect(Collectors.toList());
+
+            oldObject.setEspecie(especies);
+        }
+
         return areaServiceInterface.updateArea(oldObject);
     }
+
 
     public Area findAreaById(Long id) {
         return areaServiceInterface.findAreaById(id);
