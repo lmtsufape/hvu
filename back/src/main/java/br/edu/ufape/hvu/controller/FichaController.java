@@ -10,13 +10,13 @@ import br.edu.ufape.hvu.controller.dto.request.FichaRequest;
 import br.edu.ufape.hvu.controller.dto.response.FichaResponse;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class FichaController {
     private final Facade facade;
 
     @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
-    @GetMapping("ficha")
+    @GetMapping("/ficha")
     public List<FichaResponse> getAllFicha() {
         return facade.getAllFicha()
                 .stream()
@@ -25,19 +25,19 @@ public class FichaController {
     }
 
     @PreAuthorize("hasRole('MEDICO')")
-    @PostMapping("ficha")
+    @PostMapping("/ficha")
     public FichaResponse createFicha(@Valid @RequestBody FichaRequest newObj) {
         return new FichaResponse(facade.saveFicha(newObj.convertToEntity()));
     }
 
     @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
-    @GetMapping("ficha/{id}")
+    @GetMapping("/ficha/{id}")
     public FichaResponse getFichaById(@PathVariable Long id) {
         return new FichaResponse(facade.findFichaById(id));
     }
 
     @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
-    @GetMapping("ficha/animal/{animalId}")
+    @GetMapping("/ficha/animal/{animalId}")
     public List<FichaResponse> findFichasByAnimalId(@PathVariable Long animalId) {
         return facade.findFichasByAnimalId(animalId)
                 .stream()
@@ -46,7 +46,7 @@ public class FichaController {
     }
 
     @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
-    @GetMapping("ficha/agendamento/{agendamentoId}")
+    @GetMapping("/ficha/agendamento/{agendamentoId}")
     public List<FichaResponse> findFichasByAgendamentoId(@PathVariable Long agendamentoId) {
         return facade.findFichasByAgendamentoId(agendamentoId)
                 .stream()
@@ -55,13 +55,13 @@ public class FichaController {
     }
 
     @PreAuthorize("hasRole('MEDICO')")
-    @PatchMapping("ficha/{id}")
+    @PatchMapping("/ficha/{id}")
     public FichaResponse updateFicha(@PathVariable Long id, @Valid @RequestBody FichaRequest obj) {
         return new FichaResponse(facade.updateFicha(obj, id));
     }
 
     @PreAuthorize("hasRole('MEDICO')")
-    @DeleteMapping("ficha/{id}")
+    @DeleteMapping("/ficha/{id}")
     public String deleteFicha(@PathVariable Long id) {
         facade.deleteFicha(id);
         return "";

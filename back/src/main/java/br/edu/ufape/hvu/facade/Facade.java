@@ -933,11 +933,12 @@ public class Facade {
 
     private boolean existsVagaByMedicoIdAndAnimalId(Long medicoId, Long animalId) {
         Medico medico = medicoServiceInterface.findMedicoById(medicoId);
-        Animal animal = animalServiceInterface.findAnimalById(animalId);
 
         return vagaServiceInterface.findVagasByMedicoId(medicoId).stream()
+                .filter(vaga -> vaga.getAgendamento() != null)
+                .filter(vaga -> vaga.getAgendamento().getAnimal() != null)
                 .anyMatch(vaga -> vaga.getMedico().equals(medico) &&
-                        vaga.getAgendamento().getAnimal().equals(animal));
+                        vaga.getAgendamento().getAnimal().getId() == animalId);
     }
 
     // Consulta--------------------------------------------------------------
