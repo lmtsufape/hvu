@@ -3,134 +3,158 @@ import styles from "./index.module.css";
 import { useRouter } from "next/router";
 import VoltarButton from "../VoltarButton";
 import SearchBar from "../SearchBar";
-import { getConsultaByAnimal } from "../../../services/consultaService";
-// import { CriarConsulta } from '../WhiteButton';
+import { getFichasByAnimalId } from "../../../services/fichaService";  
 
-function GetAllConsultas() {
+function HistoricoFichasAnimal() {
   const router = useRouter();
-  const { id } = router.query;
-
-  const [consultas, setConsultas] = useState([]);
+  const { id: animalId } = router.query;
+  const [agendamentosComFichas, setAgendamentosComFichas] = useState(new Map());
   const [searchTerm, setSearchTerm] = useState("");
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
+  const [vagas, setVagas] = useState([]);
 
-  console.log("consultas:", consultas);
+  const rotasPorNome = {
+    "Ficha clínica ortopédica": "/updateFichaOrtopedica",
+    "Ficha clínica cardiológica": "/updateFichaCardiologica",
+    "Ficha Clínica Médica": "/updateFichaClinicaMedica",
+    "Ficha clínico médica de retorno": "/updateFichaMedicaRetorno",
+    "Ficha dermatológica de retorno": "/updateFichaDermatologicaRetorno",
+    "Ficha de solicitação de citologia": "/updateFichaSolicitacaoCitologia",
+    "Ficha clínica dermatológica": "/updateFichaDermatologica",
+    "Ficha de Retorno Clínico de Animais Silvestres e Exóticos": "/updateFichaRetornoClinicoSil",
+    "Ficha clínica neurológica": "/updateFichaNeurologica",
+    "Ficha de sessão": "/updateFichaSessao",
+    "Ficha de Reabilitação Integrativa": "/updateFichaReabilitacao",
+    "Ficha Solicitação de Exame": "/updateFichaSolicitacaoExame",
+    "Ficha Clínica Médica (silvestres ou exóticos)": "/updateFichaClinicaMedicaSilvestres",
+    "Ficha Anestesiológica": "/updateFichaAnestesiologia",
+    "Ficha de ato cirúrgico": "/updateFichaAtoCirurgico"
+  };
+
+  useEffect(() => {
+    const fetchDataAndGroup = async () => {
+      if (!animalId) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const todasAsFichas = await getFichasByAnimalId(animalId);
+        if (!Array.isArray(todasAsFichas)) {
+          setAgendamentosComFichas(new Map()); 
+          return;
+        }
+        const groupedByAgendamento = todasAsFichas.reduce((acc, ficha) => {
+          const agendamento = ficha.agendamento;
+          if (agendamento?.id) {
+            if (!acc.has(agendamento.id)) {
+              acc.set(agendamento.id, { ...agendamento, fichas: [] });
+            }
+            acc.get(agendamento.id).fichas.push(ficha);
+          }
+          return acc;
+        }, new Map());
+        setAgendamentosComFichas(groupedByAgendamento);
+      } catch (error) {
+        console.error("Erro ao buscar ou agrupar as fichas:", error);
+        setAgendamentosComFichas(new Map()); 
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDataAndGroup();
+  }, [animalId]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("token");
-      const storedRoles = JSON.parse(localStorage.getItem("roles"));
+      const storedRoles = JSON.parse(localStorage.getItem("roles") || "[]");
       setToken(storedToken || "");
       setRoles(storedRoles || []);
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const consultasData = await getConsultaByAnimal(id);
-        setConsultas(consultasData);
-      } catch (error) {
-        console.error("Erro ao buscar consultas:", error);
-      } finally {
-        setLoading(false); // Marcar como carregado após buscar os dados
-      }
-    };
-    if (id) {
-      fetchData();
-    }
-  }, [id]);
-
-  // Verifica se os dados estão carregando
-  if (loading) {
-    return <div className={styles.message}>Carregando dados do usuário...</div>;
-  }
-
-  // Verifica se o usuário tem permissão
-  if (!roles.includes("medico")) {
-    return (
-      <div className={styles.container}>
-        <h3 className={styles.message}>
-          Acesso negado: Você não tem permissão para acessar esta página.
-        </h3>
-      </div>
-    );
-  }
-
-  if (!token) {
-    return (
-      <div className={styles.container}>
-        <h3 className={styles.message}>
-          Acesso negado: Faça login para acessar esta página.
-        </h3>
-      </div>
-    );
-  }
-
-  const handleSearchChange = (term) => {
-    setSearchTerm(term);
-  };
-
   const formatDate = (dateString) => {
+    if (!dateString) return "Data não informada";
     const date = new Date(dateString);
-
+    if (isNaN(date)) return "Data inválida";
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
-
     return `${day}/${month} às ${hours}:${minutes}`;
   };
 
+  if (loading) { return <div className={styles.message}>Carregando histórico do paciente...</div>; }
+  if (!token || (!roles.includes("medico") && !roles.includes("patologista"))) { return <div className={styles.container}><h3 className={styles.message}>Acesso negado.</h3></div>; }
+
+  const filteredAgendamentos = Array.from(agendamentosComFichas.values())
+    .filter(agendamento => {
+        const medicoNome = agendamento.medico?.nome || "";
+        return medicoNome.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+
+  // LÓGICA DE RENDERIZAÇÃO (EXIBIÇÃO)
   return (
-    <div>
+    <div className={styles.pageContainer}>
       <VoltarButton />
       <div className={styles.titleMeusAgendamentos}>
-        <h1>Histórico de consultas</h1>
+        <h1>Histórico de Fichas do Paciente</h1>
       </div>
       <div className={styles.navbar}>
         <SearchBar
-          placeholder="Buscar consulta através do nome do(a) veterinário(a)"
-          onSearchChange={handleSearchChange}
+          placeholder="Buscar por nome do(a) veterinário(a)..."
+          onSearchChange={setSearchTerm}
         />
-        {/*   <CriarConsulta page={'createConsulta'} id={id} />  */}
       </div>
 
-      {consultas.length === 0 ? (
+      {filteredAgendamentos.length === 0 ? (
         <div className={styles.message}>
-          Não há consultas registradas para este animal.
+          Não há fichas registradas para este animal.
         </div>
       ) : (
         <ul className={styles.list}>
-          {consultas.map((consulta) => (
-            <li key={consulta.id} className={styles.info_container}>
-              <div className={styles.agendamentos}>
-                <div className={styles.agendamentoBox}>
-                  <div>
-                    <h1>Consulta Clínica</h1>
-                    <h2>{formatDate(consulta.dataVaga)}</h2>
-                  </div>
-                  <div>
-                    <h1>Paciente</h1>
-                    <h2>{consulta.animal && consulta.animal.nome}</h2>
-                  </div>
-                  <div>
-                    <h1>Veterinário&#40;a&#41;</h1>
-                    <h2>{consulta.medico.nome}</h2>
-                  </div>
-                  <div>
+
+          {filteredAgendamentos.map((vaga) => (
+            <li key={vaga.id} className={styles.agendamento_container}>
+  
+              <div className={styles.agendamentoHeader}>
+                <div>
+                  <h1>Agendamento</h1>
+                  <h2>{formatDate(vaga.dataVaga)}</h2>
+                </div>
+                <div>
+                  <h1>Veterinário(a)</h1>
+                  <h2>{vaga.medico?.nome || "Não informado"}</h2>
+                </div>
+              </div>
+
+              <div className={styles.fichas_list}>
+                <h3>Fichas da Consulta:</h3>
+                
+                {vaga.fichas.map((ficha) => (
+                  <div key={ficha.id} className={styles.ficha_item}>
+      
+                    <span className={styles.ficha_nome}>{ficha.nome || "Ficha sem nome"}</span>
+                    
+  
                     <button
                       className={styles.acessar_button}
-                      onClick={() =>
-                        router.push(`/getConsultaById/${consulta.id}`)
-                      }
+                      onClick={() => {
+                        const basePath = rotasPorNome[ficha.nome];
+                        if (basePath) {
+                          const url = `${basePath}?fichaId=${ficha.id}&animalId=${animalId}&agendamentoId=${vaga.id}&modo=visualizar`; //passar id do agendamento e nao da vaga
+                          router.push(url);
+                        } else {
+                          alert(`A visualização para "${ficha.nome}" ainda não foi implementada.`);
+                        }
+                      }}
                     >
                       Visualizar
                     </button>
                   </div>
-                </div>
+                ))}
               </div>
             </li>
           ))}
@@ -140,4 +164,4 @@ function GetAllConsultas() {
   );
 }
 
-export default GetAllConsultas;
+export default HistoricoFichasAnimal;

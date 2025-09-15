@@ -1,0 +1,552 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
+
+.container {
+  display: block;
+  width: 100%;
+  max-width: 65rem;
+  min-width: 300px;
+  height: auto;
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-family: "Poppins", sans-serif;
+}
+
+.container h1 {
+  font-size: clamp(20px, 5vw, 24px); /* Font size responsivo */
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+}
+
+.container h2 {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: start;
+  color: #333;
+}
+
+.form_box {
+  border-radius: 20px;
+  border: 0.5px solid #b1b1b1;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.box{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.checkbox_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+}
+
+.checkbox_container label {
+  display: flex;
+  align-items: center;
+  font-size: clamp(14px, 3.5vw, 16px);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.3s ease-in-out;
+}
+
+.checkbox_container input[type="checkbox"],
+.checkbox_container input[type="radio"] {
+  appearance: none;
+  margin-right: 0.5rem;
+  accent-color: #39805f;
+  border: 1px solid #B1B1B1;
+  border-radius: 50%;
+  min-width: 26px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.checkbox_container input[type="checkbox"]:checked,
+.checkbox_container input[type="radio"]:checked {
+  background-color: #B1B1B1;
+}
+
+.checkbox_square input[type="checkbox"]{
+  border-radius: 5px;
+}
+
+.column {
+  flex: 1;
+  min-width: 100px;
+  margin: 10px;
+}
+
+.column label {
+  /* display: block; */
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.column input,
+.column select,
+.column textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+}
+
+.inputs_three_columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+}
+
+.inputs_four_columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+}
+
+.criar_button {
+  width: 180px;
+  height: 48px;
+  border-radius: 10px;
+  border: 1px solid #39805F;
+  color: #FFF5F6;
+  background-color: #39805F;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
+}
+
+.criar_button:hover {
+  background-color: #39805fe6;
+}
+
+.button_box {
+  width: 100%; /* Alterado para usar uma porcentagem */
+  max-width: 1152px;
+  height: 10vh;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  gap: 3vh;
+}
+
+.message {
+  min-height: 300px;
+  margin-top: 56px; 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
+}
+
+.error_message {
+  margin-top: -0.2em;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 24px;
+  color: #C7122F;
+}
+/* index.module.css */
+.boxBorder {
+  display: grid;
+  border-radius: 20px;
+  padding-bottom: 18px;
+  padding-left: 29px;
+  padding-right: 37px;
+  background-color: #fff;
+  box-shadow: 0px 0px 14px 0px rgba(0, 0, 0, 0.15);      
+}
+
+  .box_ficha_toggle{
+  max-width: 1118px;
+  width: 100%;
+  margin-bottom: 18px;
+  margin-top: 38px;
+}
+
+.toggleButton {
+  max-width: 1118px;
+  width: 100%;
+  height: 44px;
+  background-color: #98b7a9;
+  color: #000000;
+  font-size: 20px;
+  padding: 9.5px 16px;
+  padding-left: 16px;
+  margin-bottom: 0px;
+  border-radius: 10px 10px 10px 10px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-align: left;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  box-sizing: border-box;
+  position: relative; 
+}
+
+.toggleButton::after {
+  font-weight: 600;
+  position: absolute; 
+  right: 16px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+}
+
+.toggleButton.expand::after {
+  content: "+"; 
+}
+
+.toggleButton.minimize::after {
+  content: "-"; 
+}
+
+.toggleButton:hover {
+  background-color: #d6ece0;
+}
+
+.toggleButton:active {
+  background-color: #c4e2d2;
+}
+
+.container_toggle {
+  width: 100%;
+  height: 430px;
+  align-items: center;
+  margin-top: 22px;
+}
+
+.container_toggle h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+}
+
+.infos_box {
+  display: flex;
+  flex-direction: column;
+  width: 97%;
+  border-radius: 20px;
+  border: 0.5px solid #B1B1B1;
+  gap: 10px;
+}
+
+.identificacao {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 28px;
+  margin-top: 32px;
+}
+
+.nome_animal {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  letter-spacing: 0em;
+}
+
+.especie_animal {
+  color: #39805F;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+}
+
+.animal-data-box {
+  display: flex;
+  gap: 188px;
+  margin-left: 28px;
+  margin-bottom: 32px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.infos {
+  display: flex;
+  flex-direction: column;
+}
+
+.infos p {
+  margin-top: -6px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #39805F;
+}
+
+.infos h6 {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #404040;
+}
+
+.tabela_tratamento {
+  width: 100%;
+  border-spacing: 10px 11px;
+  border-collapse: separate;
+}
+
+.tabela_tratamento td {
+  text-align: center;
+  font-size: 16px;
+}
+
+.tabela_tratamento th {
+  text-align: center;
+  background-color: #f6fbf9;
+  font-weight: 600;
+  font-size: 16px;
+  color: #7f7f7f;
+  border: solid 1px #7f7f7f;
+  border-radius: 5px;
+  padding-right: 10px;
+}
+
+.tabela_tratamento input {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 49px;
+  margin-bottom: -5px;
+}
+
+.bolha_container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  margin-right: 15px;
+}
+
+.bolha {
+  display: flex;
+  position: relative;
+  width: 23px;
+  height: 23px;
+  align-items: center;   
+  justify-content: center;
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 18px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  transition: background 0.3s;
+  padding-top: 3px;
+}
+
+.bolha_remover_linha {
+  right: 0px;  
+}
+
+.bolha:hover {
+  background-color: #a5a5a5;
+}
+
+
+
+@media (max-width: 700px) {
+
+  /* --- GERAL E CONTAINER --- */
+  .container {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .container h1 {
+    font-size: 20px; /* Reduz o título principal */
+    margin-bottom: 20px;
+  }
+
+  .boxBorder {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+  }
+
+  /* --- DADOS DO ANIMAL (TOGGLE) --- */
+  .box_ficha_toggle {
+    margin-top: 20px;
+  }
+
+  .toggleButton {
+    font-size: 18px; /* Reduz a fonte do botão toggle */
+  }
+
+  .container_toggle {
+    height: auto; /* Altura automática para o conteúdo caber */
+    margin-top: 15px;
+  }
+
+  .animal-data-box {
+    flex-direction: column; /* Empilha as colunas de informações */
+    gap: 0; /* Remove o espaçamento entre as colunas empilhadas */
+    margin-left: 15px;
+  }
+
+  .lista {
+    gap: 20px; /* Reduz o espaçamento entre os itens da lista */
+    margin-bottom: 20px;
+  }
+
+  .infos p {
+    font-size: 16px; /* Ajusta o tamanho da fonte das informações */
+  }
+
+  .infos h6 {
+    font-size: 14px; /* Ajusta o tamanho da fonte dos rótulos */
+  }
+
+  /* --- FORMULÁRIO --- */
+  .row {
+    flex-direction: column; /* Empilha as colunas dos inputs */
+  }
+
+  .row .col,
+  .row .col-md-3,
+  .row .col-md-6,
+  .row .col-md-9 {
+    width: 100%; /* Faz cada coluna ocupar a largura total */
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 15px; /* Adiciona espaço entre os campos empilhados */
+  }
+
+  /* --- CHECKBOXES E RADIOS --- */
+  .checkbox_container {
+    grid-template-columns: 1fr; /* Uma coluna para checkboxes e radios */
+    gap: 5px;
+  }
+
+  .checkbox_container label {
+    padding: 0.4rem;
+  }
+
+  .tabela_tratamento thead tr,
+  .tabela_tratamento tbody tr {
+    display: flex;
+    width: 100%;
+    gap: 1px; /* <--- ESTE É O VALOR A SER ALTERADO */
+  }
+
+  .tabela_tratamento th:not(:first-child),
+  .tabela_tratamento td:not(:first-child) {
+    padding-left: 5px; /* Adiciona um espaço de 5px à esquerda de cada coluna, exceto a primeira */
+  }
+
+
+  /* Garante que os checkboxes de mucosas fiquem alinhados */
+  .checkbox_square {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  /* Coluna 1: Fármaco (Largura Reduzida) */
+  .tabela_tratamento th:nth-child(1),
+  .tabela_tratamento td:nth-child(1) {
+    width: 31% !important; /* Força a largura para 30% */
+    text-align: center; 
+  }
+
+  /* Coluna 2: Dose/Volume (Largura Aumentada) */
+  .tabela_tratamento th:nth-child(2),
+  .tabela_tratamento td:nth-child(2) {
+    width: 42% !important;
+    text-align: center; /* Aumentado de 25% para 30% */
+  }
+
+/* Coluna 3: Via (Largura Aumentada) */
+.tabela_tratamento th:nth-child(3),
+.tabela_tratamento td:nth-child(3) {
+  width: 19%; /* Aumentado de 20% para 25% */
+  text-align: center; 
+}
+  /* --- TABELA DE FÁRMACOS --- */
+  .tabela_tratamento {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px; /* Mantém o espaço vertical entre as linhas */
+}
+
+  .tabela_tratamento thead, .tabela_tratamento tbody, .tabela_tratamento tr {
+    display: block;
+    
+  }
+
+  .tabela_tratamento tr {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tabela_tratamento th, .tabela_tratamento td {
+    display: inline-block;
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .tabela_tratamento th {
+    font-size: 14px;
+  }
+
+  .tabela_tratamento td {
+    width: 33%; /* Divide o espaço igualmente */
+  }
+
+  .tabela_tratamento input {
+  width: 100%;
+  height: 42px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+  }
+
+  .bolha_container {
+    margin-right: 5px; /* Ajusta a posição dos botões de adicionar/remover */
+  }
+
+  /* --- BOTÕES DE AÇÃO --- */
+  .button_box {
+    flex-direction: column-reverse; /* Empilha os botões */
+    height: auto;
+    padding-top: 20px;
+    gap: 15px;
+    align-items: stretch; /* Faz os botões ocuparem a mesma largura */
+  }
+
+  /* Força os botões a terem largura total */
+  .button_box > button, .button_box > div > button {
+    width: 100%;
+    margin: 0;
+  }
+}

@@ -1,12 +1,24 @@
 package br.edu.ufape.hvu.exception.types.global;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor 
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Getter
+@Setter @NoArgsConstructor
 public class ErrorResponse {
-    public String code;
-    public String message;
+    private String error;
+    private String message;
+    private List<StackTraceElement> stackTrace; //Descomentar quando for preciso Stacktrace
+    private LocalDateTime timestamp;
+
+    public ErrorResponse(String exceptionType, String message, List<StackTraceElement> stackTrace, LocalDateTime timestamp) {
+        this.error = exceptionType;
+        this.message = message;
+        this.stackTrace = stackTrace;
+        this.timestamp = timestamp;
+    }
 }

@@ -1,16 +1,16 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.OrgaoRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Orgao;
 
 @Service
+@RequiredArgsConstructor
 public class OrgaoService implements OrgaoServiceInterface {
-	@Autowired
-	private OrgaoRepository repository;
+	private final OrgaoRepository repository;
 
 
 	public Orgao saveOrgao(Orgao newInstance) {
@@ -29,11 +29,6 @@ public class OrgaoService implements OrgaoServiceInterface {
 		return repository.findAll();
 	}
 
-	public void deleteOrgao(Orgao persistentObject){
-		this.deleteOrgao(persistentObject.getId());
-		
-	}
-	
 	public void deleteOrgao(long id){
 		Orgao obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Orgao"));
 		repository.delete(obj);

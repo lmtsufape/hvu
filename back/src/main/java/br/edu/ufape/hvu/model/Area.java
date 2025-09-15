@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.model;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,14 +16,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-public  class Area  {
+public class Area  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
@@ -33,6 +30,5 @@ public  class Area  {
 	@OneToMany
 	@JoinColumn(name = "area_id")
 	@ToString.Exclude
-	private List<Especie> especie; 
-
+	private List<Especie> especie;
 }

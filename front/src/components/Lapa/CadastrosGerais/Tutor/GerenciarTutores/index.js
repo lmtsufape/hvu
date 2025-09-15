@@ -6,6 +6,7 @@ import { deleteTutor, getAllTutor } from '../../../../../../services/tutorServic
 import VoltarButton from '../../../VoltarButton';
 import ExcluirButton from '../../../../ExcluirButton';
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function GerenciarTutores() {
     const [tutores, setTutores] = useState([]);
@@ -15,6 +16,28 @@ function GerenciarTutores() {
     const [deletedTutorId, setDeletedTutorId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,7 +66,7 @@ function GerenciarTutores() {
     };
 
     const filteredTutores = tutores.filter(tutor => {
-        return tutor.nome.toLowerCase().includes(searchTerm.toLowerCase());
+        return tutor.nome?.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
     const handleAddTutorClick = () => {
@@ -62,9 +85,9 @@ function GerenciarTutores() {
 
             <div className={styles.navbar_container}>
                 <SearchBar placeholder={`Buscar por nome`} onSearchChange={setSearchTerm} />
-                <button className={styles.adicionar_tutor_button} onClick={handleAddTutorClick}>
+               {/*} <button className={styles.adicionar_tutor_button} onClick={handleAddTutorClick}>
                     Adicionar Tutor
-                </button>
+                </button>*/}
             </div>
 
             {filteredTutores.length === 0 ? (
@@ -76,9 +99,13 @@ function GerenciarTutores() {
                             <div className={styles.info_box}>
                                 <h6>Nome</h6>
                                 <p>{tutor.nome}</p>
-                                <h6>CPF</h6>
-                                <p>{tutor.cpf}</p>
                             </div>
+
+                            <div className={styles.info_box}>
+                                <h6>CPF</h6>
+                                <p>{tutor.nome != "Anônimo" ? tutor.cpf : "Não informado"}</p>
+                            </div>
+                            
                             <div className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}

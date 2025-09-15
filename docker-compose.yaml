@@ -12,12 +12,14 @@ services:
       - hvu-networks
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://backend-db:5432/hvu
+      SPRING_DATASOURCE_URL: jdbc:postgresql://backend-db:5432/hvu?stringtype=unspecified
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
     depends_on:
       - backend-db
       - keycloak
+    volumes:
+      - hvu-uploads:/app/uploads
 
   backend-db:
     image: postgres:16.0
@@ -90,6 +92,8 @@ volumes:
   pg-data:
     driver: local
   keycloak-pg-data:
+    driver: local
+  hvu-uploads:
     driver: local
 
 networks:

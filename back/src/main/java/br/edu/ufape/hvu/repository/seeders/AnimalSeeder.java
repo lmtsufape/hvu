@@ -2,21 +2,19 @@ package br.edu.ufape.hvu.repository.seeders;
 
 import br.edu.ufape.hvu.model.Animal;
 import br.edu.ufape.hvu.model.Raca;
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import br.edu.ufape.hvu.repository.AnimalRepository;
 import br.edu.ufape.hvu.repository.RacaRepository;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Component @RequiredArgsConstructor
 public class AnimalSeeder {
-    final private AnimalRepository animalRepository;
-    final private RacaRepository racaRepository;
-
+    private final AnimalRepository animalRepository;
+    private final RacaRepository racaRepository;
 
     public void init(){
         if(animalRepository.count() > 0){
@@ -35,8 +33,9 @@ public class AnimalSeeder {
             animal.setPeso(faker.number().randomDouble(2, 1, 15));
             animal.setNumeroFicha(faker.idNumber().valid());
             animal.setRaca(racas.get(0));
+            animal.setOrigemAnimal(OrigemAnimal.HVU);
             animalRepository.save(animal);
-
         }
     }
+
 }

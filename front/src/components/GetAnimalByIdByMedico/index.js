@@ -27,6 +27,7 @@ function GetAnimalByIdByMedico() {
             const fetchData = async () => {
                 try {
                     const animalData = await getAnimalById(id);
+                    console.log("animalData", animalData)
                     setAnimal(animalData);
                 } catch (error) {
                     console.error('Erro ao buscar animal:', error);
@@ -44,7 +45,7 @@ function GetAnimalByIdByMedico() {
     }
 
     // Verifica se o usuário tem permissão
-    if (!roles.includes("medico")) {
+    if (!roles.includes("medico") && !roles.includes("patologista")) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
@@ -117,10 +118,14 @@ function GetAnimalByIdByMedico() {
                                         <h6>Número da ficha</h6>
                                         <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
                                     </div>
+                                    <div className={styles.infos}>
+                                        <h6>Origem do animal</h6>
+                                        <p>{animal.origemAnimal ? animal.origemAnimal : 'Não definido'}</p>
+                                    </div>
                                 </div>
                             </div>
                             <div className={styles.botao}>
-                                <ConsultasWhiteButton page={"getAllConsultas"} id={animal.id}/>
+                                {animal.origemAnimal === "HVU" && (<ConsultasWhiteButton page={"getAllConsultas"} id={animal.id}/>)}
                                 <EditarWhiteButton page={"updateAnimalBySecretarioAndMedico"} id={animal.id}/>
                             </div>
                         </div>

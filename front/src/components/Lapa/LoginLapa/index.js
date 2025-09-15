@@ -23,13 +23,16 @@ function FormularioLogin() {
     const logged = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            try{
+            try {
                 await postLogin(login, senha);
                 const userData = await getCurrentUsuario();
-                if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("medico")){
-                    router.push('/lapa/telaprincipallaudos');
+
+                if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("patologista")){
+                  router.push('/lapa/telaprincipallaudos');
+                } else if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("admin_lapa")){
+                  router.push('/lapa/homeAdmin');
                 }
-            }catch(error){
+            } catch(error){
                 console.log(error);
             }  
         } 

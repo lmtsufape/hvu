@@ -7,6 +7,7 @@ import { CancelarWhiteButton } from "../../../../WhiteButton";
 import { createEspecialidade } from "../../../../../../services/especialidadeService";
 import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function CreateEspecialidade() {
     const router = useRouter();
@@ -19,6 +20,29 @@ function CreateEspecialidade() {
     const [especialidade, setEspecialidade] = useState({
         nome: ""
     });
+
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     const handleEspecialidadeChange = (event) => {
         const { name, value } = event.target;
@@ -77,7 +101,7 @@ function CreateEspecialidade() {
                     </button>
                 </div>
             </form>
-            {<Alert message="Especialidade criada com sucesso!" show={showAlert} url={`/gerenciarEspecialidades`} />}
+            {<Alert message="Especialidade criada com sucesso!" show={showAlert} url={`/lapa/gerenciarEspecialidades`} />}
             {showErrorAlert && <ErrorAlert message="Erro ao cadastrar especialidade, tente novamente." show={showErrorAlert} />}
         </div>
     );

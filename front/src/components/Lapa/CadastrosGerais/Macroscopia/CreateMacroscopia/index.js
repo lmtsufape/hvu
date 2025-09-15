@@ -8,10 +8,11 @@ import { createCampoLaudo } from "../../../../../../services/campoLaudoService";
 import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
 import OrgaosList from "@/hooks/useOrgaoList";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function CreateCampoLaudo() {
     const router = useRouter();
-    const { orgaos, error } = OrgaosList(); // Usando o hook para obter órgãos
+    const { orgaos, error } = OrgaosList(); 
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -20,6 +21,28 @@ function CreateCampoLaudo() {
         descricao: "",
         orgao: { id: null }
     });
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     const handleCampoLaudoChange = (event) => {
         const { name, value } = event.target;
@@ -48,6 +71,8 @@ function CreateCampoLaudo() {
             setErrors(errors);
             return;
         }
+
+        console.log(campoLaudo)
         try {
             await createCampoLaudo(campoLaudo);
             setShowAlert(true);
@@ -64,7 +89,7 @@ function CreateCampoLaudo() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Adicionar Campo de Laudo</h1>
+            <h1>Adicionar Macroscopia</h1>
             <form className={styles.inputs_container}>
                 <div className={styles.inputs_box}>
                     <div className="row">

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { getAllFoto } from '../../services/fotoService';
+import { getAllFotos } from '../../services/fotoService';
 
-const FotosList = () => {
+const FotoList = () => {
     const [fotos, setFotos] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const getFotos = async () => {
             try {
-                const data = await getAllFoto();
+                const data = await getAllFotos();
                 setFotos(data);
             } catch (err) {
                 setError(err);
@@ -21,4 +21,4 @@ const FotosList = () => {
     return { fotos, error };
 };
 
-export default FotosList;
+export default FotoList;

@@ -6,6 +6,7 @@ import { CancelarWhiteButton } from "../../../../WhiteButton";
 import { updateCampoLaudo, getCampoLaudoById } from "../../../../../../services/campoLaudoService";
 import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function UpdateCampoLaudo() {
     const router = useRouter();
@@ -15,6 +16,28 @@ function UpdateCampoLaudo() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [campoLaudo, setCampoLaudo] = useState({});
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         if (id) {
@@ -86,7 +109,7 @@ function UpdateCampoLaudo() {
                     </button>
                 </div>
             </form>
-            {showAlert && <Alert message="Informações da Macroscopia editadas com sucesso!" show={showAlert} url={`/gerenciarCampoLaudo`} />}
+            {showAlert && <Alert message="Informações da Macroscopia editadas com sucesso!" show={showAlert} url={`/lapa/gerenciarMacroscopias`} />}
             {showErrorAlert && <ErrorAlert message="Erro ao editar informações da Macroscopia, tente novamente." show={showErrorAlert} />}
         </div>
     );

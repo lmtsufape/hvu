@@ -5,12 +5,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import br.edu.ufape.hvu.facade.Facade;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,14 +21,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-
-
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class FileController {
-	@Autowired
-	private Facade facade;
+	private final Facade facade;
 
+    @PreAuthorize("hasRole('MEDICO', 'PATOLOGISTA')")
 	@GetMapping(value = "arquivos/{filename}", produces = MediaType.ALL_VALUE)
 	public ResponseEntity<byte[]> getFile(@PathVariable String filename) {
 		File file;
@@ -43,6 +42,7 @@ public class FileController {
 		}
 	}
 
+    @PreAuthorize("hasRole('MEDICO', 'PATOLOGISTA')")
 	@PostMapping("arquivos")
 	public ResponseEntity<List<String>> storageFile(@RequestParam(name = "file") List<MultipartFile> files) {
 		List<String> filenames = new ArrayList<>();
@@ -57,13 +57,11 @@ public class FileController {
 		}
 	}
 
+    @PreAuthorize("hasRole('MEDICO', 'PATOLOGISTA')")
 	@DeleteMapping("arquivos/{filename}")
 	public ResponseEntity<Void> deleteFile(@PathVariable String filename) {
-		try {
-			facade.deleteFile(filename);
-			return ResponseEntity.noContent().build();
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+		facade.deleteFile(filename);
+		return ResponseEntity.noContent().build();
 	}
+
 }

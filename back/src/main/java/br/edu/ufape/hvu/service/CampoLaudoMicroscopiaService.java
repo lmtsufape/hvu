@@ -3,16 +3,15 @@ package br.edu.ufape.hvu.service;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.CampoLaudoMicroscopia;
 import br.edu.ufape.hvu.repository.CampoLaudoMicroscopiaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CampoLaudoMicroscopiaService implements CampoLaudoMicroscopiaServiceInterface {
-
-    @Autowired
-    private CampoLaudoMicroscopiaRepository repository;
+    private final CampoLaudoMicroscopiaRepository repository;
 
     @Override
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
@@ -32,11 +31,6 @@ public class CampoLaudoMicroscopiaService implements CampoLaudoMicroscopiaServic
     @Override
     public List<CampoLaudoMicroscopia> getAllCampoLaudoMicroscopia() {
         return repository.findAll();
-    }
-
-    @Override
-    public void deleteCampoLaudoMicroscopia(CampoLaudoMicroscopia persistentObject) {
-        this.deleteCampoLaudoMicroscopia(persistentObject.getId());
     }
 
     @Override

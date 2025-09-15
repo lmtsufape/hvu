@@ -79,6 +79,12 @@
   margin-top: 50px;
 }
 
+.button_box{
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
 .box_button {
   display: flex;
   justify-content: center;
@@ -224,4 +230,27 @@
 
 .add_button:hover {
   background-color: #5b977b;
+}
+
+.message {
+  min-height: 300px;
+  margin-top: 56px; 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
+}
+
+.term {
+  cursor: pointer;
+  transition: text-decoration 0.2s;
+}
+
+.term:hover {
+  text-decoration: underline; 
 }

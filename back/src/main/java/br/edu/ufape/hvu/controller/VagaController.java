@@ -1,151 +1,124 @@
 package br.edu.ufape.hvu.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-
 import java.time.LocalDate;
 import java.util.Comparator;
-
 import br.edu.ufape.hvu.model.Vaga;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.VagaCreateRequest;
 import br.edu.ufape.hvu.controller.dto.request.VagaRequest;
 import br.edu.ufape.hvu.controller.dto.response.VagaResponse;
-import br.edu.ufape.hvu.exception.IdNotFoundException;
 
-
- 
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class VagaController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
-	
+	private final Facade facade;
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@GetMapping("vaga")
 	public List<VagaResponse> getAllVaga() {
-	    return facade.getAllVaga()
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+	    return facade.findAllVaga(principal.getSubject())
 	            .stream()
 	            .sorted(Comparator.comparing(Vaga::getDataHora)) // Ordenar as vagas por dataHora
 	            .map(VagaResponse::new)
 	            .toList();
 	}
-	
-	@PostMapping("vaga")
-	public VagaResponse createVaga(@Valid @RequestBody VagaRequest newObj) {
-		return new VagaResponse(facade.saveVaga(newObj.convertToEntity()));
-	}
-	
+
+    @PreAuthorize("hasRole('SECRETARIO')")
+    @GetMapping("vaga/especialidade/{idEspecialidade}")
+    public List<VagaResponse> getVagasByEspecialidade(@PathVariable(value = "idEspecialidade") long idEspecialidade) {
+        return facade.getVagasByEspecialidade(idEspecialidade)
+                .stream()
+                .map(VagaResponse::new)
+                .toList();
+    }
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @GetMapping("vaga/agendamento/{idAgendamento}")
+    public VagaResponse getVagaByAgendamento(@PathVariable(value = "idAgendamento") long idAgendamento) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return new VagaResponse(facade.getVagaByAgendamento(idAgendamento, principal.getSubject()));
+    }
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @GetMapping("vaga/medico/{idMedico}/{data}")
+    public List<VagaResponse> getVagasAndAgendamentoByMedico(@PathVariable long idMedico, @PathVariable LocalDate data) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return facade.findVagasAndAgendamentoByMedico(data, idMedico, principal.getSubject())
+                .stream()
+                .map(VagaResponse::new)
+                .toList();
+    }
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@GetMapping("vaga/{id}")
 	public VagaResponse getVagaById(@PathVariable Long id) {
-		try {
-			return new VagaResponse(facade.findVagaById(id));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return new VagaResponse(facade.findVagaById(id, principal.getSubject()));
 	}
 
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@GetMapping("vaga/data/{date}")
-	List<VagaResponse> getVagasByDay(@PathVariable LocalDate date){
-		List<Vaga> vagas = facade.findVagaByData(date);
+	List<VagaResponse> getVagasByDay(@PathVariable LocalDate date) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+		List<Vaga> vagas = facade.findVagasByData(date, principal.getSubject());
 		return vagas
 				.stream()
 				.map(VagaResponse::new)
 				.toList();
 	}
 
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@GetMapping("vaga/data/{dataInicio}/{dataFinal}")
-	List<VagaResponse> getVagaBetweenInicialDateAndFinal(@PathVariable LocalDate dataInicio, @PathVariable LocalDate dataFinal){
-		List<Vaga> vagas = facade.findVagaBetweenInicialAndFinalDate(dataInicio, dataFinal);
-		return vagas
-				.stream()
+	List<VagaResponse> getVagaBetweenInicialDateAndFinal(@PathVariable LocalDate dataInicio, @PathVariable LocalDate dataFinal) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+
+		List<Vaga> vagas = facade.findVagaBetweenInicialAndFinalDate(dataInicio, dataFinal, principal.getSubject());
+		return vagas.stream()
 				.map(VagaResponse::new)
 				.toList();
 	}
-	
+
+    @PreAuthorize("hasRole('SECRETARIO')")
+    @PostMapping("vaga")
+    public VagaResponse createVaga(@Valid @RequestBody VagaRequest newObj) {
+        return new VagaResponse(facade.saveVaga(newObj.convertToEntity()));
+    }
+
+    @PreAuthorize("hasRole('SECRETARIO')")
+    @PostMapping("/gestao-vagas/criar")
+    public String createNewVagas(@Valid @RequestBody VagaCreateRequest newObj) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return facade.createVagasByTurno(newObj, principal.getSubject());
+    }
+
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("vaga/{id}")
 	public VagaResponse updateVaga(@PathVariable Long id, @Valid @RequestBody VagaRequest obj) {
-		try {
-			//Vaga o = obj.convertToEntity();
-			Vaga oldObject = facade.findVagaById(id);
-
-			if (obj.getTipoConsulta() != null) {
-				oldObject.setTipoConsulta(facade.findTipoConsultaById(obj.getTipoConsulta().getId()));
-				obj.setTipoConsulta(null);
-			}
-
-			if (obj.getEspecialidade() != null) {
-				oldObject.setEspecialidade(facade.findEspecialidadeById(obj.getEspecialidade().getId()));
-				obj.setEspecialidade(null);
-			}
-
-			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
-				obj.setMedico(null);
-			}
-
-			TypeMap<VagaRequest, Vaga> typeMapper = modelMapper
-													.typeMap(VagaRequest.class, Vaga.class)
-													.addMappings(mapper -> mapper.skip(Vaga::setId));
-													
-			typeMapper.map(obj, oldObject);	
-			
-			
-			return new VagaResponse(facade.updateVaga(oldObject));
-			
-			
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
+		return new VagaResponse(facade.processUpdateVaga(obj, id));
 	}
-	
-	@PostMapping("/gestao-vagas/criar")
-	public String createNewVagas(@Valid @RequestBody VagaCreateRequest newObj) {
-		return facade.createVagasByTurno(newObj);
 
-	}
-	
-	
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("vaga/{id}")
 	public String deleteVaga(@PathVariable Long id) {
-		try {
-			facade.deleteVaga(id);
-			return "";
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
+		facade.deleteVaga(id);
+		return "";
 	}
-	
-	@GetMapping("vaga/especialidade/{idEspecialidade}")
-	public List<VagaResponse> getVagasByEspecialidade(@PathVariable(value = "idEspecialidade") long idEspecialidade) {
-		return facade.getVagasByEspecialidade(idEspecialidade)
-				.stream()
-				.map(VagaResponse::new)
-				.toList();
-	}
-	
-	@GetMapping("vaga/medico/{idMedico}/{data}")
-	public List<VagaResponse> findVagasAndAgendamentoByMedico(@PathVariable long idMedico, @PathVariable LocalDate data) {
-		return facade.findVagasAndAgendamentoByMedico(data, idMedico)
-				.stream()
-				.map(VagaResponse::new)
-				.toList();
-	}
-	
-	@GetMapping("vaga/agendamento/{idAgendamento}")
-	public VagaResponse getVagaByAgendamento(@PathVariable(value = "idAgendamento") long idAgendamento) {
-		return new VagaResponse(facade.getVagaByAgendamento(idAgendamento));
-	}
+
 }

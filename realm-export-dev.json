@@ -113,6 +113,24 @@
         "attributes": {}
       },
       {
+        "id": "49cdd40e-1782-45cd-8648-0880c9a241a8",
+        "name": "patologista",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "e71d210a-2967-4d9b-9ea9-b095320322fd",
+        "attributes": {}
+      },
+      {
+        "id": "e3c50567-aacd-4490-8d7e-9b3ed9738dad",
+        "name": "admin_lapa",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "e71d210a-2967-4d9b-9ea9-b095320322fd",
+        "attributes": {}
+      },
+      {
         "id": "1507d420-78c3-4f1f-96cd-06994e726f3a",
         "name": "uma_authorization",
         "description": "${role_uma_authorization}",
@@ -653,6 +671,46 @@
       ],
       "realmRoles": [
         "medico"
+      ]
+    },
+    {
+      "id": "db15a5e9-c0ad-4ea3-903c-142a3e08dbe7",
+      "createdTimestamp": 1720000000000,
+      "username": "patologista",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "firstName": "patologista",
+      "lastName": "patologista",
+      "email": "patologista@patologista.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password"
+        }
+      ],
+      "realmRoles": [
+        "patologista"
+      ]
+    },
+    {
+      "id": "6c7fe50-75d7-48a0-bcfb-32c2000f485e",
+      "createdTimestamp": 1730000000000,
+      "username": "admin_lapa",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "firstName": "admin_lapa",
+      "lastName": "admin_lapa",
+      "email": "admin_lapa@admin_lapa.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password"
+        }
+      ],
+      "realmRoles": [
+        "admin_lapa"
       ]
     },
     {

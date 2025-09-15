@@ -1,82 +1,69 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-
+import java.util.stream.Collectors;
 import br.edu.ufape.hvu.model.Foto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import br.edu.ufape.hvu.facade.Facade;
-import br.edu.ufape.hvu.controller.dto.request.FotoRequest;
 import br.edu.ufape.hvu.controller.dto.response.FotoResponse;
-import br.edu.ufape.hvu.exception.IdNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
-
- 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/fotos")
+@RequiredArgsConstructor
+@PreAuthorize("hasRole('PATOLOGISTA')")
 public class FotoController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
-	
-	@GetMapping("foto")
-	public List<FotoResponse> getAllFoto() {
-		return facade.getAllFoto()
-			.stream()
-			.map(FotoResponse::new)
-			.toList();
-	}
-	
-	@PostMapping("foto")
-	public FotoResponse createFoto(@Valid @RequestBody FotoRequest newObj) {
-		return new FotoResponse(facade.saveFoto(newObj.convertToEntity()));
-	}
-	
-	@GetMapping("foto/{id}")
-	public FotoResponse getFotoById(@PathVariable Long id) {
-		try {
-			return new FotoResponse(facade.findFotoById(id));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
-	}
-	
-	@PatchMapping("foto/{id}")
-	public FotoResponse updateFoto(@PathVariable Long id, @Valid @RequestBody FotoRequest obj) {
-		try {
-			//Foto o = obj.convertToEntity();
-			Foto oldObject = facade.findFotoById(id);
+    private final Facade facade;
 
-			TypeMap<FotoRequest, Foto> typeMapper = modelMapper
-													.typeMap(FotoRequest.class, Foto.class)
-													.addMappings(mapper -> mapper.skip(Foto::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new FotoResponse(facade.updateFoto(oldObject));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
-	}
-	
-	@DeleteMapping("foto/{id}")
-	public String deleteFoto(@PathVariable Long id) {
-		try {
-			facade.deleteFoto(id);
-			return "";
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-		
-	}
-	
+    @PostMapping
+    public ResponseEntity<FotoResponse> uploadFoto(@RequestParam("file") MultipartFile file,
+                                                   @RequestParam("titulo") String titulo) {
+        Foto foto = facade.saveFoto(file, titulo);
+        return ResponseEntity.ok(new FotoResponse(foto));
+    }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<FotoResponse> replaceFoto(@PathVariable long id,
+                                                    @RequestParam("file") MultipartFile newFile,
+                                                    @RequestParam("titulo") String newTitle) {
+        Foto foto = facade.replaceFoto(id, newFile, newTitle);
+        return ResponseEntity.ok(new FotoResponse(foto));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FotoResponse>> getAllFotos() {
+        List<FotoResponse> fotos = facade.findllFotos()
+                .stream()
+                .map(FotoResponse::new)
+                .toList();
+        return ResponseEntity.ok(fotos);
+    }
+
+    @GetMapping("/info/{id}")
+    public ResponseEntity<FotoResponse> getFotoMetadata(@PathVariable long id) {
+        Foto foto = facade.findFotoById(id);
+        return ResponseEntity.ok(new FotoResponse(foto));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<byte[]> getFotoFileById(@PathVariable long id) {
+        byte[] fileData = facade.loadFotoFile(id);
+        Foto foto = facade.findFotoById(id);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(foto.getTipoArquivo()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + foto.getNomeArquivo() + "\"")
+                .body(fileData);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFoto(@PathVariable long id) {
+        facade.deleteFoto(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -6,9 +6,11 @@ const text_white_button = {
 	login: "Login",
 	adicionar_animal: "Adicionar animal",
 	adicionar_medico: "Adicionar veterinário(a)",
+	adicionar_patologista: "Adicionar patologista",
 	adicionar_raca: "Adicionar raça",
 	cadastro: "Cadastre-se",
 	cancelar: "Cancelar",
+	voltar: "Voltar",
 	editar: "Editar",
 	criar_agendamento: "Criar agendamento",
 	visualizar_agendas: "Visualizar agenda",
@@ -74,6 +76,20 @@ export function AdicionarMedicoWhiteButton() {
 	);
 }
 
+export function AdicionarPatologistaWhiteButton() {
+	const router = useRouter();
+
+	const handlAdicionarClick = () => {
+		router.push("/lapa/gerenciarPatologistas/createPatologista");
+	};
+
+	return (
+		<button className={styles.white_button} onClick={handlAdicionarClick}>
+			{text_white_button.adicionar_patologista}
+		</button>
+	);
+}
+
 export function AdicionarRacaWhiteButton() {
 	const router = useRouter();
 
@@ -96,17 +112,34 @@ export function CadastrolWhiteButton() {
 	);
 }
 
-export function CancelarWhiteButton({ type = "button" }) {
+export function CancelarWhiteButton({ type = "button", onClick  }) {
 	const router = useRouter();
 
 	const handlCancelarClick = (e) => {
 		e.preventDefault();
+		if (onClick) {
+			onClick(e); 
+		}
 		router.back();
 	};
 
 	return (
 		<button type={type} className={styles.white_button} onClick={handlCancelarClick}>
 			{text_white_button.cancelar}
+		</button>
+	);
+}
+
+export function VoltarWhiteButton({ type = "button", onClick }) {
+
+	const handlVoltarClick = (e) => {
+		e.preventDefault();
+        onClick(); 
+	};
+
+	return (
+		<button type={type} className={styles.white_button} onClick={handlVoltarClick}>
+			{text_white_button.voltar}
 		</button>
 	);
 }

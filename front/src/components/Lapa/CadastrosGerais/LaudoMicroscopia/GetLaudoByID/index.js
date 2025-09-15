@@ -3,12 +3,35 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import VoltarButton from '@/components/Lapa/VoltarButton';
 import { getLaudoMicroscopiaById } from '../../../../../../services/laudoMicroscopiaService';
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function GetLaudoMicroscopiaById() {
     const router = useRouter();
     const { id } = router.query;
     const [laudo, setLaudo] = useState({});
-    const [errors, setErrors] = useState({}); // Se precisar de validação de erros
+    const [errors, setErrors] = useState({}); 
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         if (id) {

@@ -1,10 +1,5 @@
 package br.edu.ufape.hvu.model;
 
-import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
+import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -34,4 +31,7 @@ public class Ficha {
     private String conteudo;
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
+    @ManyToOne
+    @JoinColumn(name = "agendamento_id")
+    private Agendamento agendamento;
 }

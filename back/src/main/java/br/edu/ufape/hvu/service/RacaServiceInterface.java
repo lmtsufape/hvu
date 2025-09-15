@@ -9,8 +9,7 @@ public interface RacaServiceInterface {
 	Raca saveRaca(Raca o);
 	Raca findRacaById(long id);
 	Raca updateRaca(Raca u);
-	void deleteRaca(Raca u);
-	void deleteRaca(long id);
+    void deleteRaca(long id);
 	List<Raca> getAllRaca();
 	List<Raca> findByEspecie(Especie especie);
     

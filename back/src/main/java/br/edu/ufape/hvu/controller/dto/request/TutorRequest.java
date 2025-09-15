@@ -1,29 +1,33 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
-
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Tutor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.validation.constraints.AssertTrue;
 
+@Getter @Setter @NoArgsConstructor
+public class TutorRequest extends UsuarioRequest {
+	private boolean anonimo;
 
-@Getter @Setter @NoArgsConstructor 
-public  class TutorRequest extends UsuarioRequest {
-	private String rg;
-	private List<AnimalRequest> animal;
-	private long id;
-
-
-	public Tutor convertToEntity() {
-		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-		Tutor obj = modelMapper.map(this, Tutor.class);
-		return obj;
+	@AssertTrue(message = "Campos obrigatórios devem ser preenchidos para tutor não anônimo")
+	public boolean isValid() {
+		if (anonimo) {
+			// Se for anônimo, libera qualquer campo vazio
+			return true;
+		}
+		// Se não for anônimo, todos os campos obrigatórios devem estar preenchidos
+		return getCpf() != null && !getCpf().isBlank()
+				&& getTelefone() != null && !getTelefone().isBlank()
+				&& getNome() != null && !getNome().isBlank()
+				&& getEndereco() != null;
 	}
 
-
-
+    @Override
+	public Tutor convertToEntity() {
+		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
+		return modelMapper.map(this, Tutor.class);
+	}
 }

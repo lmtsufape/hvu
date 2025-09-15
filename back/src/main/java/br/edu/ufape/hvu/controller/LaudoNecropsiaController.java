@@ -1,35 +1,21 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import br.edu.ufape.hvu.model.CampoLaudo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-
-import br.edu.ufape.hvu.model.LaudoNecropsia;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.LaudoNecropsiaRequest;
 import br.edu.ufape.hvu.controller.dto.response.LaudoNecropsiaResponse;
-import br.edu.ufape.hvu.exception.IdNotFoundException;
-
-
  
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class LaudoNecropsiaController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
+	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("laudoNecropsia")
 	public List<LaudoNecropsiaResponse> getAllLaudoNecropsia() {
 		return facade.getAllLaudoNecropsia()
@@ -38,59 +24,29 @@ public class LaudoNecropsiaController {
 				.toList();
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("laudoNecropsia")
 	public LaudoNecropsiaResponse createLaudoNecropsia(@Valid @RequestBody LaudoNecropsiaRequest newObj) {
 		return new LaudoNecropsiaResponse(facade.saveLaudoNecropsia(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("laudoNecropsia/{id}")
 	public LaudoNecropsiaResponse getLaudoNecropsiaById(@PathVariable Long id) {
-		try {
-			return new LaudoNecropsiaResponse(facade.findLaudoNecropsiaById(id));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return new LaudoNecropsiaResponse(facade.findLaudoNecropsiaById(id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@PatchMapping("laudoNecropsia/{id}")
 	public LaudoNecropsiaResponse updateLaudoNecropsia(@PathVariable Long id, @Valid @RequestBody LaudoNecropsiaRequest obj) {
-		try {
-			LaudoNecropsia oldObject = facade.findLaudoNecropsiaById(id);
-
-			// campoLaudo
-			if(obj.getCampoLaudo() != null && !obj.getCampoLaudo().isEmpty()){
-				List<CampoLaudo> updatedCampoLaudos = obj.getCampoLaudo().stream()
-						.map(campo -> facade.findCampoLaudoById(campo.getId()))
-						.collect(Collectors.toList());
-				oldObject.setCampoLaudo(updatedCampoLaudos);
-				obj.setCampoLaudo(null); // Limpar para evitar mapeamento duplo
-			}
-
-			TypeMap<LaudoNecropsiaRequest, LaudoNecropsia> typeMapper = modelMapper
-					.typeMap(LaudoNecropsiaRequest.class, LaudoNecropsia.class)
-					.addMappings(mapper -> mapper.skip(LaudoNecropsia::setId));
-
-			typeMapper.map(obj, oldObject);
-			return new LaudoNecropsiaResponse(facade.updateLaudoNecropsia(oldObject));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
+		return new LaudoNecropsiaResponse(facade.updateLaudoNecropsia(obj, id));
 	}
 
-	@PreAuthorize("hasAnyRole('MEDICOLAPA', 'SECRETARIOLAPA')")
+    @PreAuthorize("hasRole('PATOLOGISTA')")
 	@DeleteMapping("laudoNecropsia/{id}")
 	public String deleteLaudoNecropsia(@PathVariable Long id) {
-		try {
-			facade.deleteLaudoNecropsia(id);
-			return "";
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
-
+		facade.deleteLaudoNecropsia(id);
+		return "";
 	}
-
 
 }

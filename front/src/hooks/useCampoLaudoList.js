@@ -2,23 +2,23 @@ import { useState, useEffect } from 'react';
 import { getAllCampoLaudo } from '../../services/campoLaudoService';
 
 const CampoLaudoList = () => {
-    const [composLaudos, setComposLaudos] = useState([]);
+    const [campoLaudo, setCampoLaudo] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const getComposLaudos = async () => {
+        const getCampoLaudo = async () => {
             try {
                 const data = await getAllCampoLaudo();
-                setComposLaudos(data);
+                setCampoLaudo(data);
             } catch (err) {
                 setError(err);
             }
         };
 
-        getComposLaudos();
+        getCampoLaudo();
     }, []);
 
-    return { composLaudos, error };
+    return { campoLaudo, error };
 };
 
 export default CampoLaudoList;

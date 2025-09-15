@@ -1,13 +1,11 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,24 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import br.edu.ufape.hvu.controller.dto.request.CronogramaRequest;
 import br.edu.ufape.hvu.controller.dto.response.CronogramaResponse;
-import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.facade.Facade;
-import br.edu.ufape.hvu.model.Cronograma;
 import jakarta.validation.Valid;
-
-
  
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class CronogramaController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
+	private final Facade facade;
 
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("cronograma")
@@ -47,87 +37,48 @@ public class CronogramaController {
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@PostMapping("cronograma")
 	public CronogramaResponse createCronograma(@Valid @RequestBody CronogramaRequest newObj) {
-		try {
-			return new CronogramaResponse(facade.saveCronograma(newObj.convertToEntity()));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return new CronogramaResponse(facade.saveCronograma(newObj.convertToEntity()));
 	}
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("cronograma/{id}")
 	public CronogramaResponse getCronogramaById(@PathVariable Long id) {
-		try {
-			return new CronogramaResponse(facade.findCronogramaById(id));
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
+		return new CronogramaResponse(facade.findCronogramaById(id));
 	}
-	
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("cronograma/medico/{id}")
 	public List<CronogramaResponse> getCronogramaByMedicoId(@PathVariable Long id) {
-		try {
-			return facade.findCronogramaByMedicoId(id).stream()
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return facade.findCronogramaByMedicoId(id, principal.getSubject()).stream()
 					.map(CronogramaResponse::new)
 					.toList();
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
 	}
-	
+
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("cronograma/especialidade/{id}")
 	public List<CronogramaResponse> getCronogramaByEspecialidadeId(@PathVariable Long id) {
-	
-		try {
-			return facade.findCronogramaByEspecialidadeId(id).stream()
+		return facade.findCronogramaByEspecialidadeId(id).stream()
 					.map(CronogramaResponse::new)
 					.toList();
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}					
-		
+
 	}
 
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@PatchMapping("cronograma/{id}")
 	public CronogramaResponse updateCronograma(@PathVariable Long id, @Valid @RequestBody CronogramaRequest obj) {
-		try {
-			Cronograma oldObject = facade.findCronogramaById(id);
-
-			// medico
-			if(obj.getMedico() != null){
-				oldObject.setMedico(facade.findMedicoById(obj.getMedico().getId()));
-				obj.setMedico(null);
-			}
-
-			if (obj.getEspecialidade() != null) {
-				oldObject.setEspecialidade(facade.findEspecialidadeById(obj.getEspecialidade().getId()));
-				obj.setEspecialidade(null);
-			}
-
-
-			TypeMap<CronogramaRequest, Cronograma> typeMapper = modelMapper
-													.typeMap(CronogramaRequest.class, Cronograma.class)
-													.addMappings(mapper -> mapper.skip(Cronograma::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new CronogramaResponse(facade.updateCronograma(oldObject));
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-		}
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return new CronogramaResponse(facade.updateCronograma(obj, id, principal.getSubject()));
 		
 	}
 
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@DeleteMapping("cronograma/{id}")
 	public String deleteCronograma(@PathVariable Long id) {
-		try {
-			facade.deleteCronograma(id);
-			return "";
-		} catch (RuntimeException ex) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
-		}
-		
+		facade.deleteCronograma(id);
+		return "";
 	}
+
 }

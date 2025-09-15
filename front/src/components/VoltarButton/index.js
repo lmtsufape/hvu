@@ -3,11 +3,15 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import Image from 'next/image';
 
-function VoltarButton() {
+function VoltarButton({ onClick }) {
     const router = useRouter();
 
     const handlVoltarClick = () => {
-        router.back();
+        if (onClick) {
+            onClick(); 
+        } else {
+            router.back(); 
+        }
     };
 
     return(

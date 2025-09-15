@@ -2,8 +2,7 @@ package br.edu.ufape.hvu.service;
 
 import java.util.List;
 
-import org.hibernate.service.spi.ServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import br.edu.ufape.hvu.exception.IdNotFoundException;
@@ -11,10 +10,9 @@ import br.edu.ufape.hvu.model.Cancelamento;
 import br.edu.ufape.hvu.repository.CancelamentoRepository;
 
 @Service
+@RequiredArgsConstructor
 public class CancelamentoService implements CancelamentoServiceInterface {
-	@Autowired
-	private CancelamentoRepository repository;
-
+	private final CancelamentoRepository repository;
 
 	public Cancelamento saveCancelamento(Cancelamento newInstance) {
 		return repository.save(newInstance);
@@ -29,20 +27,11 @@ public class CancelamentoService implements CancelamentoServiceInterface {
 	}
 
 	public List<Cancelamento> findCancelamentosByTutorId(long tutorId) {
-		try {
-			return repository.findCancelamentosByTutorId(tutorId);
-		} catch (RuntimeException e) {
-			throw new ServiceException("Erro ao buscar os cancelamentos", e);
-		}
+		return repository.findCancelamentosByTutorId(tutorId);
 	}
 
 	public List<Cancelamento> getAllCancelamento(){
 		return repository.findAll();
-	}
-
-	public void deleteCancelamento(Cancelamento persistentObject){
-		this.deleteCancelamento(persistentObject.getId());
-		
 	}
 	
 	public void deleteCancelamento(long id){

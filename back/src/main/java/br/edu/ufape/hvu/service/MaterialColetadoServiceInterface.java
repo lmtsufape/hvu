@@ -8,8 +8,7 @@ public interface MaterialColetadoServiceInterface {
 	MaterialColetado saveMaterialColetado(MaterialColetado o);
 	MaterialColetado findMaterialColetadoById(long id);
 	MaterialColetado updateMaterialColetado(MaterialColetado u);
-	void deleteMaterialColetado(MaterialColetado u);
-	void deleteMaterialColetado(long id);
+    void deleteMaterialColetado(long id);
 	List<MaterialColetado> getAllMaterialColetado();
     
     

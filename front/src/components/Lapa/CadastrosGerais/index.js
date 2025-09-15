@@ -2,9 +2,32 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from "./index.module.css";
+import { getToken, getRoles } from "../../../../services/userService";
 
 function TelaAdministracao() {
     const router = useRouter();
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     return (
         <div className={styles.container}>
@@ -47,30 +70,26 @@ function TelaAdministracao() {
                 <button className={styles.button} onClick={() => router.push('/lapa/gerenciarAnimais')}>
                     <Image src="/animais.svg" alt="Animais" width={62} height={62} />
                     <h6>Gerenciar Animais</h6>
-                </button>
-                <button className={styles.button} onClick={() => router.push('/lapa/gerenciarMedicos')}>
-                    <Image src="/veterinarios.svg" alt="Veterinarios" width={62} height={62} />
-                    <h6>Gerenciar Veterinários</h6>
-                </button>
-            </div>
-
-            <div className={styles.box_button}>             
+                </button>          
                 <button className={styles.button} onClick={() => router.push('/lapa/gerenciarMacroscopias')}>
                     <Image src="/macroscopias.svg" alt="Laudos" width={62} height={62} />
                     <h6>Gerenciar Macroscopias</h6>
                 </button>
+            </div>
+
+            <div className={styles.box_button}>   
                 <button className={styles.button} onClick={() => router.push('/lapa/gerenciarMicroscopias')}>
                     <Image src="/macroscopias.svg" alt="Laudos" width={62} height={62} />
                     <h6>Gerenciar Microscopias</h6>
                 </button>
-                <button className={styles.button} onClick={() => router.push('/lapa/gerenciarLaudos')}>
+             {/*   <button className={styles.button} onClick={() => router.push('/lapa/gerenciarLaudos')}>
                     <Image src="/laudos.svg" alt="Laudos" width={62} height={62} />
                     <h6>Gerenciar Laudos de Necropsias</h6>
                 </button>
                 <button className={styles.button} onClick={() => router.push('/lapa/gerenciarLaudosMicroscopias')}>
                     <Image src="/laudos.svg" alt="Laudos" width={62} height={62} />
                     <h6>Gerenciar Laudos de Histopatologias</h6>
-                </button>
+                </button> */}
             </div>
 
         </div>

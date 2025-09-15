@@ -6,6 +6,7 @@ import VoltarButton from '../../../VoltarButton';
 import ExcluirButton from '../../../../ExcluirButton';
 import ErrorAlert from "../../../../ErrorAlert";
 import { getAllCampoLaudoMicroscopia, deleteCampoLaudoMicroscopia } from '../../../../../../services/campoLaudoMicroscopiaService';
+import { getToken, getRoles } from "../../../../../../services/userService";
 
 function GerenciarMicroscopia() {
     const [microscopias, setMicroscopias] = useState([]);
@@ -14,6 +15,28 @@ function GerenciarMicroscopia() {
     const [showAlert, setShowAlert] = useState(false);
     const [deletedMicroscopiaId, setDeletedMicroscopiaId] = useState(null);
     const router = useRouter();
+    const roles = getRoles();
+    const token= getToken();
+
+    if (!token) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Faça login para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
+
+    if (!roles.includes("patologista")) {
+        return (
+        <div className={styles.container}>
+            <h3 className={styles.message}>
+                Acesso negado: Você não tem permissão para acessar esta página.
+            </h3>
+        </div>
+        );
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,6 +68,11 @@ function GerenciarMicroscopia() {
         return microscopia.descricao.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
+    const capitalizeFirstLetter = (text) => {
+        if (!text) return ''; 
+        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+    };
+
     return (
         <div className={styles.container}>
             <VoltarButton />
@@ -63,14 +91,18 @@ function GerenciarMicroscopia() {
                 <ul className={styles.list}>
                     {filteredMicroscopias.map(microscopia => (
                         <li key={microscopia.id} className={styles.info_container}>
-                            <div className={styles.info_box}>
-                                <h6>Descrição</h6>
-                                <p>{microscopia.descricao}</p>
-                                <h6>Processamento</h6>
-                                <p>{microscopia.processamento}</p>
-                                <h6>Órgão</h6>
-                                <p>{microscopia.orgao.id}</p>
-                            </div>
+                                <div className={styles.info_box}>
+                                    <h6>Descrição</h6>
+                                    <p>{microscopia.descricao}</p>
+                                </div>
+                                <div className={styles.info_box}>
+                                    <h6>Processamento</h6>
+                                    <p>{capitalizeFirstLetter(microscopia.processamento)}</p>
+                                </div>
+                                <div className={styles.info_box}>
+                                    <h6>Órgão</h6>
+                                    <p>{microscopia.orgao.nome}</p>
+                                </div>
                             <div className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}

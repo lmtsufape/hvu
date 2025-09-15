@@ -2,23 +2,24 @@ import { useState, useEffect } from 'react';
 import { getAllFichaSolicitacao } from '../../services/fichaSolicitacaoService'; 
 
 const FichaSolicitacaoServicoList = () => {
-    const [fichaSolicitacaoServico, setFichaSolicitacaoServico] = useState([]);
+    const [fichas, setFichas] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const getFichaSolicitacaoServico = async () => {
+        const getFichas = async () => {
             try {
                 const data = await getAllFichaSolicitacao();
-                setFichaSolicitacaoServico(data);
+                const list = Array.isArray(data) ? data : data.content || [];
+                setFichas(list);
             } catch (err) {
                 setError(err);
             }
         };
 
-        getFichaSolicitacaoServico();
+        getFichas();
     }, []);
 
-    return { fichaSolicitacaoServico, error };
+    return { fichas, error };
 };
 
 export default FichaSolicitacaoServicoList;

@@ -14,14 +14,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-public  class Raca  {
+public class Raca  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
@@ -31,6 +29,5 @@ public  class Raca  {
 	private String descricao;
 	@ManyToOne
 	@ToString.Exclude
-	private Especie especie; 
-
+	private Especie especie;
 }

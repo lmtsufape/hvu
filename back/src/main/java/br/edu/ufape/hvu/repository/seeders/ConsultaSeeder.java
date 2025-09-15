@@ -5,13 +5,13 @@ import br.edu.ufape.hvu.repository.*;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Component @RequiredArgsConstructor
 public class ConsultaSeeder {
     final private ConsultaRepository consultaRepository;
     final private MedicoRepository medicoRepository;
+    final private FichaRepository fichaRepository;
 
     public void init(){
         if(consultaRepository.count() > 0){
@@ -27,6 +27,5 @@ public class ConsultaSeeder {
         consulta.setMedico(medicos.get(0));
 
         consultaRepository.save(consulta);
-
     }
 }

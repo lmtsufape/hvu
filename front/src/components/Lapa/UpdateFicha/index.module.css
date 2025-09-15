@@ -279,6 +279,20 @@
   color: red;
 }
 
+.hist_button {
+  all: unset;
+  cursor: pointer;     
+  color: #327053;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  text-decoration: none; 
+  padding: 0;           
+}
+
+.hist_button:hover {
+  text-decoration: underline; 
+}
+
 .form_box {
   display: block;
   justify-content: center;
@@ -436,7 +450,19 @@
   box-shadow: #327053;
 }
 
-
+.message {
+  min-height: 300px;
+  margin-top: 56px; 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
+}
 
 
   

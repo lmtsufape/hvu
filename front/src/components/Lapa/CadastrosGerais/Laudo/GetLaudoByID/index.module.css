@@ -1,112 +1,263 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap");
 
 .container {
-    min-height: 900px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 56px;
+  min-height: 900px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 56px;
 }
 
 .container_box {
-    width: 1200px;
-    min-height: 363.72px;
-    margin-top: -30px;
-    margin-bottom: 56px;
-    border-radius: 20px;
-    border: 0.5px solid #B1B1B1;
-    display: flex;
-    flex-direction: column;
-    gap: 56px;
+  width: 1200px;
+  min-height: 363.72px;
+  margin-top: -30px;
+  margin-bottom: 56px;
+  border-radius: 20px;
+  border: 0.5px solid #b1b1b1;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
 }
 
 .container h1 {
-    margin-top: -30px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 36px;
-    letter-spacing: 0em;
-    color: #000000;
+  margin-top: -30px;
+  font-family: "Poppins", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  letter-spacing: 0em;
+  color: #000000;
 }
 
 .list_container {
-    list-style: none;
+  list-style: none;
 }
 
 .list_box {
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    gap: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 56px;
 }
 
 .tutor {
-    width: 1152px;
-    margin-top: 56px;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+  width: 1152px;
+  margin-top: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
 .item_container {
-    display: flex;
-    align-items: center;
-    gap: 120px;
+  display: flex;
+  align-items: center;
+  gap: 120px;
 }
 
 .item_box {
-    width: 272px;
-    display: flex;
-    flex-direction: column;
-}
-
-.medico_nome {
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 30px;
-    color: #272727;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .item_box h6 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 24px;
-    color: #404040;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #404040;
+}
+
+.item_box p {
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #39805f;
 }
 
 .item_box div {
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 24px;
-    color: #39805F;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #39805f;
 }
 
 .title_endereco {
-    width: 1152px;
-    margin-bottom: -80px;
-    display: flex;
-    justify-content: left;
-    align-items: left;
+  width: 1152px;
+  margin-bottom: -80px;
+  display: flex;
+  justify-content: left;
+  align-items: left;
 
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 30px;
-    letter-spacing: 0em;
-    color: #272727;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 30px;
+  letter-spacing: 0em;
+  color: #272727;
 }
 
 .button_container {
-    width: 1152px;
-    display: flex;
-    align-items: center;
-    justify-content: right;
-    margin-bottom: 48px;
-    gap: 32px;
+  width: 1152px;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin-bottom: 48px;
+  gap: 32px;
 }
 
+.message {
+  min-height: 300px;
+  margin-top: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
+}
+
+/* Adicionou estilos para melhor exibição de microscopia e macroscopia */
+.campos_container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.campo_card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #fafafa;
+  transition: box-shadow 0.2s ease;
+}
+
+.campo_card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.campo_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.campo_numero {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #39805f;
+  background-color: #e8f5e8;
+  padding: 4px 12px;
+  border-radius: 16px;
+}
+
+.orgao_tag {
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.campo_content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.campo_text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.campo_item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.campo_item strong {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #404040;
+}
+
+.campo_item p {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #39805f;
+  margin: 0;
+}
+
+.campo_image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 150px;
+}
+
+.orgao_foto {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  transition: transform 0.2s ease;
+}
+
+.orgao_foto:hover {
+  transform: scale(1.05);
+  border-color: #39805f;
+}
+
+.image_caption {
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  text-align: center;
+  max-width: 150px;
+  line-height: 16px;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+  .campo_content {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .campo_image {
+    align-self: center;
+  }
+
+  .orgao_foto {
+    width: 120px;
+    height: 120px;
+  }
+
+  .image_caption {
+    max-width: 120px;
+  }
+}

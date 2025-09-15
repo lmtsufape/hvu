@@ -1,15 +1,27 @@
-import React from "react";
-import Link from 'next/link';
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css"
 import { useRouter } from "next/router"; 
+import { getCurrentUsuario } from '../../../../services/userService';
 
 //Administração Geral 
 export function SubHeaderGeral () {
     const router = useRouter();
+    const [userData, setUserData] = useState({ roles: [] });
+
+    useEffect(() => {
+        async function fetchUser() {
+            const data = await getCurrentUsuario();
+            setUserData(data || { roles: [] });
+        }
+        fetchUser();
+    }, []);
 
     const handleHomeLaudosClick = () => {
         router.push('/lapa/telaprincipallaudos');
+    };
+    const handleHomeAdminLapaClick = () => {
+        router.push('/lapa/homeAdmin');
     };
     const handleGeralClick = () => {
         router.push('/lapa/cadastrosGerais');
@@ -17,9 +29,16 @@ export function SubHeaderGeral () {
  
     return (
         <div className={styles.button_box}>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleHomeLaudosClick}>Home</button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleGeralClick}>Cadastros Gerais </button>
-            
+            <button type="button" className="btn btn-link" id={styles.button_decoration} 
+            onClick={userData.roles && Array.isArray(userData.roles) && userData.roles.includes("patologista") ? 
+            handleHomeLaudosClick : handleHomeAdminLapaClick}>
+                Home
+            </button>
+            {userData.roles && Array.isArray(userData.roles) && userData.roles.includes("patologista") && (
+                <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={handleGeralClick}>
+                    Cadastros Gerais
+                </button>
+            )}
         </div>
     );
 }

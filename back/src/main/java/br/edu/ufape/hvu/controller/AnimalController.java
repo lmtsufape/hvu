@@ -1,17 +1,13 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
+import br.edu.ufape.hvu.controller.dto.request.AnimalByPatologistaRequest;
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,27 +16,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import br.edu.ufape.hvu.controller.dto.request.AnimalRequest;
 import br.edu.ufape.hvu.controller.dto.response.AnimalResponse;
-import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.model.Animal;
-import br.edu.ufape.hvu.model.Tutor;
 import jakarta.validation.Valid;
 
-
- 
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class AnimalController {
-	@Autowired
-	private Facade facade;
-	@Autowired
-	private ModelMapper modelMapper;
+	private final Facade facade;
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@GetMapping("animal")
 	public List<AnimalResponse> getAllAnimal() {
 		return facade.getAllAnimal()
@@ -48,7 +36,8 @@ public class AnimalController {
 			.map(AnimalResponse::new)
 			.toList();
 	}
-	
+
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("animal/retorno")
 	public List<AnimalResponse> findAnimaisWithReturn() {
 		return facade.findAnimaisWithReturn()
@@ -57,6 +46,7 @@ public class AnimalController {
 			.toList();
 	}
 
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("animal/semRetorno")
 	public List<AnimalResponse> findAnimaisWithoutReturn() {
 		return facade.findAnimaisWithoutReturn()
@@ -65,15 +55,14 @@ public class AnimalController {
 			.toList();
 	}
 
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
+    @GetMapping("animal/retorno/{id}")
+    public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(@PathVariable Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
 
-	@GetMapping("animal/retorno/{id}")
-	public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(@PathVariable Long id) {
-		try {
-			return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id);
-		} catch (IdNotFoundException ex) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-		}
-	}
+        return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id, principal.getSubject());
+    }
 
 	@PreAuthorize("hasRole('TUTOR')")
 	@GetMapping("animal/tutor")
@@ -87,30 +76,22 @@ public class AnimalController {
 			.toList();
 	}
 
+    @PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("animal/numeroficha/{fichaNumero}")
 	public AnimalResponse getAnimaisByNumeroficha(@PathVariable String fichaNumero) {
 		Animal animals = facade.getAnimalByFichaNumber(fichaNumero);
-		if (animals == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrado animal com o número de ficha: " + fichaNumero);
-		}
 		return new AnimalResponse(animals);
 	}
 
 	@PreAuthorize("hasRole('TUTOR')")
 	@PostMapping("animal")
 	public AnimalResponse createAnimal(@Valid @RequestBody AnimalRequest newObj) {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			Jwt principal = (Jwt) authentication.getPrincipal();
-			return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
-		} catch (IdNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        } catch (RuntimeException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }
-		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
 	}
-	
+
+    @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -118,52 +99,37 @@ public class AnimalController {
 		return new AnimalResponse(facade.findAnimalById(id, principal.getSubject()));
 	}
 
-	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR', 'PATOLOGISTA')")
 	@PatchMapping("animal/{id}")
 	public AnimalResponse updateAnimal(@PathVariable Long id, @Valid @RequestBody AnimalRequest obj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
-			//Animal o = obj.convertToEntity();
-			Animal oldObject = facade.findAnimalById(id, principal.getSubject());
-
-			if(obj.getRaca() != null){
-				oldObject.setRaca(facade.findRacaById(obj.getRaca().getId()));
-				obj.setRaca(null);
-			}
-			
-			TypeMap<AnimalRequest, Animal> typeMapper = modelMapper
-													.typeMap(AnimalRequest.class, Animal.class)
-													.addMappings(mapper -> mapper.skip(Animal::setId));			
-			
-			
-			typeMapper.map(obj, oldObject);	
-			return new AnimalResponse(facade.updateAnimal(oldObject, principal.getSubject()));
-		} catch (IdNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        } catch (RuntimeException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }
-		
+		return new AnimalResponse(facade.updateAnimal(id, obj, principal.getSubject()));
 	}
 
+    @PreAuthorize("hasAnyRole('TUTOR', 'PATOLOGISTA')")
 	@DeleteMapping("animal/{id}")
 	public String deleteAnimal(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		try {
-			Animal oldObject = facade.findAnimalById(id, principal.getSubject());
-			Tutor tutor = facade.findTutorByanimalId(oldObject.getId());
-			if(!principal.getSubject().equals(tutor.getUserId())) {
-				throw new AccessDeniedException("This is not your animal");
-			}
-			facade.deleteAnimal(id);
-			return "";
-		} catch (IdNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        } catch (RuntimeException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
-        }
-		
+		facade.deleteAnimal(id, principal.getSubject());
+		return "";
 	}
+
+	@PreAuthorize("hasRole('PATOLOGISTA')")
+	@PostMapping("animal/patologista")
+	public AnimalResponse createAnimalByPatologista(
+			@Valid @RequestBody AnimalByPatologistaRequest request
+	) {
+        Animal savedAnimal = facade.saveAnimalByPatologista(request);
+		return new AnimalResponse(savedAnimal);
+	}
+
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
+    @GetMapping("/animal/origem/{origem}")
+    public List<Animal> getAnimalsByOrigemAnimal(@PathVariable OrigemAnimal origem) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+        return facade.findAnimalsByOrigemAnimal(origem, principal.getSubject());
+    }
 }
