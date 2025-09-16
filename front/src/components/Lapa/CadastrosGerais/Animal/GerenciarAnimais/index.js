@@ -44,7 +44,7 @@ function GerenciarAnimais() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const animaisData = await getAllAnimal();
+                const animaisData = await getAllAnimal("LAPA");
                 setAnimais(animaisData);
 
                 const tutoresData = {};

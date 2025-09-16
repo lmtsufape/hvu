@@ -13,7 +13,7 @@ import api from '../common/http-common-back';
   // Função para buscar todas 
   export async function getAllAviso() {
     try {
-      const response = await api.get('/aviso');
+      const response = await api.get("/aviso/habilitados");
       return response.data;
     } catch (error) {
       throw error;
