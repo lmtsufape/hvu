@@ -11,9 +11,9 @@ import api from '../common/http-common-back';
   }
   
   // Função para buscar todas 
-  export async function getAllAnimal() {
+  export async function getAllAnimal(origem = "HVU") {
     try {
-      const response = await api.get('/animal');
+      const response = await api.get(`/animal/origem/${origem}`);
       return response.data;
     } catch (error) {
       throw error;
