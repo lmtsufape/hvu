@@ -515,7 +515,7 @@ useEffect(() => {
   const nomeMedico = vagaData?.medico?.nome;
 
   const handleClick = (path, id) => {
-    router.push(`${path}?fichaId=${id}&animalId=${animalId}&agendamentoId=${id}&medico=${encodeURIComponent(nomeMedico || '')}`);
+   router.push(`${path}?fichaId=${id}&animalId=${animalId}&agendamentoId=${agendamentoId}&medico=${encodeURIComponent(nomeMedico || '')}`);
   };
 
   const rotasPorNome = {
