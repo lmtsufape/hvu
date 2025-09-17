@@ -63,7 +63,7 @@ function VisualizarTutor() {
   return (
     <div className={styles.container}>
       <VoltarButton />
-      <h1>Informações do&#40;a&#41; tutor&#40;a&#41;</h1>
+      <h1>Informações do&#40;a&#41; responsável</h1>
       <div className={styles.container_box}>
         <ul style={{ paddingLeft: "1rem" }}>
           {usuario && (

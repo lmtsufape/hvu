@@ -30,15 +30,15 @@ function TipoTutor() {
       <div className={styles.box_button}>
         <button className={styles.button} onClick={() => router.push("/lapa/createAnimal?tipo=novo")}>
           <Image src="/tutor.svg" alt="Tutores" width={62} height={62} />
-          <h6>Novo tutor</h6>
+          <h6>Novo Responsável</h6>
         </button>
         <button className={styles.button} onClick={() => router.push("/lapa/createAnimal?tipo=anonimo")}>
           <Image src="/tutor.svg" alt="Tutores" width={62} height={62} />
-          <h6>Tutor anônimo</h6>
+          <h6>Responsável anônimo</h6>
         </button>
         <button className={styles.button} onClick={() => router.push("/lapa/createAnimal?tipo=existente")}>
           <Image src="/tutor.svg" alt="Tutores" width={62} height={62} />
-          <h6>Tutor existente</h6>
+          <h6>Responsável existente</h6>
         </button>
       </div>
     </div>

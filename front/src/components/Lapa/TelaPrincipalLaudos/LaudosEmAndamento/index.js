@@ -98,7 +98,7 @@ function LaudosEmAndamento() {
                                 <p>{ficha.codigoPatologia}</p>
                             </div>
                             <div className={styles.info}>
-                                <h6>Tutor</h6>
+                                <h6>Responsável</h6>
                                 <p>{ficha.tutor.nome}</p>
                             </div>
                             <div className={styles.info}>
