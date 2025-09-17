@@ -49,7 +49,7 @@ const GeneratePdfButton = ({ ficha }) => {
           margin: [0, 0, 0, 15],
         },
 
-        { text: "IDENTIFICAÇÃO DO TUTOR", style: "sectionHeader" },
+        { text: "IDENTIFICAÇÃO DO(A) RESPONSÁVEL", style: "sectionHeader" },
         {
           text: [
             { text: "Nome: ", style: "label" },

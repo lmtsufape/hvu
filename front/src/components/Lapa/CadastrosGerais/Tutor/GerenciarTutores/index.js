@@ -81,7 +81,7 @@ function GerenciarTutores() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Listagem de Tutores</h1>
+            <h1>Listagem de responsáveis</h1>
 
             <div className={styles.navbar_container}>
                 <SearchBar placeholder={`Buscar por nome`} onSearchChange={setSearchTerm} />
@@ -91,7 +91,7 @@ function GerenciarTutores() {
             </div>
 
             {filteredTutores.length === 0 ? (
-                <p className={styles.paragrafo}> Tutor não encontrado.</p>
+                <p className={styles.paragrafo}> Responsável não encontrado.</p>
             ) : (
                 <ul className={styles.list}>
                     {filteredTutores.map(tutor => (
@@ -119,15 +119,15 @@ function GerenciarTutores() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Tutor excluído com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Este tutor não pode ser excluído." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message="Responsável excluído com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message="Este responsáveis não pode ser excluído." show={showErrorAlert} />}
 
             {isModalOpen && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
-                        <h2>Você será redirecionado para área de criação de tutor.</h2>
+                        <h2>Você será redirecionado para área de criação de responsável.</h2>
                         <p></p>
-                        <p>Crie uma conta e cadastre os animais desse tutor e após isso, faça o login na sua conta para continuar com a criação da Ficha de Solicitação de Serviços.</p>
+                        <p>Crie uma conta e cadastre os animais desse responsável e após isso, faça o login na sua conta para continuar com a criação da Ficha de Solicitação de Serviços.</p>
                         <p></p>
                         <div className={styles.buttonGroup}>
                             <button className={styles.modalButton} onClick={confirmRedirect}>Confirmar</button>

@@ -64,8 +64,8 @@ function TelaAdministracao() {
                     <h6>Gerenciar Estagiários</h6>
                 </button>
                 <button className={styles.button} onClick={() => router.push('/lapa/gerenciarTutores')}>
-                    <Image src="/tutor.svg" alt="Tutores" width={62} height={62} />
-                    <h6>Gerenciar Tutores</h6>
+                    <Image src="/tutor.svg" alt="Responsáveis" width={62} height={62} />
+                    <h6>Gerenciar Responsáveis</h6>
                 </button>
                 <button className={styles.button} onClick={() => router.push('/lapa/gerenciarAnimais')}>
                     <Image src="/animais.svg" alt="Animais" width={62} height={62} />

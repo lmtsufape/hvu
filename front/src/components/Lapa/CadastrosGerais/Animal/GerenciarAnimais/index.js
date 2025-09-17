@@ -58,7 +58,7 @@ function GerenciarAnimais() {
                 }
                 setTutores(tutoresData);
             } catch (error) {
-                console.error('Erro ao buscar animais ou tutores:', error);
+                console.error('Erro ao buscar animais ou responsáveis:', error);
             }
         };
         fetchData();
@@ -112,7 +112,7 @@ function GerenciarAnimais() {
                             <div className={styles.info_box}>
                                 <h6>Nome</h6>
                                 <p>{animal.nome}</p>
-                                <h6>Nome do Tutor</h6>
+                                <h6>Nome do&#40;a&#41; responsável</h6>
                                 <p>{tutores[animal.id]?.nome || 'Tutor não disponível'}</p>
                             </div>
                             <div className={styles.button_container}>

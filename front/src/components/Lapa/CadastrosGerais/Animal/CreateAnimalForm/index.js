@@ -290,7 +290,7 @@ function CreateAnimalForm() {
           }
         } else if (tipo === "existente") {
           if (!selectedTutor) {
-            console.error("Nenhum tutor selecionado")
+            console.error("Nenhum responsável selecionado")
             return
           }
 
@@ -375,11 +375,11 @@ function CreateAnimalForm() {
   const getTitulo = () => {
     switch (tipo) {
       case "anonimo":
-        return "Cadastrar animal - Tutor Anônimo"
+        return "Cadastrar animal - Responsável Anônimo"
       case "novo":
-        return "Cadastrar animal - Novo Tutor"
+        return "Cadastrar animal - Novo Responsável"
       case "existente":
-        return "Cadastrar animal - Tutor Existente"
+        return "Cadastrar animal - Responsável Existente"
       default:
         return "Cadastrar animal"
     }
@@ -396,7 +396,7 @@ function CreateAnimalForm() {
 
       {tipo === "existente" && selectedTutor && (
         <div className={styles.selectedTutorInfo}>
-          <h4>Tutor Selecionado:</h4>
+          <h4>Responsável Selecionado:</h4>
           <div className={styles.tutorDetails}>
             <p>
               <strong>Nome:</strong> {selectedTutor.nome}
@@ -415,7 +415,7 @@ function CreateAnimalForm() {
               </p>
             )}
             <button onClick={handleBackToTutorSelection} className={styles.changeTutorButton}>
-              Alterar Tutor
+              Alterar responsável
             </button>
           </div>
         </div>
@@ -548,7 +548,7 @@ function CreateAnimalForm() {
         {tipo === "novo" && (
           <>
             <hr className="my-4" />
-            <h4>Dados do Tutor</h4>
+            <h4>Dados do Responsável</h4>
 
             <CreateTutorForm tutorFormData={tutorData} handleTutorChange={handleTutorChange} errors={errors} />
 
