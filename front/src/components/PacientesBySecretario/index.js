@@ -61,7 +61,7 @@ function PacientesBySecretario() {
     // Função para filtrar os tutores com base no nome do tutor
     const filteredTutores = tutores.filter(tutor => {
         // Verifica se o nome do tutor corresponde ao termo de pesquisa
-        return tutor.nome.toLowerCase().includes(searchTerm.toLowerCase());
+        return tutor.nome?.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
     return (
@@ -82,13 +82,13 @@ function PacientesBySecretario() {
                     {filteredTutores.map(tutor => (
                         <li key={tutor.id} className={styles.info_box}>
                             <div className={styles.info}>
-                                <h6>Tutor</h6>
+                                <h6>Responsavel</h6>
                                 <p>{tutor.nome}</p>
                             </div>
-                            {tutor.animal.length === 0 ? (
+                            {tutor.animal?.length === 0 ? (
                                 <p className={styles.paragrafo}>Não há animais cadastrados para este tutor.</p>
                             ) : (
-                                tutor.animal.map(animal => (
+                                tutor.animal?.map(animal => (
                                     <div key={animal.id} className={styles.info_container}>
                                         <div className={styles.info}>
                                             <h6>Paciente</h6>
