@@ -4,12 +4,22 @@ import { SubHeader } from "../../src/components/SubHeader";
 import Footer from "@/components/Footer";
 import "@/styles/styles.css";
 import UpdateFichaSolicitacaoCitologia from "@/components/Fichas/UpdateFichaSolicitacaoCitologia";
+import { SubHeaderGeral } from "../../src/components/Lapa/SubHeader";
+import { getRoles } from "../../services/userService";
 
 function UpdateFichaSolicitacaoCitologiaPage() {
+    const role = getRoles();
+    
     return(
         <div className="divPai">
             < Header03 />
-            < SubHeader />
+            
+            {role.includes("medico") ? (
+                <SubHeader />
+            ) : role.includes("patologista") ? (
+                <SubHeaderGeral />
+            ) : null}
+
             <div className="flexStyle">
                 <UpdateFichaSolicitacaoCitologia />
             </div>

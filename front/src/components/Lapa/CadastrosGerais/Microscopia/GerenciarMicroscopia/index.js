@@ -68,6 +68,11 @@ function GerenciarMicroscopia() {
         return microscopia.descricao.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
+    const capitalizeFirstLetter = (text) => {
+        if (!text) return ''; 
+        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+    };
+
     return (
         <div className={styles.container}>
             <VoltarButton />
@@ -92,7 +97,7 @@ function GerenciarMicroscopia() {
                                 </div>
                                 <div className={styles.info_box}>
                                     <h6>Processamento</h6>
-                                    <p>{microscopia.processamento}</p>
+                                    <p>{capitalizeFirstLetter(microscopia.processamento)}</p>
                                 </div>
                                 <div className={styles.info_box}>
                                     <h6>Órgão</h6>

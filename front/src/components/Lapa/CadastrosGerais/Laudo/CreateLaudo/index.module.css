@@ -79,6 +79,12 @@
   margin-top: 50px;
 }
 
+.button_box{
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
 .box_button {
   display: flex;
   justify-content: center;

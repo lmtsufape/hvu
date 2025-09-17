@@ -23,7 +23,7 @@ public class EspecieController {
 			.toList();
 	}
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', PATOLOGISTA)")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@PostMapping("especie")
 	public EspecieResponse createEspecie(@Valid @RequestBody EspecieRequest newObj) {
 		return new EspecieResponse(facade.saveEspecie(newObj.convertToEntity()));
@@ -34,12 +34,13 @@ public class EspecieController {
 		return new EspecieResponse(facade.findEspecieById(id));
 	}
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', PATOLOGISTA)")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
+	@PatchMapping("especie/{id}")
 	public EspecieResponse updateEspecie(@PathVariable Long id, @Valid @RequestBody EspecieRequest obj) {
 		return new EspecieResponse(facade.updateEspecie(obj, id));
 	}
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', PATOLOGISTA)")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@DeleteMapping("especie/{id}")
 	public String deleteEspecie(@PathVariable Long id) {
 		facade.deleteEspecie(id);

@@ -296,15 +296,9 @@ function CreateAnimalForm() {
 
           requestData = {
             animal: animalToCreate,
-            tutor: {
-              id: selectedTutor.id,
-              anonimo: false,
-            },
+            tutorId: selectedTutor.id,
           }
         }
-
-        console.log("Dados da requisição:", requestData)
-        console.log("animalToCreate:", animalToCreate)
 
         try {
           const result = await createAnimalByPatologista(requestData)

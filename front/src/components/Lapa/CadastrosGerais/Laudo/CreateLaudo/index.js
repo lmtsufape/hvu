@@ -210,7 +210,7 @@ function CreateLaudoNecropsia() {
     return (
         <div className={styles.container}>
             <VoltarButton />
-            <h1>Criar Laudo de Necropsia</h1>
+            <h1>Criar Laudo</h1>
             <div className={styles.form_box}>
                 <div className={styles.inputs_container}>
                     <div className={styles.inputs_box}>

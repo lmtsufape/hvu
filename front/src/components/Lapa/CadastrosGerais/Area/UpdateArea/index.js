@@ -70,7 +70,12 @@ function UpdateArea() {
     const handleEspecieSelection = (event) => {
         const selectedEspecieId = event.target.value;
         setSelectedEspecie(selectedEspecieId);
-        setArea({ ...area, especie: [{ id: parseInt(selectedEspecieId) }] });
+
+        if (selectedEspecieId) {
+            setArea({ ...area, especie: [{ id: parseInt(selectedEspecieId) }] });
+        } else {
+            setArea({ ...area, especie: [] }); 
+        }
     };
 
     const handleAreaChange = (event) => {
@@ -98,7 +103,7 @@ function UpdateArea() {
 
         const areaToUpdate = {
             tituloArea: area.tituloArea,
-            especie: area.especie
+            especie: area.especie.filter(e => e.id)
         };
 
         try {

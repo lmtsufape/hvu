@@ -127,6 +127,21 @@ function FichaSessao() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (router.isReady) {
+        const medicoFromQuery = router.query.medico;
+        if (medicoFromQuery) {
+          const nomeMedico = decodeURIComponent(medicoFromQuery);
+        
+          // ATUALIZA o formData com o nome do médico vindo da URL.
+          setFormData(prevData => ({
+            ...prevData,
+            medicosResponsaveis: nomeMedico 
+          }));
+          }
+       }
+            }, [router.isReady, router.query.medico]);
+
     // Verifica se os dados estão carregando
     if (loading) {
         return <div className={styles.message}>Carregando dados do usuário...</div>;
@@ -158,7 +173,8 @@ function FichaSessao() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (nomeDoMedicoResponsavel) => {
+    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
         const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); // Gera a data atual no formato ISO 8601
         const fichaData = {
             nome: "Ficha de sessão", 
@@ -167,7 +183,8 @@ function FichaSessao() {
                 sessaoData: formData.sessaoData,
                 anotacao: formData.anotacao,
                 rg: formData.rg,
-                estagiario: formData.estagiario
+                estagiario: formData.estagiario,
+                medicosResponsaveis: formData.medicosResponsaveis,
             },
             dataHora: dataFormatada,
             agendamento: {
@@ -389,12 +406,23 @@ const handleGeneratePDF = () => {
                         <label>RG: </label>
                         <input type="text" name="rg" value={formData.rg} onChange={handleChange} />
                     </div>
+                    <div className={styles.column}>
+                        <label>Médico(s) Vetérinario(s) Responsável: </label>
+                        <input
+                            type="text"
+                            name="medicosResponsaveis"
+                            value={formData.medicosResponsaveis || ''} 
+                            readOnly
+                            className="form-control"
+                            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
+                            />
+                    </div>
 
                     <div className={styles.button_box}>
                         < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         <button type="button" onClick={handleGeneratePDF} className={styles.pdf_button}>
-                Gerar PDF
-            </button>
+                            Gerar PDF
+                        </button>
                         < FinalizarFichaModal onConfirm={handleSubmit} />
                     </div>
                 </form>

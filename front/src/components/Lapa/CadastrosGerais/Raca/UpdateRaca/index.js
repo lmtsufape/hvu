@@ -178,7 +178,7 @@ function UpdateRaca() {
                     </button>
                 </div>
             </form>
-            {<Alert message="Informações da raça editadas com sucesso!" show={showAlert} url={`/gerenciarRacas`} />}
+            {<Alert message="Informações da raça editadas com sucesso!" show={showAlert} url={`/lapa/gerenciarRacas`} />}
             {showErrorAlert && <ErrorAlert message="Erro ao editar informações da raça, tente novamente." show={showErrorAlert} />}
         </div>
     );

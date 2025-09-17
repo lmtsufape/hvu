@@ -12,6 +12,7 @@ import ErrorAlert from "../ErrorAlert";
 import { getFichaById } from "../../../services/fichaService";
 import { deleteFicha } from "../../../services/fichaService";
 import { getConsultaByAnimal } from "../../../services/consultaService";
+import HistoricoFichasAnimal from '../HistoricoFichasAnimal';
 
 // Hook personalizado para gerenciar fichaIds
 const useFichaManager = () => {
@@ -514,7 +515,7 @@ useEffect(() => {
   const nomeMedico = vagaData?.medico?.nome;
 
   const handleClick = (path, id) => {
-    router.push(`${path}?fichaId=${id}&animalId=${animalId}&agendamentoId=${id}&medico=${encodeURIComponent(nomeMedico || '')}`);
+   router.push(`${path}?fichaId=${id}&animalId=${animalId}&agendamentoId=${agendamentoId}&medico=${encodeURIComponent(nomeMedico || '')}`);
   };
 
   const rotasPorNome = {
@@ -588,52 +589,9 @@ useEffect(() => {
               {showHistorico ? "Ocultar Histórico Clínico" : "Visualizar Histórico Clínico"}
             </button>
             {showHistorico && (
-              <div className={styles.ficha_container}>
-                <div className={styles.form_box}>
-                  {loadingHistorico ? (
-                    <p className={styles.message}>Carregando histórico...</p>
-                  ) : historicoConsultas.length === 0 ? (
-                    <p className={styles.message}>Não há consultas registradas para este animal.</p>
-                  ) : (
-                    <ul className={styles.list}>
-                      {historicoConsultas.map((consulta) => (
-                        <li key={consulta.id} className={styles.info_container}>
-                          <div className={styles.agendamentos}>
-                            <div className={styles.agendamentoBox}>
-                              <div>
-                                <h1>Consulta Clínica</h1>
-                                <h2>{formatDate(consulta.dataVaga)}</h2>
-                              </div>
-                              <div>
-                                <h1>Paciente</h1>
-                                <h2>{consulta.animal?.nome}</h2>
-                              </div>
-                              <div>
-                                <h1>Veterinário&#40;a&#41;</h1>
-                                <h2>{consulta.medico?.nome}</h2>
-                              </div>
-                              <div>
-                                <button
-                                  className={styles.acessar_button}
-                                  onClick={() =>
-                                    router.push(`/getConsultaById/${consulta.id}`)
-                                  }
-                                >
-                                  Visualizar
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
+                <HistoricoFichasAnimal />
             )}
           </div>
-
-
 
 
 

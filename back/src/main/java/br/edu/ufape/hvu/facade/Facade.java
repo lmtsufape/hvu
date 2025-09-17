@@ -25,6 +25,7 @@ import org.modelmapper.TypeMap;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
@@ -98,7 +99,7 @@ public class Facade {
     }
 
     public Tutor findTutorById(long id, String idSession) {
-        if (keycloakService.hasRoleSecretario(idSession)) {
+        if (keycloakService.hasRoleSecretario(idSession) || keycloakService.hasRolePatologista(idSession)) {
             return tutorServiceInterface.findTutorById(id);
         }
 
@@ -437,7 +438,7 @@ public class Facade {
 
     public Medico findMedicoById(long id, String idSession) {
         Medico medico = medicoService.findMedicoById(id);
-        if(!keycloakService.hasRoleSecretario(idSession) && !medico.getUserId().equals(idSession)){
+        if(!keycloakService.hasRoleSecretario(idSession) && !medico.getUserId().equals(idSession) && !keycloakService.hasRolePatologista(idSession)){
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
         }
         return medicoService.findMedicoById(id);
@@ -513,7 +514,7 @@ public class Facade {
     public Patologista findPatologistaById(long id, String idSession) {
         Patologista patologista = patologistaService.findPatologistaById(id);
 
-        if (!keycloakService.hasRoleAdminLapa(idSession) && !patologista.getUserId().equals(idSession)) {
+        if (!keycloakService.hasRoleAdminLapa(idSession) && !keycloakService.hasRolePatologista(idSession)) {
             throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
 
@@ -536,6 +537,15 @@ public class Facade {
 
     @Transactional
     public Raca saveRaca(Raca newInstance) {
+        Long especieId = newInstance.getEspecie().getId();
+
+        if (especieId == null) {
+            throw new RuntimeException("Espécie não informada");
+        }
+
+        Especie especie = especieServiceInterface.findEspecieById(especieId);
+        newInstance.setEspecie(especie);
+
         return racaServiceInterface.saveRaca(newInstance);
     }
 
@@ -923,11 +933,12 @@ public class Facade {
 
     private boolean existsVagaByMedicoIdAndAnimalId(Long medicoId, Long animalId) {
         Medico medico = medicoServiceInterface.findMedicoById(medicoId);
-        Animal animal = animalServiceInterface.findAnimalById(animalId);
 
         return vagaServiceInterface.findVagasByMedicoId(medicoId).stream()
+                .filter(vaga -> vaga.getAgendamento() != null)
+                .filter(vaga -> vaga.getAgendamento().getAnimal() != null)
                 .anyMatch(vaga -> vaga.getMedico().equals(medico) &&
-                        vaga.getAgendamento().getAnimal().equals(animal));
+                        vaga.getAgendamento().getAnimal().getId() == animalId);
     }
 
     // Consulta--------------------------------------------------------------
@@ -1564,16 +1575,21 @@ public class Facade {
 
     @Transactional
     public Area updateArea(AreaRequest transientObject, Long id) {
-        //Area o = obj.convertToEntity();
         Area oldObject = findAreaById(id);
 
-        TypeMap<AreaRequest, Area> typeMapper = modelMapper
-                .typeMap(AreaRequest.class, Area.class)
-                .addMappings(mapper -> mapper.skip(Area::setId));
+        oldObject.setTituloArea(transientObject.getTituloArea());
 
-        typeMapper.map(transientObject, oldObject);
+        if (transientObject.getEspecie() != null) {
+            List<Especie> especies = transientObject.getEspecie().stream()
+                    .map(e -> especieServiceInterface.findEspecieById(e.getId())) // buscar cada espécie do DB
+                    .collect(Collectors.toList());
+
+            oldObject.setEspecie(especies);
+        }
+
         return areaServiceInterface.updateArea(oldObject);
     }
+
 
     public Area findAreaById(Long id) {
         return areaServiceInterface.findAreaById(id);
@@ -1590,9 +1606,13 @@ public class Facade {
 
     // CampoLaudo--------------------------------------------------------------
     private final CampoLaudoServiceInterface campoLaudoServiceInterface;
+    private final OrgaoServiceInterface orgaoServiceInterface;
 
     @Transactional
     public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
+        Orgao orgao = orgaoServiceInterface.findOrgaoById(newInstance.getOrgao().getId());
+        newInstance.setOrgao(orgao);
+
         return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
     }
 
@@ -1784,40 +1804,30 @@ public class Facade {
 
     // Foto--------------------------------------------------------------
 
-
     private final FotoServiceInterface fotoServiceInterface;
 
-    @Transactional
-    public Foto saveFoto(Foto newInstance) {
-        return fotoServiceInterface.saveFoto(newInstance);
+    public Foto saveFoto(MultipartFile file, String title) {
+        return fotoServiceInterface.save(file, title);
     }
 
-    @Transactional
-    public Foto updateFoto(FotoRequest obj, Long id) {
-        //Foto o = obj.convertToEntity();
-        Foto oldObject = findFotoById(id);
-
-        TypeMap<FotoRequest, Foto> typeMapper = modelMapper
-                .typeMap(FotoRequest.class, Foto.class)
-                .addMappings(mapper -> mapper.skip(Foto::setId));
-
-
-        typeMapper.map(obj, oldObject);
-
-        return fotoServiceInterface.updateFoto(oldObject);
+    public Foto replaceFoto(long id, MultipartFile newFile, String newTitle) {
+        return fotoServiceInterface.replaceFile(id, newFile, newTitle);
     }
 
-    public Foto findFotoById(Long id) {
-        return fotoServiceInterface.findFotoById(id);
+    public Foto findFotoById(long id) {
+        return fotoServiceInterface.findById(id);
     }
 
-    public List<Foto> getAllFoto() {
-        return fotoServiceInterface.getAllFoto();
+    public byte[] loadFotoFile(long id) {
+        return fotoServiceInterface.loadFile(id);
     }
 
-    @Transactional
+    public List<Foto> findllFotos() {
+        return fotoServiceInterface.findAll();
+    }
+
     public void deleteFoto(long id) {
-        fotoServiceInterface.deleteFoto(id);
+        fotoServiceInterface.delete(id);
     }
 
     // Instituicao--------------------------------------------------------------
@@ -1947,21 +1957,28 @@ public class Facade {
 
     @Transactional
     public Orgao saveOrgao(Orgao newInstance) {
+        if (newInstance.getFoto() != null) {
+            newInstance.setFoto(null);
+        }
+
         return OrgaoServiceInterface.saveOrgao(newInstance);
     }
 
     @Transactional
     public Orgao updateOrgao(OrgaoRequest transientObject, Long id) {
-        //Orgao o = obj.convertToEntity();
         Orgao oldObject = OrgaoServiceInterface.findOrgaoById(id);
-
 
         TypeMap<OrgaoRequest, Orgao> typeMapper = modelMapper
                 .typeMap(OrgaoRequest.class, Orgao.class)
                 .addMappings(mapper -> mapper.skip(Orgao::setId));
 
-
         typeMapper.map(transientObject, oldObject);
+
+        if (transientObject.getFoto() == null) {
+            oldObject.setFoto(null);
+        } else if (oldObject.getFoto() != null && oldObject.getFoto().getId() == 0) {
+            oldObject.setFoto(null);
+        }
 
         return OrgaoServiceInterface.updateOrgao(oldObject);
     }
@@ -2009,43 +2026,32 @@ public class Facade {
 
     @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
-        if (newInstance.getOrgao() != null && newInstance.getOrgao().getId() != 0) {
-            Orgao orgao = orgaoRepository.findById(newInstance.getOrgao().getId())
-                    .orElseThrow(() -> new IdNotFoundException(newInstance.getOrgao().getId(), "Orgao"));
-            newInstance.setOrgao(orgao);  // agora é um objeto gerenciado
+        if (newInstance.getOrgao() != null && newInstance.getOrgao().getId() > 0) {
+            Orgao orgao = orgaoServiceInterface.findOrgaoById(newInstance.getOrgao().getId());
+            newInstance.setOrgao(orgao);
+        } else {
+            newInstance.setOrgao(null);
         }
 
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
     }
 
-
     @Transactional
     public CampoLaudoMicroscopia updateCampoLaudoMicroscopia(CampoLaudoMicroscopiaRequest obj, Long id) {
         CampoLaudoMicroscopia oldObject = findCampoLaudoMicroscopiaById(id);
 
-        // Garantir que o Orgao seja gerenciado
-        if (obj.getOrgao() != null && obj.getOrgao().getId() != 0) {
-            Orgao orgaoReal = orgaoRepository.findById(obj.getOrgao().getId())
-                    .orElseThrow(() -> new IdNotFoundException(obj.getOrgao().getId(), "Orgao"));
+        if (obj.getOrgao() != null && obj.getOrgao().getId() > 0) {
+            Orgao orgaoReal = orgaoServiceInterface.findOrgaoById(obj.getOrgao().getId());
             oldObject.setOrgao(orgaoReal);
+        } else {
+            oldObject.setOrgao(null);
         }
 
-        // Mapear o restante dos campos, pulando Orgao
-        TypeMap<CampoLaudoMicroscopiaRequest, CampoLaudoMicroscopia> typeMapper = modelMapper
-                .getTypeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class);
-        if (typeMapper == null) {
-            typeMapper = modelMapper.createTypeMap(CampoLaudoMicroscopiaRequest.class, CampoLaudoMicroscopia.class);
-        }
-        typeMapper.addMappings(mapper -> {
-            mapper.skip(CampoLaudoMicroscopia::setId);
-            mapper.skip(CampoLaudoMicroscopia::setOrgao); // Já setado manualmente
-        });
-
-        typeMapper.map(obj, oldObject);
+        oldObject.setDescricao(obj.getDescricao());
+        oldObject.setProcessamento(obj.getProcessamento());
 
         return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(oldObject);
     }
-
 
 
     public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {

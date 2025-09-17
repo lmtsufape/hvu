@@ -41,6 +41,7 @@ function HistoricoFichasAnimal() {
       }
       try {
         const todasAsFichas = await getFichasByAnimalId(animalId);
+        console.log("Dados brutos da API (todasAsFichas):", todasAsFichas);
         if (!Array.isArray(todasAsFichas)) {
           setAgendamentosComFichas(new Map()); 
           return;
@@ -87,7 +88,7 @@ function HistoricoFichasAnimal() {
   };
 
   if (loading) { return <div className={styles.message}>Carregando histórico do paciente...</div>; }
-  if (!token || (!roles.includes("medico") && !roles.includes("patologista"))) { return <div className={styles.container}><h3 className={styles.message}>Acesso negado.</h3></div>; }
+  if (!token || !roles.includes("medico")) { return <div className={styles.container}><h3 className={styles.message}>Acesso negado.</h3></div>; }
 
   const filteredAgendamentos = Array.from(agendamentosComFichas.values())
     .filter(agendamento => {
@@ -98,16 +99,10 @@ function HistoricoFichasAnimal() {
   // LÓGICA DE RENDERIZAÇÃO (EXIBIÇÃO)
   return (
     <div className={styles.pageContainer}>
-      <VoltarButton />
       <div className={styles.titleMeusAgendamentos}>
         <h1>Histórico de Fichas do Paciente</h1>
       </div>
-      <div className={styles.navbar}>
-        <SearchBar
-          placeholder="Buscar por nome do(a) veterinário(a)..."
-          onSearchChange={setSearchTerm}
-        />
-      </div>
+      
 
       {filteredAgendamentos.length === 0 ? (
         <div className={styles.message}>
@@ -124,10 +119,7 @@ function HistoricoFichasAnimal() {
                   <h1>Consulta</h1>
                   <h2>{formatDate(vaga.dataVaga)}</h2>
                 </div>
-                <div>
-                  <h1>Veterinário(a)</h1>
-                  <h2>{vaga.medico?.nome || "Não informado"}</h2>
-                </div>
+                
               </div>
 
               <div className={styles.fichas_list}>

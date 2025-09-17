@@ -23,7 +23,7 @@ public class EspecialidadeController {
 			.toList();
 	}
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'ADMIN_LAPA')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'ADMIN_LAPA', 'PATOLOGISTA')")
 	@PostMapping("especialidade")
 	public EspecialidadeResponse createEspecialidade(@Valid @RequestBody EspecialidadeRequest newObj) {
 		return new EspecialidadeResponse(facade.saveEspecialidade(newObj.convertToEntity()));
@@ -40,7 +40,7 @@ public class EspecialidadeController {
 		return new EspecialidadeResponse(facade.updateEspecialidade(obj, id));
 	}
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'ADMIN_LAPA')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'ADMIN_LAPA', 'PATOLOGISTA')")
 	@DeleteMapping("especialidade/{id}")
 	public String deleteEspecialidade(@PathVariable Long id) {
 		facade.deleteEspecialidade(id);

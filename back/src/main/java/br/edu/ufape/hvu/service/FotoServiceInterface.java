@@ -1,17 +1,14 @@
 package br.edu.ufape.hvu.service;
 
+import br.edu.ufape.hvu.model.Foto;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
-import br.edu.ufape.hvu.model.Foto;
-
 public interface FotoServiceInterface {
-	Foto saveFoto(Foto o);
-	Foto findFotoById(long id);
-	Foto updateFoto(Foto u);
-    void deleteFoto(long id);
-	List<Foto> getAllFoto();
-    
-    
-
-    
+    Foto save(MultipartFile file, String titulo);
+    Foto replaceFile(long id, MultipartFile newFile, String novoTitulo);
+    Foto findById(long id);
+    byte[] loadFile(long id);
+    List<Foto> findAll();
+    void delete(long id);
 }
