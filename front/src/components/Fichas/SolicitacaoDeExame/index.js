@@ -573,12 +573,13 @@ const handleGeneratePDF = () => {
 
               {/* Input "Outros(s):" */}
               {showOtherInputs[field] && (
-                <input
+                <textarea
                   type="text"
                   placeholder="Digite aqui..."
                   value={otherValues[field]}
                   onChange={(e) => handleOtherInputChange(field, e.target.value)}
                   className="form-control"
+                  rows={4}
                 />
               )}
 

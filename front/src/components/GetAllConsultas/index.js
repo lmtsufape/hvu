@@ -121,7 +121,7 @@ function HistoricoFichasAnimal() {
   
               <div className={styles.agendamentoHeader}>
                 <div>
-                  <h1>Agendamento</h1>
+                  <h1>Consulta</h1>
                   <h2>{formatDate(vaga.dataVaga)}</h2>
                 </div>
                 <div>

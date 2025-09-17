@@ -29,6 +29,7 @@ function GetAllCronogramaByMedico() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                
                 const cronogramasData = await getAllCronograma();
                 const cronogramasMedico = cronogramasData.filter(cronograma => cronograma.medico.id === parseInt(id));
                 setCronogramas(cronogramasMedico);
@@ -70,7 +71,7 @@ function GetAllCronogramaByMedico() {
     };
 
     const filteredCronogramas = cronogramas.filter(cronograma =>
-        cronograma.nome.toLowerCase().includes(searchTerm.toLowerCase())
+        cronograma.nome?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
