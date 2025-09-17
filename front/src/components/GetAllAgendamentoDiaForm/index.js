@@ -91,9 +91,10 @@ function GetAllAgendamentosDiaForm() {
   const handleCancelarConsulta = async () => {
     try {
       const cancelamentoData = {
-        vaga: {
-          id: selectedVaga.id,
-        },
+        vaga: selectedVaga,
+        dataCancelamento: new Date().toISOString(),
+        especialidade: selectedVaga.especialidade,
+        agendamento: selectedVaga.agendamento,
         descricao: descricaoCancelamento,
       };
       await cancelarVaga(cancelamentoData);
