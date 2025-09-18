@@ -1,17 +1,14 @@
-package br.edu.ufape.hvu.model.enums;
+    package br.edu.ufape.hvu.model.enums;
 
-public enum TipoServico {
-    NECROPSIA("N"),
-    MICROSCOPIA("G"),
-    NECROPSIA_COM_MICROSCOPIA("GN");
+    import lombok.AllArgsConstructor;
+    import lombok.Getter;
 
-    private String codigo;
+    @Getter
+    @AllArgsConstructor
+    public enum TipoServico {
+        NECROPSIA("N"),
+        MICROSCOPIA("G"),
+        NECROPSIA_COM_MICROSCOPIA("GN");
 
-    TipoServico(String codigo) {
-        this.codigo = codigo;
+        private final String codigo;
     }
-
-    public String getCodigo() {
-        return this.codigo;
-    }
-}
