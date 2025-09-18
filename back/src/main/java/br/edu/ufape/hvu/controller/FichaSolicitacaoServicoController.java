@@ -34,7 +34,6 @@ public class FichaSolicitacaoServicoController {
 	@PostMapping("fichaSolicitacaoServico")
 	public FichaSolicitacaoServicoResponse createFichaSolicitacaoServico(@Valid @RequestBody FichaSolicitacaoServicoRequest newObj) {
 		FichaSolicitacaoServico fichaSolicitacaoServico = newObj.convertToEntity();
-		fichaSolicitacaoServico.gerarCodigoPatologia();
 		FichaSolicitacaoServico savedFicha = facade.saveFichaSolicitacaoServico(fichaSolicitacaoServico);
 		return new FichaSolicitacaoServicoResponse(savedFicha);
 	}

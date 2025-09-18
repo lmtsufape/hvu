@@ -56,7 +56,7 @@ function TutorSelector({ onTutorSelect, onBack }) {
   if (hookError) {
     return (
       <div className={styles.errorContainer}>
-        <p className={styles.errorMessage}>Erro ao carregar tutores</p>
+        <p className={styles.errorMessage}>Erro ao carregar responsáveis</p>
         <button onClick={() => window.location.reload()} className={styles.retryButton}>
           Tentar novamente
         </button>
@@ -69,8 +69,8 @@ function TutorSelector({ onTutorSelect, onBack }) {
       <VoltarButton/>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Selecionar Tutor Existente</h1>
-          <p className={styles.subtitle}>Escolha um tutor para vincular ao novo animal</p>
+          <h1 className={styles.title}>Selecionar responsável Existente</h1>
+          <p className={styles.subtitle}>Escolha um responsável para vincular ao novo animal</p>
         </div>
       </div>
 
@@ -86,7 +86,7 @@ function TutorSelector({ onTutorSelect, onBack }) {
 
       {filteredTutores.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>{searchTerm ? "Nenhum tutor encontrado com os critérios de busca" : "Nenhum tutor cadastrado"}</p>
+          <p>{searchTerm ? "Nenhum responsável encontrado com os critérios de busca" : "Nenhum responsável cadastrado"}</p>
         </div>
       ) : (
         <div className={styles.tutorGrid}>
@@ -113,7 +113,7 @@ function TutorSelector({ onTutorSelect, onBack }) {
                   </div>
                 )}
                 <button onClick={() => handleTutorSelect(tutor)} className={styles.selectButton}>
-                  Selecionar Tutor
+                  Selecionar responsável
                 </button>
               </div>
             </div>

@@ -7,7 +7,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-
 @Getter @Setter @NoArgsConstructor
 public class ReagendamentoRequest {
 	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")

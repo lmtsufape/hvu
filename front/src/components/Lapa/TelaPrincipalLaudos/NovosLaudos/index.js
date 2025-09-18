@@ -277,16 +277,16 @@ function CreateFichaForm() {
 
       <form className={styles.form_box} onSubmit={handleSubmit}>
         <div className="row">
-          <h2>Identificação do Tutor</h2>
+          <h2>Identificação do&#40;a&#41; responsável</h2>
           <div className="col">
             <label htmlFor="search" className="form-label">
-              Pesquisar Tutor
+              Pesquisar responsável
             </label>
             <div className="input-group">
               <input
                 type="text"
                 className={`form-control ${searchError ? "is-invalid" : ""}`}
-                placeholder="Digite o ID ou nome do tutor"
+                placeholder="Digite o nome do(a) responsável"
                 value={searchTerm}
                 onChange={handleSearch}
               />
@@ -300,7 +300,7 @@ function CreateFichaForm() {
 
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header closeButton>
-            <Modal.Title>Selecione o Tutor</Modal.Title>
+            <Modal.Title>Selecione o&#40;a&#41; responsável</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {filteredTutores.length > 0 ? (

@@ -10,8 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 
 @Getter @Setter @NoArgsConstructor 
-public  class AgendamentoRequest  {
-	private long id;
+public class AgendamentoRequest {
+    private long id;
 	private String status;
 	private boolean tipoEspecial;
 	private AnimalRequest animal;
@@ -22,5 +22,4 @@ public  class AgendamentoRequest  {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
         return modelMapper.map(this, Agendamento.class);
 	}
-
 }

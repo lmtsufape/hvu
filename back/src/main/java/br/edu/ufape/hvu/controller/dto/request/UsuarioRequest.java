@@ -10,6 +10,7 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
 public class UsuarioRequest {
+    private long id;
 	@Email(message = "Forneça um endereço de email correto")
 	private String email;
 	private String senha;
@@ -17,12 +18,10 @@ public class UsuarioRequest {
 	private String telefone;   // sem @NotBlank
 	private String nome;       // sem @NotBlank
 	private EnderecoRequest endereco;  // sem @NotNull
-	private long id;
 
 	public Usuario convertToEntity() {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-		Usuario obj = modelMapper.map(this, Usuario.class);
-		return obj;
+        return modelMapper.map(this, Usuario.class);
 	}
 }
 
