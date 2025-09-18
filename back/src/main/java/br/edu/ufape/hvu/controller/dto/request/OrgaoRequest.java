@@ -22,12 +22,5 @@ public class OrgaoRequest {
     public Orgao convertToEntity() {
         ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
         return modelMapper.map(this, Orgao.class);
-
-//        if (this.foto != null && this.foto.getId() != 0) {
-//            Foto fotoEntity = facade.findFotoById(this.foto.getId());
-//            orgao.setFoto(fotoEntity);
-//        }
-//
-//        return orgao;
     }
 }
