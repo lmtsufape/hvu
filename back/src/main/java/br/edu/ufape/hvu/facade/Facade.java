@@ -14,6 +14,7 @@ import br.edu.ufape.hvu.exception.OrigemAnimalInvalidaException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import br.edu.ufape.hvu.model.enums.TipoServico;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import br.edu.ufape.hvu.repository.AnimalRepository;
@@ -220,7 +221,6 @@ public class Facade {
     @Transactional
     public TipoConsulta updateTipoConsulta(Long id, TipoConsultaRequest transientObject) {
 
-
         //TipoConsulta o = obj.convertToEntity();
         TipoConsulta oldObject = findTipoConsultaById(id);
         TipoConsulta obj = transientObject.convertToEntity();
@@ -228,7 +228,6 @@ public class Facade {
         TypeMap<TipoConsulta, TipoConsulta> typeMapper = modelMapper
                 .typeMap(TipoConsulta.class, TipoConsulta.class)
                 .addMappings(mapper -> mapper.skip(TipoConsulta::setId));
-
 
         typeMapper.map(obj, oldObject);
 
@@ -660,7 +659,7 @@ public class Facade {
     }
 
     @Transactional
-    private Vaga updateVaga(Vaga transientObject) {
+    protected Vaga updateVaga(Vaga transientObject) {
         return vagaServiceInterface.updateVaga(transientObject);
     }
 
@@ -887,7 +886,7 @@ public class Facade {
     }
 
     @Transactional
-    private String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao, String idSession) {
+    protected String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao, String idSession) {
         List<Vaga> vagasByData = findVagasByData(data, idSession);
         List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
         vagasByData.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
@@ -949,6 +948,10 @@ public class Facade {
     public Consulta saveConsulta(Long id, Consulta newInstance) {
         Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
         Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
+
+        if (agendamentoVaga.getStatus().equals("Finalizado")) {
+            throw new ForbiddenOperationException("Esse agendamento já foi finalizado.");
+        }
 
         Consulta consulta = consultaServiceInterface.saveConsulta(newInstance);
 
@@ -1582,7 +1585,7 @@ public class Facade {
         if (transientObject.getEspecie() != null) {
             List<Especie> especies = transientObject.getEspecie().stream()
                     .map(e -> especieServiceInterface.findEspecieById(e.getId())) // buscar cada espécie do DB
-                    .collect(Collectors.toList());
+                    .toList();
 
             oldObject.setEspecie(especies);
         }
@@ -1760,11 +1763,15 @@ public class Facade {
 
     // FichaSolicitacaoServico--------------------------------------------------------------
 
-
     private final FichaSolicitacaoServicoServiceInterface fichaSolicitacaoServicoServiceInterface;
+    private final CodigoPatologiaService codigoPatologiaService;
 
     @Transactional
     public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
+        TipoServico tipo = newInstance.getTipoServico();
+        String codigo = codigoPatologiaService.gerarCodigo(tipo);
+        newInstance.setCodigoPatologia(codigo);
+
         return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
     }
 
@@ -1778,11 +1785,9 @@ public class Facade {
             obj.setMedico(null);
         }
 
-
         TypeMap<FichaSolicitacaoServicoRequest, FichaSolicitacaoServico> typeMapper = modelMapper
                 .typeMap(FichaSolicitacaoServicoRequest.class, FichaSolicitacaoServico.class)
                 .addMappings(mapper -> mapper.skip(FichaSolicitacaoServico::setId));
-
 
         typeMapper.map(obj, oldObject);
 
@@ -1806,10 +1811,12 @@ public class Facade {
 
     private final FotoServiceInterface fotoServiceInterface;
 
+    @Transactional
     public Foto saveFoto(MultipartFile file, String title) {
         return fotoServiceInterface.save(file, title);
     }
 
+    @Transactional
     public Foto replaceFoto(long id, MultipartFile newFile, String newTitle) {
         return fotoServiceInterface.replaceFile(id, newFile, newTitle);
     }
@@ -1826,6 +1833,7 @@ public class Facade {
         return fotoServiceInterface.findAll();
     }
 
+    @Transactional
     public void deleteFoto(long id) {
         fotoServiceInterface.delete(id);
     }
@@ -1849,9 +1857,7 @@ public class Facade {
                 .typeMap(InstituicaoRequest.class, Instituicao.class)
                 .addMappings(mapper -> mapper.skip(Instituicao::setId));
 
-
         typeMapper.map(obj, oldObject);
-
 
         return instituicaoServiceInterface.updateInstituicao(oldObject);
     }
@@ -1887,7 +1893,7 @@ public class Facade {
         if(obj.getCampoLaudo() != null && !obj.getCampoLaudo().isEmpty()){
             List<CampoLaudo> updatedCampoLaudos = obj.getCampoLaudo().stream()
                     .map(campo -> findCampoLaudoById(campo.getId()))
-                    .collect(Collectors.toList());
+                    .toList();
             oldObject.setCampoLaudo(updatedCampoLaudos);
             obj.setCampoLaudo(null); // Limpar para evitar mapeamento duplo
         }
@@ -1957,10 +1963,6 @@ public class Facade {
 
     @Transactional
     public Orgao saveOrgao(Orgao newInstance) {
-        if (newInstance.getFoto() != null) {
-            newInstance.setFoto(null);
-        }
-
         return OrgaoServiceInterface.saveOrgao(newInstance);
     }
 
@@ -1974,9 +1976,7 @@ public class Facade {
 
         typeMapper.map(transientObject, oldObject);
 
-        if (transientObject.getFoto() == null) {
-            oldObject.setFoto(null);
-        } else if (oldObject.getFoto() != null && oldObject.getFoto().getId() == 0) {
+        if (transientObject.getFoto() == null || (oldObject.getFoto() != null && oldObject.getFoto().getId() == 0)) {
             oldObject.setFoto(null);
         }
 

@@ -12,7 +12,6 @@ import br.edu.ufape.hvu.model.FichaSolicitacaoServico;
 public class FichaSolicitacaoServicoService implements FichaSolicitacaoServicoServiceInterface {
 	private final FichaSolicitacaoServicoRepository repository;
 
-
 	public FichaSolicitacaoServico saveFichaSolicitacaoServico(FichaSolicitacaoServico newInstance) {
 		return repository.save(newInstance);
 	}
@@ -32,8 +31,5 @@ public class FichaSolicitacaoServicoService implements FichaSolicitacaoServicoSe
 	public void deleteFichaSolicitacaoServico(long id){
 		FichaSolicitacaoServico obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id,"FichaSolicitacaoServico"));
 		repository.delete(obj);
-	}	
-	
-	
-	
+	}
 }

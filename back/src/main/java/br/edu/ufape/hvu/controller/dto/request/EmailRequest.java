@@ -10,8 +10,7 @@ import lombok.Setter;
 public class EmailRequest {
     private String email;
 
-
-    public String convertToString(){
+    public String convertToString() {
         return this.email;
     }
 }

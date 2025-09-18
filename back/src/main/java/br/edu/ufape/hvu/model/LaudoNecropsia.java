@@ -34,6 +34,8 @@ public class LaudoNecropsia {
     @JoinColumn(name = "campoLaudoMicroscopia_id")
     @ToString.Exclude
     private List<CampoLaudoMicroscopia> campoMicroscopia;
+    private String descricaoMacroscopia;
+    private String descricaoMicroscopia;
     @ManyToMany
     @ToString.Exclude
     private List<Estagiario> estagiario;

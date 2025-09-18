@@ -12,7 +12,6 @@ import br.edu.ufape.hvu.model.Orgao;
 public class OrgaoService implements OrgaoServiceInterface {
 	private final OrgaoRepository repository;
 
-
 	public Orgao saveOrgao(Orgao newInstance) {
 		return repository.save(newInstance);
 	}
@@ -32,8 +31,5 @@ public class OrgaoService implements OrgaoServiceInterface {
 	public void deleteOrgao(long id){
 		Orgao obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Orgao"));
 		repository.delete(obj);
-	}	
-	
-	
-	
+	}
 }

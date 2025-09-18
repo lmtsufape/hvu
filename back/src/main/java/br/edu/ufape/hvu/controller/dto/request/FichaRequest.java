@@ -12,8 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @Getter @Setter @NoArgsConstructor
-public  class FichaRequest {
-    private long id;
+public class FichaRequest {
     private String nome;
     private Map<String, Object> conteudo;
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
@@ -22,7 +21,6 @@ public  class FichaRequest {
 
     public Ficha convertToEntity() {
         Ficha ficha = new Ficha();
-        ficha.setId(this.id);
         ficha.setNome(this.nome);
         ficha.setDataHora(this.dataHora);
 

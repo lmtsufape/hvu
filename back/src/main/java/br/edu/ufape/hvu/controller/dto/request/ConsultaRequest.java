@@ -10,8 +10,8 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter @Setter @NoArgsConstructor 
-public  class ConsultaRequest  {
-	private long id;
+public class ConsultaRequest {
+    private long id;
 	private Double pesoAtual;
 	private Double idadeAtual;
 	private MedicoRequest medico;
@@ -29,5 +29,4 @@ public  class ConsultaRequest  {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
         return modelMapper.map(this, Consulta.class);
 	}
-
 }
