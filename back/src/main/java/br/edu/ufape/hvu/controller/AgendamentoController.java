@@ -79,7 +79,7 @@ public class AgendamentoController {
 
 	@PreAuthorize("hasRole('TUTOR')")
 	@GetMapping("agendamento/tutor")
-	public List<AgendamentoResponse> findAgendamentosByTutorId() {
+	public List<AgendamentoResponse> findAgendamentosByTutorUserId() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 			

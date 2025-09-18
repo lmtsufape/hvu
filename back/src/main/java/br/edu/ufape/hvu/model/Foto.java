@@ -20,18 +20,9 @@ public class Foto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
 	private long id;
-
-    @Column(nullable = false, unique = true)
     private String nomeArquivo;
-
     private String titulo;
-
-    @Column(nullable = false)
     private String caminhoRelativo;
-
-    @Column(nullable = false)
     private String tipoArquivo;
-
-    @Column(nullable = false)
     private LocalDateTime dataUpload;
 }

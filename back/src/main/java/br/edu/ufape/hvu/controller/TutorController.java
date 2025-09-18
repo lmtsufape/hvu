@@ -43,11 +43,13 @@ public class TutorController {
 		return new TutorResponse(facade.findTutorById(id, principal.getSubject()));
 	}
 
-    // TODO - configurar permissao de medico para receber apenas tutores que tenham animais agendados
     @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA', 'MEDICO')")
 	@GetMapping("tutor/animal/{id}")
 	public TutorResponse getTutorByAnimalId(@PathVariable Long id) {
-		return new TutorResponse(facade.findTutorByanimalId(id));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+
+		return new TutorResponse(facade.findTutorByanimalId(id, principal.getSubject()));
 	}
 
     @PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
