@@ -15,7 +15,7 @@ import lombok.ToString;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-public class Orgao  {
+public class Orgao {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
