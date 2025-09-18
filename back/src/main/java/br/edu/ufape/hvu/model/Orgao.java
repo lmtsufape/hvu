@@ -1,15 +1,8 @@
 package br.edu.ufape.hvu.model;
 
 import java.util.List;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,6 +29,6 @@ public class Orgao  {
 	@ToString.Exclude
 	private List<Area> area;
 
-	@ManyToOne
-	private Foto foto;
+    @ManyToOne
+    private Foto foto;
 }
