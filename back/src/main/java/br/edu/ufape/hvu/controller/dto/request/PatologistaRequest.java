@@ -11,7 +11,6 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
 public class PatologistaRequest extends UsuarioRequest {
-    private long id;
     @NotNull( message = "Crmv não pode estar em branco")
     private String crmv;
     @NotNull

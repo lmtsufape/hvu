@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor 
-public class AnimalRequest  {
+public class AnimalRequest {
+    private long id;
 	@NotBlank(message = "Nome não pode estar em branco")
 	private String nome;
 	@NotBlank(message = "Sexo não pode estar em branco")
@@ -26,7 +27,6 @@ public class AnimalRequest  {
 	private double peso;
 	@NotNull
 	private RacaRequest raca;
-	private long id;
 	//@NotBlank(message = "Numero ficha não pode estar em branco")
 	private String numeroFicha;
 	private OrigemAnimal origemAnimal;

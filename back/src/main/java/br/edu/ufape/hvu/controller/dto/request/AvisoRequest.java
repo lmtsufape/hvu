@@ -13,12 +13,9 @@ import org.modelmapper.ModelMapper;
 public class AvisoRequest {
     private String texto;
     private boolean habilitado;
-    private long id;
-
 
     public Aviso convertToEntity() {
         ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-        Aviso obj = modelMapper.map(this, Aviso.class);
-        return obj;
+        return modelMapper.map(this, Aviso.class);
     }
 }
