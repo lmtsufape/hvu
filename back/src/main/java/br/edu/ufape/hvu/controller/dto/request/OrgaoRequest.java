@@ -1,8 +1,6 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
 import java.util.List;
-import br.edu.ufape.hvu.facade.Facade;
-import br.edu.ufape.hvu.model.Foto;
 import org.modelmapper.ModelMapper;
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Orgao;
