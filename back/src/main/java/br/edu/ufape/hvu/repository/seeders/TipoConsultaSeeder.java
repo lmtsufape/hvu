@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component @RequiredArgsConstructor
 public class TipoConsultaSeeder {
-    final private TipoConsultaRepository tipoConsultaRepository;
-
+    private final TipoConsultaRepository tipoConsultaRepository;
 
     public void init(){
         if(tipoConsultaRepository.count() > 0){
@@ -22,10 +21,5 @@ public class TipoConsultaSeeder {
         tipoConsulta2.setTipo("Retorno");
         tipoConsultaRepository.save(tipoConsulta);
         tipoConsultaRepository.save(tipoConsulta2);
-
-
-
-
-
     }
 }
