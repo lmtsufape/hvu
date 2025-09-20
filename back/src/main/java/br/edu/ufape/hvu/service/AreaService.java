@@ -12,7 +12,6 @@ import br.edu.ufape.hvu.model.Area;
 public class AreaService implements AreaServiceInterface {
 	private final AreaRepository repository;
 
-
 	public Area saveArea(Area newInstance) {
 		return repository.save(newInstance);
 	}
@@ -32,8 +31,5 @@ public class AreaService implements AreaServiceInterface {
 	public void deleteArea(long id){
 		Area obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Area"));
 		repository.delete(obj);
-	}	
-	
-	
-	
+	}
 }
