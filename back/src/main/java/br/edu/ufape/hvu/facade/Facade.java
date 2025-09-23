@@ -1084,11 +1084,12 @@ public class Facade {
 
     @Transactional
     public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject, String idSession) {
-        if (newObject.getAnimal().getOrigemAnimal() != OrigemAnimal.HVU) {
+        Animal animal = animalServiceInterface.findAnimalById(newObject.getAnimal().getId());
+        if (animal.getOrigemAnimal() != OrigemAnimal.HVU) {
             throw new IllegalArgumentException("Só é permitido agendar animais com origem HVU.");
         }
 
-        if (newObject.getAnimal().isObito()) {
+        if (animal.isObito()) {
             throw new IllegalArgumentException("Não é permitido agendar animais que tiveram óbito.");
         }
 
@@ -1871,23 +1872,54 @@ public class Facade {
     }
 
     @Transactional
-    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsiaRequest obj, Long id) {
+    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsiaRequest transientObject, Long id) {
         LaudoNecropsia oldObject = laudoNecropsiaServiceInterfcae.findLaudoNecropsiaById(id);
 
-        // campoLaudo
-        if(obj.getCampoLaudo() != null && !obj.getCampoLaudo().isEmpty()){
-            List<CampoLaudo> updatedCampoLaudos = obj.getCampoLaudo().stream()
-                    .map(campo -> findCampoLaudoById(campo.getId()))
-                    .toList();
-            oldObject.setCampoLaudo(updatedCampoLaudos);
-            obj.setCampoLaudo(null); // Limpar para evitar mapeamento duplo
+        oldObject.setConclusao(transientObject.getConclusao());
+        oldObject.setDescricaoMacroscopia(transientObject.getDescricaoMacroscopia());
+        oldObject.setDescricaoMicroscopia(transientObject.getDescricaoMicroscopia());
+
+        if (transientObject.getFichaSolicitacaoServico() != null) {
+            FichaSolicitacaoServico ficha = fichaSolicitacaoServicoServiceInterface
+                    .findFichaSolicitacaoServicoById(transientObject.getFichaSolicitacaoServico().getId());
+            oldObject.setFichaSolicitacaoServico(ficha);
         }
 
-        TypeMap<LaudoNecropsiaRequest, LaudoNecropsia> typeMapper = modelMapper
-                .typeMap(LaudoNecropsiaRequest.class, LaudoNecropsia.class)
-                .addMappings(mapper -> mapper.skip(LaudoNecropsia::setId));
+        if (transientObject.getCampoLaudo() != null) {
+            List<CampoLaudo> novosCampos = new ArrayList<>();
+            for (CampoLaudoRequest campoReq : transientObject.getCampoLaudo()) {
+                CampoLaudo campo = findCampoLaudoById(campoReq.getId());
+                novosCampos.add(campo);
+            }
+            oldObject.setCampoLaudo(novosCampos);
+        }
 
-        typeMapper.map(obj, oldObject);
+        if (transientObject.getCampoMicroscopia() != null) {
+            List<CampoLaudoMicroscopia> novosCamposMicroscopia = new ArrayList<>();
+            for (CampoLaudoMicroscopiaRequest campoReq : transientObject.getCampoMicroscopia()) {
+                CampoLaudoMicroscopia campo = findCampoLaudoMicroscopiaById(campoReq.getId());
+                novosCamposMicroscopia.add(campo);
+            }
+            oldObject.setCampoMicroscopia(novosCamposMicroscopia);
+        }
+
+        if (transientObject.getEstagiario() != null) {
+            List<Estagiario> novosEstagiarios = new ArrayList<>();
+            for (EstagiarioRequest estagiarioReq : transientObject.getEstagiario()) {
+                Estagiario estagiario = estagiarioServiceInterface.findEstagiarioById(estagiarioReq.getId());
+                novosEstagiarios.add(estagiario);
+            }
+            oldObject.setEstagiario(novosEstagiarios);
+        }
+
+        if (transientObject.getFoto() != null) {
+            List<Foto> novasFotos = new ArrayList<>();
+            for (FotoRequest fotoReq : transientObject.getFoto()) {
+                Foto foto = fotoServiceInterface.findById(fotoReq.getId());
+                novasFotos.add(foto);
+            }
+            oldObject.setFoto(novasFotos);
+        }
 
         return laudoNecropsiaServiceInterfcae.updateLaudoNecropsia(oldObject);
     }
