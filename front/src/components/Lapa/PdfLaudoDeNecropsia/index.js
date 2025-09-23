@@ -2,6 +2,7 @@
 import pdfMake from "pdfmake/build/pdfmake"
 import pdfFonts from "pdfmake/build/vfs_fonts"
 import styles from "./index.module.css"
+import { getFotoById } from "../../../../services/fotoService"
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 
@@ -40,7 +41,7 @@ const pdfStyles = {
   },
   value: {
     fontSize: 11,
-    color: "#39805F",
+    color: "#404040",
     margin: [0, 0, 0, 8],
   },
   footer: {
@@ -62,6 +63,15 @@ const formatDate = (dateString) => {
       minute: "2-digit",
     })
   )
+}
+
+const blobToBase64 = (blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
 }
 
 const generateLaudoContent = (laudo) => {
@@ -93,6 +103,13 @@ const generateLaudoContent = (laudo) => {
   // Macroscopia
   content.push({ text: "MACROSCOPIA", style: "sectionTitle" })
 
+  if (laudo.descricaoMacroscopia) {
+    content.push(
+      { text: "Descrição Geral:", style: "label" },
+      { text: laudo.descricaoMacroscopia, style: "value" },
+    )
+  }
+
   if (laudo.campoLaudo && laudo.campoLaudo.length > 0) {
     laudo.campoLaudo.forEach((campo, index) => {
       content.push(
@@ -101,12 +118,19 @@ const generateLaudoContent = (laudo) => {
         { text: `Descrição: ${campo.descricao}`, style: "value" },
       )
     })
-  } else {
+  } else if (!laudo.descricaoMacroscopia) {
     content.push({ text: "Não definido", style: "value" })
   }
 
   // Microscopia
   content.push({ text: "MICROSCOPIA", style: "sectionTitle" })
+
+  if (laudo.descricaoMicroscopia) {
+    content.push(
+      { text: "Descrição Geral:", style: "label" },
+      { text: laudo.descricaoMicroscopia, style: "value" },
+    )
+  }
 
   if (laudo.campoMicroscopia && laudo.campoMicroscopia.length > 0) {
     laudo.campoMicroscopia.forEach((campo, index) => {
@@ -117,7 +141,7 @@ const generateLaudoContent = (laudo) => {
         { text: `Descrição: ${campo.descricao}`, style: "value" },
       )
     })
-  } else {
+  } else if (!laudo.descricaoMicroscopia) {
     content.push({ text: "Não definido", style: "value" })
   }
 
@@ -135,36 +159,57 @@ const generateLaudoContent = (laudo) => {
     content.push({ text: "Nenhum estagiário selecionado", style: "value" })
   }
 
-  // Fotos
-  if (laudo.foto && laudo.foto.length > 0) {
-    content.push(
-      { text: "DOCUMENTAÇÃO FOTOGRÁFICA", style: "sectionTitle" },
-      { text: `Total de ${laudo.foto.length} foto(s) anexada(s) ao laudo`, style: "value" },
-    )
-  }
-
   return content
 }
 
-// Componente do botão
 const GenerateLaudoPdfButton = ({ laudo }) => {
-  const generatePdf = () => {
+  const generatePdf = async () => {
     if (!laudo || !laudo.id) {
       alert("Dados do laudo não disponíveis para gerar PDF")
       return
     }
 
+    const content = generateLaudoContent(laudo)
+
+    // Fotos
+    if (laudo.foto && laudo.foto.length > 0) {
+      content.push({ text: "DOCUMENTAÇÃO FOTOGRÁFICA", style: "sectionTitle" })
+
+      for (const f of laudo.foto) {
+        try {
+          const blob = await getFotoById(f.id)
+          const base64 = await blobToBase64(blob)
+
+          content.push({
+            image: base64,
+            width: 250,
+            margin: [0, 10, 0, 10],
+          })
+
+          if (f.titulo) {
+            content.push({ text: f.titulo, style: "value" })
+          }
+        } catch (err) {
+          console.error("Erro ao carregar foto", f.id, err)
+        }
+      }
+    }
+
     const docDefinition = {
-      content: generateLaudoContent(laudo),
+      content,
       styles: pdfStyles,
       pageMargins: [60, 60, 60, 80],
       footer: (currentPage, pageCount) => ({
-        text: `Laudo de Necropsia - ${laudo.fichaSolicitacaoServico?.codigoPatologia || "N/A"}                                                                                                                    Página ${currentPage} de ${pageCount}`,
+        text: `Laudo de Necropsia - ${
+          laudo.fichaSolicitacaoServico?.codigoPatologia || "N/A"
+        }                                                                                                                    Página ${currentPage} de ${pageCount}`,
         style: "footer",
       }),
     }
 
-    const fileName = `Laudo_Necropsia_${laudo.fichaSolicitacaoServico?.codigoPatologia || laudo.id}_${new Date().toLocaleDateString("pt-BR").replace(/\//g, "-")}.pdf`
+    const fileName = `Laudo_Necropsia_${
+      laudo.fichaSolicitacaoServico?.codigoPatologia || laudo.id
+    }_${new Date().toLocaleDateString("pt-BR").replace(/\//g, "-")}.pdf`
 
     pdfMake.createPdf(docDefinition).download(fileName)
   }

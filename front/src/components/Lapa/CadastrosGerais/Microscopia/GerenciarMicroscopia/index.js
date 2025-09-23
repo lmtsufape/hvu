@@ -49,6 +49,7 @@ function GerenciarMicroscopia() {
         };
         fetchData();
     }, [deletedMicroscopiaId]); // Atualiza a lista ao excluir um campo
+    console.log(microscopias)
 
     const handleDeleteMicroscopia = async (microscopiaId) => {
         try {
@@ -101,7 +102,7 @@ function GerenciarMicroscopia() {
                                 </div>
                                 <div className={styles.info_box}>
                                     <h6>Órgão</h6>
-                                    <p>{microscopia.orgao.nome}</p>
+                                    <p>{microscopia.orgao?.nome || "Não informado"}</p>
                                 </div>
                             <div className={styles.button_container}>
                                 <button

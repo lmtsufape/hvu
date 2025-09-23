@@ -61,7 +61,7 @@ function CreateMicroscopia() {
     };
 
     const handleOrgaoChange = (event) => {
-        const selectedId = Number(event.target.value); // garante que seja número
+        const selectedId = Number(event.target.value);
         setMicroscopia({ ...microscopia, orgao: { id: selectedId } });
     };
 
@@ -80,6 +80,7 @@ function CreateMicroscopia() {
             return;
         }
         try {
+            console.log(microscopia)
             await createCampoLaudoMicroscopia(microscopia);
             setShowAlert(true);
         } catch (error) {

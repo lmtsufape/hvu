@@ -54,7 +54,7 @@ function CreateFichaForm() {
     historico: "",
     caracteristicasAdicionais: "",
     tutor: { id: null },
-    animal: { id: null, origemAnimal: null },
+    animal: { id: null },
     medico: { id: null },
   })
 
@@ -129,7 +129,7 @@ function CreateFichaForm() {
     setFichaDeSolicitacaoData((prev) => ({
       ...prev,
       tutor: { id: tutor.id },
-      animal: { id: null, origemAnimal: null },
+      animal: { id: null },
     }))
 
     setFilteredAnimals(tutor.animais || [])
@@ -145,7 +145,7 @@ function CreateFichaForm() {
 
     setFichaDeSolicitacaoData((prev) => ({
       ...prev,
-      animal: { id: animalId, origemAnimal: animal?.origemAnimal || null },
+      animal: { id: animalId },
     }))
   }
 
@@ -184,7 +184,14 @@ function CreateFichaForm() {
     }))
   }
 
-  const formatDate = (date) => (date ? new Date(date).toISOString() : "")
+  const formatDate = (date) => {
+    if (!date) return ""
+    if (date.length === 19) return date
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(date)) {
+      return date + ":00"
+    }
+    return date
+  }
 
   const validateForm = () => {
     const newErrors = {}
@@ -211,7 +218,9 @@ function CreateFichaForm() {
       dataHoraObito: formatDate(fichaDeSolicitacaoData.dataHoraObito),
       dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
     }
+
     console.log(fichaToCreate)
+
     try {
       await createFichaSolicitacao(fichaToCreate)
       clearSavedData()
@@ -244,7 +253,7 @@ function CreateFichaForm() {
       historico: "",
       caracteristicasAdicionais: "",
       tutor: { id: null },
-      animal: { id: null, origemAnimal: null },
+      animal: { id: null },
       medico: { id: null },
     })
     setSelectedTutor(null)

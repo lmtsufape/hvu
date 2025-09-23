@@ -16,11 +16,11 @@ function CreateOrgao() {
   const router = useRouter();
 
   const [orgao, setOrgao] = useState({
-    image_path: "",
+    //image_path: "",
     nome: "",
     sexoMacho: false,
     sexoFemea: false,
-    foto: { id: null },
+    foto: null ,
     area: [{ id: null }],
   });
 
@@ -58,13 +58,20 @@ function CreateOrgao() {
   }
 
   const handleOrgaoChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    setOrgao({ ...orgao, [name]: type === 'checkbox' ? checked : value });
+    const { name, checked } = event.target;
+
+    if (name === "sexoMacho") {
+        setOrgao({ ...orgao, sexoMacho: checked, sexoFemea: checked ? false : orgao.sexoFemea });
+    } else if (name === "sexoFemea") {
+        setOrgao({ ...orgao, sexoFemea: checked, sexoMacho: checked ? false : orgao.sexoMacho });
+    } else {
+        setOrgao({ ...orgao, [name]: event.target.value });
+    }
   };
 
   const handleFotoChange = (event) => {
-    const selectedFotoId = Number(event.target.value);
-    setOrgao({ ...orgao, foto: { id: selectedFotoId } });
+    const selectedFotoId = event.target.value ? Number(event.target.value) : null;
+    setOrgao({ ...orgao, foto: selectedFotoId ? { id: selectedFotoId } : null });
   };
 
   const handleAreaChange = (event) => {
@@ -93,7 +100,7 @@ function CreateOrgao() {
       setErrors(validationErrors);
       return;
     }
-
+    console.log("orgaoToCreate:", orgao)
     try {
       await createOrgao(orgao);
       setShowAlert(true);
@@ -111,7 +118,7 @@ function CreateOrgao() {
       <div className={styles.inputs_container}>
         <div className={styles.inputs_box}>
           <div className="row">
-            <div className={`col ${styles.col}`}>
+            {/*<div className={`col ${styles.col}`}>
               <label htmlFor="image_path" className="form-label">Imagem</label>
               <input
                 type="file"
@@ -119,8 +126,7 @@ function CreateOrgao() {
                 onChange={handleImageChange}
                 className={`form-control ${styles.input}`}
               />
-              {image && <p>{image.name}</p>}
-            </div>
+            </div>*/}
 
             <div className={`col ${styles.col}`}>
               <label htmlFor="nome" className="form-label">Nome <span className={styles.obrigatorio}>*</span></label>
@@ -132,6 +138,29 @@ function CreateOrgao() {
                 onChange={handleOrgaoChange}
               />
               {errors.nome && <div className={`invalid-feedback ${styles.error_message}`}>{errors.nome}</div>}
+            </div>
+
+                        <div className={`col ${styles.col}`}>
+              <div className={styles.checkboxContainer}>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="sexoMacho"
+                    checked={orgao.sexoMacho}
+                    onChange={handleOrgaoChange}
+                  />
+                  Macho
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="sexoFemea"
+                    checked={orgao.sexoFemea}
+                    onChange={handleOrgaoChange}
+                  />
+                  Fêmea
+                </label>
+              </div>
             </div>
           </div>
 
@@ -164,31 +193,6 @@ function CreateOrgao() {
               </select>
               {errors.area && <div className={`invalid-feedback ${styles.error_message}`}>{errors.area}</div>}
               {areasError && <div className={styles.error_message}>Erro ao carregar áreas.</div>}
-            </div>
-          </div>
-
-          <div className="row">
-            <div className={`col ${styles.col}`}>
-              <div className={styles.checkboxContainer}>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="sexoMacho"
-                    checked={orgao.sexoMacho}
-                    onChange={handleOrgaoChange}
-                  />
-                  Macho
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="sexoFemea"
-                    checked={orgao.sexoFemea}
-                    onChange={handleOrgaoChange}
-                  />
-                  Fêmea
-                </label>
-              </div>
             </div>
           </div>
         </div>
