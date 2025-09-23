@@ -95,8 +95,7 @@ function GerenciarAreaList() {
                         <li key={area.id} className={styles.info_container}>
                             <div className={styles.info_box}>
                                 <h6>Espécie</h6>
-                                {/* Verifique se a propriedade 'especie' existe e se não é um array vazio */}
-                                <p>{area.especie.length > 0 ? area.especie[0].nome : 'N/A'}</p>
+                                <p>{area.especie ? area.especie.nome : 'N/A'}</p>
                             </div>
                             <div className={styles.info_box}>
                                 <h6>Área</h6>

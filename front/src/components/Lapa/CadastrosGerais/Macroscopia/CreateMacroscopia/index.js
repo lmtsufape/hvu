@@ -49,10 +49,10 @@ function CreateCampoLaudo() {
         setCampoLaudo({ ...campoLaudo, [name]: value });
     };
 
-    const handleOrgaoChange = (event) => {
-        const selectedId = event.target.value;
-        setCampoLaudo({ ...campoLaudo, orgao: { id: selectedId } });
-    };
+const handleOrgaoChange = (event) => {
+    const selectedId = Number(event.target.value); 
+    setCampoLaudo({ ...campoLaudo, orgao: { id: selectedId } });
+};
 
     const validateForm = () => {
         const errors = {};
@@ -65,22 +65,22 @@ function CreateCampoLaudo() {
         return errors;
     };
 
-    const handleSubmit = async () => {
-        const errors = validateForm();
-        if (Object.keys(errors).length > 0) {
-            setErrors(errors);
-            return;
-        }
+const handleSubmit = async () => {
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+        setErrors(errors);
+        return;
+    }
 
-        console.log(campoLaudo)
-        try {
-            await createCampoLaudo(campoLaudo);
-            setShowAlert(true);
-        } catch (error) {
-            console.error("Erro ao criar campo laudo:", error);
-            setShowErrorAlert(true);
-        }
-    };
+    console.log("Enviando campoLaudo:", campoLaudo); // Para debug
+    try {
+        await createCampoLaudo(campoLaudo);
+        setShowAlert(true);
+    } catch (error) {
+        console.error("Erro ao criar campo laudo:", error);
+        setShowErrorAlert(true);
+    }
+};
 
     if (error) {
         return <div>Erro ao carregar órgãos: {error.message}</div>; // Tratamento de erro ao buscar órgãos

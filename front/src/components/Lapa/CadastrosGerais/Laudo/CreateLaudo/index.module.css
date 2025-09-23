@@ -139,6 +139,12 @@
   cursor: not-allowed;
 }
 
+.inputs_box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 
 .input_space {
   display: flex;

@@ -21,34 +21,39 @@ function GerenciarFotos() {
   const roles = getRoles()
   const token = getToken()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fotosData = await getAllFotos()
+useEffect(() => {
+  const roles = getRoles()
+  const token = getToken()
 
-        // para cada foto, busca o blob e gera URL
-        const fotosComArquivo = await Promise.all(
-          fotosData.map(async (foto) => {
-            try {
-              const blob = await getFotoById(foto.id)
-              const imageUrl = URL.createObjectURL(blob)
-              return { ...foto, imageUrl }
-            } catch (error) {
-              console.error(`Erro ao carregar arquivo da foto ${foto.id}:`, error)
-              return { ...foto, imageUrl: "/placeholder.svg" }
-            }
-          }),
-        )
+  const fetchData = async () => {
+    try {
+      const fotosData = await getAllFotos()
 
-        setFotos(fotosComArquivo)
-      } catch (error) {
-        console.error("Erro ao buscar fotos:", error)
-      }
+      const fotosComArquivo = await Promise.all(
+        fotosData.map(async (foto) => {
+          try {
+            const blob = await getFotoById(foto.id)
+            const imageUrl = URL.createObjectURL(blob)
+            return { ...foto, imageUrl }
+          } catch (error) {
+            console.error(`Erro ao carregar arquivo da foto ${foto.id}:`, error)
+            return { ...foto, imageUrl: "/placeholder.svg" }
+          }
+        }),
+      )
+
+      setFotos(fotosComArquivo)
+    } catch (error) {
+      console.error("Erro ao buscar fotos:", error)
     }
-    if (token && roles.includes("patologista")) {
-      fetchData()
-    }
-  }, [deletedFotoId, token, roles])
+  }
+
+  if (token && roles.includes("patologista")) {
+    fetchData()
+  }
+}, [deletedFotoId]) 
+
+  console.log(fotos)
 
   const handleDeleteFoto = async (fotoId) => {
     try {
