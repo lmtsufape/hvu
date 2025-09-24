@@ -5,6 +5,8 @@ import FinalizarFichaModal from "../../FinalizarFichaModal";
 import { CancelarWhiteButton }         from "@/components/WhiteButton";
 import { ContinuarFichasGreenButton }  from "@/components/GreenButton";
 import React, { useState, useEffect } from "react";
+import { getCurrentUsuario } from '../../../../../services/userService'; 
+import { getMedicoById } from '../../../../../services/medicoService'; 
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
@@ -113,6 +115,29 @@ const handleInputChange = (idx, param, value) => {
     return updatedData;
   });
 };
+
+const [medicoLogado, setMedicoLogado] = useState(null);
+  
+      useEffect(() => {
+      const fetchMedicoData = async () => {
+          try {
+              const userData = await getCurrentUsuario();
+              const medicoId = userData.usuario.id;
+  
+              if (medicoId) {
+                  const medicoCompletoData = await getMedicoById(medicoId);
+                  
+                  //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                  setMedicoLogado(medicoCompletoData);
+              }
+          } catch (error) {
+              console.error('Erro ao buscar dados do médico logado:', error);
+          }
+      };
+  
+      fetchMedicoData();
+    }, []); 
+         
 
 // Carregar do localStorage ao montar:
 useEffect(() => {
@@ -822,19 +847,7 @@ return (
     onChange={handleChange}
   />
 
-<div className="mb-3">
-<label htmlFor="pos-medicoResp" className="form-label mb-0 fw-medium">
-    Médico(s) / Veterinário(s) Responsável:
-  </label>
-   <input
-    type="text"
-    name="medicosResponsaveis"
-    value={formData.medicosResponsaveis || ''} 
-    readOnly
-    className="form-control"
-    style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
-    />
-  </div>
+
   </div>
 
   <label htmlFor="pos-plantonistas" className="form-label mb-0 lb-0 fw-medium">
@@ -849,6 +862,16 @@ return (
     disabled={isReadOnly}
     onChange={handleChange}
   />
+
+  <div className={styles.assinaturaSombreada}>
+        {medicoLogado ? (
+        <p style={{ margin: 0 }}>
+          Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+        </p>
+        ) : (
+        <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+        )}
+    </div>
 
   </div>
       {!isReadOnly && (
