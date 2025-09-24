@@ -8,6 +8,9 @@ import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { createFicha } from '../../../../../services/fichaService';
 import { useRouter } from 'next/router';
+import { getCurrentUsuario } from "../../../../../services/userService";
+import { getMedicoById } from '../../../../../services/medicoService';
+
 const DIAGNOSTICO = [
   { key: "diagnostico", label: "Diagnóstico(s)" },
   { key: "prognostico", label: "Prognóstico" },
@@ -37,9 +40,31 @@ export default function Step3ClinicaMedica({
   const [animal, setAnimal] = useState({});
   const [showButtons, setShowButtons] = useState(false);
   const [tutor, setTutor] = useState({});
-  const [consultaId, setConsultaId] = useState(null);
+  const [consultaId, setConsultaId] = useState(null); 
+  const [medicoLogado, setMedicoLogado] = useState(null); 
 
   const [nomeMedico, setNomeMedico] = useState("Carregando...");
+
+  useEffect(() => {
+    const fetchMedicoData = async () => {
+        try {
+            const userData = await getCurrentUsuario();
+            const medicoId = userData.usuario.id;
+
+            if (medicoId) {
+                const medicoCompletoData = await getMedicoById(medicoId); 
+                
+                setMedicoLogado(medicoCompletoData);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar dados do médico logado:', error);
+        }
+    };
+
+    fetchMedicoData();
+  }, []);
+
+
   useEffect(() => {
     if (router.isReady) {
       const medicoFromQuery = router.query.medico;
@@ -279,16 +304,14 @@ export default function Step3ClinicaMedica({
               className="form-control" />
 
           </div>
-          <div className={styles.column}>
-            <label>Médico(s) Veterinário(s) Responsável:</label>
-            <input
-            type="text"
-            name="medicosResponsaveis"
-            value={formData.medicosResponsaveis || ''} 
-            readOnly
-            className="form-control"
-            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
-            />
+           <div className={styles.assinaturaSombreada}>
+                    {medicoLogado ? (
+                     <p style={{ margin: 0 }}>
+                     Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                   </p>
+                   ) : (
+                 <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                 )}
           </div>
 
 

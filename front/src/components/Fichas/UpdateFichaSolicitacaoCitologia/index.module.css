@@ -28,6 +28,18 @@
   font-weight: 500;
 }
 
+.assinaturaSombreada {
+  padding: 0.75rem 1.25rem;
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  font-style: italic;
+  color: #495057;
+  text-align: center;
+  margin-top: 1rem;
+}
+
 .dados_ocultos {
   width: 100%;
   height: auto;

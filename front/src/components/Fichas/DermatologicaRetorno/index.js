@@ -12,6 +12,7 @@ import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
 import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getAnimalById } from "../../../../services/animalService";
+import { getMedicoById } from "../../../../services/medicoService";
 
 function FichaDermatologicaRetorno() {
 
@@ -32,6 +33,7 @@ function FichaDermatologicaRetorno() {
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
     const [agendamentoId, setAgendamentoId] = useState(null);
+    const [medicoLogado, setMedicoLogado] = useState(null);
     const [formData, setFormData] = useState({
         anamnese: "",
         tratamentos: "",
@@ -115,7 +117,14 @@ function FichaDermatologicaRetorno() {
         const fetchData = async () => {
             try {
                 const userData = await getCurrentUsuario();
-                setUserId(userData.usuario.id);
+                const medicoId = userData.usuario.id;
+                setMedicoLogado(userData.usuario); 
+                if (medicoId) {
+                const medicoCompletoData = await getMedicoById(medicoId);
+                //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                setMedicoLogado(medicoCompletoData);
+                console.log("Dados completos do médico logado:", medicoCompletoData);
+                }
             } catch (error) {
                 console.error('Erro ao buscar usuário:', error);
             } finally {
@@ -316,15 +325,19 @@ function FichaDermatologicaRetorno() {
                     </div>
                     
                     <div className={styles.column}>
-                        <label>Médico(s) Veterinário(s) Responsável: </label>
-                        <textarea name="medicoResponsavel" value={formData.medicoResponsavel} 
-                        onChange={handleChange} />
-                        
-                    </div>
-                    <div className={styles.column}>
                         <label>Plantonista(s) discente(s): </label>
                         <textarea name="estagiarios" value={formData.estagiarios} 
                         onChange={handleChange} />
+                    </div>
+
+                    <div className={styles.assinaturaSombreada}>
+                            {medicoLogado ? (
+                            <p style={{ margin: 0 }}>
+                                Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                            </p>
+                        ) : (
+                            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                        )}
                     </div>
 
                     <div className={styles.button_box}>

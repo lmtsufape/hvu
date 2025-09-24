@@ -13,6 +13,8 @@ import FinalizarFichaModal from "../FinalizarFichaModal";
 import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
+import { getMedicoById } from "../../../../services/medicoService";
+
 
 function updateFichaRetornoClinicoSil() {
 
@@ -49,6 +51,28 @@ function updateFichaRetornoClinicoSil() {
     });
     const { id, modo } = router.query; 
     const [isReadOnly, setIsReadOnly] = useState(false);
+    const [medicoLogado, setMedicoLogado] = useState(null);
+
+      useEffect(() => {
+            const fetchMedicoData = async () => {
+                try {
+                    const userData = await getCurrentUsuario();
+                    const medicoId = userData.usuario.id;
+    
+                    if (medicoId) {
+                        const medicoCompletoData = await getMedicoById(medicoId);
+                        
+                        setMedicoLogado(medicoCompletoData);
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar dados do médico logado:', error);
+                } finally {
+                    setLoading(false); // Garante que o loading termine após a busca
+                }
+            };
+    
+            fetchMedicoData();
+        }, []);
                   
     useEffect(() => {
     // Se o modo for 'visualizar', define o estado para somente leitura
@@ -397,16 +421,14 @@ function updateFichaRetornoClinicoSil() {
                         <label>Estagiário: </label>
                         <input type="text" name="estagiario" value={formData.estagiario} disabled={isReadOnly} onChange={handleChange} />
                     </div>
-                    <div className={styles.column}>
-                        <label>Médico(s) Vetérinario(s) Responsável: </label>
-                        <input
-                            type="text"
-                            name="medicosResponsaveis"
-                            value={formData.medicosResponsaveis || ''} 
-                            readOnly
-                            className="form-control"
-                            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
-                            />
+                     <div className={styles.assinaturaSombreada}>
+                            {medicoLogado ? (
+                            <p style={{ margin: 0 }}>
+                                Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                            </p>
+                        ) : (
+                            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                        )}
                     </div>
 
                     {!isReadOnly && (
