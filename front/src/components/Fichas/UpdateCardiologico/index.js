@@ -440,7 +440,7 @@ function UpdateCardiologicaSteps() {
           <>
           {showAlert && consultaId &&
           <div className={styles.alert}>
-            <Alert message="Ficha ediatada com sucesso!" 
+            <Alert message="Ficha editada com sucesso!" 
             show={showAlert} url={`/createConsulta/${consultaId}`} />
           </div>}
           {showErrorAlert && 
