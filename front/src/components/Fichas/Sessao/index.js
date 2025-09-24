@@ -12,6 +12,7 @@ import ErrorAlert from "../../ErrorAlert";
 import moment from 'moment';
 import FinalizarFichaModal from "../FinalizarFichaModal";
 import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getMedicoById } from '../../../../services/medicoService';
 
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -34,6 +35,7 @@ function FichaSessao() {
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
     const [agendamentoId, setAgendamentoId] = useState(null);
+    const [medicoLogado, setMedicoLogado] = useState(null); 
      
 
     const [formData, setFormData] = useState({
@@ -117,7 +119,14 @@ function FichaSessao() {
         const fetchData = async () => {
             try {
                 const userData = await getCurrentUsuario();
-                setUserId(userData.usuario.id);
+                const medicoId = userData.usuario.id;
+                setMedicoLogado(userData.usuario); 
+                if (medicoId) {
+                const medicoCompletoData = await getMedicoById(medicoId);
+                //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                setMedicoLogado(medicoCompletoData);
+                console.log("Dados completos do médico logado:", medicoCompletoData);
+            }
             } catch (error) {
                 console.error('Erro ao buscar usuário:', error);
             } finally {
@@ -406,16 +415,14 @@ const handleGeneratePDF = () => {
                         <label>RG: </label>
                         <input type="text" name="rg" value={formData.rg} onChange={handleChange} />
                     </div>
-                    <div className={styles.column}>
-                        <label>Médico(s) Vetérinario(s) Responsável: </label>
-                        <input
-                            type="text"
-                            name="medicosResponsaveis"
-                            value={formData.medicosResponsaveis || ''} 
-                            readOnly
-                            className="form-control"
-                            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
-                            />
+                  <div className={styles.assinaturaSombreada}>
+                            {medicoLogado ? (
+                            <p style={{ margin: 0 }}>
+                                Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                            </p>
+                        ) : (
+                            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                        )}
                     </div>
 
                     <div className={styles.button_box}>
