@@ -13,6 +13,8 @@ import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getAnimalById } from '../../../../services/animalService';
 import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
+import { getCurrentUsuario } from "../../../../services/userService";
+import { getMedicoById } from "../../../../services/medicoService";
 
 function FichaSolicitacaoCitologia() {
 
@@ -39,6 +41,7 @@ function FichaSolicitacaoCitologia() {
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
+    const [medicoLogado, setMedicoLogado] = useState(null);
 
 
     const [formData, setFormData] = useState({
@@ -73,6 +76,26 @@ function FichaSolicitacaoCitologia() {
 
     const { id, modo } = router.query; 
     const [isReadOnly, setIsReadOnly] = useState(false);
+
+    useEffect(() => {
+            const fetchMedicoData = async () => {
+                try {
+                    const userData = await getCurrentUsuario();
+                    const medicoId = userData.usuario.id;
+    
+                    if (medicoId) {
+                        const medicoCompletoData = await getMedicoById(medicoId);
+                        
+                        //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                        setMedicoLogado(medicoCompletoData);
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar dados do médico logado:', error);
+                }
+            };
+    
+            fetchMedicoData();
+        }, []);
                           
     useEffect(() => {
               // Se o modo for 'visualizar', define o estado para somente leitura
@@ -669,8 +692,18 @@ function FichaSolicitacaoCitologia() {
                                 onChange={handleChange}
                             />
                         </div>
+                        </div>
+                        <div className={styles.assinaturaSombreada}>
+                            {medicoLogado ? (
+                            <p style={{ margin: 0 }}>
+                            Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                            </p>
+                            ) : (
+                            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                            )}
+                        </div>
 
-                    </div>
+                    
                     {!isReadOnly && (
                     <div className={styles.button_box}>
                         < CancelarWhiteButton />
