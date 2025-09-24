@@ -8,6 +8,8 @@ import { getAnimalById } from '../../../../../services/animalService';
 import { createFicha } from '../../../../../services/fichaService';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from "react";
+import { getCurrentUsuario } from "../../../../../services/userService";
+import { getMedicoById } from "../../../../../services/medicoService";
 
 function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasChange, handleSubmit, prevStep, handleSelectChange, handlePrincipiosChange }) {
     const [loading, setLoading] = useState(true);
@@ -17,8 +19,31 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const [medicoLogado, setMedicoLogado] = useState(null);
 
     const [nomeMedico, setNomeMedico] = useState("Carregando...");
+
+    useEffect(() => {
+    const fetchMedicoData = async () => {
+        try { 
+            const userData = await getCurrentUsuario();
+            const medicoId = userData.usuario.id;
+
+            if (medicoId) {
+                const medicoCompletoData = await getMedicoById(medicoId);
+                
+                //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                setMedicoLogado(medicoCompletoData);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar dados do médico logado:', error);
+        }
+    };
+
+    fetchMedicoData();
+  }, []); 
+
+
       useEffect(() => {
         if (router.isReady) {
           const medicoFromQuery = router.query.medico;
@@ -313,17 +338,7 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                     </div>
 
                     {/*dados*/}
-                     <div className={styles.column}>
-                        <label>Médico(s) Veterinário(s) Responsável:</label>
-                        <input
-                        type="text"
-                        name="medicosResponsaveis"
-                        value={formData.medicosResponsaveis || ''} 
-                        readOnly
-                        className="form-control"
-                        style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
-                        />
-                    </div>
+                     
                     <div className={styles.column}>
                         <label>Estagiários/ Nome :</label>
                         <input type="text" name="estagiario" value={formData.estagiario} onChange={handleChange} />
@@ -334,7 +349,15 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
                     </div>
 
                     {/*aqui vai ficar a seguda imagem*/}
-
+                    <div className={styles.assinaturaSombreada}>
+                            {medicoLogado ? (
+                            <p style={{ margin: 0 }}>
+                                Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                            </p>
+                        ) : (
+                            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                        )}
+                    </div>
 
                     <div className={styles.button_box}>
                         < VoltarWhiteButton onClick={prevStep} />
