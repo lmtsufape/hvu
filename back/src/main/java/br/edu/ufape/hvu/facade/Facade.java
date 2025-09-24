@@ -1868,6 +1868,12 @@ public class Facade {
 
     @Transactional
     public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
+        if (newInstance.getFichaSolicitacaoServico() != null) {
+            FichaSolicitacaoServico ficha = fichaSolicitacaoServicoServiceInterface.findFichaSolicitacaoServicoById(
+                            newInstance.getFichaSolicitacaoServico().getId());
+            newInstance.setFichaSolicitacaoServico(ficha);
+        }
+
         return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
     }
 
