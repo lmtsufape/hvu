@@ -6,6 +6,8 @@ import FinalizarFichaModal from "../../FinalizarFichaModal";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
+import { getCurrentUsuario } from "../../../../../services/userService";
+import { getMedicoById } from "../../../../../services/medicoService";
 
 function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, handleSubmit, prevStep, setFormData,
   selecionados, ladosVisiveis, toggleItem, toggleLadoVisivel, }) {
@@ -16,6 +18,7 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
   const [showButtons, setShowButtons] = useState(false);
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
+  const [medicoLogado, setMedicoLogado] = useState(null);
 
   
   const [nomeMedico, setNomeMedico] = useState("Carregando...");
@@ -30,6 +33,27 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
         }
       }
     }, [router.isReady, router.query.medico]);
+
+
+    useEffect(() => {
+    const fetchMedicoData = async () => {
+        try {
+            const userData = await getCurrentUsuario();
+            const medicoId = userData.usuario.id;
+
+            if (medicoId) {
+                const medicoCompletoData = await getMedicoById(medicoId);
+                
+                //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                setMedicoLogado(medicoCompletoData);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar dados do médico logado:', error);
+        }
+    };
+
+    fetchMedicoData();
+  }, []);
 
   useEffect(() => {
     if (router.isReady) {
@@ -543,17 +567,15 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                 onChange={handleChange} />
             </label>
           </div>
-          <div className={styles.column}>
-            <label>Médico(s) Veterinário(s) Responsável:</label>
-            <input
-            type="text"
-            name="medicosResponsaveis"
-            value={formData.medicosResponsaveis || ''} 
-            readOnly
-            className="form-control"
-            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
-            />
-          </div>
+          <div className={styles.assinaturaSombreada}>
+                  {medicoLogado ? (
+                  <p style={{ margin: 0 }}>
+                  Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                </p>
+                ) : (
+                <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                )}
+            </div>
 
           <div className={styles.button_box}>
             < VoltarWhiteButton onClick={prevStep} />
