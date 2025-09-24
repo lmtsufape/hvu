@@ -13,6 +13,7 @@ import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getAnimalById } from "../../../../services/animalService";
 import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
+import { getMedicoById } from "../../../../services/medicoService";
 
 function FichaDermatologicaRetorno() {
 
@@ -33,6 +34,7 @@ function FichaDermatologicaRetorno() {
     const [animal, setAnimal] = useState({});
     const [showButtons, setShowButtons] = useState(false);
     const [tutor , setTutor] = useState({});
+    const [medicoLogado, setMedicoLogado] = useState(null);
     const [formData, setFormData] = useState({
         anamnese: "",
         tratamentos: "",
@@ -120,7 +122,14 @@ function FichaDermatologicaRetorno() {
         const fetchData = async () => {
             try {
                 const userData = await getCurrentUsuario();
-                setUserId(userData.usuario.id);
+                const medicoId = userData.usuario.id;
+                setMedicoLogado(userData.usuario); 
+                if (medicoId) {
+                const medicoCompletoData = await getMedicoById(medicoId);
+                //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                setMedicoLogado(medicoCompletoData);
+                console.log("Dados completos do médico logado:", medicoCompletoData);
+                }
             } catch (error) {
                 console.error('Erro ao buscar usuário:', error);
             } finally {
@@ -323,17 +332,20 @@ function FichaDermatologicaRetorno() {
                     </div>
                     
                     <div className={styles.column}>
-                        <label>Médico(s) Veterinário(s) Responsável: </label>
-                        <textarea name="medicoResponsavel" value={formData.medicoResponsavel} 
-                        disabled={isReadOnly}
-                        onChange={handleChange} />
-                        
-                    </div>
-                    <div className={styles.column}>
                         <label>Plantonista(s) discente(s): </label>
                         <textarea name="estagiarios" value={formData.estagiarios} 
                         disabled={isReadOnly}
                         onChange={handleChange} />
+                    </div>
+
+                      <div className={styles.assinaturaSombreada}>
+                            {medicoLogado ? (
+                            <p style={{ margin: 0 }}>
+                                Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                            </p>
+                        ) : (
+                            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                        )}
                     </div>
 
                     {!isReadOnly && (
