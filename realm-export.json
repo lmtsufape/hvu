@@ -116,7 +116,7 @@
       },
       {
         "id": "b410aa82-e015-4fa7-b795-70a9fa756a8c",
-        "name": "admin-lapa",
+        "name": "admin_lapa",
         "description": "",
         "composite": false,
         "clientRole": false,
@@ -510,12 +510,12 @@
   "groups": [
     {
       "id": "2e88bfd2-ba45-4a84-ba92-ddebdfaacd3c",
-      "name": "admin-lapa",
-      "path": "/admin-lapa",
+      "name": "admin_lapa",
+      "path": "/admin_lapa",
       "subGroups": [],
       "attributes": {},
       "realmRoles": [
-        "admin-lapa"
+        "admin_lapa"
       ],
       "clientRoles": {}
     },

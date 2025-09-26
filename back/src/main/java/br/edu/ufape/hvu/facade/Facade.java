@@ -40,7 +40,6 @@ public class Facade {
 
     // Auth--------------------------------------------------------------
     private final KeycloakService keycloakService;
-    private final MedicoServiceInterface medicoServiceInterface;
 
     public TokenResponse login(String username, String password) {
         return keycloakService.login(username, password);
@@ -393,23 +392,35 @@ public class Facade {
     }
 
     // Medico--------------------------------------------------------------
+
     private final MedicoServiceInterface medicoService;
+    private final MedicoServiceInterface medicoServiceInterface;
 
     @Transactional
-    public Medico saveMedico(MedicoRequest request, String password) {
-        Medico medico = request.convertToEntity();
-        String userKcId = null;
-        keycloakService.createUser(medico.getCpf(), medico.getEmail(), password, "medico");
+    public Medico saveMedico(MedicoRequest medicoRequest, String password) {
+        Medico medico = medicoRequest.convertToEntity();
+
+        if (medicoRequest.getEspecialidade() != null) {
+            List<Especialidade> especialidades = new ArrayList<>(
+                    medicoRequest.getEspecialidade().stream()
+                            .map(especialidadeRequest -> especialidadeServiceInterface.findEspecialidadeById(especialidadeRequest.getId()))
+                            .toList()
+            );
+            medico.setEspecialidade(especialidades);
+        }
+
+        medico = medicoService.saveMedico(medico);
+
         try {
-            userKcId = keycloakService.getUserId(medico.getEmail());
+            keycloakService.createUser(medico.getCpf(), medico.getEmail(), password, "medico");
+            String userKcId = keycloakService.getUserId(medico.getEmail());
+
             medico.setUserId(userKcId);
             return medicoService.saveMedico(medico);
-        }catch (DataIntegrityViolationException e){
-            keycloakService.deleteUser(userKcId);
-            throw e;
-        }catch (Exception e){
-            keycloakService.deleteUser(userKcId);
-            throw new RuntimeException("Ocorreu um erro inesperado ao salvar o usuário: "+ e.getMessage(), e);
+
+        } catch (Exception exception) {
+            medicoService.deleteMedico(medico.getId());
+            throw new RuntimeException("Erro ao criar usuário no Keycloak: " + exception.getMessage(), exception);
         }
     }
 
@@ -478,18 +489,28 @@ public class Facade {
     @Transactional
     public Patologista savePatologista(PatologistaRequest request, String password) {
         Patologista patologista = request.convertToEntity();
-        String userKcId = null;
-        keycloakService.createUser(patologista.getCpf(), patologista.getEmail(), password, "patologista");
+
+        if (request.getEspecialidade() != null) {
+            List<Especialidade> especialidades = new ArrayList<>(
+                    request.getEspecialidade().stream()
+                            .map(especialidadeRequest -> especialidadeServiceInterface.findEspecialidadeById(especialidadeRequest.getId()))
+                            .toList()
+            );
+            patologista.setEspecialidade(especialidades);
+        }
+
+        Patologista savedPatologista = patologistaService.savePatologista(patologista);
+
         try {
-            userKcId = keycloakService.getUserId(patologista.getEmail());
-            patologista.setUserId(userKcId);
-            return patologistaService.savePatologista(patologista);
-        }catch (DataIntegrityViolationException e){
-            keycloakService.deleteUser(userKcId);
-            throw e;
-        }catch (Exception e){
-            keycloakService.deleteUser(userKcId);
-            throw new RuntimeException("Ocorreu um erro inesperado ao salvar o usuário: "+ e.getMessage(), e);
+            keycloakService.createUser(savedPatologista.getCpf(), savedPatologista.getEmail(), password, "patologista");
+            String userKcId = keycloakService.getUserId(savedPatologista.getEmail());
+
+            savedPatologista.setUserId(userKcId);
+            return patologistaService.savePatologista(savedPatologista);
+
+        } catch (Exception exception) {
+            patologistaService.deletePatologista(savedPatologista.getId());
+            throw new RuntimeException("Erro ao criar usuário no Keycloak: " + exception.getMessage(), exception);
         }
     }
 
@@ -542,17 +563,14 @@ public class Facade {
 
     @Transactional
     public Raca saveRaca(Raca newInstance) {
-        Long especieId = newInstance.getEspecie().getId();
-
-        if (especieId == null) {
-            throw new RuntimeException("Espécie não informada");
+        if (newInstance.getEspecie() != null) {
+            Especie especie = especieServiceInterface.findEspecieById(newInstance.getEspecie().getId());
+            newInstance.setEspecie(especie);
         }
-
-        Especie especie = especieServiceInterface.findEspecieById(especieId);
-        newInstance.setEspecie(especie);
 
         return racaServiceInterface.saveRaca(newInstance);
     }
+
 
     @Transactional
     public Raca updateRaca(RacaRequest obj, Long id) {
@@ -1565,6 +1583,11 @@ public class Facade {
 
     @Transactional
     public Area saveArea(Area newInstance) {
+        if (newInstance.getEspecie() != null) {
+            Especie especie = especieServiceInterface.findEspecieById(newInstance.getEspecie().getId());
+            newInstance.setEspecie(especie);
+        }
+
         return areaServiceInterface.saveArea(newInstance);
     }
 
@@ -1757,6 +1780,21 @@ public class Facade {
         TipoServico tipo = newInstance.getTipoServico();
         String codigo = codigoPatologiaService.gerarCodigo(tipo);
         newInstance.setCodigoPatologia(codigo);
+
+        if (newInstance.getAnimal() != null) {
+            Animal animal = animalServiceInterface.findAnimalById(newInstance.getAnimal().getId());
+            newInstance.setAnimal(animal);
+        }
+
+        if (newInstance.getTutor() != null) {
+            Tutor tutor = tutorServiceInterface.findTutorById(newInstance.getTutor().getId());
+            newInstance.setTutor(tutor);
+        }
+
+        if (newInstance.getMedico() != null) {
+            Medico medico = medicoServiceInterface.findMedicoById(newInstance.getMedico().getId());
+            newInstance.setMedico(medico);
+        }
 
         return fichaSolicitacaoServicoServiceInterface.saveFichaSolicitacaoServico(newInstance);
     }
