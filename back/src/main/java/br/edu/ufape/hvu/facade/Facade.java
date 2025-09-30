@@ -556,21 +556,24 @@ public class Facade {
         patologistaService.deletePatologista(id);
     }
 
-
-
     // Raca--------------------------------------------------------------
     private final RacaServiceInterface racaServiceInterface;
 
     @Transactional
-    public Raca saveRaca(Raca newInstance) {
+    public Raca saveRaca(RacaRequest newInstance) {
+        Raca novaRaca = new Raca();
+
+        novaRaca.setNome(newInstance.getNome());
+        novaRaca.setDescricao(newInstance.getDescricao());
+        novaRaca.setPorte(newInstance.getPorte());
+
         if (newInstance.getEspecie() != null) {
             Especie especie = especieServiceInterface.findEspecieById(newInstance.getEspecie().getId());
-            newInstance.setEspecie(especie);
+            novaRaca.setEspecie(especie);
         }
 
-        return racaServiceInterface.saveRaca(newInstance);
+        return racaServiceInterface.saveRaca(novaRaca);
     }
-
 
     @Transactional
     public Raca updateRaca(RacaRequest obj, Long id) {
