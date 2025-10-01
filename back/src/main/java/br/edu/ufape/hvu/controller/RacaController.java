@@ -26,7 +26,7 @@ public class RacaController {
     @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
 	@PostMapping("raca")
 	public RacaResponse createRaca(@Valid @RequestBody RacaRequest newObj) {
-		return new RacaResponse(facade.saveRaca(newObj.convertToEntity()));
+		return new RacaResponse(facade.saveRaca(newObj));
 	}
 
 	@GetMapping("raca/{id}")
