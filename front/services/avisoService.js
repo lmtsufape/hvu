@@ -13,13 +13,23 @@ import api from '../common/http-common-back';
   // Função para buscar todas 
   export async function getAllAviso() {
     try {
-      const response = await api.get("/aviso/habilitados");
+      const response = await api.get("/aviso");
       return response.data;
     } catch (error) {
       throw error;
     }
   }
   
+  // Função para buscar apenas os avisos habilitados
+  export async function getAvisosHabilitados() {
+    try {
+      const response = await api.get("/aviso/habilitados");
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // Função para buscar por ID
   export async function getAvisoById(avisoId) {
     try {

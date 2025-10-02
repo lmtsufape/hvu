@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./index.module.css";
-import { getAllAviso } from "../../../services/avisoService";
+import { getAvisosHabilitados } from "../../../services/avisoService";
 
 export default function Text() {
   const [showPopup, setShowPopup] = useState(true);
@@ -9,7 +9,7 @@ export default function Text() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const avisosData = await getAllAviso();
+        const avisosData = await getAvisosHabilitados();
         setAvisos(avisosData);
       } catch (error) {
         console.error("Erro ao buscar avisos:", error);
