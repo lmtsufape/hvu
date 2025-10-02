@@ -213,13 +213,21 @@ export function AdicionarCronograma({ page, id }) {
 	);
 }
 
-export function CriarConsulta({ page, id }) {
+export function CriarConsulta({ page, id, disabled = false }) {
 	const router = useRouter();
+
+	const handleClick = () => {
+		if (!disabled) {
+			router.push(`/${page}/${id}`);
+		}
+	};
 
 	return (
 		<button
-			className={styles.white_button}
-			onClick={() => router.push(`/${page}/${id}`)}
+			className={`${styles.white_button} ${disabled ? styles.disabled : ''}`}
+			onClick={handleClick}
+			disabled={disabled}
+			title={disabled ? "Não é possível criar consulta para agendamentos finalizados" : ""}
 		>
 			{text_white_button.criar_consulta}
 		</button>
