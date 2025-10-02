@@ -109,6 +109,7 @@
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 24px;
+    margin-top: 24px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     font-family: 'Poppins', sans-serif;
 }
