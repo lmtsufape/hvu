@@ -127,7 +127,7 @@ function GetAgendamentoByMedicoById() {
                                         </div>
 
                                         <div className={styles.button_box}>
-                                            <CriarConsulta page={'createConsulta'} id={id} />
+                                            <CriarConsulta page={'createConsulta'} id={id} disabled={vaga.status === 'Finalizado'} />
                                         </div>
                                     </div>
                                 </div>
