@@ -559,6 +559,7 @@ function FichaSolicitacaoExame() {
                     type="checkbox"
                     value={item}
                     checked={formData[field].includes(item)}
+                    disabled={isReadOnly}
                     onChange={(e) => handleCheckboxChange(e, field)}
                     className="form-control"
                   />
@@ -572,6 +573,8 @@ function FichaSolicitacaoExame() {
                   type="text"
                   placeholder="Digite aqui..."
                   value={otherValues[field]}
+                  disabled={isReadOnly}
+                  checked={formData[field].includes("Outros(s):")}
                   onChange={(e) => handleOtherInputChange(field, e.target.value)}
                   className="form-control"
                   rows={5}
