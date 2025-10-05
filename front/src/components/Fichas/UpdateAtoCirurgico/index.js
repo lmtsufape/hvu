@@ -14,8 +14,34 @@ import { useRouter } from 'next/router';
 import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
 import { getMedicoById } from '../../../../services/medicoService';
+import dynamic from 'next/dynamic';
+import AtoCirurgicoPDF from './AtoCirurgicoPDF';
 
 function UpdateAtoCirurgico() {
+    const PDFLink = dynamic(
+        () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+        { ssr: false }
+    );
+
+    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+        <button type="button" className={styles.green_buttonFichas}>
+            <PDFLink
+                document={
+                    <AtoCirurgicoPDF 
+                        ficha={ficha} 
+                        animal={animal} 
+                        tutor={tutor} 
+                        medicoLogado={medicoLogado} 
+                    />
+                }
+                fileName={`AtoCirurgico_${animal.nome?.replace(/\s/g, '_')}.pdf`}
+                style={{ color: 'inherit', textDecoration: 'none' }}
+            >
+                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+            </PDFLink>
+        </button>
+    );
+
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [roles, setRoles] = useState([]);
@@ -450,12 +476,23 @@ function UpdateAtoCirurgico() {
                         )}
                     </div>
 
-                    {!isReadOnly && (
                     <div className={styles.button_box}>
+                    {/* Botão de PDF */}
+                    {!loading && animal.id && tutor.id && medicoLogado && (
+                        <DownloadPdfStyledButton
+                            ficha={formData}
+                            animal={animal}
+                            tutor={tutor}
+                            medicoLogado={medicoLogado}
+                        />
+                    )}
+                    {!isReadOnly && (
+                    <>
                         < CancelarWhiteButton />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
-                    </div>
+                    </>
                     )}
+                    </div>
                 </form>
                 {showAlert && consultaId && (
                     <Alert message="Ficha editada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
