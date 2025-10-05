@@ -7,12 +7,16 @@ import { getCurrentUsuario } from '../../../services/userService';
 export function SubHeader() {
     const [subHeaderComponent, setSubHeaderComponent] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isClient, setIsClient] = useState(false);
     
     const sidebarRef = useRef(null);
     const menuButtonRef = useRef(null);
 
     const touchStartX = useRef(0);
     const touchStartY = useRef(0);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const loadSubHeaderComponent = async () => {
         try {
@@ -35,8 +39,10 @@ export function SubHeader() {
     };
 
     useEffect(() => {
-        loadSubHeaderComponent();
-    }, []); 
+        if (isClient) {
+            loadSubHeaderComponent();
+        }
+    }, [isClient]);
 
 
   // Detecta cliques fora do menu
@@ -86,6 +92,10 @@ export function SubHeader() {
             document.removeEventListener("touchmove", handleTouchMove);
         };
     }, [menuOpen]);
+
+    if (!isClient) {
+    return null;
+}
 
     return (
         <div>
