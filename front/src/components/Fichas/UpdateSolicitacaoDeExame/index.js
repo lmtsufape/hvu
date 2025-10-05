@@ -14,8 +14,14 @@ import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
 import { getCurrentUsuario } from "../../../../services/userService";
 import { getMedicoById } from "../../../../services/medicoService";
+import dynamic from 'next/dynamic';
+import FichaSolicitacaoExamePDF from './FichaSolicitacaoExamePDF';
 
 function FichaSolicitacaoExame() {
+  const PDFLink = dynamic(
+        () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+        { ssr: false }
+    );
   const router = useRouter();
 
   const [showAlert, setShowAlert] = useState(false);
@@ -75,6 +81,56 @@ function FichaSolicitacaoExame() {
     aspecto: "",
     local: ""
     });
+
+    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado, className }) => (
+        <button type="button" className={`${styles.green_buttonFichas} ${className || ''}`}>
+            <PDFLink
+                document={
+                    <FichaSolicitacaoExamePDF 
+                        ficha={ficha} 
+                        animal={animal} 
+                        tutor={tutor} 
+                        medicoLogado={medicoLogado} 
+                    />
+                }
+                fileName={`SolicitacaoExame_${animal.nome?.replace(/\s/g, '_')}.pdf`}
+                style={{ color: 'inherit', textDecoration: 'none' }}
+            >
+                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+            </PDFLink>
+        </button>
+    );
+
+    const conteudoDaFichaParaPDF = () => {
+    const finalFormData = { ...formData };
+    Object.keys(finalFormData).forEach((field) => {
+        if (finalFormData[field].includes("Outros(s):") && otherValues[field].trim() !== "") {
+            finalFormData[field] = finalFormData[field].filter((item) => item !== "Outros(s):");
+            finalFormData[field].push(`Outros(s): ${otherValues[field].trim()}`);
+        }
+    });
+
+    const citoArray = [...finalFormData.citologiaHistopatologia];
+    const histopatologicoIndex = citoArray.indexOf("Histopatológico");
+    if (histopatologicoIndex !== -1) {
+        citoArray[histopatologicoIndex] = {
+            nome: "Histopatológico",
+            aspecto: histopatologicoExtra.aspecto.trim(),
+            local: histopatologicoExtra.local.trim()
+        };
+    }
+
+    return {
+        HematologiaDiagnóstica: finalFormData.hematologiaDiagnostica,
+        Urinálise: finalFormData.urinalise,
+        Parasitologico: finalFormData.parasitologico,
+        BioquímicaClínica: finalFormData.bioquimicaClinica,
+        CitologiaHistopatologia: citoArray,
+        Imunológicos: finalFormData.imunologicos,
+        Imaginologia: finalFormData.imaginologia,
+        Cardiologia: finalFormData.cardiologia,
+    };
+};
 
 
 
@@ -570,12 +626,24 @@ function FichaSolicitacaoExame() {
             )}
         </div>
 
-          {!isReadOnly && (
-          <div className={styles.button_box}>
-            <CancelarWhiteButton />
-            <FinalizarFichaModal onConfirm={handleSubmit} />
-          </div>
+        <div className={styles.button_box}>
+          {/* Botão de PDF agora junto com os outros */}
+          {!loading && animal.id && tutor.id && medicoLogado && (
+              <DownloadPdfStyledButton
+                  ficha={conteudoDaFichaParaPDF()}
+                  animal={animal}
+                  tutor={tutor}
+                  medicoLogado={medicoLogado}
+              />
           )}
+
+          {!isReadOnly && (
+            <> 
+              <CancelarWhiteButton />
+              <FinalizarFichaModal onConfirm={handleSubmit} />
+            </>
+          )}
+          </div>
         </form>
 
         {showAlert && consultaId && (
