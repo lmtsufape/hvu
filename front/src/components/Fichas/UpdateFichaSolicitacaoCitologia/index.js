@@ -15,8 +15,33 @@ import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
 import { getCurrentUsuario } from "../../../../services/userService";
 import { getMedicoById } from "../../../../services/medicoService";
+import dynamic from 'next/dynamic';
+import FichaSolicitacaoCitologiaPDF from './FichaSolicitacaoCitologiaPDF';
 
 function FichaSolicitacaoCitologia() {
+    const PDFLink = dynamic(
+        () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+        { ssr: false }
+    );
+
+    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+        <button type="button" className={styles.green_buttonFichas}>
+            <PDFLink
+                document={
+                    <FichaSolicitacaoCitologiaPDF 
+                        ficha={ficha} 
+                        animal={animal} 
+                        tutor={tutor} 
+                        medicoLogado={medicoLogado} 
+                    />
+                }
+                fileName={`SolicitacaoCitologia_${animal.nome?.replace(/\s/g, '_')}.pdf`}
+                style={{ color: 'inherit', textDecoration: 'none' }}
+            >
+                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+            </PDFLink>
+        </button>
+    );
 
     const [showAlert, setShowAlert] = useState(false);
     const [showOtherInput, setShowOtherInput] = useState(false);
@@ -703,13 +728,23 @@ function FichaSolicitacaoCitologia() {
                             )}
                         </div>
 
-                    
-                    {!isReadOnly && (
                     <div className={styles.button_box}>
+                        {/* Botão de PDF */}
+                        {!loading && animal.id && tutor.id && medicoLogado && (
+                            <DownloadPdfStyledButton
+                                ficha={formData}
+                                animal={animal}
+                                tutor={tutor}
+                                medicoLogado={medicoLogado}
+                            />
+                        )}
+                    {!isReadOnly && (
+                    <>
                         < CancelarWhiteButton />
                         < FinalizarFichaModal onConfirm={handleSubmit} />
-                    </div>
+                    </>
                     )}
+                    </div>
                 </form>
 
                 {showAlert && consultaId &&
