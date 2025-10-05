@@ -187,7 +187,8 @@ function FichaSolicitacaoExame() {
     }
   }, [router.isReady, router.query.consultaId, router.query.animalId, router.query.fichaId]);
 
-   useEffect(() => {
+   // Substitua este useEffect inteiro no seu código
+useEffect(() => {
     if (!animalId) return;
     if (!fichaId) return;
 
@@ -206,86 +207,98 @@ function FichaSolicitacaoExame() {
             console.error('Erro ao buscar tutor do animal:', error);
         } 
 
-      try {
-        const fichaDataFromApi = await getFichaById(fichaId);
-        const conteudo = JSON.parse(fichaDataFromApi.conteudo);
-        console.log("Conteúdo da ficha bruta da API:", conteudo);
+        try {
+            const fichaDataFromApi = await getFichaById(fichaId);
+            const conteudo = fichaDataFromApi.conteudo ? JSON.parse(fichaDataFromApi.conteudo) : {};
+            console.log("Conteúdo da ficha bruta da API:", conteudo);
 
-        const newFormData = {};
-        const newOtherValues = {};
-        const newShowOtherInputs = {};
+            const newFormData = {};
+            const newOtherValues = {};
+            const newShowOtherInputs = {};
 
-        const apiToStateMap = {
-          'HematologiaDiagnóstica': 'hematologiaDiagnostica',
-          'Urinálise': 'urinalise',
-          'Parasitologico': 'parasitologico',
-          'BioquímicaClínica': 'bioquimicaClinica',
-          'CitologiaHistopatologia': 'citologiaHistopatologia',
-          'Imunológicos': 'imunologicos',
-          'Imaginologia': 'imaginologia',
-          'Cardiologia': 'cardiologia',
-          'medicosResponsaveis': 'medicosResponsaveis'
-        };
+            const apiToStateMap = {
+                'HematologiaDiagnóstica': 'hematologiaDiagnostica',
+                'Urinálise': 'urinalise',
+                'Parasitologico': 'parasitologico',
+                'BioquímicaClínica': 'bioquimicaClinica',
+                'CitologiaHistopatologia': 'citologiaHistopatologia',
+                'Imunológicos': 'imunologicos',
+                'Imaginologia': 'imaginologia',
+                'Cardiologia': 'cardiologia',
+            };
 
-        for (const apiField in conteudo) {
-          const stateField = apiToStateMap[apiField];
-          if (stateField) {
-            let items = conteudo[apiField];
-            let otherValue = '';
-            let hasOther = false;
+            
+            const standardOptions = {
+                hematologiaDiagnostica: ["Hemograma Parcial mais Proteínas Plasmáticas Totais", "Proteínas Plasmáticas Totais", "Hemograma Parcial", "Hematócrito/Volume Globular", "Outros(s):"],
+                urinalise: ["Urinálise Completo", "Outros(s):"],
+                parasitologico: ["Coproparasitológico", "Outros(s):"],
+                bioquimicaClinica: ["Creatinina (CREA)", "Ureia (UR)", "ALT/TGP", "AST/TGO", "Fosfatase alcalina (FA)", "Gama - Glutamiltransferase (GGT)", "Bilirrubina total e frações (BT + BD + BI)", "Proteínas totais (PT)", "Albumina (ALB)", "Globulinas (GLOB)", "Triglicerides (TG)", "Colesterol Total (COL)", "Colesteróis HDL e LDL", "Glicose (GLI)", "Creatina quinase (CK/CPK)", "Outros(s):"],
+                citologiaHistopatologia: ["Citologia cutânea", "Raspado cutâneo", "Citologia oncológica", "Histopatológico", "Outros(s):"],
+                imunologicos: ["Teste rápido Cinomose", "Teste rápido Erliquiose", "Teste rápido Leishmaniose", "FIV/FELV", "Outros(s):"],
+                imaginologia: ["Ultrassonografia", "Radiografia", "Mielografia", "Outros(s):"],
+                cardiologia: ["Eletrocardiograma", "Ecocardiograma", "Outros(s):"],
+            };
 
-            if (Array.isArray(items)) {
-              const outrosIndex = items.indexOf("Outros(s):");
-              if (outrosIndex !== -1) {
-                hasOther = true;
-                newShowOtherInputs[stateField] = true;
-                const filteredItems = items.filter(item => item !== "Outros(s):");
-                if (filteredItems.length > 0) {
-                    otherValue = filteredItems[filteredItems.length - 1];
-                    items = filteredItems.filter(item => item !== otherValue);
-                } else {
-                    items = [];
-                }
-              } else {
-                newShowOtherInputs[stateField] = false;
-                otherValue = '';
-              }
-            }
+            for (const apiField in apiToStateMap) {
+                const stateField = apiToStateMap[apiField];
+                const itemsFromApi = conteudo[apiField] || [];
+                
+                let formDataForField = [];
+                let otherValueForField = "";
+                let showOtherInput = false;
 
-            if (stateField === 'citologiaHistopatologia') {
-                        const histopatologicoIndex = items.findIndex(item => typeof item === 'object' && item !== null && item.nome === 'Histopatológico');
-                        if (histopatologicoIndex !== -1) {
-                            const histopatologicoObj = items[histopatologicoIndex];
+                if (Array.isArray(itemsFromApi)) {
+                   
+                    const customValue = itemsFromApi.find(item => 
+                        typeof item === 'string' && !standardOptions[stateField].includes(item)
+                    );
+
+                    if (customValue) {
+                        otherValueForField = customValue;
+                        showOtherInput = true;
+                    
+                        formDataForField = itemsFromApi.filter(item => item !== customValue);
+                        if (!formDataForField.includes("Outros(s):")) {
+                            formDataForField.push("Outros(s):");
+                        }
+                    } else {
+                        formDataForField = itemsFromApi;
+                    }
+
+                  
+                    if (stateField === 'citologiaHistopatologia') {
+                        const histopatologicoObj = itemsFromApi.find(item => typeof item === 'object' && item?.nome === 'Histopatológico');
+                        if (histopatologicoObj) {
                             setHistopatologicoExtra({
                                 aspecto: histopatologicoObj.aspecto || "",
                                 local: histopatologicoObj.local || ""
                             });
-                            items[histopatologicoIndex] = 'Histopatológico';
+                            
+                            formDataForField = formDataForField.map(item => (typeof item === 'object' && item?.nome === 'Histopatológico') ? 'Histopatológico' : item);
                         }
                     }
-
-            newFormData[stateField] = items || [];
-            newOtherValues[stateField] = otherValue;
-            if (hasOther) {
-              newFormData[stateField].push("Outros(s):");
+                }
+                
+                newFormData[stateField] = formDataForField;
+                newOtherValues[stateField] = otherValueForField;
+                newShowOtherInputs[stateField] = showOtherInput;
             }
-          }
+
+            setFormData(newFormData);
+            setOtherValues(newOtherValues);
+            setShowOtherInputs(newShowOtherInputs);
+            setData(fichaDataFromApi.dataHora);
+
+        } catch (error) {
+            console.error("Erro ao buscar dados da ficha:", error);
+        } finally {
+            setLoading(false);
         }
-
-        setFormData(newFormData);
-        setOtherValues(newOtherValues);
-        setShowOtherInputs(newShowOtherInputs);
-        setData(fichaDataFromApi.dataHora);
-
-      } catch (error) {
-        console.error("Erro ao buscar dados da ficha:", error);
-      } finally {
-        setLoading(false);
-      }
     };
 
-        fetchData();
-    }, [animalId, fichaId]);
+    fetchData();
+}, [animalId, fichaId]); 
+
 
   // Carrega token e roles do localStorage
   useEffect(() => {
