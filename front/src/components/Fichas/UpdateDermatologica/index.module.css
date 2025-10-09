@@ -57,3 +57,20 @@
     pointer-events: none; 
     cursor: default; 
   }
+
+   .green_buttonFichas {
+    width: 180px;
+    height: 56px;
+    border-radius: 10px;
+    border: 1px solid #39805F;
+    color: #FFF5F6;
+    background-color: #39805F;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+}
+.green_buttonFichas:hover {
+    background-color: #5b977b;
+}
