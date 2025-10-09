@@ -35,15 +35,17 @@ const ExamList = ({ title, items }) => {
             <Text style={styles.sectionTitle}>{title}</Text>
             <View style={styles.subsection}>
                 {items.map((item, index) => {
+                    // Tratamento especial para o objeto Histopatológico
                     if (typeof item === 'object' && item.nome === 'Histopatológico') {
                         return (
-                            <View key={index}>
+                            <View key={index} style={{ marginBottom: 5 }}>
                                 <Text style={styles.listItem}>• {item.nome}</Text>
                                 <Text style={{...styles.listItem, marginLeft: 20}}>- Aspecto: {item.aspecto || 'N/A'}</Text>
                                 <Text style={{...styles.listItem, marginLeft: 20}}>- Local: {item.local || 'N/A'}</Text>
                             </View>
                         );
                     }
+                    // Renderiza outros itens como texto simples
                     return <Text key={index} style={styles.listItem}>• {item}</Text>;
                 })}
             </View>
@@ -68,7 +70,10 @@ const FichaSolicitacaoExamePDF = ({ ficha, animal, tutor, medicoLogado }) => (
           <View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View>
           <View style={styles.row}><Text style={styles.label}>Raça:</Text><Text style={styles.value}>{animal.raca?.nome || 'N/A'}</Text></View>
           <View style={styles.row}><Text style={styles.label}>Sexo:</Text><Text style={styles.value}>{animal.sexo || 'N/A'}</Text></View>
-          <View style={styles.row}><Text style={styles.label}>Data de Nascimento:</Text><Text style={styles.value}>{formatDate(animal.dataNascimento)}</Text></View>
+          <View style={styles.row}><Text style={styles.label}>Data de Nascimento:</Text><Text style={styles.value}>{animal.dataNascimento ? moment(animal.dataNascimento).format('DD/MM/YYYY') : 'N/A'}</Text></View>
+          <View style={styles.row}><Text style={styles.label}>Porte:</Text><Text style={styles.value}>{animal.raca?.porte || 'N/A'}</Text></View>
+          <View style={styles.row}><Text style={styles.label}>Alergias:</Text><Text style={styles.value}>{animal.alergias || 'N/A'}</Text></View>
+          <View style={styles.row}><Text style={styles.label}>Número da Ficha:</Text><Text style={styles.value}>{animal.numeroFicha || 'N/A'}</Text></View>
           <View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View>
         </View>
       </View>
@@ -83,17 +88,7 @@ const FichaSolicitacaoExamePDF = ({ ficha, animal, tutor, medicoLogado }) => (
       <ExamList title="Imaginologia" items={ficha.Imaginologia} />
       <ExamList title="Cardiologia" items={ficha.Cardiologia} />
 
-      {/* Assinatura Eletrônica */}
-      {medicoLogado && (
-        <Text style={styles.assinatura}>
-          Assinado eletronicamente por Dr(a). {medicoLogado.nome}, CRMV {medicoLogado.crmv}
-        </Text>
-      )}
-
-      {/* Rodapé */}
-      <Text style={styles.footer} fixed>
-        Documento gerado em: {moment().format('DD/MM/YYYY HH:mm:ss')}
-      </Text>
+      <View fixed>{medicoLogado && <Text style={styles.assinatura}>Assinado eletronicamente por Dr(a). {medicoLogado.nome}, CRMV {medicoLogado.crmv}</Text>}</View>
     </Page>
   </Document>
 );
