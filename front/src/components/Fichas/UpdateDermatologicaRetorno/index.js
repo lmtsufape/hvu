@@ -14,8 +14,33 @@ import { getAnimalById } from "../../../../services/animalService";
 import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
 import { getMedicoById } from "../../../../services/medicoService";
+import dynamic from 'next/dynamic';
+import FichaDermatologicaRetornoPDF from './FichaDermatologicaRetornoPDF';
 
 function FichaDermatologicaRetorno() {
+     const PDFLink = dynamic(
+        () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+        { ssr: false }
+    );
+
+    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+        <button type="button" className={styles.green_buttonFichas}>
+            <PDFLink
+                document={
+                    <FichaDermatologicaRetornoPDF 
+                        ficha={ficha} 
+                        animal={animal} 
+                        tutor={tutor} 
+                        medicoLogado={medicoLogado} 
+                    />
+                }
+                fileName={`FichaDermatologicaRetorno_${animal.nome?.replace(/\s/g, '_')}.pdf`}
+                style={{ color: 'inherit', textDecoration: 'none' }}
+            >
+                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+            </PDFLink>
+        </button>
+    );
 
     const [userId, setUserId] = useState(null);
     console.log("userId:", userId);
@@ -348,12 +373,23 @@ function FichaDermatologicaRetorno() {
                         )}
                     </div>
 
-                    {!isReadOnly && (
                     <div className={styles.button_box}>
+                    {/* Botão de PDF */}
+                    {!loading && animal.id && tutor.id && medicoLogado && (
+                        <DownloadPdfStyledButton
+                            ficha={formData}
+                            animal={animal}
+                            tutor={tutor}
+                            medicoLogado={medicoLogado}
+                        />
+                    )}
+                    {!isReadOnly && (
+                    <>
                         < CancelarWhiteButton onClick={cleanLocalStorage}/>
                         < FinalizarFichaModal onConfirm={handleSubmit} />
-                    </div>
+                    </>
                     )}
+                    </div>
                 </form>
                 {showAlert && consultaId &&
                 <div className={styles.alert}>
