@@ -142,6 +142,7 @@ export function SubheaderSecretario() {
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/agendamentosDia')}><span>Agendamentos</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/pacientesBySecretario')}><span>Pacientes</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/getAllMedicos')}><span>Veterinários&#40;as&#41;</span></button>
+            {/* <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarAgendas')}><span>Agendas</span></button> */}
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarRacas')}><span>Raças</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarEspecies')}><span>Espécies</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarTiposConsulta')}><span>Consultas</span></button>
@@ -159,6 +160,7 @@ export function SubheaderMedico({medicoId}) {
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/mainMedico')}><span>Home</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/agendamentosByMedico/${medicoId}`)}><span>Agendamentos</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/pacientesByMedico/${medicoId}`)}><span>Pacientes</span></button>
+            {/* <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/getAllCronogramaByMedico/${medicoId}`)}><span>Agendas</span></button> */}
         </div>
     );
 }

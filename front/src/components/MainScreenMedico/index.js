@@ -70,6 +70,10 @@ function MainScreenMedico() {
                     <Image src="/subtract.svg" alt="Calendário" width={62} height={62}/>
                     <h6>Meus pacientes</h6>
                 </button>
+               {/* <button className={styles.button} onClick={(e) => router.push(`/getAllCronogramaByMedico/${userId}`)}>
+                    <Image src="/description.svg" alt="Calendário" width={62} height={62}/>
+                    <h6>Minhas agendas</h6>
+                </button> */}
             </div>
         </div>
     );
