@@ -40,8 +40,23 @@ const ClinicaMedicaRetornoPDF = ({ ficha, animal, tutor, medicoLogado }) => {
         <Document>
             <Page size="A4" style={styles.page}>
                 <Text style={styles.header}>Ficha Clínico Médica de Retorno</Text>
-                <View style={styles.section}><Text style={styles.sectionTitle}>Dados do Paciente</Text><View style={styles.subsection}><View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View><View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View><View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View></View></View>
-                
+
+                {/* Dados do Paciente */}
+                      <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Dados do Paciente</Text>
+                        <View style={styles.subsection}>
+                          <View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Raça:</Text><Text style={styles.value}>{animal.raca?.nome || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Sexo:</Text><Text style={styles.value}>{animal.sexo || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Data de Nascimento:</Text><Text style={styles.value}>{animal.dataNascimento ? moment(animal.dataNascimento).format('DD/MM/YYYY') : 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Porte:</Text><Text style={styles.value}>{animal.raca?.porte || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Alergias:</Text><Text style={styles.value}>{animal.alergias || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Número da Ficha:</Text><Text style={styles.value}>{animal.numeroFicha || 'N/A'}</Text></View>
+                          <View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View>
+                        </View>
+                      </View>
+
                 <Text style={styles.sectionTitle}>Anamnese</Text>
                 <View style={styles.subsection}>
                     <View style={styles.row}><Text style={styles.label}>Peso:</Text><Text style={styles.value}>{ficha.peso ? `${ficha.peso} kg` : 'N/A'}</Text></View>
@@ -56,18 +71,18 @@ const ClinicaMedicaRetornoPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                     ))}
                     <View style={styles.row}><Text style={styles.label}>Controle de Ectoparasitos:</Text><Text style={styles.value}>{ficha.ectoparasitosDetalhes?.ectoparasitos === 'Sim' ? `${ficha.ectoparasitosDetalhes.produto || ''} em ${moment(ficha.ectoparasitosDetalhes.data).format('DD/MM/YYYY')}` : 'Não'}</Text></View>
                     <View style={styles.rowLast}><Text style={styles.label}>Vermifugação:</Text><Text style={styles.value}>{ficha.vermifugacaoDetalhes?.vermifugacao === 'Sim' ? `${ficha.vermifugacaoDetalhes.produto || ''} em ${moment(ficha.vermifugacaoDetalhes.data).format('DD/MM/YYYY')}` : 'Não'}</Text></View>
+                    <View style={styles.row}><Text style={styles.label}>Alimentação:</Text><Text style={styles.value}>{ExameFisico.alimentacao || 'N/A'}</Text></View>
                 </View>
 
                 <Text style={styles.sectionTitle}>Exame Físico Geral</Text>
                 <View style={styles.subsection}>
-                    <View style={styles.row}><Text style={styles.label}>Alimentação:</Text><Text style={styles.value}>{ExameFisico.alimentacao || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Postura:</Text><Text style={styles.value}>{ExameFisico.postura || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Nível de Consciência:</Text><Text style={styles.value}>{ExameFisico.nivelConsciencia || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Score Corporal:</Text><Text style={styles.value}>{ExameFisico.score || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Temperatura:</Text><Text style={styles.value}>{ExameFisico.temperatura ? `${ExameFisico.temperatura}°C` : 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Grau de Desidratação:</Text><Text style={styles.value}>{ExameFisico.hidratacao || 'N/A'}</Text></View>
-                    <View style={styles.row}><Text style={styles.label}>FC (BPM):</Text><Text style={styles.value}>{ficha.freqCardiaca || 'N/A'}</Text></View>
-                    <View style={styles.row}><Text style={styles.label}>FR (RPM):</Text><Text style={styles.value}>{ficha.freqRespiratoria || 'N/A'}</Text></View>
+                    <View style={styles.row}><Text style={styles.label}>Frequência cardíaca (BPM):</Text><Text style={styles.value}>{ficha.freqCardiaca || 'N/A'}</Text></View>
+                    <View style={styles.row}><Text style={styles.label}>Frequência Respiratória (RPM):</Text><Text style={styles.value}>{ficha.freqRespiratoria || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Turgor Cutâneo:</Text><Text style={styles.value}>{ficha.turgorCutaneo || 'N/A'}</Text></View>
                     <View style={styles.rowLast}><Text style={styles.label}>TPC:</Text><Text style={styles.value}>{ficha.tpc || 'N/A'}</Text></View>
                 </View>
@@ -77,7 +92,12 @@ const ClinicaMedicaRetornoPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                 <Text style={styles.sectionTitle}>Exame Físico por Sistema</Text>
                 <View style={styles.subsection}>
                     {Object.keys(fisicogeral).map(key => (
-                        <View key={key}><Text style={styles.label}>{key}:</Text><Text style={styles.textAreaContent}>{fisicogeral[key]}</Text></View>
+                        <View key={key}>
+                        <Text style={styles.label}>
+                            {key.charAt(0).toUpperCase() + key.slice(1)}:
+                        </Text>
+                        <Text style={styles.textAreaContent}>{fisicogeral[key]}</Text>
+                    </View>
                     ))}
                 </View>
 
@@ -86,8 +106,6 @@ const ClinicaMedicaRetornoPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                     <Text style={styles.label}>Diagnóstico(s):</Text><Text style={styles.textAreaContent}>{diagnostico.diagnostico || 'N/A'}</Text>
                     <Text style={{...styles.label, marginTop: 8}}>Conduta Terapêutica:</Text><Text style={styles.textAreaContent}>{diagnostico.condutaTerapeutica || 'N/A'}</Text>
                 </View>
-
-                <Text style={styles.sectionTitle}>Responsáveis</Text>
                 <View style={styles.subsection}><View style={styles.rowLast}><Text style={styles.label}>Plantonista(s) Discente(s):</Text><Text style={styles.value}>{ficha.plantonistas || 'N/A'}</Text></View></View>
 
                 <View fixed>{medicoLogado && <Text style={styles.assinatura}>Assinado eletronicamente por Dr(a). {medicoLogado.nome}, CRMV {medicoLogado.crmv}</Text>}</View>
