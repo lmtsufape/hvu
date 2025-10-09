@@ -50,7 +50,22 @@ const OrtopedicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
         <Document>
             <Page size="A4" style={styles.page}>
                 <Text style={styles.header}>Ficha de Atendimento Ortopédico</Text>
-                <View style={styles.section}><Text style={styles.sectionTitle}>Dados do Paciente</Text><View style={styles.subsection}><View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View><View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View><View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View></View></View>
+                {/* Dados do Paciente */}
+                      <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Dados do Paciente</Text>
+                        <View style={styles.subsection}>
+                          <View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Raça:</Text><Text style={styles.value}>{animal.raca?.nome || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Sexo:</Text><Text style={styles.value}>{animal.sexo || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Data de Nascimento:</Text><Text style={styles.value}>{animal.dataNascimento ? moment(animal.dataNascimento).format('DD/MM/YYYY') : 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Porte:</Text><Text style={styles.value}>{animal.raca?.porte || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Alergias:</Text><Text style={styles.value}>{animal.alergias || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Número da Ficha:</Text><Text style={styles.value}>{animal.numeroFicha || 'N/A'}</Text></View>
+                          <View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View>
+                        </View>
+                      </View>
+
 
                 <Text style={styles.sectionTitle}>Histórico</Text>
                 <View style={styles.subsection}>
@@ -79,13 +94,17 @@ const OrtopedicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                     <View style={styles.row}><Text style={styles.label}>Assimetrias/Desvios:</Text><Text style={styles.value}>{ficha.assimetriaDesvio || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Atrofia Muscular:</Text><Text style={styles.value}>{ficha.atrofiaMuscular || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Escoriações/Fístulas:</Text><Text style={styles.value}>{ficha.escoriacoesFistulas || 'N/A'}</Text></View>
+                </View>
+                <Text style={styles.sectionTitle}>Marcha</Text>
+                <View style={styles.subsection}>
                     <View style={styles.row}><Text style={styles.label}>Marcha:</Text><Text style={styles.value}>{ficha.marcha || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Características da Marcha:</Text><Text style={styles.value}>{ficha.caracteristicas || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Claudicação:</Text><Text style={styles.value}>{ficha.claudicacao || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Fase de Apoio:</Text><Text style={styles.value}>{ficha.faseApoio || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Fase de Elevação:</Text><Text style={styles.value}>{ficha.faseElevacao || 'N/A'}</Text></View>
                     <View style={styles.row}><Text style={styles.label}>Ângulo das Articulações:</Text><Text style={styles.value}>{ficha.anguloArticulacoes || 'N/A'}</Text></View>
-                    <View style={styles.rowLast}><Text style={styles.label}>Obs Marcha:</Text><Text style={styles.value}>{ficha.segundaObservacao || 'N/A'}</Text></View>
+                    <View style={styles.rowLast}><Text style={styles.label}>Observações:</Text><Text style={styles.value}>{ficha.segundaObservacao || 'N/A'}</Text></View>
+                
                 </View>
                 
                 <Text style={styles.sectionTitle}>Palpação Membro Torácico</Text>
@@ -100,6 +119,10 @@ const OrtopedicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                     {renderPalpacao("Escápula", ficha.escapula)}
                     {renderPalpacao("Articulação Cubital", ficha.articulacaoCubital)}
                 </View>
+                <View style={styles.subsection}>
+                    <View style={styles.row}><Text style={styles.label}>Achados Exames de Imagem:</Text><Text style={styles.value}>{ficha.achadosImagem || 'N/A'}</Text></View>
+                    <View style={styles.rowLast}><Text style={styles.label}>Outros Exames:</Text><Text style={styles.value}>{ficha.outrosExames || 'N/A'}</Text></View>
+                </View>
 
                 <Text style={styles.sectionTitle}>Palpação Membro Pélvico</Text>
                 <View style={styles.subsection}>
@@ -112,18 +135,7 @@ const OrtopedicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                     {renderPalpacao("Articulação Sacroilíaca", ficha.articulacaoSacroiliaca)}
                     {renderPalpacao("Pelve", ficha.pelve)}
                 </View>
-
-                <Text style={styles.sectionTitle}>Cabeça e Esqueleto Axial</Text>
-                <View style={styles.subsection}>
-                    {renderPalpacao("Cabeça e Esqueleto Axial", ficha.cabecaEsqueletoAxial)}
-                </View>
-            
-
-                <Text style={styles.sectionTitle}>Exames e Diagnóstico</Text>
-                <View style={styles.subsection}>
-                    <View style={styles.row}><Text style={styles.label}>Achados Exames de Imagem:</Text><Text style={styles.value}>{ficha.achadosImagem || 'N/A'}</Text></View>
-                    <View style={styles.rowLast}><Text style={styles.label}>Outros Exames:</Text><Text style={styles.value}>{ficha.outrosExames || 'N/A'}</Text></View>
-                </View>
+                
                 <View style={styles.subsection}>
                     <Text style={styles.label}>Diagnóstico:</Text>
                     <Text style={styles.textAreaContent}>{ficha.diagnostico || 'N/A'}</Text>
@@ -132,8 +144,6 @@ const OrtopedicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                     <Text style={styles.label}>Tratamento:</Text>
                     <Text style={styles.textAreaContent}>{ficha.tratamento || 'N/A'}</Text>
                 </View>
-
-                <Text style={styles.sectionTitle}>Responsáveis</Text>
                 <View style={styles.subsection}>
                     <View style={styles.rowLast}><Text style={styles.label}>Plantonista(s) Discente(s):</Text><Text style={styles.value}>{ficha.plantonistas || 'N/A'}</Text></View>
                 </View>
