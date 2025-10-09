@@ -34,64 +34,66 @@ const FichaRetornoClinicoSilPDF = ({ ficha, animal, tutor, medicoLogado }) => (
     author={medicoLogado ? `Dr(a). ${medicoLogado.nome}` : 'Clínica Vet'}
   >
     <Page size="A4" style={styles.page}>
-      <Text style={styles.header}>Ficha Clínico Médica de Retorno de Animais Silvestres e Exóticos</Text>
+      <Text style={styles.header}>Ficha Clínico Médica de Retorno de Animais Silvestres</Text>
 
        {/* Dados do Paciente */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Dados do Paciente</Text>
-              <View style={styles.subsection}>
-                <View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View>
-                <View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View>
-                <View style={styles.row}><Text style={styles.label}>Raça:</Text><Text style={styles.value}>{animal.raca?.nome || 'N/A'}</Text></View>
-                <View style={styles.row}><Text style={styles.label}>Sexo:</Text><Text style={styles.value}>{animal.sexo || 'N/A'}</Text></View>
-                <View style={styles.row}><Text style={styles.label}>Data de Nascimento:</Text><Text style={styles.value}>{formatDate(animal.dataNascimento)}</Text></View>
-                <View style={styles.row}><Text style={styles.label}>Peso:</Text><Text style={styles.value}>{animal.peso ? `${animal.peso} kg` : 'N/A'}</Text></View>
-                <View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View>
-              </View>
+             <View style={styles.subsection}>
+              <View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Raça:</Text><Text style={styles.value}>{animal.raca?.nome || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Sexo:</Text><Text style={styles.value}>{animal.sexo || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Data de Nascimento:</Text><Text style={styles.value}>{animal.dataNascimento ? moment(animal.dataNascimento).format('DD/MM/YYYY') : 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Porte:</Text><Text style={styles.value}>{animal.raca?.porte || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Alergias:</Text><Text style={styles.value}>{animal.alergias || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Número da Ficha:</Text><Text style={styles.value}>{animal.numeroFicha || 'N/A'}</Text></View>
+              <View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View>
+            </View>
             </View>
 
       {/* Dados da Ficha */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Retorno – Acompanhamento Clínico</Text>
-        <View style={styles.subsection}>
+     <View style={styles.section}>
+    <Text style={styles.sectionTitle}>Retorno – Acompanhamento Clínico</Text>
+    <View style={styles.subsection}>
+        <View style={styles.row}>
             <Text style={styles.label}>Anamnese:</Text>
-            <Text style={styles.textAreaContent}>{ficha.anamnese || 'Não preenchido.'}</Text>
+            <Text style={styles.value}>{ficha.anamnese || 'N/A'}</Text>
         </View>
-        <View style={styles.subsection}>
+        <View style={styles.row}>
             <Text style={styles.label}>Exame Clínico:</Text>
-            <Text style={styles.textAreaContent}>{ficha.exameclinico || 'Não preenchido.'}</Text>
+            <Text style={styles.value}>{ficha.exameclinico || 'N/A'}</Text>
         </View>
-        <View style={styles.subsection}>
+        <View style={styles.rowLast}>
             <Text style={styles.label}>Tratamento:</Text>
-            <Text style={styles.textAreaContent}>{ficha.tratamento || 'Não preenchido.'}</Text>
+            <Text style={styles.value}>{ficha.tratamento || 'N/A'}</Text>
         </View>
-      </View>
+    </View>
+</View>
 
-      {/* Exames Complementares */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Exames Complementares</Text>
-        <View style={styles.subsection}>
-            <View style={styles.examList}>
-                {ficha.exames && ficha.exames.map((item, index) => (
-                    item !== 'outros' && <Text key={index} style={styles.examItem}>• {item}</Text>
-                ))}
-            </View>
-            {ficha.outros_texto && <Text style={{...styles.examItem, width: '100%', marginTop: 5}}>Outros: {ficha.outros_texto}</Text>}
-        </View>
-      </View>
-
-      {/* Assinatura Eletrônica */}
-      {medicoLogado && (
-        <Text style={styles.assinatura}>
-          Assinado eletronicamente por Dr(a). {medicoLogado.nome}, CRMV {medicoLogado.crmv}
-        </Text>
-      )}
-
-      {/* Rodapé */}
-      <Text style={styles.footer} fixed>
-        Documento gerado em: {moment().format('DD/MM/YYYY HH:mm:ss')}
-      </Text>
+{/* Exames Complementares */}
+<View style={styles.section}>
+    <Text style={styles.sectionTitle}>Exames Complementares</Text>
+    <View style={styles.subsection}>
+        <Text style={styles.label}>Exames Solicitados:</Text>
+        {(ficha.exames || [])
+            .filter(item => item !== 'outros')
+            .map((item, index) => (
+                <Text key={index} style={{...styles.value, textAlign: 'left', marginTop: 4 }}>
+                    • {item}
+                </Text>
+            ))
+        }
+        {ficha.outros_texto && (
+            <Text style={{...styles.value, textAlign: 'left', marginTop: 4 }}>
+                • Outros: {ficha.outros_texto}
+            </Text>
+        )}
+    </View>
+</View>
+      <View fixed>{medicoLogado && <Text style={styles.assinatura}>Assinado eletronicamente por Dr(a). {medicoLogado.nome}, CRMV {medicoLogado.crmv}</Text>}</View>
     </Page>
+       
   </Document>
 );
 
