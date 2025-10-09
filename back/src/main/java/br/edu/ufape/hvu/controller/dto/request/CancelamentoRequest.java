@@ -19,10 +19,8 @@ public class CancelamentoRequest {
 	private LocalDateTime dataVaga;
 	@NotNull
 	private LocalDateTime dataCancelamento;
-	@NotNull
 	private EspecialidadeRequest especialidade;
 	private AgendamentoRequest agendamento;
-	@NotNull
 	private VagaRequest vaga;
 	
 	public Cancelamento convertToEntity() {
