@@ -34,21 +34,21 @@ const FichaSolicitacaoCitologiaPDF = ({ ficha, animal, tutor, medicoLogado }) =>
     <Page size="A4" style={styles.page}>
       <Text style={styles.header}>Ficha de Solicitação de Citologia</Text>
 
-       <View style={styles.section}>
-    <Text style={styles.sectionTitle}>Dados do Paciente</Text>
-    <View style={styles.subsection}>
-        <View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View>
-        <View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View>
-        <View style={styles.row}><Text style={styles.label}>Raça:</Text><Text style={styles.value}>{animal.raca?.nome || 'N/A'}</Text></View>
-        <View style={styles.row}><Text style={styles.label}>Porte:</Text><Text style={styles.value}>{animal.raca?.porte || 'Não definido'}</Text></View>
-        <View style={styles.row}><Text style={styles.label}>Alergias:</Text><Text style={styles.value}>{animal.alergias || 'Não definidas'}</Text></View>
-        <View style={styles.row}><Text style={styles.label}>Número da Ficha:</Text><Text style={styles.value}>{animal.numeroFicha || 'Não definido'}</Text></View>
-        <View style={styles.row}><Text style={styles.label}>Sexo:</Text><Text style={styles.value}>{animal.sexo || 'N/A'}</Text></View>
-        <View style={styles.row}><Text style={styles.label}>Data de Nascimento:</Text><Text style={styles.value}>{formatDate(animal.dataNascimento)}</Text></View>
-        <View style={styles.row}><Text style={styles.label}>Peso:</Text><Text style={styles.value}>{animal.peso ? `${animal.peso} kg` : 'N/A'}</Text></View>
-        <View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View>
-    </View>
-</View>
+    {/* Dados do Paciente */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Dados do Paciente</Text>
+            <View style={styles.subsection}>
+              <View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Raça:</Text><Text style={styles.value}>{animal.raca?.nome || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Sexo:</Text><Text style={styles.value}>{animal.sexo || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Data de Nascimento:</Text><Text style={styles.value}>{animal.dataNascimento ? moment(animal.dataNascimento).format('DD/MM/YYYY') : 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Porte:</Text><Text style={styles.value}>{animal.raca?.porte || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Alergias:</Text><Text style={styles.value}>{animal.alergias || 'N/A'}</Text></View>
+              <View style={styles.row}><Text style={styles.label}>Número da Ficha:</Text><Text style={styles.value}>{animal.numeroFicha || 'N/A'}</Text></View>
+              <View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View>
+            </View>
+          </View>
 
       {/* Dados da Ficha */}
       <View style={styles.section}>
@@ -99,17 +99,8 @@ const FichaSolicitacaoCitologiaPDF = ({ ficha, animal, tutor, medicoLogado }) =>
         </View>
       </View>
 
-      {/* Assinatura Eletrônica */}
-      {medicoLogado && (
-        <Text style={styles.assinatura}>
-          Assinado eletronicamente por Dr(a). {medicoLogado.nome}, CRMV {medicoLogado.crmv}
-        </Text>
-      )}
+     <View fixed>{medicoLogado && <Text style={styles.assinatura}>Assinado eletronicamente por Dr(a). {medicoLogado.nome}, CRMV {medicoLogado.crmv}</Text>}</View>
 
-      {/* Rodapé */}
-      <Text style={styles.footer} fixed>
-        Documento gerado em: {moment().format('DD/MM/YYYY HH:mm:ss')}
-      </Text>
     </Page>
   </Document>
 );
