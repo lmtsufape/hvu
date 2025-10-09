@@ -54,10 +54,6 @@ function MainScreenSecretario() {
                     <Image src="/description.svg" alt="Listagem de veterinários" width={62} height={62} />
                     <h6>Listagem de Veterinários&#40;as&#41;</h6>
                 </button>
-                <button className={styles.button} onClick={() => router.push('/gerenciarAgendas')}>
-                    <Image src="/overview.svg" alt="Gerenciar agendas" width={62} height={62} />
-                    <h6>Gerenciar agendas</h6>
-                </button>
             </div>
 
             <div className={styles.box_button}>
