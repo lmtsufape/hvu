@@ -46,9 +46,22 @@ const NeurologicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
             <Page size="A4" style={styles.page}>
                 <Text style={styles.header}>Ficha Neurológica</Text>
                 
-                {/* --- DADOS DO PACIENTE --- */}
-                <View style={styles.section}><Text style={styles.sectionTitle}>Dados do Paciente</Text><View style={styles.subsection}><View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View><View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View><View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View></View></View>
-                
+                {/* Dados do Paciente */}
+                      <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Dados do Paciente</Text>
+                        <View style={styles.subsection}>
+                          <View style={styles.row}><Text style={styles.label}>Nome:</Text><Text style={styles.value}>{animal.nome || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Espécie:</Text><Text style={styles.value}>{animal.raca?.especie?.nome || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Raça:</Text><Text style={styles.value}>{animal.raca?.nome || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Sexo:</Text><Text style={styles.value}>{animal.sexo || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Data de Nascimento:</Text><Text style={styles.value}>{animal.dataNascimento ? moment(animal.dataNascimento).format('DD/MM/YYYY') : 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Porte:</Text><Text style={styles.value}>{animal.raca?.porte || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Alergias:</Text><Text style={styles.value}>{animal.alergias || 'N/A'}</Text></View>
+                          <View style={styles.row}><Text style={styles.label}>Número da Ficha:</Text><Text style={styles.value}>{animal.numeroFicha || 'N/A'}</Text></View>
+                          <View style={styles.rowLast}><Text style={styles.label}>Tutor:</Text><Text style={styles.value}>{tutor.nome || 'N/A'}</Text></View>
+                        </View>
+                      </View>
+            
                 {/* --- PÁGINA 1 DO FORMULÁRIO --- */}
                 <Text style={styles.sectionTitle}>Estado Mental, Postura e Locomoção</Text>
                 <View style={styles.subsection}>
@@ -88,8 +101,6 @@ const NeurologicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                     {renderPostural("Correção Tátil", reacoesPosturais.correcaoTatil)}
                 </View>
 
-                <Text style={styles.header}>Ficha Neurológica (Continuação)</Text>
-                
                 {/* --- PÁGINA 2 DO FORMULÁRIO (PARTE 2) --- */}
                 <Text style={styles.sectionTitle}>Reflexos Segmentares</Text>
                 <text style={{fontSize: 8, fontFamily: 'Helvetica-Oblique', color: '#6c757d', marginBottom: 4}}>(0 – ausente, 1 – diminuído, 2 – normal, 3 – aumentado, 4 - clono)</text>
@@ -126,7 +137,6 @@ const NeurologicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                     <Text style={{...styles.label, marginTop: 8}}>Tratamento:</Text><Text style={styles.textAreaContent}>{diagnosticoAnatomico.tratamento || 'N/A'}</Text>
                 </View>
 
-                <Text style={styles.sectionTitle}>Responsáveis</Text>
                 <View style={styles.subsection}><View style={styles.rowLast}><Text style={styles.label}>Plantonista(s) Discente(s):</Text><Text style={styles.value}>{ficha.plantonistasDiscentes || 'N/A'}</Text></View></View>
 
                 <View fixed>{medicoLogado && <Text style={styles.assinatura}>Assinado eletronicamente por Dr(a). {medicoLogado.nome}, CRMV {medicoLogado.crmv}</Text>}</View>
