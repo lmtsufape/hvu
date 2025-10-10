@@ -1378,6 +1378,8 @@ public class Facade {
 
     @Transactional
     public Animal saveAnimal(Animal newInstance, String idSession) {
+        newInstance.setRaca(racaServiceInterface.findRacaById(newInstance.getRaca().getId()));
+
         Tutor tutor = findTutorByUserId(idSession);
         if (tutor == null) {
             throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
@@ -1389,7 +1391,6 @@ public class Facade {
 
         validarOrigemAnimal("TUTOR", newInstance.getOrigemAnimal());
 
-        racaServiceInterface.findRacaById(newInstance.getRaca().getId());
         Animal animal = animalServiceInterface.saveAnimal(newInstance);
         tutor.getAnimais().add(animal);
         tutorServiceInterface.updateTutor(tutor);
