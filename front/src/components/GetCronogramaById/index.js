@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./index.module.css";
-import { getCronogramaById } from '../../../services/cronogramaService';
-import VoltarButton from '../VoltarButton';
-import { EditarWhiteButton } from '../WhiteButton';
+import { getCronogramaById } from '../../../../services/cronogramaService';
+import VoltarButton from '../../VoltarButton';
+import { EditarWhiteButton } from '../../WhiteButton';
 
 function GetCronogramaById() {
     const router = useRouter();
