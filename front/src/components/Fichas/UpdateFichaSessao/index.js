@@ -14,8 +14,17 @@ import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
 import { getMedicoById } from '../../../../services/medicoService';
+import FichaSessaoPDF from './FichaSessaoPDF';
+import dynamic from 'next/dynamic';
 
 function updateFichaSessao() {
+    const PdfDownloadButton = dynamic(
+        () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+        {
+            ssr: false, // Garante que não será renderizado no servidor
+            loading: () => <p style={{fontFamily: 'Poppins, sans-serif', fontSize: '14px'}}>Carregando...</p>, // Mensagem de carregamento opcional
+        }
+        );
 
     const [userId, setUserId] = useState(null);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -204,6 +213,31 @@ function updateFichaSessao() {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('pt-BR', options);
     };
+    // ... logo após a definição do PdfDownloadButton
+
+    // Componente Wrapper que cria um botão real e coloca o link de download dentro
+    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+        <button type="button" className={styles.green_buttonFichas}>
+            <PdfDownloadButton
+                document={
+                    <FichaSessaoPDF 
+                        ficha={ficha} 
+                        animal={animal} 
+                        tutor={tutor} 
+                        medicoLogado={medicoLogado} 
+                    />
+                }
+                fileName={`FichaSessao_${animal.nome?.replace(/\s/g, '_')}_${ficha.sessaoData}.pdf`}
+                style={{
+                color: 'inherit', // Herda a cor do botão (branco)
+                textDecoration: 'none', // Remove o sublinhado
+            }}
+            >
+                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+            </PdfDownloadButton>
+        </button>
+    );
+
     
     return(
         <div className={styles.container}>
@@ -324,13 +358,23 @@ function updateFichaSessao() {
                             <p style={{ margin: 0 }}>Carregando dados do médico...</p>
                         )}
                     </div>
-
-                    {!isReadOnly && (
                     <div className={styles.button_box}>
-                        < CancelarWhiteButton />
-                        < FinalizarFichaModal onConfirm={handleSubmit} />
+                        {!loading && animal.id && tutor.id && medicoLogado && (
+                            <DownloadPdfStyledButton
+                                ficha={formData}
+                                animal={animal}
+                                tutor={tutor}
+                                medicoLogado={medicoLogado}
+                            />
+                        )}
+
+                        {!isReadOnly && (
+                            <>
+                                <CancelarWhiteButton />
+                                <FinalizarFichaModal onConfirm={handleSubmit} />
+                            </>
+                        )}
                     </div>
-                    )}
                 </form>
                 {showAlert && consultaId && (
                 <Alert message="Ficha editada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />

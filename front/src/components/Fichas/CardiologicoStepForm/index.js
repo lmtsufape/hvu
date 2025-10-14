@@ -241,7 +241,7 @@ function CardiologicaSteps() {
 
   const fichaData = {
     nome: "Ficha clínica cardiológica",
-    conteudo: dadosParaEnviar, // Envia apenas os dados relevantes
+    conteudo: formData, // Envia apenas os dados relevantes
     dataHora: dataFormatada,
      agendamento: {
                 id: Number(agendamentoId)

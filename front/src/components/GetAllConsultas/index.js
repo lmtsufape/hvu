@@ -124,10 +124,6 @@ function HistoricoFichasAnimal() {
                   <h1>Consulta</h1>
                   <h2>{formatDate(vaga.dataVaga)}</h2>
                 </div>
-                <div>
-                  <h1>Veterinário(a)</h1>
-                  <h2>{vaga.medico?.nome || "Não informado"}</h2>
-                </div>
               </div>
 
               <div className={styles.fichas_list}>

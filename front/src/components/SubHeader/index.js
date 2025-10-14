@@ -7,12 +7,16 @@ import { getCurrentUsuario } from '../../../services/userService';
 export function SubHeader() {
     const [subHeaderComponent, setSubHeaderComponent] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isClient, setIsClient] = useState(false);
     
     const sidebarRef = useRef(null);
     const menuButtonRef = useRef(null);
 
     const touchStartX = useRef(0);
     const touchStartY = useRef(0);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const loadSubHeaderComponent = async () => {
         try {
@@ -35,8 +39,10 @@ export function SubHeader() {
     };
 
     useEffect(() => {
-        loadSubHeaderComponent();
-    }, []); 
+        if (isClient) {
+            loadSubHeaderComponent();
+        }
+    }, [isClient]);
 
 
   // Detecta cliques fora do menu
@@ -87,6 +93,10 @@ export function SubHeader() {
         };
     }, [menuOpen]);
 
+    if (!isClient) {
+    return null;
+}
+
     return (
         <div>
             {/* Botão para abrir o menu */}
@@ -132,7 +142,7 @@ export function SubheaderSecretario() {
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/agendamentosDia')}><span>Agendamentos</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/pacientesBySecretario')}><span>Pacientes</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/getAllMedicos')}><span>Veterinários&#40;as&#41;</span></button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarAgendas')}><span>Agendas</span></button>
+            {/* <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarAgendas')}><span>Agendas</span></button> */}
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarRacas')}><span>Raças</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarEspecies')}><span>Espécies</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/gerenciarTiposConsulta')}><span>Consultas</span></button>
@@ -150,7 +160,7 @@ export function SubheaderMedico({medicoId}) {
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push('/mainMedico')}><span>Home</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/agendamentosByMedico/${medicoId}`)}><span>Agendamentos</span></button>
             <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/pacientesByMedico/${medicoId}`)}><span>Pacientes</span></button>
-            <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/getAllCronogramaByMedico/${medicoId}`)}><span>Agendas</span></button>
+            {/* <button type="button" className="btn btn-link" id={styles.button_decoration} onClick={() => router.push(`/getAllCronogramaByMedico/${medicoId}`)}><span>Agendas</span></button> */}
         </div>
     );
 }

@@ -10,8 +10,48 @@ import moment from 'moment';
 import { getCurrentUsuario } from '../../../../services/userService';
 import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
+import dynamic from 'next/dynamic';
+import NeurologicaPDF from './NeurologicaPDF';
+import { getAnimalById } from "../../../../services/animalService";
+import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getMedicoById } from "../../../../services/medicoService";
+
 
 function NeurologicaSteps() {
+
+    const router = useRouter(); // Garanta que o router está aqui
+
+    const PDFLink = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink), { ssr: false });
+    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+        <button type="button" className={styles.green_buttonFichas} style={{width: 'auto', padding: '0 1.5rem'}}>
+            <PDFLink document={<NeurologicaPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} fileName={`FichaNeurologica_${animal.nome?.replace(/\s/g, '_')}.pdf`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+            </PDFLink>
+        </button>
+    );
+
+    const [animalId, setAnimalId] = useState(null);
+    const [animal, setAnimal] = useState({});
+    const [tutor, setTutor] = useState({});
+    const [medicoLogado, setMedicoLogado] = useState(null);
+
+    useEffect(() => { if (router.isReady) { setAnimalId(router.query.animalId); } }, [router.isReady, router.query.animalId]);
+
+    useEffect(() => {
+        const fetchDataForPDF = async () => {
+            if (!animalId) return;
+            try {
+                const [animalData, tutorData, userData] = await Promise.all([getAnimalById(animalId), getTutorByAnimal(animalId), getCurrentUsuario()]);
+                setAnimal(animalData);
+                setTutor(tutorData);
+                if (userData?.usuario?.id) {
+                    const medicoData = await getMedicoById(userData.usuario.id);
+                    setMedicoLogado(medicoData);
+                }
+            } catch (error) { console.error('Erro ao buscar dados para o PDF:', error); }
+        };
+        fetchDataForPDF();
+    }, [animalId]);
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState(null);
   const [roles, setRoles] = useState([]);
@@ -24,7 +64,6 @@ function NeurologicaSteps() {
   const [consultaId, setConsultaId] = useState(null);
   const [fichaId, setFichaId] = useState(null);
   const [data, setData] = useState([]);
-  const router = useRouter();
   const [agendamentoId, setAgendamentoId] = useState(null);
 
   console.log("userId:", userId);
@@ -152,11 +191,36 @@ function NeurologicaSteps() {
             MPD:"",
             MPE:""
         },
-        perineal:"",
-        reflexoCutaneo:"",
-        reflexoToracicoLateral:"",
-        tonoDaCalda:"",
-        miccao:"",
+        perineal:{
+            MTD:"",
+            MTE:"",
+            MPD:"",
+            MPE:""
+        },
+        reflexoCutaneo:{
+            MTD:"",
+            MTE:"",
+            MPD:"",
+            MPE:""
+        },
+        reflexoToracicoLateral:{
+            MTD:"",
+            MTE:"",
+            MPD:"",
+            MPE:""
+        },
+        tonoDaCalda:{
+            MTD:"",
+            MTE:"",
+            MPD:"",
+            MPE:""
+        },
+        miccao:{
+            MTD:"",
+            MTE:"",
+            MPD:"",
+            MPE:""
+        },
     },
     avaliacaoSensitiva:{
         palpacaoEpaxial:"",
@@ -404,6 +468,12 @@ function NeurologicaSteps() {
     return (
         <div className={styles.container}>
           {renderStepContent()}
+
+          <div className={styles.footerControls}>
+            {!loading && animal.id && tutor.id && medicoLogado && (
+                <DownloadPdfStyledButton ficha={formData} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />
+            )}
+        </div>
     
           <div className={styles.pagination}>
             {[1, 2, 3].map((page) => (

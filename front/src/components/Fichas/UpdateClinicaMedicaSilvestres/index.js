@@ -12,10 +12,56 @@ import moment from "moment";
 import { getCurrentUsuario }  from "../../../../services/userService";
 import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
+import dynamic from 'next/dynamic';
+import ClinicaMedicaSilvestresPDF from './ClinicaMedicaSilvestresPDF';
+import { getAnimalById } from "../../../../services/animalService";
+import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getMedicoById } from "../../../../services/medicoService";
+
 
 /* ─────────────────────────────────────────────────────────────── */
 
 function UpdateClinicaMedicaSilvestresSteps() {
+    const router = useRouter();
+    const PDFLink = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink), { ssr: false });
+    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+        <button type="button" className={styles.green_buttonFichas} style={{width: 'auto', padding: '0 1.5rem'}}>
+            <PDFLink document={<ClinicaMedicaSilvestresPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} fileName={`FichaClinicaSilvestres_${animal.nome?.replace(/\s/g, '_')}.pdf`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+            </PDFLink>
+        </button>
+    );
+
+    // Estados para os dados do PDF
+    const [animal, setAnimal] = useState({});
+    const [tutor, setTutor] = useState({});
+    const [medicoLogado, setMedicoLogado] = useState(null);
+
+    // Busca os dados necessários para o cabeçalho do PDF
+    useEffect(() => {
+        const animalId = router.query.animalId;
+        if (!animalId) return;
+
+        const fetchDataForPDF = async () => {
+            try {
+                const [animalData, tutorData, userData] = await Promise.all([
+                    getAnimalById(animalId),
+                    getTutorByAnimal(animalId),
+                    getCurrentUsuario()
+                ]);
+                setAnimal(animalData);
+                setTutor(tutorData);
+                if (userData?.usuario?.id) {
+                    const medicoData = await getMedicoById(userData.usuario.id);
+                    setMedicoLogado(medicoData);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar dados para o PDF:', error);
+            }
+        };
+        fetchDataForPDF();
+    }, [router.query.animalId]);
+
     const [step, setStep] = useState(1);
     const [userId, setUserId] = useState(null);
     const [roles, setRoles] = useState([]);
@@ -28,7 +74,6 @@ function UpdateClinicaMedicaSilvestresSteps() {
     const [consultaId, setConsultaId] = useState(null);
     const [fichaId, setFichaId] = useState(null);
     const [data, setData] = useState([]);
-    const router = useRouter();
     const [agendamentoId, setAgendamentoId] = useState(null);
 
   /* dados do formulário (pág. 1 + pág. 2) */
@@ -431,6 +476,15 @@ function UpdateClinicaMedicaSilvestresSteps() {
   return (
     <div className={styles.container}>
       {renderStep()}
+
+      {!loading && animal.id && tutor.id && medicoLogado && (
+        <DownloadPdfStyledButton
+            ficha={formData}
+            animal={animal}
+            tutor={tutor}
+            medicoLogado={medicoLogado}
+        />
+    )}
 
       <div className={styles.pagination}>
         {[1, 2 ,3].map((p) => (

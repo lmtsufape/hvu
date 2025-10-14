@@ -49,28 +49,31 @@ export default function MeusAgendamentos() {
   }, [canceledAgendamentoId]); // Adicionar canceledAgendamentoId como uma dependência
 
   const handleDeleteAgendamento = async (agendamentoData) => {
-    const cancelamento = {
-      agendamento: {
-        id: agendamentoData.id,
-      },
-      descricao: "Cancelamento solicitado pelo tutor",
-    };
-    try {
-      await cancelarAgendamento(cancelamento);
-      setAgendamentos(
-        agendamentos.filter(
-          (agendamento) => agendamento.id !== agendamentoData.id
-        )
-      );
-      setCancelarModalId(null);
-      setCanceledAgendamentoId(agendamentoData.id); // Atualiza o estado para acionar a recuperação da lista
-      setShowAlert(true);
-    } catch (error) {
-      console.error("Erro ao excluir agendamento:", error);
-      setCancelarModalId(null);
-      setShowErrorAlert(true);
-    }
+  const cancelamento = {
+    agendamento: {
+      id: agendamentoData.id,
+    },
+    descricao: "Cancelamento solicitado pelo tutor",
+    dataCancelamento: new Date().toISOString(), // ✅ Adiciona data do cancelamento no formato ISO
   };
+
+  try {
+    await cancelarAgendamento(cancelamento);
+    setAgendamentos(
+      agendamentos.filter(
+        (agendamento) => agendamento.id !== agendamentoData.id
+      )
+    );
+    setCancelarModalId(null);
+    setCanceledAgendamentoId(agendamentoData.id); // Atualiza o estado para acionar a recuperação da lista
+    setShowAlert(true);
+  } catch (error) {
+    console.error("Erro ao excluir agendamento:", error);
+    setCancelarModalId(null);
+    setShowErrorAlert(true);
+  }
+};
+
 
   const handleSearchChange = (term) => {
     setSearchTerm(term);

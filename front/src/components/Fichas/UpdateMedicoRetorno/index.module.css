@@ -22,6 +22,27 @@
     color: #333;
   }
 
+
+  .footerControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+/* Adicione a classe do botão se ela não for global */
+.green_buttonFichas {
+    width: auto;
+    height: 48px;
+    padding: 0 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #39805F;
+    color: #FFF;
+    background-color: #39805F;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+}
+
   .container {
     width: 100%;
     max-width: 65rem;
