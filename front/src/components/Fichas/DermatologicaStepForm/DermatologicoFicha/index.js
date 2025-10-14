@@ -8,6 +8,8 @@ import DrawingModal from "@/components/Fichas/DrawingModal";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
+import { getCurrentUsuario } from "../../../../../services/userService";
+import { getMedicoById } from "../../../../../services/medicoService";
 
 function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxChange, handleSubmit,
     handleSaveDrawing, storageKeyDrawing, handleChangeTratamentos, tratamentos, adicionarLinhaTratamento,
@@ -20,6 +22,27 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
     const [showButtons, setShowButtons] = useState(false);
     const [tutor, setTutor] = useState({});
     const [consultaId, setConsultaId] = useState(null);
+    const [medicoLogado, setMedicoLogado] = useState(null);
+
+    useEffect(() => {
+    const fetchMedicoData = async () => {
+        try {
+            const userData = await getCurrentUsuario();
+            const medicoId = userData.usuario.id;
+
+            if (medicoId) {
+                const medicoCompletoData = await getMedicoById(medicoId);
+                
+                //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                setMedicoLogado(medicoCompletoData);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar dados do médico logado:', error);
+        }
+    };
+
+    fetchMedicoData();
+  }, []);
 
     useEffect(() => {
         if (router.isReady) {
@@ -478,19 +501,22 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
                         </div>
                     </div>
 
-                    <div className={styles.column}>
-                        <label>Médico veterinário:
-                            <input type="text" name="medico"
-                                value={formData.medico}
-                                onChange={handleChange} />
-                        </label>
-                    </div>
+
                     <div className={styles.column}>
                         <label>Estágiarios:
                             <textarea type="text" name="estagiarios"
                                 value={formData.estagiarios}
                                 onChange={handleChange} />
                         </label>
+                    </div>
+                    <div className={styles.assinaturaSombreada}>
+                            {medicoLogado ? (
+                            <p style={{ margin: 0 }}>
+                                Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                            </p>
+                        ) : (
+                            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                        )}
                     </div>
 
                     <div className={styles.button_box}>

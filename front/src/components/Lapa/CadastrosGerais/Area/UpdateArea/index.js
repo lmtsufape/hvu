@@ -21,7 +21,7 @@ function UpdateArea() {
     const [area, setArea] = useState({
         id: null,
         tituloArea: "", 
-        especie: [{ id: null }]
+        especie: { id: null }
     });
     const [selectedEspecie, setSelectedEspecie] = useState(null);
 
@@ -56,9 +56,9 @@ function UpdateArea() {
                     setArea({
                         id: areaData.id,
                         tituloArea: areaData.tituloArea,
-                        especie: areaData.especie.map(e => ({ id: e.id }))
+                        especie: areaData.especie
                     });
-                    setSelectedEspecie(areaData.especie[0].id);
+                    setSelectedEspecie(areaData.especie?.id || null);
                 } catch (error) {
                     console.error('Erro ao buscar área:', error);
                 }
@@ -72,9 +72,9 @@ function UpdateArea() {
         setSelectedEspecie(selectedEspecieId);
 
         if (selectedEspecieId) {
-            setArea({ ...area, especie: [{ id: parseInt(selectedEspecieId) }] });
+            setArea({ ...area, especie: { id: parseInt(selectedEspecieId) } });
         } else {
-            setArea({ ...area, especie: [] }); 
+            setArea({ ...area, especie: { id: null } }); 
         }
     };
 
@@ -103,11 +103,11 @@ function UpdateArea() {
 
         const areaToUpdate = {
             tituloArea: area.tituloArea,
-            especie: area.especie.filter(e => e.id)
+            especie: area.especie && area.especie.id ? { id: area.especie.id } : null
         };
 
         try {
-            const response = await updateArea(area.id, areaToUpdate);
+            await updateArea(area.id, areaToUpdate);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao editar área:", error);

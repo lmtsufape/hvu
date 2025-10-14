@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import styles from "./index.module.css";
@@ -7,11 +9,12 @@ import { createLaudoNecropsia } from "../../../../../../services/laudoNecropsiaS
 import Alert from "../../../../Alert";
 import ErrorAlert from "../../../../ErrorAlert";
 import FichaSolicitacaoServicoList from "@/hooks/useFichaSolicitacaoList";
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button } from "react-bootstrap";
 import CampoLaudoList from "@/hooks/useCampoLaudoList";
 import EstagiarioList from "@/hooks/useEstagiarioList";
 import FotosList from "@/hooks/useFotoList";
 import LaudoMicroscopiaList from "@/hooks/useLaudoMicroscopiaList";
+import { getFotoById } from "../../../../../../services/fotoService";
 import { getToken, getRoles } from "../../../../../../services/userService";
 
 function CreateLaudoNecropsia() {
@@ -20,8 +23,10 @@ function CreateLaudoNecropsia() {
     const [laudo, setLaudo] = useState({
         id: 0,
         conclusao: "",
+        descricaoMacroscopia: "",
+        descricaoMicroscopia: "",
         fichaSolicitacaoServico: { id: null },
-        campoLaudo: [], 
+        campoLaudo: [],
         campoMicroscopia: []
     });
 
@@ -35,35 +40,32 @@ function CreateLaudoNecropsia() {
     const [selectedFicha, setSelectedFicha] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
-    const { fichas, error: fichasError } = FichaSolicitacaoServicoList();
-
-    const { campoLaudo, error: campoLaudoError } = CampoLaudoList();
-
-    const { campoMicroscopiaOptions, error: microscopiaError } = LaudoMicroscopiaList();
+    const { fichas } = FichaSolicitacaoServicoList();
+    const { campoLaudo } = CampoLaudoList();
+    const { campoMicroscopiaOptions } = LaudoMicroscopiaList();
+    const { estagiarios = [] } = EstagiarioList();
+    const { fotos = [] } = FotosList();
 
     const roles = getRoles();
-    const token= getToken();
+    const token = getToken();
 
     if (!token) {
         return (
-        <div className={styles.container}>
-            <h3 className={styles.message}>
-                Acesso negado: Faça login para acessar esta página.
-            </h3>
-        </div>
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
         );
     }
 
     if (!roles.includes("patologista")) {
         return (
-        <div className={styles.container}>
-            <h3 className={styles.message}>
-                Acesso negado: Você não tem permissão para acessar esta página.
-            </h3>
-        </div>
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+            </div>
         );
     }
 
+    // --- Campo Laudo ---
     const handleCampoLaudoChange = (event, index) => {
         const selectedCampoId = parseInt(event.target.value);
         const selectedCampo = campoLaudo.find(campo => campo.id === selectedCampoId);
@@ -91,6 +93,7 @@ function CreateLaudoNecropsia() {
         }));
     };
 
+    // --- Campo Microscopia ---
     const handleMicroscopiaChange = (event, index) => {
         const selectedMicroscopiaId = parseInt(event.target.value);
         setLaudo(prevData => {
@@ -114,9 +117,8 @@ function CreateLaudoNecropsia() {
         }));
     };
 
+    // --- Estagiário ---
     const [selectedEstagiarioId, setSelectedEstagiarioId] = useState("");
-
-    const { estagiarios = [], error: estagiariosError } = EstagiarioList();
 
     const handleEstagiarioChange = (event) => {
         const estagiarioId = event.target.value;
@@ -128,41 +130,61 @@ function CreateLaudoNecropsia() {
         }));
     };
 
-    const [selectedFotoId, setSelectedFotoId] = useState("");
+    // --- Fotos ---
+    const [selectedFotoIds, setSelectedFotoIds] = useState([]);
+    const [previewFotos, setPreviewFotos] = useState([]);
 
-    const { fotos = [], error: fotosError } = FotosList();
-
-    const handleFotoChange = (event) => {
-        const fotoId = event.target.value;
-        setSelectedFotoId(fotoId);
-
-        setLaudo(prevData => ({
-            ...prevData,
-            foto: [{ id: parseInt(fotoId) }]
-        }));
+    const fetchFotoPreview = async (id, titulo) => {
+        try {
+            const blob = await getFotoById(id);
+            const url = URL.createObjectURL(blob);
+            return { id, titulo, url };
+        } catch (error) {
+            console.error("Erro ao carregar foto:", error);
+            return null;
+        }
     };
 
+    const handleFotoChange = async (event) => {
+        const selectedOptions = Array.from(event.target.selectedOptions, (option) => ({
+            id: parseInt(option.value),
+            titulo: option.text,
+        }));
+
+        const newIds = selectedOptions.map((opt) => opt.id);
+        setSelectedFotoIds(newIds);
+
+        const previews = await Promise.all(
+            selectedOptions.map((opt) => fetchFotoPreview(opt.id, opt.titulo))
+        );
+
+        setPreviewFotos(previews.filter((p) => p !== null));
+    };
+
+    const handleRemoveFoto = (id) => {
+        setSelectedFotoIds((prev) => prev.filter((fotoId) => fotoId !== id));
+        setPreviewFotos((prev) => prev.filter((foto) => foto.id !== id));
+    };
+
+    // --- Laudo ---
     const handleLaudoChange = (event) => {
         const { name, value } = event.target;
-        setLaudo(prevData => ({
-            ...prevData,
-            [name]: value
-        }));
+        setLaudo(prevData => ({ ...prevData, [name]: value }));
     };
 
-
     const handleLaudoCreate = async () => {
-
         const laudoToSend = {
             conclusao: laudo.conclusao,
+            descricaoMacroscopia: laudo.descricaoMacroscopia,
+            descricaoMicroscopia: laudo.descricaoMicroscopia,
             fichaSolicitacaoServico: { id: laudo.fichaSolicitacaoServico.id },
             campoLaudo: laudo.campoLaudo.map(campo => ({ id: campo.id })),
             estagiario: selectedEstagiarioId ? [{ id: parseInt(selectedEstagiarioId) }] : [],
-            foto: selectedFotoId ? [{ id: parseInt(selectedFotoId) }] : [],
-            campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id })) 
+            foto: selectedFotoIds.map((id) => ({ id })),
+            campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id }))
         };
 
-        console.log("laudoToSend:", laudoToSend)
+        console.log("laudoToSend:", laudoToSend);
         try {
             await createLaudoNecropsia(laudoToSend);
             setShowAlert(true);
@@ -175,6 +197,7 @@ function CreateLaudoNecropsia() {
         }
     };
 
+    // --- Ficha ---
     const handleSearch = (event) => {
         const term = event.target.value;
         setSearchTerm(term);
@@ -207,6 +230,7 @@ function CreateLaudoNecropsia() {
         setSearchTerm(ficha.codigoPatologia);
     };
 
+    // --- JSX ---
     return (
         <div className={styles.container}>
             <VoltarButton />
@@ -233,16 +257,11 @@ function CreateLaudoNecropsia() {
                                     Buscar
                                 </button>
                             </div>
-                            {searchError && (
-                                <div className="invalid-feedback">
-                                    Por favor, digite um termo de pesquisa válido.
-                                </div>
-                            )}
+                            {searchError && <div className="invalid-feedback">Por favor, digite um termo de pesquisa válido.</div>}
                         </div>
+
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="campoLaudo" className={`form-label ${styles.macroscopia_label}`}>
-                                Macroscopia
-                            </label>
+                            <label htmlFor="campoLaudo" className={`form-label ${styles.macroscopia_label}`}>Macroscopia</label>
                             {laudo.campoLaudo.map((campo, index) => (
                                 <div className={styles.macroscopia_field} key={index}>
                                     <select
@@ -251,11 +270,9 @@ function CreateLaudoNecropsia() {
                                         value={campo.id}
                                         onChange={(e) => handleCampoLaudoChange(e, index)}
                                     >
-                                        <option disabled value="">Selecione a Microscopia</option>
+                                        <option disabled value="">Selecione a Macroscopia</option>
                                         {campoLaudo.map(campo => (
-                                        <option key={campo.id} value={campo.id}>
-                                            {campo.descricao}
-                                        </option>
+                                            <option key={campo.id} value={campo.id}>{campo.descricao}</option>
                                         ))}
                                     </select>
                                     <button
@@ -268,51 +285,24 @@ function CreateLaudoNecropsia() {
                                 </div>
                             ))}
                             <div className={styles.add_button_container}>
-                                <button
-                                    type="button"
-                                    className={`btn ${styles.add_button}`}
-                                    onClick={addCampoLaudoField}
-                                >
+                                <button type="button" className={`btn ${styles.add_button}`} onClick={addCampoLaudoField}>
                                     Adicionar Macroscopia
                                 </button>
                             </div>
                         </div>
+
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="estagiario" className="form-label">Estagiário</label>
-                            <select
-                                id="estagiario"
-                                className="form-select"
-                                value={selectedEstagiarioId}
-                                onChange={handleEstagiarioChange}
-                            >
-                                <option value="">Selecione o Estagiário</option>
-                                {estagiarios.map(estagiario => (
-                                    <option key={estagiario.id} value={estagiario.id}>
-                                        {estagiario.nome}
-                                    </option>
-                                ))}
-                            </select>
+                            <label htmlFor="descricaoMacroscopia" className="form-label">Descrição Macroscopia</label>
+                            <textarea
+                                className={`form-control ${styles.input} ${errors.descricaoMacroscopia ? "is-invalid" : ""}`}
+                                name="descricaoMacroscopia"
+                                value={laudo.descricaoMacroscopia}
+                                onChange={handleLaudoChange}
+                            />
                         </div>
+
                         <div className={`col ${styles.col}`}>
-                            <label htmlFor="foto" className="form-label">Foto</label>
-                            <select
-                                id="foto"
-                                className="form-select"
-                                value={selectedFotoId}
-                                onChange={handleFotoChange}
-                            >
-                                <option value="" disabled>Selecione a Foto</option>
-                                {fotos.map(foto => (
-                                    <option key={foto.id} value={foto.id}>
-                                        {foto.titulo}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className={`col ${styles.col}`}>
-                            <label htmlFor="campoMicroscopia" className={`form-label ${styles.macroscopia_label}`}>
-                                Microscopia
-                            </label>
+                            <label htmlFor="campoMicroscopia" className={`form-label ${styles.macroscopia_label}`}>Microscopia</label>
                             {laudo.campoMicroscopia.map((microscopia, index) => (
                                 <div className={styles.macroscopia_field} key={index}>
                                     <select
@@ -338,15 +328,80 @@ function CreateLaudoNecropsia() {
                                 </div>
                             ))}
                             <div className={styles.add_button_container}>
-                                <button
-                                    type="button"
-                                    className={`btn ${styles.add_button}`}
-                                    onClick={addMicroscopiaField}
-                                >
+                                <button type="button" className={`btn ${styles.add_button}`} onClick={addMicroscopiaField}>
                                     Adicionar Microscopia
                                 </button>
                             </div>
                         </div>
+
+                        <div className={`col ${styles.col}`}>
+                            <label htmlFor="descricaoMicroscopia" className="form-label">Descrição Microscopia</label>
+                            <textarea
+                                className={`form-control ${styles.input} ${errors.descricaoMicroscopia ? "is-invalid" : ""}`}
+                                name="descricaoMicroscopia"
+                                value={laudo.descricaoMicroscopia}
+                                onChange={handleLaudoChange}
+                            />
+                        </div>
+
+                        <div className={`col ${styles.col}`}>
+                            <label htmlFor="estagiario" className="form-label">Estagiário</label>
+                            <select
+                                id="estagiario"
+                                className="form-select"
+                                value={selectedEstagiarioId}
+                                onChange={handleEstagiarioChange}
+                            >
+                                <option value="">Selecione o Estagiário</option>
+                                {estagiarios.map(estagiario => (
+                                    <option key={estagiario.id} value={estagiario.id}>{estagiario.nome}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className={`col ${styles.col}`}>
+                            <label htmlFor="foto" className="form-label">Fotos</label>
+                            <select
+                                id="foto"
+                                className="form-select"
+                                multiple
+                                value={selectedFotoIds}
+                                onChange={handleFotoChange}
+                            >
+                                {fotos.map((foto) => (
+                                    <option key={foto.id} value={foto.id}>{foto.titulo}</option>
+                                ))}
+                            </select>
+                            <small className="text-muted">Segure Ctrl (ou Cmd no Mac) para selecionar várias fotos</small>
+
+                            <div className="mt-3 d-flex flex-wrap gap-3">
+                                {previewFotos.map((foto) => (
+                                    <div key={foto.id} className="position-relative text-center" style={{ width: "120px" }}>
+                                        <img
+                                            src={foto.url}
+                                            alt={foto.titulo}
+                                            style={{
+                                                width: "120px",
+                                                height: "120px",
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                                boxShadow: "0 2px 6px rgba(0,0,0,0.2)"
+                                            }}
+                                        />
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-danger position-absolute top-0 end-0"
+                                            style={{ borderRadius: "50%", padding: "2px 6px" }}
+                                            onClick={() => handleRemoveFoto(foto.id)}
+                                        >
+                                            ❌
+                                        </button>
+                                        <p className="mt-1" style={{ fontSize: "0.9rem" }}>{foto.titulo}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
                         <div className={`col ${styles.col}`}>
                             <label htmlFor="conclusao" className="form-label">Conclusão</label>
                             <textarea
@@ -357,6 +412,8 @@ function CreateLaudoNecropsia() {
                             />
                         </div>
                     </div>
+
+                    {/* --- Botões --- */}
                     <div className={styles.button_box}>
                         <CancelarWhiteButton />
                         <button type="button" className={styles.cadastrar_button} onClick={handleLaudoCreate}>
@@ -365,9 +422,11 @@ function CreateLaudoNecropsia() {
                     </div>
                 </div>
             </div>
+
             {showAlert && <Alert message="Laudo de necropsia criado com sucesso!" show={showAlert} />}
             {showErrorAlert && <ErrorAlert message="Erro ao criar laudo de necropsia, tente novamente." show={showErrorAlert} />}
 
+            {/* --- Modal Ficha --- */}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Selecionar Ficha de Solicitação</Modal.Title>

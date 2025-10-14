@@ -20,7 +20,7 @@ function CreateArea() {
     const [selectedEspecie, setSelectedEspecie] = useState("");
     const [area, setArea] = useState({
         tituloArea: "", 
-        especie: []
+        especie: ""
     });
 
     const roles = getRoles();
@@ -83,10 +83,8 @@ function CreateArea() {
 
         const areaToCreate = {
             tituloArea: area.tituloArea,
-            especie: [{ id: parseInt(selectedEspecie) }]
+            especie: { id: parseInt(selectedEspecie) }
         };
-
-        console.log('Payload:', areaToCreate);
 
         try {
             const newArea = await createArea(areaToCreate);

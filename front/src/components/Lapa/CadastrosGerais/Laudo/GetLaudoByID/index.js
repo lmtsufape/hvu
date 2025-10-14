@@ -19,61 +19,62 @@ function GetLaudoNecropsiaById() {
   const token = getToken()
 
   useEffect(() => {
-    if (!token) {
-      router.push("/login")
-      return
-    }
+    const fetchLaudo = async () => {
+      const token = getToken()
+      const roles = getRoles()
 
-    if (!roles.includes("patologista")) {
-      router.push("/access-denied")
-      return
-    }
-
-    if (id) {
-      const fetchData = async () => {
-        try {
-          const laudoData = await getLaudoNecropsiaById(id)
-          setLaudo(laudoData || {})
-
-          // gerar URLs para todas as fotos
-          const urls = {}
-          if (laudoData.campoLaudo) {
-            for (const campo of laudoData.campoLaudo) {
-              if (campo.orgao?.foto?.id) {
-                const blob = await getFotoById(campo.orgao.foto.id)
-                urls[campo.orgao.foto.id] = URL.createObjectURL(blob) + `?t=${Date.now()}`
-              }
-            }
-          }
-          if (laudoData.campoMicroscopia) {
-            for (const campo of laudoData.campoMicroscopia) {
-              if (campo.orgao?.foto?.id) {
-                const blob = await getFotoById(campo.orgao.foto.id)
-                urls[campo.orgao.foto.id] = URL.createObjectURL(blob)
-              }
-            }
-          }
-          if (laudoData.foto) {
-            for (const f of laudoData.foto) {
-              if (f.id) {
-                const blob = await getFotoById(f.id)
-                urls[f.id] = URL.createObjectURL(blob)
-              }
-            }
-          }
-          setFotoUrls(urls)
-        } catch (error) {
-          console.error("Erro ao buscar laudo:", error)
-        }
+      if (!token) {
+        router.push("/login")
+        return
       }
-      fetchData()
-    }
 
-    // libera memória ao desmontar
-    return () => {
-      Object.values(fotoUrls).forEach(URL.revokeObjectURL)
+      if (!roles.includes("patologista")) {
+        router.push("/access-denied")
+        return
+      }
+
+      if (!id) return
+
+      try {
+        const laudoData = await getLaudoNecropsiaById(id)
+        setLaudo(laudoData || {})
+
+        const urls = {}
+        if (laudoData.campoLaudo) {
+          for (const campo of laudoData.campoLaudo) {
+            if (campo.orgao?.foto?.id) {
+              const blob = await getFotoById(campo.orgao.foto.id)
+              urls[campo.orgao.foto.id] = URL.createObjectURL(blob)
+            }
+          }
+        }
+
+        if (laudoData.campoMicroscopia) {
+          for (const campo of laudoData.campoMicroscopia) {
+            if (campo.orgao?.foto?.id) {
+              const blob = await getFotoById(campo.orgao.foto.id)
+              urls[campo.orgao.foto.id] = URL.createObjectURL(blob)
+            }
+          }
+        }
+
+        if (laudoData.foto) {
+          for (const f of laudoData.foto) {
+            if (f.id) {
+              const blob = await getFotoById(f.id)
+              urls[f.id] = URL.createObjectURL(blob)
+            }
+          }
+        }
+
+        setFotoUrls(urls)
+      } catch (err) {
+        console.error(err)
+      }
     }
-  }, [id, router, fotoUrls])
+    console.log(laudo)
+    fetchLaudo()
+  }, [id, router])
 
   if (!token || !roles.includes("patologista")) return null
 
@@ -101,6 +102,19 @@ function GetLaudoNecropsiaById() {
                     <div>{laudo.conclusao || "Não definido"}</div>
                   </div>
 
+                  {laudo.descricaoMacroscopia && (
+                    <div className={styles.item_box}>
+                      <h6>Descrição da Macroscopia</h6>
+                      <div className={styles.campo_card}>
+                        <div className={styles.campo_content}>
+                          <div className={styles.campo_text}>
+                            <p>{laudo.descricaoMacroscopia}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className={styles.item_box}>
                     <h6>Macroscopia</h6>
                     {laudo.campoLaudo?.length > 0 ? (
@@ -121,7 +135,7 @@ function GetLaudoNecropsiaById() {
                               {campo.orgao?.foto?.id && (
                                 <div className={styles.campo_image}>
                                   <img
-                                    src={fotoUrls[campo.orgao.foto.id]}
+                                    src={fotoUrls[campo.orgao.foto.id] || "/placeholder.svg"}
                                     alt={campo.orgao.foto.titulo}
                                     className={styles.orgao_foto}
                                   />
@@ -136,6 +150,19 @@ function GetLaudoNecropsiaById() {
                       <div>Não definido</div>
                     )}
                   </div>
+
+                  {laudo.descricaoMicroscopia && (
+                    <div className={styles.item_box}>
+                      <h6>Descrição da Microscopia</h6>
+                      <div className={styles.campo_card}>
+                        <div className={styles.campo_content}>
+                          <div className={styles.campo_text}>
+                            <p>{laudo.descricaoMicroscopia}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className={styles.item_box}>
                     <h6>Microscopia</h6>
@@ -161,7 +188,7 @@ function GetLaudoNecropsiaById() {
                               {campo.orgao?.foto?.id && (
                                 <div className={styles.campo_image}>
                                   <img
-                                    src={fotoUrls[campo.orgao.foto.id]}
+                                    src={fotoUrls[campo.orgao.foto.id] || "/placeholder.svg"}
                                     alt={campo.orgao.foto.titulo}
                                     className={styles.orgao_foto}
                                   />
@@ -183,7 +210,7 @@ function GetLaudoNecropsiaById() {
                       laudo.foto.map((f) => (
                         <div key={f.id}>
                           <strong>{f.titulo}</strong> <br />
-                          <img src={fotoUrls[f.id]} alt={f.titulo} width={100} />
+                          <img src={fotoUrls[f.id] || "/placeholder.svg"} alt={f.titulo} width={100} />
                         </div>
                       ))
                     ) : (

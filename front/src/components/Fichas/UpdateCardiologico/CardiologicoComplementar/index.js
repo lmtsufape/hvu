@@ -7,6 +7,9 @@ import FinalizarFichaModal from "../../FinalizarFichaModal";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
+import { getCurrentUsuario } from "../../../../../services/userService";
+import { getMedicoById } from "../../../../../services/medicoService";
+
 
 const DIAGNOSTICO = [
   { key: "diagnostico", label: "Diagnóstico(s)" },
@@ -35,6 +38,7 @@ function AtendimentoCardiologico({
   const [tutor, setTutor] = useState({});
   const { id, modo } = router.query; 
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const [medicoLogado, setMedicoLogado] = useState(null);
 
   useEffect(() => {
         // Se o modo for 'visualizar', define o estado para somente leitura
@@ -79,6 +83,26 @@ function AtendimentoCardiologico({
 
     fetchData();
   }, [animalId]);
+
+    useEffect(() => {
+      const fetchMedicoData = async () => {
+          try {
+              const userData = await getCurrentUsuario();
+              const medicoId = userData.usuario.id;
+  
+              if (medicoId) {
+                  const medicoCompletoData = await getMedicoById(medicoId);
+                  
+                  //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                  setMedicoLogado(medicoCompletoData);
+              }
+          } catch (error) {
+              console.error('Erro ao buscar dados do médico logado:', error);
+          }
+      };
+  
+      fetchMedicoData();
+    }, []);
 
   const formatDate = (dateString) => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -288,10 +312,14 @@ function AtendimentoCardiologico({
               className="form-control" />
 
           </div>
-          <div className={styles.column}>
-            <label>Médico(s) Veterinário(s) Responsável:</label>
-            <textarea name="medicosResponsaveis" value={formData.medicosResponsaveis} disabled={isReadOnly} onChange={handleChange}
-              className="form-control" />
+           <div className={styles.assinaturaSombreada}>
+                  {medicoLogado ? (
+                  <p style={{ margin: 0 }}>
+                    Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                  </p>
+                  ) : (
+                  <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+               )}
           </div>
 
           {!isReadOnly && (

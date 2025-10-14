@@ -19,7 +19,7 @@ function UpdateOrgao() {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [orgao, setOrgao] = useState({
     id: null,
-    image_path: "",
+  //  image_path: "",
     nome: "",
     sexoMacho: false,
     sexoFemea: false,
@@ -49,9 +49,10 @@ function UpdateOrgao() {
       const fetchData = async () => {
         try {
           const orgaoData = await getOrgaoById(id);
+          console.log("orgaoData",orgaoData )
           setOrgao({
             id: orgaoData.id,
-            image_path: orgaoData.image_path,
+            //image_path: orgaoData.image_path,
             nome: orgaoData.nome,
             sexoMacho: orgaoData.sexoMacho,
             sexoFemea: orgaoData.sexoFemea,
@@ -67,8 +68,15 @@ function UpdateOrgao() {
   }, [router.isReady, id]);
 
   const handleOrgaoChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    setOrgao({ ...orgao, [name]: type === "checkbox" ? checked : value });
+    const { name, checked } = event.target;
+
+    if (name === "sexoMacho") {
+        setOrgao({ ...orgao, sexoMacho: checked, sexoFemea: checked ? false : orgao.sexoFemea });
+    } else if (name === "sexoFemea") {
+        setOrgao({ ...orgao, sexoFemea: checked, sexoMacho: checked ? false : orgao.sexoMacho });
+    } else {
+        setOrgao({ ...orgao, [name]: event.target.value });
+    }
   };
 
   const handleFotoChange = (event) => {
@@ -91,14 +99,14 @@ function UpdateOrgao() {
     }
     return errors;
   };
-
+console.log("orgao",orgao )
   const handleOrgaoUpdate = async () => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-
+console.log("orgaoToUpdate:", orgao)
     try {
       await updateOrgao(orgao.id, orgao);
       setShowAlert(true);
@@ -138,7 +146,7 @@ function UpdateOrgao() {
       <form className={styles.inputs_container}>
         <div className={styles.inputs_box}>
           <div className="row">
-            <div className={`col ${styles.col}`}>
+          {/* <div className={`col ${styles.col}`}>
               <label htmlFor="image_path" className="form-label">Imagem</label>
               <input
                 type="file"
@@ -147,7 +155,7 @@ function UpdateOrgao() {
                 className={`form-control ${styles.input}`}
               />
               {orgao.image_path && <p>{orgao.image_path}</p>}
-            </div>
+            </div>*/}
             <div className={`col ${styles.col}`}>
               <label htmlFor="nome" className="form-label">
                 Nome <span className={styles.obrigatorio}>*</span>
@@ -160,6 +168,30 @@ function UpdateOrgao() {
                 onChange={handleOrgaoChange}
               />
               {errors.nome && <div className={`invalid-feedback ${styles.error_message}`}>{errors.nome}</div>}
+            </div>
+
+                        <div className={`col ${styles.col}`}>
+              <label className="form-label"></label>
+              <div className={styles.checkboxContainer}>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="sexoMacho"
+                    checked={orgao.sexoMacho}
+                    onChange={handleOrgaoChange}
+                  />
+                  Macho
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="sexoFemea"
+                    checked={orgao.sexoFemea}
+                    onChange={handleOrgaoChange}
+                  />
+                  Fêmea
+                </label>
+              </div>
             </div>
           </div>
 
@@ -204,32 +236,6 @@ function UpdateOrgao() {
                 </select>
               )}
               {errors.area && <div className={`invalid-feedback ${styles.error_message}`}>{errors.area}</div>}
-            </div>
-          </div>
-
-          <div className="row">
-            <div className={`col ${styles.col}`}>
-              <label className="form-label"></label>
-              <div className={styles.checkboxContainer}>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="sexoMacho"
-                    checked={orgao.sexoMacho}
-                    onChange={handleOrgaoChange}
-                  />
-                  Macho
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    name="sexoFemea"
-                    checked={orgao.sexoFemea}
-                    onChange={handleOrgaoChange}
-                  />
-                  Fêmea
-                </label>
-              </div>
             </div>
           </div>
         </div>

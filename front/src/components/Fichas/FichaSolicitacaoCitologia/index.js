@@ -12,6 +12,8 @@ import { CancelarWhiteButton } from "../../WhiteButton";
 import DrawingModal from "@/components/Fichas/DrawingModal";
 import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getAnimalById } from '../../../../services/animalService';
+import { getCurrentUsuario } from "../../../../services/userService";
+import { getMedicoById } from "../../../../services/medicoService";
 
 function FichaSolicitacaoCitologia() {
     const [showAlert, setShowAlert] = useState(false);
@@ -33,6 +35,7 @@ function FichaSolicitacaoCitologia() {
     const [tutor, setTutor] = useState({});
     const router = useRouter();
     const [agendamentoId, setAgendamentoId] = useState(null);
+    const [medicoLogado, setMedicoLogado] = useState(null);
 
     const [formData, setFormData] = useState({
         anamnese: [],
@@ -67,6 +70,26 @@ function FichaSolicitacaoCitologia() {
     // Função para gerar uma chave única no localStorage com base no consultaId
     const getLocalStorageKey = () => `solicitacaoCitologiaFormData_${consultaId || "default"}`;
     const storageKeyDrawing = () => `citologiaDrawingLines_${consultaId || "default"}`;
+
+    useEffect(() => {
+        const fetchMedicoData = async () => {
+            try {
+                const userData = await getCurrentUsuario();
+                const medicoId = userData.usuario.id;
+
+                if (medicoId) {
+                    const medicoCompletoData = await getMedicoById(medicoId);
+                    
+                    //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                    setMedicoLogado(medicoCompletoData);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar dados do médico logado:', error);
+            }
+        };
+
+        fetchMedicoData();
+    }, []);
 
     // Carrega os dados do formulário e dos campos "Outros" do localStorage
     useEffect(() => {
@@ -677,7 +700,17 @@ function FichaSolicitacaoCitologia() {
                                 onChange={handleChange}
                             />
                         </div>
-                    </div>
+                        </div>
+                        <div className={styles.assinaturaSombreada}>
+                            {medicoLogado ? (
+                            <p style={{ margin: 0 }}>
+                            Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                            </p>
+                            ) : (
+                            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+                            )}
+                        </div>
+                    
 
                     <div className={styles.button_box}>
                         <CancelarWhiteButton onClick={cleanLocalStorage} />

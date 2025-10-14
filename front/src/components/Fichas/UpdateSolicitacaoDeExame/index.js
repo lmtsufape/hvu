@@ -12,6 +12,8 @@ import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getAnimalById } from "../../../../services/animalService";
 import { getFichaById } from "../../../../services/fichaService";
 import { updateFicha } from "../../../../services/fichaService";
+import { getCurrentUsuario } from "../../../../services/userService";
+import { getMedicoById } from "../../../../services/medicoService";
 
 function FichaSolicitacaoExame() {
   const router = useRouter();
@@ -31,6 +33,7 @@ function FichaSolicitacaoExame() {
   const { id, modo } = router.query; 
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [agendamentoId, setAgendamentoId] = useState(null);
+  const [medicoLogado, setMedicoLogado] = useState(null);
 
   // Estados para checkboxes e campos "Outros"
   const [formData, setFormData] = useState({
@@ -72,6 +75,30 @@ function FichaSolicitacaoExame() {
     aspecto: "",
     local: ""
     });
+
+
+
+    useEffect(() => {
+      const fetchMedicoData = async () => {
+          try {
+              // Passo 1: Busca o usuário atual para obter o ID
+              const userData = await getCurrentUsuario();
+              const medicoId = userData.usuario.id;
+  
+              if (medicoId) {
+                  // Passo 2: Usa o ID para buscar os dados COMPLETOS do médico
+                  const medicoCompletoData = await getMedicoById(medicoId);
+                  
+                  // Passo 3: Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                  setMedicoLogado(medicoCompletoData);
+              }
+          } catch (error) {
+              console.error('Erro ao buscar dados do médico logado:', error);
+          }
+      };
+  
+      fetchMedicoData();
+    }, []);
   
 
     useEffect(() => {
@@ -533,16 +560,14 @@ function FichaSolicitacaoExame() {
             </div>
           </div>
         ))}
-        <div className={styles.column}>
-            <label>Médico(s) Vetérinario(s) Responsável: </label>
-            <input
-            type="text"
-            name="medicosResponsaveis"
-            value={formData.medicosResponsaveis || ''} 
-            readOnly
-            className="form-control"
-            style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
-           />
+        <div className={styles.assinaturaSombreada}>
+                {medicoLogado ? (
+                <p style={{ margin: 0 }}>
+                 Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+               </p>
+              ) : (
+            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+            )}
         </div>
 
           {!isReadOnly && (

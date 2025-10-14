@@ -5,6 +5,8 @@ import styles from "./index.module.css";
 import VoltarButton from "../../../VoltarButton";
 import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
+import { getCurrentUsuario } from '../../../../../services/userService'; 
+import { getMedicoById } from '../../../../../services/medicoService'; 
 import React, { useState, useEffect } from "react";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
@@ -59,6 +61,28 @@ export default function Step2ClinicaMedica({
   const [tutor, setTutor] = useState({});
   const [consultaId, setConsultaId] = useState(null);
   const [agendamentoId, setAgendamentoId] = useState(null);
+  const [medicoLogado, setMedicoLogado] = useState(null);
+
+    useEffect(() => {
+    const fetchMedicoData = async () => {
+        try {
+            const userData = await getCurrentUsuario();
+            const medicoId = userData.usuario.id;
+
+            if (medicoId) {
+                const medicoCompletoData = await getMedicoById(medicoId);
+                
+                //Armazena o objeto COMPLETO (que tem o CRMV) no estado
+                setMedicoLogado(medicoCompletoData);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar dados do médico logado:', error);
+        }
+    };
+
+    fetchMedicoData();
+  }, []); 
+       
 
   const [nomeMedico, setNomeMedico] = useState("Carregando...");
   useEffect(() => {
@@ -328,16 +352,14 @@ export default function Step2ClinicaMedica({
               className="form-control" />
 
           </div>
-          <div className={styles.column}>
-            <label>Médico Veterinário Responsável:</label>
-            <input
-              type="text"
-              name="medicosResponsaveis"
-              value={formData.medicosResponsaveis || ''} 
-              readOnly
-              className="form-control"
-              style={{ backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
-            />
+          <div className={styles.assinaturaSombreada}>
+              {medicoLogado ? (
+                  <p style={{ margin: 0 }}>
+                      Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+                  </p>
+              ) : (
+                  <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+              )}
           </div>
 
 

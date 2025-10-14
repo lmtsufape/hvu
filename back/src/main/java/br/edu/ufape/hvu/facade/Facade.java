@@ -231,16 +231,11 @@ public class Facade {
 
     @Transactional
     public TipoConsulta updateTipoConsulta(Long id, TipoConsultaRequest transientObject) {
-
-        //TipoConsulta o = obj.convertToEntity();
         TipoConsulta oldObject = findTipoConsultaById(id);
-        TipoConsulta obj = transientObject.convertToEntity();
 
-        TypeMap<TipoConsulta, TipoConsulta> typeMapper = modelMapper
-                .typeMap(TipoConsulta.class, TipoConsulta.class)
-                .addMappings(mapper -> mapper.skip(TipoConsulta::setId));
-
-        typeMapper.map(obj, oldObject);
+        if (transientObject.getTipo() != null) {
+            oldObject.setTipo(transientObject.getTipo());
+        }
 
         return tipoConsultaServiceInterface.updateTipoConsulta(oldObject);
     }
@@ -1089,11 +1084,12 @@ public class Facade {
 
     @Transactional
     public Agendamento createAgendamentoEspecial(AgendamentoEspecialRequest newObject, String idSession) {
-        if (newObject.getAnimal().getOrigemAnimal() != OrigemAnimal.HVU) {
+        Animal animal = animalServiceInterface.findAnimalById(newObject.getAnimal().getId());
+        if (animal.getOrigemAnimal() != OrigemAnimal.HVU) {
             throw new IllegalArgumentException("Só é permitido agendar animais com origem HVU.");
         }
 
-        if (newObject.getAnimal().isObito()) {
+        if (animal.isObito()) {
             throw new IllegalArgumentException("Não é permitido agendar animais que tiveram óbito.");
         }
 
@@ -1569,19 +1565,6 @@ public class Facade {
 
     @Transactional
     public Area saveArea(Area newInstance) {
-        List<Especie> especies = newInstance.getEspecie()
-                .stream()
-                .map(e -> {
-                    Especie especie = especieServiceInterface.findEspecieById(e.getId());
-                    if (especie == null) {
-                        throw new IdNotFoundException(e.getId(), "Especie");
-                    }
-                    return especie;
-                })
-                .toList();
-
-        newInstance.setEspecie(especies);
-
         return areaServiceInterface.saveArea(newInstance);
     }
 
@@ -1589,19 +1572,17 @@ public class Facade {
     public Area updateArea(AreaRequest transientObject, Long id) {
         Area oldObject = findAreaById(id);
 
-        oldObject.setTituloArea(transientObject.getTituloArea());
+        if (transientObject.getTituloArea() != null) {
+            oldObject.setTituloArea(transientObject.getTituloArea());
+        }
 
         if (transientObject.getEspecie() != null) {
-            List<Especie> especies = transientObject.getEspecie().stream()
-                    .map(e -> especieServiceInterface.findEspecieById(e.getId())) // buscar cada espécie do DB
-                    .toList();
-
-            oldObject.setEspecie(especies);
+            Especie especie = especieServiceInterface.findEspecieById(transientObject.getEspecie().getId());
+            oldObject.setEspecie(especie);
         }
 
         return areaServiceInterface.updateArea(oldObject);
     }
-
 
     public Area findAreaById(Long id) {
         return areaServiceInterface.findAreaById(id);
@@ -1618,13 +1599,9 @@ public class Facade {
 
     // CampoLaudo--------------------------------------------------------------
     private final CampoLaudoServiceInterface campoLaudoServiceInterface;
-    private final OrgaoServiceInterface orgaoServiceInterface;
 
     @Transactional
     public CampoLaudo saveCampoLaudo(CampoLaudo newInstance) {
-        Orgao orgao = orgaoServiceInterface.findOrgaoById(newInstance.getOrgao().getId());
-        newInstance.setOrgao(orgao);
-
         return campoLaudoServiceInterface.saveCampoLaudo(newInstance);
     }
 
@@ -1891,27 +1868,64 @@ public class Facade {
 
     @Transactional
     public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
+        if (newInstance.getFichaSolicitacaoServico() != null) {
+            FichaSolicitacaoServico ficha = fichaSolicitacaoServicoServiceInterface.findFichaSolicitacaoServicoById(
+                            newInstance.getFichaSolicitacaoServico().getId());
+            newInstance.setFichaSolicitacaoServico(ficha);
+        }
+
         return laudoNecropsiaServiceInterfcae.saveLaudoNecropsia(newInstance);
     }
 
     @Transactional
-    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsiaRequest obj, Long id) {
+    public LaudoNecropsia updateLaudoNecropsia(LaudoNecropsiaRequest transientObject, Long id) {
         LaudoNecropsia oldObject = laudoNecropsiaServiceInterfcae.findLaudoNecropsiaById(id);
 
-        // campoLaudo
-        if(obj.getCampoLaudo() != null && !obj.getCampoLaudo().isEmpty()){
-            List<CampoLaudo> updatedCampoLaudos = obj.getCampoLaudo().stream()
-                    .map(campo -> findCampoLaudoById(campo.getId()))
-                    .toList();
-            oldObject.setCampoLaudo(updatedCampoLaudos);
-            obj.setCampoLaudo(null); // Limpar para evitar mapeamento duplo
+        oldObject.setConclusao(transientObject.getConclusao());
+        oldObject.setDescricaoMacroscopia(transientObject.getDescricaoMacroscopia());
+        oldObject.setDescricaoMicroscopia(transientObject.getDescricaoMicroscopia());
+
+        if (transientObject.getFichaSolicitacaoServico() != null) {
+            FichaSolicitacaoServico ficha = fichaSolicitacaoServicoServiceInterface
+                    .findFichaSolicitacaoServicoById(transientObject.getFichaSolicitacaoServico().getId());
+            oldObject.setFichaSolicitacaoServico(ficha);
         }
 
-        TypeMap<LaudoNecropsiaRequest, LaudoNecropsia> typeMapper = modelMapper
-                .typeMap(LaudoNecropsiaRequest.class, LaudoNecropsia.class)
-                .addMappings(mapper -> mapper.skip(LaudoNecropsia::setId));
+        if (transientObject.getCampoLaudo() != null) {
+            List<CampoLaudo> novosCampos = new ArrayList<>();
+            for (CampoLaudoRequest campoReq : transientObject.getCampoLaudo()) {
+                CampoLaudo campo = findCampoLaudoById(campoReq.getId());
+                novosCampos.add(campo);
+            }
+            oldObject.setCampoLaudo(novosCampos);
+        }
 
-        typeMapper.map(obj, oldObject);
+        if (transientObject.getCampoMicroscopia() != null) {
+            List<CampoLaudoMicroscopia> novosCamposMicroscopia = new ArrayList<>();
+            for (CampoLaudoMicroscopiaRequest campoReq : transientObject.getCampoMicroscopia()) {
+                CampoLaudoMicroscopia campo = findCampoLaudoMicroscopiaById(campoReq.getId());
+                novosCamposMicroscopia.add(campo);
+            }
+            oldObject.setCampoMicroscopia(novosCamposMicroscopia);
+        }
+
+        if (transientObject.getEstagiario() != null) {
+            List<Estagiario> novosEstagiarios = new ArrayList<>();
+            for (EstagiarioRequest estagiarioReq : transientObject.getEstagiario()) {
+                Estagiario estagiario = estagiarioServiceInterface.findEstagiarioById(estagiarioReq.getId());
+                novosEstagiarios.add(estagiario);
+            }
+            oldObject.setEstagiario(novosEstagiarios);
+        }
+
+        if (transientObject.getFoto() != null) {
+            List<Foto> novasFotos = new ArrayList<>();
+            for (FotoRequest fotoReq : transientObject.getFoto()) {
+                Foto foto = fotoServiceInterface.findById(fotoReq.getId());
+                novasFotos.add(foto);
+            }
+            oldObject.setFoto(novasFotos);
+        }
 
         return laudoNecropsiaServiceInterfcae.updateLaudoNecropsia(oldObject);
     }
@@ -1968,41 +1982,49 @@ public class Facade {
 
     // Orgao--------------------------------------------------------------
 
-    private final OrgaoServiceInterface OrgaoServiceInterface;
+    private final OrgaoServiceInterface orgaoServiceInterface;
 
     @Transactional
     public Orgao saveOrgao(Orgao newInstance) {
-        return OrgaoServiceInterface.saveOrgao(newInstance);
+        return orgaoServiceInterface.saveOrgao(newInstance);
     }
 
     @Transactional
     public Orgao updateOrgao(OrgaoRequest transientObject, Long id) {
-        Orgao oldObject = OrgaoServiceInterface.findOrgaoById(id);
+        Orgao oldObject = orgaoServiceInterface.findOrgaoById(id);
 
-        TypeMap<OrgaoRequest, Orgao> typeMapper = modelMapper
-                .typeMap(OrgaoRequest.class, Orgao.class)
-                .addMappings(mapper -> mapper.skip(Orgao::setId));
+        if (transientObject.getNome() != null) oldObject.setNome(transientObject.getNome());
+        if (transientObject.getSexoMacho() != null) oldObject.setSexoMacho(transientObject.getSexoMacho());
+        if (transientObject.getSexoFemea() != null) oldObject.setSexoFemea(transientObject.getSexoFemea());
 
-        typeMapper.map(transientObject, oldObject);
-
-        if (transientObject.getFoto() == null || (oldObject.getFoto() != null && oldObject.getFoto().getId() == 0)) {
-            oldObject.setFoto(null);
+        if (transientObject.getFoto() != null) {
+            Foto novaFoto = fotoServiceInterface.findById(transientObject.getFoto().getId());
+            oldObject.setFoto(novaFoto);
         }
 
-        return OrgaoServiceInterface.updateOrgao(oldObject);
+        if (transientObject.getArea() != null) {
+            List<Area> novasAreas = new ArrayList<>();
+            for (AreaRequest areaAtual : transientObject.getArea()) {
+                Area area = areaServiceInterface.findAreaById(areaAtual.getId());
+                novasAreas.add(area);
+            }
+            oldObject.setArea(novasAreas);
+        }
+
+        return orgaoServiceInterface.updateOrgao(oldObject);
     }
 
     public Orgao findOrgaoById(long id) {
-        return OrgaoServiceInterface.findOrgaoById(id);
+        return orgaoServiceInterface.findOrgaoById(id);
     }
 
     public List<Orgao> getAllOrgao() {
-        return OrgaoServiceInterface.getAllOrgao();
+        return orgaoServiceInterface.getAllOrgao();
     }
 
     @Transactional
     public void deleteOrgao(long id) {
-        OrgaoServiceInterface.deleteOrgao(id);
+        orgaoServiceInterface.deleteOrgao(id);
     }
 
 
@@ -2035,13 +2057,6 @@ public class Facade {
 
     @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {
-        if (newInstance.getOrgao() != null && newInstance.getOrgao().getId() > 0) {
-            Orgao orgao = orgaoServiceInterface.findOrgaoById(newInstance.getOrgao().getId());
-            newInstance.setOrgao(orgao);
-        } else {
-            newInstance.setOrgao(null);
-        }
-
         return campoLaudoMicroscopiaServiceInterface.saveCampoLaudoMicroscopia(newInstance);
     }
 

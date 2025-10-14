@@ -21,7 +21,6 @@ public class CancelamentoRequest {
 	private LocalDateTime dataCancelamento;
 	@NotNull
 	private EspecialidadeRequest especialidade;
-	@NotNull
 	private AgendamentoRequest agendamento;
 	@NotNull
 	private VagaRequest vaga;
