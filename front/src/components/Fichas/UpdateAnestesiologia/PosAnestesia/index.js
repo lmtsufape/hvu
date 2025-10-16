@@ -155,12 +155,8 @@ useEffect(() => {
 
 
 
-useEffect(() => {
-  setFormData(prev => ({
-    ...prev,
-    pos: { ...prev.pos, farmacos: farmacosPos,  parametros: data  }
-  }));
-}, [farmacosPos, setFormData]);
+
+
 
 const [farmacoPosAnestesico, setFarmacoPosAnestesico] = useState(
   formData.pos?.farmacoPosAnestesico ??               
@@ -168,13 +164,18 @@ const [farmacoPosAnestesico, setFarmacoPosAnestesico] = useState(
     farmaco: "", dose: "", via: "", hora: ""
   }))
 );
-
 useEffect(() => {
-  setFormData(prev => ({
-    ...prev,
-    pos: { ...prev.pos, farmacoPosAnestesico }        
-  }));
-}, [farmacoPosAnestesico, setFormData]);
+    setFormData(prev => ({
+      ...prev,
+      pos: { 
+        ...prev.pos, 
+        farmacos: farmacosPos,                      // Tabela de Indução
+        farmacoPosAnestesico: farmacoPosAnestesico, // Tabela Pós-Anestésica
+        parametros: data                            // Tabela de Parâmetros
+      }
+    }));
+// A lista de dependências agora monitora TUDO
+}, [farmacosPos, farmacoPosAnestesico, data, setFormData]);
 
  useEffect(() => {
     if (router.isReady) {
