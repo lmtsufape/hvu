@@ -46,6 +46,59 @@ function UpdateMeuPerfil() {
         }
     });
 
+        // Substitua sua função validarCPF por esta
+    const validarCPF = (cpf) => {
+    if (!cpf) return false;
+
+    // Remove caracteres não numéricos
+    cpf = cpf.replace(/[^\d]+/g, '');
+
+    // Verifica se tem 11 dígitos e não é uma sequência repetida
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+    // Validação dos dois dígitos verificadores
+    let soma = 0;
+    for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+    let resto = soma % 11;
+    let digito1 = resto < 2 ? 0 : 11 - resto;
+    if (digito1 !== parseInt(cpf.charAt(9))) return false;
+
+    soma = 0;
+    for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+    resto = soma % 11;
+    let digito2 = resto < 2 ? 0 : 11 - resto;
+    if (digito2 !== parseInt(cpf.charAt(10))) return false;
+
+    return true;
+    };
+
+
+        // Substitua sua função validarTelefone por esta
+    const validarTelefone = (telefone) => {
+    if (!telefone) return false;
+
+    // Remove tudo que não for número
+    const numeroLimpo = telefone.replace(/\D/g, '');
+
+    // Deve ter 10 ou 11 dígitos
+    if (numeroLimpo.length < 10 || numeroLimpo.length > 11) return false;
+
+    const ddd = numeroLimpo.substring(0, 2);
+    const numero = numeroLimpo.substring(2);
+
+    // Verifica DDD válido (de 11 a 99)
+    if (parseInt(ddd) < 11 || parseInt(ddd) > 99) return false;
+
+    // Validação para celular: 11 dígitos e começa com 9
+    if (numeroLimpo.length === 11 && numero[0] !== '9') return false;
+
+    // Validação para fixo: 10 dígitos e começa com 2, 3, 4 ou 5
+    if (numeroLimpo.length === 10 && !['2', '3', '4', '5'].includes(numero[0])) return false;
+
+    return true;
+    };
+
+
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const storedToken = localStorage.getItem('token');
@@ -96,6 +149,25 @@ function UpdateMeuPerfil() {
     const handleUsuarioChange = (event) => {
         const { name, value } = event.target;
         setUsuario({ ...usuario, [name]: value });
+        
+        // Validação em tempo real para CPF
+        if (name === "cpf") {
+            const cpfLimpo = value.replace(/[^\d]/g, '');
+            if (cpfLimpo.length === 11 && !validarCPF(value)) {
+                setErrors(prev => ({ ...prev, cpf: "CPF inválido" }));
+            } else {
+                setErrors(prev => ({ ...prev, cpf: "" }));
+            }
+        }
+        
+        // Validação em tempo real para telefone
+        if (name === "telefone") {
+            if (!validarTelefone(value)) {
+                setErrors(prev => ({ ...prev, telefone: "Telefone inválido" }));
+            } else {
+                setErrors(prev => ({ ...prev, telefone: "" }));
+            }
+        }
     };
 
     const handleEnderecoChange = (event) => {
@@ -147,6 +219,21 @@ function UpdateMeuPerfil() {
 
     const validateForm = () => {
         const newErrors = {};
+        
+        // Validação de CPF
+        if (!usuario.cpf) {
+            newErrors.cpf = "Campo obrigatório";
+        } else if (!validarCPF(usuario.cpf)) {
+            newErrors.cpf = "CPF inválido";
+        }
+        
+        // Validação de telefone
+        if (!usuario.telefone) {
+            newErrors.telefone = "Campo obrigatório";
+        } else if (!validarTelefone(usuario.telefone)) {
+            newErrors.telefone = "Telefone inválido";
+        }
+        
         if (alterarSenha) {
             if (!usuario.senha) {
                 newErrors.senha = "Senha é obrigatória";
@@ -162,12 +249,6 @@ function UpdateMeuPerfil() {
         }
         if (!usuario.email) {
             newErrors.email = "Campo obrigatório";
-        }
-        if (!usuario.cpf) {
-            newErrors.cpf = "Campo obrigatório";
-        }
-        if (!usuario.telefone) {
-            newErrors.telefone = "Campo obrigatório";
         }
         if (!usuario.endereco.cep) {
             newErrors.cep = "Campo obrigatório";
@@ -237,7 +318,7 @@ function UpdateMeuPerfil() {
                         <div className="row">
                             <div className={`col ${styles.col}`}>
                                 {/* {renderUsuarioInput("E-mail", usuario.email, "email", usuario.email, handleUsuarioChange, "email", errors.email)} */}
-                                {renderUsuarioInput("CPF", usuario.cpf, "cpf", usuario.cpf, handleUsuarioChange, "text", errors.cepf, "999.999.999-99")}
+                                {renderUsuarioInput("CPF", usuario.cpf, "cpf", usuario.cpf, handleUsuarioChange, "text", errors.cpf, "999.999.999-99")}
                             </div>
                             <div className={`col ${styles.col}`}>
                                 {renderUsuarioInput("Telefone", usuario.telefone, "telefone", usuario.telefone, handleUsuarioChange, "tel", errors.telefone, "(99) 99999-9999")}
