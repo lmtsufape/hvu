@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { getCurrentUsuario } from '../../../../services/userService';
+import { toast } from "react-toastify";
 
 
 function FormularioLogin() {
@@ -32,9 +33,16 @@ function FormularioLogin() {
                 } else if(userData.roles && Array.isArray(userData.roles) && userData.roles.includes("admin_lapa")){
                   router.push('/lapa/homeAdmin');
                 }
-            } catch(error){
-                console.log(error);
-            }  
+            } catch (error) {
+              if (error.response.status === 401) {
+                toast.error("Email e/ou senha inválidos!");
+              } else {
+                toast.error(
+                  "Ocorreu um erro ao tentar fazer login. Tente novamente mais tarde."
+                );
+              }
+              console.log(error);
+            }
         } 
     }
     //Funcao para validar o formulario de login
@@ -113,10 +121,10 @@ function FormularioLogin() {
     
           <div className={styles.button_box}>
             <button onClick={logged} type="submit" className="btn btn-primary" id={styles.entrar_button}>Entrar</button>
-            <div className={styles.criar_button_box}>
+           {/* <div className={styles.criar_button_box}>
               <h6>Não possui conta? </h6>
               <button type="button" onClick={() => router.push("/lapa/createMedicoLapa")} className="btn btn-link">Crie agora</button>
-            </div>
+            </div>*/}
           </div>
         </>
       );
