@@ -102,14 +102,13 @@ function CreatePatologista() {
         });
     };
 
-    const handleCreatePatologista = async () => {
+    const handleCreatePatologista = async (event) => {
         event.preventDefault();
-
-       {/*} const validationErrors = validateFields(patologista);
+        const validationErrors = validateFields(patologista);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
-        } */}
+        }
 
         const PatologistaToCreate = {
             nome: patologista.nome,
@@ -306,7 +305,7 @@ function CreatePatologista() {
                                             </option>
                                         ))}
                                     </select>
-                                    {errors.especialidade && <div className={`invalid-feedback ${styles.error_message}`}>{errors.especialidade}</div>}
+                                    {errors.especialidade && <div className={`${styles.error_message}`}>{errors.especialidade}</div>}
                                 </div>
                                 <div>
                                     {selectedEspecialidades.map(especialidade => (
@@ -348,7 +347,7 @@ function CreatePatologista() {
 
                 <div className={styles.button_box}>
                     <CancelarWhiteButton />
-                    <button type="submit" className={styles.criar_button} onClick={handleCreatePatologista}>
+                    <button type="submit" className={styles.criar_button}>
                         {cityStateLoading ? "Aguarde..." : "Cadastrar"}
                     </button>
                 </div>
@@ -382,7 +381,7 @@ function renderPatologistaInput(label, placeholder, name, value, onChange, type 
                     </span>
                 )}
             </div>
-            {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
+            {errorMessage && <div className={`${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }
@@ -403,7 +402,7 @@ function renderEnderecoInput(label, name, value, onChange, placeholder, type = "
                 onChange={onChange}
                 {...inputProps}
             />
-            {errorMessage && <div className={`invalid-feedback ${styles.error_message}`}>{errorMessage}</div>}
+            {errorMessage && <div className={`${styles.error_message}`}>{errorMessage}</div>}
         </div>
     );
 }

@@ -67,6 +67,10 @@ function FormularioLogin() {
             router.push("/mainMedico");
           } else if (userData.roles.includes("tutor")) {
             router.push("/mainTutor");
+          } else if (userData.roles.includes("patologista")) {
+            router.push("/lapa/telaprincipallaudos");
+          } else if (userData.roles.includes("admin_lapa")) {
+            router.push("/lapa/homeAdmin");
           }
         }
       } catch (error) {

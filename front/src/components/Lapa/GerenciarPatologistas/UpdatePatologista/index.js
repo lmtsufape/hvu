@@ -116,10 +116,49 @@ function UpdatePatologista() {
         );
     }
 
-    const handlePatologistaChange = (event) => {
-        const { name, value } = event.target;
-        setPatologista({ ...patologista, [name]: value });
-    };
+const handlePatologistaChange = (event) => {
+    const { name, value } = event.target;
+    setPatologista({ ...patologista, [name]: value });
+
+    // Validação em tempo real
+    switch(name) {
+        case "cpf":
+            if (!validateCPF(value)) {
+                setErrors(prev => ({ ...prev, cpf: "CPF inválido" }));
+            } else {
+                setErrors(prev => ({ ...prev, cpf: null }));
+            }
+            break;
+        case "telefone":
+            if (!validateTelefone(value)) {
+                setErrors(prev => ({ ...prev, telefone: "Telefone inválido" }));
+            } else {
+                setErrors(prev => ({ ...prev, telefone: null }));
+            }
+            break;
+        case "email":
+            if (!validateEmail(value)) {
+                setErrors(prev => ({ ...prev, email: "E-mail inválido" }));
+            } else {
+                setErrors(prev => ({ ...prev, email: null }));
+            }
+            break;
+        case "crmv":
+            if (!validateCRMV(value)) {
+                setErrors(prev => ({ ...prev, crmv: "CRMV inválido" }));
+            } else {
+                setErrors(prev => ({ ...prev, crmv: null }));
+            }
+            break;
+        default:
+            if (!value) {
+                setErrors(prev => ({ ...prev, [name]: "Campo obrigatório" }));
+            } else {
+                setErrors(prev => ({ ...prev, [name]: null }));
+            }
+    }
+};
+
 
     const handleEnderecoChange = (event) => {
         const { name, value } = event.target;
@@ -168,63 +207,81 @@ function UpdatePatologista() {
         fetchCepData(value);
     };
 
-    const validateForm = () => {
-        const newErrors = {};
-        if (alterarSenha) {
-            if (!patologista.senha) {
-                newErrors.senha = "Senha é obrigatória";
-            }
-            if (!patologista.confirmarSenha) {
-                newErrors.confirmarSenha = "Confirme sua senha";
-            } else if (patologista.senha !== patologista.confirmarSenha) {
-                newErrors.confirmarSenha = "As senhas não coincidem";
-            }
-        }
-        if (!patologista.nome) {
-            newErrors.nome = "Campo obrigatório";
-        }
-        if (!patologista.email) {
-            newErrors.email = "Campo obrigatório"; 
-        }
-        if (!/\S+@\S+\.\S+/.test(patologista.email)) {
-            newErrors.email = "E-mail inválido";
-        }
-        if (!patologista.cpf) {
-            newErrors.cpf = "Campo obrigatório"; 
-        }
-        if (!patologista.telefone) {
-            newErrors.telefone = "Campo obrigatório"; 
-        }
-        if (!patologista.crmv) {
-            newErrors.crmv = "Campo obrigatório"; 
-        }
-        if (selectedEspecialidades.length === 0) {
-            newErrors.especialidade = "Selecione pelo menos uma especialidade."; 
-        }
-        if (!patologista.endereco.cep) {
-            newErrors.cep = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.rua) {
-            newErrors.rua = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.estado) {
-            newErrors.estado = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.cidade) {
-            newErrors.cidade = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.numero) {
-            newErrors.numero = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.bairro) {
-            newErrors.bairro = "Campo obrigatório"; 
-        }
-        setErrors(newErrors);
-    
-        return Object.keys(newErrors).length === 0;
-    };
+ const validateCPF = (cpf) => {
+    if (!cpf) return false;
+    cpf = cpf.replace(/\D/g, '');
+    if (cpf.length !== 11) return false;
+    if (/^(\d)\1+$/.test(cpf)) return false;
 
-    const handlePatologistaUpdate = async () => {
+    let soma = 0;
+    for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+    let resto = (soma * 10) % 11;
+    if (resto === 10) resto = 0;
+    if (resto !== parseInt(cpf.charAt(9))) return false;
+
+    soma = 0;
+    for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10) resto = 0;
+    return resto === parseInt(cpf.charAt(10));
+};
+
+const validateTelefone = (telefone) => {
+    if (!telefone) return false;
+    // Apenas números
+    const digits = telefone.replace(/\D/g, '');
+    return digits.length === 10 || digits.length === 11;
+};
+
+const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+};
+
+const validateCRMV = (crmv) => {
+    // Exemplo: deve ter entre 4 e 10 caracteres alfanuméricos
+    return /^[a-zA-Z0-9]{4,10}$/.test(crmv);
+};
+
+// Na função validateForm:
+const validateForm = () => {
+    const newErrors = {};
+
+    if (alterarSenha) {
+        if (!patologista.senha) newErrors.senha = "Senha é obrigatória";
+        if (!patologista.confirmarSenha) newErrors.confirmarSenha = "Confirme sua senha";
+        else if (patologista.senha !== patologista.confirmarSenha) newErrors.confirmarSenha = "As senhas não coincidem";
+    }
+
+    if (!patologista.nome) newErrors.nome = "Campo obrigatório";
+
+    if (!patologista.email) newErrors.email = "Campo obrigatório";
+    else if (!validateEmail(patologista.email)) newErrors.email = "E-mail inválido";
+
+    if (!patologista.cpf) newErrors.cpf = "Campo obrigatório";
+    else if (!validateCPF(patologista.cpf)) newErrors.cpf = "CPF inválido";
+
+    if (!patologista.telefone) newErrors.telefone = "Campo obrigatório";
+    else if (!validateTelefone(patologista.telefone)) newErrors.telefone = "Telefone inválido";
+
+    if (!patologista.crmv) newErrors.crmv = "Campo obrigatório";
+    else if (!validateCRMV(patologista.crmv)) newErrors.crmv = "CRMV inválido";
+
+    if (selectedEspecialidades.length === 0) newErrors.especialidade = "Selecione pelo menos uma especialidade.";
+
+    // Validações do endereço
+    if (!patologista.endereco.cep) newErrors.cep = "Campo obrigatório";
+    if (!patologista.endereco.rua) newErrors.rua = "Campo obrigatório";
+    if (!patologista.endereco.estado) newErrors.estado = "Campo obrigatório";
+    if (!patologista.endereco.cidade) newErrors.cidade = "Campo obrigatório";
+    if (!patologista.endereco.numero) newErrors.numero = "Campo obrigatório";
+    if (!patologista.endereco.bairro) newErrors.bairro = "Campo obrigatório";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+};
+
+
+    const handlePatologistaUpdate = async (event) => {
         event.preventDefault();
         if (!validateForm()) {
             return;
