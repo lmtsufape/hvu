@@ -1130,6 +1130,8 @@ public class Facade {
         return confirmarAgendamento(vaga, agendamento);
     }
 
+
+    @Transactional // Minimiza inconsistências ao criar agendamento
     private Agendamento confirmarAgendamento(Vaga vaga, Agendamento agendamento) {
         if (vagaServiceInterface.existsByIdAndAgendamentoIsNotNull(vaga.getId())) {
             throw new BusinessException("vaga.ocupada", "A vaga já foi ocupada por outro agendamento.");
