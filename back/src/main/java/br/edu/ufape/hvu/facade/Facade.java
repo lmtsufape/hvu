@@ -1130,6 +1130,8 @@ public class Facade {
         return confirmarAgendamento(vaga, agendamento);
     }
 
+
+    @Transactional // Minimiza inconsistências ao criar agendamento
     private Agendamento confirmarAgendamento(Vaga vaga, Agendamento agendamento) {
         if (vagaServiceInterface.existsByIdAndAgendamentoIsNotNull(vaga.getId())) {
             throw new BusinessException("vaga.ocupada", "A vaga já foi ocupada por outro agendamento.");
@@ -1169,7 +1171,7 @@ public class Facade {
     // Reagenda um agendamento para uma nova vaga
     @Transactional
     public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga, String idSession){
-        if (!keycloakService.hasRoleSecretario(idSession) || !keycloakService.hasRoleTutor(idSession)) {
+        if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleTutor(idSession)) {
             throw new ForbiddenOperationException("Você não é responsável por este agendamento.");
         }
 
