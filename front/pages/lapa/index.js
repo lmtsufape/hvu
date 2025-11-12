@@ -34,7 +34,6 @@ function PageLogin() {
         <Footer />
       </div>
 
-      {/* O ToastContainer deve estar aqui, isolado */}
       <ToastContainer
         position="top-right"
         autoClose={2500}
