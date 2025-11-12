@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { getCurrentUsuario } from '../../../../services/userService';
+import { toast } from "react-toastify";
 
 
 function FormularioLogin() {
@@ -33,6 +34,13 @@ function FormularioLogin() {
                   router.push('/lapa/homeAdmin');
                 }
             } catch(error){
+              if (error.response.status === 401) {
+                        toast.error("Email e/ou senha inválidos!");
+                      } else {
+                        toast.error(
+                          "Ocorreu um erro ao tentar fazer login. Tente novamente mais tarde."
+                        );
+                      }
                 console.log(error);
             }  
         } 
