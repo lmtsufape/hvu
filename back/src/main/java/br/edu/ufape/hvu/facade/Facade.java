@@ -1171,7 +1171,7 @@ public class Facade {
     // Reagenda um agendamento para uma nova vaga
     @Transactional
     public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga, String idSession){
-        if (!keycloakService.hasRoleSecretario(idSession) || !keycloakService.hasRoleTutor(idSession)) {
+        if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleTutor(idSession)) {
             throw new ForbiddenOperationException("Você não é responsável por este agendamento.");
         }
 
