@@ -14,8 +14,6 @@ import { getAnimalById } from "../../../../services/animalService";
 import { getCurrentUsuario } from "../../../../services/userService";
 import { getMedicoById } from "../../../../services/medicoService";
 
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 function FichaSolicitacaoExame() {
   const router = useRouter();
@@ -228,88 +226,6 @@ function FichaSolicitacaoExame() {
                 }
               }, [router.isReady, router.query.medico]);
 
-const handleGeneratePDF = () => {
-    const input = formBoxRef.current;
-
-    if (!input) {
-        console.error("Erro: a referência ao elemento do formulário não foi encontrada.");
-        alert("Erro ao gerar PDF: O conteúdo da ficha não foi encontrado.");
-        return;
-    }
-
-    const actionsBox = input.querySelector(`.${styles.button_box}`);
-    
-    // 1. Oculta os botões antes da captura
-    if (actionsBox) {
-        actionsBox.style.visibility = 'hidden';
-    }
-
-    // Opções aprimoradas para o html2canvas
-    const canvasOptions = {
-        // AUMENTA A RESOLUÇÃO DA CAPTURA (MELHORIA MAIS IMPORTANTE)
-        scale: 3, 
-        useCORS: true,
-        allowTaint: true,
-        // Garante que o fundo seja branco, evitando problemas com transparência
-        backgroundColor: '#ffffff', 
-        // Melhora a renderização das fontes
-        letterRendering: 1, 
-        logging: false // Desative para produção para não poluir o console
-    };
-
-    html2canvas(input, canvasOptions).then(canvas => {
-        // 2. Reexibe os botões imediatamente após a captura
-        if (actionsBox) {
-            actionsBox.style.visibility = 'visible';
-        }
-
-        // Dados da imagem com alta qualidade
-        const imgData = canvas.toDataURL('image/jpeg', 1.0); // Usar JPEG com qualidade máxima
-
-        // Configurações do PDF
-        const pdf = new jsPDF({
-            orientation: 'p', // p = portrait (retrato)
-            unit: 'mm',       // unidade em milímetros
-            format: 'a4'      // formato A4
-        });
-
-        // Dimensões do PDF e da imagem
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        
-        // Calcula a proporção para que a imagem se ajuste à largura do PDF
-        const ratio = canvasWidth / canvasHeight;
-        const imgHeight = pdfWidth / ratio;
-
-        // Lógica para dividir o conteúdo em várias páginas
-        let heightLeft = imgHeight;
-        let position = 0;
-
-        // Adiciona a primeira parte da imagem
-        pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
-        heightLeft -= pdfHeight;
-
-        // Adiciona novas páginas enquanto houver conteúdo restante
-        while (heightLeft > 0) {
-            position = -heightLeft; // A posição Y da imagem será negativa
-            pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
-            heightLeft -= pdfHeight;
-        }
-        
-        // Salva o PDF com um nome de arquivo descritivo
-        pdf.save(`solicitacao_exame_${animal.nome || 'animal'}_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.pdf`);
-
-    }).catch(err => {
-        console.error("Erro crítico no html2canvas:", err);
-        if (actionsBox) {
-            actionsBox.style.visibility = 'visible';
-        }
-        alert("Ocorreu um erro ao gerar o PDF. Verifique o console para mais detalhes.");
-    });
-};
 
   if (loading) {
     return <div className={styles.message}>Carregando dados do usuário...</div>;
@@ -659,9 +575,6 @@ const handleGeneratePDF = () => {
           
           <div className={styles.button_box}>
             <CancelarWhiteButton onClick={cleanLocalStorage} />
-            <button type="button" onClick={handleGeneratePDF} className={styles.pdf_button}>
-                Gerar PDF
-            </button>
             < FinalizarFichaModal onConfirm={handleSubmit} />
           </div>
         </form>
