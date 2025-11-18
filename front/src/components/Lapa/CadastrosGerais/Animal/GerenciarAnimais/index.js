@@ -113,7 +113,7 @@ function GerenciarAnimais() {
                                 <h6>Nome</h6>
                                 <p>{animal.nome}</p>
                                 <h6>Nome do&#40;a&#41; responsável</h6>
-                                <p>{tutores[animal.id]?.nome || 'Tutor não disponível'}</p>
+                                <p>{tutores[animal.id]?.nome || 'Responsável não disponível'}</p>
                             </div>
                             <div className={styles.button_container}>
                                 <button
