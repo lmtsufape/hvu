@@ -105,7 +105,10 @@
 			<artifactId>apache-mime4j-dom</artifactId>
 			<version>0.8.11</version>
 		</dependency>
-
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
 
     </dependencies>
 

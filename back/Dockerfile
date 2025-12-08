@@ -11,7 +11,7 @@ COPY . .
 RUN mvn clean install -DskipTests
 
 # Use uma imagem OpenJDK como base para a imagem final
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk
 
 # Define o diretório de trabalho no contêiner
 WORKDIR /app
