@@ -1437,7 +1437,7 @@ public class Facade {
         tutor.getAnimais().add(animal);
         Animal savedAnimal = animalServiceInterface.saveAnimal(animal);
 
-        tutorServiceInterface.updateTutor(tutor);
+        tutorServiceInterface.saveTutor(tutor);
 
         return savedAnimal;
     }
@@ -1806,23 +1806,58 @@ public class Facade {
     }
 
     @Transactional
-    public FichaSolicitacaoServico updateFichaSolicitacaoServico(FichaSolicitacaoServicoRequest obj, Long id, String idSession) {
-        //FichaSolicitacaoServico o = obj.convertToEntity();
+    public FichaSolicitacaoServico updateFichaSolicitacaoServico(
+            FichaSolicitacaoServicoRequest obj, Long id, String idSession) {
+
         FichaSolicitacaoServico oldObject = findFichaSolicitacaoServicoById(id);
 
-        if(obj.getMedico() != null){
-            oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
-            obj.setMedico(null);
+        if (obj.getFichaClinica() != null)
+            oldObject.setFichaClinica(obj.getFichaClinica());
+
+        if (obj.getTipoServico() != null)
+            oldObject.setTipoServico(obj.getTipoServico());
+
+        if (obj.getDataHoraObito() != null)
+            oldObject.setDataHoraObito(obj.getDataHoraObito());
+
+        if (obj.getDataRecebimento() != null)
+            oldObject.setDataRecebimento(obj.getDataRecebimento());
+
+        if (obj.getEstadoConservacao() != null)
+            oldObject.setEstadoConservacao(obj.getEstadoConservacao());
+
+        if (obj.getAcondicionamento() != null)
+            oldObject.setAcondicionamento(obj.getAcondicionamento());
+
+        if (obj.getMaterial() != null)
+            oldObject.setMaterial(obj.getMaterial());
+
+        oldObject.setEutanasia(obj.isEutanasia());
+
+        if (obj.getHistorico() != null)
+            oldObject.setHistorico(obj.getHistorico());
+
+        if (obj.getCaracteristicasAdicionais() != null)
+            oldObject.setCaracteristicasAdicionais(obj.getCaracteristicasAdicionais());
+
+        if (obj.getTutor() != null && obj.getTutor().getId() > 0) {
+            Tutor tutor = findTutorById(obj.getTutor().getId(), idSession);
+            oldObject.setTutor(tutor);
         }
 
-        TypeMap<FichaSolicitacaoServicoRequest, FichaSolicitacaoServico> typeMapper = modelMapper
-                .typeMap(FichaSolicitacaoServicoRequest.class, FichaSolicitacaoServico.class)
-                .addMappings(mapper -> mapper.skip(FichaSolicitacaoServico::setId));
+        if (obj.getAnimal() != null && obj.getAnimal().getId() > 0) {
+            Animal animal = findAnimalById(obj.getAnimal().getId(), idSession);
+            oldObject.setAnimal(animal);
+        }
 
-        typeMapper.map(obj, oldObject);
+        if (obj.getMedico() != null && obj.getMedico().getId() > 0) {
+            Medico medico = findMedicoById(obj.getMedico().getId(), idSession);
+            oldObject.setMedico(medico);
+        }
 
         return fichaSolicitacaoServicoServiceInterface.updateFichaSolicitacaoServico(oldObject);
     }
+
 
     public FichaSolicitacaoServico findFichaSolicitacaoServicoById(Long id) {
         return fichaSolicitacaoServicoServiceInterface.findFichaSolicitacaoServicoById(id);
