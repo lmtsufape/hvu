@@ -113,7 +113,6 @@ function UpdateFoto() {
     } catch (error) {
       console.error("Erro ao editar foto:", error)
 
-      // ⭐ DETECTA ERRO 400 DE ARQUIVO GRANDE
       if (error.response?.status === 400) {
         setErrors((prev) => ({
           ...prev,
