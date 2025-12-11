@@ -26,13 +26,11 @@ function UpdateFoto() {
   const [token, setToken] = useState(null)
   const [roles, setRoles] = useState([])
 
-  // inicializa token e roles apenas uma vez
   useEffect(() => {
     setToken(getToken())
     setRoles(getRoles())
   }, [])
 
-  // busca dados da foto quando o id, token e roles estiverem definidos
   useEffect(() => {
     if (!token || roles.length === 0) return
 
@@ -114,6 +112,16 @@ function UpdateFoto() {
       setShowAlert(true)
     } catch (error) {
       console.error("Erro ao editar foto:", error)
+
+      if (error.response?.status === 400) {
+        setErrors((prev) => ({
+          ...prev,
+          fotoFile: "O arquivo é muito grande. Envie uma imagem menor."
+        }))
+        setShowErrorAlert(true)
+        return
+      }
+
       setShowErrorAlert(true)
     }
   }
@@ -122,6 +130,7 @@ function UpdateFoto() {
     <div className={styles.container}>
       <VoltarButton />
       <h1>Editar Informações da Foto</h1>
+
       {currentImageUrl && (
         <div className={styles.image_preview}>
           <h3>Imagem Atual:</h3>
@@ -132,13 +141,12 @@ function UpdateFoto() {
           />
         </div>
       )}
+
       <form className={styles.inputs_container}>
         <div className={styles.inputs_box}>
           <div className="row">
             <div className={`col ${styles.col}`}>
-              <label htmlFor="titulo" className="form-label">
-                Título
-              </label>
+              <label htmlFor="titulo" className="form-label">Título</label>
               <input
                 type="text"
                 className={`form-control ${styles.input} ${errors.titulo ? "is-invalid" : ""}`}
@@ -146,25 +154,34 @@ function UpdateFoto() {
                 value={foto.titulo || ""}
                 onChange={handleFotoChange}
               />
-              {errors.titulo && (
-                <div className={`invalid-feedback ${styles.error_message}`}>
-                  {errors.titulo}
-                </div>
-              )}
+              <div
+                className={`invalid-feedback ${styles.error_message}`}
+                style={{ display: errors.titulo ? "block" : "none" }}
+              >
+                {errors.titulo || ""}
+              </div>
             </div>
           </div>
+
           <div className={`col ${styles.col}`}>
-            <label htmlFor="foto" className="form-label">
-              Foto
-            </label>
+            <label htmlFor="foto" className="form-label">Foto</label>
             <input
               type="file"
+              className="form-control"
               accept="image/*"
               onChange={handleFileChange}
-              className="form-control"
             />
+
+            {/* ⭐ DIV SEMPRE RENDERIZADA – evita hydration error */}
+            <div
+              className={`invalid-feedback ${styles.error_message}`}
+              style={{ display: errors.fotoFile ? "block" : "none" }}
+            >
+              {errors.fotoFile || ""}
+            </div>
           </div>
         </div>
+
         <div className={styles.button_box}>
           <CancelarWhiteButton />
           <button
@@ -176,6 +193,7 @@ function UpdateFoto() {
           </button>
         </div>
       </form>
+
       {showAlert && (
         <Alert
           message="Informações da foto editadas com sucesso!"
@@ -183,6 +201,7 @@ function UpdateFoto() {
           url={`/lapa/gerenciarFotos`}
         />
       )}
+
       {showErrorAlert && (
         <ErrorAlert
           message="Erro ao editar informações da foto, tente novamente."
