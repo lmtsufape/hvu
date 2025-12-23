@@ -16,6 +16,7 @@ function CreateFoto() {
 
   const [showAlert, setShowAlert] = useState(false)
   const [showErrorAlert, setShowErrorAlert] = useState(false)
+  const [showFileSizeAlert, setShowFileSizeAlert] = useState(false) // Novo estado para alerta de tamanho
   const [errors, setErrors] = useState({})
   const [titulo, setTitulo] = useState("")
   const [foto, setFoto] = useState(null)
@@ -40,7 +41,25 @@ function CreateFoto() {
   }
 
   const handleFileChange = (event) => {
-    setFoto(event.target.files[0])
+    const file = event.target.files[0]
+    
+    // Verificação do tamanho do arquivo (exemplo: 5MB)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; 
+    
+    if (file && file.size > MAX_FILE_SIZE) {
+      setShowFileSizeAlert(true) 
+      setErrors((prev) => ({
+        ...prev,
+        fotoFile: `Arquivo muito grande. Tamanho máximo: ${MAX_FILE_SIZE / (1024 * 1024)}MB`
+      }))
+      event.target.value = ""
+      setFoto(null)
+      return
+    }
+    
+    setShowFileSizeAlert(false)
+    setErrors((prev) => ({ ...prev, fotoFile: "" }))
+    setFoto(file)
   }
 
   const validateForm = () => {
@@ -51,6 +70,18 @@ function CreateFoto() {
   }
 
   const handleSubmit = async () => {
+    if (foto) {
+      const MAX_FILE_SIZE = 5 * 1024 * 1024;
+      if (foto.size > MAX_FILE_SIZE) {
+        setShowFileSizeAlert(true)
+        setErrors((prev) => ({
+          ...prev,
+          fotoFile: `Arquivo muito grande. Tamanho máximo: ${MAX_FILE_SIZE / (1024 * 1024)}MB`
+        }))
+        return
+      }
+    }
+
     const errors = validateForm()
     if (Object.keys(errors).length > 0) {
       setErrors(errors)
@@ -63,6 +94,7 @@ function CreateFoto() {
       setTitulo("")
       setFoto(null)
       setErrors({})
+      setShowFileSizeAlert(false) 
     } catch (error) {
       console.error("Erro ao criar foto:", error)
 
@@ -71,11 +103,13 @@ function CreateFoto() {
           ...prev,
           fotoFile: "O arquivo é muito grande. Envie uma imagem menor."
         }))
-        setShowErrorAlert(true)
+        setShowFileSizeAlert(true) 
+        setShowErrorAlert(false)
         return
       }
 
       setShowErrorAlert(true)
+      setShowFileSizeAlert(false)
     }
   }
 
@@ -121,9 +155,14 @@ function CreateFoto() {
 
               <div
                 className={`invalid-feedback ${styles.error_message}`}
-                style={{ display: errors.foto || errors.fotoFile ? "block" : "none" }}
+                style={{ display: errors.foto || errors.fotoFile ? "block" : "block" }}
               >
                 {errors.foto || errors.fotoFile || ""}
+              </div>
+              
+              {/* Dica de tamanho máximo */}
+              <div className="form-text">
+                Tamanho máximo: 5MB. Formatos aceitos: JPG, PNG, GIF, etc.
               </div>
             </div>
           </div>
@@ -149,6 +188,14 @@ function CreateFoto() {
         <ErrorAlert
           message="Erro ao criar foto, tente novamente."
           show={showErrorAlert}
+        />
+      )}
+
+      {showFileSizeAlert && (
+        <ErrorAlert
+          message={errors.fotoFile || "Arquivo muito grande. Por favor, selecione uma imagem menor."}
+          show={showFileSizeAlert}
+          onClose={() => setShowFileSizeAlert(false)} 
         />
       )}
     </div>
