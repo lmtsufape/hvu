@@ -4,6 +4,8 @@ import br.edu.ufape.hvu.exception.InvalidJsonException;
 import br.edu.ufape.hvu.model.Ficha;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,10 +15,16 @@ import java.util.Map;
 
 @Getter @Setter @NoArgsConstructor
 public class FichaRequest {
+    @NotBlank(message = "O campo 'nome' é obrigatório e não pode ser vazio.")
     private String nome;
+
+    @NotNull(message = "O campo 'conteudo' é obrigatório.")
     private Map<String, Object> conteudo;
+
+    @NotNull(message = "O campo 'dataHora' é obrigatório.")
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
+
     private AgendamentoRequest agendamento;
 
     public Ficha convertToEntity() {

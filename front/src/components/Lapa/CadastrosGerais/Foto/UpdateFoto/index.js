@@ -17,6 +17,7 @@ function UpdateFoto() {
   const [errors, setErrors] = useState({})
   const [showAlert, setShowAlert] = useState(false)
   const [showErrorAlert, setShowErrorAlert] = useState(false)
+  const [showFileSizeAlert, setShowFileSizeAlert] = useState(false) // Novo estado para alerta de tamanho
   const [foto, setFoto] = useState({})
   const [fotoFile, setFotoFile] = useState(null)
   const [currentImageUrl, setCurrentImageUrl] = useState(null)
@@ -25,6 +26,8 @@ function UpdateFoto() {
 
   const [token, setToken] = useState(null)
   const [roles, setRoles] = useState([])
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 
 
   useEffect(() => {
     setToken(getToken())
@@ -91,16 +94,47 @@ function UpdateFoto() {
   }
 
   const handleFileChange = (event) => {
-    setFotoFile(event.target.files[0])
+    const file = event.target.files[0]
+    
+    if (!file) {
+      setFotoFile(null)
+      return
+    }
+    
+    if (file.size > MAX_FILE_SIZE) {
+      setShowFileSizeAlert(true)
+      
+      setErrors((prev) => ({
+        ...prev,
+        fotoFile: `Arquivo muito grande! Tamanho máximo permitido: 5MB. Seu arquivo: ${(file.size / (1024 * 1024)).toFixed(2)}MB`
+      }))
+      
+      event.target.value = ""
+      setFotoFile(null)
+      return
+    }
+    
+    setShowFileSizeAlert(false)
+    setErrors((prev) => ({ ...prev, fotoFile: "" }))
+    setFotoFile(file)
   }
 
   const validateForm = () => {
     const errors = {}
-    if (!foto.titulo) errors.titulo = "Campo obrigatório"
+    if (!foto.titulo?.trim()) errors.titulo = "Campo obrigatório"
     return errors
   }
 
   const handleFotoUpdate = async () => {
+    if (fotoFile && fotoFile.size > MAX_FILE_SIZE) {
+      setShowFileSizeAlert(true)
+      setErrors((prev) => ({
+        ...prev,
+        fotoFile: `Arquivo muito grande! Tamanho máximo: 5MB. Seu arquivo: ${(fotoFile.size / (1024 * 1024)).toFixed(2)}MB`
+      }))
+      return
+    }
+
     const errors = validateForm()
     if (Object.keys(errors).length > 0) {
       setErrors(errors)
@@ -110,20 +144,29 @@ function UpdateFoto() {
     try {
       await replaceFoto(id, fotoFile, foto.titulo)
       setShowAlert(true)
+      setErrors({})
+      setShowFileSizeAlert(false)
     } catch (error) {
       console.error("Erro ao editar foto:", error)
 
       if (error.response?.status === 400) {
         setErrors((prev) => ({
           ...prev,
-          fotoFile: "O arquivo é muito grande. Envie uma imagem menor."
+          fotoFile: "Arquivo muito grande! Tamanho máximo permitido: 5MB."
         }))
-        setShowErrorAlert(true)
+        setShowFileSizeAlert(true)
+        setShowErrorAlert(false)
         return
       }
 
       setShowErrorAlert(true)
+      setShowFileSizeAlert(false)
     }
+  }
+
+  const handleCloseFileSizeAlert = () => {
+    setShowFileSizeAlert(false)
+    setErrors((prev) => ({ ...prev, fotoFile: "" }))
   }
 
   return (
@@ -164,20 +207,28 @@ function UpdateFoto() {
           </div>
 
           <div className={`col ${styles.col}`}>
-            <label htmlFor="foto" className="form-label">Foto</label>
+            <label htmlFor="foto" className="form-label">Nova Foto (opcional)</label>
             <input
               type="file"
-              className="form-control"
+              className={`form-control ${styles.input} ${errors.fotoFile ? "is-invalid" : ""}`}
               accept="image/*"
               onChange={handleFileChange}
             />
 
-            {/* ⭐ DIV SEMPRE RENDERIZADA – evita hydration error */}
             <div
               className={`invalid-feedback ${styles.error_message}`}
-              style={{ display: errors.fotoFile ? "block" : "none" }}
+              style={{ 
+                display: errors.fotoFile ? "block" : "none",
+                marginTop: "5px"
+              }}
             >
               {errors.fotoFile || ""}
+            </div>
+            
+            <div className="form-text" style={{ marginTop: "5px" }}>
+              <small>
+                Tamanho máximo: <strong>5MB</strong>. Deixe em branco para manter a imagem atual.
+              </small>
             </div>
           </div>
         </div>
@@ -206,6 +257,18 @@ function UpdateFoto() {
         <ErrorAlert
           message="Erro ao editar informações da foto, tente novamente."
           show={showErrorAlert}
+          onClose={() => setShowErrorAlert(false)}
+        />
+      )}
+
+      {showFileSizeAlert && (
+        <ErrorAlert
+          message={
+            errors.fotoFile || 
+            "Arquivo muito grande! O tamanho máximo permitido é 5MB. Por favor, selecione uma imagem menor."
+          }
+          show={showFileSizeAlert}
+          onClose={handleCloseFileSizeAlert}
         />
       )}
     </div>
