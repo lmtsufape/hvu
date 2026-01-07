@@ -1,0 +1,2 @@
+ALTER TABLE consulta
+DROP COLUMN tipo;
