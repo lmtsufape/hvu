@@ -1,0 +1,9 @@
+ALTER TABLE animal
+ADD COLUMN obito BOOLEAN;
+
+UPDATE animal
+SET obito = FALSE
+WHERE obito IS NULL;
+
+ALTER TABLE animal
+ALTER COLUMN obito SET NOT NULL;

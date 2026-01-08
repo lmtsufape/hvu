@@ -1,0 +1,9 @@
+ALTER TABLE tutor
+ADD COLUMN anonimo BOOLEAN;
+
+UPDATE tutor
+SET anonimo = FALSE
+WHERE anonimo IS NULL;
+
+ALTER TABLE tutor
+ALTER COLUMN anonimo SET NOT NULL;

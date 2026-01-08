@@ -1,0 +1,2 @@
+ALTER TABLE foto
+ADD COLUMN tipo_arquivo VARCHAR(255);
