@@ -91,6 +91,7 @@ public class AnimalController {
 		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
 	}
 
+	// TODO
     @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
@@ -99,6 +100,7 @@ public class AnimalController {
 		return new AnimalResponse(facade.findAnimalById(id, principal.getSubject()));
 	}
 
+	// TODO
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR', 'PATOLOGISTA')")
 	@PatchMapping("animal/{id}")
 	public AnimalResponse updateAnimal(@PathVariable Long id, @Valid @RequestBody AnimalRequest obj) {
@@ -116,6 +118,7 @@ public class AnimalController {
 		return "";
 	}
 
+	// TODO tutor anonimo
 	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("animal/patologista")
 	public AnimalResponse createAnimalByPatologista(

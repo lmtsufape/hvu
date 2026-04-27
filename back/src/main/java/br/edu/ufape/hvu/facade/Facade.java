@@ -1501,14 +1501,6 @@ public class Facade {
             }
         }
 
-        if (keycloakService.hasRoleMedico(idSession)) {
-            Medico medico = findMedicoByUserId(idSession);
-
-            if (!existsVagaByMedicoIdAndAnimalId(medico.getId(), animalId)) {
-                throw new ForbiddenOperationException("Você não é o médico responsável por este animal");
-            }
-        }
-
         return animalServiceInterface.findAnimalById(animalId);
     }
 

@@ -51,6 +51,7 @@ public class VagaController {
         return new VagaResponse(facade.getVagaByAgendamento(idAgendamento, principal.getSubject()));
     }
 
+    // TODO
     @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
     @GetMapping("vaga/medico/{idMedico}/{data}")
     public List<VagaResponse> getVagasAndAgendamentoByMedico(@PathVariable long idMedico, @PathVariable LocalDate data) {
@@ -62,6 +63,7 @@ public class VagaController {
                 .toList();
     }
 
+    // TODO
     @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@GetMapping("vaga/{id}")
 	public VagaResponse getVagaById(@PathVariable Long id) {
@@ -70,6 +72,7 @@ public class VagaController {
         return new VagaResponse(facade.findVagaById(id, principal.getSubject()));
 	}
 
+    // TODO
     @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@GetMapping("vaga/data/{date}")
 	List<VagaResponse> getVagasByDay(@PathVariable LocalDate date) {
@@ -82,6 +85,7 @@ public class VagaController {
 				.toList();
 	}
 
+    // TODO
     @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@GetMapping("vaga/data/{dataInicio}/{dataFinal}")
 	List<VagaResponse> getVagaBetweenInicialDateAndFinal(@PathVariable LocalDate dataInicio, @PathVariable LocalDate dataFinal) {

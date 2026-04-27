@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 
-@Component @RequiredArgsConstructor
+@Component
+@RequiredArgsConstructor
 public class TutorSeeder {
     private final AnimalRepository animalRepository;
     private final TutorRepository tutorRepository;
     private final UsuarioSeeder usuarioSeeder;
 
-    public void init(){
+    public void init() {
         if(tutorRepository.count() > 0){
             return;
         }
@@ -29,7 +30,7 @@ public class TutorSeeder {
         tutorRepository.save(tutor);
     }
 
-    protected Tutor criarTutor(Faker faker, Endereco endereco, List<Animal> animais){
+    protected Tutor criarTutor(Faker faker, Endereco endereco, List<Animal> animais) {
         Tutor tutor = new Tutor();
         tutor.setNome("tutor");
         tutor.setEmail("tutor@tutor.com");
