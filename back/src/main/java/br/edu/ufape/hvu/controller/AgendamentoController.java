@@ -56,7 +56,6 @@ public class AgendamentoController {
 		return new AgendamentoResponse(facade.createAgendamentoEspecial(newObj, principal.getSubject()));
 	}
 
-	// TODO
     @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
 	@GetMapping("agendamento/{id}")
 	public AgendamentoResponse getAgendamentoById(@PathVariable Long id) {
@@ -66,8 +65,6 @@ public class AgendamentoController {
 		return new AgendamentoResponse(facade.findAgendamentoById(id, principal.getSubject()));
 	}
 
-
-	// TODO
     @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("agendamento/medico/{id}")
 	public List<AgendamentoResponse> getAgendamentosByMedicoId(@PathVariable Long id) {
@@ -106,7 +103,6 @@ public class AgendamentoController {
 		return facade.reagendarAgendamento(idAgendamento, idVaga, principal.getSubject());
 	}
 
-	// TODO
 	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@PatchMapping("agendamento/{id}")
 	public AgendamentoResponse updateAgendamento(@PathVariable Long id, @Valid @RequestBody AgendamentoRequest obj) {
