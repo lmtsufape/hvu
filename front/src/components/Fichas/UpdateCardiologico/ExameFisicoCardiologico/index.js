@@ -67,7 +67,9 @@ function AtendimentoCardiologico({
     { value: "aumentado", label: "Aumentado" },
     { value: "doloroso", label: "Doloroso" },
     { value: "aderido", label: "Aderido" },
-    { value: "naoAvaliado", label: "Não avaliado" }
+    { value: "naoAvaliado", label: "Não avaliado" },
+    { value: "reativos", label: "Reativos" },
+    { value: "semAlteracao", label: "Sem alteração" }
   ];
 
   const formatDate = (dateString) => {
