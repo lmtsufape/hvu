@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./index.module.css";
 import { useRouter } from "next/router";
-import SearchBar from "../SearchBar";
 import { getFichasByAnimalId } from "../../../services/fichaService";
 import { getVagaByAgendamento } from "../../../services/vagaService";
 
@@ -16,6 +15,9 @@ function HistoricoFichasAnimal({
   const animalId = animalIdProp || animalIdFromRoute;
   const [agendamentosComFichas, setAgendamentosComFichas] = useState(new Map());
   const [searchTerm, setSearchTerm] = useState("");
+  const [filtroTipoFicha, setFiltroTipoFicha] = useState("");
+  const [filtroDataInicio, setFiltroDataInicio] = useState("");
+  const [filtroDataFim, setFiltroDataFim] = useState("");
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
@@ -109,6 +111,17 @@ function HistoricoFichasAnimal({
     return `${day}/${month} às ${hours}:${minutes}`;
   };
 
+  // Extrair tipos de ficha disponíveis para o dropdown (deve ficar antes dos returns condicionais)
+  const tiposFichaDisponiveis = useMemo(() => {
+    const tipos = new Set();
+    Array.from(agendamentosComFichas.values()).forEach((agendamento) => {
+      (agendamento.fichas || []).forEach((ficha) => {
+        if (ficha.nome) tipos.add(ficha.nome);
+      });
+    });
+    return Array.from(tipos).sort();
+  }, [agendamentosComFichas]);
+
   if (loading) {
     return <div className={styles.message}>Carregando histórico do paciente...</div>;
   }
@@ -127,21 +140,58 @@ function HistoricoFichasAnimal({
   const filteredAgendamentos = Array.from(agendamentosComFichas.values())
     .filter((agendamento) => {
       const term = searchTerm.trim().toLowerCase();
-      if (!term) return true;
 
-      const medicoNome = (agendamento.medico?.nome || "").toLowerCase();
-      const dataConsulta = formatDate(agendamento.dataVaga).toLowerCase();
-      const tiposFicha = (agendamento.fichas || [])
-        .map((ficha) => (ficha.nome || "").toLowerCase())
-        .join(" ");
+      // Filtro por texto (médico ou tipo de ficha)
+      if (term) {
+        const medicoNome = (agendamento.medico?.nome || "").toLowerCase();
+        const tiposFicha = (agendamento.fichas || [])
+          .map((ficha) => (ficha.nome || "").toLowerCase())
+          .join(" ");
 
-      return (
-        medicoNome.includes(term) ||
-        dataConsulta.includes(term) ||
-        tiposFicha.includes(term) ||
-        "consulta".includes(term)
-      );
+        const matchTexto = medicoNome.includes(term) || tiposFicha.includes(term);
+        if (!matchTexto) return false;
+      }
+
+      // Filtro por tipo de ficha (dropdown)
+      if (filtroTipoFicha) {
+        const temTipo = (agendamento.fichas || []).some(
+          (ficha) => ficha.nome === filtroTipoFicha
+        );
+        if (!temTipo) return false;
+      }
+
+      // Filtro por período de data
+      if (filtroDataInicio || filtroDataFim) {
+        const dataAgendamento = agendamento.dataVaga
+          ? new Date(agendamento.dataVaga)
+          : null;
+
+        if (!dataAgendamento) return false;
+
+        if (filtroDataInicio) {
+          const inicio = new Date(filtroDataInicio);
+          inicio.setHours(0, 0, 0, 0);
+          if (dataAgendamento < inicio) return false;
+        }
+
+        if (filtroDataFim) {
+          const fim = new Date(filtroDataFim);
+          fim.setHours(23, 59, 59, 999);
+          if (dataAgendamento > fim) return false;
+        }
+      }
+
+      return true;
     });
+
+  const limparFiltros = () => {
+    setSearchTerm("");
+    setFiltroTipoFicha("");
+    setFiltroDataInicio("");
+    setFiltroDataFim("");
+  };
+
+  const temFiltrosAtivos = searchTerm || filtroTipoFicha || filtroDataInicio || filtroDataFim;
 
   return (
     <div className={`${styles.pageContainer} ${embedded ? styles.embeddedContainer : ""}`}>
@@ -151,17 +201,72 @@ function HistoricoFichasAnimal({
             <h1>Histórico de Fichas do Paciente</h1>
           </div>
         )}
-        <div className={styles.searchWrapper}>
-          <SearchBar
-            placeholder="Buscar por médico, tipo de ficha ou data da consulta"
-            onSearchChange={setSearchTerm}
-          />
+
+        <div className={styles.filtrosContainer}>
+          <div className={styles.filtroRow}>
+            <div className={styles.filtroGroup}>
+              <label className={styles.filtroLabel}>Buscar por médico ou ficha</label>
+              <input
+                type="text"
+                className={styles.filtroInput}
+                placeholder="Digite o nome do médico ou tipo de ficha"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.filtroGroup}>
+              <label className={styles.filtroLabel}>Tipo de ficha</label>
+              <select
+                className={styles.filtroSelect}
+                value={filtroTipoFicha}
+                onChange={(e) => setFiltroTipoFicha(e.target.value)}
+              >
+                <option value="">Todos os tipos</option>
+                {tiposFichaDisponiveis.map((tipo) => (
+                  <option key={tipo} value={tipo}>{tipo}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className={styles.filtroRow}>
+            <div className={styles.filtroGroup}>
+              <label className={styles.filtroLabel}>Data início</label>
+              <input
+                type="date"
+                className={styles.filtroInput}
+                value={filtroDataInicio}
+                onChange={(e) => setFiltroDataInicio(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.filtroGroup}>
+              <label className={styles.filtroLabel}>Data fim</label>
+              <input
+                type="date"
+                className={styles.filtroInput}
+                value={filtroDataFim}
+                onChange={(e) => setFiltroDataFim(e.target.value)}
+              />
+            </div>
+
+            {temFiltrosAtivos && (
+              <button
+                className={styles.limparFiltrosButton}
+                onClick={limparFiltros}
+                type="button"
+              >
+                Limpar filtros
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       {filteredAgendamentos.length === 0 ? (
         <div className={styles.message}>
-          {searchTerm.trim()
+          {temFiltrosAtivos
             ? "Nenhuma ficha encontrada com os filtros informados."
             : "Não há fichas registradas para este animal."}
         </div>
