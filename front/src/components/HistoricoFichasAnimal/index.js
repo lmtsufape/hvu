@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import { useRouter } from "next/router";
 import SearchBar from "../SearchBar";
 import { getFichasByAnimalId } from "../../../services/fichaService";
+import { getVagaByAgendamento } from "../../../services/vagaService";
 
 function HistoricoFichasAnimal({
   animalId: animalIdProp,
@@ -60,6 +61,22 @@ function HistoricoFichasAnimal({
           }
           return acc;
         }, new Map());
+
+        // Buscar o médico de cada agendamento via a Vaga associada
+        const agendamentoIds = Array.from(groupedByAgendamento.keys());
+        await Promise.all(
+          agendamentoIds.map(async (agendamentoId) => {
+            try {
+              const vaga = await getVagaByAgendamento(agendamentoId);
+              if (vaga?.medico) {
+                const agendamento = groupedByAgendamento.get(agendamentoId);
+                agendamento.medico = vaga.medico;
+              }
+            } catch (err) {
+              console.warn(`Não foi possível buscar a vaga do agendamento ${agendamentoId}:`, err);
+            }
+          })
+        );
 
         setAgendamentosComFichas(groupedByAgendamento);
       } catch (error) {
