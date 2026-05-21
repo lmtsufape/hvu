@@ -191,6 +191,9 @@ function HistoricoFichasAnimal({
                       <span className={styles.ficha_medico}>
                         Médico: {vaga.medico?.nome || "Não informado"}
                       </span>
+                      <span className={styles.ficha_data}>
+                        Criada em: {ficha.dataHora ? formatDate(ficha.dataHora) : "Data não informada"}
+                      </span>
                     </div>
 
                     <button

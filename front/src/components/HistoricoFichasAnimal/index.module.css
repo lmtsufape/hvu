@@ -191,6 +191,12 @@
     font-weight: 500;
 }
 
+.ficha_data {
+    font-size: 13px;
+    color: #888888;
+    font-weight: 400;
+}
+
 .medicoPrincipal {
     margin: 0;
     font-size: 15px;
