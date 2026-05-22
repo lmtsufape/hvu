@@ -10,6 +10,59 @@ import moment from 'moment';
 import { createFicha } from '../../../../services/fichaService';
 import { getCurrentUsuario } from '../../../../services/userService';
 
+const NUMERIC_SEGMENTAR_FIELDS = [
+  "perineal",
+  "reflexoCutaneo",
+  "reflexoToracicoLateral",
+  "tonoDaCalda",
+  "miccao",
+];
+
+const getFirstLegacyValue = (value) => {
+  if (!value || typeof value !== "object") return "";
+  const keys = ["MTD", "MTE", "MPD", "MPE"];
+  for (const key of keys) {
+    const item = value[key];
+    if (item !== undefined && item !== null && String(item).trim() !== "") {
+      return String(item).trim();
+    }
+  }
+  return "";
+};
+
+const normalizeNumericSegmentarValue = (value) => {
+  if (value === undefined || value === null) return "";
+  const digits = String(value).replace(/\D/g, "");
+  if (!digits) return "";
+  const bounded = Math.min(4, Math.max(0, Number(digits[0])));
+  return String(bounded);
+};
+
+const normalizeNeurologicaFormData = (data) => {
+  if (!data || typeof data !== "object") return data;
+  const normalized = JSON.parse(JSON.stringify(data));
+  const reflexosSegmentares = normalized.reflexosSegmentares || {};
+
+  normalized.reflexosSegmentares = {
+    ...reflexosSegmentares,
+    patelar: {
+      MPD: reflexosSegmentares?.patelar?.MPD ?? "",
+      MPE: reflexosSegmentares?.patelar?.MPE ?? "",
+    },
+  };
+
+  for (const field of NUMERIC_SEGMENTAR_FIELDS) {
+    const currentValue = reflexosSegmentares[field];
+    const sourceValue =
+      currentValue && typeof currentValue === "object"
+        ? getFirstLegacyValue(currentValue)
+        : currentValue;
+    normalized.reflexosSegmentares[field] = normalizeNumericSegmentarValue(sourceValue);
+  }
+
+  return normalized;
+};
+
 function NeurologicaSteps() {
   const [step, setStep] = useState(1);
   const [userId, setUserId] = useState(null);
@@ -139,8 +192,6 @@ function NeurologicaSteps() {
             MPE:""
         },
         patelar:{
-            MTD:"",
-            MTE:"",
             MPD:"",
             MPE:""
         },
@@ -182,7 +233,7 @@ function NeurologicaSteps() {
         if (typeof window !== 'undefined') {
             const savedFormData = localStorage.getItem("fichaNeurologicaFormData");
             if (savedFormData) {
-                setFormData(JSON.parse(savedFormData));
+                setFormData(normalizeNeurologicaFormData(JSON.parse(savedFormData)));
             }
         }
     }, []); 
@@ -324,27 +375,30 @@ function NeurologicaSteps() {
   
 
   const handleSubmit = async (nomeDoMedicoResponsavel) => {
-    const finalFormData = { ...formData, medicosResponsaveis: nomeDoMedicoResponsavel };
+    const finalFormData = normalizeNeurologicaFormData({
+      ...formData,
+      medicosResponsaveis: nomeDoMedicoResponsavel,
+    });
     setShowErrorAlert(false);
     const dataFormatada = moment().format("YYYY-MM-DDTHH:mm:ss"); 
     const fichaData = {
         nome: "Ficha clínica neurológica",  
         conteudo:{
-            nivelConsciencia: formData.nivelConsciencia,
-            resultadoExame: formData.resultadoExame,
-            postura: formData.postura,
-            descricaoLocomocao: formData.descricaoLocomocao,
-            tipoAtaxia: formData.tipoAtaxia,
-            andarCompulsivo: formData.andarCompulsivo,
+            nivelConsciencia: finalFormData.nivelConsciencia,
+            resultadoExame: finalFormData.resultadoExame,
+            postura: finalFormData.postura,
+            descricaoLocomocao: finalFormData.descricaoLocomocao,
+            tipoAtaxia: finalFormData.tipoAtaxia,
+            andarCompulsivo: finalFormData.andarCompulsivo,
 
-            nervosCranianos: formData.nervosCranianos,
-            reacoesPosturais: formData.reacoesPosturais,
-            reflexosSegmentares: formData.reflexosSegmentares,
-            avaliacaoSensitiva: formData.avaliacaoSensitiva,
+            nervosCranianos: finalFormData.nervosCranianos,
+            reacoesPosturais: finalFormData.reacoesPosturais,
+            reflexosSegmentares: finalFormData.reflexosSegmentares,
+            avaliacaoSensitiva: finalFormData.avaliacaoSensitiva,
 
-            diagnosticoAnatomico:formData.diagnosticoAnatomico,
-            plantonistasDiscentes: formData.plantonistasDiscentes,
-            medicosResponsaveis: formData.medicosResponsaveis
+            diagnosticoAnatomico:finalFormData.diagnosticoAnatomico,
+            plantonistasDiscentes: finalFormData.plantonistasDiscentes,
+            medicosResponsaveis: finalFormData.medicosResponsaveis
         },
         dataHora: dataFormatada,
         agendamento: {
