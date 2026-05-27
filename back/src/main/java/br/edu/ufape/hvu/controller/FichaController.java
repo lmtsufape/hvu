@@ -36,7 +36,7 @@ public class FichaController {
         return new FichaResponse(facade.findFichaById(id));
     }
 
-    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
+    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA', 'TUTOR')")
     @GetMapping("/ficha/animal/{animalId}")
     public List<FichaResponse> findFichasByAnimalId(@PathVariable Long animalId) {
         return facade.findFichasByAnimalId(animalId)

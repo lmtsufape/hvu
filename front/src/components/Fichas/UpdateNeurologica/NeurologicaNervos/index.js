@@ -10,6 +10,27 @@ import { getAnimalById } from '../../../../../services/animalService';
 import { createFicha } from '../../../../../services/fichaService';
 import { useRouter } from 'next/router';
 
+const NUMERIC_REFLEX_FIELDS = new Set([
+    "perineal",
+    "reflexoCutaneo",
+    "reflexoToracicoLateral",
+    "tonoDaCalda",
+    "miccao",
+]);
+
+const hasSectionValue = (section) => {
+    if (section === null || section === undefined) return false;
+    if (typeof section !== "object") return String(section).trim() !== "";
+    return Object.values(section).some((value) => String(value ?? "").trim() !== "");
+};
+
+const sanitizeNumericReflexValue = (value) => {
+    const digitsOnly = String(value ?? "").replace(/\D/g, "");
+    if (!digitsOnly) return "";
+    const bounded = Math.min(4, Math.max(0, Number(digitsOnly[0])));
+    return String(bounded);
+};
+
 function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
     const [fields, setFields] = useState({
         ameaca: false,
@@ -53,7 +74,7 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
             } else if (formData.reflexosSegmentares && formData.reflexosSegmentares[key]) {
                 secaoNoFormData = formData.reflexosSegmentares[key];
             }
-            if (secaoNoFormData && (secaoNoFormData.Esq || secaoNoFormData.Dir || secaoNoFormData.MTD)) {
+            if (hasSectionValue(secaoNoFormData)) {
                 novosFields[key] = true;
             } else {
                 novosFields[key] = fields[key];
@@ -129,6 +150,24 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
 
     const handleFieldToggle = (field) => {
         setFields((prev) => ({ ...prev, [field]: !prev[field] }));
+    };
+
+    const handleNumericReflexChange = (event) => {
+        const { name, value } = event.target;
+        const reflexField = name.split(".")[1];
+        if (!NUMERIC_REFLEX_FIELDS.has(reflexField)) {
+            handleChange(event);
+            return;
+        }
+
+        const sanitizedValue = sanitizeNumericReflexValue(value);
+        handleChange({ target: { name, value: sanitizedValue } });
+    };
+
+    const preventInvalidNumberInput = (event) => {
+        if (["e", "E", "+", "-", ".", ","].includes(event.key)) {
+            event.preventDefault();
+        }
     };
 
     return (
@@ -729,12 +768,6 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             </label>
                             {fields.patelar && (
                                 <div className={styles.posturalInputGroup}>
-                                <label>MTD:
-                                    <input type="text" name="reflexosSegmentares.patelar.MTD" value={formData.reflexosSegmentares.patelar.MTD} disabled={isReadOnly} onChange={handleChange} />
-                                </label>
-                                <label>MTE:
-                                    <input type="text" name="reflexosSegmentares.patelar.MTE" value={formData.reflexosSegmentares.patelar.MTE} disabled={isReadOnly} onChange={handleChange} />
-                                </label>
                                 <label>MPD:
                                     <input type="text" name="reflexosSegmentares.patelar.MPD" value={formData.reflexosSegmentares.patelar.MPD} disabled={isReadOnly} onChange={handleChange} />
                                 </label>
@@ -783,17 +816,19 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             </label>
                             {fields.perineal && (
                                 <div className={styles.posturalInputGroup}>
-                                    <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.perineal.MTD" value={formData.reflexosSegmentares.perineal.MTD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.perineal.MTE" value={formData.reflexosSegmentares.perineal.MTE} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.perineal.MPD" value={formData.reflexosSegmentares.perineal.MPD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.perineal.MPE" value={formData.reflexosSegmentares.perineal.MPE} disabled={isReadOnly} onChange={handleChange} />
+                                    <label>Valor:
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="4"
+                                            step="1"
+                                            inputMode="numeric"
+                                            name="reflexosSegmentares.perineal"
+                                            value={formData.reflexosSegmentares.perineal}
+                                            disabled={isReadOnly}
+                                            onKeyDown={preventInvalidNumberInput}
+                                            onChange={handleNumericReflexChange}
+                                        />
                                     </label>
                                 </div>
                             )}
@@ -810,17 +845,19 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             </label>
                             {fields.reflexoCutaneo && (
                                 <div className={styles.posturalInputGroup}>
-                                    <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MTD" value={formData.reflexosSegmentares.reflexoCutaneo.MTD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MTE" value={formData.reflexosSegmentares.reflexoCutaneo.MTE} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MPD" value={formData.reflexosSegmentares.reflexoCutaneo.MPD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.reflexoCutaneo.MPE" value={formData.reflexosSegmentares.reflexoCutaneo.MPE} disabled={isReadOnly} onChange={handleChange} />
+                                    <label>Valor:
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="4"
+                                            step="1"
+                                            inputMode="numeric"
+                                            name="reflexosSegmentares.reflexoCutaneo"
+                                            value={formData.reflexosSegmentares.reflexoCutaneo}
+                                            disabled={isReadOnly}
+                                            onKeyDown={preventInvalidNumberInput}
+                                            onChange={handleNumericReflexChange}
+                                        />
                                     </label>
                                 </div>
                             )}
@@ -837,17 +874,19 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             </label>
                             {fields.reflexoToracicoLateral && (
                                 <div className={styles.posturalInputGroup}>
-                                    <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MTD" value={formData.reflexosSegmentares.reflexoToracicoLateral.MTD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MTE" value={formData.reflexosSegmentares.reflexoToracicoLateral.MTE} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MPD" value={formData.reflexosSegmentares.reflexoToracicoLateral.MPD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.reflexoToracicoLateral.MPE" value={formData.reflexosSegmentares.reflexoToracicoLateral.MPE} disabled={isReadOnly} onChange={handleChange} />
+                                    <label>Valor:
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="4"
+                                            step="1"
+                                            inputMode="numeric"
+                                            name="reflexosSegmentares.reflexoToracicoLateral"
+                                            value={formData.reflexosSegmentares.reflexoToracicoLateral}
+                                            disabled={isReadOnly}
+                                            onKeyDown={preventInvalidNumberInput}
+                                            onChange={handleNumericReflexChange}
+                                        />
                                     </label>
                                 </div>
                             )}
@@ -864,17 +903,19 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             </label>
                             {fields.tonoDaCalda && (
                                 <div className={styles.posturalInputGroup}>
-                                    <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MTD" value={formData.reflexosSegmentares.tonoDaCalda.MTD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MTE" value={formData.reflexosSegmentares.tonoDaCalda.MTE} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MPD" value={formData.reflexosSegmentares.tonoDaCalda.MPD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.tonoDaCalda.MPE" value={formData.reflexosSegmentares.tonoDaCalda.MPE} disabled={isReadOnly} onChange={handleChange} />
+                                    <label>Valor:
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="4"
+                                            step="1"
+                                            inputMode="numeric"
+                                            name="reflexosSegmentares.tonoDaCalda"
+                                            value={formData.reflexosSegmentares.tonoDaCalda}
+                                            disabled={isReadOnly}
+                                            onKeyDown={preventInvalidNumberInput}
+                                            onChange={handleNumericReflexChange}
+                                        />
                                     </label>
                                 </div>
                             )}
@@ -891,17 +932,19 @@ function FichaNeurologica({ formData, handleChange, nextStep, prevStep }) {
                             </label>
                             {fields.miccao && (
                                 <div className={styles.posturalInputGroup}>
-                                    <label>MTD:
-                                        <input type="text" name="reflexosSegmentares.miccao.MTD" value={formData.reflexosSegmentares.miccao.MTD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MTE:
-                                        <input type="text" name="reflexosSegmentares.miccao.MTE" value={formData.reflexosSegmentares.miccao.MTE} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPD:
-                                        <input type="text" name="reflexosSegmentares.miccao.MPD" value={formData.reflexosSegmentares.miccao.MPD} disabled={isReadOnly} onChange={handleChange} />
-                                    </label>
-                                    <label>MPE:
-                                        <input type="text" name="reflexosSegmentares.miccao.MPE" value={formData.reflexosSegmentares.miccao.MPE} disabled={isReadOnly} onChange={handleChange} />
+                                    <label>Valor:
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="4"
+                                            step="1"
+                                            inputMode="numeric"
+                                            name="reflexosSegmentares.miccao"
+                                            value={formData.reflexosSegmentares.miccao}
+                                            disabled={isReadOnly}
+                                            onKeyDown={preventInvalidNumberInput}
+                                            onChange={handleNumericReflexChange}
+                                        />
                                     </label>
                                 </div>
                             )}
