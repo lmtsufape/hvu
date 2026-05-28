@@ -13,6 +13,7 @@ function CreateEspecie() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [errors, setErrors] = useState({});
 
@@ -53,7 +54,6 @@ function CreateEspecie() {
         const { name, value } = event.target;
         setEspecie({ ...especie, [name]: value });
     };
-    console.log(especie);
 
     const validateForm = () => {
         const errors = {};
@@ -70,11 +70,21 @@ function CreateEspecie() {
           setErrors(errors);
           return;
         }
+        setShowErrorAlert(false);
         try {
             await createEspecie(especie);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar espécie:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -108,7 +118,7 @@ function CreateEspecie() {
                 </div>
             </form>
             {<Alert message="Espécie criada com sucesso!" show={showAlert} url={`/gerenciarEspecies`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao criar especie, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao criar especie, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

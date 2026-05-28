@@ -8,6 +8,7 @@ import br.edu.ufape.hvu.exception.types.NotFoundException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
 import br.edu.ufape.hvu.exception.types.auth.KeycloakAuthenticationException;
 import br.edu.ufape.hvu.exception.types.global.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -34,7 +36,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 "Falha de autenticação",
                 ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
+        stackToStringList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -47,7 +49,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 "Recurso não encontrado",
                 ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
+                stackToStringList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -57,10 +59,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) {
         logger.warn("Recurso não encontrado : {}", ex.getMessage());
 
-        ErrorResponse error = new ErrorResponse(
+    ErrorResponse error = new ErrorResponse(
                 "Recurso não encontrado",
                 ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
+        stackToStringList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -71,10 +73,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
         logger.warn("Acesso negado: {}", ex.getMessage());
 
-        ErrorResponse errorResponse = new ErrorResponse(
+    ErrorResponse errorResponse = new ErrorResponse(
                 "Acesso negado",
                 ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
+        stackToStringList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -85,10 +87,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenOperationException ex) {
         logger.warn("Operação proibida: {}", ex.getMessage());
 
-        ErrorResponse errorResponse = new ErrorResponse(
+    ErrorResponse errorResponse = new ErrorResponse(
                 "Acesso negado",
                 ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
+        stackToStringList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
@@ -98,10 +100,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
         logger.warn("Argumento inválido: {}", ex.getMessage());
-        ErrorResponse error = new ErrorResponse(
+    ErrorResponse error = new ErrorResponse(
                 "Argumento inválido",
                 ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
+        stackToStringList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -119,12 +121,12 @@ public class GlobalExceptionHandler {
 
         logger.warn("Erro de validação: {}", errorMessage);
 
-        ErrorResponse error = new ErrorResponse(
-                "Erro de validação",
-                errorMessage,
-                Arrays.asList(ex.getStackTrace()),
-                LocalDateTime.now()
-        );
+    ErrorResponse error = new ErrorResponse(
+        "Erro de validação",
+        errorMessage,
+        stackToStringList(ex.getStackTrace()),
+        LocalDateTime.now()
+    );
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -133,12 +135,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleDuplicateAccount(DuplicateAccountException ex) {
         logger.warn("Recurso duplicado: {}", ex.getMessage());
 
-        ErrorResponse error = new ErrorResponse(
-                "Conflito de dados",
-                ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
-                LocalDateTime.now()
-        );
+    ErrorResponse error = new ErrorResponse(
+        "Conflito de dados",
+        ex.getMessage(),
+        stackToStringList(ex.getStackTrace()),
+        LocalDateTime.now()
+    );
 
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
@@ -147,12 +149,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         logger.error("Violação de integridade de dados: {}", Objects.requireNonNull(ex.getRootCause()).getMessage());
 
-        ErrorResponse error = new ErrorResponse(
-                "Erro de integridade de dados",
-                ex.getRootCause().getMessage(), // Detalhe técnico
-                Arrays.asList(ex.getStackTrace()),
-                LocalDateTime.now()
-        );
+    ErrorResponse error = new ErrorResponse(
+        "Erro de integridade de dados",
+        ex.getRootCause().getMessage(), // Detalhe técnico
+        stackToStringList(ex.getStackTrace()),
+        LocalDateTime.now()
+    );
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST); // ou UNPROCESSABLE_ENTITY (422)
     }
@@ -161,12 +163,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInvalidJson(InvalidJsonException ex) {
         logger.warn("JSON inválido: {}", ex.getMessage());
 
-        ErrorResponse error = new ErrorResponse(
-                "Erro de formatação",
-                ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
-                LocalDateTime.now()
-        );
+    ErrorResponse error = new ErrorResponse(
+        "Erro de formatação",
+        ex.getMessage(),
+        stackToStringList(ex.getStackTrace()),
+        LocalDateTime.now()
+    );
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -175,12 +177,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex) {
         logger.warn("Operação inválida: {}", ex.getMessage());
 
-        ErrorResponse error = new ErrorResponse(
-                "Operação inválida",
-                ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
-                LocalDateTime.now()
-        );
+    ErrorResponse error = new ErrorResponse(
+        "Operação inválida",
+        ex.getMessage(),
+        stackToStringList(ex.getStackTrace()),
+        LocalDateTime.now()
+    );
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -189,14 +191,49 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
         logger.warn("Regra de negócio violada: {}", ex.getMessage());
 
+    ErrorResponse error = new ErrorResponse(
+        "Regra de negócio violada",
+        ex.getMessage(),
+        stackToStringList(ex.getStackTrace()),
+        LocalDateTime.now()
+    );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
+        String errorMessage = ex.getConstraintViolations().stream()
+                .map(v -> v.getMessage())
+                .findFirst()
+                .orElse("Dados inválidos");
+
+        logger.warn("Erro de validação (ConstraintViolation): {}", errorMessage);
+
         ErrorResponse error = new ErrorResponse(
-                "Regra de negócio violada",
-                ex.getMessage(),
-                Arrays.asList(ex.getStackTrace()),
+                "Erro de validação",
+                errorMessage,
+                stackToStringList(ex.getStackTrace()),
                 LocalDateTime.now()
         );
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAll(Exception ex) {
+        logger.error("Unhandled exception: {}", ex.getMessage(), ex);
+        ErrorResponse error = new ErrorResponse(
+                "Internal Server Error",
+                ex.getMessage(),
+                stackToStringList(ex.getStackTrace()),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private List<String> stackToStringList(StackTraceElement[] stack) {
+        return Arrays.stream(stack).map(StackTraceElement::toString).toList();
     }
 
 }

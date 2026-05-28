@@ -1,11 +1,12 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
 import java.time.LocalDateTime;
+import br.edu.ufape.hvu.model.Animal;
+import br.edu.ufape.hvu.model.Medico;
+import br.edu.ufape.hvu.model.Tutor;
 import br.edu.ufape.hvu.model.enums.Acondicionamento;
 import br.edu.ufape.hvu.model.enums.TipoMaterial;
 import br.edu.ufape.hvu.model.enums.TipoServico;
-import org.modelmapper.ModelMapper;
-import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.FichaSolicitacaoServico;
 import br.edu.ufape.hvu.model.enums.EstadoConservacao;
 import lombok.Getter;
@@ -30,7 +31,32 @@ public class FichaSolicitacaoServicoRequest  {
 	private MedicoRequest medico;
 
 	public FichaSolicitacaoServico convertToEntity() {
-		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-        return modelMapper.map(this, FichaSolicitacaoServico.class);
+		FichaSolicitacaoServico ficha = new FichaSolicitacaoServico();
+
+		ficha.setFichaClinica(this.fichaClinica);
+		ficha.setTipoServico(this.tipoServico);
+		ficha.setDataHoraObito(this.dataHoraObito);
+		ficha.setDataRecebimento(this.dataRecebimento);
+		ficha.setEstadoConservacao(this.estadoConservacao);
+		ficha.setAcondicionamento(this.acondicionamento);
+		ficha.setMaterial(this.material);
+		ficha.setEutanasia(this.eutanasia);
+		ficha.setHistorico(this.historico);
+		ficha.setCaracteristicasAdicionais(this.caracteristicasAdicionais);
+
+		if (this.animal != null) {
+			ficha.setAnimal(new Animal());
+			ficha.getAnimal().setId(this.animal.getId());
+		}
+		if (this.tutor != null) {
+			ficha.setTutor(new Tutor());
+			ficha.getTutor().setId(this.tutor.getId());
+		}
+		if (this.medico != null) {
+			ficha.setMedico(new Medico());
+			ficha.getMedico().setId(this.medico.getId());
+		}
+
+		return ficha;
 	}
 }

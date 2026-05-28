@@ -16,6 +16,7 @@ function UpdateConsulta() {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
   const [errors, setErrors] = useState({});
   const [consulta, setConsulta] = useState({});
@@ -38,6 +39,7 @@ function UpdateConsulta() {
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
+        setShowErrorAlert(false);
         try {
           const consultaData = await getConsultaById(id);
           setConsulta(consultaData);
@@ -55,6 +57,7 @@ function UpdateConsulta() {
   useEffect(() => {
     if (medicoEncaminhamentoId) {
       const fetchData = async () => {
+        setShowErrorAlert(false);
         try {
           const medico = await getMedicoById(medicoEncaminhamentoId);
           setConsulta((prevConsulta) => ({
@@ -108,18 +111,26 @@ function UpdateConsulta() {
     setConsulta({ ...consulta, proximaConsulta: value === "true" });
   };
 
-  console.log("consulta:", consulta);
 
   const handleSubmit = async () => {
-    try {
+    setShowErrorAlert(false);
+        try {
       await updateConsulta(id, consulta);
 
-      console.log("consultaToUpdate:", consulta);
       
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao editar consulta:", error);
-      setShowErrorAlert(true);
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
   };
 
@@ -296,7 +307,7 @@ function UpdateConsulta() {
           </div>
         </form>
         {showAlert && <Alert message="Consulta editada com sucesso!" show={showAlert} url={`/getConsultaById/${id}`} />}
-        {showErrorAlert && <ErrorAlert message="Erro ao editar consulta, tente novamente." show={showErrorAlert} />}
+        {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao editar consulta, tente novamente."} show={showErrorAlert} />}
       </div>
     </>
   );

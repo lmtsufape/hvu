@@ -72,13 +72,11 @@ function GetLaudoNecropsiaById() {
         console.error(err)
       }
     }
-    console.log(laudo)
     fetchLaudo()
   }, [id, router])
 
   if (!token || !roles.includes("patologista")) return null
 
-  console.log(laudo)
 
   return (
     <div className={styles.container}>

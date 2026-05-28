@@ -16,6 +16,59 @@ import { getAnimalById } from "../../../../services/animalService";
 import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getMedicoById } from "../../../../services/medicoService";
 
+const NUMERIC_SEGMENTAR_FIELDS = [
+  "perineal",
+  "reflexoCutaneo",
+  "reflexoToracicoLateral",
+  "tonoDaCalda",
+  "miccao",
+];
+
+const getFirstLegacyValue = (value) => {
+  if (!value || typeof value !== "object") return "";
+  const keys = ["MTD", "MTE", "MPD", "MPE"];
+  for (const key of keys) {
+    const item = value[key];
+    if (item !== undefined && item !== null && String(item).trim() !== "") {
+      return String(item).trim();
+    }
+  }
+  return "";
+};
+
+const normalizeNumericSegmentarValue = (value) => {
+  if (value === undefined || value === null) return "";
+  const digits = String(value).replace(/\D/g, "");
+  if (!digits) return "";
+  const bounded = Math.min(4, Math.max(0, Number(digits[0])));
+  return String(bounded);
+};
+
+const normalizeNeurologicaFormData = (data) => {
+  if (!data || typeof data !== "object") return data;
+  const normalized = JSON.parse(JSON.stringify(data));
+  const reflexosSegmentares = normalized.reflexosSegmentares || {};
+
+  normalized.reflexosSegmentares = {
+    ...reflexosSegmentares,
+    patelar: {
+      MPD: reflexosSegmentares?.patelar?.MPD ?? "",
+      MPE: reflexosSegmentares?.patelar?.MPE ?? "",
+    },
+  };
+
+  for (const field of NUMERIC_SEGMENTAR_FIELDS) {
+    const currentValue = reflexosSegmentares[field];
+    const sourceValue =
+      currentValue && typeof currentValue === "object"
+        ? getFirstLegacyValue(currentValue)
+        : currentValue;
+    normalized.reflexosSegmentares[field] = normalizeNumericSegmentarValue(sourceValue);
+  }
+
+  return normalized;
+};
+
 
 function NeurologicaSteps() {
 
@@ -58,6 +111,7 @@ function NeurologicaSteps() {
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
@@ -66,7 +120,6 @@ function NeurologicaSteps() {
   const [data, setData] = useState([]);
   const [agendamentoId, setAgendamentoId] = useState(null);
 
-  console.log("userId:", userId);
   const [formData, setFormData] = useState({
 
     // página 1
@@ -180,8 +233,6 @@ function NeurologicaSteps() {
             MPE:""
         },
         patelar:{
-            MTD:"",
-            MTE:"",
             MPD:"",
             MPE:""
         },
@@ -191,36 +242,11 @@ function NeurologicaSteps() {
             MPD:"",
             MPE:""
         },
-        perineal:{
-            MTD:"",
-            MTE:"",
-            MPD:"",
-            MPE:""
-        },
-        reflexoCutaneo:{
-            MTD:"",
-            MTE:"",
-            MPD:"",
-            MPE:""
-        },
-        reflexoToracicoLateral:{
-            MTD:"",
-            MTE:"",
-            MPD:"",
-            MPE:""
-        },
-        tonoDaCalda:{
-            MTD:"",
-            MTE:"",
-            MPD:"",
-            MPE:""
-        },
-        miccao:{
-            MTD:"",
-            MTE:"",
-            MPD:"",
-            MPE:""
-        },
+        perineal:"",
+        reflexoCutaneo:"",
+        reflexoToracicoLateral:"",
+        tonoDaCalda:"",
+        miccao:"",
     },
     avaliacaoSensitiva:{
         palpacaoEpaxial:"",
@@ -267,7 +293,7 @@ function NeurologicaSteps() {
     const fetchData = async () => {
         try {
             const formData = await getFichaById(fichaId);
-            setFormData(JSON.parse(formData.conteudo));
+            setFormData(normalizeNeurologicaFormData(JSON.parse(formData.conteudo)));
             setData(formData.dataHora);
         } catch (error) {
             console.error('Erro ao buscar dados da ficha:', error);
@@ -379,25 +405,26 @@ function NeurologicaSteps() {
   
 
   const handleSubmit = async (event) => {
+    const normalizedFormData = normalizeNeurologicaFormData(formData);
     setShowErrorAlert(false);
     const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss"); 
     const fichaData = {
         nome: "Ficha clínica neurológica",  
         conteudo:{
-            nivelConsciencia: formData.nivelConsciencia,
-            resultadoExame: formData.resultadoExame,
-            postura: formData.postura,
-            descricaoLocomocao: formData.descricaoLocomocao,
-            tipoAtaxia: formData.tipoAtaxia,
-            andarCompulsivo: formData.andarCompulsivo,
+            nivelConsciencia: normalizedFormData.nivelConsciencia,
+            resultadoExame: normalizedFormData.resultadoExame,
+            postura: normalizedFormData.postura,
+            descricaoLocomocao: normalizedFormData.descricaoLocomocao,
+            tipoAtaxia: normalizedFormData.tipoAtaxia,
+            andarCompulsivo: normalizedFormData.andarCompulsivo,
 
-            nervosCranianos: formData.nervosCranianos,
-            reacoesPosturais: formData.reacoesPosturais,
-            reflexosSegmentares: formData.reflexosSegmentares,
-            avaliacaoSensitiva: formData.avaliacaoSensitiva,
+            nervosCranianos: normalizedFormData.nervosCranianos,
+            reacoesPosturais: normalizedFormData.reacoesPosturais,
+            reflexosSegmentares: normalizedFormData.reflexosSegmentares,
+            avaliacaoSensitiva: normalizedFormData.avaliacaoSensitiva,
 
-            diagnosticoAnatomico:formData.diagnosticoAnatomico,
-            plantonistasDiscentes: formData.plantonistasDiscentes,
+            diagnosticoAnatomico:normalizedFormData.diagnosticoAnatomico,
+            plantonistasDiscentes: normalizedFormData.plantonistasDiscentes,
         },
         dataHora: dataFormatada,
         agendamento: { id: Number(agendamentoId) }

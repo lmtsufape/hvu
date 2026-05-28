@@ -25,6 +25,7 @@ function AgendamentoEspecial() {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [agendamento, setAgendamento] = useState({
     animal: { id: null },
@@ -51,10 +52,10 @@ function AgendamentoEspecial() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-        const storedToken = localStorage.getItem('token');
-        const storedRoles = JSON.parse(localStorage.getItem('roles'));
-        setToken(storedToken || "");
-        setRoles(storedRoles || []);
+      const storedToken = localStorage.getItem('token');
+      const storedRoles = JSON.parse(localStorage.getItem('roles'));
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
     }
   }, []);
 
@@ -62,6 +63,7 @@ function AgendamentoEspecial() {
     const fetchTutores = async () => {
       const tutoresTemp = {};
       for (const animal of animais) {
+        setShowErrorAlert(false);
         try {
           const tutor = await getTutorByAnimal(animal.id, token);
           tutoresTemp[animal.id] = { nome: tutor.nome, cpf: tutor.cpf };
@@ -95,21 +97,20 @@ function AgendamentoEspecial() {
   }
 
   const handleAnimalSelection = (event) => {
-    const selectAnimalId = event.target.value; 
-    setSelectedAnimal(selectAnimalId); 
+    const selectAnimalId = event.target.value;
+    setSelectedAnimal(selectAnimalId);
   };
 
   const handleTiposConsultaSelection = (event) => {
     const selectedTipo = JSON.parse(event.target.value);
     setSelectedTiposConsulta(selectedTipo);
-    console.log("selectedTipo:", selectedTipo);
   };
-  
+
   const handleEspecialidadeSelection = (event) => {
     const selectedId = event.target.value;
     setSelectedEspecialidade(selectedId);
   };
-  
+
   const handleMedicoSelection = (event) => {
     const selectedId = event.target.value;
     setSelectedMedico(selectedId);
@@ -148,14 +149,23 @@ function AgendamentoEspecial() {
       medico: { id: selectedMedico }
     };
 
-    console.log("agendamentoToCreate:", agendamentoToCreate);
 
-    try {
+    setShowErrorAlert(false);
+        try {
       await createAgendamentoEspecial(agendamentoToCreate);
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar agendamento especial:", error);
-      setShowErrorAlert(true);
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
   };
 
@@ -183,9 +193,9 @@ function AgendamentoEspecial() {
   };
 
   const maskCPF = (cpf) => {
-    if(!cpf) return "";
+    if (!cpf) return "";
 
-    return `***.${cpf.slice(4,11)}-**`;
+    return `***.${cpf.slice(4, 11)}-**`;
   };
 
   const animalOptions = animais.map((animal) => ({
@@ -219,9 +229,10 @@ function AgendamentoEspecial() {
                   locale={ptBR}
                   selected={escolherData}
                   onChange={handleDateChange}
+                  minDate={new Date()}
                 />
               </div>
-              {errors.escolherData && (<div className={`invalid-feedback ${styles.error_message}`}> {errors.escolherData}</div> )}
+              {errors.escolherData && (<div className={`invalid-feedback ${styles.error_message}`}> {errors.escolherData}</div>)}
             </div>
 
             <div className={`col ${styles.col}`}>
@@ -389,7 +400,7 @@ function AgendamentoEspecial() {
           </div>
         </form>
         {<Alert message="Agendamento criado com sucesso!" show={showAlert} url='/agendamentosDia' />}
-        {showErrorAlert && <ErrorAlert message="Erro ao realizar agendamento, tente novamente." show={showErrorAlert} />}
+        {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao realizar agendamento, tente novamente."} show={showErrorAlert} />}
       </div>
     </>
   );

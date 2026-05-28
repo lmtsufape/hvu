@@ -13,6 +13,7 @@ function CreateTipoConsulta() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [errors, setErrors] = useState({});
 
@@ -53,7 +54,6 @@ function CreateTipoConsulta() {
         const { name, value } = event.target;
         setTipoConsulta({ ...tipoConsulta, [name]: value });
     };
-    console.log(tipoConsulta);
 
     const validateForm = () => {
         const errors = {};
@@ -70,11 +70,21 @@ function CreateTipoConsulta() {
           setErrors(errors);
           return;
         }
+        setShowErrorAlert(false);
         try {
             await createTipoConsulta(tipoConsulta);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar tipo de consulta:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -108,7 +118,7 @@ function CreateTipoConsulta() {
                 </div>
             </form>
             {<Alert message="Tipo de consulta criado com sucesso!" show={showAlert} url={`/gerenciarTiposConsulta`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao criar tipo de consulta, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao criar tipo de consulta, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

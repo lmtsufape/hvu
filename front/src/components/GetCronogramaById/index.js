@@ -36,7 +36,6 @@ function GetCronogramaById() {
                     const cronogramaData = await getCronogramaById(id);
                     setCronograma(cronogramaData);
 
-                    console.log("jsão crono", cronogramaData.horariosJson);
                 } catch (error) {
                     console.error('Erro ao buscar agenda:', error);
                 } finally {

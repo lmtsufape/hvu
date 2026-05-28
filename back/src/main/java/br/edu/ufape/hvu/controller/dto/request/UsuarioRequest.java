@@ -1,6 +1,8 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.modelmapper.ModelMapper;
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Usuario;
@@ -11,12 +13,14 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public class UsuarioRequest {
     private long id;
+	@NotBlank
 	@Email(message = "Forneça um endereço de email correto")
 	private String email;
 	private String senha;
 	private String cpf;        // sem @NotBlank
 	private String telefone;   // sem @NotBlank
 	private String nome;       // sem @NotBlank
+	@Valid
 	private EnderecoRequest endereco;  // sem @NotNull
 
 	public Usuario convertToEntity() {
@@ -24,4 +28,3 @@ public class UsuarioRequest {
         return modelMapper.map(this, Usuario.class);
 	}
 }
-

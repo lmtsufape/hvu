@@ -26,6 +26,7 @@ function FichaSolicitacaoExame() {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
@@ -136,7 +137,8 @@ function FichaSolicitacaoExame() {
 
     useEffect(() => {
       const fetchMedicoData = async () => {
-          try {
+          setShowErrorAlert(false);
+        try {
               // Passo 1: Busca o usuário atual para obter o ID
               const userData = await getCurrentUsuario();
               const medicoId = userData.usuario.id;
@@ -193,6 +195,7 @@ useEffect(() => {
     if (!fichaId) return;
 
     const fetchData = async () => {
+        setShowErrorAlert(false);
         try {
             const animalData = await getAnimalById(animalId);
             setAnimal(animalData);
@@ -200,6 +203,7 @@ useEffect(() => {
             console.error('Erro ao buscar animal:', error);
         }
 
+        setShowErrorAlert(false);
         try {
             const tutorData = await getTutorByAnimal(animalId);
             setTutor(tutorData);
@@ -207,10 +211,10 @@ useEffect(() => {
             console.error('Erro ao buscar tutor do animal:', error);
         } 
 
+        setShowErrorAlert(false);
         try {
             const fichaDataFromApi = await getFichaById(fichaId);
             const conteudo = fichaDataFromApi.conteudo ? JSON.parse(fichaDataFromApi.conteudo) : {};
-            console.log("Conteúdo da ficha bruta da API:", conteudo);
 
             const newFormData = {};
             const newOtherValues = {};
@@ -405,12 +409,22 @@ useEffect(() => {
       }
     };
 
-    try {
+    setShowErrorAlert(false);
+        try {
       await updateFicha(fichaData, fichaId);
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao editar ficha:", error);
-      setShowErrorAlert(true);
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
   };
 
@@ -671,7 +685,7 @@ useEffect(() => {
             />
           </div>
         )}
-        {showErrorAlert && <ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />}
+        {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao criar ficha"} show={showErrorAlert} />}
       </div>
     </div>
   );

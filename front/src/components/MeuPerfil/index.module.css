@@ -83,7 +83,12 @@
   font-weight: 500;
   line-height: 24px;
   color: #39805F;
+  word-break: break-word;         
+  overflow-wrap: anywhere;        
+  white-space: normal;            
+  max-width: 100%;                
 }
+
 
 .title_endereco {
   width: 1152px;

@@ -30,7 +30,6 @@ function PacientesByMedico() {
         }
     }, []);
 
-    console.log("erro:", erro);
 
     useEffect(() => {
         const fetchData = async () => {

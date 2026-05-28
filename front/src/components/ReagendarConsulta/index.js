@@ -12,36 +12,33 @@ import TabelaAgendamento from "../TabelaAgendamento";
 function ReagendarConsulta() {
 	const router = useRouter();
 	const { id } = router.query;
+	const today = new Date().toISOString().split("T")[0];
 
 	const [showAlert, setShowAlert] = useState(false);
 	const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 	const [vagas, setVagas] = useState([]);
 	const [vagasFiltradas, setVagasFiltradas] = useState([]);
 	const [novaData, setNovaData] = useState("");
 	const [selectedVaga, setSelectedVaga] = useState(null); // Alterado para null inicialmente
 	const [roles, setRoles] = useState([]);
 	const [token, setToken] = useState("");
-    const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(true);
 
-	console.log("vagas:", vagas);
-	console.log("novaData:", novaData);
-	console.log("vagasFiltradas:", vagasFiltradas);
-	console.log("selectedVaga:", selectedVaga); // Log da vaga selecionada
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const storedToken = localStorage.getItem('token');
-            const storedRoles = JSON.parse(localStorage.getItem('roles'));
-            setToken(storedToken || "");
-            setRoles(storedRoles || []);
-        }
-      }, []);
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			const storedToken = localStorage.getItem('token');
+			const storedRoles = JSON.parse(localStorage.getItem('roles'));
+			setToken(storedToken || "");
+			setRoles(storedRoles || []);
+		}
+	}, []);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const vagasList = await getAllVaga();
-				console.log("vagasList:", vagasList);
 
 				// Função para normalizar strings removendo acentos e convertendo para minúsculas
 				const normalizeString = (str) =>
@@ -68,27 +65,27 @@ function ReagendarConsulta() {
 		}
 	}, [id]);
 
-    // Verifica se os dados estão carregando
-    if (loading) {
-        return <div className={styles.message}>Carregando dados do usuário...</div>;
-    }
+	// Verifica se os dados estão carregando
+	if (loading) {
+		return <div className={styles.message}>Carregando dados do usuário...</div>;
+	}
 
-    // Verifica se o usuário tem permissão
-    if (!roles.includes("secretario")) {
-        return (
-            <div className={styles.container}>
-                <h3 className={styles.message_message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
-            </div>
-        );
-    }
+	// Verifica se o usuário tem permissão
+	if (!roles.includes("secretario")) {
+		return (
+			<div className={styles.container}>
+				<h3 className={styles.message_message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+			</div>
+		);
+	}
 
 	if (!token) {
-        return (
-            <div className={styles.container}>
-                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-            </div>
-        );
-    }
+		return (
+			<div className={styles.container}>
+				<h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+			</div>
+		);
+	}
 
 	const handleNovaDataChange = (event) => {
 		const novaDataSelecionada = event.target.value;
@@ -138,6 +135,7 @@ function ReagendarConsulta() {
 						className={styles.input}
 						value={novaData}
 						onChange={handleNovaDataChange}
+						min={today}
 					/>
 				</div>
 
@@ -167,7 +165,7 @@ function ReagendarConsulta() {
 			/>
 			{showErrorAlert && (
 				<ErrorAlert
-					message="Erro ao realizar reagendamento, tente novamente."
+					message={errorMessage || "Erro ao realizar reagendamento, tente novamente."}
 					show={showErrorAlert}
 				/>
 			)}

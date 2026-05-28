@@ -126,7 +126,6 @@ const handleVisualizar = (ficha) => {
         const animalId = consulta?.animal?.id;
         // Redireciona para a página de edição, adicionando o ID da ficha e o modo de visualização
         const urlCorreta = `${basePath}?fichaId=${ficha.id}&animalId=${animalId}&consultaId=${consultaId}&modo=visualizar`;
-        console.log("Redirecionando para:", urlCorreta); // Bom para depuração
         router.push(urlCorreta);
     } else {
         console.error(`Rota de visualização não encontrada para a ficha: ${ficha.nome}`);

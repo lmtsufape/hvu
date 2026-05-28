@@ -1,18 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap' );
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap');
 
-.voltar{
+.pageContainer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+.embeddedContainer {
+    padding: 0;
+}
+
+.headerArea {
     display: flex;
-    margin-top: 2.5em;
-    margin-left: 5em;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 24px;
 }
 
-.voltar h1{
-    font-size: 1.2em;
-    align-items: center;
-    font-family: 'Poppins', sans-serif;
-}
-
-.titleMeusAgendamentos{
+.titleMeusAgendamentos {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -20,79 +27,118 @@
     font-family: 'Poppins', sans-serif;
 }
 
-.titleMeusAgendamentos h1{
-    font-size: 1.7em;
+.titleMeusAgendamentos h1 {
     font-family: 'Poppins', sans-serif;
     font-size: 24px;
     font-weight: 700;
     line-height: 36px;
     letter-spacing: 0em;
-    color: #000000;
+    color: #272727;
 }
 
-.agendamentos{
-    margin-bottom: 3em;
-}
-
-.agendamentoBox{
-    border: 1px solid #B1B1B1;
-    width: 90%;
-    align-items: center;
+/* Filtros */
+.filtrosContainer {
     display: flex;
-    padding: 2.5em;
-    margin:auto;
-    margin-left: 2em;
-    margin-right: 25em;
-    margin-top: 2em;
-    border-radius: 1em;
-    font-family: 'Poppins', sans-serif;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 20px;
+    background-color: #ffffff;
+    border: 1px solid #B1B1B1;
+    border-radius: 10px;
 }
 
-.agendamentoBox div {
-    width: 100%;
+.filtroRow {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
 }
 
-.agendamentoBox h1{
+.filtroGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 180px;
+}
+
+.filtroLabel {
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    letter-spacing: 0em;
-    text-align: left;
+    font-size: 13px;
+    font-weight: 500;
+    color: #404040;
+}
+
+.filtroInput {
+    padding: 10px 12px;
+    border: 1px solid #B1B1B1;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    color: #000000;
+    background-color: #fff;
+    outline: none;
+}
+
+.filtroInput:focus {
+    box-shadow: 0 0 5px 2px #3d856371;
+    border: 1px solid #ccc;
+}
+
+.filtroInput::placeholder {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
     color: #606060;
 }
 
-.agendamentoBox h2{
+.filtroSelect {
+    padding: 10px 12px;
+    border: 1px solid #B1B1B1;
+    border-radius: 10px;
     font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 30px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: #39805F;
+    font-size: 14px;
+    font-weight: 300;
+    color: #000000;
+    background-color: #fff;
+    cursor: pointer;
+    outline: none;
 }
 
-.navbar {
-    margin-top: 2em;
-    display: flex;
-    gap: 32px;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
+.filtroSelect:focus {
+    box-shadow: 0 0 5px 2px #3d856371;
+    border: 1px solid #ccc;
 }
 
+.limparFiltrosButton {
+    padding: 10px 16px;
+    border: 1px solid #606060;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #606060;
+    background-color: white;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.limparFiltrosButton:hover {
+    background-color: #f3f3f3;
+}
+
+/* Lista de agendamentos */
 .list {
     list-style-type: none;
-    padding: 0; 
-    margin: 0 auto 5em auto; 
-    max-width: 1200px; 
-    width: 90%; 
+    padding: 0;
+    margin: 0 auto 2em auto;
 }
 
 .message {
     min-height: 300px;
-    margin-top: 56px; 
-    display: flex; 
+    margin-top: 56px;
+    display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Poppins', sans-serif;
@@ -103,13 +149,13 @@
     text-align: center;
 }
 
+/* Card de agendamento */
 .agendamento_container {
     background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 24px;
+    border: 1px solid #B1B1B1;
+    border-radius: 20px;
+    padding: 24px 28px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     font-family: 'Poppins', sans-serif;
 }
 
@@ -117,122 +163,158 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #B1B1B1;
     padding-bottom: 16px;
     margin-bottom: 16px;
 }
 
 .agendamentoHeader div h1 {
+    font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 600;
+    line-height: 24px;
     color: #606060;
     margin: 0;
 }
 
 .agendamentoHeader div h2 {
+    font-family: 'Poppins', sans-serif;
     font-size: 20px;
     font-weight: 700;
+    line-height: 30px;
     color: #39805F;
     margin: 0;
 }
 
+/* Fichas dentro do agendamento */
 .fichas_list {
     display: flex;
     flex-direction: column;
-    gap: 12px; 
+    gap: 12px;
 }
 
 .fichas_list h3 {
+    font-family: 'Poppins', sans-serif;
     font-size: 18px;
     font-weight: 600;
-    color: #333;
+    color: #272727;
     margin: 0 0 8px 0;
 }
 
-.ficha_item {
-    display: flex;                
-    justify-content: space-between;
-    align-items: center;           
-    padding: 12px 16px;
-    border-radius: 8px;
-    background-color: #f7f7f7;
-    border: 1px solid #e9e9e9;
+.medicoPrincipal {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    color: #39805F;
+    font-weight: 600;
 }
 
+.ficha_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background-color: #EEF8F3;
+    border: 1px solid #B1B1B1;
+}
+
+.ficha_info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
 
 .ficha_nome {
+    font-family: 'Poppins', sans-serif;
     font-size: 16px;
-    color: #333;
     font-weight: 500;
+    color: #272727;
 }
 
+.ficha_medico {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #606060;
+}
+
+.ficha_data {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: #606060;
+}
 
 .acessar_button {
-    width: 170px;
-    height: 50px;
+    width: 150px;
+    height: 44px;
     padding: 10px;
     border-radius: 10px;
-    border: none; 
-    gap: 10px;
+    border: none;
+    font-family: 'Poppins', sans-serif;
     font-size: 16px;
+    font-weight: 600;
     color: white;
     background-color: #327053;
-    font-family: 'Poppins', sans-serif;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
 }
 
 .acessar_button:hover {
-    background-color: #5b977b;
+    background-color: #39805F;
 }
 
-.pageContainer {
-    width: 100%;     
-    max-width: 1400px;  
-    margin: 0 auto;   
-    padding: 0 24px; 
-    box-sizing: border-box; 
-}
-
-@media only screen and (max-width: 700px) {
-    .voltar {
-        margin-left: 1em;
-    }
-  
-    .navbar {
-        flex-direction: column;
-        align-items: stretch;
-        margin-right: 1em;
-        margin-left: 1em;
-    }
-  
+/* Responsivo */
+@media screen and (max-width: 768px) {
     .agendamentoHeader {
         flex-direction: column;
         gap: 16px;
     }
 
     .ficha_item {
-        flex-direction: column; 
-        align-items: flex-start; 
+        flex-direction: column;
+        align-items: flex-start;
         gap: 12px;
+    }
+
+    .ficha_info {
+        width: 100%;
+    }
+
+    .acessar_button {
+        width: 100%;
+    }
+
+    .filtroRow {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .filtroGroup {
+        min-width: 100%;
+    }
+
+    .limparFiltrosButton {
+        width: 100%;
     }
 }
 
+@media screen and (max-width: 480px) {
+    .titleMeusAgendamentos h1 {
+        font-size: 20px;
+    }
 
-.modal {
-    position: absolute;
-    margin: -2rem 0 0 50rem;
-    width: 620px;
-    height: 181px;
-    border-radius: 20px;
-    border: 2px solid #ECECEC;
-    box-shadow: 4px 5px 15px 0px #00000014;
-    background-color: #FFFFFF;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    justify-content: center;
-    align-items: center;
+    .agendamento_container {
+        padding: 16px;
+    }
+
+    .ficha_nome {
+        font-size: 14px;
+    }
+
+    .ficha_medico,
+    .ficha_data {
+        font-size: 12px;
+    }
 }
-
-/* ... (resto dos seus estilos de modal e botões) ... */

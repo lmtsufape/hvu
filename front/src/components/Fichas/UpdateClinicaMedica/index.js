@@ -222,15 +222,28 @@ function UpdateClinicaMedicaSteps() {
   };
   const handleCaracteristicaChange = (e, linfonodo) => {
     const { name, checked } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      linfonodos: {
-        ...prevState.linfonodos,
-        [linfonodo]: checked
-          ? [...prevState.linfonodos[linfonodo], name]
-          : prevState.linfonodos[linfonodo].filter((item) => item !== name)
+    setFormData((prevState) => {
+      const currentValues = prevState.linfonodos[linfonodo] || [];
+      let nextValues = checked
+        ? [...currentValues, name]
+        : currentValues.filter((item) => item !== name);
+
+      if (name === "reativos" && checked) {
+        nextValues = nextValues.filter((item) => item !== "semAlteracao");
       }
-    }));
+
+      if (name === "semAlteracao" && checked) {
+        nextValues = nextValues.filter((item) => item !== "reativos");
+      }
+
+      return {
+        ...prevState,
+        linfonodos: {
+          ...prevState.linfonodos,
+          [linfonodo]: nextValues
+        }
+      };
+    });
   };
   const handleCheckboxChangeMucosas = (e) => {
     const { name, checked } = e.target;
@@ -373,7 +386,6 @@ function UpdateClinicaMedicaSteps() {
       agendamento: { id: Number(agendamentoId) }
     };
 
-    console.log("➡️  Enviando para a API:", fichaData);
 
     try {
       await updateFicha(fichaData, fichaId);

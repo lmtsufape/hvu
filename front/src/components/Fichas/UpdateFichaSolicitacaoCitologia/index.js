@@ -49,6 +49,7 @@ function FichaSolicitacaoCitologia() {
     const [showOtherInputLesao, setShowOtherInputLesao] = useState(false);
     const [otherValueLesao, setOtherValueLesao] = useState("");
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
@@ -104,7 +105,8 @@ function FichaSolicitacaoCitologia() {
 
     useEffect(() => {
             const fetchMedicoData = async () => {
-                try {
+                setShowErrorAlert(false);
+        try {
                     const userData = await getCurrentUsuario();
                     const medicoId = userData.usuario.id;
     
@@ -156,24 +158,26 @@ function FichaSolicitacaoCitologia() {
         if (!fichaId) return;
 
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const animalData = await getAnimalById(animalId);
                 setAnimal(animalData);
             } catch (error) {
                 console.error('Erro ao buscar animal:', error);
             }
 
-            try {
+            setShowErrorAlert(false);
+        try {
                 const tutorData = await getTutorByAnimal(animalId);
                 setTutor(tutorData);
             } catch (error) {
                 console.error('Erro ao buscar tutor do animal:', error);
             } 
 
-            try {
+            setShowErrorAlert(false);
+        try {
                 const formData = await getFichaById(fichaId);
                 const conteudo = (JSON.parse(formData.conteudo));
-                console.log("Dados da ficha:", conteudo);
                 setFormData(conteudo);
                 setImagemDesenhada(conteudo.imagemLesao.imagem); 
                 setData(formData.dataHora);
@@ -327,11 +331,21 @@ function FichaSolicitacaoCitologia() {
             }
         };
 
+        setShowErrorAlert(false);
         try {
             await updateFicha(fichaData, fichaId);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao editar ficha:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -752,7 +766,7 @@ function FichaSolicitacaoCitologia() {
                         <Alert message="Ficha editada com sucesso!"
                             show={showAlert} url={`/createConsulta/${consultaId}`} />
                     </div>}
-                {showErrorAlert && (<ErrorAlert message="Erro ao editar ficha" show={showErrorAlert} />)}
+                {showErrorAlert && (<ErrorAlert message={errorMessage || "Erro ao editar ficha"} show={showErrorAlert} />)}
 
             </div>
         </div>

@@ -6,12 +6,15 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+import java.util.TimeZone;
+
 @SpringBootApplication
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true, jsr250Enabled = true, securedEnabled = true)
 public class SpringApiCrudApplication {
 
 	public static void main(String[] args) {
+		TimeZone.setDefault(TimeZone.getTimeZone("America/Fortaleza"));
 		@SuppressWarnings("unused")
 		ConfigurableApplicationContext appCtx = SpringApplication.run(SpringApiCrudApplication.class, args);
 	}

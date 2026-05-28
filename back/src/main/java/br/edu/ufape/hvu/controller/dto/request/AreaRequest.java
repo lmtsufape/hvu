@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.controller.dto.request;
 
-import org.modelmapper.ModelMapper;
-import br.edu.ufape.hvu.config.SpringApplicationContext;
+import br.edu.ufape.hvu.model.Especie;
 import br.edu.ufape.hvu.model.Area;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,17 @@ public class AreaRequest {
 	private EspecieRequest especie;
 
 	public Area convertToEntity() {
-		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
-        return modelMapper.map(this, Area.class);
+		Area area = new Area();
+
+		area.setId(this.id);
+		area.setTituloArea(this.tituloArea);
+
+		if (this.especie != null) {
+			Especie especieEntity = new Especie();
+			especieEntity.setId(this.especie.getId());
+			area.setEspecie(especieEntity);
+		}
+
+		return area;
 	}
 }

@@ -80,7 +80,8 @@ function updateFichaRetornoClinicoSil() {
 
       useEffect(() => {
             const fetchMedicoData = async () => {
-                try {
+                setShowErrorAlert(false);
+        try {
                     const userData = await getCurrentUsuario();
                     const medicoId = userData.usuario.id;
     
@@ -133,21 +134,24 @@ function updateFichaRetornoClinicoSil() {
         if (!fichaId) return;
 
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const animalData = await getAnimalById(animalId);
                 setAnimal(animalData);
             } catch (error) {
                 console.error('Erro ao buscar animal:', error);
             }
 
-            try {
+            setShowErrorAlert(false);
+        try {
                 const tutorData = await getTutorByAnimal(animalId);
                 setTutor(tutorData);
             } catch (error) {
                 console.error('Erro ao buscar tutor do animal:', error);
             } 
 
-            try {
+            setShowErrorAlert(false);
+        try {
                 const formData = await getFichaById(fichaId);
                 setFormData(JSON.parse(formData.conteudo));
                 setData(formData.dataHora);
@@ -173,7 +177,8 @@ function updateFichaRetornoClinicoSil() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const userData = await getCurrentUsuario();
                 setUserId(userData.usuario.id);
             } catch (error) {
@@ -232,6 +237,7 @@ function updateFichaRetornoClinicoSil() {
             agendamento: { id: Number(agendamentoId) }
         };
 
+        setShowErrorAlert(false);
         try {
             await updateFicha(fichaData, fichaId);
             setShowAlert(true);
@@ -478,7 +484,7 @@ function updateFichaRetornoClinicoSil() {
                 {showAlert && consultaId && (
                 <Alert message="Ficha editada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
                 )}
-                {showErrorAlert && (<ErrorAlert message="Erro ao editar ficha" show={showErrorAlert} />)}
+                {showErrorAlert && (<ErrorAlert message={errorMessage || "Erro ao editar ficha"} show={showErrorAlert} />)}
             </div>
         </div>
     )

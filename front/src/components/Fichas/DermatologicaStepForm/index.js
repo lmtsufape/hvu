@@ -206,7 +206,6 @@ function DermatologicaSteps() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      console.log("Dados do formulário atualizados:", formData);
     }}, [formData]);
 
   // Obtém o ID da ficha da URL
@@ -216,7 +215,6 @@ function DermatologicaSteps() {
         const aId = router.query.agendamentoId; 
         if (id) {
           setConsultaId(id);
-          console.log("ID da ficha:", id);
         }
         if (aId) {
           setAgendamentoId(aId); 
@@ -302,15 +300,28 @@ function DermatologicaSteps() {
   };
   const handleCaracteristicaChange = (e, linfonodo) => {
     const { name, checked } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      linfonodos: {
-        ...prevState.linfonodos,
-        [linfonodo]: checked
-          ? [...prevState.linfonodos[linfonodo], name]
-          : prevState.linfonodos[linfonodo].filter((item) => item !== name)
+    setFormData((prevState) => {
+      const currentValues = prevState.linfonodos[linfonodo] || [];
+      let nextValues = checked
+        ? [...currentValues, name]
+        : currentValues.filter((item) => item !== name);
+
+      if (name === "reativos" && checked) {
+        nextValues = nextValues.filter((item) => item !== "semAlteracao");
       }
-    }));
+
+      if (name === "semAlteracao" && checked) {
+        nextValues = nextValues.filter((item) => item !== "reativos");
+      }
+
+      return {
+        ...prevState,
+        linfonodos: {
+          ...prevState.linfonodos,
+          [linfonodo]: nextValues
+        }
+      };
+    });
   };
 
   const handleChange = (event) => {
@@ -536,7 +547,6 @@ function DermatologicaSteps() {
            }
         
     };
-    console.log("Dados enviados para o backend:", JSON.stringify(fichaData, null, 2));
     
 
     try {
@@ -547,7 +557,16 @@ function DermatologicaSteps() {
         setShowAlert(true);
     } catch (error) {
         console.error("Erro ao criar ficha:", error);
-        setShowErrorAlert(true);
+        
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
  };
 

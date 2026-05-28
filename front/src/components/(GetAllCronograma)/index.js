@@ -7,6 +7,7 @@ import { getAllCronograma, deleteCronograma } from '../../../services/cronograma
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
 import ErrorAlert from "../ErrorAlert";
+import Alert from '../Alert';
 
 function GetAllCronograma() {
     const router = useRouter();
@@ -17,6 +18,7 @@ function GetAllCronograma() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
@@ -33,6 +35,7 @@ function GetAllCronograma() {
 
     useEffect(() => {
         const fetchData = async () => {
+            setShowErrorAlert(false);
             try {
                 const cronogramasData = await getAllCronograma();
                 const cronogramasMedico = cronogramasData.filter(cronograma => cronograma.medico.id === parseInt(id));
@@ -68,23 +71,33 @@ function GetAllCronograma() {
 
     if (!token) {
         return (
-          <div className={styles.container}>
-            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-          </div>
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
         );
-      }
+    }
 
     const filteredCronogramas = cronogramas.filter(cronograma =>
-        cronograma.nome.toLowerCase().includes(searchTerm.toLowerCase())
+        cronograma.nome?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleDeleteCronograma = async (cronogramaId) => {
+        setShowErrorAlert(false);
         try {
             await deleteCronograma(cronogramaId);
             setCronogramas(cronogramas.filter(cronograma => cronograma.id !== cronogramaId))
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir a agenda: ', error);
+
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("Erro ao excluir agenda, tente novamente.");
+            }
             setShowErrorAlert(true);
         }
     }
@@ -100,7 +113,7 @@ function GetAllCronograma() {
                     placeholder={"Buscar agenda"}
                     onSearchChange={handleSearchChange}
                 />
-                <AdicionarCronograma page={`createCronograma/${id}`}/>
+                <AdicionarCronograma page={`createCronograma/${id}`} />
             </div>
 
             {filteredCronogramas.length === 0 ? (
@@ -120,7 +133,7 @@ function GetAllCronograma() {
                             <div className={styles.button_box}>
                                 <button
                                     className={styles.acessar_button}
-                                    onClick={() => router.push(`/getCronogramaById/${cronograma.id}`)} 
+                                    onClick={() => router.push(`/getCronogramaById/${cronograma.id}`)}
                                 >
                                     Visualizar
                                 </button>
@@ -130,9 +143,9 @@ function GetAllCronograma() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Agenda excluída com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao excluir agenda, tente novamente" show={showErrorAlert} />}
-            
+            {showAlert && <Alert message="Agenda excluída com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage} show={showErrorAlert} />}
+
         </div>
     );
 }

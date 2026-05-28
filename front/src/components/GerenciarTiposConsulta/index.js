@@ -11,6 +11,7 @@ function GerenciarTiposConsulta() {
     const [tiposConsulta, setTiposConsulta] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedTipoConsultaId, setDeletedTipoConsultaId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
     const [roles, setRoles] = useState([]);
@@ -30,7 +31,8 @@ function GerenciarTiposConsulta() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const tiposConsultaData = await getAllTipoConsulta();
                 setTiposConsulta(tiposConsultaData);
             } catch (error) {
@@ -65,6 +67,7 @@ function GerenciarTiposConsulta() {
     }
 
     const handleDeleteTipoConsulta = async (tipoConsultaId) => {
+        setShowErrorAlert(false);
         try {
             await deleteTipoConsulta(tipoConsultaId);
             setTiposConsulta(tiposConsulta.filter(tipoConsulta => tipoConsulta.id !== tipoConsultaId));
@@ -72,8 +75,17 @@ function GerenciarTiposConsulta() {
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir tipos de consulta:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -118,8 +130,8 @@ function GerenciarTiposConsulta() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Tipo de consulta excluído com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Este tipo de consulta não pode ser excluído por estar associado a um agendamento." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Tipo de consulta excluído com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Este tipo de consulta não pode ser excluído por estar associado a um agendamento."} show={showErrorAlert} />}
 
         </div>
     );

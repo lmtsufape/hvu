@@ -21,7 +21,7 @@ function PacientesBySecretario() {
             setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-      }, []);
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -81,7 +81,6 @@ function PacientesBySecretario() {
                 <ul className={styles.lista}>
                     {filteredTutores.map(tutor => (
                         <li key={tutor.id} className={styles.info_box}>
-                             {console.log('Objeto tutor:', tutor)}
                             <div className={styles.info}>
                                 <h6>Responsavel</h6>
                                 <p>{tutor.nome}</p>
@@ -89,7 +88,6 @@ function PacientesBySecretario() {
                             {tutor.animal?.length === 0 ? (
                                 <p className={styles.paragrafo}>Não há animais cadastrados para este tutor.</p>
                             ) : (
-                                console.log(tutor.animal),
                                 tutor.animais?.map(animal => (
                                     <div key={animal.id} className={styles.info_container}>
                                         <div className={styles.info}>

@@ -67,7 +67,8 @@ function UpdateLaudoForm() {
     const loadLaudo = async () => {
       if (!id) return
 
-      try {
+      setShowErrorAlert(false);
+        try {
         const laudoData = await getLaudoNecropsiaById(id)
 
         setLaudo({
@@ -101,7 +102,16 @@ function UpdateLaudoForm() {
         setLoading(false)
       } catch (error) {
         console.error("Erro ao carregar laudo:", error)
-        setShowErrorAlert(true)
+        
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
         setLoading(false)
       }
     }
@@ -137,7 +147,8 @@ function UpdateLaudoForm() {
   }
 
   const fetchFotoPreview = async (id, titulo) => {
-    try {
+    setShowErrorAlert(false);
+        try {
       const blob = await getFotoById(id)
       const url = URL.createObjectURL(blob)
       return { id, titulo, url }
@@ -256,9 +267,9 @@ function UpdateLaudoForm() {
       campoMicroscopia: laudo.campoMicroscopia.map((microscopia) => ({ id: microscopia.id })),
     }
 
-    console.log("laudotosend:", laudoToSend)
 
-    try {
+    setShowErrorAlert(false);
+        try {
       await updateLaudoNecropsia(id, laudoToSend)
       setShowAlert(true)
       setTimeout(() => {
@@ -266,7 +277,16 @@ function UpdateLaudoForm() {
       }, 2000)
     } catch (error) {
       console.error("Erro ao atualizar laudo de necropsia:", error)
-      setShowErrorAlert(true)
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
     }
   }
 
@@ -530,7 +550,7 @@ function UpdateLaudoForm() {
       </div>
 
       {showAlert && <Alert message="Laudo atualizado com sucesso!" />}
-      {showErrorAlert && <ErrorAlert message="Erro ao atualizar o laudo de necropsia." />}
+      {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao atualizar o laudo de necropsia."} />}
 
       {/* 📌 Modal de fichas */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>

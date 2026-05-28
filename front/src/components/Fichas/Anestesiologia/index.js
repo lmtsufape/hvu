@@ -14,6 +14,7 @@ import { getCurrentUsuario }    from "../../../../services/userService";
 export default function AnestesiologiaSteps() {
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [step, setStep] = useState(1);
   const nextStep = () => setStep((s) => s + 1);
   const prevStep = () => setStep((s) => s - 1);
@@ -144,7 +145,6 @@ export default function AnestesiologiaSteps() {
             }
     };
 
-    console.log("Enviando para API:", data);
 
     try {
       const resultado = await createFicha(data);

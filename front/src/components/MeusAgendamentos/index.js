@@ -20,6 +20,7 @@ export default function MeusAgendamentos() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [canceledAgendamentoId, setCanceledAgendamentoId] = useState(null); // Estado para controlar o ID do agendamento cancelado recentemente
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
@@ -36,7 +37,8 @@ export default function MeusAgendamentos() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
+      setShowErrorAlert(false);
+        try {
         const agendamentosData = await getAgendamentoTutor();
         setAgendamentos(agendamentosData);
       } catch (error) {
@@ -57,7 +59,8 @@ export default function MeusAgendamentos() {
     dataCancelamento: new Date().toISOString(), // ✅ Adiciona data do cancelamento no formato ISO
   };
 
-  try {
+  setShowErrorAlert(false);
+        try {
     await cancelarAgendamento(cancelamento);
     setAgendamentos(
       agendamentos.filter(
@@ -70,7 +73,16 @@ export default function MeusAgendamentos() {
   } catch (error) {
     console.error("Erro ao excluir agendamento:", error);
     setCancelarModalId(null);
-    setShowErrorAlert(true);
+    
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
   }
 };
 
@@ -203,13 +215,13 @@ export default function MeusAgendamentos() {
       )}
       {showAlert && (
         <ErrorAlert
-          message="Agendamento cancelado com sucesso!"
+          message={errorMessage || "Agendamento cancelado com sucesso!"}
           show={showAlert}
         />
       )}
       {showErrorAlert && (
         <ErrorAlert
-          message="Erro ao cancelar agendamento, tente novamente"
+          message={errorMessage || "Erro ao cancelar agendamento, tente novamente"}
           show={showErrorAlert}
         />
       )}

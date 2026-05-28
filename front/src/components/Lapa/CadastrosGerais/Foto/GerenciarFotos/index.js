@@ -26,12 +26,14 @@ useEffect(() => {
   const token = getToken()
 
   const fetchData = async () => {
-    try {
+    setShowErrorAlert(false);
+        try {
       const fotosData = await getAllFotos()
 
       const fotosComArquivo = await Promise.all(
         fotosData.map(async (foto) => {
-          try {
+          setShowErrorAlert(false);
+        try {
             const blob = await getFotoById(foto.id)
             const imageUrl = URL.createObjectURL(blob)
             return { ...foto, imageUrl }
@@ -53,18 +55,27 @@ useEffect(() => {
   }
 }, [deletedFotoId]) 
 
-  console.log(fotos)
 
   const handleDeleteFoto = async (fotoId) => {
-    try {
+    setShowErrorAlert(false);
+        try {
       await deleteFoto(fotoId)
       setFotos(fotos.filter((foto) => foto.id !== fotoId))
       setDeletedFotoId(fotoId)
       setShowAlert(true)
     } catch (error) {
       console.error("Erro ao excluir foto:", error)
-      if (error.response && error.response.status === 409) {
-        setShowErrorAlert(true)
+      if (error) {
+        
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
       }
     }
   }
@@ -114,8 +125,8 @@ useEffect(() => {
               ))}
             </ul>
           )}
-          {showAlert && <ErrorAlert message="Foto excluída com sucesso!" show={showAlert} />}
-          {showErrorAlert && <ErrorAlert message="Esta foto não pode ser excluída." show={showErrorAlert} />}
+          {showAlert && <ErrorAlert message={errorMessage || "Foto excluída com sucesso!"} show={showAlert} />}
+          {showErrorAlert && <ErrorAlert message={errorMessage || "Esta foto não pode ser excluída."} show={showErrorAlert} />}
         </>
       )}
     </div>

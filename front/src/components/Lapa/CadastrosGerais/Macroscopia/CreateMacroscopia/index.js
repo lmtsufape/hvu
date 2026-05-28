@@ -16,6 +16,7 @@ function CreateCampoLaudo() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [errors, setErrors] = useState({});
     const [campoLaudo, setCampoLaudo] = useState({
         descricao: "",
@@ -72,13 +73,22 @@ const handleSubmit = async () => {
         return;
     }
 
-    console.log("Enviando campoLaudo:", campoLaudo); // Para debug
-    try {
+    setShowErrorAlert(false);
+        try {
         await createCampoLaudo(campoLaudo);
         setShowAlert(true);
     } catch (error) {
         console.error("Erro ao criar campo laudo:", error);
-        setShowErrorAlert(true);
+        
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
 };
 
@@ -134,7 +144,7 @@ const handleSubmit = async () => {
                 </div>
             </form>
             {showAlert && <Alert message="Campo de laudo criado com sucesso!" show={showAlert} url={`/lapa/gerenciarMacroscopias`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao cadastrar campo de laudo, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao cadastrar campo de laudo, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

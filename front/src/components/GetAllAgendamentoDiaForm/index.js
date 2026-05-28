@@ -85,7 +85,6 @@ function GetAllAgendamentosDiaForm() {
 
   const handleDataSelecionada = (novaData) => {
     setDataSelecionada(novaData);
-    console.log("Data Selecionada:", novaData);
   };
 
   const handleCancelarConsulta = async () => {
@@ -125,10 +124,8 @@ function GetAllAgendamentosDiaForm() {
     setModalOpen(false);
     setTutor("");
     setDescricaoCancelamento("");
-    console.log("Modal closed");
   };
 
-  console.log("vagas: ", vagas);
 
   const horarios = [
     "07:30",

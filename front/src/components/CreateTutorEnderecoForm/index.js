@@ -175,26 +175,28 @@ function CreateTutorEnderecoForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setShowErrorAlert(false);
+
     if (validateForm()) {
-      console.log("form:", formData);
       try {
         const response = await createTutor(formData);
         await postLogin(tutorFormData.email, tutorFormData.senha);
-        console.log(response);
         setShowAlert(true);
       } catch (error) {
         console.error("Erro ao cadastrar tutor:", error);
 
-        if (error.response && error.response.data && error.response.data.code) {
-          setErrorMessage(error.response.data.code);
-        } else {
+        const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
           setErrorMessage("Erro ao realizar cadastro, tente novamente.");
         }
 
         setShowErrorAlert(true);
       }
     } else {
-      console.log("Formulário inválido. Corrija os erros.");
     }
   };
 

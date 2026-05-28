@@ -2,12 +2,18 @@
 
 .container {
     width: 1200;
-    height: 500px;
-    margin-bottom: 200px;
+    min-height: 500px;
+    margin-bottom: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 42px;
+}
+
+.container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .container h1 {
@@ -18,6 +24,12 @@
     letter-spacing: 0em;
 }
 
+.contentWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
 .infos_box {
     display: flex;
     flex-direction: column;
@@ -25,6 +37,19 @@
     border-radius: 20px;
     border: 0.5px solid #B1B1B1;
     gap: 56px;
+}
+
+.historicoSection {
+    width: 1200px;
+    margin-bottom: 64px;
+}
+
+.historicoSection h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #272727;
+    margin-bottom: 16px;
 }
 
 .identificacao {
@@ -108,4 +133,51 @@
     line-height: 30px;
     letter-spacing: 0em;
     text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+    .infos_box {
+        width: 90vw;
+        padding: 16px;
+        gap: 20px;
+        margin-right: 2em;
+    }
+
+    .historicoSection {
+        width: 90vw;
+        margin-right: 2em;
+    }
+
+    .box{
+        gap: 2em;
+    }
+
+    .botao{
+        width: 90%;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container h1 {
+        font-size: 20px;
+    }
+
+    .infos_box {
+        width: 90vw;
+        padding: 16px;
+        gap: 20px;
+    }
+
+    .historicoSection {
+        width: 90vw;
+    }
+
+    .infos p, .infos h6 {
+        font-size: 14px;
+    }
+
+    .box{
+        gap: 1.5em;
+    }
 }

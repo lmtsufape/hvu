@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.controller.dto.request;
 import org.modelmapper.ModelMapper;
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Endereco;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor 
 public class EnderecoRequest {
     private long id;
+	@Pattern(regexp = "\\d{5}-?\\d{3}", message = "CEP inválido. Use o formato 00000-000 ou 00000000")
 	private String cep;
 	private String rua;
 	private String estado;

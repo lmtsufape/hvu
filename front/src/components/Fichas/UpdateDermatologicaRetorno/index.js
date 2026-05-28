@@ -43,7 +43,6 @@ function FichaDermatologicaRetorno() {
     );
 
     const [userId, setUserId] = useState(null);
-    console.log("userId:", userId);
 
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
@@ -107,21 +106,24 @@ function FichaDermatologicaRetorno() {
         if (!fichaId) return;
 
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const animalData = await getAnimalById(animalId);
                 setAnimal(animalData);
             } catch (error) {
                 console.error('Erro ao buscar animal:', error);
             }
 
-            try {
+            setShowErrorAlert(false);
+        try {
                 const tutorData = await getTutorByAnimal(animalId);
                 setTutor(tutorData);
             } catch (error) {
                 console.error('Erro ao buscar tutor do animal:', error);
             } 
 
-            try {
+            setShowErrorAlert(false);
+        try {
                 const formData = await getFichaById(fichaId);
                 setFormData(JSON.parse(formData.conteudo));
                 setData(formData.dataHora);
@@ -145,7 +147,8 @@ function FichaDermatologicaRetorno() {
     }, []);
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const userData = await getCurrentUsuario();
                 const medicoId = userData.usuario.id;
                 setMedicoLogado(userData.usuario); 
@@ -153,7 +156,6 @@ function FichaDermatologicaRetorno() {
                 const medicoCompletoData = await getMedicoById(medicoId);
                 //Armazena o objeto COMPLETO (que tem o CRMV) no estado
                 setMedicoLogado(medicoCompletoData);
-                console.log("Dados completos do médico logado:", medicoCompletoData);
                 }
             } catch (error) {
                 console.error('Erro ao buscar usuário:', error);
@@ -205,6 +207,7 @@ function FichaDermatologicaRetorno() {
             agendamento: { id: Number(agendamentoId) }
         };
 
+        setShowErrorAlert(false);
         try {
             await updateFicha(fichaData, fichaId);
             setShowAlert(true);
@@ -396,7 +399,7 @@ function FichaDermatologicaRetorno() {
                     <Alert message="Ficha editada com sucesso!" 
                     show={showAlert} url={`/createConsulta/${consultaId}`} />
                 </div>}
-                {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
+                {showErrorAlert && (<ErrorAlert message={errorMessage || "Erro ao criar ficha"} show={showErrorAlert} />)}
             </div>
         </div>
     )

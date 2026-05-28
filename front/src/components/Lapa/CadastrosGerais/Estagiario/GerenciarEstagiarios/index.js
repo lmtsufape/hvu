@@ -12,6 +12,7 @@ function GerenciarEstagiarios() {
     const [estagiarios, setEstagiarios] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedEstagiarioId, setDeletedEstagiarioId] = useState(null);
     const router = useRouter();
@@ -40,7 +41,8 @@ function GerenciarEstagiarios() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const estagiariosData = await getAllEstagiario();
                 setEstagiarios(estagiariosData);
             } catch (error) {
@@ -51,6 +53,7 @@ function GerenciarEstagiarios() {
     }, [deletedEstagiarioId]);
 
     const handleDeleteEstagiario = async (estagiarioId) => {
+        setShowErrorAlert(false);
         try {
             await deleteEstagiario(estagiarioId);
             setEstagiarios(estagiarios.filter(estagiario => estagiario.id !== estagiarioId));
@@ -58,8 +61,17 @@ function GerenciarEstagiarios() {
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir estagiário:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -103,8 +115,8 @@ function GerenciarEstagiarios() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Estagiário excluído com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Este estagiário não pode ser excluído." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Estagiário excluído com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Este estagiário não pode ser excluído."} show={showErrorAlert} />}
         </div>
     );
 }

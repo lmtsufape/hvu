@@ -18,6 +18,7 @@ function CreateTutorEnderecoFormLapa() {
     const [errors, setErrors] = useState({});
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [tutorFormData, setTutorFormData] = useState({
         nome: "",
@@ -151,22 +152,30 @@ function CreateTutorEnderecoFormLapa() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (validateForm()) {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const responseRegister = await postRegister(tutorFormData.email, tutorFormData.nome, tutorFormData.senha, "tutor");
-                console.log(responseRegister);
     
                 await postLogin(tutorFormData.email, tutorFormData.senha);
                 const response = await createTutor(formData);
-                console.log(response);
     
                 setShowAlert(true);
             } catch (error) {
                 console.error("Erro ao cadastrar tutor:", error);
                 if (error.response) {
                     // Exibe mensagens de erro específicas do servidor
-                    if (error.response.status === 409) {
+                    if (error) {
                         // Exemplo de mensagem de erro para CPF ou e-mail duplicado
-                        setShowErrorAlert(true);
+                        
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
                     }
                 } else {
                     // Lida com erros não relacionados à resposta do servidor
@@ -174,7 +183,6 @@ function CreateTutorEnderecoFormLapa() {
                 }
             }
         } else {
-            console.log("Formulário inválido. Corrija os erros.");
         }
     };
     
@@ -211,7 +219,7 @@ function CreateTutorEnderecoFormLapa() {
                 </div>
             </form>
             {<Alert message="Cadastro realizado com sucesso!" show={showAlert} url='/lapa/mainTutor' />}
-            {showErrorAlert && <ErrorAlert message="Erro ao realizar cadastro, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao realizar cadastro, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

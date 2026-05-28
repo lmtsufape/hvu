@@ -25,9 +25,10 @@ function UpdatePatologista() {
     const [selectedEspecialidades, setSelectedEspecialidades] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
 
     const [patologista, setPatologista] = useState({
         nome: "",
@@ -60,6 +61,7 @@ function UpdatePatologista() {
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
+                setShowErrorAlert(false);
                 try {
                     const patologistaData = await getPatologistaById(id);
                     setPatologista(patologistaData);
@@ -67,7 +69,7 @@ function UpdatePatologista() {
                 } catch (error) {
                     console.error('Erro ao buscar informações do(a) patologista:', error);
                 } finally {
-                    setLoading(false); 
+                    setLoading(false);
                 }
             };
             fetchData();
@@ -77,7 +79,7 @@ function UpdatePatologista() {
     const handleEspecialidadeSelection = (event) => {
         const especialidadeId = parseInt(event.target.value);
         const especialidadeSelected = especialidades.find(espec => espec.id === especialidadeId);
-    
+
         if (!selectedEspecialidades.some(espec => espec.id === especialidadeId)) {
             setSelectedEspecialidades(prevSelected => [...prevSelected, especialidadeSelected]);
         } else {
@@ -92,7 +94,6 @@ function UpdatePatologista() {
         }
     }, [selectedEspecialidade, especialidades]);
 
-    console.log("Especialidades:", selectedEspecialidades);
 
 
     if (loading) {
@@ -119,7 +120,46 @@ function UpdatePatologista() {
     const handlePatologistaChange = (event) => {
         const { name, value } = event.target;
         setPatologista({ ...patologista, [name]: value });
+
+        // Validação em tempo real
+        switch (name) {
+            case "cpf":
+                if (!validateCPF(value)) {
+                    setErrors(prev => ({ ...prev, cpf: "CPF inválido" }));
+                } else {
+                    setErrors(prev => ({ ...prev, cpf: null }));
+                }
+                break;
+            case "telefone":
+                if (!validateTelefone(value)) {
+                    setErrors(prev => ({ ...prev, telefone: "Telefone inválido" }));
+                } else {
+                    setErrors(prev => ({ ...prev, telefone: null }));
+                }
+                break;
+            case "email":
+                if (!validateEmail(value)) {
+                    setErrors(prev => ({ ...prev, email: "E-mail inválido" }));
+                } else {
+                    setErrors(prev => ({ ...prev, email: null }));
+                }
+                break;
+            case "crmv":
+                if (!validateCRMV(value)) {
+                    setErrors(prev => ({ ...prev, crmv: "CRMV inválido" }));
+                } else {
+                    setErrors(prev => ({ ...prev, crmv: null }));
+                }
+                break;
+            default:
+                if (!value) {
+                    setErrors(prev => ({ ...prev, [name]: "Campo obrigatório" }));
+                } else {
+                    setErrors(prev => ({ ...prev, [name]: null }));
+                }
+        }
     };
+
 
     const handleEnderecoChange = (event) => {
         const { name, value } = event.target;
@@ -133,10 +173,12 @@ function UpdatePatologista() {
     };
 
     const fetchCepData = async (cep) => {
+        setShowErrorAlert(false);
         try {
             const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
             const data = await response.json();
             if (!data.erro) {
+                setErrors(prev => { const e = { ...prev }; delete e.cep; return e; });
                 setPatologista({
                     ...patologista,
                     endereco: {
@@ -149,15 +191,17 @@ function UpdatePatologista() {
                     }
                 });
             } else {
-                console.error("CEP não encontrado.");
+                setErrors(prev => ({ ...prev, cep: "CEP não encontrado" }));
             }
         } catch (error) {
             console.error("Erro ao buscar CEP:", error);
+            setErrors(prev => ({ ...prev, cep: "CEP não encontrado" }));
         }
     };
 
     const handleCepChange = (event) => {
         const { value } = event.target;
+        const digits = value.replace(/\D/g, '');
         setPatologista({
             ...patologista,
             endereco: {
@@ -165,66 +209,90 @@ function UpdatePatologista() {
                 cep: value
             }
         });
-        fetchCepData(value);
+        if (digits.length === 8) {
+            fetchCepData(digits);
+        } else {
+            setErrors(prev => { const e = { ...prev }; delete e.cep; return e; });
+        }
     };
 
+    const validateCPF = (cpf) => {
+        if (!cpf) return false;
+        cpf = cpf.replace(/\D/g, '');
+        if (cpf.length !== 11) return false;
+        if (/^(\d)\1+$/.test(cpf)) return false;
+
+        let soma = 0;
+        for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+        let resto = (soma * 10) % 11;
+        if (resto === 10) resto = 0;
+        if (resto !== parseInt(cpf.charAt(9))) return false;
+
+        soma = 0;
+        for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+        resto = (soma * 10) % 11;
+        if (resto === 10) resto = 0;
+        return resto === parseInt(cpf.charAt(10));
+    };
+
+    const validateTelefone = (telefone) => {
+        if (!telefone) return false;
+        // Apenas números
+        const digits = telefone.replace(/\D/g, '');
+        return digits.length === 10 || digits.length === 11;
+    };
+
+    const validateEmail = (email) => {
+        return /\S+@\S+\.\S+/.test(email);
+    };
+
+    const validateCRMV = (crmv) => {
+        // Exemplo: deve ter entre 4 e 10 caracteres alfanuméricos
+        return /^[a-zA-Z0-9]{4,10}$/.test(crmv);
+    };
+
+    // Na função validateForm:
     const validateForm = () => {
         const newErrors = {};
+
         if (alterarSenha) {
-            if (!patologista.senha) {
-                newErrors.senha = "Senha é obrigatória";
-            }
-            if (!patologista.confirmarSenha) {
-                newErrors.confirmarSenha = "Confirme sua senha";
-            } else if (patologista.senha !== patologista.confirmarSenha) {
-                newErrors.confirmarSenha = "As senhas não coincidem";
-            }
+            if (!patologista.senha) newErrors.senha = "Senha é obrigatória";
+            if (!patologista.confirmarSenha) newErrors.confirmarSenha = "Confirme sua senha";
+            else if (patologista.senha !== patologista.confirmarSenha) newErrors.confirmarSenha = "As senhas não coincidem";
         }
-        if (!patologista.nome) {
-            newErrors.nome = "Campo obrigatório";
-        }
-        if (!patologista.email) {
-            newErrors.email = "Campo obrigatório"; 
-        }
-        if (!/\S+@\S+\.\S+/.test(patologista.email)) {
-            newErrors.email = "E-mail inválido";
-        }
-        if (!patologista.cpf) {
-            newErrors.cpf = "Campo obrigatório"; 
-        }
-        if (!patologista.telefone) {
-            newErrors.telefone = "Campo obrigatório"; 
-        }
-        if (!patologista.crmv) {
-            newErrors.crmv = "Campo obrigatório"; 
-        }
-        if (selectedEspecialidades.length === 0) {
-            newErrors.especialidade = "Selecione pelo menos uma especialidade."; 
-        }
-        if (!patologista.endereco.cep) {
-            newErrors.cep = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.rua) {
-            newErrors.rua = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.estado) {
-            newErrors.estado = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.cidade) {
-            newErrors.cidade = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.numero) {
-            newErrors.numero = "Campo obrigatório"; 
-        }
-        if (!patologista.endereco.bairro) {
-            newErrors.bairro = "Campo obrigatório"; 
-        }
+
+        if (!patologista.nome) newErrors.nome = "Campo obrigatório";
+
+        if (!patologista.email) newErrors.email = "Campo obrigatório";
+        else if (!validateEmail(patologista.email)) newErrors.email = "E-mail inválido";
+
+        if (!patologista.cpf) newErrors.cpf = "Campo obrigatório";
+        else if (!validateCPF(patologista.cpf)) newErrors.cpf = "CPF inválido";
+
+        if (!patologista.telefone) newErrors.telefone = "Campo obrigatório";
+        else if (!validateTelefone(patologista.telefone)) newErrors.telefone = "Telefone inválido";
+
+        if (!patologista.crmv) newErrors.crmv = "Campo obrigatório";
+        else if (!validateCRMV(patologista.crmv)) newErrors.crmv = "CRMV inválido";
+
+        if (selectedEspecialidades.length === 0) newErrors.especialidade = "Selecione pelo menos uma especialidade.";
+
+        // Validações do endereço
+        if (!patologista.endereco.cep) newErrors.cep = "Campo obrigatório";
+        else if (patologista.endereco.cep.replace(/\D/g, '').length !== 8) newErrors.cep = "CEP inválido";
+        else if (errors.cep === "CEP não encontrado") newErrors.cep = "CEP não encontrado";
+        if (!patologista.endereco.rua) newErrors.rua = "Campo obrigatório";
+        if (!patologista.endereco.estado) newErrors.estado = "Campo obrigatório";
+        if (!patologista.endereco.cidade) newErrors.cidade = "Campo obrigatório";
+        if (!patologista.endereco.numero) newErrors.numero = "Campo obrigatório";
+        if (!patologista.endereco.bairro) newErrors.bairro = "Campo obrigatório";
+
         setErrors(newErrors);
-    
         return Object.keys(newErrors).length === 0;
     };
 
-    const handlePatologistaUpdate = async () => {
+
+    const handlePatologistaUpdate = async (event) => {
         event.preventDefault();
         if (!validateForm()) {
             return;
@@ -248,15 +316,23 @@ function UpdatePatologista() {
             }
         };
 
-        console.log("patologistaToUpdate:", patologistaToUpdate);
 
+        setShowErrorAlert(false);
         try {
             await updatePatologista(id, patologistaToUpdate);
-            setShowAlert(true); 
+            setShowAlert(true);
         } catch (error) {
             console.error("Erro ao editar patologista:", error);
-            console.log("Erro ao editar informações. Por favor, tente novamente.");
-            setShowErrorAlert(true);   
+
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+            if (error?.response?.data?.message && !isDataIntegrityError) {
+                setErrorMessage(error?.response?.data?.message);
+            } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                setErrorMessage(error?.response?.data?.error);
+            } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
         }
     };
 
@@ -316,7 +392,7 @@ function UpdatePatologista() {
                     </div>
                 </div>
 
-                <div className={styles.boxcadastro}>
+                {/*<div className={styles.boxcadastro}>
                     <div className={styles.input_space}>
                         <div className="form-label">Deseja alterar sua senha?</div>
                         <input
@@ -336,7 +412,7 @@ function UpdatePatologista() {
                             </div>
                         </div>
                     )}
-                </div>
+                </div> */}
 
                 {patologista.endereco && (
                     <div className={styles.boxcadastro}>
@@ -367,7 +443,7 @@ function UpdatePatologista() {
 
             </form>
             {<Alert message="Informações do(a) patologista editadas com sucesso!" show={showAlert} url={`/lapa/gerenciarPatologistas/getPatologistaById/${id}`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao editar informações do(a) patologista, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao editar informações do(a) patologista, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }
@@ -376,7 +452,7 @@ function renderPatologistaInput(label, placeholder, name, value, onChange, type 
     const InputComponent = mask ? InputMask : 'input';
 
     const toggleShow = (event) => {
-        event.preventDefault(); 
+        event.preventDefault();
         setShow(!show);
     };
 

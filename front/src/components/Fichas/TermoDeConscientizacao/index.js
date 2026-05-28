@@ -31,7 +31,8 @@ function TermoDeConcientizacao() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
+      setShowErrorAlert(false);
+        try {
         const userData = await getCurrentUsuario();
         setUserId(userData.usuario.id);
       } catch (error) {
@@ -83,8 +84,8 @@ function TermoDeConcientizacao() {
       dataHora: dataFormatada 
     };
 
-    try {
-      console.log("fichaData:", fichaData);
+    setShowErrorAlert(false);
+        try {
       await createFicha(fichaData);
       setShowAlert(true);
     } catch (error) {

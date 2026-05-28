@@ -19,13 +19,14 @@ function UpdateMeuPerfil() {
     const [alterarSenha, setAlterarSenha] = useState(false);
     const [senhaErro, setSenhaErro] = useState("");
     const [confirmarSenhaErro, setConfirmarSenhaErro] = useState("");
-    
+
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
 
     const [usuario, setUsuario] = useState({
         id: null,
@@ -46,56 +47,47 @@ function UpdateMeuPerfil() {
         }
     });
 
-        // Substitua sua função validarCPF por esta
+
     const validarCPF = (cpf) => {
-    if (!cpf) return false;
+        if (!cpf) return false;
 
-    // Remove caracteres não numéricos
-    cpf = cpf.replace(/[^\d]+/g, '');
+        cpf = cpf.replace(/[^\d]+/g, '');
 
-    // Verifica se tem 11 dígitos e não é uma sequência repetida
-    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+        if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
 
-    // Validação dos dois dígitos verificadores
-    let soma = 0;
-    for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
-    let resto = soma % 11;
-    let digito1 = resto < 2 ? 0 : 11 - resto;
-    if (digito1 !== parseInt(cpf.charAt(9))) return false;
+        let soma = 0;
+        for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+        let resto = soma % 11;
+        let digito1 = resto < 2 ? 0 : 11 - resto;
+        if (digito1 !== parseInt(cpf.charAt(9))) return false;
 
-    soma = 0;
-    for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
-    resto = soma % 11;
-    let digito2 = resto < 2 ? 0 : 11 - resto;
-    if (digito2 !== parseInt(cpf.charAt(10))) return false;
+        soma = 0;
+        for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+        resto = soma % 11;
+        let digito2 = resto < 2 ? 0 : 11 - resto;
+        if (digito2 !== parseInt(cpf.charAt(10))) return false;
 
-    return true;
+        return true;
     };
 
 
-        // Substitua sua função validarTelefone por esta
     const validarTelefone = (telefone) => {
-    if (!telefone) return false;
+        if (!telefone) return false;
 
-    // Remove tudo que não for número
-    const numeroLimpo = telefone.replace(/\D/g, '');
+        const numeroLimpo = telefone.replace(/\D/g, '');
 
-    // Deve ter 10 ou 11 dígitos
-    if (numeroLimpo.length < 10 || numeroLimpo.length > 11) return false;
+        if (numeroLimpo.length < 10 || numeroLimpo.length > 11) return false;
 
-    const ddd = numeroLimpo.substring(0, 2);
-    const numero = numeroLimpo.substring(2);
+        const ddd = numeroLimpo.substring(0, 2);
+        const numero = numeroLimpo.substring(2);
 
-    // Verifica DDD válido (de 11 a 99)
-    if (parseInt(ddd) < 11 || parseInt(ddd) > 99) return false;
+        if (parseInt(ddd) < 11 || parseInt(ddd) > 99) return false;
 
-    // Validação para celular: 11 dígitos e começa com 9
-    if (numeroLimpo.length === 11 && numero[0] !== '9') return false;
+        if (numeroLimpo.length === 11 && numero[0] !== '9') return false;
 
-    // Validação para fixo: 10 dígitos e começa com 2, 3, 4 ou 5
-    if (numeroLimpo.length === 10 && !['2', '3', '4', '5'].includes(numero[0])) return false;
+        if (numeroLimpo.length === 10 && !['2', '3', '4', '5'].includes(numero[0])) return false;
 
-    return true;
+        return true;
     };
 
 
@@ -111,7 +103,8 @@ function UpdateMeuPerfil() {
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
-                try {
+                setShowErrorAlert(false);
+        try {
                     const usuarioData = await getUsuarioById(id);
                     setUsuario(usuarioData);
                 } catch (error) {
@@ -130,7 +123,7 @@ function UpdateMeuPerfil() {
     }
 
     // Verifica se o usuário tem permissão
-    if (!roles.includes("secretario") && !roles.includes("tutor") && !roles.includes("medico")) {
+    if (!roles.includes("secretario") && !roles.includes("tutor") && !roles.includes("medico") && !roles.includes("admin_lapa") && !roles.includes("patologista")) {
         return (
             <div className={styles.container}>
                 <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
@@ -149,7 +142,7 @@ function UpdateMeuPerfil() {
     const handleUsuarioChange = (event) => {
         const { name, value } = event.target;
         setUsuario({ ...usuario, [name]: value });
-        
+
         // Validação em tempo real para CPF
         if (name === "cpf") {
             const cpfLimpo = value.replace(/[^\d]/g, '');
@@ -159,7 +152,7 @@ function UpdateMeuPerfil() {
                 setErrors(prev => ({ ...prev, cpf: "" }));
             }
         }
-        
+
         // Validação em tempo real para telefone
         if (name === "telefone") {
             if (!validarTelefone(value)) {
@@ -182,6 +175,7 @@ function UpdateMeuPerfil() {
     };
 
     const fetchCepData = async (cep) => {
+        setShowErrorAlert(false);
         try {
             const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
             const data = await response.json();
@@ -201,8 +195,10 @@ function UpdateMeuPerfil() {
                 console.error("CEP não encontrado.");
             }
         } catch (error) {
-            console.error("Erro ao buscar CEP:", error);
-        }
+                console.error("Erro ao buscar CEP:", error);
+                setErrors(prev => ({ ...prev, cep: "CEP não encontrado" }));
+                
+            }
     };
 
     const handleCepChange = (event) => {
@@ -219,21 +215,21 @@ function UpdateMeuPerfil() {
 
     const validateForm = () => {
         const newErrors = {};
-        
+
         // Validação de CPF
         if (!usuario.cpf) {
             newErrors.cpf = "Campo obrigatório";
         } else if (!validarCPF(usuario.cpf)) {
             newErrors.cpf = "CPF inválido";
         }
-        
+
         // Validação de telefone
         if (!usuario.telefone) {
             newErrors.telefone = "Campo obrigatório";
         } else if (!validarTelefone(usuario.telefone)) {
             newErrors.telefone = "Telefone inválido";
         }
-        
+
         if (alterarSenha) {
             if (!usuario.senha) {
                 newErrors.senha = "Senha é obrigatória";
@@ -294,12 +290,21 @@ function UpdateMeuPerfil() {
                 bairro: usuario.endereco.bairro
             }
         };
-        console.log("usuarioToUpdate:", usuarioToUpdate);
+        setShowErrorAlert(false);
         try {
             await updateUsuario(usuario.id, usuarioToUpdate);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao editar usuario:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -328,7 +333,7 @@ function UpdateMeuPerfil() {
                 </div>
 
                 {/* opção de alterar senha */}
-                
+
                 {/* <div className={styles.boxcadastro}>
                     <div className={styles.input_space}>
                         <div className="form-label">Deseja alterar sua senha?</div>
@@ -379,8 +384,8 @@ function UpdateMeuPerfil() {
                 </div>
 
             </form>
-            {<Alert message="Informações editadas com sucesso!" show={showAlert} url={`/meuPerfil/${id}`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao editar informações, tente novamente." show={showErrorAlert} />}
+            {<Alert message="Informações editadas com sucesso!" show={showAlert} url={(roles.includes('admin_lapa') || roles.includes('patologista')) ? `/lapa/meuPerfil/${id}` : `/meuPerfil/${id}`} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao editar informações, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

@@ -31,6 +31,9 @@ public class Animal  {
 	@ManyToOne
 	@ToString.Exclude
 	private Raca raca;
+
+	@Enumerated(EnumType.STRING)
 	private OrigemAnimal origemAnimal;
+
 	private boolean obito;
 }

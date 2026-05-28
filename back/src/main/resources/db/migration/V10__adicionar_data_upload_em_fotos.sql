@@ -1,0 +1,2 @@
+ALTER TABLE foto
+ADD COLUMN data_upload TIMESTAMP;

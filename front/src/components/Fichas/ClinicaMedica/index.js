@@ -171,15 +171,28 @@ function ClinicaMedicaSteps() {
   };
   const handleCaracteristicaChange = (e, linfonodo) => {
     const { name, checked } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      linfonodos: {
-        ...prevState.linfonodos,
-        [linfonodo]: checked
-          ? [...prevState.linfonodos[linfonodo], name]
-          : prevState.linfonodos[linfonodo].filter((item) => item !== name)
+    setFormData((prevState) => {
+      const currentValues = prevState.linfonodos[linfonodo] || [];
+      let nextValues = checked
+        ? [...currentValues, name]
+        : currentValues.filter((item) => item !== name);
+
+      if (name === "reativos" && checked) {
+        nextValues = nextValues.filter((item) => item !== "semAlteracao");
       }
-    }));
+
+      if (name === "semAlteracao" && checked) {
+        nextValues = nextValues.filter((item) => item !== "reativos");
+      }
+
+      return {
+        ...prevState,
+        linfonodos: {
+          ...prevState.linfonodos,
+          [linfonodo]: nextValues
+        }
+      };
+    });
   };
   const handleCheckboxChangeMucosas = (e) => {
     const { name, checked } = e.target;
@@ -257,7 +270,6 @@ function ClinicaMedicaSteps() {
         const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
         if (id) {
         setConsultaId(id);
-        console.log("ID da ficha:", id);
         }
         if (aId) {
           setAgendamentoId(aId); // Define o ID do agendamento
@@ -331,7 +343,6 @@ function ClinicaMedicaSteps() {
 
     };
 
-    console.log("➡️  Enviando para a API:", fichaData);
 
     try {
         const resultado = await createFicha(fichaData);

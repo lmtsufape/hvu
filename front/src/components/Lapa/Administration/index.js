@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from 'next/link';
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./index.module.css"
@@ -7,9 +7,20 @@ import { useRouter } from "next/router";
 function TelaAdministracao() {
 
     const router = useRouter();
+    const [roles, setRoles] = useState([]);
+    const [token, setToken] = useState("");
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedToken = localStorage.getItem('token');
+            const storedRoles = JSON.parse(localStorage.getItem('roles'));
+            setToken(storedToken || "");
+            setRoles(storedRoles || []);
+        }
+    }, []);
 
     const handlePatologistasClick = () => {
-      router.push('/lapa/administrationPage/patologista');
+        router.push('/lapa/administrationPage/patologista');
     };
 
     const handleAnimaisClick = () => {
@@ -17,15 +28,15 @@ function TelaAdministracao() {
     };
 
     const handleLaudosClick = () => {
-      router.push('/lapa/administrationPage/laudo');
+        router.push('/lapa/administrationPage/laudo');
     };
 
     const handleNecropsiastasClick = () => {
-      router.push('/lapa/administrationPage/necropsia');
+        router.push('/lapa/administrationPage/necropsia');
     };
 
     const handleHistopatologicaClick = () => {
-      router.push('/lapa/administrationPage/histopatologica');
+        router.push('/lapa/administrationPage/histopatologica');
     };
 
     const handleCaafClick = () => {
@@ -42,54 +53,62 @@ function TelaAdministracao() {
 
     return (
         <div className={styles.container}>
+            {(!roles.includes("admin_lapa") && !roles.includes("patologista")) ? (
+                <div className={styles.container}>
+                    <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+                </div>
+            ) : (!token) ? (
+                <div className={styles.container}>
+                    <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+                </div>
+            ) : (
+                <>
+                    <div className={styles.text_box}>
+                        <h1 className={styles.titulo}>Administração</h1>
+                    </div>
 
-            <div className={styles.text_box}>
-            <h1 className={styles.titulo}>Administração</h1>
-            </div>
+                    <div className={styles.box_button}>
 
-            <div className={styles.box_button}>
+                        <button type="button" className={styles.button} onClick={handlePatologistasClick}>
+                            <h6>Seção dos patologistas</h6>
+                        </button>
 
-                <button type="button" className={styles.button} onClick={handlePatologistasClick}>
-                    <h6>Seção dos patologistas</h6>
-                </button>
+                        <button type="button" className={styles.button} onClick={handleAnimaisClick}>
+                            <h6>Seção dos Animais</h6>
+                        </button>
 
-                <button type="button" className={styles.button} onClick={handleAnimaisClick}>
-                    <h6>Seção dos Animais</h6>
-                </button>
+                        <button type="button" className={styles.button} onClick={handleLaudosClick}>
+                            <h6>Seção dos Laudos</h6>
+                        </button>
 
-                <button type="button" className={styles.button} onClick={handleLaudosClick}>
-                    <h6>Seção dos Laudos</h6>
-                </button>
+                        <button type="button" className={styles.button} onClick={handleNecropsiastasClick}>
+                            <h6>Seção das Necropsias</h6>
+                        </button>
+                    </div>
 
-                <button type="button" className={styles.button}onClick={handleNecropsiastasClick}>
-                    <h6>Seção das Necropsias</h6>
-                </button>
+                    <div className={styles.box_button2}>
+                        <button type="button" className={styles.button} onClick={handleHistopatologicaClick}>
+                            <h6>Seção das Histopatologias</h6>
+                        </button>
 
-            </div>
+                        <button type="button" className={styles.button} onClick={handleCaafClick}>
+                            <h6>Seção do CAAF</h6>
+                        </button>
 
-            <div className={styles.box_button2}>
+                        <button type="button" className={styles.button} onClick={handleVeterinarioClick}>
+                            <h6>Seção dos Veterinários</h6>
+                        </button>
 
-                <button type="button" className={styles.button} onClick={handleHistopatologicaClick}>
-                    <h6>Seção das Histopatologias</h6>
-                </button>
-
-                <button type="button" className={styles.button} onClick={handleCaafClick}>
-                    <h6>Seção do CAAF</h6>
-                </button>
-
-                <button type="button" className={styles.button} onClick={handleVeterinarioClick}>
-                    <h6>Seção dos Veterinários</h6>
-                </button>
-
-                <button type="button" className={styles.button} onClick={handleTutorClick}>
-                    <h6>Seção dos Tutores</h6>
-                </button>
-            </div>
-            
+                        <button type="button" className={styles.button} onClick={handleTutorClick}>
+                            <h6>Seção dos Tutores</h6>
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     );
 }
 
-export default TelaAdministracao; 
+export default TelaAdministracao;
 
 

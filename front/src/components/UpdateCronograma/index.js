@@ -16,6 +16,7 @@ function CreateCronograma() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [errors, setErrors] = useState({});
 
@@ -57,7 +58,8 @@ function CreateCronograma() {
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
-                try {
+                setShowErrorAlert(false);
+        try {
                     const cronogramaData = await getCronogramaById(id);
                     setCronograma({
                         nome: cronogramaData.nome,
@@ -69,7 +71,6 @@ function CreateCronograma() {
                     setSelectedMedico(cronogramaData.medico.id);
                     setSelectedEspecialidade(cronogramaData.especialidade.id);
 
-                    console.log("racaData:", cronogramaData)
                 } catch (error) {
                     console.error('Erro ao buscar raça:', error);
                 } finally {
@@ -127,7 +128,6 @@ function CreateCronograma() {
         const { name, value } = event.target;
         setCronograma({ ...cronograma, [name]: value });
     };
-    console.log("cronograma:", cronograma);
     
     const handleEspecialidadeSelection = (event) => {
         const selectedEspecialidadeId = event.target.value;
@@ -139,7 +139,6 @@ function CreateCronograma() {
         setSelectedMedico(selectedMedicoId);
     };
 
-    console.log("medico", selectedMedico);
 
     const validateFields = (cronograma) => {
         const errors = {};
@@ -190,13 +189,22 @@ function CreateCronograma() {
             medico: { id: parseInt(selectedMedico) },
             especialidade: { id: parseInt(selectedEspecialidade) }
         };
-        console.log("cronogramaToCreate", cronogramaToCreate);
 
+        setShowErrorAlert(false);
         try {
             await updateCronograma(id, cronogramaToCreate);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar agenda:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -639,7 +647,7 @@ function CreateCronograma() {
 
             </form>
             {<Alert message="Agenda editada com sucesso!" show={showAlert} url={`/getAllCronograma/${selectedMedico}`} />}   
-            {showErrorAlert && <ErrorAlert message="Erro ao editar agenda, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao editar agenda, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

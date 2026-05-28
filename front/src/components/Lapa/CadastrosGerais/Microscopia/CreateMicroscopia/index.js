@@ -16,6 +16,7 @@ function CreateMicroscopia() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [errors, setErrors] = useState({});
     const [microscopia, setMicroscopia] = useState({
         descricao: "",
@@ -79,12 +80,21 @@ function CreateMicroscopia() {
             setErrors(errors);
             return;
         }
+        setShowErrorAlert(false);
         try {
-            console.log(microscopia)
             await createCampoLaudoMicroscopia(microscopia);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar microscopia:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -186,7 +196,7 @@ function CreateMicroscopia() {
             )}
             {showErrorAlert && (
                 <ErrorAlert
-                    message="Erro ao cadastrar microscopia, tente novamente."
+                    message={errorMessage || "Erro ao cadastrar microscopia, tente novamente."}
                     show={showErrorAlert}
                 />
             )}

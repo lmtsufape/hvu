@@ -15,6 +15,7 @@ function UpdateTipoConsulta() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [tipoConsulta, setTipoConsulta] = useState({});
 
@@ -34,11 +35,11 @@ function UpdateTipoConsulta() {
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
-                try {
+                setShowErrorAlert(false);
+        try {
                     const tipoConsultaData = await getTipoConsultaById(id);
                     setTipoConsulta(tipoConsultaData);
 
-                    console.log("tipoConsultaData:", tipoConsultaData)
                 } catch (error) {
                     console.error('Erro ao buscar tipo de consulta:', error);
                 } finally {
@@ -92,11 +93,21 @@ function UpdateTipoConsulta() {
           return;
         }
 
+        setShowErrorAlert(false);
         try {
             await updateTipoConsulta(tipoConsulta.id, tipoConsulta);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao editar tipo de consulta:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -129,7 +140,7 @@ function UpdateTipoConsulta() {
                 </div>
             </form>
             {<Alert message="Informações do tipo de consulta editadas com sucesso!" show={showAlert} url={`/gerenciarTiposConsulta`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao editar informações do tipo de consulta, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao editar informações do tipo de consulta, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

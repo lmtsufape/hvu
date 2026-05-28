@@ -28,6 +28,7 @@ function CreateOrgao() {
   const [errors, setErrors] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
   const [token, setToken] = useState(null);
   const [roles, setRoles] = useState([]);
@@ -100,13 +101,22 @@ function CreateOrgao() {
       setErrors(validationErrors);
       return;
     }
-    console.log("orgaoToCreate:", orgao)
-    try {
+    setShowErrorAlert(false);
+        try {
       await createOrgao(orgao);
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar órgão:", error);
-      setShowErrorAlert(true);
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
   };
 
@@ -206,7 +216,7 @@ function CreateOrgao() {
       </div>
 
       {showAlert && <Alert message="Órgão criado com sucesso!" show={showAlert} url={`/lapa/gerenciarOrgaos`} />}
-      {showErrorAlert && <ErrorAlert message="Erro ao criar órgão, tente novamente." show={showErrorAlert} />}
+      {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao criar órgão, tente novamente."} show={showErrorAlert} />}
     </div>
   );
 }

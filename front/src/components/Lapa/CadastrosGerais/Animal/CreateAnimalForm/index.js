@@ -300,22 +300,28 @@ function CreateAnimalForm() {
           }
         }
 
+        setShowErrorAlert(false);
         try {
           const result = await createAnimalByPatologista(requestData)
-          console.log(result)
           //resetForm()
           setShowAlert(true)
         } catch (error) {
           console.error("Erro ao criar animal:", error)
-          console.log("Detalhes do erro:", error.response)
           //resetForm()
-          setShowErrorAlert(true)
+          
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
         }
       } else {
-        console.log("Aguardando dados de espécies e raças carregarem...")
       }
     } else {
-      console.log("Formulário inválido, preencha corretamente e tente novamente.")
     }
   }
 
@@ -569,7 +575,7 @@ function CreateAnimalForm() {
         </div>
       </form>
       {<Alert message="Animal cadastrado com sucesso!" show={showAlert} url="/lapa/gerenciarAnimais" />}
-      {showErrorAlert && <ErrorAlert message="Erro ao realizar cadastro, tente novamente." show={showErrorAlert} />}
+      {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao realizar cadastro, tente novamente."} show={showErrorAlert} />}
     </div>
   )
 }

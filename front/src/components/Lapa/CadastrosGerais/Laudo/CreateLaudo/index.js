@@ -33,6 +33,7 @@ function CreateLaudoNecropsia() {
     const [errors, setErrors] = useState({});
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [filteredFichas, setFilteredFichas] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -135,6 +136,7 @@ function CreateLaudoNecropsia() {
     const [previewFotos, setPreviewFotos] = useState([]);
 
     const fetchFotoPreview = async (id, titulo) => {
+        setShowErrorAlert(false);
         try {
             const blob = await getFotoById(id);
             const url = URL.createObjectURL(blob);
@@ -184,7 +186,7 @@ function CreateLaudoNecropsia() {
             campoMicroscopia: laudo.campoMicroscopia.map(microscopia => ({ id: microscopia.id }))
         };
 
-        console.log("laudoToSend:", laudoToSend);
+        setShowErrorAlert(false);
         try {
             await createLaudoNecropsia(laudoToSend);
             setShowAlert(true);
@@ -193,6 +195,15 @@ function CreateLaudoNecropsia() {
             }, 2000);
         } catch (error) {
             console.error("Erro ao criar laudo de necropsia:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -424,7 +435,7 @@ function CreateLaudoNecropsia() {
             </div>
 
             {showAlert && <Alert message="Laudo de necropsia criado com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao criar laudo de necropsia, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao criar laudo de necropsia, tente novamente."} show={showErrorAlert} />}
 
             {/* --- Modal Ficha --- */}
             <Modal show={showModal} onHide={() => setShowModal(false)}>

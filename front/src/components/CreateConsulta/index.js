@@ -26,7 +26,6 @@ const useFichaManager = () => {
           const parsedIds = JSON.parse(storedIds);
           if (Array.isArray(parsedIds)) {
             setFichaIds(parsedIds.filter((id) => id && id !== "null"));
-            console.log("parsedIds:", parsedIds);
           }
         } catch (error) {
           console.error("Erro ao ler fichaIds:", error);
@@ -36,7 +35,6 @@ const useFichaManager = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Ficha IDs atualizados:", fichaIds);
   }, [fichaIds]);
 
   const addFichaId = (newId) => {
@@ -105,7 +103,7 @@ const formatFichaContent = (content) => {
       .replace(/([A-Z])/g, " $1")
       .replace(/^./, (str) => str.toUpperCase())
       .replace(/_/g, " ");
-    
+
 
     // Ignorar chaves indesejadas
     if (key.toLowerCase() === "opc" || key.toLowerCase() === "option") {
@@ -141,35 +139,35 @@ const formatFichaContent = (content) => {
       );
     }
     if (key.toLowerCase() === "parametros" && Array.isArray(value)) {
-  const valoresComDados = value.filter((item) => {
-    // Mantém apenas os tempos que têm mais que só o tempo preenchido
-    const { tempo, ...resto } = item;
-    return Object.values(resto).some((v) => v !== "" && v !== null && v !== undefined);
-  });
+      const valoresComDados = value.filter((item) => {
+        // Mantém apenas os tempos que têm mais que só o tempo preenchido
+        const { tempo, ...resto } = item;
+        return Object.values(resto).some((v) => v !== "" && v !== null && v !== undefined);
+      });
 
-  if (valoresComDados.length === 0) return null;
+      if (valoresComDados.length === 0) return null;
 
-  return (
-    <div key={key}>
-      <strong>{formattedKey}:</strong>
-      {valoresComDados.map((item, idx) => (
-        <div key={idx} style={{ marginLeft: "20px" }}>
-          {Object.entries(item).map(([subKey, subValue]) => {
-            const formattedSubKey = subKey
-              .replace(/([A-Z])/g, " $1")
-              .replace(/^./, (str) => str.toUpperCase())
-              .replace(/_/g, " ");
-            return (
-              <p key={subKey}>
-                <strong>{formattedSubKey}:</strong> {String(subValue)}
-              </p>
-            );
-          })}
+      return (
+        <div key={key}>
+          <strong>{formattedKey}:</strong>
+          {valoresComDados.map((item, idx) => (
+            <div key={idx} style={{ marginLeft: "20px" }}>
+              {Object.entries(item).map(([subKey, subValue]) => {
+                const formattedSubKey = subKey
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/^./, (str) => str.toUpperCase())
+                  .replace(/_/g, " ");
+                return (
+                  <p key={subKey}>
+                    <strong>{formattedSubKey}:</strong> {String(subValue)}
+                  </p>
+                );
+              })}
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  );
-}
+      );
+    }
 
     // Para arrays simples (ex.: Anamnese)
     if (Array.isArray(value) && value.every((item) => typeof item !== "object")) {
@@ -230,7 +228,7 @@ function CreateConsulta() {
   const router = useRouter();
   const { id } = router.query;
 
-   const [agendamentoId, setAgendamentoId] = useState(null);
+  const [agendamentoId, setAgendamentoId] = useState(null);
 
   const [showButtons, setShowButtons] = useState(false);
   const [showFichas, setShowFichas] = useState(false);
@@ -243,6 +241,7 @@ function CreateConsulta() {
   const { fichaIds, addFichaId, setFichaIds } = useFichaManager();
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [showAlertFicha, setShowAlertFicha] = useState(false);
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
@@ -292,6 +291,7 @@ function CreateConsulta() {
 
     const fetchHistorico = async () => {
       setLoadingHistorico(true);
+      setShowErrorAlert(false);
       try {
         const consultasData = await getConsultaByAnimal(animalId);
         setHistoricoConsultas(consultasData);
@@ -302,41 +302,43 @@ function CreateConsulta() {
       }
     };
 
-     // Só busca o histórico se o toggle estiver aberto
+    // Só busca o histórico se o toggle estiver aberto
     if (showHistorico) {
       fetchHistorico();
     }
   }, [animalId, showHistorico]);
 
-  
+
   useEffect(() => {
-  if (typeof window !== "undefined") {
-    const savedData = localStorage.getItem('consultaFormData');
-    if (savedData) {
-      try {
-        const parsedData = JSON.parse(savedData);
-        // Atualiza o estado 'consulta' com os dados salvos
-        setConsulta(parsedData);
-      } catch (error) {
-        console.error("Erro ao carregar dados do formulário do localStorage:", error);
-        // Se houver erro, limpa o item inválido
-        localStorage.removeItem('consultaFormData');
+    if (typeof window !== "undefined") {
+      const savedData = localStorage.getItem('consultaFormData');
+      if (savedData) {
+        setShowErrorAlert(false);
+        try {
+          const parsedData = JSON.parse(savedData);
+          // Atualiza o estado 'consulta' com os dados salvos
+          setConsulta(parsedData);
+        } catch (error) {
+          console.error("Erro ao carregar dados do formulário do localStorage:", error);
+          // Se houver erro, limpa o item inválido
+          localStorage.removeItem('consultaFormData');
+        }
       }
     }
-  }
-}, []);
+  }, []);
 
-useEffect(() => {
-  // Este efeito roda sempre que o estado 'consulta' for atualizado.
-  // A verificação inicial evita salvar o estado padrão vazio na primeira renderização,
-  // embora salvá-lo não seja um grande problema.
-  if (consulta.queixaPrincipal || consulta.pesoAtual || consulta.idadeAtual) {
+  useEffect(() => {
+    // Este efeito roda sempre que o estado 'consulta' for atualizado.
+    // A verificação inicial evita salvar o estado padrão vazio na primeira renderização,
+    // embora salvá-lo não seja um grande problema.
+    if (consulta.queixaPrincipal || consulta.pesoAtual || consulta.idadeAtual) {
       localStorage.setItem('consultaFormData', JSON.stringify(consulta));
-  }
-}, [consulta]);
+    }
+  }, [consulta]);
 
   useEffect(() => {
     const fetchFichas = async () => {
+      setShowErrorAlert(false);
       try {
         const fetchedFichas = await Promise.all(
           fichaIds.map((id) => getFichaById(id))
@@ -346,7 +348,6 @@ useEffect(() => {
           conteudo: cleanFichaContent(JSON.parse(ficha.conteudo || "{}")),
         }));
         setFichas(fichasComConteudo);
-        console.log("Fichas processadas:", fichasComConteudo);
       } catch (error) {
         console.error("Erro ao buscar fichas:", error);
         setShowErrorAlert(true);
@@ -362,7 +363,6 @@ useEffect(() => {
     if (typeof window !== "undefined") {
       const currentFichaId = localStorage.getItem("fichaId");
       if (currentFichaId) {
-        console.log("currentFichaId:", currentFichaId);
         addFichaId(currentFichaId);
         localStorage.removeItem("fichaId");
       }
@@ -381,21 +381,31 @@ useEffect(() => {
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
+        setShowErrorAlert(false);
         try {
-                const vagaJson = await getVagaById(id);
-                setVagaData(vagaJson);
+          const vagaJson = await getVagaById(id);
+          setVagaData(vagaJson);
 
-                // Extrai os IDs do objeto da vaga e os salva nos estados
-                if (vagaJson.agendamento) {
-                    setAnimalId(vagaJson.agendamento.animal.id);
-                    setAgendamentoId(vagaJson.agendamento.id); // <-- AQUI ESTÁ A CORREÇÃO
-                }
-                if (vagaJson.medico) {
-                    setMedicoId(vagaJson.medico.id);
-                }
+          // Extrai os IDs do objeto da vaga e os salva nos estados
+          if (vagaJson.agendamento) {
+            setAnimalId(vagaJson.agendamento.animal.id);
+            setAgendamentoId(vagaJson.agendamento.id); // <-- AQUI ESTÁ A CORREÇÃO
+          }
+          if (vagaJson.medico) {
+            setMedicoId(vagaJson.medico.id);
+          }
 
         } catch (error) {
           console.error("Erro ao buscar vaga:", error);
+
+          const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+          if (error?.response?.data?.message && !isDataIntegrityError) {
+            setErrorMessage(error?.response?.data?.message);
+          } else if (error?.response?.data?.error && !isDataIntegrityError) {
+            setErrorMessage(error?.response?.data?.error);
+          } else {
+            setErrorMessage("");
+          }
           setShowErrorAlert(true);
         } finally {
           setLoading(false);
@@ -435,8 +445,25 @@ useEffect(() => {
     );
   }
 
+  const sanitizeWeightValue = (value) => {
+    const numericOnly = value.replace(/,/g, ".").replace(/[^\d.]/g, "");
+    const parts = numericOnly.split(".");
+    if (parts.length <= 2) return numericOnly;
+    return `${parts[0]}.${parts.slice(1).join("")}`;
+  };
+
+  const preventInvalidNumberKeys = (event) => {
+    if (["e", "E", "+", "-"].includes(event.key)) {
+      event.preventDefault();
+    }
+  };
+
   const handleConsultaChange = (event) => {
     const { name, value } = event.target;
+    if (name === "pesoAtual") {
+      setConsulta({ ...consulta, [name]: sanitizeWeightValue(value) });
+      return;
+    }
     setConsulta({ ...consulta, [name]: value });
   };
 
@@ -446,14 +473,14 @@ useEffect(() => {
   };
 
   const handleObitoChange = (event) => {
-  const value = event.target.value === 'true';
+    const value = event.target.value === 'true';
     setConsulta(prevConsulta => ({
       ...prevConsulta,
       obito: value
     }));
   };
 
-  
+
 
   const validateFields = (consulta) => {
     const errors = {};
@@ -499,23 +526,32 @@ useEffect(() => {
       setErrors(validationErrors);
       return;
     }
+    setShowErrorAlert(false);
     try {
-      console.log("Criando consulta com os dados:", consultaToCreate);
       await createConsulta(consultaToCreate, id);
       // Limpa os dados salvos do localStorage após o sucesso
       localStorage.removeItem('consultaFormData');
       // Também é uma boa ideia limpar os IDs das fichas aqui
-      localStorage.removeItem('fichaIds'); 
+      localStorage.removeItem('fichaIds');
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar consulta:", error);
+
+      const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+      if (error?.response?.data?.message && !isDataIntegrityError) {
+        setErrorMessage(error?.response?.data?.message);
+      } else if (error?.response?.data?.error && !isDataIntegrityError) {
+        setErrorMessage(error?.response?.data?.error);
+      } else {
+        setErrorMessage("");
+      }
       setShowErrorAlert(true);
     }
   };
   const nomeMedico = vagaData?.medico?.nome;
 
   const handleClick = (path, id) => {
-   router.push(`${path}?fichaId=${id}&animalId=${animalId}&agendamentoId=${agendamentoId}&medico=${encodeURIComponent(nomeMedico || '')}`);
+    router.push(`${path}?fichaId=${id}&animalId=${animalId}&agendamentoId=${agendamentoId}&medico=${encodeURIComponent(nomeMedico || '')}`);
   };
 
   const rotasPorNome = {
@@ -542,6 +578,7 @@ useEffect(() => {
   };
 
   const handleDelete = async (id) => {
+    setShowErrorAlert(false);
     try {
       await deleteFicha(id);
       setFichas((prev) => prev.filter((ficha) => ficha.id !== id));
@@ -556,6 +593,15 @@ useEffect(() => {
       }
     } catch (error) {
       console.error("Erro ao deletar ficha:", error);
+
+      const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+      if (error?.response?.data?.message && !isDataIntegrityError) {
+        setErrorMessage(error?.response?.data?.message);
+      } else if (error?.response?.data?.error && !isDataIntegrityError) {
+        setErrorMessage(error?.response?.data?.error);
+      } else {
+        setErrorMessage("");
+      }
       setShowErrorAlert(true);
     }
   };
@@ -581,17 +627,17 @@ useEffect(() => {
 
 
         <div className={styles.box_ficha_toggle}>
-            <button
-              type="button"
-              className={`${styles.toggleButton} ${showHistorico ? styles.minimize : styles.expand}`}
-              onClick={() => setShowHistorico((prev) => !prev)}
-            >
-              {showHistorico ? "Ocultar Histórico Clínico" : "Visualizar Histórico Clínico"}
-            </button>
-            {showHistorico && (
-                <HistoricoFichasAnimal />
-            )}
-          </div>
+          <button
+            type="button"
+            className={`${styles.toggleButton} ${showHistorico ? styles.minimize : styles.expand}`}
+            onClick={() => setShowHistorico((prev) => !prev)}
+          >
+            {showHistorico ? "Ocultar Histórico Clínico" : "Visualizar Histórico Clínico"}
+          </button>
+          {showHistorico && (
+            <HistoricoFichasAnimal />
+          )}
+        </div>
 
 
 
@@ -634,11 +680,15 @@ useEffect(() => {
                   Peso atual<span className={styles.obrigatorio}>*</span>
                 </label>
                 <input
-                  type="text"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  inputMode="decimal"
                   className={`form-control ${styles.input} ${errors.pesoAtual ? "is-invalid" : ""}`}
                   name="pesoAtual"
-                  placeholder="Digite o peso do animal"
+                  placeholder="Digite o peso do animal (kg)"
                   value={consulta.pesoAtual || ""}
+                  onKeyDown={preventInvalidNumberKeys}
                   onChange={handleConsultaChange}
                 />
                 {errors.pesoAtual && (
@@ -814,42 +864,42 @@ useEffect(() => {
           </div>
 
           <div className={styles.espacodosforms}>
-          <div className="row">
-            <div className={`col ${styles.col_radio}`}>
-              <label htmlFor="obito" className="form-label">
-                Óbito?
-              </label>
-              <div>
-                <input
-                  type="radio"
-                  className={`form-check-input ${styles.checkbox}`}
-                  id="obito_sim"
-                  name="obito"
-                  value="true"
-                  checked={consulta.obito === true}
-                  onChange={handleObitoChange}
-                />
-                <label htmlFor="obito_sim" className={styles.input}>
-                  Sim
+            <div className="row">
+              <div className={`col ${styles.col_radio}`}>
+                <label htmlFor="obito" className="form-label">
+                  Óbito?
                 </label>
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  className={`form-check-input ${styles.checkbox}`}
-                  id="obito_nao"
-                  name="obito"
-                  value="false"
-                  checked={consulta.obito === false}
-                  onChange={handleObitoChange}
-                />
-                <label htmlFor="obito_nao" className={styles.input}>
-                  Não
-                </label>
+                <div>
+                  <input
+                    type="radio"
+                    className={`form-check-input ${styles.checkbox}`}
+                    id="obito_sim"
+                    name="obito"
+                    value="true"
+                    checked={consulta.obito === true}
+                    onChange={handleObitoChange}
+                  />
+                  <label htmlFor="obito_sim" className={styles.input}>
+                    Sim
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="radio"
+                    className={`form-check-input ${styles.checkbox}`}
+                    id="obito_nao"
+                    name="obito"
+                    value="false"
+                    checked={consulta.obito === false}
+                    onChange={handleObitoChange}
+                  />
+                  <label htmlFor="obito_nao" className={styles.input}>
+                    Não
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
           <div className={styles.box_ficha_toggle}>
             <button
@@ -920,7 +970,7 @@ useEffect(() => {
                     >
                       Ficha ortopédica
                     </button>
-                
+
                     <button
                       className={styles.ficha_button}
                       type="button"
@@ -971,7 +1021,7 @@ useEffect(() => {
                     >
                       Ficha de solicitação de exame
                     </button>
-                    
+
                   </div>
                 </div>
               </div>
@@ -996,9 +1046,8 @@ useEffect(() => {
                         <div key={ficha.id} className={styles.ficha_item}>
                           <button
                             type="button"
-                            className={`${styles.ficha_button} ${
-                              selectedFichaId === ficha.id ? styles.selected : ""
-                            }`}
+                            className={`${styles.ficha_button} ${selectedFichaId === ficha.id ? styles.selected : ""
+                              }`}
                             onClick={() => toggleFichaDisplay(ficha.id)}
                             aria-label={`Exibir detalhes da ficha ${ficha.nome || "Ficha sem nome"}`}
                           >
@@ -1094,14 +1143,14 @@ useEffect(() => {
         {vagaData.consulta === null ? (
           showErrorAlert && (
             <ErrorAlert
-              message="Erro ao criar consulta, tente novamente."
+              message={errorMessage || "Erro ao criar consulta, tente novamente."}
               show={showErrorAlert}
             />
           )
         ) : (
           showErrorAlert && (
             <ErrorAlert
-              message="Consulta já foi criada, tente editá-la."
+              message={errorMessage || "Consulta já foi criada, tente editá-la."}
               show={showErrorAlert}
             />
           )

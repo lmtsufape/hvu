@@ -22,6 +22,7 @@ function FichaSolicitacaoCitologia() {
     const [showOtherInputLesao, setShowOtherInputLesao] = useState(false);
     const [otherValueLesao, setOtherValueLesao] = useState("");
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
@@ -73,7 +74,8 @@ function FichaSolicitacaoCitologia() {
 
     useEffect(() => {
         const fetchMedicoData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const userData = await getCurrentUsuario();
                 const medicoId = userData.usuario.id;
 
@@ -96,7 +98,8 @@ function FichaSolicitacaoCitologia() {
         if (typeof window !== 'undefined' && consultaId) {
             const savedFormData = localStorage.getItem(getLocalStorageKey());
             if (savedFormData) {
-                try {
+                setShowErrorAlert(false);
+        try {
                     const parsedData = JSON.parse(savedFormData);
                     setFormData(parsedData.formData || {
                         anamnese: [],
@@ -172,14 +175,16 @@ function FichaSolicitacaoCitologia() {
         if (!animalId) return;
 
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const animalData = await getAnimalById(animalId);
                 setAnimal(animalData);
             } catch (error) {
                 console.error('Erro ao buscar animal:', error);
             }
 
-            try {
+            setShowErrorAlert(false);
+        try {
                 const tutorData = await getTutorByAnimal(animalId);
                 setTutor(tutorData);
             } catch (error) {
@@ -223,8 +228,6 @@ function FichaSolicitacaoCitologia() {
     }
 
     const handleSaveDrawing = (imagemFinal, linhasDesenhadas) => {
-        console.log("Imagem final recebida:", imagemFinal); // Debug
-        console.log("Linhas desenhadas:", linhasDesenhadas); // Debug
         setFormData(prev => ({
             ...prev,
             imagemLesao: {
@@ -347,6 +350,7 @@ function FichaSolicitacaoCitologia() {
         };
 
 
+        setShowErrorAlert(false);
         try {
             const resultado = await createFicha(fichaData);
             localStorage.setItem('fichaId', resultado.id.toString());
@@ -355,6 +359,15 @@ function FichaSolicitacaoCitologia() {
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar ficha:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -727,7 +740,7 @@ function FichaSolicitacaoCitologia() {
                         />
                     </div>
                 )}
-                {showErrorAlert && <ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />}
+                {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao criar ficha"} show={showErrorAlert} />}
             </div>
         </div>
     );

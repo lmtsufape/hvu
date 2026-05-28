@@ -17,6 +17,7 @@ function UpdateFoto() {
   const [errors, setErrors] = useState({})
   const [showAlert, setShowAlert] = useState(false)
   const [showErrorAlert, setShowErrorAlert] = useState(false)
+  const [showFileSizeAlert, setShowFileSizeAlert] = useState(false) // Novo estado para alerta de tamanho
   const [foto, setFoto] = useState({})
   const [fotoFile, setFotoFile] = useState(null)
   const [currentImageUrl, setCurrentImageUrl] = useState(null)
@@ -26,13 +27,13 @@ function UpdateFoto() {
   const [token, setToken] = useState(null)
   const [roles, setRoles] = useState([])
 
-  // inicializa token e roles apenas uma vez
+  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 
+
   useEffect(() => {
     setToken(getToken())
     setRoles(getRoles())
   }, [])
 
-  // busca dados da foto quando o id, token e roles estiverem definidos
   useEffect(() => {
     if (!token || roles.length === 0) return
 
@@ -54,7 +55,16 @@ function UpdateFoto() {
           setCurrentImageUrl(imageUrl)
         } catch (error) {
           console.error("Erro ao buscar foto:", error)
-          setShowErrorAlert(true)
+          
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
         } finally {
           setLoading(false)
         }
@@ -93,16 +103,47 @@ function UpdateFoto() {
   }
 
   const handleFileChange = (event) => {
-    setFotoFile(event.target.files[0])
+    const file = event.target.files[0]
+    
+    if (!file) {
+      setFotoFile(null)
+      return
+    }
+    
+    if (file.size > MAX_FILE_SIZE) {
+      setShowFileSizeAlert(true)
+      
+      setErrors((prev) => ({
+        ...prev,
+        fotoFile: `Arquivo muito grande! Tamanho máximo permitido: 5MB. Seu arquivo: ${(file.size / (1024 * 1024)).toFixed(2)}MB`
+      }))
+      
+      event.target.value = ""
+      setFotoFile(null)
+      return
+    }
+    
+    setShowFileSizeAlert(false)
+    setErrors((prev) => ({ ...prev, fotoFile: "" }))
+    setFotoFile(file)
   }
 
   const validateForm = () => {
     const errors = {}
-    if (!foto.titulo) errors.titulo = "Campo obrigatório"
+    if (!foto.titulo?.trim()) errors.titulo = "Campo obrigatório"
     return errors
   }
 
   const handleFotoUpdate = async () => {
+    if (fotoFile && fotoFile.size > MAX_FILE_SIZE) {
+      setShowFileSizeAlert(true)
+      setErrors((prev) => ({
+        ...prev,
+        fotoFile: `Arquivo muito grande! Tamanho máximo: 5MB. Seu arquivo: ${(fotoFile.size / (1024 * 1024)).toFixed(2)}MB`
+      }))
+      return
+    }
+
     const errors = validateForm()
     if (Object.keys(errors).length > 0) {
       setErrors(errors)
@@ -112,16 +153,45 @@ function UpdateFoto() {
     try {
       await replaceFoto(id, fotoFile, foto.titulo)
       setShowAlert(true)
+      setErrors({})
+      setShowFileSizeAlert(false)
     } catch (error) {
       console.error("Erro ao editar foto:", error)
-      setShowErrorAlert(true)
+
+      if (error.response?.status === 400) {
+        setErrors((prev) => ({
+          ...prev,
+          fotoFile: "Arquivo muito grande! Tamanho máximo permitido: 5MB."
+        }))
+        setShowFileSizeAlert(true)
+        setShowErrorAlert(false)
+        return
+      }
+
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
+      setShowFileSizeAlert(false)
     }
+  }
+
+  const handleCloseFileSizeAlert = () => {
+    setShowFileSizeAlert(false)
+    setErrors((prev) => ({ ...prev, fotoFile: "" }))
   }
 
   return (
     <div className={styles.container}>
       <VoltarButton />
       <h1>Editar Informações da Foto</h1>
+
       {currentImageUrl && (
         <div className={styles.image_preview}>
           <h3>Imagem Atual:</h3>
@@ -132,13 +202,12 @@ function UpdateFoto() {
           />
         </div>
       )}
+
       <form className={styles.inputs_container}>
         <div className={styles.inputs_box}>
           <div className="row">
             <div className={`col ${styles.col}`}>
-              <label htmlFor="titulo" className="form-label">
-                Título
-              </label>
+              <label htmlFor="titulo" className="form-label">Título</label>
               <input
                 type="text"
                 className={`form-control ${styles.input} ${errors.titulo ? "is-invalid" : ""}`}
@@ -146,25 +215,42 @@ function UpdateFoto() {
                 value={foto.titulo || ""}
                 onChange={handleFotoChange}
               />
-              {errors.titulo && (
-                <div className={`invalid-feedback ${styles.error_message}`}>
-                  {errors.titulo}
-                </div>
-              )}
+              <div
+                className={`invalid-feedback ${styles.error_message}`}
+                style={{ display: errors.titulo ? "block" : "none" }}
+              >
+                {errors.titulo || ""}
+              </div>
             </div>
           </div>
+
           <div className={`col ${styles.col}`}>
-            <label htmlFor="foto" className="form-label">
-              Foto
-            </label>
+            <label htmlFor="foto" className="form-label">Nova Foto (opcional)</label>
             <input
               type="file"
+              className={`form-control ${styles.input} ${errors.fotoFile ? "is-invalid" : ""}`}
               accept="image/*"
               onChange={handleFileChange}
-              className="form-control"
             />
+
+            <div
+              className={`invalid-feedback ${styles.error_message}`}
+              style={{ 
+                display: errors.fotoFile ? "block" : "none",
+                marginTop: "5px"
+              }}
+            >
+              {errors.fotoFile || ""}
+            </div>
+            
+            <div className="form-text" style={{ marginTop: "5px" }}>
+              <small>
+                Tamanho máximo: <strong>5MB</strong>. Deixe em branco para manter a imagem atual.
+              </small>
+            </div>
           </div>
         </div>
+
         <div className={styles.button_box}>
           <CancelarWhiteButton />
           <button
@@ -176,6 +262,7 @@ function UpdateFoto() {
           </button>
         </div>
       </form>
+
       {showAlert && (
         <Alert
           message="Informações da foto editadas com sucesso!"
@@ -183,10 +270,23 @@ function UpdateFoto() {
           url={`/lapa/gerenciarFotos`}
         />
       )}
+
       {showErrorAlert && (
         <ErrorAlert
-          message="Erro ao editar informações da foto, tente novamente."
+          message={errorMessage || "Erro ao editar informações da foto, tente novamente."}
           show={showErrorAlert}
+          onClose={() => setShowErrorAlert(false)}
+        />
+      )}
+
+      {showFileSizeAlert && (
+        <ErrorAlert
+          message={
+            errors.fotoFile || 
+            "Arquivo muito grande! O tamanho máximo permitido é 5MB. Por favor, selecione uma imagem menor."
+          }
+          show={showFileSizeAlert}
+          onClose={handleCloseFileSizeAlert}
         />
       )}
     </div>
