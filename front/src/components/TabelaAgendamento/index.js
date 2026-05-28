@@ -16,15 +16,20 @@ export default function TabelaAgendamento({
 	const [vagaSelecionada, setVagaSelecionada] = useState(null);
 
 	const horarios = [
-		"08:00",
-		"09:00",
-		"10:00",
-		"11:00",
-		"13:00",
-		"14:00",
-		"15:00",
-		"16:00",
+		"07:30",
+		"08:30",
+		"09:30",
+		"10:30",
+		"12:30",
+		"13:30",
+		"14:30",
+		"15:30",
 	];
+
+	const getHorarioFim = (horario) => {
+		const [hora, minuto] = horario.split(":");
+		return `${String(Number(hora) + 1).padStart(2, "0")}:${minuto}`;
+	};
 
 	const handleChangeVaga = async (e, vaga) => {
 		e.preventDefault();
@@ -33,14 +38,14 @@ export default function TabelaAgendamento({
 
 	const handleReagendamento = async (e) => {
 		e.preventDefault();
-		setShowErrorAlert(false);
-        try {
+		try {
 			if (!id || !vagaSelecionada) {
 				throw new Error("Agendamento ID ou vaga selecionada não encontrada.");
 			}
 
 			await reagendamento(id, vagaSelecionada.id, vagaSelecionada.dataHora);
 
+			console.log("Reagendamento concluído com sucesso!");
 			setShowAlert(true);
 		} catch (error) {
 			console.error("Erro ao reagendar vaga:", error);
@@ -144,8 +149,7 @@ export default function TabelaAgendamento({
 																		</div>
 																		<div className={styles.info2}>
 																			{horario} -{" "}
-																			{new Date(vaga.dataHora).getHours() + 1}
-																			:00
+																			{getHorarioFim(horario)}
 																		</div>
 																	</div>
 																</div>
@@ -156,7 +160,7 @@ export default function TabelaAgendamento({
 										</div>
 									</th>
 								</tr>
-								{horario === "11:00" && (
+								{horario === "10:30" && (
 									<tr key="separator" className={styles.separator}>
 										<td colSpan={2} className={styles.separatorCell}></td>
 									</tr>
