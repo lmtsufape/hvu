@@ -264,9 +264,7 @@ function CreateAnimalForm() {
         if (tipo === "anonimo") {
           requestData = {
             animal: animalToCreate,
-            tutor: {
-              anonimo: true,
-            },
+            anonimo: true,
           }
         } else if (tipo === "novo") {
           requestData = {

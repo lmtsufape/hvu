@@ -1393,6 +1393,9 @@ public class Facade {
 
     @Transactional
     public Animal saveAnimal(Animal newInstance, String idSession) {
+        if (newInstance.getRaca() == null) {
+            throw new IllegalArgumentException("Raça é obrigatória");
+        }
         newInstance.setRaca(racaServiceInterface.findRacaById(newInstance.getRaca().getId()));
 
         Tutor tutor = findTutorByUserId(idSession);
@@ -1406,10 +1409,15 @@ public class Facade {
 
         validarOrigemAnimal("TUTOR", newInstance.getOrigemAnimal());
 
-        Animal animal = animalServiceInterface.saveAnimal(newInstance);
-        tutor.getAnimais().add(animal);
+        if (tutor.getAnimais() == null) {
+            tutor.setAnimais(new ArrayList<>());
+        }
+        Animal savedAnimal = animalServiceInterface.saveAnimal(newInstance);
+
+        tutor.getAnimais().add(savedAnimal);
         tutorServiceInterface.updateTutor(tutor);
-        return animal;
+
+        return savedAnimal;
     }
 
     private Tutor determinarTutor(AnimalByPatologistaRequest request) {
@@ -1447,10 +1455,14 @@ public class Facade {
         if (tutor.getAnimais() == null) {
             tutor.setAnimais(new ArrayList<>());
         }
-        tutor.getAnimais().add(animal);
+
         Animal savedAnimal = animalServiceInterface.saveAnimal(animal);
 
-        tutorServiceInterface.saveTutor(tutor);
+        if (tutor.getAnimais() == null) {
+            tutor.setAnimais(new ArrayList<>());
+        }
+        tutor.getAnimais().add(savedAnimal);
+        tutorServiceInterface.updateTutor(tutor);
 
         return savedAnimal;
     }
