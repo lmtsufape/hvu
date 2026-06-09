@@ -1,0 +1,534 @@
+{
+  "info": {
+    "_postman_id": "06046e5e-e121-4f53-8982-b3fd642106fd",
+    "name": "HVU",
+    "description": "Coleção da API do HVU, contendo requisições organizadas por domínio de negócio, autenticação e cenários de integração. O objetivo é centralizar a documentação da API, facilitar o desenvolvimento e a validação de funcionalidades, permitindo a execução de fluxos completos do sistema através de testes integrados que reproduzem cenários reais de utilização da aplicação.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41799555",
+    "_collection_link": "https://go.postman.co/collection/41799555-06046e5e-e121-4f53-8982-b3fd642106fd?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "API tests",
+      "item": [
+        {
+          "name": "Adicionar animal com tutor anônimo como Patologista",
+          "item": [],
+          "description": "Conjunto de requisições que executa o fluxo necessário para que um usuário autenticado com perfil de patologista adicione um animal associado a um tutor anônimo."
+        }
+      ],
+      "description": "Esta pasta contém cenários de teste de integração organizados por funcionalidade do sistema. Cada subpasta representa um fluxo de negócio completo e reúne todas as requisições necessárias para preparar os dados, executar a operação principal e validar o resultado esperado. Por exemplo, para testar a criação de uma consulta, a coleção pode incluir previamente a criação ou recuperação de entidades relacionadas, como tutor, animal, médico, vaga e demais recursos necessários para a execução do fluxo completo."
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Tutor Access Tokens",
+          "item": [
+            {
+              "name": "Tutor Local Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "tutor@tutor.com",
+                      "type": "text",
+                      "uuid": "c4e777e3-8c1d-4900-b734-884b12329ce8"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "a0de3718-a926-4656-8b82-f2144e528633"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{localUrl}}/auth/login",
+                  "host": [
+                    "{{localUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do tutor cadastrado automaticamente pelos Seeders da aplicação em execução local no container Docker (`https://localhost:8081`). A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de tutor."
+              },
+              "response": []
+            },
+            {
+              "name": "Tutor Test Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "tutor@tutor.com",
+                      "type": "text",
+                      "uuid": "2cffee93-6a73-487a-ab4a-83c8ac85c821"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "9234beda-5571-4401-9485-07d18cd8bb71"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{testUrl}}/auth/login",
+                  "host": [
+                    "{{testUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do tutor cadastrado automaticamente pelos Seeders da aplicação em execução no servidor de testes do HVU. A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de tutor."
+              },
+              "response": []
+            }
+          ],
+          "description": "Requisições responsáveis pela autenticação de usuários com perfil de tutor. Envia credenciais válidas (e-mail e senha) para o endpoint `/auth/login` e obtém os tokens de acesso necessários para autenticar as demais requisições da coleção, tanto em ambiente local quanto em ambiente de testes."
+        },
+        {
+          "name": "Medico Access Tokens",
+          "item": [
+            {
+              "name": "Medico Local Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "medico@medico.com",
+                      "type": "text",
+                      "uuid": "673da0b3-ee05-478a-a297-3d3f8c84ea80"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "3c058ca0-27d8-4dfa-9a1d-59a039e9ad06"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{localUrl}}/auth/login",
+                  "host": [
+                    "{{localUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do médico cadastrado automaticamente pelos Seeders da aplicação em execução local no container Docker (`https://localhost:8081`). A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de médico."
+              },
+              "response": []
+            },
+            {
+              "name": "Medico Test Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "medico@medico.com",
+                      "type": "text",
+                      "uuid": "e84ad71c-a8a7-4043-bbc7-daa239f25d5d"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "29536273-5791-44e3-acac-cb076c84c9b3"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{testUrl}}/auth/login",
+                  "host": [
+                    "{{testUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do médico cadastrado automaticamente pelos Seeders da aplicação em execução no servidor de testes do HVU. A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de médico."
+              },
+              "response": []
+            }
+          ],
+          "description": "Requisições responsáveis pela autenticação de usuários com perfil de médico. Envia credenciais válidas (e-mail e senha) para o endpoint `/auth/login` e obtém os tokens de acesso necessários para autenticar as demais requisições da coleção, tanto em ambiente local quanto em ambiente de testes."
+        },
+        {
+          "name": "Secretário Access Tokens",
+          "item": [
+            {
+              "name": "Secretario Local Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "secretario@secretario.com",
+                      "type": "text",
+                      "uuid": "673da0b3-ee05-478a-a297-3d3f8c84ea80"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "3c058ca0-27d8-4dfa-9a1d-59a039e9ad06"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{localUrl}}/auth/login",
+                  "host": [
+                    "{{localUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do secretário cadastrado automaticamente pelos Seeders da aplicação em execução local no container Docker (`https://localhost:8081`). A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de secretário."
+              },
+              "response": []
+            },
+            {
+              "name": "Secretario Test Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "secretario@secretario.com",
+                      "type": "text",
+                      "uuid": "e84ad71c-a8a7-4043-bbc7-daa239f25d5d"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "29536273-5791-44e3-acac-cb076c84c9b3"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{testUrl}}/auth/login",
+                  "host": [
+                    "{{testUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do secretário cadastrado automaticamente pelos Seeders da aplicação em execução no servidor de testes do HVU. A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de secretário."
+              },
+              "response": []
+            }
+          ],
+          "description": "Requisições responsáveis pela autenticação de usuários com perfil de secretário. Envia credenciais válidas (e-mail e senha) para o endpoint `/auth/login` e obtém os tokens de acesso necessários para autenticar as demais requisições da coleção, tanto em ambiente local quanto em ambiente de testes."
+        },
+        {
+          "name": "Admin Lapa Access Tokens",
+          "item": [
+            {
+              "name": "Admin Lapa Local Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "admin_lapa@admin_lapa.com",
+                      "type": "text",
+                      "uuid": "9a216928-157a-4ae4-810a-b1d625d8d2f9"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "f4bcedd8-4fd7-420c-a847-0bb4233734ea"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{localUrl}}/auth/login",
+                  "host": [
+                    "{{localUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do admin lapa cadastrado automaticamente pelos Seeders da aplicação em execução local no container Docker (`https://localhost:8081`). A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de admin lapa."
+              },
+              "response": []
+            },
+            {
+              "name": "Admin Lapa Test Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "admin_lapa@admin_lapa.com",
+                      "type": "text",
+                      "uuid": "2a8e5334-b94a-48e8-8b17-4d7b746b3146"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "03a37b8c-3b22-418a-b14b-0405ecae1e06"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{testUrl}}/auth/login",
+                  "host": [
+                    "{{testUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do admin lapa cadastrado automaticamente pelos Seeders da aplicação em execução no servidor de testes do HVU. A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de admin lapa."
+              },
+              "response": []
+            }
+          ],
+          "description": "Requisições responsáveis pela autenticação de usuários com perfil de Admin LAPA. Envia credenciais válidas (e-mail e senha) para o endpoint `/auth/login` e obtém os tokens de acesso necessários para autenticar as demais requisições da coleção, tanto em ambiente local quanto em ambiente de testes."
+        },
+        {
+          "name": "Patologista Access Tokens",
+          "item": [
+            {
+              "name": "Patologista Local Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "patologista@patologista.com",
+                      "type": "text",
+                      "uuid": "05b00916-2504-4e35-8692-cba9f69509ee"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "947c69f3-466e-4223-95f7-6d12ef844c1a"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{localUrl}}/auth/login",
+                  "host": [
+                    "{{localUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do patologista cadastrado automaticamente pelos Seeders da aplicação em execução local no container Docker (`https://localhost:8081`). A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de patologista."
+              },
+              "response": []
+            },
+            {
+              "name": "Patologista Test Access Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "email",
+                      "value": "patologista@patologista.com",
+                      "type": "text",
+                      "uuid": "1ceb5dda-f0e8-4404-8350-20abbd5d5e49"
+                    },
+                    {
+                      "key": "senha",
+                      "value": "password",
+                      "type": "text",
+                      "uuid": "5f0bbc93-149e-4ca3-90ed-94b07b1644e5"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{testUrl}}/auth/login",
+                  "host": [
+                    "{{testUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Envia os RequestParams `email` e `senha` do patologista cadastrado automaticamente pelos Seeders da aplicação em execução no servidor de testes do HVU. A requisição autentica o usuário e retorna os tokens JWT necessários para acessar endpoints protegidos com perfil de patologista."
+              },
+              "response": []
+            }
+          ],
+          "description": "Requisições responsáveis pela autenticação de usuários com perfil de patologista. Envia credenciais válidas (e-mail e senha) para o endpoint `/auth/login` e obtém os tokens de acesso necessários para autenticar as demais requisições da coleção, tanto em ambiente local quanto em ambiente de testes."
+        }
+      ],
+      "description": "Contém as requisições relacionadas à autenticação e autorização da aplicação como a obtenção de tokens de acesso. Esta pasta serve como ponto de entrada para os testes da API e para a validação dos mecanismos de segurança utilizados pelo sistema."
+    },
+    {
+      "name": "Endpoints",
+      "item": [
+        {
+          "name": "Animal",
+          "item": [
+            {
+              "name": "Create Animal By Patologista",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"animal\": {\n        \"nome\": \"teste luis 2\",\n        \"sexo\": \"Macho\",\n        \"alergias\": \"teste\",\n        \"dataNascimento\": \"2026-06-04\",\n        \"obito\": false,\n        \"raca\": {\n            \"id\": 1\n        }\n    },\n    \"anonimo\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{localUrl}}/animal/patologista",
+                  "host": [
+                    "{{localUrl}}"
+                  ],
+                  "path": [
+                    "animal",
+                    "patologista"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Requisições responsáveis pelo gerenciamento de animais atendidos pelo HVU. Inclui operações de cadastro, consulta, atualização e remoção de animais, bem como validações relacionadas ao vínculo com tutores, espécies, raças e demais informações clínicas necessárias para o atendimento veterinário."
+        }
+      ],
+      "description": "Contém requisições individuais organizadas por recurso do sistema. O objetivo desta pasta é facilitar o desenvolvimento, depuração e validação isolada dos endpoints da API, permitindo testar operações específicas sem a necessidade de executar fluxos completos de negócio.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "localUrl",
+      "value": "http://localhost:8081/api/v1"
+    },
+    {
+      "key": "testUrl",
+      "value": "https://lmtsteste03.ufape.edu.br/api/v1"
+    },
+    {
+      "key": "productionUrl",
+      "value": "https://gestaohvuback.ufape.edu.br/api/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
