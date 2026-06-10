@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import br.edu.ufape.hvu.controller.dto.response.TutorEAnimalPorOrigemFlatResponse;
 import br.edu.ufape.hvu.exception.DuplicateAccountException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import br.edu.ufape.hvu.repository.TutorRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.Tutor;
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,10 @@ public class TutorService implements TutorServiceInterface {
             throw new IdNotFoundException(animalId, "Tutor vinculado ao animal");
         }
         return tutor;
+    }
+
+    public List<TutorEAnimalPorOrigemFlatResponse> findTutoresEAnimaisPorOrigemFlat(OrigemAnimal origem) {
+        return repository.findTutoresEAnimaisPorOrigemFlat(origem);
     }
 
     public Tutor findTutorByUserId(String userId) {

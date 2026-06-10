@@ -5,12 +5,12 @@ import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
+import br.edu.ufape.hvu.controller.dto.response.TutorEAnimalPorOrigemFlatResponse;
 import br.edu.ufape.hvu.exception.OrigemAnimalInvalidaException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.BusinessException;
@@ -127,6 +127,13 @@ public class Facade {
         }
 
         return tutorServiceInterface.findTutorByAnimalId(animalId);
+    }
+
+    public List<TutorEAnimalPorOrigemFlatResponse> findTutoresEAnimaisPorOrigemFlat(OrigemAnimal origem, String userId) {
+        if (keycloakService.hasRoleSecretario(userId) || keycloakService.hasRolePatologista(userId)) {
+            return tutorServiceInterface.findTutoresEAnimaisPorOrigemFlat(origem);
+        }
+        throw new ForbiddenOperationException("Você não tem acesso a essa operação");
     }
 
     public List<Tutor> getAllTutor() {
@@ -1558,7 +1565,7 @@ public class Facade {
             return animalServiceInterface.findAnimalsByOrigemAnimal(origem);
         }
 
-        if ((keycloakService.hasRoleSecretario(userId) && origem == OrigemAnimal.HVU)) {
+        if (keycloakService.hasRoleSecretario(userId) && origem == OrigemAnimal.HVU) {
             return animalServiceInterface.findAnimalsByOrigemAnimal(origem);
         }
 
@@ -1723,16 +1730,20 @@ public class Facade {
 
     @Transactional
     public Ficha saveFicha(Ficha newInstance) {
-        Long agendamentoId = (newInstance.getAgendamento() != null)
-                ? newInstance.getAgendamento().getId()
-                : null;
-
-        if (agendamentoId == null || agendamentoId <= 0) {
+        if (newInstance.getAgendamento() == null || newInstance.getAgendamento().getId() <= 0) {
             throw new IllegalArgumentException("Ficha deve estar vinculada a um agendamento válido.");
         }
 
-        if (!agendamentoRepository.existsById(agendamentoId)) {
-            throw new ResourceNotFoundException("Agendamento", "id", agendamentoId);
+        if (!agendamentoRepository.existsById(newInstance.getAgendamento().getId())) {
+            throw new ResourceNotFoundException("Agendamento", "id", newInstance.getAgendamento().getId());
+        }
+
+        if (newInstance.getMedico() == null || newInstance.getMedico().getId() <= 0) {
+            throw new IllegalArgumentException("Ficha deve estar vinculada a um médico válido.");
+        }
+
+        if (!medicoServiceInterface.existsById(newInstance.getMedico().getId())) {
+            throw new ResourceNotFoundException("Médico", "id", newInstance.getMedico().getId());
         }
 
         return fichaServiceInterface.saveFicha(newInstance);
@@ -1748,9 +1759,18 @@ public class Facade {
             throw new IllegalArgumentException("Ficha deve estar vinculada a um agendamento.");
         }
 
+        if (obj.getMedico() == null) {
+            throw new IllegalArgumentException("Ficha deve estar vinculada a um médico.");
+        }
+
         Long agendamentoId = obj.getAgendamento().getId();
         if (!agendamentoRepository.existsById(agendamentoId)) {
             throw new ResourceNotFoundException("Agendamento", "id", agendamentoId);
+        }
+
+        Long medicoId = obj.getMedico().getId();
+        if (!medicoServiceInterface.existsById(medicoId)) {
+            throw new ResourceNotFoundException("Medico", "id", medicoId);
         }
 
         Ficha existingFicha = findFichaById(id);
@@ -1773,6 +1793,17 @@ public class Facade {
         return fichaServiceInterface.findFichasByAgendamentoId(agendamentoId);
     }
 
+     public List<Ficha> findFichasByMedicoId(Long medicoId) {
+        if (medicoId == null || medicoId <= 0) {
+            throw new IllegalArgumentException("O id do medico é inválido.");
+        }
+        if (!medicoServiceInterface.existsById(medicoId)) {
+            throw new ResourceNotFoundException("Medico", "id", medicoId);
+        }
+
+        return fichaServiceInterface.findFichasByMedicoId(medicoId);
+    }
+    
     public List<Ficha> findFichasByAnimalId(Long animalId) {
         if (animalId == null || animalId <= 0) {
             throw new IllegalArgumentException("O id do animal é inválido.");

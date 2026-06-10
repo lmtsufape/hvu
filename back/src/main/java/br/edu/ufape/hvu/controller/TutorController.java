@@ -1,6 +1,8 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
+
+import br.edu.ufape.hvu.controller.dto.response.TutorEAnimalPorOrigemFlatResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import jakarta.validation.Valid;
 import br.edu.ufape.hvu.model.Tutor;
+import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.TutorRequest;
 import br.edu.ufape.hvu.controller.dto.response.TutorResponse;
@@ -41,6 +44,15 @@ public class TutorController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 		return new TutorResponse(facade.findTutorById(id, principal.getSubject()));
+	}
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
+	@GetMapping("/tutor/origem/{origem}/animais")
+	public List<TutorEAnimalPorOrigemFlatResponse> getTutoresEAnimaisPorOrigemFlat(@PathVariable OrigemAnimal origem) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+
+		return facade.findTutoresEAnimaisPorOrigemFlat(origem, principal.getSubject());
 	}
 
     @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA', 'MEDICO')")
