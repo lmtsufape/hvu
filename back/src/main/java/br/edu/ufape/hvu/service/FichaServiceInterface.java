@@ -8,6 +8,7 @@ public interface FichaServiceInterface {
     Ficha saveFicha(Ficha o);
     Ficha findFichaById(long id);
     List<Ficha> findFichasByAgendamentoId(long agendamentoId);
+    List<Ficha> findFichasByMedicoId(long medicoId);
     List<Ficha> findFichasByAnimalId(long animalId);
     Ficha updateFicha(Ficha u);
     void deleteFicha(long id);

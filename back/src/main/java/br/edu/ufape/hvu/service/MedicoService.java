@@ -27,6 +27,10 @@ public class MedicoService implements MedicoServiceInterface {
 		return repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Medico"));
 	}
 
+	public boolean existsById(long id) {
+		return repository.existsById(id);
+	}
+
 	public List<Medico> findByInstituicao(Instituicao instituicao){
 		List<Medico> medico = repository.findByInstituicaoAndDeletedFalse(instituicao);
 		if(medico.isEmpty()){

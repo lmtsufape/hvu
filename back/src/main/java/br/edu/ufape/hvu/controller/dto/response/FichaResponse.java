@@ -17,6 +17,7 @@ public  class FichaResponse  {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
     private AgendamentoResponse agendamento;
+    private MedicoResponse medico;
 
     public FichaResponse(Ficha obj) {
         ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");

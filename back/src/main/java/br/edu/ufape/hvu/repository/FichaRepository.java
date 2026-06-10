@@ -9,6 +9,7 @@ import java.util.List;
 public interface FichaRepository extends JpaRepository<Ficha, Long> {
 
     List<Ficha> findByAgendamentoId(Long agendamentoId);
+    List<Ficha> findByMedicoId(Long medicoId);
     List<Ficha> findByAgendamentoAnimalId(Long animalId);
 
 }

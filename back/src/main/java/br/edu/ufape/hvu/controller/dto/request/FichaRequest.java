@@ -27,6 +27,8 @@ public class FichaRequest {
 
     private AgendamentoRequest agendamento;
 
+    private MedicoRequest medico;
+
     public Ficha convertToEntity() {
         Ficha ficha = new Ficha();
         ficha.setNome(this.nome);
@@ -42,6 +44,10 @@ public class FichaRequest {
 
         if (this.agendamento != null) {
             ficha.setAgendamento(this.agendamento.convertToEntity());
+        }
+
+        if (this.medico != null) {
+            ficha.setMedico(this.medico.convertToEntity());
         }
 
         return ficha;
@@ -61,6 +67,10 @@ public class FichaRequest {
 
         if (this.agendamento != null) {
             ficha.setAgendamento(this.agendamento.convertToEntity());
+        }
+
+        if (this.medico != null) {
+            ficha.setMedico(this.medico.convertToEntity());
         }
     }
 }
