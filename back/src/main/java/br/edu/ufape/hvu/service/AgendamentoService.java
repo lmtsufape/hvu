@@ -5,7 +5,6 @@ import java.util.List;
 import br.edu.ufape.hvu.model.Medico;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.exception.IdNotFoundException;
@@ -53,8 +52,5 @@ public class AgendamentoService implements AgendamentoServiceInterface {
 	public void deleteAgendamento(long id){
 		Agendamento obj = repository.findById(id).orElseThrow( () -> new IdNotFoundException(id, "Agendamento"));
 		repository.delete(obj);
-	}	
-	
-	
-	
+	}
 }
