@@ -428,7 +428,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"animal\": {\n        \"nome\": \"teste luis 2\",\n        \"sexo\": \"Macho\",\n        \"alergias\": \"teste\",\n        \"dataNascimento\": \"2026-06-04\",\n        \"obito\": false,\n        \"raca\": {\n            \"id\": 1\n        }\n    },\n    \"anonimo\": true\n}",
+                  "raw": "{\n    \"animal\": {\n        \"nome\": \"teste luis 3\",\n        \"sexo\": \"Macho\",\n        \"alergias\": \"teste\",\n        \"dataNascimento\": \"2026-06-04\",\n        \"obito\": false,\n        \"raca\": {\n            \"id\": 1\n        }\n    },\n    \"anonimo\": true\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -444,12 +444,40 @@
                     "animal",
                     "patologista"
                   ]
-                }
+                },
+                "description": "Este endpoint permite cadastrar um novo animal associado a um tutor. O tutor pode ser informado de três formas distintas, mas exatamente uma delas deve ser utilizada por requisição.\n\nRegras de validação:\n\n- Apenas uma das opções (`tutor`, `tutorId` ou `anonimo`) pode ser enviada.\n    \n- Enviar mais de uma ou nenhuma opção resultará em erro de validação.\n    \n- Caso `anonimo = true`, o sistema irá utilizar ou criar um tutor anônimo automaticamente.\n    \n- Caso `tutorId` seja informado, o sistema buscará um tutor já existente.\n    \n- Caso `tutor` seja informado, o sistema irá validar duplicidade de CPF e e-mail antes de criar um novo tutor."
               },
               "response": []
             }
           ],
           "description": "Requisições responsáveis pelo gerenciamento de animais atendidos pelo HVU. Inclui operações de cadastro, consulta, atualização e remoção de animais, bem como validações relacionadas ao vínculo com tutores, espécies, raças e demais informações clínicas necessárias para o atendimento veterinário."
+        },
+        {
+          "name": "Tutor",
+          "item": [
+            {
+              "name": "Tutores e animais por origem animal",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{localUrl}}/tutor/origem/HVU/animais",
+                  "host": [
+                    "{{localUrl}}"
+                  ],
+                  "path": [
+                    "tutor",
+                    "origem",
+                    "HVU",
+                    "animais"
+                  ]
+                },
+                "description": "Este endpoint retorna uma listagem plana (flat) de tutores e seus respectivos animais filtrados pela origem informada. Cada registro da resposta contém os dados básicos do tutor (id, nome e CPF) repetidos conforme a quantidade de animais associados, junto com os dados essenciais de cada animal (id e nome)."
+              },
+              "response": []
+            }
+          ],
+          "description": "Requisições responsáveis pelo gerenciamento de tutores atendidos pelo HVU. Inclui operações de cadastro, consulta, atualização e remoção de tutores, bem como validações relacionadas ao vínculo com animais, endereço e demais informações necessárias para o atendimento veterinário."
         }
       ],
       "description": "Contém requisições individuais organizadas por recurso do sistema. O objetivo desta pasta é facilitar o desenvolvimento, depuração e validação isolada dos endpoints da API, permitindo testar operações específicas sem a necessidade de executar fluxos completos de negócio.",
@@ -528,7 +556,7 @@
     },
     {
       "key": "token",
-      "value": ""
+      "value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI5b1pWaU91OGhoUjBsS2xyUkNrT1pPSnVvSjgxTkpFQ005M1pacWZHYkIwIn0.eyJleHAiOjE3ODExMDQ0MjUsImlhdCI6MTc4MTA4NjQyNSwianRpIjoib25ydHJvOjQzYjE2OGM2LWRmYjEtNDk5Yy0yMzA3LTZiNzE1YTZkNjk4ZSIsImlzcyI6Imh0dHA6Ly9rZXljbG9hazo4MDgwL3JlYWxtcy9sbXRzIiwic3ViIjoiZGIxNWE1ZTktYzBhZC00ZWEzLTkwM2MtMTQyYTNlMDhkYmU3IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiY3JlYXRlX3VzZXIiLCJzaWQiOiJOdWR2ODVwc1ZkOGs1d0M3YjM3RUZiaUQiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIioiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInBhdG9sb2dpc3RhIl19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6InBhdG9sb2dpc3RhIHBhdG9sb2dpc3RhIiwicHJlZmVycmVkX3VzZXJuYW1lIjoicGF0b2xvZ2lzdGEiLCJnaXZlbl9uYW1lIjoicGF0b2xvZ2lzdGEiLCJmYW1pbHlfbmFtZSI6InBhdG9sb2dpc3RhIiwiZW1haWwiOiJwYXRvbG9naXN0YUBwYXRvbG9naXN0YS5jb20ifQ.RL-ktnJzBdVcmLSk5Vq_t-qGYS54q71fGjyuqaRx4B5EKVaAC0vufSPW9UlfIWIN8vb_tQWvtxc8LI4ORpNvJsVdxWQ4EFij45tWsHItlBk4Wskx0Igg_pXfjCa7V-N05GP1tZuth_yYByud_HkjO7YWrO_G0vZokmG9SfDgf74D5Vdt44p1yPJoMDg8-vT7u9Xp3JxnV3rkjELzYCQCppw8Yy3c2WmMBnpgtGUkx5CAi4Hk63pPvrBT3IqiixSw5z4hii0lMjtwCUA2SehXucL3WglJbOwQhWdTgMjUIt4t_5_nKsA5xcN8qgrJCMHUSfbCkQYF3UdWbRhyIOAZnA"
     }
   ]
 }
