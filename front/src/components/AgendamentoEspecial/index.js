@@ -6,7 +6,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ptBR from "date-fns/locale/pt-BR";
 import VoltarButton from "../VoltarButton";
-import AnimalList from "@/hooks/useAnimalList";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import TipoConsultaList from "@/hooks/useTipoConsultaList";
 import MedicoList from "@/hooks/useMedicoList";
@@ -17,8 +16,11 @@ import { format } from "date-fns";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 import Select from 'react-select';
-import { getTutorByAnimal } from "../../../services/tutorService";
 import { CancelarWhiteButton } from "../WhiteButton";
+
+// import AnimalList from "@/hooks/useAnimalList";
+// import { getTutorByAnimal } from "../../../services/tutorService";
+import { getTutoresEAnimaisPorOrigemFlat } from "../../../services/tutorService";
 
 function AgendamentoEspecial() {
   const router = useRouter();
@@ -43,9 +45,11 @@ function AgendamentoEspecial() {
   const [escolherHorario, setEscolherHorario] = useState(null);
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
-  const [tutores, setTutores] = useState({});
 
-  const { animais } = AnimalList();
+  // const [tutores, setTutores] = useState({});
+  // const { animais } = AnimalList();
+  const [tutoresAnimais, setTutoresAnimais] = useState([]);
+
   const { tiposConsulta } = TipoConsultaList();
   const { especialidades } = EspecialidadeList();
   const { medicos } = MedicoList();
@@ -59,25 +63,38 @@ function AgendamentoEspecial() {
     }
   }, []);
 
+  // useEffect(() => {
+  //   const fetchTutores = async () => {
+  //     const tutoresTemp = {};
+  //     for (const animal of animais) {
+  //       setShowErrorAlert(false);
+  //       try {
+  //         const tutor = await getTutorByAnimal(animal.id, token);
+  //         tutoresTemp[animal.id] = { nome: tutor.nome, cpf: tutor.cpf };
+  //       } catch (error) {
+  //         console.error(`Erro ao buscar tutor para o animal ${animal.id}:`, error);
+  //       }
+  //     }
+  //     setTutores(tutoresTemp);
+  //   };
+
+  //   if (animais.length > 0) {
+  //     fetchTutores();
+  //   }
+  // }, [animais, token]);
+
   useEffect(() => {
-    const fetchTutores = async () => {
-      const tutoresTemp = {};
-      for (const animal of animais) {
-        setShowErrorAlert(false);
-        try {
-          const tutor = await getTutorByAnimal(animal.id, token);
-          tutoresTemp[animal.id] = { nome: tutor.nome, cpf: tutor.cpf };
-        } catch (error) {
-          console.error(`Erro ao buscar tutor para o animal ${animal.id}:`, error);
-        }
+    const fetch = async () => {
+      try {
+        const data = await getTutoresEAnimaisPorOrigemFlat("HVU");
+        setTutoresAnimais(data);
+      } catch (error) {
+        console.error("Erro ao buscar tutores e animais:", error);
       }
-      setTutores(tutoresTemp);
     };
 
-    if (animais.length > 0) {
-      fetchTutores();
-    }
-  }, [animais, token]);
+    fetch();
+  }, []);
 
   // Verifica se o usuário tem permissão
   if (!roles.includes("secretario")) {
@@ -198,9 +215,14 @@ function AgendamentoEspecial() {
     return `***.${cpf.slice(4, 11)}-**`;
   };
 
-  const animalOptions = animais.map((animal) => ({
-    value: animal.id,
-    label: `${animal.nome} - ${tutores[animal.id]?.nome || "Sem Tutor"} - ${maskCPF(tutores[animal.id]?.cpf) || "CPF Não Informado"}`,
+  // const animalOptions = animais.map((animal) => ({
+  //   value: animal.id,
+  //   label: `${animal.nome} - ${tutores[animal.id]?.nome || "Sem Tutor"} - ${maskCPF(tutores[animal.id]?.cpf) || "CPF Não Informado"}`,
+  // }));
+
+  const animalOptions = tutoresAnimais.map((item) => ({
+    value: item.animalId,
+    label: `${item.animalNome} - ${item.tutorNome || "Sem Tutor"} - ${maskCPF(item.tutorCpf) || "CPF Não Informado"}`
   }));
 
   return (

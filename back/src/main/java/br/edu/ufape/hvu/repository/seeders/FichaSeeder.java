@@ -2,9 +2,12 @@ package br.edu.ufape.hvu.repository.seeders;
 
 import br.edu.ufape.hvu.model.Agendamento;
 import br.edu.ufape.hvu.model.Ficha;
+import br.edu.ufape.hvu.model.Medico;
 import br.edu.ufape.hvu.model.enums.TipoFicha;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.repository.FichaRepository;
+import br.edu.ufape.hvu.repository.MedicoRepository;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
@@ -20,6 +23,7 @@ import java.util.Map;
 public class FichaSeeder {
     private final FichaRepository fichaRepository;
     private final AgendamentoRepository agendamentoRepository;
+    private final MedicoRepository medicoRepository;
 
     public void init(){
         if(fichaRepository.count() > 0){
@@ -29,6 +33,11 @@ public class FichaSeeder {
         List<Agendamento> agendamentos = agendamentoRepository.findAll();
         if (agendamentos.isEmpty()) {
             throw new RuntimeException("Nenhum agendamento disponível para vincular às fichas.");
+        }
+
+        List<Medico> medicos = medicoRepository.findAll();
+        if (medicos.isEmpty()) {
+            throw new RuntimeException("Nenhum medico disponível para vincular às fichas.");
         }
 
         Faker faker = new Faker();
@@ -54,11 +63,14 @@ public class FichaSeeder {
             }
 
             ficha.setDataHora(LocalDateTime.parse("2025-04-08T10:00:00"));
+
             Agendamento agendamentoAleatorio = agendamentos.get(faker.random().nextInt(agendamentos.size()));
             ficha.setAgendamento(agendamentoAleatorio);
+
+            Medico medicoAleatorio = medicos.get(faker.random().nextInt(medicos.size()));
+            ficha.setMedico(medicoAleatorio);
 
             fichaRepository.save(ficha);
         }
     }
-
 }

@@ -22,7 +22,7 @@ import br.edu.ufape.hvu.controller.dto.response.AgendamentoResponse;
 public class AgendamentoController {
 	private final Facade facade;
 
-	@PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
 	@GetMapping("agendamento")
 	public List<AgendamentoResponse> getAllAgendamento() {
 		return facade.getAllAgendamento()

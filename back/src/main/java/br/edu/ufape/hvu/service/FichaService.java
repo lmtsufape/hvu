@@ -32,6 +32,10 @@ public class FichaService implements FichaServiceInterface {
         return repository.findByAgendamentoId(agendamentoId);
     }
 
+    public List<Ficha> findFichasByMedicoId(long medicoId) {
+        return repository.findByMedicoId(medicoId);
+    }
+
     public List<Ficha> findFichasByAnimalId(long animalId) {
         return repository.findByAgendamentoAnimalId(animalId);
     }

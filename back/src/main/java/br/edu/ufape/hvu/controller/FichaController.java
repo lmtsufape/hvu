@@ -54,6 +54,15 @@ public class FichaController {
                 .toList();
     }
 
+    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
+    @GetMapping("/ficha/medico/{medicoId}")
+    public List<FichaResponse> findFichasByMedicoId(@PathVariable Long medicoId) {
+        return facade.findFichasByMedicoId(medicoId)
+                .stream()
+                .map(FichaResponse::new)
+                .toList();
+    }
+
     @PreAuthorize("hasRole('MEDICO')")
     @PatchMapping("/ficha/{id}")
     public FichaResponse updateFicha(@PathVariable Long id, @Valid @RequestBody FichaRequest obj) {
