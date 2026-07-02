@@ -3,6 +3,7 @@ package br.edu.ufape.hvu.repository.seeders;
 import br.edu.ufape.hvu.model.Animal;
 import br.edu.ufape.hvu.model.Raca;
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
+import br.edu.ufape.hvu.model.enums.TipoAnimal;
 import br.edu.ufape.hvu.repository.AnimalRepository;
 import br.edu.ufape.hvu.repository.RacaRepository;
 import com.github.javafaker.Faker;
@@ -34,6 +35,7 @@ public class AnimalSeeder {
             animal.setNumeroFicha(faker.idNumber().valid());
             animal.setRaca(racas.get(0));
             animal.setOrigemAnimal(OrigemAnimal.HVU);
+            animal.setTipo(TipoAnimal.COMUM);
             animalRepository.save(animal);
         }
     }

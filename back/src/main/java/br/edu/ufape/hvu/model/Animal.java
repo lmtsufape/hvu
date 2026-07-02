@@ -2,6 +2,7 @@ package br.edu.ufape.hvu.model;
 
 import java.time.LocalDate;
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
+import br.edu.ufape.hvu.model.enums.TipoAnimal;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -36,4 +37,9 @@ public class Animal  {
 	private OrigemAnimal origemAnimal;
 
 	private boolean obito;
+
+	private String codigoProntuario;
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private TipoAnimal tipo;
 }

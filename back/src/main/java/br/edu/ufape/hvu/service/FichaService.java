@@ -37,7 +37,7 @@ public class FichaService implements FichaServiceInterface {
     }
 
     public List<Ficha> findFichasByAnimalId(long animalId) {
-        return repository.findByAgendamentoAnimalId(animalId);
+        return repository.findByAnimalId(animalId);
     }
 
     public List<Ficha> getAllFicha(){

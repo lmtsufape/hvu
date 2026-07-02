@@ -25,7 +25,11 @@ public class FichaRequest {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
     private LocalDateTime dataHora;
 
+    // nao é obrigatorio
     private AgendamentoRequest agendamento;
+
+    @NotNull(message = "O id do animal é obrigatório.")
+    private AnimalRequest animal;
 
     public Ficha convertToEntity() {
         Ficha ficha = new Ficha();
@@ -43,6 +47,7 @@ public class FichaRequest {
         if (this.agendamento != null) {
             ficha.setAgendamento(this.agendamento.convertToEntity());
         }
+        ficha.setAnimal(this.animal.convertToEntity());
 
         return ficha;
     }
@@ -62,5 +67,6 @@ public class FichaRequest {
         if (this.agendamento != null) {
             ficha.setAgendamento(this.agendamento.convertToEntity());
         }
+        ficha.setAnimal(this.animal.convertToEntity());
     }
 }

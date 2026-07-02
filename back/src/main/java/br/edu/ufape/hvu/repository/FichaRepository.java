@@ -10,6 +10,6 @@ public interface FichaRepository extends JpaRepository<Ficha, Long> {
 
     List<Ficha> findByAgendamentoId(Long agendamentoId);
     List<Ficha> findByMedicoId(Long medicoId);
-    List<Ficha> findByAgendamentoAnimalId(Long animalId);
+    List<Ficha> findByAnimalId(Long animalId);
 
 }

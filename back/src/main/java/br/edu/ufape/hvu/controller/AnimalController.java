@@ -2,6 +2,8 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 import br.edu.ufape.hvu.controller.dto.request.AnimalByPatologistaRequest;
+import br.edu.ufape.hvu.controller.dto.request.ValorInicialProntuarioRequest;
+import br.edu.ufape.hvu.controller.dto.response.ContadorProntuarioResponse;
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -132,4 +134,12 @@ public class AnimalController {
         Jwt principal = (Jwt) authentication.getPrincipal();
         return facade.findAnimalsByOrigemAnimal(origem, principal.getSubject());
     }
+
+	@PreAuthorize("hasRole('SECRETARIO')")
+	@PostMapping("animal/prontuario/valor-inicial")
+	public ContadorProntuarioResponse definirValorInicialProntuario(
+			@Valid @RequestBody ValorInicialProntuarioRequest request
+	) {
+		return facade.definirValorInicialProntuario(request);
+	}
 }
