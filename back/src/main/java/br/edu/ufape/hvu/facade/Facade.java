@@ -1112,10 +1112,6 @@ public class Facade {
             throw new IllegalArgumentException("A vaga não pode estar no passado.");
         }
 
-        // Só gera códigos de prontuário para animais que nunca tiveram agendamento
-        if (!agendamentoRepository.existsByAnimalId(animal.getId())) {
-            codigoProntuarioService.garantirCodigoProntuario(animal.getId());
-        }
         Agendamento agendamento = newInstance.convertToEntity();
         agendamento.setAnimal(animal);
         return confirmarAgendamento(vaga, agendamento);
@@ -1146,10 +1142,6 @@ public class Facade {
 
         saveVaga(vaga);
 
-        // Só gera códigos de prontuário para animais que nunca tiveram agendamento
-        if (!agendamentoRepository.existsByAnimalId(animal.getId())) {
-            codigoProntuarioService.garantirCodigoProntuario(animal.getId());
-        }
         agendamento.setAnimal(findAnimalById(newObject.getAnimal().getId(), idSession));
         agendamento.setTipoEspecial(newObject.isTipoEspecial());
 
@@ -1769,6 +1761,11 @@ public class Facade {
 
         Medico medico = medicoServiceInterface.findByUserId(sessionId);
         newInstance.setMedico(medico);
+
+        // Só gera códigos de prontuário para animais que nunca tiveram ficha
+        if (!fichaServiceInterface.existsByAnimalId(newInstance.getAnimal().getId())) {
+            codigoProntuarioService.garantirCodigoProntuario(newInstance.getAnimal().getId());
+        }
 
         return fichaServiceInterface.saveFicha(newInstance);
     }

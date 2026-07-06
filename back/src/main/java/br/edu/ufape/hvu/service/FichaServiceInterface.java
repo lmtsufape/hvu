@@ -7,6 +7,7 @@ import java.util.List;
 public interface FichaServiceInterface {
     Ficha saveFicha(Ficha o);
     Ficha findFichaById(long id);
+    boolean existsByAnimalId(long id);
     List<Ficha> findFichasByAgendamentoId(long agendamentoId);
     List<Ficha> findFichasByMedicoId(long medicoId);
     List<Ficha> findFichasByAnimalId(long animalId);

@@ -36,6 +36,10 @@ public class FichaService implements FichaServiceInterface {
         return repository.findByMedicoId(medicoId);
     }
 
+    public boolean existsByAnimalId(long id) {
+        return repository.existsByAnimalId(id);
+    }
+
     public List<Ficha> findFichasByAnimalId(long animalId) {
         return repository.findByAnimalId(animalId);
     }
