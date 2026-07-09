@@ -240,6 +240,13 @@
     color: #606060;
 }
 
+.ficha_prontuario {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #327053;
+}
+
 .ficha_data {
     font-family: 'Poppins', sans-serif;
     font-size: 13px;
