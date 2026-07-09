@@ -388,8 +388,14 @@ function CreateConsulta() {
 
           // Extrai os IDs do objeto da vaga e os salva nos estados
           if (vagaJson.agendamento) {
-            setAnimalId(vagaJson.agendamento.animal.id);
-            setAgendamentoId(vagaJson.agendamento.id); // <-- AQUI ESTÁ A CORREÇÃO
+            const resolvedAnimalId = vagaJson.agendamento.animal?.id;
+            if (resolvedAnimalId) {
+              setAnimalId(resolvedAnimalId);
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('animalId', resolvedAnimalId.toString());
+              }
+            }
+            setAgendamentoId(vagaJson.agendamento.id);
           }
           if (vagaJson.medico) {
             setMedicoId(vagaJson.medico.id);

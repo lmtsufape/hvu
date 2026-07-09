@@ -1,5 +1,30 @@
 import api from '../common/http-common-back';
 
+function resolveAnimalId(ficha) {
+    if (ficha?.animal?.id != null) {
+        return Number(ficha.animal.id);
+    }
+
+    if (ficha?.animalId != null) {
+        return Number(ficha.animalId);
+    }
+
+    if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const queryAnimalId = params.get('animalId');
+        if (queryAnimalId) {
+            return Number(queryAnimalId);
+        }
+
+        const storedAnimalId = localStorage.getItem('animalId');
+        if (storedAnimalId) {
+            return Number(storedAnimalId);
+        }
+    }
+
+    return null;
+}
+
 export async function getAllFichas() {
     try {
         const response = await api.get('/ficha');
@@ -11,7 +36,14 @@ export async function getAllFichas() {
 
 export async function createFicha(ficha) {
     try {
-        const response = await api.post('/ficha', ficha);
+        const normalizedFicha = { ...ficha };
+        const animalId = resolveAnimalId(normalizedFicha);
+
+        if (animalId && !normalizedFicha.animal?.id) {
+            normalizedFicha.animal = { id: animalId };
+        }
+
+        const response = await api.post('/ficha', normalizedFicha);
         return response.data;
     } catch (error) {
         throw error;
