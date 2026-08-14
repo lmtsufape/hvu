@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import br.edu.ufape.hvu.model.Foto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

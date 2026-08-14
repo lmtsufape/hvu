@@ -11,7 +11,6 @@ import java.util.List;
 public class ConsultaSeeder {
     final private ConsultaRepository consultaRepository;
     final private MedicoRepository medicoRepository;
-    final private FichaRepository fichaRepository;
 
     public void init(){
         if(consultaRepository.count() > 0){
