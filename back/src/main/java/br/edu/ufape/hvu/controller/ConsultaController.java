@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.controller;
 
 import java.util.List;
-import br.edu.ufape.hvu.model.Animal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -12,7 +11,9 @@ import jakarta.validation.Valid;
 import br.edu.ufape.hvu.model.Consulta;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.controller.dto.request.ConsultaRequest;
+import br.edu.ufape.hvu.controller.dto.request.ConsultaRequestFix;
 import br.edu.ufape.hvu.controller.dto.response.ConsultaResponse;
+import br.edu.ufape.hvu.controller.dto.response.ConsultaResponseFix;
  
 @RestController
 @RequestMapping("/api/v1/")
@@ -31,15 +32,11 @@ public class ConsultaController {
 
     @PreAuthorize("hasRole('MEDICO')")
 	@PostMapping("consulta/{id}")
-	public ConsultaResponse createConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequest newObj) {
+	public ConsultaResponseFix createConsulta(@PathVariable Long id, @Valid @RequestBody ConsultaRequestFix consultaRequest) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
 
-		Animal animal = facade.findAnimalById(newObj.getAnimal().getId(), principal.getSubject());
-		Consulta consulta = newObj.convertToEntity();
-		consulta.setAnimal(animal);
-
-		return new ConsultaResponse(facade.saveConsulta(id, consulta));
+		return facade.saveConsulta(id, consultaRequest, principal.getSubject());
 	}
 
     @PreAuthorize("hasRole('MEDICO')")

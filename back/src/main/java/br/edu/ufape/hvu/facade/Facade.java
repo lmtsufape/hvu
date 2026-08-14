@@ -1,7 +1,5 @@
 package br.edu.ufape.hvu.facade;
 
-import java.io.File;
-import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +19,6 @@ import br.edu.ufape.hvu.model.enums.TipoServico;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import br.edu.ufape.hvu.repository.AnimalRepository;
-import br.edu.ufape.hvu.repository.OrgaoRepository;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
@@ -35,6 +32,10 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 import jakarta.transaction.Transactional;
+import br.edu.ufape.hvu.mapper.AnimalMapper;
+import br.edu.ufape.hvu.mapper.ConsultaMapper;
+import br.edu.ufape.hvu.controller.dto.response.AnimalResponseFix;
+import br.edu.ufape.hvu.controller.dto.response.ConsultaResponseFix;
 
 @Service @RequiredArgsConstructor
 public class Facade {
@@ -984,9 +985,10 @@ public class Facade {
     // Consulta--------------------------------------------------------------
 
     private final ConsultaServiceInterface consultaServiceInterface;
+    private final ConsultaMapper consultaMapper;
 
     @Transactional
-    public Consulta saveConsulta(Long id, Consulta newInstance) {
+    public ConsultaResponseFix saveConsulta(Long id, ConsultaRequestFix consultaRequest, String idSession) {
         Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
         Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
 
@@ -994,18 +996,44 @@ public class Facade {
             throw new ForbiddenOperationException("Esse agendamento já foi finalizado.");
         }
 
-        Consulta consulta = consultaServiceInterface.saveConsulta(newInstance);
+        Animal animal = findAnimalById(
+                consultaRequest.getAnimal().getId(),
+                idSession
+        );
+
+        Consulta consulta = consultaMapper.toEntity(consultaRequest);
+
+        consulta.setAnimal(animal);
+
+        if (consultaRequest.getMedico() != null) {
+            Medico medico = medicoServiceInterface.findMedicoById(
+                    consultaRequest.getMedico().getId()
+            );
+
+            consulta.setMedico(medico);
+        }
+
+        if (consultaRequest.getEncaminhamento() != null) {
+            Especialidade especialidade =
+                    especialidadeServiceInterface.findEspecialidadeById(
+                            consultaRequest.getEncaminhamento().getId()
+                    );
+
+            consulta.setEncaminhamento(especialidade);
+        }
+
+        Consulta consultaSalva = consultaServiceInterface.saveConsulta(consulta);
 
         vagaDaConsulta.setStatus("Finalizado");
         agendamentoVaga.setStatus("Finalizado");
 
         vagaDaConsulta.setAgendamento(agendamentoVaga);
-        vagaDaConsulta.setConsulta(consulta);
+        vagaDaConsulta.setConsulta(consultaSalva);
 
         updateVaga(vagaDaConsulta);
         updateAgendamento(agendamentoVaga);
 
-        return consulta;
+        return consultaMapper.toResponse(consultaSalva);
     }
 
     @Transactional
@@ -1391,6 +1419,7 @@ public class Facade {
     // Animal--------------------------------------------------------------
     private final AnimalServiceInterface animalServiceInterface;
     private final CodigoProntuarioService codigoProntuarioService;
+    private final AnimalMapper animalMapper;
 
     private void validarOrigemAnimal(String role, OrigemAnimal origemAnimal) {
         if ("TUTOR".equals(role) && origemAnimal != OrigemAnimal.HVU) {
@@ -1402,35 +1431,44 @@ public class Facade {
     }
 
     @Transactional
-    public Animal saveAnimal(Animal newInstance, String idSession) {
-        if (newInstance.getRaca() == null) {
+    public AnimalResponseFix saveAnimal(AnimalRequestFix animalRequest, String idSession) {
+        if (animalRequest.getRaca() == null) {
             throw new IllegalArgumentException("Raça é obrigatória");
         }
-        newInstance.setRaca(racaServiceInterface.findRacaById(newInstance.getRaca().getId()));
+
+        Raca raca = racaServiceInterface.findRacaById(
+            animalRequest.getRaca().getId()
+        );
 
         Tutor tutor = findTutorByUserId(idSession);
         if (tutor == null) {
             throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
         }
 
-        if (newInstance.getTipo() == null) {
-            newInstance.setTipo(TipoAnimal.COMUM);
+        Animal animal = animalMapper.toEntity(animalRequest);
+        animal.setRaca(raca);
+
+        if (animal.getTipo() == null) {
+            animal.setTipo(TipoAnimal.COMUM);
         }
 
-        if (newInstance.getOrigemAnimal() == null) {
-            newInstance.setOrigemAnimal(OrigemAnimal.HVU);
+        if (animal.getOrigemAnimal() == null) {
+            animal.setOrigemAnimal(OrigemAnimal.HVU);
         }
-        validarOrigemAnimal("TUTOR", newInstance.getOrigemAnimal());
+        validarOrigemAnimal(
+            "TUTOR",
+            animal.getOrigemAnimal()
+        );
 
         if (tutor.getAnimais() == null) {
             tutor.setAnimais(new ArrayList<>());
         }
-        Animal savedAnimal = animalServiceInterface.saveAnimal(newInstance);
+        Animal animalSalvo = animalServiceInterface.saveAnimal(animal);
 
-        tutor.getAnimais().add(savedAnimal);
+        tutor.getAnimais().add(animalSalvo);
         tutorServiceInterface.updateTutor(tutor);
 
-        return savedAnimal;
+        return animalMapper.toResponse(animalSalvo);
     }
 
     private Tutor determinarTutor(AnimalByPatologistaRequest request) {
@@ -2166,33 +2204,11 @@ public class Facade {
         orgaoServiceInterface.deleteOrgao(id);
     }
 
-
-    // Arquivo --------------------------------------------------------------
-
-
-    private final FileServiceInterface fileService;
-
-    public File findFile(String fileName) {
-        return fileService.findFile(fileName);
-    }
-
-    @Transactional
-    public String storeFile(InputStream file, String fileName) {
-        String fn = System.currentTimeMillis() + "-" + fileName;
-        return fileService.storeFile(file, fn.replace(" ", ""));
-    }
-
-    @Transactional
-    public void deleteFile(String fileName) {
-        fileService.deleteFile(fileName);
-    }
-
     // CampoLaudoMicroscopia --------------------------------------------------------------
 
     private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
     private final AnimalRepository animalRepository;
     private final AgendamentoRepository agendamentoRepository;
-    private final OrgaoRepository orgaoRepository;
 
     @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {

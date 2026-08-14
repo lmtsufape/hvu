@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.model;
 
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
