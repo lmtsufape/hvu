@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import br.edu.ufape.hvu.controller.dto.request.AnimalRequest;
+import br.edu.ufape.hvu.controller.dto.request.AnimalRequestFix;
 import br.edu.ufape.hvu.controller.dto.response.AnimalResponse;
+import br.edu.ufape.hvu.controller.dto.response.AnimalResponseFix;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.model.Animal;
 import jakarta.validation.Valid;
@@ -87,10 +89,10 @@ public class AnimalController {
 
 	@PreAuthorize("hasRole('TUTOR')")
 	@PostMapping("animal")
-	public AnimalResponse createAnimal(@Valid @RequestBody AnimalRequest newObj) {
+	public AnimalResponseFix createAnimal(@Valid @RequestBody AnimalRequestFix newObj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
+		return facade.saveAnimal(newObj, principal.getSubject());
 	}
 
     @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO', 'PATOLOGISTA')")
