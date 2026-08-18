@@ -54,18 +54,16 @@ public class CodigoProntuarioService {
         }
 
         ContadorProntuario contador = buscarContadorComLock();
+        
 
-        if (contador.isValorInicialConfigurado()) {
+        int novoUltimoValor = valorInicial - 1;
+        if (contador.getUltimoValor() > 0 &&
+            novoUltimoValor < contador.getUltimoValor()) {
             throw new IllegalArgumentException(
-                    "O valor inicial já foi configurado.");
+                "Valor inicial inválido. Informe um valor maior ou igual ao próximo número disponível.");
         }
 
-        if (contador.getUltimoValor() > 0) {
-            throw new IllegalArgumentException(
-                    "Já existem códigos de prontuário gerados.");
-        }
-
-        contador.setUltimoValor(valorInicial - 1);
+        contador.setUltimoValor(novoUltimoValor);
         contador.setValorInicialConfigurado(true);
 
         return contadorProntuarioRepository.save(contador);
