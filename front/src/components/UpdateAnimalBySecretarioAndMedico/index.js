@@ -28,7 +28,9 @@ function UpdateAnimalBySecretarioAndMedico() {
 
   const [racasByEspecie, setRacasByEspecie] = useState([]);
 
-  const [animalData, setAnimalData] = useState({});
+  const [animalData, setAnimalData] = useState({
+    tipo: "COMUM",
+  });
 
   const [url, setUrl] = useState('');
 
@@ -99,9 +101,12 @@ function UpdateAnimalBySecretarioAndMedico() {
 
   const handleAnimalChange = (event) => {
     setShowErrorAlert(false);
-        try {
+      try {
       const { name, value } = event.target;
-      setAnimalData({ ...animalData, [name]: value });
+        setAnimalData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
     } catch (error) {
       console.error('Erro ao puxar dados do animal:', error);
     }
@@ -197,7 +202,8 @@ function UpdateAnimalBySecretarioAndMedico() {
       peso: animalData.peso,
       raca: {
         id: parseInt(selectedRaca)
-      }
+      },
+      tipo: animalData.tipo || 'COMUM'
     };
 
     if (validateForm()) {
@@ -350,6 +356,18 @@ function UpdateAnimalBySecretarioAndMedico() {
                     <option value="femea">Fêmea</option>
                   </select>
                   {errors.sexo && <div className={`invalid-feedback ${styles.error_message}`}>{errors.sexo}</div>}
+                </div>
+
+                <div className={`col ${styles.col}`}>
+                  <label htmlFor="tipo" className="form-label">Tipo de animal</label>
+                  <select
+                    name="tipo"
+                    value={animalData.tipo || "COMUM"}
+                    onChange={handleAnimalChange}
+                  >
+                    <option value="COMUM">Comum</option>
+                    <option value="SILVESTRE">Silvestre</option>
+                  </select>
                 </div>
               </div>
 
