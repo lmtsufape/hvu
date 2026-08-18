@@ -23,7 +23,7 @@ public class TutorSeeder {
             return;
         }
 
-        Faker faker = new Faker(new Locale("pt-BR"));
+        Faker faker = new Faker(Locale.forLanguageTag("pt-BR"));
         Endereco endereco = usuarioSeeder.criarEndereco(faker);
         List<Animal> animais = animalRepository.findAll();
         Tutor tutor = criarTutor(faker, endereco, animais);
