@@ -1,94 +1,79 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+import moment from 'moment';
+
 import Reabilitacao from "./ReabilitacaoIntegrativaUm";
 import Reabilitacao2 from "./ReabilitacaoIntegrativaDois";
 import Reabilitacao3 from "./ReabilitacaoIntegrativaTres";
+import ReabilitacaoIntegrativaPDF from './ReabilitacaoIntegrativaPDF';
+
 import styles from "./index.module.css";
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
-import moment from 'moment';
+
 import { getCurrentUsuario } from '../../../../services/userService';
-import { getFichaById } from "../../../../services/fichaService";
-import { updateFicha } from "../../../../services/fichaService";
-import dynamic from 'next/dynamic';
-import ReabilitacaoIntegrativaPDF from './ReabilitacaoIntegrativaPDF';
+import { getFichaById, updateFicha, createFicha } from "../../../../services/fichaService";
 import { getAnimalById } from "../../../../services/animalService";
 import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getMedicoById } from "../../../../services/medicoService";
 
+// Dynamic import fora do componente
+const PDFLink = dynamic(
+  () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink), 
+  { ssr: false }
+);
+
+const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+  <button type="button" className={styles.green_buttonFichas} style={{ width: 'auto', padding: '0 1.5rem' }}>
+    <PDFLink 
+      document={<ReabilitacaoIntegrativaPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} 
+      fileName={`FichaReabilitacao_${animal?.nome ? animal.nome.replace(/\s/g, '_') : 'animal'}.pdf`} 
+      style={{ color: 'inherit', textDecoration: 'none' }}
+    >
+      {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+    </PDFLink>
+  </button>
+);
 
 function ReabilitacaoIntegrativaSteps() {
   const router = useRouter();
-  const PDFLink = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink), { ssr: false });
-    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
-        <button type="button" className={styles.green_buttonFichas} style={{width: 'auto', padding: '0 1.5rem'}}>
-            <PDFLink document={<ReabilitacaoIntegrativaPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} fileName={`FichaReabilitacao_${animal.nome?.replace(/\s/g, '_')}.pdf`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
-            </PDFLink>
-        </button>
-    );
-
-    // Estados para os dados do PDF
-    const [animal, setAnimal] = useState({});
-    const [tutor, setTutor] = useState({});
-    const [medicoLogado, setMedicoLogado] = useState(null);
-
-    // Busca os dados necessários para o cabeçalho do PDF
-    useEffect(() => {
-        const animalId = router.query.animalId;
-        if (!animalId) return;
-
-        const fetchDataForPDF = async () => {
-            try {
-                const [animalData, tutorData, userData] = await Promise.all([
-                    getAnimalById(animalId),
-                    getTutorByAnimal(animalId),
-                    getCurrentUsuario()
-                ]);
-                setAnimal(animalData);
-                setTutor(tutorData);
-                if (userData?.usuario?.id) {
-                    const medicoData = await getMedicoById(userData.usuario.id);
-                    setMedicoLogado(medicoData);
-                }
-            } catch (error) {
-                console.error('Erro ao buscar dados para o PDF:', error);
-            }
-        };
-        fetchDataForPDF();
-    }, [router.query.animalId]);
+  const { modo, animalId: queryAnimalId, fichaId: queryFichaId, agendamentoId: queryAgendamentoId, consultaId: queryConsultaId } = router.query;
 
   const [step, setStep] = useState(1);
-  const [userId, setUserId] = useState(null);
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const nextStep = () => setStep(step + 1);
-  const prevStep = () => setStep(step - 1);
+
   const [consultaId, setConsultaId] = useState(null);
   const [fichaId, setFichaId] = useState(null);
-  const [data, setData] = useState([]);
+  const [animalId, setAnimalId] = useState(null);
   const [agendamentoId, setAgendamentoId] = useState(null);
+  const [data, setData] = useState("");
+  const [isReadOnly, setIsReadOnly] = useState(false);
+
+  const [animal, setAnimal] = useState({});
+  const [tutor, setTutor] = useState({});
+  const [medicoLogado, setMedicoLogado] = useState(null);
+
+  const nextStep = () => setStep((s) => s + 1);
+  const prevStep = () => setStep((s) => s - 1);
 
   const [formData, setFormData] = useState({
-
     // página 1
     numeroProntuario: "",
     peso: "",
     queixaPrincipal: "",
-
-    historicoClinico :{
-
+    historicoClinico: {
       ortopedico: "",
       neurologico: "",
       oncologico: "",
       outros: "",
     },
-
-    exameClinicoEspecialOrtpedico:{
+    exameClinicoEspecialOrtpedico: {
       palpacaoMembrosArticulacao: "",
       palpacaoColuna: "",
       testeOrtolani: "",
@@ -99,8 +84,7 @@ function ReabilitacaoIntegrativaSteps() {
       avaliacaoDeMassaMuscular: "",
       avaliacaoDaCapacidadeDeMovimento: "",
     },
-
-    exameClinicoEspecialNeurologico:{
+    exameClinicoEspecialNeurologico: {
       estadoMental: "",
       postura: "",
       locomocao: "",
@@ -109,30 +93,27 @@ function ReabilitacaoIntegrativaSteps() {
       reflexoesSegmentares: "",
       avaliacaoSensitiva: "",
     },
-    exameClinicoEspecialOutros:{
+    exameClinicoEspecialOutros: {
       observacoes: "",
     },
-
-    queixaPrincipal2:{
+    queixaPrincipal2: {
       sinaisClinicos: "",
       primeiraOcorrencia: "",
       evolucao: "",
     },
-    
     medicacaoAdministrada: "",
 
-    //pate 2
-    sistemaDigestorio:{
+    // página 2
+    sistemaDigestorio: {
       alimentacao: "",
       apetiteDeglutinacao: "",
-      tipo: "", // Êmese/Regurgitação/Refluxo/etc.
+      tipo: "",
       denticao: "",
       fezes: "",
       obesidade: "",
       ConsumoDeAgua: "",
     },
-
-    sistemaCardiorespiratorio:{
+    sistemaCardiorespiratorio: {
       respiracao: "",
       tosseEspirros: "",
       secrecao: "",
@@ -140,45 +121,39 @@ function ReabilitacaoIntegrativaSteps() {
       cardiopatia: "",
       aumentoDeVolume: "",
     },
-
-    sistemaGeniturinario:{
+    sistemaGeniturinario: {
       miccao: "",
       castradoInteiro: "",
-      tipo1: "", // cruzamentos/cios/etc.
-      tipo2: "", // infecções/secreções/etc.
+      tipo1: "",
+      tipo2: "",
     },
-
-    sistemaNervoso:{
+    sistemaNervoso: {
       convulsoesDesequilibrios: "",
       alteracoesComportamentais: "",
       nistagmoMioclonias: "",
       dorDeCabeca: "",
       sinaisNeurologicos: "",
     },
-
-    sistemaOsteoarticularLocomotor:{
+    sistemaOsteoarticularLocomotor: {
       posturaMarcha: "",
       claudinacao: "",
-      tipo3: "", // paralisia/paresia/ataxia
-      tipo4: "", // atonia/hipotonia/hipertonia
+      tipo3: "",
+      tipo4: "",
     },
-
-    sistemaTegumentarAnexos:{
-      tipo5: "", // pruridos/lambedura
-      tipo6: "", // descamações/lesões
+    sistemaTegumentarAnexos: {
+      tipo5: "",
+      tipo6: "",
       odoresSecrecoes: "",
       qualidade: "",
       acusia: "",
       unhas: "",
     },
-
-    sistemaVisual:{
+    sistemaVisual: {
       opacificacaoDeCristalino: "",
       perdaDaVisao: "",
-      secrecao2: "", // Renomeei para evitar conflito com `secrecao` do cardiorrespiratório
+      secrecao2: "",
     },
-
-    manejosGerais:{
+    manejosGerais: {
       vacinacao: "",
       desverminizacao: "",
       ambiente: "",
@@ -186,119 +161,142 @@ function ReabilitacaoIntegrativaSteps() {
       contactantes: "",
     },
 
-    sensibilidadePontosMu:"",
-    sensibilidadePontosShu:"",
-    sensibilidadeDorCorporal:"",
-    pulso:"",
-    lingua:"",
-
-    perguntasAdicionaisMTC:{
-      historicoAncestral:"",
-      comportamento:"",
+    // página 3
+    sensibilidadePontosMu: "",
+    sensibilidadePontosShu: "",
+    sensibilidadeDorCorporal: "",
+    pulso: "",
+    lingua: "",
+    perguntasAdicionaisMTC: {
+      historicoAncestral: "",
+      comportamento: "",
       latidoMiado: "",
       sono: "",
       descricao: "",
     },
-
-    diagnosticoMTC:{
+    diagnosticoMTC: {
       orgaosSubstacias: "",
-      wuXing:"",
-      zangFu:"",
+      wuXing: "",
+      zangFu: "",
     },
-
-    responsavel:"",
-    estagiario:"",
-    cpf:"",
-
+    responsavel: "",
+    estagiario: "",
+    cpf: "",
+    medicosResponsaveis: "",
     principios: [],
     constituicaoCorporal: [],
     preferencias: [],
-
-
   });
 
-  // Obtém o ID da ficha da URL
   useEffect(() => {
-    if (router.isReady) {
-        const id = router.query.consultaId;
-        const ficha = router.query.fichaId;
-        const aId = router.query.agendamentoId;
-        if (id) {
-          setConsultaId(id);
-        }
-        if (ficha) {
-          setFichaId(ficha);
-        }
-        if (aId) {
-          setAgendamentoId(aId);
-        }
+    if (modo === 'visualizar') {
+      setIsReadOnly(true);
     }
-  }, [router.isReady, router.query.consultaId]);
+  }, [modo]);
 
   useEffect(() => {
+    if (router.isReady) {
+      if (queryConsultaId) setConsultaId(queryConsultaId);
+      if (queryFichaId) setFichaId(queryFichaId);
+      if (queryAgendamentoId) setAgendamentoId(queryAgendamentoId);
+      if (queryAnimalId) setAnimalId(queryAnimalId);
+    }
+  }, [router.isReady, queryConsultaId, queryFichaId, queryAgendamentoId, queryAnimalId]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('token');
+      const storedRoles = JSON.parse(localStorage.getItem('roles') || "[]");
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getCurrentUsuario();
+        const medicoId = userData?.usuario?.id;
+        if (medicoId) {
+          const medicoCompletoData = await getMedicoById(medicoId);
+          setMedicoLogado(medicoCompletoData);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar médico:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (!animalId) return;
+
+    const fetchDataForPDF = async () => {
+      try {
+        const [animalData, tutorData] = await Promise.all([
+          getAnimalById(animalId),
+          getTutorByAnimal(animalId)
+        ]);
+        setAnimal(animalData || {});
+        setTutor(tutorData || {});
+      } catch (error) {
+        console.error('Erro ao buscar dados para o PDF:', error);
+      }
+    };
+    fetchDataForPDF();
+  }, [animalId]);
+
+  useEffect(() => {
+    if (modo === "criar") {
+      setLoading(false);
+      return;
+    }
+
     if (!fichaId) return;
 
     const fetchData = async () => {
-        try {
-            const formData = await getFichaById(fichaId);
-            setFormData(JSON.parse(formData.conteudo));
-            setData(formData.dataHora);
-        } catch (error) {
-            console.error('Erro ao buscar dados da ficha:', error);
-        } finally {
-            setLoading(false);
+      try {
+        const formDataResponse = await getFichaById(fichaId);
+        if (formDataResponse?.conteudo) {
+          const parsedConteudo = typeof formDataResponse.conteudo === 'string'
+            ? JSON.parse(formDataResponse.conteudo)
+            : formDataResponse.conteudo;
+          setFormData(parsedConteudo);
         }
-    };
-      fetchData();
-  }, [fichaId]);
-
-  useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const storedToken = localStorage.getItem('token');
-          const storedRoles = JSON.parse(localStorage.getItem('roles'));
-          setToken(storedToken || "");
-          setRoles(storedRoles || []);
+        setData(formDataResponse?.dataHora);
+      } catch (error) {
+        console.error('Erro ao buscar dados da ficha:', error);
+      } finally {
+        setLoading(false);
       }
-      }, []);
-
-  useEffect(() => {
-      const fetchData = async () => {
-          try {
-              const userData = await getCurrentUsuario();
-              setUserId(userData.usuario.id);
-          } catch (error) {
-              console.error('Erro ao buscar usuário:', error);
-          } finally {
-              setLoading(false); 
-          }
-      };
-      fetchData();
-  }, []);
+    };
+    fetchData();
+  }, [fichaId, modo]);
 
   if (loading) {
-      return <div className={styles.message}>Carregando dados do usuário...</div>;
+    return <div className={styles.message}>Carregando dados do usuário...</div>;
+  }
+
+  if (!token) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+      </div>
+    );
   }
 
   if (!roles.includes("medico") && !roles.includes("patologista")) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
-          </div>
-      );
-  }    
-
-  if (!token) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-          </div>
-      );
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
   }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-  
-    // Verifica se o campo é aninhado (ex.: historicoClinico.ortopedico)
     if (name.includes(".")) {
       const [parent, child] = name.split(".");
       setFormData((prev) => ({
@@ -309,154 +307,141 @@ function ReabilitacaoIntegrativaSteps() {
         },
       }));
     } else {
-      // Para campos não aninhados
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-      const handlePreferenciasChange = (event) => {
-        const { value, checked } = event.target;
+  const handlePreferenciasChange = (event) => {
+    const { value, checked } = event.target;
+    let updatedPreferencias = formData.preferencias ? [...formData.preferencias] : [];
 
-        // cria uma cópia do array atual de preferências ou um array vazio se undefined
-        let updatedPreferencias = formData.preferencias ? [...formData.preferencias] : [];
-
-        if (checked) {
-            // adiciona se não existe ainda
-            if (!updatedPreferencias.includes(value)) {
-                updatedPreferencias.push(value);
-            }
-          } else {
-            // remove o valor
-            updatedPreferencias = updatedPreferencias.filter(item => item !== value);
-    }
-    
-    // atualiza o formData chamando handleChange com o array novo
-    handleChange({
-        target: {
-            name: "preferencias",
-            value: updatedPreferencias,
-        },
-    });
-};
-const handlePrincipiosChange = (event) => {
-  const { value, checked } = event.target;
-
-  // cria uma cópia do array atual de preferências ou um array vazio se undefined
-  let updatedPrincipios = formData.principios ? [...formData.principios] : [];
-
-  if (checked) {
-      // adiciona se não existe ainda
-      if (!updatedPrincipios.includes(value)) {
-          updatedPrincipios.push(value);
+    if (checked) {
+      if (!updatedPreferencias.includes(value)) {
+        updatedPreferencias.push(value);
       }
-  } else {
-      // remove o valor
+    } else {
+      updatedPreferencias = updatedPreferencias.filter(item => item !== value);
+    }
+
+    handleChange({
+      target: {
+        name: "preferencias",
+        value: updatedPreferencias,
+      },
+    });
+  };
+
+  const handlePrincipiosChange = (event) => {
+    const { value, checked } = event.target;
+    let updatedPrincipios = formData.principios ? [...formData.principios] : [];
+
+    if (checked) {
+      if (!updatedPrincipios.includes(value)) {
+        updatedPrincipios.push(value);
+      }
+    } else {
       updatedPrincipios = updatedPrincipios.filter(item => item !== value);
-  }
-  
-  
-  // atualiza o formData chamando handleChange com o array novo
-  handleChange({
+    }
+
+    handleChange({
       target: {
         name: "principios",
         value: updatedPrincipios,
-
       },
-  });
-};
+    });
+  };
 
-const handleSelectChange = (e, index) => {
-  const value = e.target.value;
-  setFormData((prevData) => {
-    const updatedArray = [...(prevData.constituicaoCorporal || [])];
-    updatedArray[index] = value;
-    return {
-      ...prevData,
-      constituicaoCorporal: updatedArray
-    };
-  });
-}
-  
+  const handleSelectChange = (e, index) => {
+    const value = e.target.value;
+    setFormData((prevData) => {
+      const updatedArray = [...(prevData.constituicaoCorporal || [])];
+      updatedArray[index] = value;
+      return {
+        ...prevData,
+        constituicaoCorporal: updatedArray
+      };
+    });
+  };
 
   const handleRadioAninhado = (e) => {
     const { name, value } = e.target;
-    const nameParts = name.split('.'); // Divida o nome para obter o caminho
+    const nameParts = name.split('.');
     const newFormData = { ...formData };
-  
+
     let temp = newFormData;
     for (let i = 0; i < nameParts.length - 1; i++) {
-      temp = temp[nameParts[i]] = temp[nameParts[i]] || {}; // Navega na estrutura
+      temp = temp[nameParts[i]] = temp[nameParts[i]] || {};
     }
-    temp[nameParts[nameParts.length - 1]] = value; // Atualiza o valor no caminho final
-  
+    temp[nameParts[nameParts.length - 1]] = value;
+
     setFormData(newFormData);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async () => {
     setShowErrorAlert(false);
-    const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss"); 
+
+    const currentModo = modo || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('modo'));
+    const currentFichaId = fichaId || queryFichaId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('fichaId'));
+    const currentAgendamentoId = agendamentoId || queryAgendamentoId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('agendamentoId'));
+
+    const dataFormatada = moment(data).isValid() 
+      ? moment(data).format("YYYY-MM-DDTHH:mm:ss") 
+      : moment().format("YYYY-MM-DDTHH:mm:ss");
+
     const fichaData = {
-        nome: "Ficha de Reabilitação Integrativa",  
-        conteudo:{
-            numeroProntuario: formData.numeroProntuario,
-            peso: formData.peso,
-            queixaPrincipal: formData.queixaPrincipal,
-
-            historicoClinico: formData.historicoClinico,
-            exameClinicoEspecialOrtpedico:formData.exameClinicoEspecialOrtpedico,
-            exameClinicoEspecialNeurologico:formData.exameClinicoEspecialNeurologico,
-
-            exameClinicoEspecialOutros:formData.exameClinicoEspecialOutros,
-
-            queixaPrincipal2: formData.queixaPrincipal2,
-            medicacaoAdministrada: formData.medicacaoAdministrada,
-           
-           //part2
-            sistemaDigestorio:formData.sistemaDigestorio,
-            sistemaCardiorespiratorio:formData.sistemaCardiorespiratorio,
-            sistemaGeniturinario:formData.sistemaGeniturinario,
-            sistemaNervoso:formData.sistemaNervoso,
-            sistemaOsteoarticularLocomotor: formData.sistemaOsteoarticularLocomotor,
-            sistemaTegumentarAnexos:formData.sistemaTegumentarAnexos,
-            sistemaVisual: formData.sistemaVisual,
-            manejosGerais:formData.manejosGerais,
-            
-
-
-            //part3
-            sensibilidadePontosMu:formData.sensibilidadePontosMu,
-            sensibilidadePontosShu:formData.sensibilidadePontosShu,
-            sensibilidadeDorCorporal:formData.sensibilidadeDorCorporal,
-            pulso:formData.pulso,
-            lingua:formData.lingua,
-            perguntasAdicionaisMTC:formData.perguntasAdicionaisMTC,
-            diagnosticoMTC:formData.diagnosticoMTC,
-
-
-          medicosResponsaveis: formData.medicosResponsaveis,
-          estagiario:formData.estagiario,
-          cpf:formData.cpf,
-
-        principios:formData.principios,
-        constituicaoCorporal:formData.constituicaoCorporal,
-        preferencias:formData.preferencias,
-            
-        },
-        dataHora: dataFormatada,
-        agendamento: { id: Number(agendamentoId) }
+      nome: "Ficha de Reabilitação Integrativa",
+      conteudo: {
+        numeroProntuario: formData.numeroProntuario,
+        peso: formData.peso,
+        queixaPrincipal: formData.queixaPrincipal,
+        historicoClinico: formData.historicoClinico,
+        exameClinicoEspecialOrtpedico: formData.exameClinicoEspecialOrtpedico,
+        exameClinicoEspecialNeurologico: formData.exameClinicoEspecialNeurologico,
+        exameClinicoEspecialOutros: formData.exameClinicoEspecialOutros,
+        queixaPrincipal2: formData.queixaPrincipal2,
+        medicacaoAdministrada: formData.medicacaoAdministrada,
+        sistemaDigestorio: formData.sistemaDigestorio,
+        sistemaCardiorespiratorio: formData.sistemaCardiorespiratorio,
+        sistemaGeniturinario: formData.sistemaGeniturinario,
+        sistemaNervoso: formData.sistemaNervoso,
+        sistemaOsteoarticularLocomotor: formData.sistemaOsteoarticularLocomotor,
+        sistemaTegumentarAnexos: formData.sistemaTegumentarAnexos,
+        sistemaVisual: formData.sistemaVisual,
+        manejosGerais: formData.manejosGerais,
+        sensibilidadePontosMu: formData.sensibilidadePontosMu,
+        sensibilidadePontosShu: formData.sensibilidadePontosShu,
+        sensibilidadeDorCorporal: formData.sensibilidadeDorCorporal,
+        pulso: formData.pulso,
+        lingua: formData.lingua,
+        perguntasAdicionaisMTC: formData.perguntasAdicionaisMTC,
+        diagnosticoMTC: formData.diagnosticoMTC,
+        medicosResponsaveis: formData.medicosResponsaveis,
+        estagiario: formData.estagiario,
+        cpf: formData.cpf,
+        principios: formData.principios,
+        constituicaoCorporal: formData.constituicaoCorporal,
+        preferencias: formData.preferencias,
+      },
+      dataHora: dataFormatada,
+      agendamento: { id: Number(currentAgendamentoId) }
     };
 
     try {
-        await updateFicha(fichaData, fichaId);
-        setShowAlert(true);
+      if (currentModo === "criar" || !currentFichaId || currentFichaId === "null") {
+        await createFicha(fichaData);
+      } else {
+        await updateFicha(fichaData, currentFichaId);
+      }
+      setShowAlert(true);
     } catch (error) {
-        console.error("Erro ao criar ficha:", error);
-        setShowErrorAlert(true);
+      console.error("Erro ao salvar ficha:", error);
+      setErrorMessage(error?.response?.data?.message || (currentModo === "criar" || !currentFichaId ? "Erro ao criar ficha" : "Erro ao editar ficha"));
+      setShowErrorAlert(true);
     }
- };
+  };
 
- const renderStepContent = () => {
-    switch(step) {
+  const renderStepContent = () => {
+    switch (step) {
       case 1:
         return (
           <Reabilitacao 
@@ -466,53 +451,46 @@ const handleSelectChange = (e, index) => {
           />
         );
       case 2:
-          return (
-              <Reabilitacao2
-              formData={formData} 
-              handleChange={handleChange} 
-              nextStep={nextStep}
-              prevStep={prevStep}
-              />
-          );
-      case 3:
-      return (
-        <>
-        {showAlert && consultaId &&
-        <div className={styles.alert}>
-          <Alert message="Ficha editada com sucesso!" 
-          show={showAlert} url={`/createConsulta/${consultaId}`} />
-        </div>}
-        {showErrorAlert && 
-        <div className={styles.alert}>
-          <ErrorAlert message={"Erro ao criar ficha"} 
-          show={showErrorAlert} />
-        </div>}
-
-          <Reabilitacao3
-          formData={formData} 
-          handlePreferenciasChange={handlePreferenciasChange}
-          handlePrincipiosChange={handlePrincipiosChange}
-          handleChange={handleChange}
-          handleRadioAninhado={handleRadioAninhado} 
-          handleSubmit={handleSubmit}
-          prevStep={prevStep}
-          handleSelectChange={handleSelectChange}
+        return (
+          <Reabilitacao2 
+            formData={formData} 
+            handleChange={handleChange} 
+            nextStep={nextStep}
+            prevStep={prevStep}
           />
-        </>
-      );
+        );
+      case 3:
+        return (
+          <Reabilitacao3
+            formData={formData} 
+            handlePreferenciasChange={handlePreferenciasChange}
+            handlePrincipiosChange={handlePrincipiosChange}
+            handleChange={handleChange}
+            handleRadioAninhado={handleRadioAninhado} 
+            handleSubmit={handleSubmit}
+            prevStep={prevStep}
+            handleSelectChange={handleSelectChange}
+          />
+        );
+      default:
+        return null;
     }
- }
+  };
+
   return (
     <div className={styles.container}>
       {renderStepContent()}
-      {!loading && animal.id && tutor.id && medicoLogado && (
-        <DownloadPdfStyledButton
+
+      <div className={styles.footerControls}>
+        {!loading && animal?.id && tutor?.id && medicoLogado && (
+          <DownloadPdfStyledButton
             ficha={formData}
             animal={animal}
             tutor={tutor}
             medicoLogado={medicoLogado}
-        />
-    )}
+          />
+        )}
+      </div>
 
       <div className={styles.pagination}>
         {[1, 2, 3].map((page) => (
@@ -526,9 +504,26 @@ const handleSelectChange = (e, index) => {
           </button>
         ))}
       </div>
+
+      {showAlert && (
+        <div className={styles.alert}>
+          <Alert
+            message={modo === "criar" ? "Ficha criada com sucesso!" : "Ficha editada com sucesso!"}
+            show={showAlert}
+            url={consultaId ? `/createConsulta/${consultaId}` : (animalId ? `/getAllConsultas/${animalId}` : `/getAllConsultas`)}
+          />
+        </div>
+      )}
+      {showErrorAlert && (
+        <div className={styles.alert}>
+          <ErrorAlert
+            message={errorMessage || (modo === "criar" ? "Erro ao criar ficha" : "Erro ao editar ficha")}
+            show={showErrorAlert}
+          />
+        </div>
+      )}
     </div>
   );
 }
-
 
 export default ReabilitacaoIntegrativaSteps;

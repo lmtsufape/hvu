@@ -108,13 +108,19 @@ function AtendimentoCardiologico({
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('pt-BR', options);
   };
+
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+    handleSubmit(e);
+  };
+
   medicacoes = medicacoes || [{ medicacao: "", dose: "", frequencia: "", periodo: "" }];
   return (
     <div className={styles.container}>
       <VoltarButton />
       <h1>Ficha de Atendimento Cardiológico</h1>
       <div className={styles.form_box}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={onSubmitForm}>
           <div className={styles.box_ficha_toggle}>
             <button
               type="button"
