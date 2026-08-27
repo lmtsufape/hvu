@@ -31,4 +31,7 @@ public class Ficha {
     @ManyToOne
     @JoinColumn(name = "medico_id")
     private Medico medico;
+    @ManyToOne
+    @JoinColumn(name = "animal_id")
+    private Animal animal;
 }

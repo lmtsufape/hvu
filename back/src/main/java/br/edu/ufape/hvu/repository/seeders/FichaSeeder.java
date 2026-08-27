@@ -66,6 +66,7 @@ public class FichaSeeder {
 
             Agendamento agendamentoAleatorio = agendamentos.get(faker.random().nextInt(agendamentos.size()));
             ficha.setAgendamento(agendamentoAleatorio);
+            ficha.setAnimal(agendamentoAleatorio.getAnimal());
 
             Medico medicoAleatorio = medicos.get(faker.random().nextInt(medicos.size()));
             ficha.setMedico(medicoAleatorio);

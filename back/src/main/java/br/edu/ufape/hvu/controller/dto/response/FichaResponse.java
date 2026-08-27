@@ -18,6 +18,7 @@ public  class FichaResponse  {
     private LocalDateTime dataHora;
     private AgendamentoResponse agendamento;
     private MedicoResponse medico;
+    private AnimalResponse animal;
 
     public FichaResponse(Ficha obj) {
         ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");

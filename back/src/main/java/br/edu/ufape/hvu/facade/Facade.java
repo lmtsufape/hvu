@@ -10,11 +10,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
+import br.edu.ufape.hvu.controller.dto.response.ContadorProntuarioResponse;
 import br.edu.ufape.hvu.controller.dto.response.TutorEAnimalPorOrigemFlatResponse;
 import br.edu.ufape.hvu.exception.OrigemAnimalInvalidaException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import br.edu.ufape.hvu.model.enums.TipoAnimal;
 import br.edu.ufape.hvu.model.enums.TipoServico;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
@@ -1388,6 +1390,7 @@ public class Facade {
 
     // Animal--------------------------------------------------------------
     private final AnimalServiceInterface animalServiceInterface;
+    private final CodigoProntuarioService codigoProntuarioService;
 
     private void validarOrigemAnimal(String role, OrigemAnimal origemAnimal) {
         if ("TUTOR".equals(role) && origemAnimal != OrigemAnimal.HVU) {
@@ -1410,10 +1413,13 @@ public class Facade {
             throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
         }
 
+        if (newInstance.getTipo() == null) {
+            newInstance.setTipo(TipoAnimal.COMUM);
+        }
+
         if (newInstance.getOrigemAnimal() == null) {
             newInstance.setOrigemAnimal(OrigemAnimal.HVU);
         }
-
         validarOrigemAnimal("TUTOR", newInstance.getOrigemAnimal());
 
         if (tutor.getAnimais() == null) {
@@ -1448,9 +1454,22 @@ public class Facade {
         return tutorServiceInterface.saveTutor(request.getTutor().convertToEntity());
     }
 
+    public ContadorProntuarioResponse definirValorInicialProntuario(
+            ValorInicialProntuarioRequest request) {
+
+        ContadorProntuario contador =
+                codigoProntuarioService.definirValorInicial(request.valorInicial());
+
+        return new ContadorProntuarioResponse(contador);
+    }
+
     @Transactional
     public Animal saveAnimalByPatologista(AnimalByPatologistaRequest request) {
         Animal animal = request.getAnimal().convertToEntity();
+
+        if (animal.getTipo() == null) {
+            animal.setTipo(TipoAnimal.COMUM);
+        }
 
         if (animal.getOrigemAnimal() == null) {
             animal.setOrigemAnimal(OrigemAnimal.LAPA);
@@ -1725,21 +1744,28 @@ public class Facade {
 
     // Ficha--------------------------------------------------------------
 
-
     private final FichaServiceInterface fichaServiceInterface;
 
     @Transactional
     public Ficha saveFicha(Ficha newInstance, String sessionId) {
-        if (newInstance.getAgendamento() == null || newInstance.getAgendamento().getId() <= 0) {
-            throw new IllegalArgumentException("Ficha deve estar vinculada a um agendamento válido.");
+        if (newInstance.getAnimal() == null || newInstance.getAnimal().getId() <= 0) {
+            throw new IllegalArgumentException("Ficha deve estar vinculada a um animal válido.");
         }
 
-        if (!agendamentoRepository.existsById(newInstance.getAgendamento().getId())) {
-            throw new ResourceNotFoundException("Agendamento", "id", newInstance.getAgendamento().getId());
+        if (!animalRepository.existsById(newInstance.getAnimal().getId())) {
+            throw new ResourceNotFoundException(
+                    "Animal",
+                    "id",
+                    newInstance.getAnimal().getId());
         }
 
         Medico medico = medicoServiceInterface.findByUserId(sessionId);
         newInstance.setMedico(medico);
+
+        // Só gera códigos de prontuário para animais que nunca tiveram ficha
+        if (!fichaServiceInterface.existsByAnimalId(newInstance.getAnimal().getId())) {
+            codigoProntuarioService.garantirCodigoProntuario(newInstance.getAnimal().getId());
+        }
 
         return fichaServiceInterface.saveFicha(newInstance);
     }
@@ -1750,13 +1776,13 @@ public class Facade {
             throw new IllegalArgumentException("FichaRequest não pode ser nulo.");
         }
 
-        if (obj.getAgendamento() == null) {
-            throw new IllegalArgumentException("Ficha deve estar vinculada a um agendamento.");
+        if (obj.getAnimal() == null) {
+            throw new IllegalArgumentException("Ficha deve estar vinculada a um animal.");
         }
 
-        Long agendamentoId = obj.getAgendamento().getId();
-        if (!agendamentoRepository.existsById(agendamentoId)) {
-            throw new ResourceNotFoundException("Agendamento", "id", agendamentoId);
+        Long animalId = obj.getAnimal().getId();
+        if (!animalRepository.existsById(animalId)) {
+            throw new ResourceNotFoundException("Animal", "id", animalId);
         }
 
         Ficha existingFicha = findFichaById(id);
