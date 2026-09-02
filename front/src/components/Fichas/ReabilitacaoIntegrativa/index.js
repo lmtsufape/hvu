@@ -17,6 +17,7 @@ function ReabilitacaoIntegrativaSteps() {
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
@@ -191,7 +192,6 @@ function ReabilitacaoIntegrativaSteps() {
         const aId = router.query.agendamentoId; 
         if (id) {
           setConsultaId(id);
-          console.log("ID da ficha:", id);
         }
         if (aId) {
             setAgendamentoId(aId); 
@@ -419,7 +419,16 @@ const handleSelectChange = (e, index) => {
         setShowAlert(true);
     } catch (error) {
         console.error("Erro ao criar ficha:", error);
-        setShowErrorAlert(true);
+        
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
  };
 

@@ -13,6 +13,7 @@ function GetAllPatologista() {
     const [searchTerm, setSearchTerm] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [deletedPatologistaId, setDeletedPatologistaId] = useState(null); 
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
@@ -31,7 +32,8 @@ function GetAllPatologista() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const patologistasData = await getAllPatologista();
                 setPatologistas(patologistasData);
             } catch (error) {
@@ -73,6 +75,7 @@ function GetAllPatologista() {
     );
 
     const handleDeletePatologista = async (patologistaId) => {
+        setShowErrorAlert(false);
         try {
             await deletePatologista(patologistaId);
             setPatologistas(patologistas.filter(patologista => patologista.id !== patologistaId));
@@ -80,6 +83,15 @@ function GetAllPatologista() {
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir patologista: ', error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     }
@@ -135,8 +147,8 @@ function GetAllPatologista() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Patologista excluído(a) com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao excluir patologista, tente novamente" show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Patologista excluído(a) com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao excluir patologista, tente novamente"} show={showErrorAlert} />}
         </div>
     );
 }

@@ -63,6 +63,7 @@ function UpdateFicha() {
   useEffect(() => {
     if (id && tutores.length > 0 && medicos.length > 0) {
       const fetchFichaData = async () => {
+        setShowErrorAlert(false);
         try {
           const fichaData = await getFichaSolicitacaoById(id)
 
@@ -113,7 +114,16 @@ function UpdateFicha() {
           setLoading(false)
         } catch (error) {
           console.error("Error loading ficha data:", error)
-          setShowErrorAlert(true)
+          
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
           setErrorMessage("Erro ao carregar dados da ficha.")
           setLoading(false)
         }
@@ -250,12 +260,22 @@ function UpdateFicha() {
       dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
     }
 
-    try {
+    setShowErrorAlert(false);
+        try {
       await updateFichaSolicitacao(id, fichaToUpdate)
       setShowAlert(true)
     } catch (error) {
       console.error(error)
-      setShowErrorAlert(true)
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
       setErrorMessage("Erro ao atualizar ficha de solicitação, tente novamente.")
     }
   }

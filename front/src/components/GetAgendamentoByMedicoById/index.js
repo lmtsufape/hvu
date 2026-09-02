@@ -14,7 +14,6 @@ function GetAgendamentoByMedicoById() {
     const [token, setToken] = useState("");
     const [loading, setLoading] = useState(true);
 
-    console.log("vaga:", vaga);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {

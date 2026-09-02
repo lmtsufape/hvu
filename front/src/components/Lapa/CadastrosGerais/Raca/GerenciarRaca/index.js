@@ -14,6 +14,7 @@ function GerenciarRacasList() {
     const [filtro, setFiltro] = useState('especie');
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedRacaId, setDeletedRacaId] = useState(null);
     const router = useRouter();
@@ -42,9 +43,9 @@ function GerenciarRacasList() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const racasData = await getAllRaca();
-                console.log('Racas recebidas:', racasData); // Debug: verificar os dados recebidos
                 setRacas(racasData);
             } catch (error) {
                 console.error('Erro ao buscar racas:', error);
@@ -54,6 +55,7 @@ function GerenciarRacasList() {
     }, [deletedRacaId]);
 
     const handleDeleteRaca = async (racaId) => {
+        setShowErrorAlert(false);
         try {
             await deleteRaca(racaId);
             setRacas(racas.filter(raca => raca.id !== racaId));
@@ -61,8 +63,17 @@ function GerenciarRacasList() {
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir a raça:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -119,8 +130,8 @@ function GerenciarRacasList() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Raça excluída com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Esta raça não pode ser excluída por estar associada a um animal." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Raça excluída com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Esta raça não pode ser excluída por estar associada a um animal."} show={showErrorAlert} />}
         </div>
     );
 }

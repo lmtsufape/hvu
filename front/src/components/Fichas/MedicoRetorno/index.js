@@ -141,7 +141,6 @@ function FichaMedicaRetorno() {
         const aId = router.query.agendamentoId; // Obtém o ID do agendamento da URL
         if (id) {
           setConsultaId(id);
-          console.log("ID da ficha:", id);
         }
         if (aId) {
           setAgendamentoId(aId); // Define o ID do agendamento
@@ -160,7 +159,8 @@ function FichaMedicaRetorno() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
+      setShowErrorAlert(false);
+        try {
         const userData = await getCurrentUsuario();
         setUserId(userData.usuario.id);
       } catch (error) {
@@ -225,7 +225,8 @@ function FichaMedicaRetorno() {
       }
     };
 
-    try {
+    setShowErrorAlert(false);
+        try {
         const resultado = await createFicha(fichaData);
         localStorage.setItem('fichaId', resultado.id.toString());
         localStorage.removeItem("fichaMedicaRetornoFormData");
@@ -310,15 +311,28 @@ function FichaMedicaRetorno() {
 
   const handleCaracteristicaChange = (e, linfonodo) => {
     const { name, checked } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      linfonodos: {
-        ...prevState.linfonodos,
-        [linfonodo]: checked
-          ? [...prevState.linfonodos[linfonodo], name]
-          : prevState.linfonodos[linfonodo].filter((item) => item !== name)
+    setFormData((prevState) => {
+      const currentValues = prevState.linfonodos[linfonodo] || [];
+      let nextValues = checked
+        ? [...currentValues, name]
+        : currentValues.filter((item) => item !== name);
+
+      if (name === "reativos" && checked) {
+        nextValues = nextValues.filter((item) => item !== "semAlteracao");
       }
-    }));
+
+      if (name === "semAlteracao" && checked) {
+        nextValues = nextValues.filter((item) => item !== "reativos");
+      }
+
+      return {
+        ...prevState,
+        linfonodos: {
+          ...prevState.linfonodos,
+          [linfonodo]: nextValues
+        }
+      };
+    });
   };
 
   const handleChangeSelect = (e) => {

@@ -6,6 +6,7 @@ import { AdicionarMedicoWhiteButton } from "../WhiteButton";
 import { getAllMedico, deleteMedico } from '../../../services/medicoService';
 import VoltarButton from '../VoltarButton';
 import ExcluirButton from '../ExcluirButton';
+import Alert from '../Alert';
 import ErrorAlert from "../ErrorAlert";
 
 function GetAllMedicos() {
@@ -13,10 +14,11 @@ function GetAllMedicos() {
     const [searchTerm, setSearchTerm] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [deletedMedicoId, setDeletedMedicoId] = useState(null); // Estado para controlar o ID do médico excluído recentemente
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
 
     const router = useRouter();
 
@@ -31,6 +33,7 @@ function GetAllMedicos() {
 
     useEffect(() => {
         const fetchData = async () => {
+            setShowErrorAlert(false);
             try {
                 const medicosData = await getAllMedico();
                 setMedicos(medicosData);
@@ -59,21 +62,22 @@ function GetAllMedicos() {
 
     if (!token) {
         return (
-          <div className={styles.container}>
-            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-          </div>
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
         );
-      }
+    }
 
     const handleSearchChange = (term) => {
         setSearchTerm(term);
     };
 
     const filteredMedicos = medicos.filter(medico =>
-        medico.nome.toLowerCase().includes(searchTerm.toLowerCase())
+        medico.nome?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleDeleteMedico = async (medicoId) => {
+        setShowErrorAlert(false);
         try {
             await deleteMedico(medicoId);
             setMedicos(medicos.filter(medico => medico.id !== medicoId));
@@ -81,6 +85,15 @@ function GetAllMedicos() {
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir o médico: ', error);
+
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("Erro ao excluir veterinário(a), tente novamente.");
+            }
             setShowErrorAlert(true);
         }
     }
@@ -97,7 +110,7 @@ function GetAllMedicos() {
                     placeholder={"Buscar veterinário(a)"}
                     onSearchChange={handleSearchChange}
                 />
-                <AdicionarMedicoWhiteButton/>
+                <AdicionarMedicoWhiteButton />
             </div>
 
             {filteredMedicos.length === 0 ? (
@@ -126,7 +139,7 @@ function GetAllMedicos() {
                             <div className={styles.button_box}>
                                 <button
                                     className={styles.acessar_button}
-                                    onClick={() => router.push(`/getMedicoById/${medico.id}`)} 
+                                    onClick={() => router.push(`/getMedicoById/${medico.id}`)}
                                 >
                                     Visualizar
                                 </button>
@@ -136,8 +149,8 @@ function GetAllMedicos() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Veterinário(a) excluído(a) com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao excluir veterinário(a), tente novamente" show={showErrorAlert} />}
+            {showAlert && <Alert message="Veterinário(a) excluído(a) com sucesso!" show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage} show={showErrorAlert} />}
         </div>
     );
 }

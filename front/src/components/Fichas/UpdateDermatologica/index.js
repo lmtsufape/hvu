@@ -1,85 +1,74 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+import moment from 'moment';
+
 import Dermatologica from "./AnamneseFicha";
 import Dermatologica2 from "./FisicoFicha";
 import Dermatologica3 from "./DermatologicoFicha";
+import DermatologicaPDF from './DermatologicaPDF';
+
 import styles from "./index.module.css";
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
-import moment from 'moment';
+
 import { getCurrentUsuario } from '../../../../services/userService';
-import { getFichaById } from "../../../../services/fichaService";
-import { updateFicha } from "../../../../services/fichaService";
-import dynamic from 'next/dynamic';
-import DermatologicaPDF from './DermatologicaPDF';
+import { getFichaById, updateFicha, createFicha } from "../../../../services/fichaService";
 import { getAnimalById } from "../../../../services/animalService";
 import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getMedicoById } from "../../../../services/medicoService";
 
+// Dynamic import fora do componente
+const PDFLink = dynamic(
+  () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+  { ssr: false }
+);
+
+const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+  <button type="button" className={styles.green_buttonFichas} style={{ width: 'auto', padding: '0 1.5rem' }}>
+    <PDFLink 
+      document={<DermatologicaPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} 
+      fileName={`FichaDermatologica_${animal?.nome ? animal.nome.replace(/\s/g, '_') : 'animal'}.pdf`} 
+      style={{ color: 'inherit', textDecoration: 'none' }}
+    >
+      {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+    </PDFLink>
+  </button>
+);
 
 function UpdateDermatologicaSteps() {
   const router = useRouter();
-  const PDFLink = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink), { ssr: false });
-    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
-        <button type="button" className={styles.green_buttonFichas} style={{width: 'auto', padding: '0 1.5rem'}}>
-            <PDFLink document={<DermatologicaPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} fileName={`FichaDermatologica_${animal.nome?.replace(/\s/g, '_')}.pdf`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
-            </PDFLink>
-        </button>
-    );
-
-    // Estados para os dados do PDF
-    const [animal, setAnimal] = useState({});
-    const [tutor, setTutor] = useState({});
-    const [medicoLogado, setMedicoLogado] = useState(null);
-
-    // Busca os dados necessários para o cabeçalho do PDF
-    useEffect(() => {
-        const animalId = router.query.animalId;
-        if (!animalId) return;
-
-        const fetchDataForPDF = async () => {
-            try {
-                const [animalData, tutorData, userData] = await Promise.all([
-                    getAnimalById(animalId),
-                    getTutorByAnimal(animalId),
-                    getCurrentUsuario()
-                ]);
-                setAnimal(animalData);
-                setTutor(tutorData);
-                if (userData?.usuario?.id) {
-                    const medicoData = await getMedicoById(userData.usuario.id);
-                    setMedicoLogado(medicoData);
-                }
-            } catch (error) {
-                console.error('Erro ao buscar dados para o PDF:', error);
-            }
-        };
-        fetchDataForPDF();
-    }, [router.query.animalId]);
+  const { modo, animalId: queryAnimalId, fichaId: queryFichaId, agendamentoId: queryAgendamentoId, consultaId: queryConsultaId } = router.query;
 
   const [step, setStep] = useState(1);
-  const [userId, setUserId] = useState(null);
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const nextStep = () => setStep(step + 1);
-  const prevStep = () => setStep(step - 1);
-  const [imagemDesenhada, setImagemDesenhada] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(""); // Added state for error message
+
   const [consultaId, setConsultaId] = useState(null);
   const [fichaId, setFichaId] = useState(null);
-  const [data, setData] = useState([]);
+  const [animalId, setAnimalId] = useState(null);
   const [agendamentoId, setAgendamentoId] = useState(null);
+  const [data, setData] = useState("");
+  const [isReadOnly, setIsReadOnly] = useState(false);
+
+  const [imagemDesenhada, setImagemDesenhada] = useState(null);
+  const [animal, setAnimal] = useState({});
+  const [tutor, setTutor] = useState({});
+  const [medicoLogado, setMedicoLogado] = useState(null);
 
   const [showOtherInputConviveComAnimais, setShowOtherInputConviveComAnimais] = useState(false);
   const [otherValueConviveComAnimais, setOtherValueConviveComAnimais] = useState("");
   const [showOtherInputProdutosUtilizados, setShowOtherInputProdutosUtilizados] = useState(false);
   const [otherValueProdutosUtilizados, setOtherValueProdutosUtilizados] = useState("");
-  const [formData, setFormData] = useState({
 
+  const nextStep = () => setStep((s) => s + 1);
+  const prevStep = () => setStep((s) => s - 1);
+
+  const [formData, setFormData] = useState({
     // página 1
     peso: "",
     ambiente: "",
@@ -99,9 +88,9 @@ function UpdateDermatologicaSteps() {
     queixaPrincipal: "",
     tratamento: "",
     tratamentosAtuais: {
-        confirmacao: "",
-        tipoTratamento: "",
-        responsividade: ""
+      confirmacao: "",
+      tipoTratamento: "",
+      responsividade: ""
     },
     prurido: "",
     local: [],
@@ -119,32 +108,26 @@ function UpdateDermatologicaSteps() {
     turgorCutaneo: "",
     scoreCorporal: "",
     temperatura: "",
-    
     alteracoesClinicas: "",
-
-      options: {
-        roseas: false,
-        roseasPalidas: false,
-        porcelanicas: false,
-        hiperemicas: false,
-        cianoticas: false,
-        ictaricas: false,
-        naoAvaliado: false
-      },
-  
-      mucosas: {
-        roseas: "",
-        roseasPalidas: "",
-        porcelanicas: "",
-        hiperemicas: "",
-        cianoticas: "",
-        ictaricas: "",
-        naoAvaliado: ""
-      },
-
-      linfonodos: {},
-    
-
+    options: {
+      roseas: false,
+      roseasPalidas: false,
+      porcelanicas: false,
+      hiperemicas: false,
+      cianoticas: false,
+      ictaricas: false,
+      naoAvaliado: false
+    },
+    mucosas: {
+      roseas: "",
+      roseasPalidas: "",
+      porcelanicas: "",
+      hiperemicas: "",
+      cianoticas: "",
+      ictaricas: "",
+      naoAvaliado: ""
+    },
+    linfonodos: {},
 
     // página 3
     ectoparasitas: "",
@@ -153,8 +136,8 @@ function UpdateDermatologicaSteps() {
     untuosidade: "",
     condutoAuditivoDireito: [],
     condutoAuditivoEsquerdo: [],
-    imagemLesao:{
-      imagem:"", // string base64 (PNG)
+    imagemLesao: {
+      imagem: "",
       linhasDesenhadas: [],
     },
     formacoesSolidas: [],
@@ -165,13 +148,13 @@ function UpdateDermatologicaSteps() {
     descricaoLesional: "",
     criteriosFavrot: [],
     observacao: "",
-    diagnostico:{
-        definitivo: "",
-        observacoes: "",
-        prodnostico: "",
+    diagnostico: {
+      definitivo: "",
+      observacoes: "",
+      prognostico: "",
     },
     tratamentoDermatologico: [
-      { medicacao: "", dose: "", frequencia: "", periodo: ""}
+      { medicacao: "", dose: "", frequencia: "", periodo: "" }
     ],
     medico: "",
     estagiarios: "",
@@ -186,96 +169,125 @@ function UpdateDermatologicaSteps() {
       cardiologia: [],
     },
   });
-  
 
-  // Obtém o ID da ficha da URL
+  useEffect(() => {
+    if (modo === 'visualizar') {
+      setIsReadOnly(true);
+    }
+  }, [modo]);
+
   useEffect(() => {
     if (router.isReady) {
-        const id = router.query.consultaId;
-        const ficha = router.query.fichaId;
-        const aId = router.query.agendamentoId;
-        if (id) {
-          setConsultaId(id);
-        }
-        if(ficha){
-          setFichaId(ficha);
-        }
-        if (aId) {
-          setAgendamentoId(aId);
-        }
+      if (queryConsultaId) setConsultaId(queryConsultaId);
+      if (queryFichaId) setFichaId(queryFichaId);
+      if (queryAgendamentoId) setAgendamentoId(queryAgendamentoId);
+      if (queryAnimalId) setAnimalId(queryAnimalId);
     }
-  }, [router.isReady, router.query.fichaId]);
+  }, [router.isReady, queryConsultaId, queryFichaId, queryAgendamentoId, queryAnimalId]);
 
   useEffect(() => {
-    if (!fichaId) return;
-
-    const fetchData = async () => {
-        try {
-            const formData = await getFichaById(fichaId);
-            setFormData(JSON.parse(formData.conteudo));
-            setData(formData.dataHora);
-        } catch (error) {
-            console.error('Erro ao buscar dados da ficha:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-      fetchData();
-  }, [fichaId]);
-
-  useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const storedToken = localStorage.getItem('token');
-          const storedRoles = JSON.parse(localStorage.getItem('roles'));
-          setToken(storedToken || "");
-          setRoles(storedRoles || []);
-      }
-      }, []);
-
-  useEffect(() => {
-      const fetchData = async () => {
-          try {
-              const userData = await getCurrentUsuario();
-              setUserId(userData.usuario.id);
-          } catch (error) {
-              console.error('Erro ao buscar usuário:', error);
-          } finally {
-              setLoading(false); // Marcar como carregado após buscar os dados
-          }
-      };
-      fetchData();
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('token');
+      const storedRoles = JSON.parse(localStorage.getItem('roles') || "[]");
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
+    }
   }, []);
 
-  // Verifica se os dados estão carregando
-  if (loading) {
-      return <div className={styles.message}>Carregando dados do usuário...</div>;
-  }
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getCurrentUsuario();
+        const medicoId = userData?.usuario?.id;
+        if (medicoId) {
+          const medicoCompletoData = await getMedicoById(medicoId);
+          setMedicoLogado(medicoCompletoData);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar médico:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserData();
+  }, []);
 
-  // Verifica se o usuário tem permissão
-  if (!roles.includes("medico") && !roles.includes("patologista")) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
-          </div>
-      );
-  }    
+  useEffect(() => {
+    if (!animalId) return;
+
+    const fetchDataForPDF = async () => {
+      try {
+        const [animalData, tutorData] = await Promise.all([
+          getAnimalById(animalId),
+          getTutorByAnimal(animalId)
+        ]);
+        setAnimal(animalData || {});
+        setTutor(tutorData || {});
+      } catch (error) {
+        console.error('Erro ao buscar dados para o PDF:', error);
+      }
+    };
+    fetchDataForPDF();
+  }, [animalId]);
+
+  useEffect(() => {
+    if (modo === "criar") {
+      setLoading(false);
+      return;
+    }
+
+    if (!fichaId) return;
+
+    const fetchFichaData = async () => {
+      try {
+        const formDataResponse = await getFichaById(fichaId);
+        if (formDataResponse?.conteudo) {
+          const parsedConteudo = typeof formDataResponse.conteudo === 'string'
+            ? JSON.parse(formDataResponse.conteudo)
+            : formDataResponse.conteudo;
+          setFormData(parsedConteudo);
+          if (parsedConteudo?.imagemLesao?.imagem) {
+            setImagemDesenhada(parsedConteudo.imagemLesao.imagem);
+          }
+        }
+        setData(formDataResponse?.dataHora);
+      } catch (error) {
+        console.error('Erro ao buscar dados da ficha:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFichaData();
+  }, [fichaId, modo]);
+
+  if (loading) {
+    return <div className={styles.message}>Carregando dados do usuário...</div>;
+  }
 
   if (!token) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-          </div>
-      );
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+      </div>
+    );
   }
 
-    const handleChangeSelect = (e) => {
-      setFormData({
-        ...formData,
-        tipo: {
-          ...formData.tipo,
-          [e.target.name]: e.target.value
-        }
-      });
+  if (!roles.includes("medico") && !roles.includes("patologista")) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
+
+  const handleChangeSelect = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      tipo: {
+        ...prev.tipo,
+        [e.target.name]: e.target.value
+      }
+    }));
   };
 
   const handleLinfonodoChange = (e, linfonodo) => {
@@ -283,9 +295,9 @@ function UpdateDermatologicaSteps() {
     setFormData((prevState) => {
       const updatedLinfonodos = { ...prevState.linfonodos };
       if (checked) {
-        updatedLinfonodos[linfonodo] = []; // Adiciona o linfonodo com array vazio
+        updatedLinfonodos[linfonodo] = [];
       } else {
-        delete updatedLinfonodos[linfonodo]; // Remove o linfonodo ao desmarcar
+        delete updatedLinfonodos[linfonodo];
       }
       return {
         ...prevState,
@@ -293,50 +305,58 @@ function UpdateDermatologicaSteps() {
       };
     });
   };
+
   const handleCaracteristicaChange = (e, linfonodo) => {
     const { name, checked } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      linfonodos: {
-        ...prevState.linfonodos,
-        [linfonodo]: checked
-          ? [...prevState.linfonodos[linfonodo], name]
-          : prevState.linfonodos[linfonodo].filter((item) => item !== name)
+    setFormData((prevState) => {
+      const currentValues = prevState.linfonodos?.[linfonodo] || [];
+      let nextValues = checked
+        ? [...currentValues, name]
+        : currentValues.filter((item) => item !== name);
+
+      if (name === "reativos" && checked) {
+        nextValues = nextValues.filter((item) => item !== "semAlteracao");
       }
-    }));
+      if (name === "semAlteracao" && checked) {
+        nextValues = nextValues.filter((item) => item !== "reativos");
+      }
+
+      return {
+        ...prevState,
+        linfonodos: {
+          ...prevState.linfonodos,
+          [linfonodo]: nextValues
+        }
+      };
+    });
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
 
     setFormData((prev) => {
-        // Verifica se o campo pertence a "tratamentosAtuais"
-        if (name.startsWith("tratamentosAtuais.")) {
-            const field = name.split(".")[1]; // Extrai "confirmacao", "tipoTratamento" ou "responsividade"
-            return {
-                ...prev,
-                tratamentosAtuais: {
-                    ...prev.tratamentosAtuais,
-                    [field]: value
-                }
-            };
-        }
-        else{    
-          const path = name.split(".");
-          const updated = structuredClone(prev); 
-          let current = updated;
-      
-          for (let i = 0; i < path.length - 1; i++) {
-            if (!(path[i] in current)) current[path[i]] = {};
-            current = current[path[i]];
+      if (name.startsWith("tratamentosAtuais.")) {
+        const field = name.split(".")[1];
+        return {
+          ...prev,
+          tratamentosAtuais: {
+            ...prev.tratamentosAtuais,
+            [field]: value
           }
-      
-          current[path[path.length - 1]] = value;
-      
-          return updated;
+        };
+      } else {
+        const path = name.split(".");
+        const updated = structuredClone(prev);
+        let current = updated;
+
+        for (let i = 0; i < path.length - 1; i++) {
+          if (!(path[i] in current)) current[path[i]] = {};
+          current = current[path[i]];
         }
-        // Para outros campos, mantém o comportamento padrão
-        //return { ...prev, [name]: value };
+
+        current[path[path.length - 1]] = value;
+        return updated;
+      }
     });
   };
 
@@ -344,19 +364,18 @@ function UpdateDermatologicaSteps() {
     setFormData((prev) => {
       const novosTratamentos = [...prev.tratamentoDermatologico];
       novosTratamentos[index][campo] = valor;
-  
       return {
         ...prev,
         tratamentoDermatologico: novosTratamentos
       };
     });
-  }; 
-  
+  };
+
   const adicionarLinhaTratamento = () => {
     setFormData((prev) => ({
       ...prev,
       tratamentoDermatologico: [
-        ...prev.tratamentoDermatologico,
+        ...(prev.tratamentoDermatologico || []),
         { medicacao: "", dose: "", frequencia: "", periodo: "" }
       ]
     }));
@@ -365,7 +384,7 @@ function UpdateDermatologicaSteps() {
   const removerUltimaLinhaTratamento = () => {
     setFormData((prev) => {
       const tratamentos = prev.tratamentoDermatologico;
-      if (tratamentos.length > 1) {
+      if (tratamentos?.length > 1) {
         return {
           ...prev,
           tratamentoDermatologico: tratamentos.slice(0, -1),
@@ -373,59 +392,48 @@ function UpdateDermatologicaSteps() {
       }
       return prev;
     });
-  };  
+  };
 
   const handleSaveDrawing = (imagemFinal, linhasDesenhadas) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       imagemLesao: {
-        imagem: imagemFinal,                // string base64 (PNG)
-        linhasDesenhadas: linhasDesenhadas // array com dados dos traços
+        imagem: imagemFinal,
+        linhasDesenhadas: linhasDesenhadas
       }
     }));
-    setImagemDesenhada(imagemFinal); // Atualiza o estado da imagem desenhada
-  };  
+    setImagemDesenhada(imagemFinal);
+  };
 
   const handleCheckboxChange = (event, field) => {
     const { value, checked } = event.target;
     setFormData((prev) => ({
-        ...prev,
-        [field]: checked
-            ? [...prev[field], value]
-            : prev[field].filter((item) => item !== value)
+      ...prev,
+      [field]: checked
+        ? [...(prev[field] || []), value]
+        : (prev[field] || []).filter((item) => item !== value)
     }));
   };
 
-   const handleCheckboxChangeOutros = (event, field, setShowOtherInput, setOtherValue) => {
-        const { value, checked } = event.target;
+  const handleCheckboxChangeOutros = (event, field, setShowOtherInput, setOtherValue) => {
+    const { value, checked } = event.target;
 
-        if (value === "Outros") {
-            setShowOtherInput(checked);
-            if (!checked) setOtherValue("");
-        }
-        setFormData((prev) => {
-         if (field === "conviveComAnimais") {
-            return {
-                ...prev,
-                conviveComAnimais: checked
-                    ? [...prev.conviveComAnimais, value]
-                    : prev.conviveComAnimais.filter((item) => item !== value)
-            };
-            
-          }
-          if (field === "produtosUtilizados") {
-            return {
-                ...prev,
-                produtosUtilizados: checked
-                    ? [...prev.produtosUtilizados, value]
-                    : prev.produtosUtilizados.filter((item) => item !== value)
-            };
-            
-          }
-           return prev;
-        });
-    };
-
+    if (value === "Outros") {
+      setShowOtherInput(checked);
+      if (!checked) setOtherValue("");
+    }
+    setFormData((prev) => {
+      if (field === "conviveComAnimais" || field === "produtosUtilizados") {
+        return {
+          ...prev,
+          [field]: checked
+            ? [...(prev[field] || []), value]
+            : (prev[field] || []).filter((item) => item !== value)
+        };
+      }
+      return prev;
+    });
+  };
 
   const handleCheckboxChangeMucosas = (e) => {
     const { name, checked } = e.target;
@@ -437,6 +445,7 @@ function UpdateDermatologicaSteps() {
       }
     }));
   };
+
   const handleLocationChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -448,139 +457,137 @@ function UpdateDermatologicaSteps() {
     }));
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async () => {
     setShowErrorAlert(false);
-    const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss"); 
-    let conviveComAnimaisFinal = [...formData.conviveComAnimais];
-    let produtosUtilizadosFinal = [...formData.produtosUtilizados];
 
-     if (conviveComAnimaisFinal.includes("Outros") && otherValueConviveComAnimais.trim() !== "") {
-        conviveComAnimaisFinal = conviveComAnimaisFinal.filter(item => item !== "Outros");
-        conviveComAnimaisFinal.push(otherValueConviveComAnimais.trim());
+    const currentModo = modo || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('modo'));
+    const currentFichaId = fichaId || queryFichaId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('fichaId'));
+    const currentAgendamentoId = agendamentoId || queryAgendamentoId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('agendamentoId'));
+
+    const dataFormatada = moment(data).isValid() 
+      ? moment(data).format("YYYY-MM-DDTHH:mm:ss") 
+      : moment().format("YYYY-MM-DDTHH:mm:ss");
+
+    let conviveComAnimaisFinal = [...(formData.conviveComAnimais || [])];
+    let produtosUtilizadosFinal = [...(formData.produtosUtilizados || [])];
+
+    if (conviveComAnimaisFinal.includes("Outros") && otherValueConviveComAnimais.trim() !== "") {
+      conviveComAnimaisFinal = conviveComAnimaisFinal.filter((item) => item !== "Outros");
+      conviveComAnimaisFinal.push(otherValueConviveComAnimais.trim());
     }
     if (produtosUtilizadosFinal.includes("Outros") && otherValueProdutosUtilizados.trim() !== "") {
-        produtosUtilizadosFinal = produtosUtilizadosFinal.filter(item => item !== "Outros");
-        produtosUtilizadosFinal.push(otherValueProdutosUtilizados.trim());
-
+      produtosUtilizadosFinal = produtosUtilizadosFinal.filter((item) => item !== "Outros");
+      produtosUtilizadosFinal.push(otherValueProdutosUtilizados.trim());
     }
+
     const fichaData = {
-        nome: "Ficha clínica dermatológica",  
-        conteudo:{
-            peso: formData.peso,
-            ambiente: formData.ambiente,
-            estiloVida: formData.estiloVida,
-            contatoComSuperfice: formData.contatoComSuperfice,
-            acessoRua: formData.acessoRua,
-            conviveComAnimais: conviveComAnimaisFinal,
-            contactantesSintomaticos: formData.contactantesSintomaticos,
-            alimentacao: formData.alimentacao,
-            banhos: formData.banhos,
-            frequenciaBanhos: formData.frequenciaBanhos,
-            produtosUtilizados: produtosUtilizadosFinal,
-            controleEctoparasitas: formData.controleEctoparasitas,
-            ultimaAdministracao: formData.ultimaAdministracao,
-            apresentaEctoparasitas: formData.apresentaEctoparasitas,
-            quandoVistoUltimaVez: formData.quandoVistoUltimaVez,
-            queixaPrincipal: formData.queixaPrincipal,
-            tratamento: formData.tratamento,
-            tratamentosAtuais: formData.tratamentosAtuais,
-            prurido: formData.prurido,
-            local: formData.local,
-            intensidade: formData.intensidade,
-            lambedura: formData.lambedura,
-
-            tipo:formData.tipo,
-            nivelDeConsciencia: formData.nivelDeConsciencia,
-            grauDedesidratacao: formData.grauDedesidratacao,
-            scoreCorporal: formData.scoreCorporal,
-            turgorCutaneo: formData.turgorCutaneo,
-            tpc: formData.tpc,
-            temperatura: formData.temperatura,
-            mucosas: formData.mucosas,
-            linfonodos: formData.linfonodos,
-            alteracoesClinicas: formData.alteracoesClinicas,
-            
-
-            ectoparasitas: formData.ectoparasitas,
-            pelagem: formData.pelagem,
-            descamacao: formData.descamacao,
-            untuosidade: formData.untuosidade,
-            condutoAuditivoDireito: formData.condutoAuditivoDireito,
-            condutoAuditivoEsquerdo: formData.condutoAuditivoEsquerdo,
-            imagemLesao: formData.imagemLesao,
-            formacoesSolidas: formData.formacoesSolidas,
-            alteracoesDeCor: formData.alteracoesDeCor,
-            colecoesLiquidas: formData.colecoesLiquidas,
-            alteracoesEspessura: formData.alteracoesEspessura,
-            perdasTeciduais: formData.perdasTeciduais,
-            descricaoLesional: formData.descricaoLesional,
-            criteriosFavrot: formData.criteriosFavrot,
-            observacao: formData.observacao,
-            diagnostico: formData.diagnostico,
-            tratamentoDermatologico: formData.tratamentoDermatologico,
-            medico: formData.medico,
-            estagiarios: formData.estagiarios,
-            SolicitacaoDeExame: formData.SolicitacaoDeExame
-
-        },
-        dataHora: dataFormatada,
-        agendamento: {id: Number(agendamentoId)}
-        
+      nome: "Ficha clínica dermatológica",
+      conteudo: {
+        peso: formData.peso,
+        ambiente: formData.ambiente,
+        estiloVida: formData.estiloVida,
+        contatoComSuperfice: formData.contatoComSuperfice,
+        acessoRua: formData.acessoRua,
+        conviveComAnimais: conviveComAnimaisFinal,
+        contactantesSintomaticos: formData.contactantesSintomaticos,
+        alimentacao: formData.alimentacao,
+        banhos: formData.banhos,
+        frequenciaBanhos: formData.frequenciaBanhos,
+        produtosUtilizados: produtosUtilizadosFinal,
+        controleEctoparasitas: formData.controleEctoparasitas,
+        ultimaAdministracao: formData.ultimaAdministracao,
+        apresentaEctoparasitas: formData.apresentaEctoparasitas,
+        quandoVistoUltimaVez: formData.quandoVistoUltimaVez,
+        queixaPrincipal: formData.queixaPrincipal,
+        tratamento: formData.tratamento,
+        tratamentosAtuais: formData.tratamentosAtuais,
+        prurido: formData.prurido,
+        local: formData.local,
+        intensidade: formData.intensidade,
+        lambedura: formData.lambedura,
+        tipo: formData.tipo,
+        nivelDeConsciencia: formData.nivelDeConsciencia,
+        grauDedesidratacao: formData.grauDedesidratacao,
+        scoreCorporal: formData.scoreCorporal,
+        turgorCutaneo: formData.turgorCutaneo,
+        tpc: formData.tpc,
+        temperatura: formData.temperatura,
+        mucosas: formData.mucosas,
+        linfonodos: formData.linfonodos,
+        alteracoesClinicas: formData.alteracoesClinicas,
+        ectoparasitas: formData.ectoparasitas,
+        pelagem: formData.pelagem,
+        descamacao: formData.descamacao,
+        untuosidade: formData.untuosidade,
+        condutoAuditivoDireito: formData.condutoAuditivoDireito,
+        condutoAuditivoEsquerdo: formData.condutoAuditivoEsquerdo,
+        imagemLesao: formData.imagemLesao,
+        formacoesSolidas: formData.formacoesSolidas,
+        alteracoesDeCor: formData.alteracoesDeCor,
+        colecoesLiquidas: formData.colecoesLiquidas,
+        alteracoesEspessura: formData.alteracoesEspessura,
+        perdasTeciduais: formData.perdasTeciduais,
+        descricaoLesional: formData.descricaoLesional,
+        criteriosFavrot: formData.criteriosFavrot,
+        observacao: formData.observacao,
+        diagnostico: formData.diagnostico,
+        tratamentoDermatologico: formData.tratamentoDermatologico,
+        medico: formData.medico,
+        estagiarios: formData.estagiarios,
+        SolicitacaoDeExame: formData.SolicitacaoDeExame
+      },
+      dataHora: dataFormatada,
+      agendamento: { id: Number(currentAgendamentoId) }
     };
 
     try {
-        await updateFicha(fichaData, fichaId);
-        setShowAlert(true);
+      if (currentModo === "criar" || !currentFichaId || currentFichaId === "null") {
+        await createFicha(fichaData);
+      } else {
+        await updateFicha(fichaData, currentFichaId);
+      }
+      setShowAlert(true);
     } catch (error) {
-        console.error("Erro ao editar ficha:", error);
-        setShowErrorAlert(true);
+      console.error("Erro ao salvar ficha:", error);
+      setErrorMessage(error?.response?.data?.message || (currentModo === "criar" || !currentFichaId ? "Erro ao criar ficha" : "Erro ao editar ficha"));
+      setShowErrorAlert(true);
     }
- };
+  };
 
-   const renderImagemLesao = () => {
+  const renderImagemLesao = () => {
     if (formData.imagemLesao && formData.imagemLesao.imagem) {
-        return (
-            <img
-                src={formData.imagemLesao.imagem}
-                alt="Localização das lesões com marcações"
-                style={{ maxWidth: '500px', border: '1px solid #ccc' }}
-            />
-        );
+      return (
+        <img
+          src={formData.imagemLesao.imagem}
+          alt="Localização das lesões com marcações"
+          style={{ maxWidth: '500px', border: '1px solid #ccc' }}
+        />
+      );
     }
     return (
-        <img
-            src="/images/localizacao_lesoes.png"
-            alt="Localização das lesões"
-            style={{ maxWidth: '500px', border: '1px solid #ccc' }}
-        />
+      <img
+        src="/images/localizacao_lesoes.png"
+        alt="Localização das lesões"
+        style={{ maxWidth: '500px', border: '1px solid #ccc' }}
+      />
     );
   };
-      
+
   const renderStepContent = () => {
-    switch(step) {
-      default:
-        return <Dermatologica 
-          formData={formData} 
-          handleChange={handleChange} 
-          nextStep={nextStep}
-          handleCheckboxChange={handleCheckboxChange}
-          setFormData={setFormData}
-  
-        />;
+    switch (step) {
       case 1:
         return (
-          <Dermatologica 
-            formData={formData} 
-            handleChange={handleChange} 
+          <Dermatologica
+            formData={formData}
+            handleChange={handleChange}
             nextStep={nextStep}
             handleCheckboxChange={handleCheckboxChange}
             setFormData={setFormData}
             handleCheckboxChangeOutros={handleCheckboxChangeOutros}
-             showOtherInputConviveComAnimais={showOtherInputConviveComAnimais}
+            showOtherInputConviveComAnimais={showOtherInputConviveComAnimais}
             setShowOtherInputConviveComAnimais={setShowOtherInputConviveComAnimais}
             otherValueConviveComAnimais={otherValueConviveComAnimais}
             setOtherValueConviveComAnimais={setOtherValueConviveComAnimais}
-
             showOtherInputProdutosUtilizados={showOtherInputProdutosUtilizados}
             setShowOtherInputProdutosUtilizados={setShowOtherInputProdutosUtilizados}
             otherValueProdutosUtilizados={otherValueProdutosUtilizados}
@@ -590,8 +597,8 @@ function UpdateDermatologicaSteps() {
       case 2:
         return (
           <Dermatologica2
-            formData={formData} 
-            handleChange={handleChange} 
+            formData={formData}
+            handleChange={handleChange}
             nextStep={nextStep}
             prevStep={prevStep}
             handleChangeSelect={handleChangeSelect}
@@ -602,51 +609,42 @@ function UpdateDermatologicaSteps() {
           />
         );
       case 3:
-      return (
-        <>
-        {showAlert && consultaId &&
-        <div className={styles.alert}>
-          <Alert message="Ficha editada com sucesso!" 
-          show={showAlert} url={`/createConsulta/${consultaId}`} />
-        </div>}
-        {showErrorAlert && 
-        <div className={styles.alert}>
-          <ErrorAlert message={"Erro ao editar ficha"} 
-          show={showErrorAlert} />
-        </div>}
-
+        return (
           <Dermatologica3
-          setFormData={setFormData}
-          formData={formData} 
-          handleChange={handleChange} 
-          prevStep={prevStep}
-          handleCheckboxChange={handleCheckboxChange}
-          handleSubmit={handleSubmit}
-          handleSaveDrawing={handleSaveDrawing}
-          imagemDesenhada={imagemDesenhada} 
-          handleChangeTratamentos={handleChangeTratamentos}
-          tratamentos={formData.tratamentoDermatologico}
-          adicionarLinhaTratamento={adicionarLinhaTratamento}
-          removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
-          renderImagemLesao={renderImagemLesao}
-
+            setFormData={setFormData}
+            formData={formData}
+            handleChange={handleChange}
+            prevStep={prevStep}
+            handleCheckboxChange={handleCheckboxChange}
+            handleSubmit={handleSubmit}
+            handleSaveDrawing={handleSaveDrawing}
+            imagemDesenhada={imagemDesenhada}
+            handleChangeTratamentos={handleChangeTratamentos}
+            tratamentos={formData.tratamentoDermatologico}
+            adicionarLinhaTratamento={adicionarLinhaTratamento}
+            removerUltimaLinhaTratamento={removerUltimaLinhaTratamento}
+            renderImagemLesao={renderImagemLesao}
           />
-        </>
-      );
+        );
+      default:
+        return null;
     }
-  }
+  };
+
   return (
     <div className={styles.container}>
       {renderStepContent()}
 
-      {!loading && animal.id && tutor.id && medicoLogado && (
-        <DownloadPdfStyledButton
+      <div className={styles.footerControls}>
+        {!loading && animal?.id && tutor?.id && medicoLogado && (
+          <DownloadPdfStyledButton
             ficha={formData}
             animal={animal}
             tutor={tutor}
             medicoLogado={medicoLogado}
-        />
-    )}
+          />
+        )}
+      </div>
 
       <div className={styles.pagination}>
         {[1, 2, 3].map((page) => (
@@ -660,6 +658,25 @@ function UpdateDermatologicaSteps() {
           </button>
         ))}
       </div>
+
+      {showAlert && (
+        <div className={styles.alert}>
+          <Alert
+            message={modo === "criar" ? "Ficha criada com sucesso!" : "Ficha editada com sucesso!"}
+            show={showAlert}
+            url={consultaId ? `/createConsulta/${consultaId}` : (animalId ? `/getAllConsultas/${animalId}` : `/getAllConsultas`)}
+          />
+        </div>
+      )}
+
+      {showErrorAlert && (
+        <div className={styles.alert}>
+          <ErrorAlert
+            message={errorMessage || (modo === "criar" ? "Erro ao criar ficha" : "Erro ao editar ficha")}
+            show={showErrorAlert}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -15,8 +15,10 @@ function GerenciarVagas() {
     const router = useRouter();
 
     const [showAlert, setShowAlert] = useState(false);
+    const today = new Date().toISOString().split("T")[0];
 
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [errors, setErrors] = useState({});
 
     const [data, setData] = useState("");
@@ -51,7 +53,7 @@ function GerenciarVagas() {
             setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-      }, []);
+    }, []);
 
     // Verifica se o usuário tem permissão
     if (!roles.includes("secretario")) {
@@ -169,13 +171,22 @@ function GerenciarVagas() {
 
         const vagasToCreate = criarJSON();
 
-        console.log("VagasToCreate:", vagasToCreate);
 
+        setShowErrorAlert(false);
         try {
             await createVagaNormal(vagasToCreate);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar vagas:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -195,6 +206,7 @@ function GerenciarVagas() {
                             name="data"
                             value={data}
                             onChange={handleDataChange}
+                            min={today}
                         />
                         {errors.data && <div className={`invalid-feedback ${styles.error_message}`}>{errors.data}</div>}
                     </div>
@@ -209,6 +221,7 @@ function GerenciarVagas() {
                             name="dataFim"
                             value={dataFim}
                             onChange={handleDataFimChange}
+                            min={data || today}
                         />
                         {errors.dataFim && <div className={`invalid-feedback ${styles.error_message}`}>{errors.dataFim}</div>}
                     </div>
@@ -858,7 +871,7 @@ function GerenciarVagas() {
 
             </form>
             {<Alert message="Vagas cadastradas com sucesso!" show={showAlert} url={`/agendamentosDia`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao criar vagas, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao criar vagas, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

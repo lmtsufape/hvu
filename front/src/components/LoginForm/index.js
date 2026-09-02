@@ -82,7 +82,6 @@ function FormularioLogin() {
           );
         }
         setIsLoading(false);
-        console.log(error);
       }
     }
   };

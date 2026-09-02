@@ -14,7 +14,4 @@ public interface AgendamentoServiceInterface {
 	List<Agendamento> getAllAgendamento();
 	List<Agendamento> findAgendamentosByMedicoId(Medico medico);
 	List<Agendamento> findAgendamentosByAnimal(Animal animal);
-
-
-    
 }

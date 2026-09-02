@@ -1,7 +1,5 @@
 package br.edu.ufape.hvu.facade;
 
-import java.io.File;
-import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,15 +8,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.ufape.hvu.controller.dto.auth.TokenResponse;
 import br.edu.ufape.hvu.controller.dto.request.*;
+import br.edu.ufape.hvu.controller.dto.response.ContadorProntuarioResponse;
+import br.edu.ufape.hvu.controller.dto.response.TutorEAnimalPorOrigemFlatResponse;
 import br.edu.ufape.hvu.exception.OrigemAnimalInvalidaException;
 import br.edu.ufape.hvu.exception.ResourceNotFoundException;
 import br.edu.ufape.hvu.exception.types.BusinessException;
 import br.edu.ufape.hvu.exception.types.auth.ForbiddenOperationException;
+import br.edu.ufape.hvu.model.enums.TipoAnimal;
 import br.edu.ufape.hvu.model.enums.TipoServico;
 import br.edu.ufape.hvu.repository.AgendamentoRepository;
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import br.edu.ufape.hvu.repository.AnimalRepository;
-import br.edu.ufape.hvu.repository.OrgaoRepository;
 import lombok.RequiredArgsConstructor;
 import br.edu.ufape.hvu.model.enums.StatusAgendamentoEVaga;
 import org.modelmapper.ModelMapper;
@@ -32,6 +32,10 @@ import br.edu.ufape.hvu.exception.IdNotFoundException;
 import br.edu.ufape.hvu.model.*;
 import br.edu.ufape.hvu.service.*;
 import jakarta.transaction.Transactional;
+import br.edu.ufape.hvu.mapper.AnimalMapper;
+import br.edu.ufape.hvu.mapper.ConsultaMapper;
+import br.edu.ufape.hvu.controller.dto.response.AnimalResponseFix;
+import br.edu.ufape.hvu.controller.dto.response.ConsultaResponseFix;
 
 @Service @RequiredArgsConstructor
 public class Facade {
@@ -126,6 +130,13 @@ public class Facade {
         }
 
         return tutorServiceInterface.findTutorByAnimalId(animalId);
+    }
+
+    public List<TutorEAnimalPorOrigemFlatResponse> findTutoresEAnimaisPorOrigemFlat(OrigemAnimal origem, String userId) {
+        if (keycloakService.hasRoleSecretario(userId) || keycloakService.hasRolePatologista(userId)) {
+            return tutorServiceInterface.findTutoresEAnimaisPorOrigemFlat(origem);
+        }
+        throw new ForbiddenOperationException("Você não tem acesso a essa operação");
     }
 
     public List<Tutor> getAllTutor() {
@@ -930,6 +941,10 @@ public class Facade {
         for (VagaTipoRequest especialidadeTipo : vagaTipo) {
             LocalDateTime dateTime = LocalDateTime.of(data, especialidadeTipo.getHorario());
             try {
+                if (dateTime.isBefore(LocalDateTime.now())) {
+                    throw new IllegalArgumentException("A data e hora da vaga não podem estar no passado.");
+                }
+
                 Especialidade especialidade = findEspecialidadeById(especialidadeTipo.getEspecialidade().getId());
                 TipoConsulta tipoConsulta = findTipoConsultaById(especialidadeTipo.getTipoConsulta().getId());
                 Medico medico = findMedicoById(especialidadeTipo.getMedico().getId(), idSession);
@@ -970,9 +985,10 @@ public class Facade {
     // Consulta--------------------------------------------------------------
 
     private final ConsultaServiceInterface consultaServiceInterface;
+    private final ConsultaMapper consultaMapper;
 
     @Transactional
-    public Consulta saveConsulta(Long id, Consulta newInstance) {
+    public ConsultaResponseFix saveConsulta(Long id, ConsultaRequestFix consultaRequest, String idSession) {
         Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
         Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
 
@@ -980,18 +996,44 @@ public class Facade {
             throw new ForbiddenOperationException("Esse agendamento já foi finalizado.");
         }
 
-        Consulta consulta = consultaServiceInterface.saveConsulta(newInstance);
+        Animal animal = findAnimalById(
+                consultaRequest.getAnimal().getId(),
+                idSession
+        );
+
+        Consulta consulta = consultaMapper.toEntity(consultaRequest);
+
+        consulta.setAnimal(animal);
+
+        if (consultaRequest.getMedico() != null) {
+            Medico medico = medicoServiceInterface.findMedicoById(
+                    consultaRequest.getMedico().getId()
+            );
+
+            consulta.setMedico(medico);
+        }
+
+        if (consultaRequest.getEncaminhamento() != null) {
+            Especialidade especialidade =
+                    especialidadeServiceInterface.findEspecialidadeById(
+                            consultaRequest.getEncaminhamento().getId()
+                    );
+
+            consulta.setEncaminhamento(especialidade);
+        }
+
+        Consulta consultaSalva = consultaServiceInterface.saveConsulta(consulta);
 
         vagaDaConsulta.setStatus("Finalizado");
         agendamentoVaga.setStatus("Finalizado");
 
         vagaDaConsulta.setAgendamento(agendamentoVaga);
-        vagaDaConsulta.setConsulta(consulta);
+        vagaDaConsulta.setConsulta(consultaSalva);
 
         updateVaga(vagaDaConsulta);
         updateAgendamento(agendamentoVaga);
 
-        return consulta;
+        return consultaMapper.toResponse(consultaSalva);
     }
 
     @Transactional
@@ -1114,6 +1156,10 @@ public class Facade {
             throw new IllegalArgumentException("Não é permitido agendar animais que tiveram óbito.");
         }
 
+        if (newObject.getHorario().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("O agendamento não pode estar no passado.");
+        }
+
         Vaga vaga = new Vaga();
         Agendamento agendamento = new Agendamento();
 
@@ -1178,6 +1224,10 @@ public class Facade {
         Agendamento agendamento = findAgendamentoById(idAgendamento, idSession);
         Vaga vagaAntiga = getVagaByAgendamento(agendamento.getId(), idSession);
         Vaga novaVaga = findVagaById(idVaga, idSession);
+
+        if (novaVaga.getDataHora().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("A nova vaga não pode estar no passado.");
+        }
 
         // cancelando vaga anterior, que é a vaga antiga que precisa ser reagendada
         if (vagaAntiga != null){
@@ -1368,6 +1418,8 @@ public class Facade {
 
     // Animal--------------------------------------------------------------
     private final AnimalServiceInterface animalServiceInterface;
+    private final CodigoProntuarioService codigoProntuarioService;
+    private final AnimalMapper animalMapper;
 
     private void validarOrigemAnimal(String role, OrigemAnimal origemAnimal) {
         if ("TUTOR".equals(role) && origemAnimal != OrigemAnimal.HVU) {
@@ -1379,24 +1431,44 @@ public class Facade {
     }
 
     @Transactional
-    public Animal saveAnimal(Animal newInstance, String idSession) {
-        newInstance.setRaca(racaServiceInterface.findRacaById(newInstance.getRaca().getId()));
+    public AnimalResponseFix saveAnimal(AnimalRequestFix animalRequest, String idSession) {
+        if (animalRequest.getRaca() == null) {
+            throw new IllegalArgumentException("Raça é obrigatória");
+        }
+
+        Raca raca = racaServiceInterface.findRacaById(
+            animalRequest.getRaca().getId()
+        );
 
         Tutor tutor = findTutorByUserId(idSession);
         if (tutor == null) {
             throw new ResourceNotFoundException("Tutor", "o idSession ", idSession);
         }
 
-        if (newInstance.getOrigemAnimal() == null) {
-            newInstance.setOrigemAnimal(OrigemAnimal.HVU);
+        Animal animal = animalMapper.toEntity(animalRequest);
+        animal.setRaca(raca);
+
+        if (animal.getTipo() == null) {
+            animal.setTipo(TipoAnimal.COMUM);
         }
 
-        validarOrigemAnimal("TUTOR", newInstance.getOrigemAnimal());
+        if (animal.getOrigemAnimal() == null) {
+            animal.setOrigemAnimal(OrigemAnimal.HVU);
+        }
+        validarOrigemAnimal(
+            "TUTOR",
+            animal.getOrigemAnimal()
+        );
 
-        Animal animal = animalServiceInterface.saveAnimal(newInstance);
-        tutor.getAnimais().add(animal);
+        if (tutor.getAnimais() == null) {
+            tutor.setAnimais(new ArrayList<>());
+        }
+        Animal animalSalvo = animalServiceInterface.saveAnimal(animal);
+
+        tutor.getAnimais().add(animalSalvo);
         tutorServiceInterface.updateTutor(tutor);
-        return animal;
+
+        return animalMapper.toResponse(animalSalvo);
     }
 
     private Tutor determinarTutor(AnimalByPatologistaRequest request) {
@@ -1420,9 +1492,22 @@ public class Facade {
         return tutorServiceInterface.saveTutor(request.getTutor().convertToEntity());
     }
 
+    public ContadorProntuarioResponse definirValorInicialProntuario(
+            ValorInicialProntuarioRequest request) {
+
+        ContadorProntuario contador =
+                codigoProntuarioService.definirValorInicial(request.valorInicial());
+
+        return new ContadorProntuarioResponse(contador);
+    }
+
     @Transactional
     public Animal saveAnimalByPatologista(AnimalByPatologistaRequest request) {
         Animal animal = request.getAnimal().convertToEntity();
+
+        if (animal.getTipo() == null) {
+            animal.setTipo(TipoAnimal.COMUM);
+        }
 
         if (animal.getOrigemAnimal() == null) {
             animal.setOrigemAnimal(OrigemAnimal.LAPA);
@@ -1434,10 +1519,14 @@ public class Facade {
         if (tutor.getAnimais() == null) {
             tutor.setAnimais(new ArrayList<>());
         }
-        tutor.getAnimais().add(animal);
+
         Animal savedAnimal = animalServiceInterface.saveAnimal(animal);
 
-        tutorServiceInterface.saveTutor(tutor);
+        if (tutor.getAnimais() == null) {
+            tutor.setAnimais(new ArrayList<>());
+        }
+        tutor.getAnimais().add(savedAnimal);
+        tutorServiceInterface.updateTutor(tutor);
 
         return savedAnimal;
     }
@@ -1488,14 +1577,6 @@ public class Facade {
             }
         }
 
-        if (keycloakService.hasRoleMedico(idSession)) {
-            Medico medico = findMedicoByUserId(idSession);
-
-            if (!existsVagaByMedicoIdAndAnimalId(medico.getId(), animalId)) {
-                throw new ForbiddenOperationException("Você não é o médico responsável por este animal");
-            }
-        }
-
         return animalServiceInterface.findAnimalById(animalId);
     }
 
@@ -1541,7 +1622,7 @@ public class Facade {
             return animalServiceInterface.findAnimalsByOrigemAnimal(origem);
         }
 
-        if ((keycloakService.hasRoleSecretario(userId) && origem == OrigemAnimal.HVU)) {
+        if (keycloakService.hasRoleSecretario(userId) && origem == OrigemAnimal.HVU) {
             return animalServiceInterface.findAnimalsByOrigemAnimal(origem);
         }
 
@@ -1701,21 +1782,27 @@ public class Facade {
 
     // Ficha--------------------------------------------------------------
 
-
     private final FichaServiceInterface fichaServiceInterface;
 
     @Transactional
-    public Ficha saveFicha(Ficha newInstance) {
-        Long agendamentoId = (newInstance.getAgendamento() != null)
-                ? newInstance.getAgendamento().getId()
-                : null;
-
-        if (agendamentoId == null || agendamentoId <= 0) {
-            throw new IllegalArgumentException("Ficha deve estar vinculada a um agendamento válido.");
+    public Ficha saveFicha(Ficha newInstance, String sessionId) {
+        if (newInstance.getAnimal() == null || newInstance.getAnimal().getId() <= 0) {
+            throw new IllegalArgumentException("Ficha deve estar vinculada a um animal válido.");
         }
 
-        if (!agendamentoRepository.existsById(agendamentoId)) {
-            throw new ResourceNotFoundException("Agendamento", "id", agendamentoId);
+        if (!animalRepository.existsById(newInstance.getAnimal().getId())) {
+            throw new ResourceNotFoundException(
+                    "Animal",
+                    "id",
+                    newInstance.getAnimal().getId());
+        }
+
+        Medico medico = medicoServiceInterface.findByUserId(sessionId);
+        newInstance.setMedico(medico);
+
+        // Só gera códigos de prontuário para animais que nunca tiveram ficha
+        if (!fichaServiceInterface.existsByAnimalId(newInstance.getAnimal().getId())) {
+            codigoProntuarioService.garantirCodigoProntuario(newInstance.getAnimal().getId());
         }
 
         return fichaServiceInterface.saveFicha(newInstance);
@@ -1727,13 +1814,13 @@ public class Facade {
             throw new IllegalArgumentException("FichaRequest não pode ser nulo.");
         }
 
-        if (obj.getAgendamento() == null) {
-            throw new IllegalArgumentException("Ficha deve estar vinculada a um agendamento.");
+        if (obj.getAnimal() == null) {
+            throw new IllegalArgumentException("Ficha deve estar vinculada a um animal.");
         }
 
-        Long agendamentoId = obj.getAgendamento().getId();
-        if (!agendamentoRepository.existsById(agendamentoId)) {
-            throw new ResourceNotFoundException("Agendamento", "id", agendamentoId);
+        Long animalId = obj.getAnimal().getId();
+        if (!animalRepository.existsById(animalId)) {
+            throw new ResourceNotFoundException("Animal", "id", animalId);
         }
 
         Ficha existingFicha = findFichaById(id);
@@ -1756,6 +1843,17 @@ public class Facade {
         return fichaServiceInterface.findFichasByAgendamentoId(agendamentoId);
     }
 
+     public List<Ficha> findFichasByMedicoId(Long medicoId) {
+        if (medicoId == null || medicoId <= 0) {
+            throw new IllegalArgumentException("O id do medico é inválido.");
+        }
+        if (!medicoServiceInterface.existsById(medicoId)) {
+            throw new ResourceNotFoundException("Medico", "id", medicoId);
+        }
+
+        return fichaServiceInterface.findFichasByMedicoId(medicoId);
+    }
+    
     public List<Ficha> findFichasByAnimalId(Long animalId) {
         if (animalId == null || animalId <= 0) {
             throw new IllegalArgumentException("O id do animal é inválido.");
@@ -2106,33 +2204,11 @@ public class Facade {
         orgaoServiceInterface.deleteOrgao(id);
     }
 
-
-    // Arquivo --------------------------------------------------------------
-
-
-    private final FileServiceInterface fileService;
-
-    public File findFile(String fileName) {
-        return fileService.findFile(fileName);
-    }
-
-    @Transactional
-    public String storeFile(InputStream file, String fileName) {
-        String fn = System.currentTimeMillis() + "-" + fileName;
-        return fileService.storeFile(file, fn.replace(" ", ""));
-    }
-
-    @Transactional
-    public void deleteFile(String fileName) {
-        fileService.deleteFile(fileName);
-    }
-
     // CampoLaudoMicroscopia --------------------------------------------------------------
 
     private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
     private final AnimalRepository animalRepository;
     private final AgendamentoRepository agendamentoRepository;
-    private final OrgaoRepository orgaoRepository;
 
     @Transactional
     public CampoLaudoMicroscopia saveCampoLaudoMicroscopia(CampoLaudoMicroscopia newInstance) {

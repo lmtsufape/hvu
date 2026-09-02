@@ -15,6 +15,7 @@ function CreateArea() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [errors, setErrors] = useState({});
     const { especies } = EspeciesList();
     const [selectedEspecie, setSelectedEspecie] = useState("");
@@ -86,12 +87,21 @@ function CreateArea() {
             especie: { id: parseInt(selectedEspecie) }
         };
 
+        setShowErrorAlert(false);
         try {
             const newArea = await createArea(areaToCreate);
-            console.log("new area: ", newArea);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar area:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -143,7 +153,7 @@ function CreateArea() {
                 </div>
             </form>
             {<Alert message="Área cadastrada com sucesso!" show={showAlert} url={`/lapa/gerenciarAreas`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao cadastrar área, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao cadastrar área, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

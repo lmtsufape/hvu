@@ -13,13 +13,15 @@ function MeusAnimaisList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [deletedAnimalId, setDeletedAnimalId] = useState(null);
 
     const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const animaisData = await getAllAnimalTutor();
                 setAnimais(animaisData);
             } catch (error) {
@@ -38,12 +40,22 @@ function MeusAnimaisList() {
     );
 
     const handleDeleteAnimal = async (animalId) => {
+        setShowErrorAlert(false);
         try {
             await deleteAnimal(animalId);
             setShowAlert(true); 
             setDeletedAnimalId(animalId); // Atualiza o estado para acionar a recuperação da lista
         } catch (error) {
             console.error('Erro ao excluir o animal: ', error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     }
@@ -89,8 +101,8 @@ function MeusAnimaisList() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Animal excluído com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao excluir o animal, pois ele possui agendamento." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Animal excluído com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao excluir o animal, pois ele possui agendamento."} show={showErrorAlert} />}
         </div>
     );
 }

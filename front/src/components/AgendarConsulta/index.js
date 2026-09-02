@@ -40,14 +40,12 @@ const HorariosSemana = () => {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState("");
 
-  console.log("retorno:", retorno);
-  console.log("selectedAnimal:", selectedAnimal);
-  console.log("datasProibidas:", datasProibidas);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -89,13 +87,25 @@ const HorariosSemana = () => {
 
   // Função para retroceder uma semana
   const retrocederSemana = () => {
+    const dataAtual = new Date();
+    dataAtual.setHours(0, 0, 0, 0);
+
+    // Obtém o domingo da semana atual
+    const inicioDestaSemana = new Date(dataAtual);
+    inicioDestaSemana.setDate(dataAtual.getDate() - dataAtual.getDay());
+
     const semanaAnterior = new Date(selecionarData);
     semanaAnterior.setDate(semanaAnterior.getDate() - 7);
-    setSelecionarData(semanaAnterior);
+
+    // Permitir retroceder se a data após retroceder ainda estiver na mesma semana ou no futuro
+    if (semanaAnterior >= inicioDestaSemana) {
+      setSelecionarData(semanaAnterior);
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
+      setShowErrorAlert(false);
       try {
         const AnimaisData = await getAllAnimalTutor();
         setAnimais(AnimaisData);
@@ -108,10 +118,10 @@ const HorariosSemana = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setShowErrorAlert(false);
       try {
         const VagasData = await getAllVaga();
         setVagas(VagasData);
-        console.log("VagasData:", VagasData);
       } catch (error) {
         console.error("Erro ao buscar vagas:", error);
       } finally {
@@ -123,6 +133,7 @@ const HorariosSemana = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setShowErrorAlert(false);
       try {
         const user = await getCurrentUsuario();
         const datas = await getDatasNaoPodeAgendar(user.usuario.id);
@@ -138,6 +149,7 @@ const HorariosSemana = () => {
     let isMounted = true;
 
     const fetchData = async () => {
+      setShowErrorAlert(false);
       try {
         const data = await getRetornoByAnimalId(selectedAnimal.id);
         if (isMounted) {
@@ -240,6 +252,7 @@ const HorariosSemana = () => {
       status: "Agendado",
     };
 
+    setShowErrorAlert(false);
     try {
       const newAgendamento = await createAgendamento(
         agendamentoToCreate,
@@ -248,6 +261,15 @@ const HorariosSemana = () => {
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao agendar consulta:", error);
+
+      const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+        setErrorMessage("Erro ao realizar agendamento, tente novamente.");
+      }
       setShowErrorAlert(true);
     }
   };
@@ -260,7 +282,7 @@ const HorariosSemana = () => {
     // Inclui o artigo se ele fizer parte do segundo nome
     const segundoNome =
       ["da", "de", "do", "dos", "das"].includes(partes[1].toLowerCase()) &&
-      partes.length > 2
+        partes.length > 2
         ? `${partes[1]} ${partes[2]}`
         : partes[1];
 
@@ -284,9 +306,8 @@ const HorariosSemana = () => {
               Paciente <span className={styles.obrigatorio}>*</span>
             </h1>
             <select
-              className={`form-select ${styles.input} ${
-                errors.selectedAnimal ? "is-invalid" : ""
-              }`}
+              className={`form-select ${styles.input} ${errors.selectedAnimal ? "is-invalid" : ""
+                }`}
               aria-label="Default select example"
               name="animal"
               value={selectedAnimal ? selectedAnimal.id : ""}
@@ -310,9 +331,8 @@ const HorariosSemana = () => {
 
         <h1 className={styles.titulodataconsulta}>Data da Consulta</h1>
         <h2
-          className={`${styles.descricaotitulodataconsulta} ${
-            errors.selectedVaga ? "is-invalid" : ""
-          }`}
+          className={`${styles.descricaotitulodataconsulta} ${errors.selectedVaga ? "is-invalid" : ""
+            }`}
         >
           Selecione o dia e o horário disponível de sua preferência para o
           atendimento
@@ -421,11 +441,9 @@ const HorariosSemana = () => {
                               ? `${styles.botaohoraIndisponivel}`
                               : vaga.tipoConsulta &&
                                 vaga.tipoConsulta.tipo === "Retorno"
-                              ? `${styles.botaoRetorno} ${
-                                  selectedVaga === vaga ? styles.selected : ""
+                                ? `${styles.botaoRetorno} ${selectedVaga === vaga ? styles.selected : ""
                                 }`
-                              : `${styles.botaoPrimeiraConsulta} ${
-                                  selectedVaga === vaga ? styles.selected : ""
+                                : `${styles.botaoPrimeiraConsulta} ${selectedVaga === vaga ? styles.selected : ""
                                 }`
                           }
                           onClick={() => {
@@ -439,7 +457,7 @@ const HorariosSemana = () => {
                             isProhibited ||
                             !selectedAnimal ||
                             retorno.toLowerCase() !==
-                              vaga.tipoConsulta.tipo.toLowerCase() ||
+                            vaga.tipoConsulta.tipo.toLowerCase() ||
                             isPast
                           }
                         >
@@ -518,10 +536,10 @@ const HorariosSemana = () => {
                       selecionarData,
                       selecionarHorario
                         ? selecionarHorario
-                            .split("T")[1]
-                            .split(":")
-                            .slice(0, 2)
-                            .join(":")
+                          .split("T")[1]
+                          .split(":")
+                          .slice(0, 2)
+                          .join(":")
                         : ""
                     )}
                   </div>
@@ -565,7 +583,7 @@ const HorariosSemana = () => {
       }
       {showErrorAlert && (
         <ErrorAlert
-          message="Erro ao realizar agendamento, tente novamente."
+          message={errorMessage}
           show={showErrorAlert}
         />
       )}

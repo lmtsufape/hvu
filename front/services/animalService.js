@@ -104,3 +104,14 @@ export async function createAnimalByPatologista(animalData) {
     throw error;
   }
 }
+
+export async function definirValorInicialProntuario(valorInicial) {
+  try {
+    const response = await api.post('/animal/prontuario/valor-inicial', {
+      valorInicial,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

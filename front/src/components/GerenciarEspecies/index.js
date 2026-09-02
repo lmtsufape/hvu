@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';  
+import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import SearchBar from '../SearchBar';
 import { getAllEspecie, deleteEspecie } from '../../../services/especieService';
@@ -11,12 +11,13 @@ function GerenciarEspecies() {
     const [especies, setEspecies] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
-    const [deletedEspecieId, setDeletedEspecieId] = useState(null); 
+    const [deletedEspecieId, setDeletedEspecieId] = useState(null);
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
-    const [loading, setLoading] = useState(true); 
-    
+    const [loading, setLoading] = useState(true);
+
     const router = useRouter();
 
     useEffect(() => {
@@ -26,7 +27,7 @@ function GerenciarEspecies() {
             setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-      }, []);
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,11 +37,11 @@ function GerenciarEspecies() {
             } catch (error) {
                 console.error('Erro ao buscar espécies:', error);
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         };
         fetchData();
-    }, [deletedEspecieId]); 
+    }, [deletedEspecieId]);
 
     if (loading) {
         return <div className={styles.message}>Carregando dados do usuário...</div>;
@@ -63,15 +64,26 @@ function GerenciarEspecies() {
     }
 
     const handleDeleteEspecie = async (especieId) => {
+        setShowErrorAlert(false);
+        setShowAlert(false);
         try {
             await deleteEspecie(especieId);
             setEspecies(especies.filter(especie => especie.id !== especieId));
             setDeletedEspecieId(especieId); // Atualiza o estado para acionar a recuperação da lista
-            setShowAlert(true); 
+            setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir espécie:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -103,21 +115,21 @@ function GerenciarEspecies() {
                                 <h6>Espécie</h6>
                                 <p>{especie.nome}</p>
                             </div>
-                            <div  className={styles.button_container}>
+                            <div className={styles.button_container}>
                                 <button
                                     className={styles.editar_button}
                                     onClick={() => router.push(`/updateEspecie/${especie.id}`)}
                                 >
                                     Editar
                                 </button>
-                                <ExcluirButton itemId={especie.id} onDelete={handleDeleteEspecie} /> 
+                                <ExcluirButton itemId={especie.id} onDelete={handleDeleteEspecie} />
                             </div>
                         </li>
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Especie excluída com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Esta especie não pode ser excluída por estar associada a um animal." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Especie excluída com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Esta especie não pode ser excluída por estar associada a um animal."} show={showErrorAlert} />}
 
         </div>
     );

@@ -16,7 +16,6 @@ const ModalAgendamento = ({
 
 	if (!isOpen) return null;
 
-	console.log("selectedVaga:", selectedVaga);
 
 	return (
 		<div>

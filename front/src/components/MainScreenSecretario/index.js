@@ -8,7 +8,6 @@ function MainScreenSecretario() {
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
 
-    console.log("Roles:", roles);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -17,10 +16,10 @@ function MainScreenSecretario() {
             setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-      }, []);
+    }, []);
 
     if (!roles.length) {
-        <div className={styles.message}>Carregando dados do usuário...</div>; 
+        <div className={styles.message}>Carregando dados do usuário...</div>;
     }
 
     if (!roles.includes("secretario") || !token) {

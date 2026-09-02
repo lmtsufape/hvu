@@ -19,6 +19,7 @@ function UpdateMicroscopia() {
   const [errors, setErrors] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [microscopia, setMicroscopia] = useState({
     descricao: "",
     processamento: "",
@@ -52,6 +53,7 @@ function UpdateMicroscopia() {
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
+        setShowErrorAlert(false);
         try {
           const data = await getCampoLaudoMicroscopiaById(id);
           setMicroscopia({
@@ -95,12 +97,21 @@ function UpdateMicroscopia() {
       return;
     }
 
-    try {
+    setShowErrorAlert(false);
+        try {
       await updateCampoLaudoMicroscopia(id, microscopia);
       setShowAlert(true);
     } catch (err) {
       console.error("Erro ao editar Microscopia:", err);
-      setShowErrorAlert(true);
+      
+            if (err?.response?.data?.message) {
+                setErrorMessage(err.response.data.message);
+            } else if (typeof err?.response?.data === 'string') {
+                setErrorMessage(err.response.data);
+            } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
   };
 
@@ -223,7 +234,7 @@ function UpdateMicroscopia() {
       )}
       {showErrorAlert && (
         <ErrorAlert
-          message="Erro ao editar informações da Microscopia, tente novamente."
+          message={errorMessage || "Erro ao editar informações da Microscopia, tente novamente."}
           show={showErrorAlert}
         />
       )}

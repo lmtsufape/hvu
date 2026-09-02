@@ -27,7 +27,6 @@ function GetPatologistaById() {
             const fetchData = async () => {
                 try {
                     const patologistaData = await getPatologistaById(id);
-                    console.log("patologistaData:", patologistaData)
                     setPatologista(patologistaData);
                 } catch (error) {
                     console.error('Erro ao buscar patologistas:', error);
@@ -39,7 +38,6 @@ function GetPatologistaById() {
         }
     }, [id]);
 
-    console.log("patologista:", patologista)
 
     if (loading) {
         return <div className={styles.message}>Carregando dados do usuário...</div>;

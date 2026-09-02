@@ -1,83 +1,71 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+import moment from 'moment';
+
 import Ortopedica from "./OrtopedicoHistorico";
 import Ortopedica2 from "./OrtopedicoMarcha";
-import Ortopedica3 from "./OrtopedicoPalpacao"
+import Ortopedica3 from "./OrtopedicoPalpacao";
+import OrtopedicaPDF from './OrtopedicaPDF';
+
 import styles from "./index.module.css";
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
-import moment from 'moment';
+
 import { getCurrentUsuario } from '../../../../services/userService';
-import { getFichaById } from "../../../../services/fichaService";
-import { updateFicha } from "../../../../services/fichaService";
-import dynamic from 'next/dynamic';
-import OrtopedicaPDF from './OrtopedicaPDF';
+import { getFichaById, updateFicha, createFicha } from "../../../../services/fichaService";
 import { getAnimalById } from "../../../../services/animalService";
 import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getMedicoById } from "../../../../services/medicoService";
 
+// Dynamic import fora do componente
+const PDFLink = dynamic(
+  () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink), 
+  { ssr: false }
+);
+
+const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+  <button type="button" className={styles.green_buttonFichas} style={{ width: 'auto', padding: '0 1.5rem' }}>
+    <PDFLink 
+      document={<OrtopedicaPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} 
+      fileName={`FichaOrtopedica_${animal?.nome ? animal.nome.replace(/\s/g, '_') : 'animal'}.pdf`} 
+      style={{ color: 'inherit', textDecoration: 'none' }}
+    >
+      {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+    </PDFLink>
+  </button>
+);
+
 function OrtopedicaSteps() {
-
-  const router = useRouter(); 
-
-    // Lógica do botão de PDF
-    const PDFLink = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink), { ssr: false });
-    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
-        <button type="button" className={styles.green_buttonFichas} style={{width: 'auto', padding: '0 1.5rem'}}>
-            <PDFLink document={<OrtopedicaPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} fileName={`FichaOrtopedica_${animal.nome?.replace(/\s/g, '_')}.pdf`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
-            </PDFLink>
-        </button>
-    );
-
-    // Estados para os dados do PDF
-    const [animal, setAnimal] = useState({});
-    const [tutor, setTutor] = useState({});
-    const [medicoLogado, setMedicoLogado] = useState(null);
-
-    // Busca os dados necessários para o cabeçalho do PDF
-    useEffect(() => {
-        const animalId = router.query.animalId;
-        if (!animalId) return;
-
-        const fetchDataForPDF = async () => {
-            try {
-                const [animalData, tutorData, userData] = await Promise.all([
-                    getAnimalById(animalId),
-                    getTutorByAnimal(animalId),
-                    getCurrentUsuario()
-                ]);
-                setAnimal(animalData);
-                setTutor(tutorData);
-                if (userData?.usuario?.id) {
-                    const medicoData = await getMedicoById(userData.usuario.id);
-                    setMedicoLogado(medicoData);
-                }
-            } catch (error) {
-                console.error('Erro ao buscar dados para o PDF:', error);
-            }
-        };
-        fetchDataForPDF();
-    }, [router.query.animalId]);
+  const router = useRouter();
+  const { modo, animalId: queryAnimalId, fichaId: queryFichaId, agendamentoId: queryAgendamentoId, consultaId: queryConsultaId } = router.query;
 
   const [step, setStep] = useState(1);
-  const [userId, setUserId] = useState(null);
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const nextStep = () => setStep(step + 1);
-  const prevStep = () => setStep(step - 1);
-  const [selecionadosGrupoExame, setSelecionadosGrupoExame] = useState([]);
-  const [ladosVisiveisGrupoExame, setLadosVisiveisGrupoExame] = useState({});
+
   const [consultaId, setConsultaId] = useState(null);
   const [fichaId, setFichaId] = useState(null);
-  const [data, setData] = useState([]);
+  const [animalId, setAnimalId] = useState(null);
   const [agendamentoId, setAgendamentoId] = useState(null);
+  const [data, setData] = useState("");
+  const [isReadOnly, setIsReadOnly] = useState(false);
+
+  const [animal, setAnimal] = useState({});
+  const [tutor, setTutor] = useState({});
+  const [medicoLogado, setMedicoLogado] = useState(null);
+
+  const [selecionadosGrupoExame, setSelecionadosGrupoExame] = useState([]);
+  const [ladosVisiveisGrupoExame, setLadosVisiveisGrupoExame] = useState({});
+
+  const nextStep = () => setStep((s) => s + 1);
+  const prevStep = () => setStep((s) => s - 1);
 
   const [formData, setFormData] = useState({
-
     // página 1
     queixaPrincipal: "",
     ocorrenciaTrauma: "",
@@ -251,75 +239,100 @@ function OrtopedicaSteps() {
     diagnostico: "",
     tratamento: "",
     plantonistas: "",
-    medicosResponsaveis:"",
+    medicosResponsaveis: "",
   });
 
-  // Obtém o ID da ficha da URL
+  useEffect(() => {
+    if (modo === 'visualizar') {
+      setIsReadOnly(true);
+    }
+  }, [modo]);
+
   useEffect(() => {
     if (router.isReady) {
-        const id = router.query.consultaId;
-        const ficha = router.query.fichaId;
-        const aId = router.query.agendamentoId;
-        if (id) {
-          setConsultaId(id);
-        }
-        if (ficha) {
-          setFichaId(ficha);
-        }
-        if (aId) {
-          setAgendamentoId(aId);
-        }
+      if (queryConsultaId) setConsultaId(queryConsultaId);
+      if (queryFichaId) setFichaId(queryFichaId);
+      if (queryAgendamentoId) setAgendamentoId(queryAgendamentoId);
+      if (queryAnimalId) setAnimalId(queryAnimalId);
     }
-  }, [router.isReady, router.query.fichaId]);
+  }, [router.isReady, queryConsultaId, queryFichaId, queryAgendamentoId, queryAnimalId]);
 
   useEffect(() => {
-  if (!fichaId) return;
-
-  const fetchData = async () => {
-      try {
-          const formData = await getFichaById(fichaId);
-          setFormData(JSON.parse(formData.conteudo));
-          setData(formData.dataHora);
-      } catch (error) {
-          console.error('Erro ao buscar dados da ficha:', error);
-      } finally {
-          setLoading(false);
-      }
-  };
-
-    fetchData();
-  }, [fichaId]);
-
-  useEffect(() => {
-      if (typeof window !== 'undefined') {
-          const storedToken = localStorage.getItem('token');
-          const storedRoles = JSON.parse(localStorage.getItem('roles'));
-          setToken(storedToken || "");
-          setRoles(storedRoles || []);
-      }
-      }, []);
-
-  useEffect(() => {
-      const fetchData = async () => {
-          try {
-              const userData = await getCurrentUsuario();
-              setUserId(userData.usuario.id);
-          } catch (error) {
-              console.error('Erro ao buscar usuário:', error);
-          } finally {
-              setLoading(false); 
-          }
-      };
-      fetchData();
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('token');
+      const storedRoles = JSON.parse(localStorage.getItem('roles') || "[]");
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
+    }
   }, []);
 
   useEffect(() => {
-    // Não executa se o formData ainda não foi carregado de uma ficha existente
-    if (!fichaId || Object.keys(formData).length === 0) {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getCurrentUsuario();
+        const medicoId = userData?.usuario?.id;
+        if (medicoId) {
+          const medicoCompletoData = await getMedicoById(medicoId);
+          setMedicoLogado(medicoCompletoData);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados do médico:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (!animalId) return;
+
+    const fetchDataForPDF = async () => {
+      try {
+        const [animalData, tutorData] = await Promise.all([
+          getAnimalById(animalId),
+          getTutorByAnimal(animalId)
+        ]);
+        setAnimal(animalData || {});
+        setTutor(tutorData || {});
+      } catch (error) {
+        console.error('Erro ao buscar dados para o PDF:', error);
+      }
+    };
+    fetchDataForPDF();
+  }, [animalId]);
+
+  useEffect(() => {
+    if (modo === "criar") {
+      setLoading(false);
       return;
     }
 
-    console.log("Sincronizando UI com os dados da ficha carregada...");
+    if (!fichaId) return;
+
+    const fetchData = async () => {
+      try {
+        const formDataResponse = await getFichaById(fichaId);
+        if (formDataResponse?.conteudo) {
+          const parsedConteudo = typeof formDataResponse.conteudo === 'string'
+            ? JSON.parse(formDataResponse.conteudo)
+            : formDataResponse.conteudo;
+          setFormData(parsedConteudo);
+        }
+        setData(formDataResponse?.dataHora);
+      } catch (error) {
+        console.error('Erro ao buscar dados da ficha:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [fichaId, modo]);
+
+  useEffect(() => {
+    if (!fichaId || Object.keys(formData).length === 0) {
+      return;
+    }
 
     const novosLadosVisiveis = {};
     const novosSelecionados = [];
@@ -336,16 +349,10 @@ function OrtopedicaSteps() {
       if (typeof grupoData === 'object' && grupoData !== null) {
         for (const itemKey in grupoData) {
           const itemData = grupoData[itemKey];
-          
-          // Verifica se o item tem algum dado preenchido
           if (itemData && (itemData.Direito || itemData.Esquerdo)) {
-            
-            // Adiciona a chave do item (ex: 'flexaoCarpo') aos selecionados
             if (!novosSelecionados.includes(itemKey)) {
               novosSelecionados.push(itemKey);
             }
-
-            // Verifica os lados (Direito/Esquerdo) e se têm valor
             if (typeof itemData === 'object' && itemData !== null) {
               novosLadosVisiveis[itemKey] = {};
               if (itemData.Direito) {
@@ -360,58 +367,49 @@ function OrtopedicaSteps() {
       }
     });
 
-    // ATUALIZA O ESTADO DA UI
     setSelecionadosGrupoExame(novosSelecionados);
     setLadosVisiveisGrupoExame(novosLadosVisiveis);
-
   }, [formData, fichaId]);
 
   if (loading) {
-      return <div className={styles.message}>Carregando dados do usuário...</div>;
+    return <div className={styles.message}>Carregando dados do usuário...</div>;
+  }
+
+  if (!token) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+      </div>
+    );
   }
 
   if (!roles.includes("medico") && !roles.includes("patologista")) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
-          </div>
-      );
-  }    
-
-  if (!token) {
-      return (
-          <div className={styles.container}>
-              <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-          </div>
-      );
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
   }
 
-  //função para alternar a seleção de um item e limpar os valores dos lados
   const toggleItem = (titulo, key) => {
     const wasSelected = selecionadosGrupoExame.includes(key);
-    
-    // Atualiza a lista de selecionados
+
     setSelecionadosGrupoExame(prev =>
       wasSelected ? prev.filter(i => i !== key) : [...prev, key]
     );
-  
-    // Se estava selecionado e agora está desmarcando, limpa os valores mas mantém a estrutura
+
     if (wasSelected) {
       setFormData(prev => {
         const newFormData = { ...prev };
-        
-        // Limpa os valores mas mantém a estrutura
         if (newFormData[titulo] && newFormData[titulo][key]) {
           newFormData[titulo][key] = {
             Direito: "",
             Esquerdo: ""
           };
         }
-        
         return newFormData;
       });
-  
-      // Limpa os lados visíveis para este item
+
       setLadosVisiveisGrupoExame(prev => {
         const novo = { ...prev };
         if (novo[key]) delete novo[key];
@@ -419,11 +417,10 @@ function OrtopedicaSteps() {
       });
     }
   };
-  //função para alternar a visibilidade dos lados
+
   const toggleLadoVisivel = (titulo, key, lado) => {
     const wasVisible = ladosVisiveisGrupoExame[key]?.[lado];
-    
-    // Atualiza a visibilidade dos lados
+
     setLadosVisiveisGrupoExame(prev => ({
       ...prev,
       [key]: {
@@ -431,24 +428,21 @@ function OrtopedicaSteps() {
         [lado]: !wasVisible,
       },
     }));
-  
-    // Se estava visível e agora está desativando, limpa o valor mas mantém a estrutura
+
     if (wasVisible) {
       setFormData(prev => {
         const newFormData = { ...prev };
-        
         if (newFormData[titulo]?.[key]) {
           newFormData[titulo][key] = {
             ...newFormData[titulo][key],
             [lado]: ""
           };
         }
-        
         return newFormData;
       });
     }
   };
-  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -456,94 +450,107 @@ function OrtopedicaSteps() {
 
   const handleRadioAninhado = (e) => {
     const { name, value } = e.target;
-    const nameParts = name.split('.'); 
+    const nameParts = name.split('.');
     const newFormData = { ...formData };
-  
+
     let temp = newFormData;
     for (let i = 0; i < nameParts.length - 1; i++) {
-      temp = temp[nameParts[i]] = temp[nameParts[i]] || {}; 
+      temp = temp[nameParts[i]] = temp[nameParts[i]] || {};
     }
-    temp[nameParts[nameParts.length - 1]] = value; 
-  
+    temp[nameParts[nameParts.length - 1]] = value;
+
     setFormData(newFormData);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async () => {
     setShowErrorAlert(false);
-    const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss"); 
+
+    const currentModo = modo || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('modo'));
+    const currentFichaId = fichaId || queryFichaId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('fichaId'));
+    const currentAgendamentoId = agendamentoId || queryAgendamentoId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('agendamentoId'));
+
+    const dataFormatada = moment(data).isValid() 
+      ? moment(data).format("YYYY-MM-DDTHH:mm:ss") 
+      : moment().format("YYYY-MM-DDTHH:mm:ss");
+
     const fichaData = {
-        nome: "Ficha clínica ortopédica",  
-        conteudo:{
-            queixaPrincipal: formData.queixaPrincipal,
-            ocorrenciaTrauma: formData.ocorrenciaTrauma,
-            duracaoProblema: formData.duracaoProblema,
-            evolucaoQuadro: formData.evolucaoQuadro,
-            ocorrenciaClaudicacao: formData.ocorrenciaClaudicacao,
-            toleranciaExercicio: formData.toleranciaExercicio,
-            indiciosDor: formData.indiciosDor,
-            acidentesAnteriores: formData.acidentesAnteriores,
-            tratamentosHistorico: formData.tratamentosHistorico,
-            alimentacao: formData.alimentacao,
-            vitaminas: formData.vitaminas,
-            ambiente: formData.ambiente,
-            observacao: formData.observacao,
+      nome: "Ficha clínica ortopédica",
+      conteudo: {
+        queixaPrincipal: formData.queixaPrincipal,
+        ocorrenciaTrauma: formData.ocorrenciaTrauma,
+        duracaoProblema: formData.duracaoProblema,
+        evolucaoQuadro: formData.evolucaoQuadro,
+        ocorrenciaClaudicacao: formData.ocorrenciaClaudicacao,
+        toleranciaExercicio: formData.toleranciaExercicio,
+        indiciosDor: formData.indiciosDor,
+        acidentesAnteriores: formData.acidentesAnteriores,
+        tratamentosHistorico: formData.tratamentosHistorico,
+        alimentacao: formData.alimentacao,
+        vitaminas: formData.vitaminas,
+        ambiente: formData.ambiente,
+        observacao: formData.observacao,
 
-            condicaoCorporal: formData.condicaoCorporal,
-            comportamento: formData.comportamento,
-            postura: formData.postura,
-            capacidadePeso: formData.capacidadePeso,
-            tumefacao: formData.tumefacao,
-            assimetriaDesvio: formData.assimetriaDesvio,
-            atrofiaMuscular: formData.atrofiaMuscular,
-            escoriacoesFistulas: formData.escoriacoesFistulas,
-            caracteristicas: formData.caracteristicas,
-            claudicacao: formData.claudicacao,
-            faseApoio: formData.faseApoio,
-            faseElevacao: formData.faseElevacao,
-            anguloArticulacoes: formData.anguloArticulacoes,
-            segundaObservacao: formData.segundaObservacao,
-            marcha: formData.marcha,
+        condicaoCorporal: formData.condicaoCorporal,
+        comportamento: formData.comportamento,
+        postura: formData.postura,
+        capacidadePeso: formData.capacidadePeso,
+        tumefacao: formData.tumefacao,
+        assimetriaDesvio: formData.assimetriaDesvio,
+        atrofiaMuscular: formData.atrofiaMuscular,
+        escoriacoesFistulas: formData.escoriacoesFistulas,
+        caracteristicas: formData.caracteristicas,
+        claudicacao: formData.claudicacao,
+        faseApoio: formData.faseApoio,
+        faseElevacao: formData.faseElevacao,
+        anguloArticulacoes: formData.anguloArticulacoes,
+        segundaObservacao: formData.segundaObservacao,
+        marcha: formData.marcha,
 
-            achadosImagem: formData.achadosImagem,
-            outrosExames: formData.outrosExames,
-            diagnostico: formData.diagnostico,
-            tratamento: formData.tratamento,
-            plantonistas: formData.plantonistas,
+        achadosImagem: formData.achadosImagem,
+        outrosExames: formData.outrosExames,
+        diagnostico: formData.diagnostico,
+        tratamento: formData.tratamento,
+        plantonistas: formData.plantonistas,
 
-            digitosMetacarpos: formData.digitosMetacarpos,
-            carpo: formData.carpo,
-            radioUlna: formData.radioUlna,
-            musculosTendoes: formData.musculosTendoes,
-            umero: formData.umero,
-            ombro: formData.ombro,
-            axilarSubescapular: formData.axilarSubescapular,
-            escapula: formData.escapula,
-            articulacaoCubital: formData.articulacaoCubital,
-            digitosMetatarsos: formData.digitosMetatarsos,
-            tarso: formData.tarso,
-            tibiaFibula: formData.tibiaFibula,
-            articulacaoJoelho: formData.articulacaoJoelho,
-            femur: formData.femur,
-            articulacaoCoxal: formData.articulacaoCoxal,
-            articulacaoSacroiliaca: formData.articulacaoSacroiliaca,
-            pelve: formData.pelve,
-            cabecaEsqueletoAxial: formData.cabecaEsqueletoAxial,
-            medicosResponsaveis: formData.medicosResponsaveis,
-        },
-        dataHora: dataFormatada,
-        agendamento: { id: Number(agendamentoId) }
+        digitosMetacarpos: formData.digitosMetacarpos,
+        carpo: formData.carpo,
+        radioUlna: formData.radioUlna,
+        musculosTendoes: formData.musculosTendoes,
+        umero: formData.umero,
+        ombro: formData.ombro,
+        axilarSubescapular: formData.axilarSubescapular,
+        escapula: formData.escapula,
+        articulacaoCubital: formData.articulacaoCubital,
+        digitosMetatarsos: formData.digitosMetatarsos,
+        tarso: formData.tarso,
+        tibiaFibula: formData.tibiaFibula,
+        articulacaoJoelho: formData.articulacaoJoelho,
+        femur: formData.femur,
+        articulacaoCoxal: formData.articulacaoCoxal,
+        articulacaoSacroiliaca: formData.articulacaoSacroiliaca,
+        pelve: formData.pelve,
+        cabecaEsqueletoAxial: formData.cabecaEsqueletoAxial,
+        medicosResponsaveis: formData.medicosResponsaveis,
+      },
+      dataHora: dataFormatada,
+      agendamento: { id: Number(currentAgendamentoId) }
     };
 
     try {
-        await updateFicha(fichaData, fichaId);
-        setShowAlert(true);
+      if (currentModo === "criar" || !currentFichaId || currentFichaId === "null") {
+        await createFicha(fichaData);
+      } else {
+        await updateFicha(fichaData, currentFichaId);
+      }
+      setShowAlert(true);
     } catch (error) {
-        console.error("Erro ao criar ficha:", error);
-        setShowErrorAlert(true);
+      console.error("Erro ao salvar ficha:", error);
+      setErrorMessage(error?.response?.data?.message || (currentModo === "criar" || !currentFichaId ? "Erro ao criar ficha" : "Erro ao editar ficha"));
+      setShowErrorAlert(true);
     }
- };
+  };
 
- const renderStepContent = () => {
+  const renderStepContent = () => {
     switch(step) {
       case 1:
         return (
@@ -554,52 +561,42 @@ function OrtopedicaSteps() {
           />
         );
       case 2:
-          return (
-              <Ortopedica2
-              formData={formData} 
-              handleChange={handleChange} 
-              nextStep={nextStep}
-              prevStep={prevStep}
-              />
-          );
-      case 3:
-      return (
-        <>
-        {showAlert && consultaId &&
-        <div className={styles.alert}>
-          <Alert message="Ficha editada com sucesso!" 
-          show={showAlert} url={`/createConsulta/${consultaId}`} />
-        </div>}
-        {showErrorAlert && 
-        <div className={styles.alert}>
-          <ErrorAlert message={"Erro ao criar ficha"} 
-          show={showErrorAlert} />
-        </div>}
-
-          <Ortopedica3
-          formData={formData} 
-          handleChange={handleChange}
-          handleRadioAninhado={handleRadioAninhado} 
-          handleSubmit={handleSubmit}
-          prevStep={prevStep}
-          selecionados={selecionadosGrupoExame}
-          ladosVisiveis={ladosVisiveisGrupoExame}
-          toggleItem={toggleItem}
-          toggleLadoVisivel={toggleLadoVisivel}
+        return (
+          <Ortopedica2
+            formData={formData} 
+            handleChange={handleChange} 
+            nextStep={nextStep}
+            prevStep={prevStep}
           />
-        </>
-      );
+        );
+      case 3:
+        return (
+          <Ortopedica3
+            formData={formData} 
+            handleChange={handleChange}
+            handleRadioAninhado={handleRadioAninhado} 
+            handleSubmit={handleSubmit}
+            prevStep={prevStep}
+            selecionados={selecionadosGrupoExame}
+            ladosVisiveis={ladosVisiveisGrupoExame}
+            toggleItem={toggleItem}
+            toggleLadoVisivel={toggleLadoVisivel}
+          />
+        );
+      default:
+        return null;
     }
- }
+  };
+
   return (
     <div className={styles.container}>
       {renderStepContent()}
       
-        <div className={styles.footerControls}>
-            {!loading && animal.id && tutor.id && medicoLogado && (
-                <DownloadPdfStyledButton ficha={formData} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />
-            )}
-        </div>
+      <div className={styles.footerControls}>
+        {!loading && animal?.id && tutor?.id && medicoLogado && (
+          <DownloadPdfStyledButton ficha={formData} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />
+        )}
+      </div>
 
       <div className={styles.pagination}>
         {[1, 2, 3].map((page) => (
@@ -613,9 +610,26 @@ function OrtopedicaSteps() {
           </button>
         ))}
       </div>
+
+      {showAlert && (
+        <div className={styles.alert}>
+          <Alert
+            message={modo === "criar" ? "Ficha criada com sucesso!" : "Ficha editada com sucesso!"}
+            show={showAlert}
+            url={consultaId ? `/createConsulta/${consultaId}` : (animalId ? `/getAllConsultas/${animalId}` : `/getAllConsultas`)}
+          />
+        </div>
+      )}
+      {showErrorAlert && (
+        <div className={styles.alert}>
+          <ErrorAlert
+            message={errorMessage || (modo === "criar" ? "Erro ao criar ficha" : "Erro ao editar ficha")}
+            show={showErrorAlert}
+          />
+        </div>
+      )}
     </div>
   );
 }
-
 
 export default OrtopedicaSteps;

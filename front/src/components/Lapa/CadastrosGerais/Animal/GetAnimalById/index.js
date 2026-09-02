@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import { getAnimalById } from '../../../../../../services/animalService'; 
 import VoltarButton from '@/components/Lapa/VoltarButton';
+import HistoricoFichasAnimal from '@/components/HistoricoFichasAnimal';
 import { EditarWhiteButton } from '@/components/WhiteButton'; 
 import { getToken, getRoles } from "../../../../../../services/userService";
 
@@ -61,7 +62,8 @@ function GetAnimalByIdForm() {
             <h1>Informações do animal</h1>
             <ul>
                 {animal && ( 
-                    <li key={animal.id} className={styles.infos_box}>
+                    <li key={animal.id} className={styles.contentWrapper}>
+                        <div className={styles.infos_box}>
                         <div className={styles.identificacao}>
                             <div className={styles.especie_animal}>Nome</div>
                             <div className={styles.nome_animal}>{animal.nome}</div>
@@ -113,6 +115,16 @@ function GetAnimalByIdForm() {
                                 <EditarWhiteButton page={"/lapa/updateAnimalByTutor"} id={animal.id}/>
                             </div>
                         </div>
+                    </div>
+
+                    <div className={styles.historicoSection}>
+                        <h2>Histórico de fichas clínicas</h2>
+                        <HistoricoFichasAnimal
+                            animalId={id}
+                            embedded
+                            skipPermissionCheck
+                        />
+                    </div>
                     </li>
                 )}
             </ul>

@@ -6,7 +6,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ptBR from "date-fns/locale/pt-BR";
 import VoltarButton from "../VoltarButton";
-import AnimalList from "@/hooks/useAnimalList";
 import EspecialidadeList from "@/hooks/useEspecialidadeList";
 import TipoConsultaList from "@/hooks/useTipoConsultaList";
 import MedicoList from "@/hooks/useMedicoList";
@@ -17,14 +16,18 @@ import { format } from "date-fns";
 import Alert from "../Alert";
 import ErrorAlert from "../ErrorAlert";
 import Select from 'react-select';
-import { getTutorByAnimal } from "../../../services/tutorService";
 import { CancelarWhiteButton } from "../WhiteButton";
+
+// import AnimalList from "@/hooks/useAnimalList";
+// import { getTutorByAnimal } from "../../../services/tutorService";
+import { getTutoresEAnimaisPorOrigemFlat } from "../../../services/tutorService";
 
 function AgendamentoEspecial() {
   const router = useRouter();
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [agendamento, setAgendamento] = useState({
     animal: { id: null },
@@ -42,40 +45,56 @@ function AgendamentoEspecial() {
   const [escolherHorario, setEscolherHorario] = useState(null);
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
-  const [tutores, setTutores] = useState({});
 
-  const { animais } = AnimalList();
+  // const [tutores, setTutores] = useState({});
+  // const { animais } = AnimalList();
+  const [tutoresAnimais, setTutoresAnimais] = useState([]);
+
   const { tiposConsulta } = TipoConsultaList();
   const { especialidades } = EspecialidadeList();
   const { medicos } = MedicoList();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-        const storedToken = localStorage.getItem('token');
-        const storedRoles = JSON.parse(localStorage.getItem('roles'));
-        setToken(storedToken || "");
-        setRoles(storedRoles || []);
+      const storedToken = localStorage.getItem('token');
+      const storedRoles = JSON.parse(localStorage.getItem('roles'));
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
     }
   }, []);
 
+  // useEffect(() => {
+  //   const fetchTutores = async () => {
+  //     const tutoresTemp = {};
+  //     for (const animal of animais) {
+  //       setShowErrorAlert(false);
+  //       try {
+  //         const tutor = await getTutorByAnimal(animal.id, token);
+  //         tutoresTemp[animal.id] = { nome: tutor.nome, cpf: tutor.cpf };
+  //       } catch (error) {
+  //         console.error(`Erro ao buscar tutor para o animal ${animal.id}:`, error);
+  //       }
+  //     }
+  //     setTutores(tutoresTemp);
+  //   };
+
+  //   if (animais.length > 0) {
+  //     fetchTutores();
+  //   }
+  // }, [animais, token]);
+
   useEffect(() => {
-    const fetchTutores = async () => {
-      const tutoresTemp = {};
-      for (const animal of animais) {
-        try {
-          const tutor = await getTutorByAnimal(animal.id, token);
-          tutoresTemp[animal.id] = { nome: tutor.nome, cpf: tutor.cpf };
-        } catch (error) {
-          console.error(`Erro ao buscar tutor para o animal ${animal.id}:`, error);
-        }
+    const fetch = async () => {
+      try {
+        const data = await getTutoresEAnimaisPorOrigemFlat("HVU");
+        setTutoresAnimais(data);
+      } catch (error) {
+        console.error("Erro ao buscar tutores e animais:", error);
       }
-      setTutores(tutoresTemp);
     };
 
-    if (animais.length > 0) {
-      fetchTutores();
-    }
-  }, [animais, token]);
+    fetch();
+  }, []);
 
   // Verifica se o usuário tem permissão
   if (!roles.includes("secretario")) {
@@ -95,21 +114,20 @@ function AgendamentoEspecial() {
   }
 
   const handleAnimalSelection = (event) => {
-    const selectAnimalId = event.target.value; 
-    setSelectedAnimal(selectAnimalId); 
+    const selectAnimalId = event.target.value;
+    setSelectedAnimal(selectAnimalId);
   };
 
   const handleTiposConsultaSelection = (event) => {
     const selectedTipo = JSON.parse(event.target.value);
     setSelectedTiposConsulta(selectedTipo);
-    console.log("selectedTipo:", selectedTipo);
   };
-  
+
   const handleEspecialidadeSelection = (event) => {
     const selectedId = event.target.value;
     setSelectedEspecialidade(selectedId);
   };
-  
+
   const handleMedicoSelection = (event) => {
     const selectedId = event.target.value;
     setSelectedMedico(selectedId);
@@ -148,14 +166,23 @@ function AgendamentoEspecial() {
       medico: { id: selectedMedico }
     };
 
-    console.log("agendamentoToCreate:", agendamentoToCreate);
 
-    try {
+    setShowErrorAlert(false);
+        try {
       await createAgendamentoEspecial(agendamentoToCreate);
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar agendamento especial:", error);
-      setShowErrorAlert(true);
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
   };
 
@@ -183,14 +210,19 @@ function AgendamentoEspecial() {
   };
 
   const maskCPF = (cpf) => {
-    if(!cpf) return "";
+    if (!cpf) return "";
 
-    return `***.${cpf.slice(4,11)}-**`;
+    return `***.${cpf.slice(4, 11)}-**`;
   };
 
-  const animalOptions = animais.map((animal) => ({
-    value: animal.id,
-    label: `${animal.nome} - ${tutores[animal.id]?.nome || "Sem Tutor"} - ${maskCPF(tutores[animal.id]?.cpf) || "CPF Não Informado"}`,
+  // const animalOptions = animais.map((animal) => ({
+  //   value: animal.id,
+  //   label: `${animal.nome} - ${tutores[animal.id]?.nome || "Sem Tutor"} - ${maskCPF(tutores[animal.id]?.cpf) || "CPF Não Informado"}`,
+  // }));
+
+  const animalOptions = tutoresAnimais.map((item) => ({
+    value: item.animalId,
+    label: `${item.animalNome} - ${item.tutorNome || "Sem Tutor"} - ${maskCPF(item.tutorCpf) || "CPF Não Informado"}`
   }));
 
   return (
@@ -219,9 +251,10 @@ function AgendamentoEspecial() {
                   locale={ptBR}
                   selected={escolherData}
                   onChange={handleDateChange}
+                  minDate={new Date()}
                 />
               </div>
-              {errors.escolherData && (<div className={`invalid-feedback ${styles.error_message}`}> {errors.escolherData}</div> )}
+              {errors.escolherData && (<div className={`invalid-feedback ${styles.error_message}`}> {errors.escolherData}</div>)}
             </div>
 
             <div className={`col ${styles.col}`}>
@@ -389,7 +422,7 @@ function AgendamentoEspecial() {
           </div>
         </form>
         {<Alert message="Agendamento criado com sucesso!" show={showAlert} url='/agendamentosDia' />}
-        {showErrorAlert && <ErrorAlert message="Erro ao realizar agendamento, tente novamente." show={showErrorAlert} />}
+        {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao realizar agendamento, tente novamente."} show={showErrorAlert} />}
       </div>
     </>
   );

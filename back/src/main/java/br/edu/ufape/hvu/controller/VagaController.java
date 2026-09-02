@@ -43,7 +43,7 @@ public class VagaController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+    @PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO', 'TUTOR')")
     @GetMapping("vaga/agendamento/{idAgendamento}")
     public VagaResponse getVagaByAgendamento(@PathVariable(value = "idAgendamento") long idAgendamento) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

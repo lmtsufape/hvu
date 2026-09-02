@@ -2,6 +2,8 @@ package br.edu.ufape.hvu.controller;
 
 import java.util.List;
 import br.edu.ufape.hvu.controller.dto.request.AnimalByPatologistaRequest;
+import br.edu.ufape.hvu.controller.dto.request.ValorInicialProntuarioRequest;
+import br.edu.ufape.hvu.controller.dto.response.ContadorProntuarioResponse;
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import br.edu.ufape.hvu.controller.dto.request.AnimalRequest;
+import br.edu.ufape.hvu.controller.dto.request.AnimalRequestFix;
 import br.edu.ufape.hvu.controller.dto.response.AnimalResponse;
+import br.edu.ufape.hvu.controller.dto.response.AnimalResponseFix;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.model.Animal;
 import jakarta.validation.Valid;
@@ -85,10 +89,10 @@ public class AnimalController {
 
 	@PreAuthorize("hasRole('TUTOR')")
 	@PostMapping("animal")
-	public AnimalResponse createAnimal(@Valid @RequestBody AnimalRequest newObj) {
+	public AnimalResponseFix createAnimal(@Valid @RequestBody AnimalRequestFix newObj) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		return new AnimalResponse(facade.saveAnimal(newObj.convertToEntity(), principal.getSubject()));
+		return facade.saveAnimal(newObj, principal.getSubject());
 	}
 
     @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO', 'PATOLOGISTA')")
@@ -132,4 +136,12 @@ public class AnimalController {
         Jwt principal = (Jwt) authentication.getPrincipal();
         return facade.findAnimalsByOrigemAnimal(origem, principal.getSubject());
     }
+
+	@PreAuthorize("hasRole('SECRETARIO')")
+	@PostMapping("animal/prontuario/valor-inicial")
+	public ContadorProntuarioResponse definirValorInicialProntuario(
+			@Valid @RequestBody ValorInicialProntuarioRequest request
+	) {
+		return facade.definirValorInicialProntuario(request);
+	}
 }

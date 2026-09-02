@@ -3,6 +3,9 @@ package br.edu.ufape.hvu.controller;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import br.edu.ufape.hvu.facade.Facade;
@@ -27,7 +30,10 @@ public class FichaController {
     @PreAuthorize("hasRole('MEDICO')")
     @PostMapping("/ficha")
     public FichaResponse createFicha(@Valid @RequestBody FichaRequest newObj) {
-        return new FichaResponse(facade.saveFicha(newObj.convertToEntity()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) authentication.getPrincipal();
+
+        return new FichaResponse(facade.saveFicha(newObj.convertToEntity(), principal.getSubject()));
     }
 
     @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
@@ -36,7 +42,7 @@ public class FichaController {
         return new FichaResponse(facade.findFichaById(id));
     }
 
-    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
+    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA', 'TUTOR')")
     @GetMapping("/ficha/animal/{animalId}")
     public List<FichaResponse> findFichasByAnimalId(@PathVariable Long animalId) {
         return facade.findFichasByAnimalId(animalId)
@@ -49,6 +55,15 @@ public class FichaController {
     @GetMapping("/ficha/agendamento/{agendamentoId}")
     public List<FichaResponse> findFichasByAgendamentoId(@PathVariable Long agendamentoId) {
         return facade.findFichasByAgendamentoId(agendamentoId)
+                .stream()
+                .map(FichaResponse::new)
+                .toList();
+    }
+
+    @PreAuthorize("hasAnyRole('MEDICO', 'PATOLOGISTA')")
+    @GetMapping("/ficha/medico/{medicoId}")
+    public List<FichaResponse> findFichasByMedicoId(@PathVariable Long medicoId) {
+        return facade.findFichasByMedicoId(medicoId)
                 .stream()
                 .map(FichaResponse::new)
                 .toList();

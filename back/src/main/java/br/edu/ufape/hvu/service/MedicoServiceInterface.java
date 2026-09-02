@@ -8,6 +8,7 @@ import br.edu.ufape.hvu.model.Medico;
 public interface MedicoServiceInterface {
 	Medico saveMedico(Medico o);
 	Medico findMedicoById(long id);
+	boolean existsById(long id);
     Medico findByUserId(String userId);
 	Medico updateMedico(Medico u);
 	void deleteMedico(long id);

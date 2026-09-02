@@ -2,36 +2,37 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Image from "next/image";
 import styles from "./index.module.css";
-import {LoginGreenButton} from '../../GreenButton';
+import { LoginGreenButton } from '../../GreenButton';
 import { LoginWhiteButton } from '../../WhiteButton';
-import {CadastrolWhiteButton} from '../../WhiteButton';
+import { CadastrolWhiteButton } from '../../WhiteButton';
 import LogoLAPA from '../LogoLAPA/logo_lapa';
+import { getCurrentUsuario } from '../../../../services/userService';
 
 //Header com botão de login e cadastro
 export function Header01() {
     const router = useRouter();
     return (
         <header className={styles.header}>
-            
+
             <div className={styles.boxlogo}>
                 < LogoLAPA />
             </div>
 
             <div className={styles.box_buttons} >
-            <button type="button" className="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
-            < LoginGreenButton />
+                <button type="button" className="btn btn-outline-success" id={styles.white_button}>Cadastre-se</button>
+                < LoginGreenButton />
             </div>
-                
-        </header>
-    );    
-  }
 
-  //Header com botão de Home e Sistema
-  export function Header02() {
+        </header>
+    );
+}
+
+//Header com botão de Home e Sistema
+export function Header02() {
     const router = useRouter();
     return (
         <header className={styles.header}>
-            
+
             <div className={styles.boxlogo}>
                 < LogoLAPA />
             </div>
@@ -40,19 +41,35 @@ export function Header01() {
                 <button type="button" className="btn btn-link" id={styles.black_button_decoration} onClick={(e) => router.push("/lapa")}>Home</button>
                 <button type="button" className="btn btn-link" id={styles.black_button_decoration} onClick={(e) => router.push("/lapa/system")}>Sistema</button>
             </div>
-                
-        </header>
-    );    
-  }
 
-  //Header com ícone de perfil
-  export function Header03() {
+        </header>
+    );
+}
+
+//Header com ícone de perfil
+export function Header03() {
     const router = useRouter();
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState(false);
+    const [usuario, setUsuario] = useState(null);
     const dropdownRef = useRef(null);
+
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userData = await getCurrentUsuario();
+                setCurrentUser(userData);
+                setUsuario(userData.usuario);
+            } catch (error) {
+                console.error("Erro ao buscar usuários:", error);
+            }
+        };
+        fetchData();
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -69,31 +86,45 @@ export function Header01() {
 
     return (
         <header className={styles.header}>
-            
+
             <div className={styles.boxlogo}>
                 <div>
-                    <Image src="/images/logoLAPA.svg" alt="Logo LAPA" width={150.94} height={72.54}/>
+                    <Image src="/images/logoLAPA.svg" alt="Logo LAPA" width={150.94} height={72.54} />
                 </div>
                 <div>
-                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82}/>
+                    <Image src="/ufape_black_logo.svg" alt="Logo UFAPE" width={73.82} height={73.82} />
                 </div>
             </div>
 
             <div className={styles.box_buttons} ref={dropdownRef}>
                 <button type="button" className="btn btn-link" onClick={toggleDropdown}>
-                <Image src="/icone_perfil.svg" alt="Ícone de perfil" width={59.2} height={59.2}/>
+                    <Image src="/icone_perfil.svg" alt="Ícone de perfil" width={59.2} height={59.2} />
                 </button>
                 {dropdownOpen && (
                     <div className={styles.dropdown_container}>
-                            <div className={styles.dropdown}>
-                                <button className={styles.button2} onClick={(e) => router.push("/lapa")}>
-                                    <div><Image src="/left_icon.svg" alt="Ícone de perfil" width={17.88} height={17.88}/></div>
-                                    <div>Sair</div>
+                        <div className={styles.dropdown}>
+                            {usuario?.id && (
+                                <button
+                                    className={styles.button1}
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => router.push(`/lapa/meuPerfil/${usuario.id}`)}
+                                >
+                                    <div><Image src="/info_icon.svg" alt="Ícone de perfil" width={18.87} height={18.87} /></div>
+                                    <div>Meu perfil</div>
                                 </button>
-                            </div>
+                            )}
+                            <button className={styles.button2} onClick={(e) => {
+                                localStorage.removeItem('token');
+                                localStorage.removeItem('roles');
+                                router.push("/lapa");
+                            }}>
+                                <div><Image src="/left_icon.svg" alt="Ícone de perfil" width={17.88} height={17.88} /></div>
+                                <div>Sair</div>
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
         </header>
-    );    
+    );
 }

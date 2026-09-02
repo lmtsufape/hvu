@@ -16,6 +16,7 @@ function UpdateArea() {
     const [errors, setErrors] = useState({});
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const { especies } = EspeciesList();
     const [area, setArea] = useState({
@@ -51,7 +52,8 @@ function UpdateArea() {
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
-                try {
+                setShowErrorAlert(false);
+        try {
                     const areaData = await getAreaById(id);
                     setArea({
                         id: areaData.id,
@@ -106,11 +108,21 @@ function UpdateArea() {
             especie: area.especie && area.especie.id ? { id: area.especie.id } : null
         };
 
+        setShowErrorAlert(false);
         try {
             await updateArea(area.id, areaToUpdate);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao editar área:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -161,7 +173,7 @@ function UpdateArea() {
                 </div>
             </form>
             {<Alert message="Informações da área editadas com sucesso!" show={showAlert} url={`/lapa/gerenciarAreas`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao editar informações da área, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao editar informações da área, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

@@ -1,20 +1,19 @@
 package br.edu.ufape.hvu.controller.dto.response;
 
 import java.time.LocalDate;
-
 import br.edu.ufape.hvu.model.enums.OrigemAnimal;
+import br.edu.ufape.hvu.model.enums.TipoAnimal;
 import org.modelmapper.ModelMapper;
-
 import br.edu.ufape.hvu.config.SpringApplicationContext;
 import br.edu.ufape.hvu.model.Animal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-
-@Getter @Setter @NoArgsConstructor
-public  class AnimalResponse  {
+@Getter
+@Setter
+@NoArgsConstructor
+public class AnimalResponse {
 	private long id;
 	private String nome;
 	private String sexo;
@@ -27,11 +26,11 @@ public  class AnimalResponse  {
 	private RacaResponse raca;
 	private OrigemAnimal origemAnimal;
 	private boolean obito;
-
+	private String codigoProntuario;
+	private TipoAnimal tipo;
 
 	public AnimalResponse(Animal obj) {
 		ModelMapper modelMapper = (ModelMapper) SpringApplicationContext.getBean("modelMapper");
 		modelMapper.map(obj, this);	
 	}
-
 }

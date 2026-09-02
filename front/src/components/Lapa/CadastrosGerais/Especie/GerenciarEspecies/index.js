@@ -12,6 +12,7 @@ function GerenciarEspecies() {
     const [especies, setEspecies] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedEspecieId, setDeletedEspecieId] = useState(null); 
     const router = useRouter();
@@ -40,7 +41,8 @@ function GerenciarEspecies() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const especiesData = await getAllEspecie();
                 setEspecies(especiesData);
             } catch (error) {
@@ -51,6 +53,7 @@ function GerenciarEspecies() {
     }, [deletedEspecieId]); 
 
     const handleDeleteEspecie = async (especieId) => {
+        setShowErrorAlert(false);
         try {
             await deleteEspecie(especieId);
             setEspecies(especies.filter(especie => especie.id !== especieId));
@@ -58,8 +61,17 @@ function GerenciarEspecies() {
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir espécie:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -108,8 +120,8 @@ function GerenciarEspecies() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Especie excluída com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Esta especie não pode ser excluída por estar associada a um animal." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Especie excluída com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Esta especie não pode ser excluída por estar associada a um animal."} show={showErrorAlert} />}
 
         </div>
     );

@@ -11,25 +11,26 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 
-@Component @RequiredArgsConstructor
+@Component
+@RequiredArgsConstructor
 public class TutorSeeder {
     private final AnimalRepository animalRepository;
     private final TutorRepository tutorRepository;
     private final UsuarioSeeder usuarioSeeder;
 
-    public void init(){
+    public void init() {
         if(tutorRepository.count() > 0){
             return;
         }
 
-        Faker faker = new Faker(new Locale("pt-BR"));
+        Faker faker = new Faker(Locale.forLanguageTag("pt-BR"));
         Endereco endereco = usuarioSeeder.criarEndereco(faker);
         List<Animal> animais = animalRepository.findAll();
         Tutor tutor = criarTutor(faker, endereco, animais);
         tutorRepository.save(tutor);
     }
 
-    protected Tutor criarTutor(Faker faker, Endereco endereco, List<Animal> animais){
+    protected Tutor criarTutor(Faker faker, Endereco endereco, List<Animal> animais) {
         Tutor tutor = new Tutor();
         tutor.setNome("tutor");
         tutor.setEmail("tutor@tutor.com");

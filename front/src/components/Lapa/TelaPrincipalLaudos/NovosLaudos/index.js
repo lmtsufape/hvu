@@ -63,7 +63,8 @@ function CreateFichaForm() {
   useEffect(() => {
     const savedData = localStorage.getItem(FORM_STORAGE_KEY)
     if (savedData) {
-      try {
+      setShowErrorAlert(false);
+        try {
         const parsedData = JSON.parse(savedData)
         setFichaDeSolicitacaoData(parsedData.formData || fichaDeSolicitacaoData)
         setSelectedTutor(parsedData.selectedTutor || null)
@@ -219,9 +220,9 @@ function CreateFichaForm() {
       dataRecebimento: formatDate(fichaDeSolicitacaoData.dataRecebimento),
     }
 
-    console.log(fichaToCreate)
 
-    try {
+    setShowErrorAlert(false);
+        try {
       await createFichaSolicitacao(fichaToCreate)
       clearSavedData()
       setShowAlert(true)
@@ -231,7 +232,16 @@ function CreateFichaForm() {
       if (error.response && error.response.status === 400) {
         const backendMessage = error.response.data?.message || ""
         if (backendMessage.includes("animal já possui outra ficha")) {
-          setShowErrorAlert(true)
+          
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
           setErrorMessage("Erro: O animal selecionado já possui outra ficha.")
           return
         }

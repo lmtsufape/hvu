@@ -13,6 +13,7 @@ function GerenciarAreaList() {
     const [filtro, setFiltro] = useState('especie');
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedAreaId, setDeletedAreaId] = useState(null); 
     const router = useRouter();
@@ -42,9 +43,9 @@ function GerenciarAreaList() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const areasData = await getAllArea();
-                console.log(areasData); 
                 setAreas(areasData);
             } catch (error) {
                 console.error('Erro ao buscar áreas:', error);
@@ -54,6 +55,7 @@ function GerenciarAreaList() {
     }, [deletedAreaId]); 
 
     const handleDeleteArea = async (areaId) => {
+        setShowErrorAlert(false);
         try {
             await deleteArea(areaId);
             setAreas(area.filter(area => area.id !== areaId));
@@ -61,8 +63,17 @@ function GerenciarAreaList() {
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir a área:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -115,8 +126,8 @@ function GerenciarAreaList() {
 
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Área excluída com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Esta área não pode ser excluída por estar associada a um laudo." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Área excluída com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Esta área não pode ser excluída por estar associada a um laudo."} show={showErrorAlert} />}
 
         </div>
     );

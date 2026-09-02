@@ -14,6 +14,7 @@ function GerenciarAnimais() {
     const [tutores, setTutores] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedAnimalId, setDeletedAnimalId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,13 +44,15 @@ function GerenciarAnimais() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const animaisData = await getAllAnimal("LAPA");
                 setAnimais(animaisData);
 
                 const tutoresData = {};
                 for (const animal of animaisData) {
-                    try {
+                    setShowErrorAlert(false);
+        try {
                         const tutor = await getTutorByAnimal(animal.id);
                         tutoresData[animal.id] = tutor;
                     } catch {
@@ -65,6 +68,7 @@ function GerenciarAnimais() {
     }, [deletedAnimalId]);
 
     const handleDeleteAnimal = async (animalId) => {
+        setShowErrorAlert(false);
         try {
             await deleteAnimal(animalId);
             setAnimais(animais.filter(animal => animal.id !== animalId));
@@ -72,8 +76,17 @@ function GerenciarAnimais() {
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir animal:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -129,8 +142,8 @@ function GerenciarAnimais() {
                 </ul>
             )}
 
-            {showAlert && <ErrorAlert message="Animal excluído com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Este animal não pode ser excluído." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Animal excluído com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Este animal não pode ser excluído."} show={showErrorAlert} />}
 
             {isModalOpen && (
                 <div className={styles.modalOverlay}>

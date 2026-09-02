@@ -15,6 +15,7 @@ function UpdateCampoLaudo() {
     const [errors, setErrors] = useState({});
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [campoLaudo, setCampoLaudo] = useState({});
     const roles = getRoles();
     const token= getToken();
@@ -42,7 +43,8 @@ function UpdateCampoLaudo() {
     useEffect(() => {
         if (id) {
             const fetchData = async () => {
-                try {
+                setShowErrorAlert(false);
+        try {
                     const campoLaudoData = await getCampoLaudoById(id);
                     setCampoLaudo(campoLaudoData);
                 } catch (error) {
@@ -73,11 +75,21 @@ function UpdateCampoLaudo() {
             return;
         }
 
+        setShowErrorAlert(false);
         try {
             await updateCampoLaudo(campoLaudo.id, campoLaudo);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao editar Macroscopia:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -110,7 +122,7 @@ function UpdateCampoLaudo() {
                 </div>
             </form>
             {showAlert && <Alert message="Informações da Macroscopia editadas com sucesso!" show={showAlert} url={`/lapa/gerenciarMacroscopias`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao editar informações da Macroscopia, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao editar informações da Macroscopia, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

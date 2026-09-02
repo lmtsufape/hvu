@@ -12,6 +12,7 @@ function GerenciarTutores() {
     const [tutores, setTutores] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedTutorId, setDeletedTutorId] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,7 +42,8 @@ function GerenciarTutores() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const tutoresData = await getAllTutor();
                 setTutores(tutoresData);
             } catch (error) {
@@ -52,6 +54,7 @@ function GerenciarTutores() {
     }, [deletedTutorId]);
 
     const handleDeleteTutor = async (tutorId) => {
+        setShowErrorAlert(false);
         try {
             await deleteTutor(tutorId);
             setTutores(tutores.filter(tutor => tutor.id !== tutorId));
@@ -59,8 +62,17 @@ function GerenciarTutores() {
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir tutor:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -119,8 +131,8 @@ function GerenciarTutores() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Responsável excluído com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Este responsáveis não pode ser excluído." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Responsável excluído com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Este responsáveis não pode ser excluído."} show={showErrorAlert} />}
 
             {isModalOpen && (
                 <div className={styles.modalOverlay}>

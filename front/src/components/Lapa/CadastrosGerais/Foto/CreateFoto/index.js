@@ -108,7 +108,16 @@ function CreateFoto() {
         return
       }
 
-      setShowErrorAlert(true)
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
       setShowFileSizeAlert(false)
     }
   }
@@ -186,7 +195,7 @@ function CreateFoto() {
 
       {showErrorAlert && (
         <ErrorAlert
-          message="Erro ao criar foto, tente novamente."
+          message={errorMessage || "Erro ao criar foto, tente novamente."}
           show={showErrorAlert}
         />
       )}

@@ -18,7 +18,6 @@ export default function Text() {
   
     fetchData();
   }, []);
-  console.log("Avisos:", avisos);
 
   useEffect(() => {
     const timer = setTimeout(() => {

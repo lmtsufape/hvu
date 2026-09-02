@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "./index.module.css";
 import { getAnimalById } from "../../../services/animalService";
+import HistoricoFichasAnimal from "../HistoricoFichasAnimal";
 import VoltarButton from "../VoltarButton";
 import { EditarWhiteButton } from "../WhiteButton";
 
@@ -86,7 +87,8 @@ function GetAnimalByIdForm() {
       <h1>Informações do animal</h1>
       <ul>
         {animal && (
-          <li key={animal.id} className={styles.infos_box}>
+          <li key={animal.id} className={styles.contentWrapper}>
+          <div className={styles.infos_box}>
             <div className={styles.identificacao}>
               <div className={styles.especie_animal}>Nome</div>
               <div className={styles.nome_animal}>{animal.nome}</div>
@@ -159,7 +161,17 @@ function GetAnimalByIdForm() {
                 />
               </div>
             </div>
-          </li>
+          </div>
+
+          <div className={styles.historicoSection}>
+            <h2>Histórico de fichas clínicas</h2>
+            <HistoricoFichasAnimal
+              animalId={id}
+              embedded
+              skipPermissionCheck
+            />
+          </div>
+        </li>
         )}
       </ul>
     </div>

@@ -17,6 +17,7 @@ function CreatePatologista() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const { especialidades } = EspecialidadeList();
     const [selectEspecialidade, setSelectEspecialidade] = useState(null);
@@ -43,7 +44,6 @@ function CreatePatologista() {
         especialidade: []
     });
 
-    console.log("patologista:", patologista);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -58,7 +58,7 @@ function CreatePatologista() {
             setToken(storedToken || "");
             setRoles(storedRoles || []);
         }
-      }, []);
+    }, []);
 
     if (!roles.includes("admin_lapa")) {
         return (
@@ -70,9 +70,9 @@ function CreatePatologista() {
 
     if (!token) {
         return (
-          <div className={styles.container}>
-            <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-          </div>
+            <div className={styles.container}>
+                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+            </div>
         );
     }
 
@@ -128,14 +128,23 @@ function CreatePatologista() {
             especialidade: selectedEspecialidades.map(espec => ({ id: espec.id }))
         };
 
-        console.log("PatologistaToCreate:", PatologistaToCreate);
 
+        setShowErrorAlert(false);
         try {
             await createPatologista(PatologistaToCreate);
             localStorage.setItem("token", token);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar patologista:", error);
+
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+            if (error?.response?.data?.message && !isDataIntegrityError) {
+                setErrorMessage(error?.response?.data?.message);
+            } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                setErrorMessage(error?.response?.data?.error);
+            } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -205,6 +214,10 @@ function CreatePatologista() {
         }
         if (!patologista.endereco.cep) {
             errors.cep = "Campo obrigatório";
+        } else if (patologista.endereco.cep.replace(/\D/g, '').length !== 8) {
+            errors.cep = "CEP inválido";
+        } else if (errors.cep === "CEP não encontrado") {
+            errors.cep = "CEP não encontrado";
         }
         if (!patologista.endereco.rua) {
             errors.rua = "Campo obrigatório";
@@ -235,10 +248,17 @@ function CreatePatologista() {
                 cep: cep
             }
         });
-        if (/^\d{8}$/.test(cep)) { // Verifica se a string do CEP tem exatamente 8 dígitos
+        if (/^\d{8}$/.test(cep)) {
+            setShowErrorAlert(false);
             try {
                 setCityStateLoading(true);
                 const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+                if (response.data.erro) {
+                    setErrors(prev => ({ ...prev, cep: "CEP não encontrado" }));
+                    setCityStateLoading(false);
+                    return;
+                }
+                setErrors(prev => { const e = { ...prev }; delete e.cep; return e; });
                 const { localidade, uf, logradouro, bairro } = response.data;
                 setPatologista({
                     ...patologista,
@@ -254,8 +274,11 @@ function CreatePatologista() {
                 setCityStateLoading(false);
             } catch (error) {
                 console.error("Erro ao buscar CEP:", error);
+                setErrors(prev => ({ ...prev, cep: "CEP não encontrado" }));
                 setCityStateLoading(false);
             }
+        } else {
+            setErrors(prev => { const e = { ...prev }; delete e.cep; return e; });
         }
     };
 
@@ -354,7 +377,7 @@ function CreatePatologista() {
 
             </form>
             {<Alert message="Patologista cadastrado(a) com sucesso!" show={showAlert} url={`/lapa/gerenciarPatologistas/getAllPatologista`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao cadastrar patologista, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao cadastrar patologista, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

@@ -21,6 +21,17 @@ export async function getAllTutor() {
   }
 }
 
+// Função que retorna uma list flat com informações de tutor e animal por origem
+// Exemplo de elemento da lista: tutorId: 2, tutorNome: luis, tutorCpf: 111.111.111-11, animalId: 12, animalNome: rex
+export async function getTutoresEAnimaisPorOrigemFlat(origem) {
+  try {
+    const response = await api.get(`/tutor/origem/${origem}/animais`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // Função para buscar um tutor por ID
 export async function getTutorById(tutorId) {
   try {

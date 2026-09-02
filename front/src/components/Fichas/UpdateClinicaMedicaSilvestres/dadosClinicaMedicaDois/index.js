@@ -87,14 +87,12 @@ export default function Step2ClinicaMedica({
     if (router.isReady) {
       const id = router.query.fichaId;
       const animalId = router.query.animalId;
-      console.log("router.isReady:", router.isReady, "fichaId:", id, "animalId:", animalId);
       if (id) {
         setConsultaId(id);
       }
       if (animalId) {
         setAnimalId(animalId);
       } else {
-        console.log("animalId não encontrado, definindo loading como false");
         setLoading(false);
       }
     }
@@ -120,16 +118,13 @@ export default function Step2ClinicaMedica({
 
   useEffect(() => {
     if (!animalId) {
-      console.log("animalId não definido, saindo do useEffect");
       setLoading(false);
       return;
     }
 
-    console.log("Iniciando fetchData para animalId:", animalId);
     const fetchData = async () => {
       try {
         const animalData = await getAnimalById(animalId);
-        console.log("Dados do animal:", animalData);
         setAnimal(animalData);
       } catch (error) {
         console.error("Erro ao buscar animal:", error);
@@ -137,12 +132,10 @@ export default function Step2ClinicaMedica({
 
       try {
         const tutorData = await getTutorByAnimal(animalId);
-        console.log("Dados do tutor:", tutorData);
         setTutor(tutorData);
       } catch (error) {
         console.error("Erro ao buscar tutor do animal:", error);
       } finally {
-        console.log("Finalizando carregamento, setting loading para false");
         setLoading(false);
       }
     };

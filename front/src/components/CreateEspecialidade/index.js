@@ -13,6 +13,7 @@ function CreateEspecialidade() {
 
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [errors, setErrors] = useState({});
 
@@ -53,7 +54,6 @@ function CreateEspecialidade() {
         const { name, value } = event.target;
         setEspecialidade({ ...especialidade, [name]: value });
     };
-    console.log(especialidade);
 
     const validateForm = () => {
         const errors = {};
@@ -70,11 +70,21 @@ function CreateEspecialidade() {
           setErrors(errors);
           return;
         }
+        setShowErrorAlert(false);
         try {
             await createEspecialidade(especialidade);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar especialidade:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -108,7 +118,7 @@ function CreateEspecialidade() {
                 </div>
             </form>
             {<Alert message="Especialidade criada com sucesso!" show={showAlert} url={`/gerenciarEspecialidades`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao cadastrar especialidade, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao cadastrar especialidade, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

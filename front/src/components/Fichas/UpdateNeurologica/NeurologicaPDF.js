@@ -40,6 +40,14 @@ const NeurologicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
         <View style={styles.row}><Text style={styles.label}>{label}:</Text><Text style={styles.value}>MTD: {data?.MTD || 'N/A'}, MTE: {data?.MTE || 'N/A'}, MPD: {data?.MPD || 'N/A'}, MPE: {data?.MPE || 'N/A'}</Text></View>
     );
 
+    const renderPatelar = (label, data) => (
+        <View style={styles.row}><Text style={styles.label}>{label}:</Text><Text style={styles.value}>MPD: {data?.MPD || 'N/A'}, MPE: {data?.MPE || 'N/A'}</Text></View>
+    );
+
+    const renderNumeric = (label, value) => (
+        <View style={styles.row}><Text style={styles.label}>{label}:</Text><Text style={styles.value}>{value !== undefined && value !== null && value !== '' ? value : 'N/A'}</Text></View>
+    );
+
     return (
         <Document>
             {/* =================== PÁGINA 1 =================== */}
@@ -106,13 +114,13 @@ const NeurologicaPDF = ({ ficha, animal, tutor, medicoLogado }) => {
                 <text style={{fontSize: 8, fontFamily: 'Helvetica-Oblique', color: '#6c757d', marginBottom: 4}}>(0 – ausente, 1 – diminuído, 2 – normal, 3 – aumentado, 4 - clono)</text>
                 <View style={styles.subsection}>
                     {renderPostural("Tono Muscular", reflexosSegmentares.tonoMuscular)}
-                    {renderPostural("Patelar", reflexosSegmentares.patelar)}
+                    {renderPatelar("Patelar", reflexosSegmentares.patelar)}
                     {renderPostural("Flexor", reflexosSegmentares.flexor)}
-                    {renderPostural("Perineal", reflexosSegmentares.perineal)}
-                    {renderPostural("Reflexo Cutâneo", reflexosSegmentares.reflexoCutaneo)}
-                    {renderPostural("Reflexo Torácico Lateral", reflexosSegmentares.reflexoToracicoLateral)}
-                    {renderPostural("Tono da Cauda", reflexosSegmentares.tonoDaCalda)}
-                    {renderPostural("Micção", reflexosSegmentares.miccao)}
+                    {renderNumeric("Perineal", reflexosSegmentares.perineal)}
+                    {renderNumeric("Reflexo Cutâneo", reflexosSegmentares.reflexoCutaneo)}
+                    {renderNumeric("Reflexo Torácico Lateral", reflexosSegmentares.reflexoToracicoLateral)}
+                    {renderNumeric("Tono da Cauda", reflexosSegmentares.tonoDaCalda)}
+                    {renderNumeric("Micção", reflexosSegmentares.miccao)}
                 </View>
 
                 <Text style={styles.sectionTitle}>Avaliação Sensitiva</Text>

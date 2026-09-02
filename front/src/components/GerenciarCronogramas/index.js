@@ -11,6 +11,7 @@ function GerenciarCronogramas() {
     const [cronogramas, setCronogramas] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedCronogramaId, setDeletedCronogramaId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
     const [roles, setRoles] = useState([]);
@@ -29,7 +30,8 @@ function GerenciarCronogramas() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const cronogramasData = await getAllCronograma();
                 setCronogramas(cronogramasData);
             } catch (error) {
@@ -64,6 +66,7 @@ function GerenciarCronogramas() {
       }
 
     const handleDeleteCronograma = async (cronogramaId) => {
+        setShowErrorAlert(false);
         try {
             await deleteCronograma(cronogramaId);
             setCronogramas(cronogramas.filter(cronograma => cronograma.id !== cronogramaId));
@@ -71,8 +74,17 @@ function GerenciarCronogramas() {
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir a raça:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -121,8 +133,8 @@ function GerenciarCronogramas() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Agenda excluída com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Esta agenda não pode ser excluída por estar associada a um agendamento." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Agenda excluída com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Esta agenda não pode ser excluída por estar associada a um agendamento."} show={showErrorAlert} />}
 
         </div>
     );

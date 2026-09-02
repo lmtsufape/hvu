@@ -61,7 +61,12 @@ function MeuPerfilList() {
   }
 
   const handleEditarClick = (UsuarioId) => {
-    router.push(`/updateMeuPerfil/${UsuarioId}`);
+    const roles = JSON.parse(localStorage.getItem('roles')) || [];
+    if (roles.includes('admin_lapa') || roles.includes('patologista')) {
+      router.push(`/lapa/updateMeuPerfil/${UsuarioId}`);
+    } else {
+      router.push(`/updateMeuPerfil/${UsuarioId}`);
+    }
   };
 
   return (

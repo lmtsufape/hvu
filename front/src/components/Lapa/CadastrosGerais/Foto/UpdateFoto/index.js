@@ -55,7 +55,16 @@ function UpdateFoto() {
           setCurrentImageUrl(imageUrl)
         } catch (error) {
           console.error("Erro ao buscar foto:", error)
-          setShowErrorAlert(true)
+          
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
         } finally {
           setLoading(false)
         }
@@ -159,7 +168,16 @@ function UpdateFoto() {
         return
       }
 
-      setShowErrorAlert(true)
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true)
       setShowFileSizeAlert(false)
     }
   }
@@ -255,7 +273,7 @@ function UpdateFoto() {
 
       {showErrorAlert && (
         <ErrorAlert
-          message="Erro ao editar informações da foto, tente novamente."
+          message={errorMessage || "Erro ao editar informações da foto, tente novamente."}
           show={showErrorAlert}
           onClose={() => setShowErrorAlert(false)}
         />

@@ -58,7 +58,7 @@ export function Header02() {
             style={{ textDecoration: "none" }}
           >
             <div>
-              <Image
+              <img
                 src="/hvu_black_logo.svg"
                 alt="Logo HVU"
                 width={100}
@@ -74,7 +74,7 @@ export function Header02() {
 
           <Link href="/lapa" target="_blank" rel="noopener noreferrer">
             <div>
-              <Image
+              <img
                 src="/images/logoLAPA.svg" // Caminho da nova logo
                 alt="Logo da Patologia"
                 width={200}
@@ -147,7 +147,6 @@ export function Header03() {
         const TutoresData = await getCurrentUsuario();
         setCurrentUser(TutoresData);
         setTutores(TutoresData.usuario);
-        console.log("Usuários:", TutoresData);
       } catch (error) {
         console.error("Erro ao buscar usuários:", error);
       }

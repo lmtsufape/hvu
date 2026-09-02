@@ -14,6 +14,7 @@ function LaudosEmAndamento() {
     const [searchTerm, setSearchTerm] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [deletedFichaId, setDeletedFichaId] = useState(null);
     const router = useRouter();
     const roles = getRoles();
@@ -41,9 +42,9 @@ function LaudosEmAndamento() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const fichasData = await getAllFichaSolicitacao();
-                console.log('Dados das fichas:', fichasData); // Log dos dados recebidos
                 setFichas(fichasData);
             } catch (error) {
                 console.error('Erro ao buscar fichas de solicitação de serviço:', error);
@@ -60,9 +61,9 @@ function LaudosEmAndamento() {
         ficha.codigoPatologia  && ficha.codigoPatologia .toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    console.log('Fichas filtradas:', filteredFichas); // Log das fichas filtradas
 
     const handleDeleteFicha = async (fichaId) => {
+        setShowErrorAlert(false);
         try {
             await deleteFichaSolicitacao(fichaId);
             setFichas(fichas.filter(ficha => ficha.id !== fichaId));
@@ -70,6 +71,15 @@ function LaudosEmAndamento() {
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir a ficha: ', error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     }
@@ -119,7 +129,7 @@ function LaudosEmAndamento() {
                 </ul>
             )}
             {showAlert && <div>Ficha excluída com sucesso!</div>}
-            {showErrorAlert && <ErrorAlert message="Erro ao excluir a ficha" />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao excluir a ficha"} />}
         </div>
     );
 }

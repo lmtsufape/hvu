@@ -7,8 +7,8 @@ import java.util.List;
 
 @Repository
 public interface FichaRepository extends JpaRepository<Ficha, Long> {
-
     List<Ficha> findByAgendamentoId(Long agendamentoId);
-    List<Ficha> findByAgendamentoAnimalId(Long animalId);
-
+    List<Ficha> findByMedicoId(Long medicoId);
+    List<Ficha> findByAnimalId(Long animalId);
+    boolean existsByAnimalId(Long animalId);
 }

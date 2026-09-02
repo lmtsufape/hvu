@@ -12,6 +12,7 @@ function GerenciarCampoLaudo() {
     const [campoLaudos, setCampoLaudos] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedCampoLaudoId, setDeletedCampoLaudoId] = useState(null);
     const router = useRouter();
@@ -40,7 +41,8 @@ function GerenciarCampoLaudo() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const campoLaudosData = await getAllCampoLaudo();
                 setCampoLaudos(campoLaudosData);
             } catch (error) {
@@ -51,6 +53,7 @@ function GerenciarCampoLaudo() {
     }, [deletedCampoLaudoId]); // Atualiza a lista ao excluir um campo
 
     const handleDeleteCampoLaudo = async (campoLaudoId) => {
+        setShowErrorAlert(false);
         try {
             await deleteCampoLaudo(campoLaudoId);
             setCampoLaudos(campoLaudos.filter(campoLaudo => campoLaudo.id !== campoLaudoId));
@@ -58,8 +61,17 @@ function GerenciarCampoLaudo() {
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir Macroscopia:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -103,8 +115,8 @@ function GerenciarCampoLaudo() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Macroscopia excluída com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Esta Macroscopia não pode ser excluído por estar associado a um Laudo." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Macroscopia excluída com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Esta Macroscopia não pode ser excluído por estar associado a um Laudo."} show={showErrorAlert} />}
         </div>
     );
 }

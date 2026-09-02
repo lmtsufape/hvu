@@ -22,7 +22,6 @@ export function SubHeader() {
         try {
             const userData = await getCurrentUsuario();
 
-            console.log("user:", userData)
 
             if (userData.roles && Array.isArray(userData.roles)) {
                 if (userData.roles.includes("secretario")) {
@@ -34,7 +33,6 @@ export function SubHeader() {
                 }
             }
         } catch (error) {
-            console.log(error);
         }
     };
 

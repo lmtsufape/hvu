@@ -1,6 +1,5 @@
 package br.edu.ufape.hvu.repository.seeders;
 
-
 import br.edu.ufape.hvu.model.Endereco;
 import br.edu.ufape.hvu.model.Usuario;
 import br.edu.ufape.hvu.repository.UsuarioRepository;
@@ -8,13 +7,13 @@ import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component @RequiredArgsConstructor
-public class UsuarioSeeder{
-    final private UsuarioRepository usuarioRepository;
-
+@Component
+@RequiredArgsConstructor
+public class UsuarioSeeder {
+    private final UsuarioRepository usuarioRepository;
 
     public void init(){
-        if(usuarioRepository.count() > 0){
+        if(usuarioRepository.count() > 0) {
             return;
         }
         Faker faker = new Faker();
@@ -29,9 +28,9 @@ public class UsuarioSeeder{
 
     }
 
-    protected Endereco criarEndereco(Faker faker){
+    protected Endereco criarEndereco(Faker faker) {
         Endereco endereco = new Endereco();
-        endereco.setCep(faker.address().zipCode());
+        endereco.setCep(gerarCepValido(faker));
         endereco.setRua(faker.address().streetName());
         endereco.setEstado(faker.address().state());
         endereco.setCidade(faker.address().cityName());
@@ -40,7 +39,7 @@ public class UsuarioSeeder{
         return endereco;
     }
 
-    protected Usuario criarUsuario(Faker faker, Endereco endereco){
+    protected Usuario criarUsuario(Faker faker, Endereco endereco) {
         Usuario usuario = new Usuario();
         usuario.setNome(faker.name().fullName());
         usuario.setEmail(faker.internet().emailAddress());
@@ -48,5 +47,11 @@ public class UsuarioSeeder{
         usuario.setCpf(faker.idNumber().valid());
         usuario.setEndereco(endereco);
         return usuario;
+    }
+
+    private String gerarCepValido(Faker faker) {
+        int numero = faker.number().numberBetween(10000000, 99999999);
+        String cep = String.valueOf(numero);
+        return cep.substring(0, 5) + "-" + cep.substring(5);
     }
 }

@@ -12,6 +12,7 @@ function GerenciarLaudos() {
     const [laudos, setLaudos] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedLaudoId, setDeletedLaudoId] = useState(null);
     const router = useRouter();
@@ -40,7 +41,8 @@ function GerenciarLaudos() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const laudosData = await getAllLaudoMicroscopia();
                 setLaudos(laudosData);
             } catch (error) {
@@ -51,6 +53,7 @@ function GerenciarLaudos() {
     }, []);
 
     const handleDeleteLaudo = async (laudoId) => {
+        setShowErrorAlert(false);
         try {
             await deleteLaudoMicroscopia(laudoId);
             setLaudos(laudos.filter(laudo => laudo.id !== laudoId));
@@ -58,8 +61,17 @@ function GerenciarLaudos() {
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao excluir laudo:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -105,8 +117,8 @@ function GerenciarLaudos() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Laudo excluído com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Este laudo não pode ser excluído." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Laudo excluído com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Este laudo não pode ser excluído."} show={showErrorAlert} />}
         </div>
     );
 }

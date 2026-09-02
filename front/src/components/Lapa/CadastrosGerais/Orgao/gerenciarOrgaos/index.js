@@ -16,6 +16,7 @@ function GerenciarOrgaos() {
   const [orgaos, setOrgaos] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [deletedOrgaoId, setDeletedOrgaoId] = useState(null);
   const router = useRouter();
@@ -44,12 +45,14 @@ function GerenciarOrgaos() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
+      setShowErrorAlert(false);
+        try {
         const orgaosData = await getAllOrgao();
 
         const orgaosComFoto = await Promise.all(
           orgaosData.map(async (orgao) => {
-            try {
+            setShowErrorAlert(false);
+        try {
               // Se o órgão tem uma foto associada, busca o arquivo
               if (orgao.foto && orgao.foto.id) {
                 const blob = await getFotoById(orgao.foto.id);
@@ -76,15 +79,25 @@ function GerenciarOrgaos() {
   }, [deletedOrgaoId]);
 
   const handleDeleteOrgao = async (orgaoId) => {
-    try {
+    setShowErrorAlert(false);
+        try {
       await deleteOrgao(orgaoId);
       setOrgaos(orgaos.filter((orgao) => orgao.id !== orgaoId));
       setDeletedOrgaoId(orgaoId);
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao excluir órgão:", error);
-      if (error.response && error.response.status === 409) {
-        setShowErrorAlert(true);
+      if (error) {
+        
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
       }
     }
   };
@@ -146,11 +159,11 @@ function GerenciarOrgaos() {
         </ul>
       )}
       {showAlert && (
-        <ErrorAlert message="Órgão excluído com sucesso!" show={showAlert} />
+        <ErrorAlert message={errorMessage || "Órgão excluído com sucesso!"} show={showAlert} />
       )}
       {showErrorAlert && (
         <ErrorAlert
-          message="Este órgão não pode ser excluído."
+          message={errorMessage || "Este órgão não pode ser excluído."}
           show={showErrorAlert}
         />
       )}

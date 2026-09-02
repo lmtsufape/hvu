@@ -49,7 +49,8 @@ function fichaRetornoClinicoSil() {
 
     useEffect(() => {
         const fetchMedicoData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const userData = await getCurrentUsuario();
                 const medicoId = userData.usuario.id;
 
@@ -108,6 +109,7 @@ function fichaRetornoClinicoSil() {
     if (!animalId) return;
 
     const fetchData = async () => {
+        setShowErrorAlert(false);
         try {
             const animalData = await getAnimalById(animalId);
             setAnimal(animalData);
@@ -115,6 +117,7 @@ function fichaRetornoClinicoSil() {
             console.error('Erro ao buscar animal:', error);
         }
 
+        setShowErrorAlert(false);
         try {
             const tutorData = await getTutorByAnimal(animalId);
             setTutor(tutorData);
@@ -140,7 +143,8 @@ function fichaRetornoClinicoSil() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const userData = await getCurrentUsuario();
                 setUserId(userData.usuario.id);
             } catch (error) {
@@ -221,10 +225,9 @@ function fichaRetornoClinicoSil() {
             }
         };
 
+        setShowErrorAlert(false);
         try {
-            console.log(fichaData)
             const resultado = await createFicha(fichaData);
-            console.log("Resposta da api", resultado.id);
             localStorage.setItem('fichaId', resultado.id.toString());
             localStorage.removeItem("fichaRetornoClinicoSilFormData");
             setShowAlert(true);
@@ -454,7 +457,7 @@ function fichaRetornoClinicoSil() {
                 {showAlert && consultaId && (
                 <Alert message="Ficha criada com sucesso!" show={showAlert} url={`/createConsulta/${consultaId}`} />
                 )}
-                {showErrorAlert && (<ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />)}
+                {showErrorAlert && (<ErrorAlert message={errorMessage || "Erro ao criar ficha"} show={showErrorAlert} />)}
             </div>
         </div>
     )

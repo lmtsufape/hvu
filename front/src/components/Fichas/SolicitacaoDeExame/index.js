@@ -21,6 +21,7 @@ function FichaSolicitacaoExame() {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
@@ -78,6 +79,7 @@ function FichaSolicitacaoExame() {
 
    useEffect(() => {
     const fetchMedicoData = async () => {
+        setShowErrorAlert(false);
         try {
             // Passo 1: Busca o usuário atual para obter o ID
             const userData = await getCurrentUsuario();
@@ -103,6 +105,7 @@ function FichaSolicitacaoExame() {
     if (typeof window !== "undefined" && consultaId) {
       const savedFormData = localStorage.getItem(getLocalStorageKey());
       if (savedFormData) {
+        setShowErrorAlert(false);
         try {
           const parsedData = JSON.parse(savedFormData);
           setFormData(parsedData.formData || {
@@ -176,14 +179,16 @@ function FichaSolicitacaoExame() {
     if (!animalId) return;
 
     const fetchData = async () => {
-      try {
+      setShowErrorAlert(false);
+        try {
         const animalData = await getAnimalById(animalId);
         setAnimal(animalData);
       } catch (error) {
         console.error("Erro ao buscar animal:", error);
       }
 
-      try {
+      setShowErrorAlert(false);
+        try {
         const tutorData = await getTutorByAnimal(animalId);
         setTutor(tutorData);
       } catch (error) {
@@ -207,8 +212,6 @@ function FichaSolicitacaoExame() {
   }, []);
 
   useEffect(() => {
-    console.log("Estado atual do formData:", formData);
-    console.log("Estado atual do otherValues:", otherValues);
   }, [formData, otherValues]); // Este useEffect será executado sempre que formData ou otherValues mudarem
 
     useEffect(() => {
@@ -328,16 +331,25 @@ function FichaSolicitacaoExame() {
             }
     };
 
-    console.log("Dados a serem enviados para a API:", JSON.stringify(fichaData, null, 2));
 
-    try {
+    setShowErrorAlert(false);
+        try {
       const resultado = await createFicha(fichaData);
       localStorage.setItem("fichaId", resultado.id.toString());
       localStorage.removeItem(getLocalStorageKey()); // Limpa os dados após salvar
       setShowAlert(true);
     } catch (error) {
       console.error("Erro ao criar ficha:", error);
-      setShowErrorAlert(true);
+      
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
     }
   };
 
@@ -588,7 +600,7 @@ function FichaSolicitacaoExame() {
             />
           </div>
         )}
-        {showErrorAlert && <ErrorAlert message="Erro ao criar ficha" show={showErrorAlert} />}
+        {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao criar ficha"} show={showErrorAlert} />}
       </div>
     </div>
     </div>

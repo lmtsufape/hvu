@@ -22,6 +22,7 @@ function CreateEstagiario() {
     const [errors, setErrors] = useState({});
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const roles = getRoles();
     const token= getToken();
 
@@ -71,11 +72,21 @@ function CreateEstagiario() {
             return;
         }
 
+        setShowErrorAlert(false);
         try {
             await createEstagiario(estagiario);
             setShowAlert(true);
         } catch (error) {
             console.error("Erro ao criar estagiário:", error);
+            
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
             setShowErrorAlert(true);
         }
     };
@@ -150,7 +161,7 @@ function CreateEstagiario() {
                 </div>
             </div>
             {showAlert && <Alert message="Estagiário criado com sucesso!" show={showAlert} url={`/lapa/gerenciarEstagiarios`} />}
-            {showErrorAlert && <ErrorAlert message="Erro ao criar estagiário, tente novamente." show={showErrorAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao criar estagiário, tente novamente."} show={showErrorAlert} />}
         </div>
     );
 }

@@ -11,6 +11,7 @@ function GerenciarEspecialidades() {
     const [especialidades, setEspecialidades] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [deletedEspecialidadeId, setDeletedEspecialidadeId] = useState(null); // Estado para controlar o ID da raça excluída recentemente
     const [roles, setRoles] = useState([]);
@@ -30,7 +31,8 @@ function GerenciarEspecialidades() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            setShowErrorAlert(false);
+        try {
                 const especialidadesData = await getAllEspecialidade();
                 setEspecialidades(especialidadesData);
             } catch (error) {
@@ -65,6 +67,7 @@ function GerenciarEspecialidades() {
     }
 
     const handleDeleteEspecialidade = async (especialidadeId) => {
+        setShowErrorAlert(false);
         try {
             await deleteEspecialidade(especialidadeId);
             setEspecialidades(especialidades.filter(especialidade => especialidade.id !== especialidadeId));
@@ -72,8 +75,17 @@ function GerenciarEspecialidades() {
             setShowAlert(true); 
         } catch (error) {
             console.error('Erro ao excluir especialidade:', error);
-            if (error.response && error.response.status === 409) {
-                setShowErrorAlert(true);
+            if (error) {
+                
+            const isDataIntegrityError = error?.response?.data?.error === "Erro de integridade de dados" || error?.response?.data?.message?.includes("violates foreign key constraint");
+                if (error?.response?.data?.message && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.message);
+                } else if (error?.response?.data?.error && !isDataIntegrityError) {
+                    setErrorMessage(error?.response?.data?.error);
+                } else {
+                setErrorMessage("");
+            }
+            setShowErrorAlert(true);
             }
         }
     };
@@ -118,8 +130,8 @@ function GerenciarEspecialidades() {
                     ))}
                 </ul>
             )}
-            {showAlert && <ErrorAlert message="Especialidade excluída com sucesso!" show={showAlert} />}
-            {showErrorAlert && <ErrorAlert message="Esta especialidade não pode ser excluída por estar associada a um(a) veterinário(a)." show={showErrorAlert} />}
+            {showAlert && <ErrorAlert message={errorMessage || "Especialidade excluída com sucesso!"} show={showAlert} />}
+            {showErrorAlert && <ErrorAlert message={errorMessage || "Esta especialidade não pode ser excluída por estar associada a um(a) veterinário(a)."} show={showErrorAlert} />}
 
         </div>
     );

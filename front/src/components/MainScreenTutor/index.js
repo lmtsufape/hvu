@@ -8,7 +8,6 @@ function MainScreenTutor() {
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
 
-    console.log("Roles:", roles);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
