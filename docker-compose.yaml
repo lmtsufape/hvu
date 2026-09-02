@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 services:
   backend:
     image: hvu-backend
@@ -86,7 +86,6 @@ services:
     depends_on:
       - backend
 
-      
 volumes:
   pg-data:
     driver: local

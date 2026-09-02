@@ -21,6 +21,7 @@ function HistoricoFichasAnimal({
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
+  const [fichaParaAdicionar, setFichaParaAdicionar] = useState({});
 
   const rotasPorNome = {
     "Ficha clínica ortopédica": "/updateFichaOrtopedica",
@@ -122,6 +123,23 @@ function HistoricoFichasAnimal({
     return Array.from(tipos).sort();
   }, [agendamentosComFichas]);
 
+  const handleAdicionarFicha = (agendamentoId) => {
+    const tipoSelecionado = fichaParaAdicionar[agendamentoId];
+    if (!tipoSelecionado) {
+      alert("Por favor, selecione um tipo de ficha.");
+      return;
+    }
+
+    const pathBase = rotasPorNome[tipoSelecionado]; 
+    
+    if (pathBase) {
+      const url = `${pathBase}?animalId=${animalId}&agendamentoId=${agendamentoId}&modo=criar`;
+      router.push(url);
+    } else {
+      alert(`A rota para "${tipoSelecionado}" não foi localizada.`);
+    }
+  };
+
   if (loading) {
     return <div className={styles.message}>Carregando histórico do paciente...</div>;
   }
@@ -192,6 +210,8 @@ function HistoricoFichasAnimal({
   };
 
   const temFiltrosAtivos = searchTerm || filtroTipoFicha || filtroDataInicio || filtroDataFim;
+
+  const esMedico = true;
 
   return (
     <div className={`${styles.pageContainer} ${embedded ? styles.embeddedContainer : ""}`}>
@@ -285,6 +305,35 @@ function HistoricoFichasAnimal({
                 <p className={styles.medicoPrincipal}>
                   Médico responsável: {vaga.medico?.nome || "Não informado"}
                 </p>
+                {esMedico && (
+                  <div className={styles.adicionarFichaContainer} style={{ display: 'flex', gap: '8px', alignItems: 'center', margin: '10px 0' }}>
+                    <select
+                      className={styles.filtroSelect}
+                      value={fichaParaAdicionar[vaga.id] || ""}
+                      onChange={(e) =>
+                        setFichaParaAdicionar({
+                          ...fichaParaAdicionar,
+                          [vaga.id]: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Selecionar nova ficha...</option>
+                      {/* CORREÇÃO: Mapeia todas as fichas do sistema, não apenas as que o animal já tem */}
+                      {Object.keys(rotasPorNome).map((tipo) => (
+                        <option key={tipo} value={tipo}>
+                          {tipo}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      className={styles.acessar_button}
+                      onClick={() => handleAdicionarFicha(vaga.id)}
+                    >
+                      Adicionar
+                    </button>
+                  </div>
+                )}
                 <h3>Fichas da Consulta:</h3>
 
                 {vaga.fichas.map((ficha) => (

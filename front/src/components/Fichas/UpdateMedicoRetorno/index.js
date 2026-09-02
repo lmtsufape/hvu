@@ -1,72 +1,65 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useRouter } from "next/router";
+import dynamic from 'next/dynamic';
+import moment from "moment";
+
 import styles from "./index.module.css";
-import { getCurrentUsuario } from "../../../../services/userService";
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
-import moment from "moment";
 import ClinicaMedicaRetornoStep1 from "./AnamneseRetorno";
-import ClinicaMedicaRetornoStep2 from "./ExameFisicoSistemaRetorno"
-import { getFichaById } from "../../../../services/fichaService";
-import { updateFicha } from "../../../../services/fichaService";
-import dynamic from 'next/dynamic';
+import ClinicaMedicaRetornoStep2 from "./ExameFisicoSistemaRetorno";
 import ClinicaMedicaRetornoPDF from './ClinicaMedicaRetornoPDF';
+
+import { getCurrentUsuario } from "../../../../services/userService";
+import { getFichaById, updateFicha, createFicha } from "../../../../services/fichaService";
 import { getAnimalById } from "../../../../services/animalService";
 import { getTutorByAnimal } from "../../../../services/tutorService";
 import { getMedicoById } from "../../../../services/medicoService";
 
+// Dynamic import fora do componente
+const PDFLink = dynamic(
+  () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink), 
+  { ssr: false }
+);
+
+const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+  <button type="button" className={styles.green_buttonFichas} style={{ width: 'auto', padding: '0 1.5rem' }}>
+    <PDFLink 
+      document={<ClinicaMedicaRetornoPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} 
+      fileName={`FichaClinicaRetorno_${animal?.nome ? animal.nome.replace(/\s/g, '_') : 'animal'}.pdf`} 
+      style={{ color: 'inherit', textDecoration: 'none' }}
+    >
+      {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+    </PDFLink>
+  </button>
+);
 
 function FichaMedicaRetorno() {
   const router = useRouter();
-
-    const PDFLink = dynamic(() => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink), { ssr: false });
-    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
-        <button type="button" className={styles.green_buttonFichas} style={{width: 'auto', padding: '0 1.5rem'}}>
-            <PDFLink document={<ClinicaMedicaRetornoPDF ficha={ficha} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />} fileName={`FichaClinicaRetorno_${animal.nome?.replace(/\s/g, '_')}.pdf`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
-            </PDFLink>
-        </button>
-    );
-
-    const [animalId, setAnimalId] = useState(null);
-    const [animal, setAnimal] = useState({});
-    const [tutor, setTutor] = useState({});
-    const [medicoLogado, setMedicoLogado] = useState(null);
-
-    useEffect(() => { if (router.isReady) { setAnimalId(router.query.animalId); } }, [router.isReady, router.query.animalId]);
-
-    useEffect(() => {
-        const fetchDataForPDF = async () => {
-            if (!animalId) return;
-            setShowErrorAlert(false);
-        try {
-                const [animalData, tutorData, userData] = await Promise.all([getAnimalById(animalId), getTutorByAnimal(animalId), getCurrentUsuario()]);
-                setAnimal(animalData);
-                setTutor(tutorData);
-                if (userData?.usuario?.id) {
-                    const medicoData = await getMedicoById(userData.usuario.id);
-                    setMedicoLogado(medicoData);
-                }
-            } catch (error) { console.error('Erro ao buscar dados para o PDF:', error); }
-        };
-        fetchDataForPDF();
-    }, [animalId]);
+  const { modo, animalId: queryAnimalId, fichaId: queryFichaId, agendamentoId: queryAgendamentoId, consultaId: queryConsultaId } = router.query;
 
   const [step, setStep] = useState(1);
-  const [userId, setUserId] = useState(null);
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const nextStep = () => setStep(step + 1);
-  const prevStep = () => setStep(step - 1);
+
   const [consultaId, setConsultaId] = useState(null);
   const [fichaId, setFichaId] = useState(null);
-  const [data, setData] = useState([]);
+  const [animalId, setAnimalId] = useState(null);
   const [agendamentoId, setAgendamentoId] = useState(null);
+  const [data, setData] = useState("");
+  const [isReadOnly, setIsReadOnly] = useState(false);
+
+  const [animal, setAnimal] = useState({});
+  const [tutor, setTutor] = useState({});
+  const [medicoLogado, setMedicoLogado] = useState(null);
+
+  const nextStep = () => setStep((s) => s + 1);
+  const prevStep = () => setStep((s) => s - 1);
 
   const [formData, setFormData] = useState({
     // página 1
@@ -82,201 +75,168 @@ function FichaMedicaRetorno() {
       outros: false,
       naoVacinado: false,
       naoInformado: false,
-      },
-  
-
-      vacinacao: {
-        antiRabica: "",
-        giardia: "",
-        leishmaniose: "",
-        tosseDosCanis: "",
-        polivalenteCanina: "",
-        polivalenteFelina: "",
-        outros: "",
-        naoVacinado: "",
-        naoInformado: "",
-
-      },
-
-      vermifugacaoDetalhes:{
-        vermifugacao: '',
-        produto: '',
-        data: '',
-      },
-      ectoparasitosDetalhes:{
-        ectoparasitos: '',
-        produto: '',
-        data: '',
-      }
-      ,
-      tpc:"",
-      turgorCutaneo:"",
-      freqCardiaca:"",
-      freqRespiratoria:"",
-
-      
-      ExameFisico: {
-        alimentacao: "",
-        postura: "",
-        nivelConsciencia: "",
-        temperatura: "",
-        score: "",
-        freqCardiaca: "",
-        freqRespiratoria: "",
-        hidratacao: "",
-        tpc: "",
-        turgor: "",
-        mucosas: "",
-        linfonodosGeral: "",
-        linfonodosLocal: []
-      },
-
-      option: {
-          roseas: false,
-          roseasPalidas: false,
-          porcelanicas: false,
-          hiperemicas: false,
-          cianoticas: false,
-          ictaricas: false,
-          naoAvaliado: false
-        },
-    
-        mucosas: {
-          roseas: "",
-          roseasPalidas: "",
-          porcelanicas: "",
-          hiperemicas: "",
-          cianoticas: "",
-          ictaricas: "",
-          naoAvaliado: ""
-        },
-
-        linfonodos: {},
-      /* ------------- passo 2 ------------- */
-      fisicogeral: {},
-      diagnostico: {},
-      plantonistas:"",
-      medicosResponsaveis:"",
+    },
+    vacinacao: {
+      antiRabica: "",
+      giardia: "",
+      leishmaniose: "",
+      tosseDosCanis: "",
+      polivalenteCanina: "",
+      polivalenteFelina: "",
+      outros: "",
+      naoVacinado: "",
+      naoInformado: "",
+    },
+    vermifugacaoDetalhes: {
+      vermifugacao: '',
+      produto: '',
+      data: '',
+    },
+    ectoparasitosDetalhes: {
+      ectoparasitos: '',
+      produto: '',
+      data: '',
+    },
+    tpc: "",
+    turgorCutaneo: "",
+    freqCardiaca: "",
+    freqRespiratoria: "",
+    ExameFisico: {
+      alimentacao: "",
+      postura: "",
+      nivelConsciencia: "",
+      temperatura: "",
+      score: "",
+      freqCardiaca: "",
+      freqRespiratoria: "",
+      hidratacao: "",
+      tpc: "",
+      turgor: "",
+      mucosas: "",
+      linfonodosGeral: "",
+      linfonodosLocal: []
+    },
+    option: {
+      roseas: false,
+      roseasPalidas: false,
+      porcelanicas: false,
+      hiperemicas: false,
+      cianoticas: false,
+      ictaricas: false,
+      naoAvaliado: false
+    },
+    mucosas: {
+      roseas: "",
+      roseasPalidas: "",
+      porcelanicas: "",
+      hiperemicas: "",
+      cianoticas: "",
+      ictaricas: "",
+      naoAvaliado: ""
+    },
+    linfonodos: {},
+    // página 2
+    fisicogeral: {},
+    diagnostico: {},
+    plantonistas: "",
+    medicosResponsaveis: "",
   });
 
-  // Obtém o ID da ficha da URL
+  useEffect(() => {
+    if (modo === 'visualizar') {
+      setIsReadOnly(true);
+    }
+  }, [modo]);
+
   useEffect(() => {
     if (router.isReady) {
-        const id = router.query.consultaId;
-        const ficha = router.query.fichaId;
-        const aId = router.query.agendamentoId;
-        if (id) {
-          setConsultaId(id);
-        }
-        if (ficha) {
-          setFichaId(ficha);
-        }
-        if (aId) {
-          setAgendamentoId(aId);
-        }
+      if (queryConsultaId) setConsultaId(queryConsultaId);
+      if (queryFichaId) setFichaId(queryFichaId);
+      if (queryAgendamentoId) setAgendamentoId(queryAgendamentoId);
+      if (queryAnimalId) setAnimalId(queryAnimalId);
     }
-  }, [router.isReady, router.query.fichaId]);
-
-    useEffect(() => {
-    if (!fichaId) return;
-
-    const fetchData = async () => {
-        setShowErrorAlert(false);
-        try {
-            const formData = await getFichaById(fichaId);
-            setFormData(JSON.parse(formData.conteudo));
-            setData(formData.dataHora);
-        } catch (error) {
-            console.error('Erro ao buscar dados da ficha:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-        fetchData();
-    }, [fichaId]);
+  }, [router.isReady, queryConsultaId, queryFichaId, queryAgendamentoId, queryAnimalId]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedToken = localStorage.getItem("token");
-      const storedRoles = JSON.parse(localStorage.getItem("roles"));
-      setToken(storedToken || "");
-      setRoles(storedRoles || []);
+      setToken(localStorage.getItem("token") ?? "");
+      setRoles(JSON.parse(localStorage.getItem("roles") ?? "[]"));
     }
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setShowErrorAlert(false);
-        try {
-        const userData = await getCurrentUsuario();
-        setUserId(userData.usuario.id);
+    if (!animalId) return;
+
+    const fetchDataForPDF = async () => {
+      try {
+        const [animalData, tutorData, userData] = await Promise.all([
+          getAnimalById(animalId),
+          getTutorByAnimal(animalId),
+          getCurrentUsuario()
+        ]);
+        setAnimal(animalData || {});
+        setTutor(tutorData || {});
+        if (userData?.usuario?.id) {
+          const medicoData = await getMedicoById(userData.usuario.id);
+          setMedicoLogado(medicoData);
+        }
       } catch (error) {
-        console.error("Erro ao buscar usuário:", error);
+        console.error('Erro ao buscar dados para o PDF:', error);
+      }
+    };
+    fetchDataForPDF();
+  }, [animalId]);
+
+  useEffect(() => {
+    if (modo === "criar") {
+      setLoading(false);
+      return;
+    }
+
+    if (!fichaId) return;
+
+    const fetchData = async () => {
+      try {
+        const formDataResponse = await getFichaById(fichaId);
+        if (formDataResponse?.conteudo) {
+          setFormData(typeof formDataResponse.conteudo === 'string'
+            ? JSON.parse(formDataResponse.conteudo)
+            : formDataResponse.conteudo);
+        }
+        setData(formDataResponse?.dataHora);
+      } catch (error) {
+        console.error('Erro ao buscar dados da ficha:', error);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
+  }, [fichaId, modo]);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        await getCurrentUsuario();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadUser();
   }, []);
 
-  if (loading) {
-    return <div className={styles.message}>Carregando dados do usuário...</div>;
-  }
-
-  if (!roles.includes("medico") && !roles.includes("patologista")) {
-    return (
-      <div className={styles.container}>
-        <h3 className={styles.message}>
-          Acesso negado: Você não tem permissão para acessar esta página.
-        </h3>
-      </div>
-    );
-  }
-
-  if (!token) {
-    return (
-      <div className={styles.container}>
-        <h3 className={styles.message}>
-          Acesso negado: Faça login para acessar esta página.
-        </h3>
-      </div>
-    );
-  }
-
-  const handleSubmit = async (event) => {
-    event?.preventDefault(); // Usa encadeamento opcional para evitar erro
-    const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss");
-    const fichaData = {
-      nome: "Ficha clínico médica de retorno",
-      conteudo: {
-        ...formData
-      },
-      dataHora: dataFormatada,
-      agendamento: { id: Number(agendamentoId) }
-    };
-
-    setShowErrorAlert(false);
-        try {
-        await updateFicha(fichaData, fichaId);
-        setShowAlert(true);
-    } catch (error) {
-      console.error("Erro ao criar ficha:", error);
-      if (error.response && error.response.data && error.response.data.code) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage("Erro ao criar ficha");
-      }
-      setShowErrorAlert(true);
-    }
-  };
+  if (loading) return <p>Carregando…</p>;
+  if (!token) return <p>Acesso negado – faça login.</p>;
+  if (!roles.includes("medico") && !roles.includes("patologista")) return <p>Acesso negado – sem permissão.</p>;
 
   const handleCheckboxChange = (event, field) => {
     const { value, checked } = event.target;
     setFormData((prev) => ({
       ...prev,
       [field]: checked
-        ? [...prev[field], value]
-        : prev[field].filter((item) => item !== value),
+        ? [...(prev[field] || []), value]
+        : (prev[field] || []).filter((item) => item !== value),
     }));
   };
 
@@ -326,9 +286,9 @@ function FichaMedicaRetorno() {
     setFormData((prevState) => {
       const updatedLinfonodos = { ...prevState.linfonodos };
       if (checked) {
-        updatedLinfonodos[linfonodo] = []; // Adiciona o linfonodo com array vazio
+        updatedLinfonodos[linfonodo] = [];
       } else {
-        delete updatedLinfonodos[linfonodo]; // Remove o linfonodo ao desmarcar
+        delete updatedLinfonodos[linfonodo];
       }
       return {
         ...prevState,
@@ -340,7 +300,7 @@ function FichaMedicaRetorno() {
   const handleCaracteristicaChange = (e, linfonodo) => {
     const { name, checked } = e.target;
     setFormData((prevState) => {
-      const currentValues = prevState.linfonodos[linfonodo] || [];
+      const currentValues = prevState.linfonodos?.[linfonodo] || [];
       let nextValues = checked
         ? [...currentValues, name]
         : currentValues.filter((item) => item !== name);
@@ -348,7 +308,6 @@ function FichaMedicaRetorno() {
       if (name === "reativos" && checked) {
         nextValues = nextValues.filter((item) => item !== "semAlteracao");
       }
-
       if (name === "semAlteracao" && checked) {
         nextValues = nextValues.filter((item) => item !== "reativos");
       }
@@ -364,13 +323,13 @@ function FichaMedicaRetorno() {
   };
 
   const handleChangeSelect = (e) => {
-      setFormData({
-        ...formData,
-        tipo: {
-          ...formData.tipo,
-          [e.target.name]: e.target.value
-        }
-      });
+    setFormData((prev) => ({
+      ...prev,
+      tipo: {
+        ...prev.tipo,
+        [e.target.name]: e.target.value
+      }
+    }));
   };
 
   const handleMucosaLocationChange = (e) => {
@@ -386,106 +345,138 @@ function FichaMedicaRetorno() {
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
-
     const finalValue = type === 'checkbox' ? checked : value;
 
     if (name.includes('.')) {
       const path = name.split('.');
-      setFormData(prev => {
-        const clone = JSON.parse(JSON.stringify(prev));
+      setFormData((prev) => {
+        const clone = structuredClone(prev);
         let ref = clone;
-        
         for (let i = 0; i < path.length - 1; i++) {
           if (!ref[path[i]]) ref[path[i]] = {};
           ref = ref[path[i]];
         }
-        
         ref[path[path.length - 1]] = finalValue;
         return clone;
       });
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [name]: finalValue
       }));
     }
   };
 
+  const handleSubmit = async (event) => {
+    if (event?.preventDefault) event.preventDefault();
+    setShowErrorAlert(false);
+
+    const currentModo = modo || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('modo'));
+    const currentFichaId = fichaId || queryFichaId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('fichaId'));
+    const currentAgendamentoId = agendamentoId || queryAgendamentoId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('agendamentoId'));
+
+    const dataFormatada = moment(data).isValid() 
+      ? moment(data).format("YYYY-MM-DDTHH:mm:ss") 
+      : moment().format("YYYY-MM-DDTHH:mm:ss");
+
+    const fichaData = {
+      nome: "Ficha clínico médica de retorno",
+      conteudo: {
+        ...formData
+      },
+      dataHora: dataFormatada,
+      agendamento: { id: Number(currentAgendamentoId) }
+    };
+
+    try {
+      if (currentModo === "criar" || !currentFichaId || currentFichaId === "null") {
+        await createFicha(fichaData);
+      } else {
+        await updateFicha(fichaData, currentFichaId);
+      }
+      setShowAlert(true);
+    } catch (error) {
+      console.error("Erro ao salvar ficha:", error);
+      setErrorMessage(error?.response?.data?.message || (currentModo === "criar" || !currentFichaId ? "Erro ao criar ficha" : "Erro ao editar ficha"));
+      setShowErrorAlert(true);
+    }
+  };
+
   const renderStep = () => {
     switch (step) {
-        case 1:
-            return (
-                <ClinicaMedicaRetornoStep1
-                    formData={formData}
-                    handleChange={handleChange}
-                    handleCheckboxChange={handleCheckboxChange}
-                    nextStep={nextStep}
-                    handleCheckboxChangeVacinacao={handleCheckboxChangeVacinacao}
-                    handleLocationChange={handleLocationChange}
-                    handleChangeAtualizaSelect={handleChangeAtualizaSelect}
-                    handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
-                    handleLinfonodoChange={handleLinfonodoChange}
-                    handleCaracteristicaChange={handleCaracteristicaChange}
-                    handleChangeSelect={handleChangeSelect}
-                    handleMucosaLocationChange={handleMucosaLocationChange}
-                />
-            );
-        case 2:
-            return (
-                <ClinicaMedicaRetornoStep2
-                    formData={formData}
-                    setFormData={setFormData}
-                    handleChange={handleChange}
-                    handleCheckboxChange={handleCheckboxChange}
-                    prevStep={prevStep}
-                    handleSubmit={handleSubmit}
-                />
-            );
-        default:
-            return null;
+      case 1:
+        return (
+          <ClinicaMedicaRetornoStep1
+            formData={formData}
+            handleChange={handleChange}
+            handleCheckboxChange={handleCheckboxChange}
+            nextStep={nextStep}
+            handleCheckboxChangeVacinacao={handleCheckboxChangeVacinacao}
+            handleLocationChange={handleLocationChange}
+            handleChangeAtualizaSelect={handleChangeAtualizaSelect}
+            handleCheckboxChangeMucosas={handleCheckboxChangeMucosas}
+            handleLinfonodoChange={handleLinfonodoChange}
+            handleCaracteristicaChange={handleCaracteristicaChange}
+            handleChangeSelect={handleChangeSelect}
+            handleMucosaLocationChange={handleMucosaLocationChange}
+          />
+        );
+      case 2:
+        return (
+          <ClinicaMedicaRetornoStep2
+            formData={formData}
+            setFormData={setFormData}
+            handleChange={handleChange}
+            handleCheckboxChange={handleCheckboxChange}
+            prevStep={prevStep}
+            handleSubmit={handleSubmit}
+          />
+        );
+      default:
+        return null;
     }
   };
 
   return (
     <div className={styles.container}>
-        {renderStep()}
+      {renderStep()}
 
-        <div className={styles.footerControls}>
-            {!loading && animal.id && tutor.id && medicoLogado && (
-                <DownloadPdfStyledButton ficha={formData} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />
-            )}
-        </div>
-
-        <div className={styles.pagination}>
-            {[1, 2].map((p) => (
-                <button
-                    key={p}
-                    className={styles.pageButton}
-                    onClick={() => setStep(p)}
-                    disabled={p === step}
-                >
-                    {p}
-                </button>
-            ))}
-        </div>
-
-        {showAlert && consultaId && (
-            <div className={styles.alert}>
-                <Alert
-                    message="Ficha editada com sucesso!"
-                    show={showAlert}
-                    url={`/createConsulta/${consultaId}`}
-                />
-            </div>
+      <div className={styles.footerControls}>
+        {!loading && animal?.id && tutor?.id && medicoLogado && (
+          <DownloadPdfStyledButton ficha={formData} animal={animal} tutor={tutor} medicoLogado={medicoLogado} />
         )}
-        {showErrorAlert && (
-            <div className={styles.alert}>
-                <ErrorAlert
-                    message={errorMessage || "Erro ao criar ficha"}
-                    show={showErrorAlert}
-                />
-            </div>
-        )}
+      </div>
+
+      <div className={styles.pagination}>
+        {[1, 2].map((p) => (
+          <button
+            key={p}
+            className={styles.pageButton}
+            onClick={() => setStep(p)}
+            disabled={p === step}
+          >
+            {p}
+          </button>
+        ))}
+      </div>
+
+      {showAlert && (
+        <div className={styles.alert}>
+          <Alert
+            message={modo === "criar" ? "Ficha criada com sucesso!" : "Ficha editada com sucesso!"}
+            show={showAlert}
+            url={consultaId ? `/createConsulta/${consultaId}` : (animalId ? `/getAllConsultas/${animalId}` : `/getAllConsultas`)}
+          />
+        </div>
+      )}
+      {showErrorAlert && (
+        <div className={styles.alert}>
+          <ErrorAlert
+            message={errorMessage || (modo === "criar" ? "Erro ao criar ficha" : "Erro ao editar ficha")}
+            show={showErrorAlert}
+          />
+        </div>
+      )}
     </div>
   );
 }

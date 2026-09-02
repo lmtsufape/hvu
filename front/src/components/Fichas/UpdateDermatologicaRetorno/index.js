@@ -1,408 +1,451 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+import moment from 'moment';
 import "bootstrap/dist/css/bootstrap.min.css";
+
 import styles from "./index.module.css";
 import VoltarButton from "../../VoltarButton";
 import { CancelarWhiteButton } from "../../WhiteButton";
-import { getCurrentUsuario } from '../../../../services/userService';
 import FinalizarFichaModal from "../FinalizarFichaModal";
-import moment from 'moment';
 import Alert from "../../Alert";
 import ErrorAlert from "../../ErrorAlert";
-import { getTutorByAnimal } from "../../../../services/tutorService";
-import { getAnimalById } from "../../../../services/animalService";
-import { getFichaById } from "../../../../services/fichaService";
-import { updateFicha } from "../../../../services/fichaService";
-import { getMedicoById } from "../../../../services/medicoService";
-import dynamic from 'next/dynamic';
 import FichaDermatologicaRetornoPDF from './FichaDermatologicaRetornoPDF';
 
+import { getCurrentUsuario } from '../../../../services/userService';
+import { getTutorByAnimal } from "../../../../services/tutorService";
+import { getAnimalById } from "../../../../services/animalService";
+import { getFichaById, updateFicha, createFicha } from "../../../../services/fichaService";
+import { getMedicoById } from "../../../../services/medicoService";
+
+// Dynamic import fora do componente
+const PDFLink = dynamic(
+  () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
+  { ssr: false }
+);
+
+const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
+  <button type="button" className={styles.green_buttonFichas}>
+    <PDFLink
+      document={
+        <FichaDermatologicaRetornoPDF 
+          ficha={ficha} 
+          animal={animal} 
+          tutor={tutor} 
+          medicoLogado={medicoLogado} 
+        />
+      }
+      fileName={`FichaDermatologicaRetorno_${animal?.nome ? animal.nome.replace(/\s/g, '_') : 'animal'}.pdf`}
+      style={{ color: 'inherit', textDecoration: 'none' }}
+    >
+      {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
+    </PDFLink>
+  </button>
+);
+
 function FichaDermatologicaRetorno() {
-     const PDFLink = dynamic(
-        () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
-        { ssr: false }
-    );
+  const router = useRouter();
+  const { modo, animalId: queryAnimalId, fichaId: queryFichaId, agendamentoId: queryAgendamentoId, consultaId: queryConsultaId } = router.query;
 
-    const DownloadPdfStyledButton = ({ ficha, animal, tutor, medicoLogado }) => (
-        <button type="button" className={styles.green_buttonFichas}>
-            <PDFLink
-                document={
-                    <FichaDermatologicaRetornoPDF 
-                        ficha={ficha} 
-                        animal={animal} 
-                        tutor={tutor} 
-                        medicoLogado={medicoLogado} 
-                    />
-                }
-                fileName={`FichaDermatologicaRetorno_${animal.nome?.replace(/\s/g, '_')}.pdf`}
-                style={{ color: 'inherit', textDecoration: 'none' }}
-            >
-                {({ loading }) => (loading ? 'Gerando...' : 'Baixar PDF')}
-            </PDFLink>
-        </button>
-    );
+  const [roles, setRoles] = useState([]);
+  const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-    const [userId, setUserId] = useState(null);
+  const [fichaId, setFichaId] = useState(null);
+  const [data, setData] = useState("");
+  const [consultaId, setConsultaId] = useState(null);
+  const [agendamentoId, setAgendamentoId] = useState(null);
+  const [animalId, setAnimalId] = useState(null);
+  const [animal, setAnimal] = useState({});
+  const [showButtons, setShowButtons] = useState(false);
+  const [tutor, setTutor] = useState({});
+  const [medicoLogado, setMedicoLogado] = useState(null);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
-    const [roles, setRoles] = useState([]);
-    const [token, setToken] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [showAlert, setShowAlert] = useState(false);
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
-    const [fichaId, setFichaId] = useState(null);
-    const [data, setData] = useState([]);
-    const [consultaId, setConsultaId] = useState(null);
-    const router = useRouter();
-    const [agendamentoId, setAgendamentoId] = useState(null);
-    const [animalId, setAnimalId] = useState(null);
-    const [animal, setAnimal] = useState({});
-    const [showButtons, setShowButtons] = useState(false);
-    const [tutor , setTutor] = useState({});
-    const [medicoLogado, setMedicoLogado] = useState(null);
-    const [formData, setFormData] = useState({
-        anamnese: "",
-        tratamentos: "",
-        resultados: "",
-        locaisAfetados: "",
-        condutaTerapeutica: "",
-        estagiarios: "",
-        peso: "",
-        medicoResponsavel: "",
-    });
-    const { id, modo } = router.query; 
-    const [isReadOnly, setIsReadOnly] = useState(false);
-                      
-    useEffect(() => {
-              // Se o modo for 'visualizar', define o estado para somente leitura
-              if (modo === 'visualizar') {
-                  setIsReadOnly(true);
-              }
-          }, [modo]);
+  const [formData, setFormData] = useState({
+    anamnese: "",
+    tratamentos: "",
+    resultados: "",
+    locaisAfetados: "",
+    condutaTerapeutica: "",
+    estagiarios: "",
+    peso: "",
+    medicoResponsavel: "",
+  });
 
-    // Obtém o ID da ficha da URL
-    useEffect(() => {
+  useEffect(() => {
+    if (modo === 'visualizar') {
+      setIsReadOnly(true);
+    }
+  }, [modo]);
+
+  useEffect(() => {
     if (router.isReady) {
-        const id = router.query.consultaId;
-        const animalId = router.query.animalId;
-        const ficha = router.query.fichaId;
-        const agendamentoId = router.query.agendamentoId;
-        if (id) {
-            setConsultaId(id);
-        }
-        if (animalId) {
-            setAnimalId(animalId);
-        }
-        if (ficha) {
-            setFichaId(ficha);
-        }
-        if (agendamentoId) {
-            setAgendamentoId(agendamentoId);
-        }
+      if (queryConsultaId) setConsultaId(queryConsultaId);
+      if (queryAnimalId) setAnimalId(queryAnimalId);
+      if (queryFichaId) setFichaId(queryFichaId);
+      if (queryAgendamentoId) setAgendamentoId(queryAgendamentoId);
     }
-    }, [router.isReady, router.query.consultaId]);
+  }, [router.isReady, queryConsultaId, queryAnimalId, queryFichaId, queryAgendamentoId]);
 
-   useEffect(() => {
-        if (!animalId) return;
-        if (!fichaId) return;
-
-        const fetchData = async () => {
-            setShowErrorAlert(false);
-        try {
-                const animalData = await getAnimalById(animalId);
-                setAnimal(animalData);
-            } catch (error) {
-                console.error('Erro ao buscar animal:', error);
-            }
-
-            setShowErrorAlert(false);
-        try {
-                const tutorData = await getTutorByAnimal(animalId);
-                setTutor(tutorData);
-            } catch (error) {
-                console.error('Erro ao buscar tutor do animal:', error);
-            } 
-
-            setShowErrorAlert(false);
-        try {
-                const formData = await getFichaById(fichaId);
-                setFormData(JSON.parse(formData.conteudo));
-                setData(formData.dataHora);
-            } catch (error) {
-                console.error('Erro ao buscar dados da ficha:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [animalId, fichaId]);
-
-     useEffect(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
-        const storedToken = localStorage.getItem('token');
-        const storedRoles = JSON.parse(localStorage.getItem('roles'));
-        setToken(storedToken || "");
-        setRoles(storedRoles || []);
+      const storedToken = localStorage.getItem('token');
+      const storedRoles = JSON.parse(localStorage.getItem('roles') || "[]");
+      setToken(storedToken || "");
+      setRoles(storedRoles || []);
     }
-    }, []);
-    useEffect(() => {
-        const fetchData = async () => {
-            setShowErrorAlert(false);
-        try {
-                const userData = await getCurrentUsuario();
-                const medicoId = userData.usuario.id;
-                setMedicoLogado(userData.usuario); 
-                if (medicoId) {
-                const medicoCompletoData = await getMedicoById(medicoId);
-                //Armazena o objeto COMPLETO (que tem o CRMV) no estado
-                setMedicoLogado(medicoCompletoData);
-                }
-            } catch (error) {
-                console.error('Erro ao buscar usuário:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
+  }, []);
 
-    if (loading) {
-        return <div className={styles.message}>Carregando dados do usuário...</div>;
-    }
-
-    if (!roles.includes("medico") && !roles.includes("patologista")) {
-        return (
-            <div className={styles.container}>
-                <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
-            </div>
-        );
-    }    
-
-    if (!token) {
-        return (
-            <div className={styles.container}>
-                <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
-            </div>
-        );
-    }
-
-
-    const handleSubmit = async (event) => {
-        event?.preventDefault(); // Usa encadeamento opcional para evitar erro
-        const dataFormatada = moment(data).format("YYYY-MM-DDTHH:mm:ss"); 
-        const fichaData = {
-            nome: "Ficha dermatológica de retorno",  
-            conteudo:{
-                anamnese: formData.anamnese,
-                tratamentos: formData.tratamentos,
-                resultados: formData.resultados,
-                locaisAfetados: formData.locaisAfetados,
-                condutaTerapeutica: formData.condutaTerapeutica,
-                estagiarios: formData.estagiarios,
-                peso: formData.peso,
-                medicoResponsavel: formData.medicoResponsavel,
-                
-            },
-            dataHora: dataFormatada,
-            agendamento: { id: Number(agendamentoId) }
-        };
-
-        setShowErrorAlert(false);
-        try {
-            await updateFicha(fichaData, fichaId);
-            setShowAlert(true);
-        } catch (error) {
-            console.error("Erro ao criar ficha:", error);
-            if (error.response && error.response.data && error.response.data.code) {
-                setErrorMessage(error.response.data.message);
-            }
-            setShowErrorAlert(true);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getCurrentUsuario();
+        const medicoId = userData?.usuario?.id;
+        if (medicoId) {
+          const medicoCompletoData = await getMedicoById(medicoId);
+          setMedicoLogado(medicoCompletoData);
         }
+      } catch (error) {
+        console.error('Erro ao buscar médico:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    const formatDate = (dateString) => {
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-        return new Date(dateString).toLocaleDateString('pt-BR', options);
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (!animalId) return;
+
+    const fetchAnimalAndTutor = async () => {
+      try {
+        const [animalData, tutorData] = await Promise.all([
+          getAnimalById(animalId),
+          getTutorByAnimal(animalId)
+        ]);
+        setAnimal(animalData || {});
+        setTutor(tutorData || {});
+      } catch (error) {
+        console.error('Erro ao buscar animal ou tutor:', error);
+      }
     };
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+    fetchAnimalAndTutor();
+  }, [animalId]);
 
-    const cleanLocalStorage = () => {
-        localStorage.removeItem("fichaCardiologicaFormData");
+  useEffect(() => {
+    if (modo === "criar") {
+      setLoading(false);
+      return;
     }
 
-    return(
-        <div className={styles.container}>
-            <VoltarButton />
-            <h1>Ficha clínica dermatológica de retorno </h1>
-            <div className={styles.form_box}>
-                <form onSubmit={handleSubmit}>
-                    <div className={styles.box_ficha_toggle}>
-                        <button
-                            type="button"
-                            className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
-                            onClick={() => setShowButtons(prev => !prev)}
-                        >
-                            Dados do animal
-                        </button>
-                        {showButtons && (
-                            <div className={styles.container_toggle}>
-                                <ul>
-                                    {animal && ( 
-                                        <li key={animal.id} className={styles.infos_box}>
-                                            <div className={styles.identificacao}>
-                                                <div className={styles.nome_animal}>{animal.nome}</div>
-                                                <div className={styles.especie_animal}>Nome</div>
-                                            </div>
-                                            <div className={styles.form}>
-                                                <div className={styles.box}>
-                                                    <div className={styles.lista}>
-                                                        <div className={styles.infos}>
-                                                            <h6>Espécie</h6>
-                                                            <p>{animal.raca && animal.raca.especie && animal.raca.especie.nome}</p>
-                                                        </div>
-                                                        <div className={styles.infos}>
-                                                            <h6>Sexo</h6>
-                                                            <p>{animal.sexo}</p>
-                                                        </div>
-                                                        <div className={styles.infos}>
-                                                            <h6>Peso</h6>
-                                                            <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
-                                                        </div>
-                                                    </div>
+    if (!fichaId) return;
 
-                                                    <div className={styles.lista}>
-                                                        <div className={styles.infos}>
-                                                            <h6>Raça</h6>
-                                                            <p>{animal.raca && animal.raca.nome}</p>
-                                                        </div>
-                                                        <div className={styles.infos}>
-                                                            <h6>Porte</h6>
-                                                            <p>{animal.raca && animal.raca.porte ? animal.raca && animal.raca.porte : 'Não definido'}</p>
-                                                        </div>
-                                                        <div className={styles.infos}>
-                                                            <h6>Data de nascimento</h6>
-                                                            <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
-                                                        </div>
-                                                    </div>
+    const fetchFichaData = async () => {
+      try {
+        const fichaResponse = await getFichaById(fichaId);
+        if (fichaResponse?.conteudo) {
+          setFormData(typeof fichaResponse.conteudo === 'string'
+            ? JSON.parse(fichaResponse.conteudo)
+            : fichaResponse.conteudo);
+        }
+        setData(fichaResponse?.dataHora);
+      } catch (error) {
+        console.error('Erro ao buscar dados da ficha:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                                                    <div className={styles.lista}>
-                                                        <div className={styles.infos}>
-                                                            <h6>Alergias</h6>
-                                                            <p>{animal.alergias ? animal.alergias : 'Não definidas'}</p>
-                                                        </div>
-                                                        <div className={styles.infos}>
-                                                            <h6>Número da ficha</h6>
-                                                            <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
-                                                        </div>
-                                                        <div className={styles.infos}>
-                                                            <h6>Tutor</h6>
-                                                            <p>{tutor.nome ? tutor.nome : 'Não definido'}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    )}
-                                </ul>
+    fetchFichaData();
+  }, [fichaId, modo]);
+
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('pt-BR', options);
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const cleanLocalStorage = () => {
+    localStorage.removeItem("fichaCardiologicaFormData");
+  };
+
+  const handleSubmit = async (event) => {
+    if (event?.preventDefault) event.preventDefault();
+    setShowErrorAlert(false);
+
+    const currentModo = modo || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('modo'));
+    const currentFichaId = fichaId || queryFichaId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('fichaId'));
+    const currentAgendamentoId = agendamentoId || queryAgendamentoId || (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('agendamentoId'));
+
+    const dataFormatada = moment(data).isValid() 
+      ? moment(data).format("YYYY-MM-DDTHH:mm:ss") 
+      : moment().format("YYYY-MM-DDTHH:mm:ss");
+
+    const fichaData = {
+      nome: "Ficha dermatológica de retorno",  
+      conteudo: { ...formData },
+      dataHora: dataFormatada,
+      agendamento: { id: Number(currentAgendamentoId) }
+    };
+
+    try {
+      if (currentModo === "criar" || !currentFichaId || currentFichaId === "null") {
+        await createFicha(fichaData);
+      } else {
+        await updateFicha(fichaData, currentFichaId);
+      }
+      setShowAlert(true);
+    } catch (error) {
+      console.error("Erro ao salvar ficha:", error);
+      setErrorMessage(error?.response?.data?.message || (currentModo === "criar" || !currentFichaId ? "Erro ao criar ficha" : "Erro ao editar ficha"));
+      setShowErrorAlert(true);
+    }
+  };
+
+  if (loading) {
+    return <div className={styles.message}>Carregando dados do usuário...</div>;
+  }
+
+  if (!token) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Faça login para acessar esta página.</h3>
+      </div>
+    );
+  }
+
+  if (!roles.includes("medico") && !roles.includes("patologista")) {
+    return (
+      <div className={styles.container}>
+        <h3 className={styles.message}>Acesso negado: Você não tem permissão para acessar esta página.</h3>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.container}>
+      <VoltarButton />
+      <h1>Ficha clínica dermatológica de retorno</h1>
+      <div className={styles.form_box}>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.box_ficha_toggle}>
+            <button
+              type="button"
+              className={`${styles.toggleButton} ${showButtons ? styles.minimize : styles.expand}`}
+              onClick={() => setShowButtons(prev => !prev)}
+            >
+              Dados do animal
+            </button>
+            {showButtons && (
+              <div className={styles.container_toggle}>
+                <ul>
+                  {animal && (
+                    <li key={animal.id} className={styles.infos_box}>
+                      <div className={styles.identificacao}>
+                        <div className={styles.nome_animal}>{animal.nome}</div>
+                        <div className={styles.especie_animal}>Nome</div>
+                      </div>
+                      <div className={styles.form}>
+                        <div className={styles.box}>
+                          <div className={styles.lista}>
+                            <div className={styles.infos}>
+                              <h6>Espécie</h6>
+                              <p>{animal.raca?.especie?.nome}</p>
                             </div>
-                        )}
-                    </div>
-                    <div className={styles.titulo}>
-                        Anamnese
-                    </div>
-                    <div className={styles.column}>
-                    <div id="flex-column" className={styles.column}>
-                        <label>peso:</label>
-                        <input id="meia-caixa" type="text" name="peso" 
-                        value={formData.peso} 
-                        disabled={isReadOnly}
-                        onChange={handleChange} />
-                    </div>
-                    </div>
+                            <div className={styles.infos}>
+                              <h6>Sexo</h6>
+                              <p>{animal.sexo}</p>
+                            </div>
+                            <div className={styles.infos}>
+                              <h6>Peso</h6>
+                              <p>{animal.peso === 0 || animal.peso === '' ? 'Não definido' : animal.peso}</p>
+                            </div>
+                          </div>
 
-                    <div className={styles.column}>
-                        <label>Anamnese/Histórico clínico </label>
-                        <textarea name="anamnese" value={formData.anamnese} 
-                        disabled={isReadOnly}
-                        onChange={handleChange} rows="4" cols="50" />
-                    </div>
-                    <div className={styles.column}>
-                        <label>Tratamentos realizados (Início/Término/Resposta terapêutica) </label>
-                        <textarea name="tratamentos" value={formData.tratamentos} 
-                        disabled={isReadOnly}
-                        onChange={handleChange} rows="4" cols="50" />
-                    </div>
-                    <div className={styles.column}>
-                        <label>Resultados dos exames realizados </label>
-                        <textarea name="resultados" value={formData.resultados} 
-                        disabled={isReadOnly}
-                        onChange={handleChange} rows="4" cols="50" />
-                    </div>
+                          <div className={styles.lista}>
+                            <div className={styles.infos}>
+                              <h6>Raça</h6>
+                              <p>{animal.raca?.nome}</p>
+                            </div>
+                            <div className={styles.infos}>
+                              <h6>Porte</h6>
+                              <p>{animal.raca?.porte || 'Não definido'}</p>
+                            </div>
+                            <div className={styles.infos}>
+                              <h6>Data de nascimento</h6>
+                              <p>{animal.dataNascimento ? formatDate(animal.dataNascimento) : 'Não definida'}</p>
+                            </div>
+                          </div>
 
-                    <div className={styles.titulo}>
-                        Exame físico dermatológico/Descrição lesional
-                    </div>
+                          <div className={styles.lista}>
+                            <div className={styles.infos}>
+                              <h6>Alergias</h6>
+                              <p>{animal.alergias || 'Não definidas'}</p>
+                            </div>
+                            <div className={styles.infos}>
+                              <h6>Número da ficha</h6>
+                              <p>{animal.numeroFicha || 'Não definido'}</p>
+                            </div>
+                            <div className={styles.infos}>
+                              <h6>Tutor</h6>
+                              <p>{tutor.nome || 'Não definido'}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
+          </div>
 
-                    <div className={styles.column}>
-                        <label>Locais afetados </label>
-                        <textarea name="locaisAfetados" value={formData.locaisAfetados} 
-                        disabled={isReadOnly}
-                        onChange={handleChange} rows="4" cols="50" />
-                    </div>
-                    <div className={styles.column}>
-                        <label>Conduta terapêutica </label>
-                        <textarea name="condutaTerapeutica" value={formData.condutaTerapeutica} 
-                        disabled={isReadOnly}
-                        onChange={handleChange} rows="4" cols="50" />
-                    </div>
-                    
-                    <div className={styles.column}>
-                        <label>Plantonista(s) discente(s): </label>
-                        <textarea name="estagiarios" value={formData.estagiarios} 
-                        disabled={isReadOnly}
-                        onChange={handleChange} />
-                    </div>
-
-                      <div className={styles.assinaturaSombreada}>
-                            {medicoLogado ? (
-                            <p style={{ margin: 0 }}>
-                                Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
-                            </p>
-                        ) : (
-                            <p style={{ margin: 0 }}>Carregando dados do médico...</p>
-                        )}
-                    </div>
-
-                    <div className={styles.button_box}>
-                    {/* Botão de PDF */}
-                    {!loading && animal.id && tutor.id && medicoLogado && (
-                        <DownloadPdfStyledButton
-                            ficha={formData}
-                            animal={animal}
-                            tutor={tutor}
-                            medicoLogado={medicoLogado}
-                        />
-                    )}
-                    {!isReadOnly && (
-                    <>
-                        < CancelarWhiteButton onClick={cleanLocalStorage}/>
-                        < FinalizarFichaModal onConfirm={handleSubmit} />
-                    </>
-                    )}
-                    </div>
-                </form>
-                {showAlert && consultaId &&
-                <div className={styles.alert}>
-                    <Alert message="Ficha editada com sucesso!" 
-                    show={showAlert} url={`/createConsulta/${consultaId}`} />
-                </div>}
-                {showErrorAlert && (<ErrorAlert message={errorMessage || "Erro ao criar ficha"} show={showErrorAlert} />)}
+          <div className={styles.titulo}>Anamnese</div>
+          
+          <div className={styles.column}>
+            <div id="flex-column" className={styles.column}>
+              <label>peso:</label>
+              <input
+                id="meia-caixa"
+                type="text"
+                name="peso"
+                value={formData.peso}
+                disabled={isReadOnly}
+                onChange={handleChange}
+              />
             </div>
-        </div>
-    )
+          </div>
+
+          <div className={styles.column}>
+            <label>Anamnese/Histórico clínico</label>
+            <textarea
+              name="anamnese"
+              value={formData.anamnese}
+              disabled={isReadOnly}
+              onChange={handleChange}
+              rows="4"
+              cols="50"
+            />
+          </div>
+
+          <div className={styles.column}>
+            <label>Tratamentos realizados (Início/Término/Resposta terapêutica)</label>
+            <textarea
+              name="tratamentos"
+              value={formData.tratamentos}
+              disabled={isReadOnly}
+              onChange={handleChange}
+              rows="4"
+              cols="50"
+            />
+          </div>
+
+          <div className={styles.column}>
+            <label>Resultados dos exames realizados</label>
+            <textarea
+              name="resultados"
+              value={formData.resultados}
+              disabled={isReadOnly}
+              onChange={handleChange}
+              rows="4"
+              cols="50"
+            />
+          </div>
+
+          <div className={styles.titulo}>
+            Exame físico dermatológico/Descrição lesional
+          </div>
+
+          <div className={styles.column}>
+            <label>Locais afetados</label>
+            <textarea
+              name="locaisAfetados"
+              value={formData.locaisAfetados}
+              disabled={isReadOnly}
+              onChange={handleChange}
+              rows="4"
+              cols="50"
+            />
+          </div>
+
+          <div className={styles.column}>
+            <label>Conduta terapêutica</label>
+            <textarea
+              name="condutaTerapeutica"
+              value={formData.condutaTerapeutica}
+              disabled={isReadOnly}
+              onChange={handleChange}
+              rows="4"
+              cols="50"
+            />
+          </div>
+          
+          <div className={styles.column}>
+            <label>Plantonista(s) discente(s):</label>
+            <textarea
+              name="estagiarios"
+              value={formData.estagiarios}
+              disabled={isReadOnly}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className={styles.assinaturaSombreada}>
+            {medicoLogado ? (
+              <p style={{ margin: 0 }}>
+                Assinado eletronicamente por <strong>Dr(a). {medicoLogado.nome}</strong>, CRMV {medicoLogado.crmv}
+              </p>
+            ) : (
+              <p style={{ margin: 0 }}>Carregando dados do médico...</p>
+            )}
+          </div>
+
+          <div className={styles.button_box}>
+            {!loading && animal?.id && tutor?.id && medicoLogado && (
+              <DownloadPdfStyledButton
+                ficha={formData}
+                animal={animal}
+                tutor={tutor}
+                medicoLogado={medicoLogado}
+              />
+            )}
+            {!isReadOnly && (
+              <>
+                <CancelarWhiteButton onClick={cleanLocalStorage} />
+                <FinalizarFichaModal onConfirm={handleSubmit} />
+              </>
+            )}
+          </div>
+        </form>
+
+        {showAlert && (
+          <div className={styles.alert}>
+            <Alert
+              message={modo === "criar" ? "Ficha criada com sucesso!" : "Ficha editada com sucesso!"}
+              show={showAlert}
+              url={consultaId ? `/createConsulta/${consultaId}` : (animalId ? `/getAllConsultas/${animalId}` : `/getAllConsultas`)}
+            />
+          </div>
+        )}
+
+        {showErrorAlert && (
+          <ErrorAlert
+            message={errorMessage || (modo === "criar" ? "Erro ao criar ficha" : "Erro ao editar ficha")}
+            show={showErrorAlert}
+          />
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default FichaDermatologicaRetorno;
