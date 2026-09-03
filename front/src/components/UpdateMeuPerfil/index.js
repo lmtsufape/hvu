@@ -5,6 +5,7 @@ import styles from "./index.module.css";
 import VoltarButton from "../VoltarButton";
 import { CancelarWhiteButton } from "../WhiteButton";
 import { updateUsuario, getUsuarioById } from "../../../services/userService";
+import { definirValorInicialProntuario } from "../../../services/animalService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import Alert from "../Alert";
@@ -23,6 +24,10 @@ function UpdateMeuPerfil() {
     const [showAlert, setShowAlert] = useState(false);
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [showProntuarioAlert, setShowProntuarioAlert] = useState(false);
+    const [showProntuarioErrorAlert, setShowProntuarioErrorAlert] = useState(false);
+    const [prontuarioErrorMessage, setProntuarioErrorMessage] = useState("");
+    const [baseProntuario, setBaseProntuario] = useState("");
 
     const [roles, setRoles] = useState([]);
     const [token, setToken] = useState("");
@@ -172,6 +177,48 @@ function UpdateMeuPerfil() {
                 [name]: value
             }
         });
+    };
+
+    const handleBaseProntuarioChange = (event) => {
+        const valor = event.target.value;
+        setBaseProntuario(valor);
+
+        if (!valor) {
+            setErrors(prev => ({ ...prev, baseProntuario: "" }));
+            return;
+        }
+
+        const numero = Number(valor);
+        if (!Number.isInteger(numero) || numero < 1) {
+            setErrors(prev => ({ ...prev, baseProntuario: "Informe um número inteiro maior ou igual a 1" }));
+        } else {
+            setErrors(prev => ({ ...prev, baseProntuario: "" }));
+        }
+    };
+
+    const handleBaseProntuarioSave = async () => {
+        const numero = Number(baseProntuario);
+
+        if (!baseProntuario || !Number.isInteger(numero) || numero < 1) {
+            setErrors(prev => ({ ...prev, baseProntuario: "Informe um número inteiro maior ou igual a 1" }));
+            return;
+        }
+
+        setShowProntuarioAlert(false);
+        setShowProntuarioErrorAlert(false);
+        setProntuarioErrorMessage("");
+
+        try {
+            await definirValorInicialProntuario(numero);
+            setShowProntuarioAlert(true);
+            setErrors(prev => ({ ...prev, baseProntuario: "" }));
+        } catch (error) {
+            const message = error?.response?.data?.message ||
+                error?.response?.data?.error ||
+                "Erro ao atualizar a base do prontuário.";
+            setProntuarioErrorMessage(message);
+            setShowProntuarioErrorAlert(true);
+        }
     };
 
     const fetchCepData = async (cep) => {
@@ -376,6 +423,44 @@ function UpdateMeuPerfil() {
                     </div>
                 )}
 
+                {roles.includes("secretario") && (
+                    <div className={styles.boxcadastro}>
+                        <div className={styles.titulo}>Numeração do prontuário</div>
+                        <p className={styles.help_text}>
+                            Defina o número inicial da contagem para novos prontuários.
+                        </p>
+                        <div className="row">
+                            <div className={`col ${styles.col}`}>
+                                <label htmlFor="baseProntuario" className="form-label">Base inicial do prontuário</label>
+                                <input
+                                    id="baseProntuario"
+                                    type="number"
+                                    min="1"
+                                    step="1"
+                                    className={`form-control ${styles.input} ${errors.baseProntuario ? "is-invalid" : ""}`}
+                                    placeholder="Ex.: 1000"
+                                    value={baseProntuario}
+                                    onChange={handleBaseProntuarioChange}
+                                />
+                                {errors.baseProntuario && (
+                                    <div className={`invalid-feedback ${styles.error_message}`}>
+                                        {errors.baseProntuario}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className={styles.prontuario_button_box}>
+                            <button
+                                type="button"
+                                className={styles.criar_button}
+                                onClick={handleBaseProntuarioSave}
+                            >
+                                Salvar base do prontuário
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 <div className={styles.button_box}>
                     < CancelarWhiteButton />
                     <button type="button" className={styles.criar_button} onClick={handleUsuarioUpdate}>
@@ -386,6 +471,14 @@ function UpdateMeuPerfil() {
             </form>
             {<Alert message="Informações editadas com sucesso!" show={showAlert} url={(roles.includes('admin_lapa') || roles.includes('patologista')) ? `/lapa/meuPerfil/${id}` : `/meuPerfil/${id}`} />}
             {showErrorAlert && <ErrorAlert message={errorMessage || "Erro ao editar informações, tente novamente."} show={showErrorAlert} />}
+            {showProntuarioAlert && (
+                <Alert
+                    message="Base do prontuário atualizada com sucesso!"
+                    show={showProntuarioAlert}
+                    onClose={() => setShowProntuarioAlert(false)}
+                />
+            )}
+            {showProntuarioErrorAlert && <ErrorAlert message={prontuarioErrorMessage} show={showProntuarioErrorAlert} />}
         </div>
     );
 }
