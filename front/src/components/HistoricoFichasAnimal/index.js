@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import { useRouter } from "next/router";
 import { getFichasByAnimalId } from "../../../services/fichaService";
 import { getVagaByAgendamento } from "../../../services/vagaService";
+import { getAgendamento } from "../../../services/agendamentoService"; // <- busca agendamentos do sistema
 
 function HistoricoFichasAnimal({
   animalId: animalIdProp,
@@ -13,6 +14,7 @@ function HistoricoFichasAnimal({
   const router = useRouter();
   const { id: animalIdFromRoute } = router.query;
   const animalId = animalIdProp || animalIdFromRoute;
+
   const [agendamentosComFichas, setAgendamentosComFichas] = useState(new Map());
   const [searchTerm, setSearchTerm] = useState("");
   const [filtroTipoFicha, setFiltroTipoFicha] = useState("");
@@ -21,7 +23,11 @@ function HistoricoFichasAnimal({
   const [roles, setRoles] = useState([]);
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // Estados para adição de fichas
   const [fichaParaAdicionar, setFichaParaAdicionar] = useState({});
+  const [fichaGeralSelecionada, setFichaGeralSelecionada] = useState("");
+  const [agendamentoFallbackId, setAgendamentoFallbackId] = useState(null);
 
   const rotasPorNome = {
     "Ficha clínica ortopédica": "/updateFichaOrtopedica",
@@ -42,54 +48,76 @@ function HistoricoFichasAnimal({
   };
 
   useEffect(() => {
-    const fetchDataAndGroup = async () => {
+    const carregarDados = async () => {
       if (!animalId) {
         setLoading(false);
         return;
       }
+
+      // 1. Procura no sistema se esse animal tem ALGUM agendamento existente para usar o ID
+      try {
+        const todosAgendamentos = await getAgendamento();
+        if (Array.isArray(todosAgendamentos)) {
+          const agendamentoDoAnimal = todosAgendamentos.find(
+            (ag) => ag.animal?.id === Number(animalId) || ag.animalId === Number(animalId)
+          );
+          if (agendamentoDoAnimal?.id) {
+            setAgendamentoFallbackId(agendamentoDoAnimal.id);
+          }
+        }
+      } catch (errAg) {
+        console.warn("Não foi possível carregar a lista de agendamentos:", errAg);
+      }
+
+      // 2. Busca o histórico de fichas já existentes do animal
       try {
         const todasAsFichas = await getFichasByAnimalId(animalId);
-        if (!Array.isArray(todasAsFichas)) {
-          setAgendamentosComFichas(new Map());
-          return;
-        }
 
-        const groupedByAgendamento = todasAsFichas.reduce((acc, ficha) => {
-          const agendamento = ficha.agendamento;
-          if (agendamento?.id) {
-            if (!acc.has(agendamento.id)) {
-              acc.set(agendamento.id, { ...agendamento, fichas: [] });
-            }
-            acc.get(agendamento.id).fichas.push(ficha);
-          }
-          return acc;
-        }, new Map());
-
-        // Buscar o médico de cada agendamento via a Vaga associada
-        const agendamentoIds = Array.from(groupedByAgendamento.keys());
-        await Promise.all(
-          agendamentoIds.map(async (agendamentoId) => {
-            try {
-              const vaga = await getVagaByAgendamento(agendamentoId);
-              if (vaga?.medico) {
-                const agendamento = groupedByAgendamento.get(agendamentoId);
-                agendamento.medico = vaga.medico;
+        if (Array.isArray(todasAsFichas) && todasAsFichas.length > 0) {
+          const groupedByAgendamento = todasAsFichas.reduce((acc, ficha) => {
+            const agendamento = ficha.agendamento;
+            if (agendamento?.id) {
+              if (!acc.has(agendamento.id)) {
+                acc.set(agendamento.id, { ...agendamento, fichas: [] });
               }
-            } catch (err) {
-              console.warn(`Não foi possível buscar a vaga do agendamento ${agendamentoId}:`, err);
+              acc.get(agendamento.id).fichas.push(ficha);
             }
-          })
-        );
+            return acc;
+          }, new Map());
 
-        setAgendamentosComFichas(groupedByAgendamento);
+          const agendamentoIds = Array.from(groupedByAgendamento.keys());
+          if (agendamentoIds.length > 0) {
+            setAgendamentoFallbackId(agendamentoIds[0]);
+          }
+
+          // Carrega médico responsável da vaga de cada agendamento
+          await Promise.all(
+            agendamentoIds.map(async (agendamentoId) => {
+              try {
+                const vaga = await getVagaByAgendamento(agendamentoId);
+                if (vaga?.medico) {
+                  const agendamento = groupedByAgendamento.get(agendamentoId);
+                  agendamento.medico = vaga.medico;
+                }
+              } catch (err) {
+                console.warn(`Erro ao carregar vaga do agendamento ${agendamentoId}:`, err);
+              }
+            })
+          );
+
+          setAgendamentosComFichas(groupedByAgendamento);
+        } else {
+          setAgendamentosComFichas(new Map());
+        }
       } catch (error) {
-        console.error("Erro ao buscar ou agrupar as fichas:", error);
+        console.error("Erro ao carregar fichas:", error);
         setAgendamentosComFichas(new Map());
       } finally {
         setLoading(false);
       }
     };
-    fetchDataAndGroup();
+
+    carregarDados();
   }, [animalId]);
 
   useEffect(() => {
@@ -112,7 +140,6 @@ function HistoricoFichasAnimal({
     return `${day}/${month} às ${hours}:${minutes}`;
   };
 
-  // Extrair tipos de ficha disponíveis para o dropdown (deve ficar antes dos returns condicionais)
   const tiposFichaDisponiveis = useMemo(() => {
     const tipos = new Set();
     Array.from(agendamentosComFichas.values()).forEach((agendamento) => {
@@ -123,6 +150,7 @@ function HistoricoFichasAnimal({
     return Array.from(tipos).sort();
   }, [agendamentosComFichas]);
 
+  // Adicionar ficha atrelada a uma consulta já listada
   const handleAdicionarFicha = (agendamentoId) => {
     const tipoSelecionado = fichaParaAdicionar[agendamentoId];
     if (!tipoSelecionado) {
@@ -130,13 +158,34 @@ function HistoricoFichasAnimal({
       return;
     }
 
-    const pathBase = rotasPorNome[tipoSelecionado]; 
-    
+    const pathBase = rotasPorNome[tipoSelecionado];
     if (pathBase) {
-      const url = `${pathBase}?animalId=${animalId}&agendamentoId=${agendamentoId}&modo=criar`;
-      router.push(url);
+      router.push(`${pathBase}?animalId=${animalId}&agendamentoId=${agendamentoId}&modo=criar`);
     } else {
       alert(`A rota para "${tipoSelecionado}" não foi localizada.`);
+    }
+  };
+
+  // Adicionar ficha no botão superior (mesmo sem fichas)
+  const handleAdicionarNovaFichaGeral = () => {
+    if (!fichaGeralSelecionada) {
+      alert("Por favor, selecione um tipo de ficha.");
+      return;
+    }
+
+    const pathBase = rotasPorNome[fichaGeralSelecionada];
+    if (!pathBase) {
+      alert(`A rota para "${fichaGeralSelecionada}" não foi localizada.`);
+      return;
+    }
+
+    // Se encontramos um agendamento prévio no banco, enviamos ele para a tela de update não quebrar
+    if (agendamentoFallbackId) {
+      router.push(`${pathBase}?animalId=${animalId}&agendamentoId=${agendamentoFallbackId}&modo=criar`);
+    } else {
+      // Caso o animal não tenha NENHUM agendamento no banco:
+      // Redireciona com animalId. (Se a tela de update quebrar aqui, é porque no Java a entidade Ficha exige obrigatoriamente um Agendamento existente).
+      router.push(`${pathBase}?animalId=${animalId}&modo=criar`);
     }
   };
 
@@ -155,52 +204,45 @@ function HistoricoFichasAnimal({
     );
   }
 
-  const filteredAgendamentos = Array.from(agendamentosComFichas.values())
-    .filter((agendamento) => {
-      const term = searchTerm.trim().toLowerCase();
+  // Qualquer médico ou quem estiver acessando pela rota embedded de médico
+  const podeAdicionarFicha = roles.includes("medico") || embedded;
 
-      // Filtro por texto (médico ou tipo de ficha)
-      if (term) {
-        const medicoNome = (agendamento.medico?.nome || "").toLowerCase();
-        const tiposFicha = (agendamento.fichas || [])
-          .map((ficha) => (ficha.nome || "").toLowerCase())
-          .join(" ");
+  const filteredAgendamentos = Array.from(agendamentosComFichas.values()).filter((agendamento) => {
+    const term = searchTerm.trim().toLowerCase();
 
-        const matchTexto = medicoNome.includes(term) || tiposFicha.includes(term);
-        if (!matchTexto) return false;
+    if (term) {
+      const medicoNome = (agendamento.medico?.nome || "").toLowerCase();
+      const tiposFicha = (agendamento.fichas || [])
+        .map((ficha) => (ficha.nome || "").toLowerCase())
+        .join(" ");
+
+      if (!medicoNome.includes(term) && !tiposFicha.includes(term)) return false;
+    }
+
+    if (filtroTipoFicha) {
+      const temTipo = (agendamento.fichas || []).some((ficha) => ficha.nome === filtroTipoFicha);
+      if (!temTipo) return false;
+    }
+
+    if (filtroDataInicio || filtroDataFim) {
+      const dataAgendamento = agendamento.dataVaga ? new Date(agendamento.dataVaga) : null;
+      if (!dataAgendamento) return false;
+
+      if (filtroDataInicio) {
+        const inicio = new Date(filtroDataInicio);
+        inicio.setHours(0, 0, 0, 0);
+        if (dataAgendamento < inicio) return false;
       }
 
-      // Filtro por tipo de ficha (dropdown)
-      if (filtroTipoFicha) {
-        const temTipo = (agendamento.fichas || []).some(
-          (ficha) => ficha.nome === filtroTipoFicha
-        );
-        if (!temTipo) return false;
+      if (filtroDataFim) {
+        const fim = new Date(filtroDataFim);
+        fim.setHours(23, 59, 59, 999);
+        if (dataAgendamento > fim) return false;
       }
+    }
 
-      // Filtro por período de data
-      if (filtroDataInicio || filtroDataFim) {
-        const dataAgendamento = agendamento.dataVaga
-          ? new Date(agendamento.dataVaga)
-          : null;
-
-        if (!dataAgendamento) return false;
-
-        if (filtroDataInicio) {
-          const inicio = new Date(filtroDataInicio);
-          inicio.setHours(0, 0, 0, 0);
-          if (dataAgendamento < inicio) return false;
-        }
-
-        if (filtroDataFim) {
-          const fim = new Date(filtroDataFim);
-          fim.setHours(23, 59, 59, 999);
-          if (dataAgendamento > fim) return false;
-        }
-      }
-
-      return true;
-    });
+    return true;
+  });
 
   const limparFiltros = () => {
     setSearchTerm("");
@@ -211,14 +253,38 @@ function HistoricoFichasAnimal({
 
   const temFiltrosAtivos = searchTerm || filtroTipoFicha || filtroDataInicio || filtroDataFim;
 
-  const esMedico = true;
-
   return (
     <div className={`${styles.pageContainer} ${embedded ? styles.embeddedContainer : ""}`}>
       <div className={styles.headerArea}>
         {!embedded && (
           <div className={styles.titleMeusAgendamentos}>
             <h1>Histórico de Fichas do Paciente</h1>
+          </div>
+        )}
+
+        {/* Botão Superior para médicos adicionarem ficha livremente */}
+        {podeAdicionarFicha && filteredAgendamentos.length === 0 && (
+          <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "18px" }}>
+            <select
+              className={styles.filtroSelect}
+              value={fichaGeralSelecionada}
+              onChange={(e) => setFichaGeralSelecionada(e.target.value)}
+              style={{ maxWidth: "320px" }}
+            >
+              <option value="">Selecionar ficha para adicionar...</option>
+              {Object.keys(rotasPorNome).map((tipo) => (
+                <option key={tipo} value={tipo}>
+                  {tipo}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className={styles.acessar_button}
+              onClick={handleAdicionarNovaFichaGeral}
+            >
+              Adicionar Ficha
+            </button>
           </div>
         )}
 
@@ -244,7 +310,9 @@ function HistoricoFichasAnimal({
               >
                 <option value="">Todos os tipos</option>
                 {tiposFichaDisponiveis.map((tipo) => (
-                  <option key={tipo} value={tipo}>{tipo}</option>
+                  <option key={tipo} value={tipo}>
+                    {tipo}
+                  </option>
                 ))}
               </select>
             </div>
@@ -305,8 +373,12 @@ function HistoricoFichasAnimal({
                 <p className={styles.medicoPrincipal}>
                   Médico responsável: {vaga.medico?.nome || "Não informado"}
                 </p>
-                {esMedico && (
-                  <div className={styles.adicionarFichaContainer} style={{ display: 'flex', gap: '8px', alignItems: 'center', margin: '10px 0' }}>
+
+                {podeAdicionarFicha && (
+                  <div
+                    className={styles.adicionarFichaContainer}
+                    style={{ display: "flex", gap: "8px", alignItems: "center", margin: "10px 0" }}
+                  >
                     <select
                       className={styles.filtroSelect}
                       value={fichaParaAdicionar[vaga.id] || ""}
@@ -318,7 +390,6 @@ function HistoricoFichasAnimal({
                       }
                     >
                       <option value="">Selecionar nova ficha...</option>
-                      {/* CORREÇÃO: Mapeia todas as fichas do sistema, não apenas as que o animal já tem */}
                       {Object.keys(rotasPorNome).map((tipo) => (
                         <option key={tipo} value={tipo}>
                           {tipo}
@@ -334,6 +405,7 @@ function HistoricoFichasAnimal({
                     </button>
                   </div>
                 )}
+
                 <h3>Fichas da Consulta:</h3>
 
                 {vaga.fichas.map((ficha) => (
