@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import styles from "./index.module.css";
+import ExcluirButton from "../ExcluirButton";
 
 const ModalAgendamento = ({
 	tutor,
@@ -11,6 +12,7 @@ const ModalAgendamento = ({
 	descricaoCancelamento,
 	setDescricaoCancelamento,
 	handleCancelarConsulta,
+	handleExcluirAgendamento,
 }) => {
 	const router = useRouter();
 
@@ -57,7 +59,7 @@ const ModalAgendamento = ({
 								<div className={styles.subtitle}>{medico || "Não informado"}</div>
 							</div>
 						</div>
-						<div className={styles.box}>
+						{/* <div className={styles.box}>
 							<div className={styles.title}>Descrição do Cancelamento</div>
 							<input
 								type="text"
@@ -66,7 +68,7 @@ const ModalAgendamento = ({
 								className={styles.input}
 								placeholder="Digite a descrição do cancelamento"
 							/>
-						</div>
+						</div> */}
 						<div className={styles.div_button2}>
 							{selectedVaga && selectedVaga.agendamento && (
 								<button
@@ -80,13 +82,12 @@ const ModalAgendamento = ({
 									Reagendar
 								</button>
 							)}
-							<button
-								onClick={handleCancelarConsulta}
-								className={styles.button_cancelar_consulta}
-								disabled={!descricaoCancelamento.trim()}
-							>
-								Cancelar consulta
-							</button>
+							{selectedVaga && selectedVaga.agendamento && (
+								<ExcluirButton
+									itemId={selectedVaga.agendamento.id}
+									onDelete={handleExcluirAgendamento}
+								/>
+							)}
 						</div>
 					</div>
 				</div>

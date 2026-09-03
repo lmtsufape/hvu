@@ -190,8 +190,8 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
                               <p>{animal.alergias ? animal.alergias : 'Não definidas'}</p>
                             </div>
                             <div className={styles.infos}>
-                              <h6>Número da ficha</h6>
-                              <p>{animal.numeroFicha ? animal.numeroFicha : 'Não definido'}</p>
+                              <h6>Número de prontuário</h6>
+                              <p>{animal.codigoProntuario ? animal.codigoProntuario : 'Não definido'}</p>
                             </div>
                             <div className={styles.infos}>
                               <h6>Tutor</h6>

@@ -147,9 +147,9 @@ function GetAnimalByIdForm() {
                     <p>{animal.alergias ? animal.alergias : "Não definidas"}</p>
                   </div>
                   <div className={styles.infos}>
-                    <h6>Número da ficha</h6>
+                    <h6>Número de prontuário</h6>
                     <p>
-                      {animal.numeroFicha ? animal.numeroFicha : "Não definido"}
+                      {animal.codigoProntuario ? animal.codigoProntuario : "Não definido"}
                     </p>
                   </div>
                 </div>

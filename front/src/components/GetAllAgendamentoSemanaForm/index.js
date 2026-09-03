@@ -8,6 +8,7 @@ import { DataCompleta } from "../Date";
 import { getVagaByPeriod } from '../../../services/vagaService';
 import { cancelarAgendamento } from '../../../services/consultaService';
 import { cancelarVaga } from '../../../services/vagaService';
+import { deleteAgendamento } from '../../../services/agendamentoService';
 import { getTutorByAnimal } from '../../../services/tutorService';
 import Filter from '../GetAgendamentosFilter';
 import ModalAgendamento from '../ModalAgendamento';
@@ -99,6 +100,17 @@ function GetAllAgendamentosSemanaForm() {
       fetchData();
     } catch (error) {
       console.error('Erro ao cancelar vaga:', error);
+    }
+  };
+
+  const handleExcluirAgendamento = async (agendamentoId) => {
+    try {
+      await deleteAgendamento(agendamentoId);
+      closeModal();
+      setShowAlert(true);
+      fetchData();
+    } catch (error) {
+      console.error('Erro ao excluir agendamento:', error);
     }
   };
 
@@ -197,6 +209,7 @@ function GetAllAgendamentosSemanaForm() {
         descricaoCancelamento={descricaoCancelamento}
         setDescricaoCancelamento={setDescricaoCancelamento}
         handleCancelarConsulta={handleCancelarConsulta}
+        handleExcluirAgendamento={handleExcluirAgendamento}
       />
       {showAlert && <ErrorAlert message="Agendamento cancelado com sucesso!" show={showAlert} />}
     </div>
