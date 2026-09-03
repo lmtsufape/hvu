@@ -19,9 +19,9 @@ public class OrgaoSeeder {
         }
         orgaoRepository.saveAll(
             List.of(
-                new Orgao(1, "Coração", true, true, Collections.singletonList(areaRepository.findById(1L).get()),
+                new Orgao(0, "Coração", true, true, Collections.singletonList(areaRepository.findById(1L).get()),
                         null),
-                new Orgao(2,"Fígado", true, true,  Collections.singletonList(areaRepository.findById(1L).get()),
+                new Orgao(0,"Fígado", true, true,  Collections.singletonList(areaRepository.findById(1L).get()),
                         null)
             )
         );

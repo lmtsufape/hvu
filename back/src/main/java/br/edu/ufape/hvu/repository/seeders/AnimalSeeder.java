@@ -32,7 +32,6 @@ public class AnimalSeeder {
             animal.setImagem("NULL");
             animal.setCastrado(faker.bool().bool());
             animal.setPeso(faker.number().randomDouble(2, 1, 15));
-            animal.setNumeroFicha(faker.idNumber().valid());
             animal.setRaca(racas.get(0));
             animal.setOrigemAnimal(OrigemAnimal.HVU);
             animal.setTipo(TipoAnimal.COMUM);

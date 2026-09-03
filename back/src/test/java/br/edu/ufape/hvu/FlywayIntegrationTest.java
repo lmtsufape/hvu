@@ -1,18 +1,22 @@
 package br.edu.ufape.hvu;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ActiveProfiles("test")
 @Testcontainers
 @SpringBootTest
-@TestPropertySource(properties = "common.seeders=false")
-class HvuApplicationTests {
+class FlywayIntegrationTest {
 
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.0")
@@ -28,7 +32,22 @@ class HvuApplicationTests {
         registry.add("spring.datasource.password", postgres::getPassword);
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Test
     void contextLoads() {
+    }
+
+    @Test
+    void flywayAplicouTodasAsMigracoes() {
+        Integer migracoesAplicadas = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM flyway_schema_history WHERE success = true",
+                Integer.class);
+
+        assertThat(migracoesAplicadas)
+                .as("Quantidade de migrações Flyway aplicadas com sucesso")
+                .isNotNull()
+                .isGreaterThanOrEqualTo(32);
     }
 }

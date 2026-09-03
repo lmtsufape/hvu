@@ -28,10 +28,6 @@ public class ConsultaService implements ConsultaServiceInterface {
 		return repository.findAll();
 	}
 
-	public List<Consulta> getConsultasByAnimalFichaNumero(String animalFichaNumero){
-		return repository.findConsultasByAnimalFichaNumero(animalFichaNumero);
-	}
-
 	@Override
 	public List<Consulta> getConsultasByAnimalId(Long id) {
 		return repository.findConsultasByAnimalId(id);

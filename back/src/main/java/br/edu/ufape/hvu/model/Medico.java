@@ -20,7 +20,6 @@ import lombok.ToString;
 public class Medico extends Usuario {
 	private String crmv;
 	@ManyToMany
-	@JoinColumn(name = "medico_id")
 	@ToString.Exclude
 	private List<Especialidade> especialidade;
 	@ManyToOne

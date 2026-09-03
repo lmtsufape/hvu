@@ -20,7 +20,7 @@ public class InstituicaoSeeder {
         Faker faker = new Faker();
         for(int i = 0; i < 3; i++){
             Endereco endereco = usuarioSeeder.criarEndereco(faker);
-            instituicaoRepository.save(new Instituicao(1, "UFAPE", endereco));
+            instituicaoRepository.save(new Instituicao(0, "UFAPE", endereco));
 
         }
     }

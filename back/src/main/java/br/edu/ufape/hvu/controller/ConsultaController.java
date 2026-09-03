@@ -46,16 +46,6 @@ public class ConsultaController {
 	}
 
     @PreAuthorize("hasRole('MEDICO')")
-	@GetMapping("consulta/numeroficha/{numeroficha}")
-	public List<ConsultaResponse> getConsultasByAnimalNumeroFicha (@PathVariable String numeroficha) {
-		List<Consulta> consutas = facade.getConsultasByAnimalFichaNumero(numeroficha);
-		return consutas
-				.stream()
-				.map(ConsultaResponse::new)
-				.toList();
-	}
-
-    @PreAuthorize("hasRole('MEDICO')")
 	@GetMapping("consulta/animalid/{id}")
 	public List<ConsultaResponse> getConsultaByAnimalId(@PathVariable Long id){
 		List<Consulta> consultas = facade.getConsultaByAnimalId(id);

@@ -19,7 +19,7 @@
 
 <p align="center">
   <a href="#"><img src="https://img.shields.io/badge/Java-21+-ED8B00?style=for-the-badge&logo=java&logoColor=white" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/Spring%20Boot-3.x-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" /></a>
   <a href="#"><img src="https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=black" /></a>
   <a href="#"><img src="https://img.shields.io/badge/PostgreSQL-Database-336791?style=for-the-badge&logo=postgresql&logoColor=white" /></a>
   <a href="#"><img src="https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white" /></a>
@@ -27,6 +27,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Flyway-Migrations-CC0200?style=for-the-badge&logo=flyway&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testcontainers-Testes%20de%20Integra%C3%A7%C3%A3o-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
   <img src="https://img.shields.io/badge/Git-Conventional%20Commits-F05032?style=for-the-badge&logo=git&logoColor=white" />
 </p>
 
@@ -56,13 +57,15 @@ Com o sistema, é possível realizar o cadastro e acompanhamento de animais e se
 
 ### Backend
 
-* Java
-* Spring Boot
+* Java 21
+* Spring Boot 3.5
 * Spring Web
 * Spring Data JPA
 * PostgreSQL
 * Flyway (migrações de banco de dados)
 * Keycloak
+* Testcontainers (testes de integração)
+* JUnit 5 + Mockito (testes unitários)
 
 ### Frontend
 
@@ -80,6 +83,7 @@ Com o sistema, é possível realizar o cadastro e acompanhamento de animais e se
 * GitFlow
 * Docker
 * Docker Compose
+* Docker Compose Watch (hot reload em desenvolvimento)
 
 ---
 
@@ -172,6 +176,35 @@ Keycloak:
 ```
 http://localhost:8080
 ```
+
+### Hot reload do frontend (opcional, apenas desenvolvimento)
+
+Para desenvolver o frontend com hot reload usando **Docker Compose Watch**:
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.dev.yml up --build --watch
+```
+
+O arquivo `docker-compose.dev.yml` é exclusivo para desenvolvimento e **não** é carregado pelo `docker compose up -d --build` padrão.
+
+---
+
+## Testes
+
+Os testes do backend usam **Testcontainers** para integração (sobe um PostgreSQL descartável; requer Docker em execução) e **JUnit 5 + Mockito** para os unitários (sem infraestrutura externa).
+
+```bash
+# Todos os testes (integração + unitários)
+cd back && bash mvnw test
+
+# Apenas o teste de integração (Flyway + contexto com Testcontainers)
+cd back && bash mvnw -Dtest=FlywayIntegrationTest test
+
+# Apenas o teste unitário (JUnit 5 + Mockito)
+cd back && bash mvnw -Dtest=AnimalServiceTest test
+```
+
+> Se o `mvnw` não tiver permissão de execução, use `bash mvnw` ou `chmod +x mvnw`.
 
 ---
 

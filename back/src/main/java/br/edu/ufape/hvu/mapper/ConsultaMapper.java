@@ -45,7 +45,6 @@ public class ConsultaMapper {
                     .imagem(consulta.getAnimal().getImagem())
                     .castrado(consulta.getAnimal().isCastrado())
                     .peso(consulta.getAnimal().getPeso())
-                    .numeroFicha(consulta.getAnimal().getNumeroFicha())
                     .origemAnimal(consulta.getAnimal().getOrigemAnimal())
                     .obito(consulta.getAnimal().isObito())
                     .codigoProntuario(consulta.getAnimal().getCodigoProntuario())

@@ -18,9 +18,9 @@ public class EspecieSeeder {
         }
         especieRepository.saveAll(
             List.of(
-                new Especie(1, "Canina", "Cachorros"),
-                new Especie(2, "Felina", "Gatos"),
-                new Especie(3, "Srigiformes" ,"Corujas")
+                new Especie(0, "Canina", "Cachorros"),
+                new Especie(0, "Felina", "Gatos"),
+                new Especie(0, "Srigiformes" ,"Corujas")
 
             )
         );
