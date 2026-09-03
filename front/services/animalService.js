@@ -20,6 +20,16 @@ import api from '../common/http-common-back';
     }
   }
 
+  export async function getAnimaisPorOrigem(origem = "HVU") {
+    try {
+      // Aponta para a nova rota ajustada no Java
+      const response = await api.get(`/animal/origem/${origem}/racas`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   export async function getAllAnimalTutor() {
     try {
       const response = await api.get('/animal/tutor');
