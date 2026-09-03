@@ -1,0 +1,2 @@
+ALTER TABLE animal
+DROP COLUMN IF EXISTS numero_ficha;

@@ -32,7 +32,6 @@ public class AnimalRequestFix {
     @NotNull(message = "Raça é obrigatória")
     private RacaRequest raca;
 
-    private String numeroFicha;
     private OrigemAnimal origemAnimal;
     private boolean obito;
     private TipoAnimal tipo;

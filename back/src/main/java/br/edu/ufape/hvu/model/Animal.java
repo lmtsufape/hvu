@@ -28,7 +28,6 @@ public class Animal  {
 	private String imagem;
 	private boolean castrado;
 	private double peso;
-	private String numeroFicha;
 	@ManyToOne
 	@ToString.Exclude
 	private Raca raca;
