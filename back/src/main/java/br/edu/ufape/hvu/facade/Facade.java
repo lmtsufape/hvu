@@ -123,13 +123,14 @@ public class Facade {
         return tutorServiceInterface.findTutorByUserId(userId);
     }
 
-    public Tutor findTutorByanimalId(Long animalId, String idSession) {
+    public Tutor findTutorByAnimalId(Long animalId, String idSession) {
+
         if (keycloakService.hasRoleMedico(idSession)) {
+
             Medico medico = medicoServiceInterface.findByUserId(idSession);
 
-            boolean autorizado = existsVagaByMedicoIdAndAnimalId(medico.getId(), animalId);
-            if (!autorizado) {
-                throw new ForbiddenOperationException("Este animal não está agendado com o médico logado.");
+            if (medico == null) {
+                throw new ForbiddenOperationException("Médico não existe.");
             }
         }
 
@@ -1281,17 +1282,7 @@ public class Facade {
     public Agendamento findAgendamentoById(long id, String idSession) {
         Agendamento agendamento = agendamentoServiceInterface.findAgendamentoById(id);
 
-        if (keycloakService.hasRoleSecretario(idSession)) {
-            return agendamento;
-        }
-
-        if (keycloakService.hasRoleMedico(idSession)) {
-            Vaga vaga = vagaServiceInterface.findVagaByAgendamento(agendamento);
-            Medico medico = vaga.getMedico();
-
-            if (!medico.getUserId().equals(idSession)) {
-                throw new ForbiddenOperationException("Você não é o médico responsável por este agendamento.");
-            }
+        if (keycloakService.hasRoleSecretario(idSession) || keycloakService.hasRoleMedico(idSession)) {
             return agendamento;
         }
 
