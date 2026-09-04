@@ -9,11 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
-
-    @Query("SELECT c FROM Consulta c where c.animal.numeroFicha = :numeroFicha")
-	List<Consulta> findConsultasByAnimalFichaNumero (@Param("numeroFicha") String numeroFicha);
-
+    
     @Query("SELECT c FROM Consulta c where c.animal.id = :animalId")
     List<Consulta> findConsultasByAnimalId(@Param("animalId") Long animalId);
-
 }

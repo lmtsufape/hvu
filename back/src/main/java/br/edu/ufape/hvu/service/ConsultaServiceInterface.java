@@ -1,7 +1,6 @@
 package br.edu.ufape.hvu.service;
 
 import java.util.List;
-
 import br.edu.ufape.hvu.model.Consulta;
 
 public interface ConsultaServiceInterface {
@@ -10,8 +9,5 @@ public interface ConsultaServiceInterface {
 	Consulta updateConsulta(Consulta u);
 	void deleteConsulta(long id);
 	List<Consulta> getAllConsulta();
-    List<Consulta> getConsultasByAnimalFichaNumero(String animalFichaNumero);
-	List<Consulta> getConsultasByAnimalId(Long id);
-
-    
+	List<Consulta> getConsultasByAnimalId(Long id);    
 }

@@ -8,6 +8,7 @@ import CalendarGreenIcon from "../CalendarGreenIcon";
 import VoltarButton from "../VoltarButton";
 import { getVagaByDate } from "../../../services/vagaService";
 import { cancelarVaga } from "../../../services/vagaService";
+import { deleteAgendamento } from "../../../services/agendamentoService";
 import { getTutorByAnimal } from "../../../services/tutorService";
 import ModalAgendamento from "../ModalAgendamento";
 import ErrorAlert from "../ErrorAlert";
@@ -102,6 +103,17 @@ function GetAllAgendamentosDiaForm() {
       fetchData();
     } catch (error) {
       console.error("Erro ao cancelar vaga:", error);
+    }
+  };
+
+  const handleExcluirAgendamento = async (agendamentoId) => {
+    try {
+      await deleteAgendamento(agendamentoId);
+      closeModal();
+      setShowAlert(true);
+      fetchData();
+    } catch (error) {
+      console.error("Erro ao excluir agendamento:", error);
     }
   };
 
@@ -282,6 +294,7 @@ function GetAllAgendamentosDiaForm() {
         descricaoCancelamento={descricaoCancelamento}
         setDescricaoCancelamento={setDescricaoCancelamento}
         handleCancelarConsulta={handleCancelarConsulta}
+        handleExcluirAgendamento={handleExcluirAgendamento}
       />
 
       {showAlert && (

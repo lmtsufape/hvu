@@ -198,7 +198,6 @@ function UpdateAnimalBySecretarioAndMedico() {
       alergias: animalData.alergias,
       dataNascimento: formatDate(animalData.dataNascimento),
       imagem: animalData.imagem,
-      numeroFicha: animalData.numeroFicha,
       peso: animalData.peso,
       raca: {
         id: parseInt(selectedRaca)
@@ -301,16 +300,6 @@ function UpdateAnimalBySecretarioAndMedico() {
                     ))}
                   </select>
                   {errors.raca && <div className={`invalid-feedback ${styles.error_message}`}>{errors.raca}</div>}
-                </div>
-                <div className={`col ${styles.col}`}>
-                  <label htmlFor="numeroFicha" className="form-label">Número da ficha</label>
-                  <input
-                    type="text"
-                    className={`form-control ${styles.input}`}
-                    name="numeroFicha"
-                    value={animalData.numeroFicha}
-                    onChange={handleAnimalChange}
-                  />
                 </div>
               </div>
 

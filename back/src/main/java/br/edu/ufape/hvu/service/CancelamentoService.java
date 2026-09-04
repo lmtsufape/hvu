@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import br.edu.ufape.hvu.exception.IdNotFoundException;
+import br.edu.ufape.hvu.model.Agendamento;
 import br.edu.ufape.hvu.model.Cancelamento;
 import br.edu.ufape.hvu.repository.CancelamentoRepository;
 
@@ -28,6 +29,10 @@ public class CancelamentoService implements CancelamentoServiceInterface {
 
 	public List<Cancelamento> findCancelamentosByTutorId(long tutorId) {
 		return repository.findCancelamentosByTutorId(tutorId);
+	}
+
+	public List<Cancelamento> findCancelamentosByAgendamento(Agendamento agendamento) {
+		return repository.findByAgendamento(agendamento);
 	}
 
 	public List<Cancelamento> getAllCancelamento(){

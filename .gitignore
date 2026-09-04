@@ -37,3 +37,4 @@ build/
 ### VS Code ###
 .vscode/
 back/src/main/resources/application.yml
+AGENTS.md

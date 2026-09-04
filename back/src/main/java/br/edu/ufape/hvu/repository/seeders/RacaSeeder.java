@@ -19,8 +19,8 @@ public class RacaSeeder {
             return;
         }
         racaRepository.saveAll(
-             List.of(new Raca(1, "Pastor Alemão", "Grande", "Raça grande e leal", especieRepository.findById(1L).get()),
-                     new Raca(2, "Yorkshire", "Pequena", "Raça pequena, dócil e amigável", especieRepository.findById(1L).get()))
+             List.of(new Raca(0, "Pastor Alemão", "Grande", "Raça grande e leal", especieRepository.findById(1L).get()),
+                     new Raca(0, "Yorkshire", "Pequena", "Raça pequena, dócil e amigável", especieRepository.findById(1L).get()))
         );
     }
 }

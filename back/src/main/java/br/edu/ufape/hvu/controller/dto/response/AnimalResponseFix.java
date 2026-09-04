@@ -18,7 +18,6 @@ public class AnimalResponseFix {
     private String imagem;
     private boolean castrado;
     private double peso;
-    private String numeroFicha;
     private RacaResponseFix raca;
     private OrigemAnimal origemAnimal;
     private boolean obito;

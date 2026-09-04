@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import br.edu.ufape.hvu.model.Agendamento;
 import br.edu.ufape.hvu.model.Cancelamento;
 
 import java.util.List;
@@ -18,5 +19,6 @@ public interface CancelamentoRepository extends JpaRepository<Cancelamento, Long
             "WHERE n.id IN (SELECT an.id FROM Tutor t JOIN t.animais an WHERE t.id = :tutorId)")
     List<Cancelamento> findCancelamentosByTutorId(@Param("tutorId") Long tutorId);
 
+    List<Cancelamento> findByAgendamento(Agendamento agendamento);
 
 }

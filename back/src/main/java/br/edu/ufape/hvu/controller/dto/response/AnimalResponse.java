@@ -22,7 +22,6 @@ public class AnimalResponse {
 	private String imagem;
 	private boolean castrado;
 	private double peso;
-	private String numeroFicha;
 	private RacaResponse raca;
 	private OrigemAnimal origemAnimal;
 	private boolean obito;

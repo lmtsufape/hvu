@@ -36,8 +36,10 @@ import br.edu.ufape.hvu.mapper.AnimalMapper;
 import br.edu.ufape.hvu.mapper.ConsultaMapper;
 import br.edu.ufape.hvu.controller.dto.response.AnimalResponseFix;
 import br.edu.ufape.hvu.controller.dto.response.ConsultaResponseFix;
+import br.edu.ufape.hvu.controller.dto.response.AnimalERacaPorOrigemResponse;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class Facade {
     // ModelMapper
     private final ModelMapper modelMapper;
@@ -53,7 +55,9 @@ public class Facade {
         return keycloakService.refreshToken(refreshToken);
     }
 
-    public void forgetPassword(String email) {keycloakService.sendResetPasswordEmail(email);}
+    public void forgetPassword(String email) {
+        keycloakService.sendResetPasswordEmail(email);
+    }
 
     // Tutor--------------------------------------------------------------
 
@@ -72,12 +76,12 @@ public class Facade {
             userKcId = keycloakService.getUserId(newInstance.getEmail());
             newInstance.setUserId(userKcId);
             return tutorServiceInterface.saveTutor(newInstance);
-        }catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             keycloakService.deleteUser(userKcId);
             throw e;
-        }catch (Exception e){
+        } catch (Exception e) {
             keycloakService.deleteUser(userKcId);
-            throw new RuntimeException("Ocorreu um erro inesperado ao salvar o usuário: "+ e.getMessage(), e);
+            throw new RuntimeException("Ocorreu um erro inesperado ao salvar o usuário: " + e.getMessage(), e);
         }
 
     }
@@ -119,20 +123,22 @@ public class Facade {
         return tutorServiceInterface.findTutorByUserId(userId);
     }
 
-    public Tutor findTutorByanimalId(Long animalId, String idSession) {
+    public Tutor findTutorByAnimalId(Long animalId, String idSession) {
+
         if (keycloakService.hasRoleMedico(idSession)) {
+
             Medico medico = medicoServiceInterface.findByUserId(idSession);
 
-            boolean autorizado = existsVagaByMedicoIdAndAnimalId(medico.getId(), animalId);
-            if (!autorizado) {
-                throw new ForbiddenOperationException("Este animal não está agendado com o médico logado.");
+            if (medico == null) {
+                throw new ForbiddenOperationException("Médico não existe.");
             }
         }
 
         return tutorServiceInterface.findTutorByAnimalId(animalId);
     }
 
-    public List<TutorEAnimalPorOrigemFlatResponse> findTutoresEAnimaisPorOrigemFlat(OrigemAnimal origem, String userId) {
+    public List<TutorEAnimalPorOrigemFlatResponse> findTutoresEAnimaisPorOrigemFlat(OrigemAnimal origem,
+            String userId) {
         if (keycloakService.hasRoleSecretario(userId) || keycloakService.hasRolePatologista(userId)) {
             return tutorServiceInterface.findTutoresEAnimaisPorOrigemFlat(origem);
         }
@@ -147,8 +153,9 @@ public class Facade {
     public void deleteTutor(long id, String idSession) {
         Tutor oldObject = findTutorById(id, idSession);
 
-        if(!keycloakService.hasRoleSecretario(idSession) && !oldObject.getUserId().equals(idSession)){
-            throw new ForbiddenOperationException("Você não tem permição de acessar esse tutor ou alterar os dados do mesmo.");
+        if (!keycloakService.hasRoleSecretario(idSession) && !oldObject.getUserId().equals(idSession)) {
+            throw new ForbiddenOperationException(
+                    "Você não tem permição de acessar esse tutor ou alterar os dados do mesmo.");
         }
 
         try {
@@ -181,7 +188,7 @@ public class Facade {
     public Cancelamento cancelarVaga(Cancelamento newInstance, String idSession) {
         Vaga vaga = findVagaById(newInstance.getVaga().getId(), idSession);
         vaga.setStatus("Cancelado");
-        if(vaga.getAgendamento() != null) {
+        if (vaga.getAgendamento() != null) {
             Agendamento agendamento = findAgendamentoById(vaga.getAgendamento().getId(), idSession);
             agendamento.setStatus("Cancelado");
         }
@@ -268,7 +275,7 @@ public class Facade {
 
     @Transactional
     public Usuario saveUsuario(Usuario newInstance) {
-        if(newInstance == null) {
+        if (newInstance == null) {
             throw new IllegalArgumentException("Usuario não pode ser nulo");
         }
 
@@ -336,8 +343,8 @@ public class Facade {
             if (usuario.getUserId().equals(idSession) || usuario instanceof Medico || usuario instanceof Tutor) {
                 podeExcluir = true;
             }
-        }
-        else if (keycloakService.hasRoleAdminLapa(idSession) && (usuario.getUserId().equals(idSession) || usuario instanceof Patologista)) {
+        } else if (keycloakService.hasRoleAdminLapa(idSession)
+                && (usuario.getUserId().equals(idSession) || usuario instanceof Patologista)) {
             podeExcluir = true;
         }
 
@@ -360,7 +367,7 @@ public class Facade {
         Cronograma oldObject = findCronogramaById(id);
 
         // medico
-        if(obj.getMedico() != null){
+        if (obj.getMedico() != null) {
             oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
             obj.setMedico(null);
         }
@@ -382,12 +389,12 @@ public class Facade {
         return cronogramaServiceInterface.findCronogramaById(id);
     }
 
-    public List<Cronograma> findCronogramaByMedicoId(long id, String idSession){
+    public List<Cronograma> findCronogramaByMedicoId(long id, String idSession) {
         Medico medico = findMedicoById(id, idSession);
         return cronogramaServiceInterface.findCronogramaByMedico(medico);
     }
 
-    public List<Cronograma> findCronogramaByEspecialidadeId(long id){
+    public List<Cronograma> findCronogramaByEspecialidadeId(long id) {
         Especialidade especialidade = findEspecialidadeById(id);
         return cronogramaServiceInterface.findCronogramaByEspecialidade(especialidade);
     }
@@ -414,9 +421,9 @@ public class Facade {
         if (medicoRequest.getEspecialidade() != null) {
             List<Especialidade> especialidades = new ArrayList<>(
                     medicoRequest.getEspecialidade().stream()
-                            .map(especialidadeRequest -> especialidadeServiceInterface.findEspecialidadeById(especialidadeRequest.getId()))
-                            .toList()
-            );
+                            .map(especialidadeRequest -> especialidadeServiceInterface
+                                    .findEspecialidadeById(especialidadeRequest.getId()))
+                            .toList());
             medico.setEspecialidade(especialidades);
         }
 
@@ -443,8 +450,9 @@ public class Facade {
 
         Medico oldMedico = medicoService.findMedicoById(id); // lança EntityNotFoundException se não existir
 
-        if(!keycloakService.hasRoleSecretario(idSession) && !oldMedico.getUserId().equals(idSession)){
-            throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
+        if (!keycloakService.hasRoleSecretario(idSession) && !oldMedico.getUserId().equals(idSession)) {
+            throw new ForbiddenOperationException(
+                    "Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
         }
 
         Medico medicoAtualizado = request.convertToEntity();
@@ -465,8 +473,10 @@ public class Facade {
 
     public Medico findMedicoById(long id, String idSession) {
         Medico medico = medicoService.findMedicoById(id);
-        if(!keycloakService.hasRoleSecretario(idSession) && !medico.getUserId().equals(idSession) && !keycloakService.hasRolePatologista(idSession)){
-            throw new ForbiddenOperationException("Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
+        if (!keycloakService.hasRoleSecretario(idSession) && !medico.getUserId().equals(idSession)
+                && !keycloakService.hasRolePatologista(idSession)) {
+            throw new ForbiddenOperationException(
+                    "Você não tem acesso para buscar esse medico ou alterar os dados do mesmo.");
         }
         return medicoService.findMedicoById(id);
     }
@@ -480,7 +490,7 @@ public class Facade {
         medicoService.deleteMedico(id);
     }
 
-    public List<Medico> findByInstituicao(long InstituicaoId){
+    public List<Medico> findByInstituicao(long InstituicaoId) {
         Instituicao instituicao = findInstituicaoById(InstituicaoId);
         return medicoService.findByInstituicao(instituicao);
     }
@@ -504,9 +514,9 @@ public class Facade {
         if (request.getEspecialidade() != null) {
             List<Especialidade> especialidades = new ArrayList<>(
                     request.getEspecialidade().stream()
-                            .map(especialidadeRequest -> especialidadeServiceInterface.findEspecialidadeById(especialidadeRequest.getId()))
-                            .toList()
-            );
+                            .map(especialidadeRequest -> especialidadeServiceInterface
+                                    .findEspecialidadeById(especialidadeRequest.getId()))
+                            .toList());
             patologista.setEspecialidade(especialidades);
         }
 
@@ -531,10 +541,12 @@ public class Facade {
             throw new IllegalArgumentException("Dados inválidos para atualização.");
         }
 
-        Patologista oldPatologista = patologistaService.findPatologistaById(id); // lança EntityNotFoundException se não existir
+        Patologista oldPatologista = patologistaService.findPatologistaById(id); // lança EntityNotFoundException se não
+                                                                                 // existir
 
-        if(!keycloakService.hasRoleAdminLapa(idSession) && !oldPatologista.getUserId().equals(idSession)){
-            throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
+        if (!keycloakService.hasRoleAdminLapa(idSession) && !oldPatologista.getUserId().equals(idSession)) {
+            throw new ForbiddenOperationException(
+                    "Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
 
         Patologista patologistaAtualizado = request.convertToEntity();
@@ -552,7 +564,8 @@ public class Facade {
         Patologista patologista = patologistaService.findPatologistaById(id);
 
         if (!keycloakService.hasRoleAdminLapa(idSession) && !keycloakService.hasRolePatologista(idSession)) {
-            throw new ForbiddenOperationException("Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
+            throw new ForbiddenOperationException(
+                    "Você não tem acesso para buscar esse patologista ou alterar os dados do mesmo.");
         }
 
         return patologista;
@@ -588,7 +601,7 @@ public class Facade {
 
     @Transactional
     public Raca updateRaca(RacaRequest obj, Long id) {
-        //Raca o = obj.convertToEntity();
+        // Raca o = obj.convertToEntity();
         Raca oldObject = findRacaById(id);
 
         if (obj.getEspecie() != null) {
@@ -599,7 +612,6 @@ public class Facade {
         TypeMap<RacaRequest, Raca> typeMapper = modelMapper
                 .typeMap(RacaRequest.class, Raca.class)
                 .addMappings(mapper -> mapper.skip(Raca::setId));
-
 
         typeMapper.map(obj, oldObject);
         return racaServiceInterface.updateRaca(oldObject);
@@ -633,7 +645,7 @@ public class Facade {
 
     @Transactional
     public Aviso updateAviso(AvisoRequest transientObject, Long id) {
-        //Aviso o = obj.convertToEntity();
+        // Aviso o = obj.convertToEntity();
         Aviso oldObject = avisoServiceInterface.findAvisoById(id);
 
         TypeMap<AvisoRequest, Aviso> typeMapper = modelMapper
@@ -641,7 +653,6 @@ public class Facade {
                 .addMappings(mapper -> mapper.skip(Aviso::setId));
 
         typeMapper.map(transientObject, oldObject);
-
 
         return avisoServiceInterface.updateAviso(oldObject);
     }
@@ -702,8 +713,8 @@ public class Facade {
     }
 
     @Transactional
-    public Vaga processUpdateVaga(VagaRequest obj, Long id){
-        //Vaga o = obj.convertToEntity();
+    public Vaga processUpdateVaga(VagaRequest obj, Long id) {
+        // Vaga o = obj.convertToEntity();
         Vaga oldObject = vagaServiceInterface.findVagaById(id);
 
         if (obj.getTipoConsulta() != null) {
@@ -712,11 +723,12 @@ public class Facade {
         }
 
         if (obj.getEspecialidade() != null) {
-            oldObject.setEspecialidade(especialidadeServiceInterface.findEspecialidadeById(obj.getEspecialidade().getId()));
+            oldObject.setEspecialidade(
+                    especialidadeServiceInterface.findEspecialidadeById(obj.getEspecialidade().getId()));
             obj.setEspecialidade(null);
         }
 
-        if(obj.getMedico() != null){
+        if (obj.getMedico() != null) {
             oldObject.setMedico(medicoServiceInterface.findMedicoById(obj.getMedico().getId()));
             obj.setMedico(null);
         }
@@ -793,7 +805,7 @@ public class Facade {
                 .toList();
     }
 
-    public List<Vaga> findVagasAndAgendamentoByMedico (LocalDate data, Long IdMedico, String idSession) {
+    public List<Vaga> findVagasAndAgendamentoByMedico(LocalDate data, Long IdMedico, String idSession) {
         Medico medico = findMedicoById(IdMedico, idSession);
 
         return vagaServiceInterface.findVagasAndAgendamentoByMedico(data, medico);
@@ -807,7 +819,7 @@ public class Facade {
                 .collect(Collectors.toList());
     }
 
-    public List<Animal> findAnimaisWithoutReturn(){
+    public List<Animal> findAnimaisWithoutReturn() {
         List<Vaga> vagas = vagaServiceInterface.findLatestVagaForEachAnimalNotReturn();
 
         List<Animal> allAnimais = animalServiceInterface.findAnimalsByOrigemAnimal(OrigemAnimal.HVU);
@@ -824,13 +836,27 @@ public class Facade {
         return animalNoReturn;
     }
 
+    public List<AnimalERacaPorOrigemResponse> findAnimaisERacasPorOrigem(
+            OrigemAnimal origem,
+            String userId) {
+
+        if (keycloakService.hasRoleSecretario(userId) ||
+                keycloakService.hasRoleMedico(userId)) {
+
+            return animalServiceInterface.findAnimaisERacasPorOrigem(origem);
+        }
+
+        throw new ForbiddenOperationException(
+                "Você não tem acesso a essa operação");
+    }
+
     public boolean isRetornoExpirado(Long id) {
         List<Vaga> vagas = vagaServiceInterface.findLatestVagaForEachAnimal();
         Animal animal = animalServiceInterface.findAnimalById(id);
         Vaga ultimaVaga = vagas.stream()
-                        .filter(vaga -> vaga.getAgendamento().getAnimal().equals(animal))
-                        .reduce((first, second) -> second)
-                        .orElse(null);
+                .filter(vaga -> vaga.getAgendamento().getAnimal().equals(animal))
+                .reduce((first, second) -> second)
+                .orElse(null);
 
         if (ultimaVaga == null) {
             return true;
@@ -902,15 +928,19 @@ public class Facade {
 
         if (endDate == null) {
             if (isWeekend(startDate)) {
-                detalheBuilder.append(createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
-                detalheBuilder.append(" ").append(createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
+                detalheBuilder.append(
+                        createVagas(startDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
+                detalheBuilder.append(" ").append(
+                        createVagas(startDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
             }
         } else {
             LocalDate currentDate = startDate;
             while (!currentDate.isAfter(endDate)) {
                 if (isWeekend(currentDate)) {
-                    detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas, countCriacao, idSessio));
-                    detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde", vagas, countCriacao, idSessio));
+                    detalheBuilder.append(createVagas(currentDate, vagaRequestDTO.getTurnoManha(), "Manhã", vagas,
+                            countCriacao, idSessio));
+                    detalheBuilder.append(" ").append(createVagas(currentDate, vagaRequestDTO.getTurnoTarde(), "Tarde",
+                            vagas, countCriacao, idSessio));
                 }
                 currentDate = currentDate.plusDays(1);
             }
@@ -924,14 +954,15 @@ public class Facade {
     }
 
     @Transactional
-    protected String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas, long[] countCriacao, String idSession) {
+    protected String createVagas(LocalDate data, List<VagaTipoRequest> vagaTipo, String turno, List<Vaga> vagas,
+            long[] countCriacao, String idSession) {
         List<Vaga> vagasByData = findVagasByData(data, idSession);
         List<Vaga> vagasByDataAndTurno = findVagaByDataAndTurno(data, turno);
         vagasByData.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
         vagasByDataAndTurno.removeIf(vaga -> Objects.equals(vaga.getStatus(), "Cancelado"));
         final long[] count = new long[2];
         count[0] = vagasByData.size(); // Total vagas no dia
-        count[1] = vagasByDataAndTurno.size();  // Total vagas no turno
+        count[1] = vagasByDataAndTurno.size(); // Total vagas no turno
 
         if (count[0] >= 16 || count[1] >= 8) {
             throw new RuntimeException("Número máximo de vagas para o dia ou turno já foi atingido.");
@@ -966,7 +997,8 @@ public class Facade {
                 }
             } catch (RuntimeException e) {
                 countCriacao[1]++;
-                detalheBuilder.append("Vaga ").append(dateTime).append(" não foi adicionada: ").append(e.getMessage()).append(". ");
+                detalheBuilder.append("Vaga ").append(dateTime).append(" não foi adicionada: ").append(e.getMessage())
+                        .append(". ");
             }
         }
         return detalheBuilder.toString().trim();
@@ -990,7 +1022,8 @@ public class Facade {
     @Transactional
     public ConsultaResponseFix saveConsulta(Long id, ConsultaRequestFix consultaRequest, String idSession) {
         Vaga vagaDaConsulta = vagaServiceInterface.findVagaById(id);
-        Agendamento agendamentoVaga = agendamentoServiceInterface.findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
+        Agendamento agendamentoVaga = agendamentoServiceInterface
+                .findAgendamentoById(vagaDaConsulta.getAgendamento().getId());
 
         if (agendamentoVaga.getStatus().equals("Finalizado")) {
             throw new ForbiddenOperationException("Esse agendamento já foi finalizado.");
@@ -998,8 +1031,7 @@ public class Facade {
 
         Animal animal = findAnimalById(
                 consultaRequest.getAnimal().getId(),
-                idSession
-        );
+                idSession);
 
         Consulta consulta = consultaMapper.toEntity(consultaRequest);
 
@@ -1007,17 +1039,14 @@ public class Facade {
 
         if (consultaRequest.getMedico() != null) {
             Medico medico = medicoServiceInterface.findMedicoById(
-                    consultaRequest.getMedico().getId()
-            );
+                    consultaRequest.getMedico().getId());
 
             consulta.setMedico(medico);
         }
 
         if (consultaRequest.getEncaminhamento() != null) {
-            Especialidade especialidade =
-                    especialidadeServiceInterface.findEspecialidadeById(
-                            consultaRequest.getEncaminhamento().getId()
-                    );
+            Especialidade especialidade = especialidadeServiceInterface.findEspecialidadeById(
+                    consultaRequest.getEncaminhamento().getId());
 
             consulta.setEncaminhamento(especialidade);
         }
@@ -1038,11 +1067,11 @@ public class Facade {
 
     @Transactional
     public Consulta updateConsulta(ConsultaRequest obj, Long id, String idSession) {
-        //Consulta o = obj.convertToEntity();
+        // Consulta o = obj.convertToEntity();
         Consulta oldObject = findConsultaById(id);
 
         // medico
-        if(obj.getMedico() != null){
+        if (obj.getMedico() != null) {
             oldObject.setMedico(findMedicoById(obj.getMedico().getId(), idSession));
             obj.setMedico(null);
         }
@@ -1057,7 +1086,6 @@ public class Facade {
                 .typeMap(ConsultaRequest.class, Consulta.class)
                 .addMappings(mapper -> mapper.skip(Consulta::setId));
 
-
         typeMapper.map(obj, oldObject);
         return consultaServiceInterface.updateConsulta(oldObject);
     }
@@ -1070,11 +1098,7 @@ public class Facade {
         return consultaServiceInterface.getAllConsulta();
     }
 
-    public List<Consulta> getConsultasByAnimalFichaNumero (String numeroFicha){
-        return consultaServiceInterface.getConsultasByAnimalFichaNumero(numeroFicha);
-    }
-
-    public List<Consulta> getConsultaByAnimalId(Long id){
+    public List<Consulta> getConsultaByAnimalId(Long id) {
         return consultaServiceInterface.getConsultasByAnimalId(id);
     }
 
@@ -1082,7 +1106,6 @@ public class Facade {
     public void deleteConsulta(long id) {
         consultaServiceInterface.deleteConsulta(id);
     }
-
 
     // Especialidade--------------------------------------------------------------
 
@@ -1095,13 +1118,12 @@ public class Facade {
 
     @Transactional
     public Especialidade updateEspecialidade(EspecialidadeRequest obj, Long id) {
-        //Especialidade o = obj.convertToEntity();
+        // Especialidade o = obj.convertToEntity();
         Especialidade oldObject = findEspecialidadeById(id);
 
         TypeMap<EspecialidadeRequest, Especialidade> typeMapper = modelMapper
                 .typeMap(EspecialidadeRequest.class, Especialidade.class)
                 .addMappings(mapper -> mapper.skip(Especialidade::setId));
-
 
         typeMapper.map(obj, oldObject);
         return especialidadeServiceInterface.updateEspecialidade(oldObject);
@@ -1176,7 +1198,6 @@ public class Facade {
         return confirmarAgendamento(vaga, agendamento);
     }
 
-
     @Transactional // Minimiza inconsistências ao criar agendamento
     private Agendamento confirmarAgendamento(Vaga vaga, Agendamento agendamento) {
         if (vagaServiceInterface.existsByIdAndAgendamentoIsNotNull(vaga.getId())) {
@@ -1216,7 +1237,7 @@ public class Facade {
 
     // Reagenda um agendamento para uma nova vaga
     @Transactional
-    public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga, String idSession){
+    public Agendamento reagendarAgendamento(Long idAgendamento, Long idVaga, String idSession) {
         if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleTutor(idSession)) {
             throw new ForbiddenOperationException("Você não é responsável por este agendamento.");
         }
@@ -1230,19 +1251,19 @@ public class Facade {
         }
 
         // cancelando vaga anterior, que é a vaga antiga que precisa ser reagendada
-        if (vagaAntiga != null){
+        if (vagaAntiga != null) {
             vagaAntiga.setStatus(String.valueOf(StatusAgendamentoEVaga.Cancelado));
             vagaAntiga.setAgendamento(null);
-            updateVaga(vagaAntiga); //atualiza vaga antiga no banco
+            updateVaga(vagaAntiga); // atualiza vaga antiga no banco
         }
 
         // veririfa se agendamento da vaga recebida está preenchido
-        if(novaVaga.getAgendamento() != null){
+        if (novaVaga.getAgendamento() != null) {
             throw new RuntimeException("A nova vaga já está ocupada.");
         }
 
         // verifica se a nova vaga recibida esta cancelada
-        if(novaVaga.getStatus().equals(String.valueOf(StatusAgendamentoEVaga.Cancelado))){
+        if (novaVaga.getStatus().equals(String.valueOf(StatusAgendamentoEVaga.Cancelado))) {
             throw new RuntimeException("A nova vaga está cancelada.");
         }
 
@@ -1252,7 +1273,7 @@ public class Facade {
         agendamento.setStatus(novaVaga.getStatus());
         novaVaga.setAgendamento(agendamento);
 
-        //atualizando no banco...
+        // atualizando no banco...
         updateAgendamento(agendamento);
         updateVaga(novaVaga);
         return agendamento;
@@ -1261,34 +1282,23 @@ public class Facade {
     public Agendamento findAgendamentoById(long id, String idSession) {
         Agendamento agendamento = agendamentoServiceInterface.findAgendamentoById(id);
 
-        if (keycloakService.hasRoleSecretario(idSession)) {
-            return agendamento;
-        }
-
-        if (keycloakService.hasRoleMedico(idSession)) {
-            Vaga vaga = vagaServiceInterface.findVagaByAgendamento(agendamento);
-            Medico medico = vaga.getMedico();
-
-            if(!medico.getUserId().equals(idSession)) {
-                throw new ForbiddenOperationException("Você não é o médico responsável por este agendamento.");
-            }
+        if (keycloakService.hasRoleSecretario(idSession) || keycloakService.hasRoleMedico(idSession)) {
             return agendamento;
         }
 
         Tutor tutor = tutorServiceInterface.findTutorByAnimalId(agendamento.getAnimal().getId());
-        if(!tutor.getUserId().equals(idSession)) {
+        if (!tutor.getUserId().equals(idSession)) {
             throw new ForbiddenOperationException("Você não é o tutor responsável por este agendamento.");
         }
 
         return agendamento;
     }
 
-
     public List<Agendamento> getAllAgendamento() {
         return agendamentoServiceInterface.getAllAgendamento();
     }
 
-    public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String idSession){
+    public List<Agendamento> findAgendamentosByMedicoId(Long medicoId, String idSession) {
         if (!keycloakService.hasRoleMedico(idSession) && !keycloakService.hasRoleSecretario(idSession)) {
             throw new AccessDeniedException("Acesso Negado");
         }
@@ -1296,8 +1306,8 @@ public class Facade {
         Medico medico = findMedicoById(medicoId, idSession);
 
         if (keycloakService.hasRoleMedico(idSession) && !medico.getUserId().equals(idSession)) {
-                throw new ForbiddenOperationException("Você não é o médico responsável por estes agendamentos.");
-            }
+            throw new ForbiddenOperationException("Você não é o médico responsável por estes agendamentos.");
+        }
 
         return agendamentoServiceInterface.findAgendamentosByMedicoId(medico);
     }
@@ -1316,7 +1326,7 @@ public class Facade {
         return agendamentos;
     }
 
-    public List<LocalDateTime> retornaVagaQueTutorNaoPodeAgendar(String id){
+    public List<LocalDateTime> retornaVagaQueTutorNaoPodeAgendar(String id) {
         Tutor tutor = tutorServiceInterface.findTutorById(Long.parseLong(id));
 
         List<Agendamento> agendamentosTutor = new ArrayList<>();
@@ -1341,6 +1351,27 @@ public class Facade {
 
     @Transactional
     public void deleteAgendamento(long id) {
+        Agendamento agendamento = agendamentoServiceInterface.findAgendamentoById(id);
+
+        Vaga vaga = vagaServiceInterface.findVagaByAgendamento(agendamento);
+        if (vaga != null) {
+            vaga.setAgendamento(null);
+            vaga.setStatus(String.valueOf(StatusAgendamentoEVaga.Disponivel));
+            updateVaga(vaga);
+        }
+
+        List<Cancelamento> cancelamentos = cancelamentoServiceInterface.findCancelamentosByAgendamento(agendamento);
+        for (Cancelamento cancelamento : cancelamentos) {
+            cancelamento.setAgendamento(null);
+            cancelamentoServiceInterface.updateCancelamento(cancelamento);
+        }
+
+        if (!fichaServiceInterface.findFichasByAgendamentoId(agendamento.getId()).isEmpty()) {
+            throw new BusinessException(
+                    "agendamento.possui.ficha",
+                    "Não é possível excluir um agendamento que possui ficha clínica vinculada.");
+        }
+
         agendamentoServiceInterface.deleteAgendamento(id);
     }
 
@@ -1355,13 +1386,12 @@ public class Facade {
 
     @Transactional
     public Endereco updateEndereco(EnderecoRequest obj, Long id) {
-        //Endereco o = obj.convertToEntity();
+        // Endereco o = obj.convertToEntity();
         Endereco oldObject = findEnderecoById(id);
 
         TypeMap<EnderecoRequest, Endereco> typeMapper = modelMapper
                 .typeMap(EnderecoRequest.class, Endereco.class)
                 .addMappings(mapper -> mapper.skip(Endereco::setId));
-
 
         typeMapper.map(obj, oldObject);
         return enderecoServiceInterface.updateEndereco(oldObject);
@@ -1391,13 +1421,12 @@ public class Facade {
 
     @Transactional
     public Estagiario updateEstagiario(EstagiarioRequest obj, Long id) {
-        //Estagiario o = obj.convertToEntity();
+        // Estagiario o = obj.convertToEntity();
         Estagiario oldObject = findEstagiarioById(id);
 
         TypeMap<EstagiarioRequest, Estagiario> typeMapper = modelMapper
                 .typeMap(EstagiarioRequest.class, Estagiario.class)
                 .addMappings(mapper -> mapper.skip(Estagiario::setId));
-
 
         typeMapper.map(obj, oldObject);
         return estagiarioServiceInterface.updateEstagiario(oldObject);
@@ -1437,8 +1466,7 @@ public class Facade {
         }
 
         Raca raca = racaServiceInterface.findRacaById(
-            animalRequest.getRaca().getId()
-        );
+                animalRequest.getRaca().getId());
 
         Tutor tutor = findTutorByUserId(idSession);
         if (tutor == null) {
@@ -1456,9 +1484,8 @@ public class Facade {
             animal.setOrigemAnimal(OrigemAnimal.HVU);
         }
         validarOrigemAnimal(
-            "TUTOR",
-            animal.getOrigemAnimal()
-        );
+                "TUTOR",
+                animal.getOrigemAnimal());
 
         if (tutor.getAnimais() == null) {
             tutor.setAnimais(new ArrayList<>());
@@ -1473,30 +1500,33 @@ public class Facade {
 
     private Tutor determinarTutor(AnimalByPatologistaRequest request) {
         int count = 0;
-        if (request.getTutor() != null) count++;
-        if (request.getTutorId() != null) count++;
-        if (request.isAnonimo()) count++;
+        if (request.getTutor() != null)
+            count++;
+        if (request.getTutorId() != null)
+            count++;
+        if (request.isAnonimo())
+            count++;
 
         if (count != 1) {
             throw new IllegalArgumentException("Você deve enviar uma das opções: tutor, tutorId ou anonimo");
         }
 
-        if (request.isAnonimo()) return tutorServiceInterface.getOrCreateAnonymousTutor();
+        if (request.isAnonimo())
+            return tutorServiceInterface.getOrCreateAnonymousTutor();
 
-        if (request.getTutorId() != null) return tutorServiceInterface.findTutorById(request.getTutorId());
+        if (request.getTutorId() != null)
+            return tutorServiceInterface.findTutorById(request.getTutorId());
 
         tutorServiceInterface.verificarDuplicidade(
                 request.getTutor().getCpf(),
-                request.getTutor().getEmail()
-        );
+                request.getTutor().getEmail());
         return tutorServiceInterface.saveTutor(request.getTutor().convertToEntity());
     }
 
     public ContadorProntuarioResponse definirValorInicialProntuario(
             ValorInicialProntuarioRequest request) {
 
-        ContadorProntuario contador =
-                codigoProntuarioService.definirValorInicial(request.valorInicial());
+        ContadorProntuario contador = codigoProntuarioService.definirValorInicial(request.valorInicial());
 
         return new ContadorProntuarioResponse(contador);
     }
@@ -1568,8 +1598,10 @@ public class Facade {
     }
 
     public Animal findAnimalById(long animalId, String idSession) {
-        // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor de fato
-        if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession) && !keycloakService.hasRolePatologista(idSession)) {
+        // caso não seja um secretario ou medico, verifica se o animal pertece ao tutor
+        // de fato
+        if (!keycloakService.hasRoleSecretario(idSession) && !keycloakService.hasRoleMedico(idSession)
+                && !keycloakService.hasRolePatologista(idSession)) {
             Tutor tutor = tutorServiceInterface.findTutorByAnimalId(animalId);
 
             if (!tutor.getUserId().equals(idSession)) {
@@ -1589,16 +1621,6 @@ public class Facade {
         return tutor.getAnimais();
     }
 
-    public Animal getAnimalByFichaNumber(String fichaNumero) {
-        Animal animal = animalServiceInterface.findAnimalByFichaNumber(fichaNumero);
-
-        if (!animal.getOrigemAnimal().equals(OrigemAnimal.HVU)) {
-            throw new ForbiddenOperationException("Você não tem acesso a animais dessa origem");
-        }
-
-        return animal;
-    }
-
     @Transactional
     public void deleteAnimal(long id, String userId) {
         Tutor tutor = tutorServiceInterface.findTutorByAnimalId(id);
@@ -1610,7 +1632,7 @@ public class Facade {
         }
 
         boolean isTutor = keycloakService.hasRoleTutor(userId);
-        if(isTutor && !tutor.getUserId().equals(userId)) {
+        if (isTutor && !tutor.getUserId().equals(userId)) {
             throw new ForbiddenOperationException("Você não tem permissão para deletar este animal");
         }
 
@@ -1640,13 +1662,12 @@ public class Facade {
 
     @Transactional
     public Especie updateEspecie(EspecieRequest obj, Long id) {
-        //Especie o = obj.convertToEntity();
+        // Especie o = obj.convertToEntity();
         Especie oldObject = findEspecieById(id);
 
         TypeMap<EspecieRequest, Especie> typeMapper = modelMapper
                 .typeMap(EspecieRequest.class, Especie.class)
                 .addMappings(mapper -> mapper.skip(Especie::setId));
-
 
         typeMapper.map(obj, oldObject);
         return especieServiceInterface.updateEspecie(oldObject);
@@ -1718,13 +1739,12 @@ public class Facade {
     @Transactional
     public CampoLaudo updateCampoLaudo(CampoLaudoRequest transientObject, Long id) {
 
-        //CampoLaudo o = obj.convertToEntity();
+        // CampoLaudo o = obj.convertToEntity();
         CampoLaudo oldObject = campoLaudoServiceInterface.findCampoLaudoById(id);
 
         TypeMap<CampoLaudoRequest, CampoLaudo> typeMapper = modelMapper
                 .typeMap(CampoLaudoRequest.class, CampoLaudo.class)
                 .addMappings(mapper -> mapper.skip(CampoLaudo::setId));
-
 
         typeMapper.map(transientObject, oldObject);
 
@@ -1755,13 +1775,12 @@ public class Facade {
 
     @Transactional
     public Etapa updateEtapa(EtapaRequest obj, Long id) {
-        //Etapa o = obj.convertToEntity();
+        // Etapa o = obj.convertToEntity();
         Etapa oldObject = findEtapaById(id);
 
         TypeMap<EtapaRequest, Etapa> typeMapper = modelMapper
                 .typeMap(EtapaRequest.class, Etapa.class)
                 .addMappings(mapper -> mapper.skip(Etapa::setId));
-
 
         typeMapper.map(obj, oldObject);
         return etapaServiceInterface.updateEtapa(oldObject);
@@ -1843,7 +1862,7 @@ public class Facade {
         return fichaServiceInterface.findFichasByAgendamentoId(agendamentoId);
     }
 
-     public List<Ficha> findFichasByMedicoId(Long medicoId) {
+    public List<Ficha> findFichasByMedicoId(Long medicoId) {
         if (medicoId == null || medicoId <= 0) {
             throw new IllegalArgumentException("O id do medico é inválido.");
         }
@@ -1853,7 +1872,7 @@ public class Facade {
 
         return fichaServiceInterface.findFichasByMedicoId(medicoId);
     }
-    
+
     public List<Ficha> findFichasByAnimalId(Long animalId) {
         if (animalId == null || animalId <= 0) {
             throw new IllegalArgumentException("O id do animal é inválido.");
@@ -1956,7 +1975,6 @@ public class Facade {
         return fichaSolicitacaoServicoServiceInterface.updateFichaSolicitacaoServico(oldObject);
     }
 
-
     public FichaSolicitacaoServico findFichaSolicitacaoServicoById(Long id) {
         return fichaSolicitacaoServicoServiceInterface.findFichaSolicitacaoServicoById(id);
     }
@@ -2013,7 +2031,7 @@ public class Facade {
     @Transactional
     public Instituicao updateInstituicao(InstituicaoRequest obj, Long id) {
 
-        //Instituicao o = obj.convertToEntity();
+        // Instituicao o = obj.convertToEntity();
         Instituicao oldObject = findInstituicaoById(id);
 
         TypeMap<InstituicaoRequest, Instituicao> typeMapper = modelMapper
@@ -2038,7 +2056,6 @@ public class Facade {
         instituicaoServiceInterface.deleteInstituicao(id);
     }
 
-
     // LaudoNecropsia--------------------------------------------------------------
 
     private final LaudoNecropsiaServiceInterface laudoNecropsiaServiceInterfcae;
@@ -2047,7 +2064,7 @@ public class Facade {
     public LaudoNecropsia saveLaudoNecropsia(LaudoNecropsia newInstance) {
         if (newInstance.getFichaSolicitacaoServico() != null) {
             FichaSolicitacaoServico ficha = fichaSolicitacaoServicoServiceInterface.findFichaSolicitacaoServicoById(
-                            newInstance.getFichaSolicitacaoServico().getId());
+                    newInstance.getFichaSolicitacaoServico().getId());
             newInstance.setFichaSolicitacaoServico(ficha);
         }
 
@@ -2131,13 +2148,12 @@ public class Facade {
 
     @Transactional
     public MaterialColetado updateMaterialColetado(MaterialColetadoRequest obj, Long id) {
-        //MaterialColetado o = obj.convertToEntity();
+        // MaterialColetado o = obj.convertToEntity();
         MaterialColetado oldObject = materialColetadoServiceInterface.findMaterialColetadoById(id);
 
         TypeMap<MaterialColetadoRequest, MaterialColetado> typeMapper = modelMapper
                 .typeMap(MaterialColetadoRequest.class, MaterialColetado.class)
                 .addMappings(mapper -> mapper.skip(MaterialColetado::setId));
-
 
         typeMapper.map(obj, oldObject);
 
@@ -2170,9 +2186,12 @@ public class Facade {
     public Orgao updateOrgao(OrgaoRequest transientObject, Long id) {
         Orgao oldObject = orgaoServiceInterface.findOrgaoById(id);
 
-        if (transientObject.getNome() != null) oldObject.setNome(transientObject.getNome());
-        if (transientObject.getSexoMacho() != null) oldObject.setSexoMacho(transientObject.getSexoMacho());
-        if (transientObject.getSexoFemea() != null) oldObject.setSexoFemea(transientObject.getSexoFemea());
+        if (transientObject.getNome() != null)
+            oldObject.setNome(transientObject.getNome());
+        if (transientObject.getSexoMacho() != null)
+            oldObject.setSexoMacho(transientObject.getSexoMacho());
+        if (transientObject.getSexoFemea() != null)
+            oldObject.setSexoFemea(transientObject.getSexoFemea());
 
         if (transientObject.getFoto() != null) {
             Foto novaFoto = fotoServiceInterface.findById(transientObject.getFoto().getId());
@@ -2204,7 +2223,8 @@ public class Facade {
         orgaoServiceInterface.deleteOrgao(id);
     }
 
-    // CampoLaudoMicroscopia --------------------------------------------------------------
+    // CampoLaudoMicroscopia
+    // --------------------------------------------------------------
 
     private final CampoLaudoMicroscopiaServiceInterface campoLaudoMicroscopiaServiceInterface;
     private final AnimalRepository animalRepository;
@@ -2231,7 +2251,6 @@ public class Facade {
 
         return campoLaudoMicroscopiaServiceInterface.updateCampoLaudoMicroscopia(oldObject);
     }
-
 
     public CampoLaudoMicroscopia findCampoLaudoMicroscopiaById(Long id) {
         return campoLaudoMicroscopiaServiceInterface.findCampoLaudoMicroscopiaById(id);

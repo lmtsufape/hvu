@@ -25,6 +25,7 @@ import br.edu.ufape.hvu.controller.dto.response.AnimalResponseFix;
 import br.edu.ufape.hvu.facade.Facade;
 import br.edu.ufape.hvu.model.Animal;
 import jakarta.validation.Valid;
+import br.edu.ufape.hvu.controller.dto.response.AnimalERacaPorOrigemResponse;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -36,55 +37,48 @@ public class AnimalController {
 	@GetMapping("animal")
 	public List<AnimalResponse> getAllAnimal() {
 		return facade.getAllAnimal()
-			.stream()
-			.map(AnimalResponse::new)
-			.toList();
+				.stream()
+				.map(AnimalResponse::new)
+				.toList();
 	}
 
-    @PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("animal/retorno")
 	public List<AnimalResponse> findAnimaisWithReturn() {
 		return facade.findAnimaisWithReturn()
-			.stream()
-			.map(AnimalResponse::new)
-			.toList();
+				.stream()
+				.map(AnimalResponse::new)
+				.toList();
 	}
 
-    @PreAuthorize("hasRole('SECRETARIO')")
+	@PreAuthorize("hasRole('SECRETARIO')")
 	@GetMapping("animal/semRetorno")
 	public List<AnimalResponse> findAnimaisWithoutReturn() {
 		return facade.findAnimaisWithoutReturn()
-			.stream()
-			.map(AnimalResponse::new)
-			.toList();
+				.stream()
+				.map(AnimalResponse::new)
+				.toList();
 	}
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
-    @GetMapping("animal/retorno/{id}")
-    public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt principal = (Jwt) authentication.getPrincipal();
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")
+	@GetMapping("animal/retorno/{id}")
+	public String verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(@PathVariable Long id) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
 
-        return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id, principal.getSubject());
-    }
+		return facade.verificaSeAnimalPodeMarcarPrimeiraConsultaRetornoOuConsulta(id, principal.getSubject());
+	}
 
 	@PreAuthorize("hasRole('TUTOR')")
 	@GetMapping("animal/tutor")
 	public List<AnimalResponse> getAllAnimalTutor() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Jwt principal = (Jwt) authentication.getPrincipal();
-		
-		return facade.getAllAnimalTutor(principal.getSubject())
-			.stream()
-			.map(AnimalResponse::new)
-			.toList();
-	}
 
-    @PreAuthorize("hasRole('SECRETARIO')")
-	@GetMapping("animal/numeroficha/{fichaNumero}")
-	public AnimalResponse getAnimaisByNumeroficha(@PathVariable String fichaNumero) {
-		Animal animals = facade.getAnimalByFichaNumber(fichaNumero);
-		return new AnimalResponse(animals);
+		return facade.getAllAnimalTutor(principal.getSubject())
+				.stream()
+				.map(AnimalResponse::new)
+				.toList();
 	}
 
 	@PreAuthorize("hasRole('TUTOR')")
@@ -95,7 +89,7 @@ public class AnimalController {
 		return facade.saveAnimal(newObj, principal.getSubject());
 	}
 
-    @PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO', 'PATOLOGISTA')")
+	@PreAuthorize("hasAnyRole('TUTOR', 'MEDICO', 'SECRETARIO', 'PATOLOGISTA')")
 	@GetMapping("animal/{id}")
 	public AnimalResponse getAnimalById(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -111,7 +105,7 @@ public class AnimalController {
 		return new AnimalResponse(facade.updateAnimal(id, obj, principal.getSubject()));
 	}
 
-    @PreAuthorize("hasAnyRole('TUTOR', 'PATOLOGISTA')")
+	@PreAuthorize("hasAnyRole('TUTOR', 'PATOLOGISTA')")
 	@DeleteMapping("animal/{id}")
 	public String deleteAnimal(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -123,25 +117,35 @@ public class AnimalController {
 	@PreAuthorize("hasRole('PATOLOGISTA')")
 	@PostMapping("animal/patologista")
 	public AnimalResponse createAnimalByPatologista(
-			@Valid @RequestBody AnimalByPatologistaRequest request
-	) {
-        Animal savedAnimal = facade.saveAnimalByPatologista(request);
+			@Valid @RequestBody AnimalByPatologistaRequest request) {
+		Animal savedAnimal = facade.saveAnimalByPatologista(request);
 		return new AnimalResponse(savedAnimal);
 	}
 
-    @PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
-    @GetMapping("/animal/origem/{origem}")
-    public List<Animal> getAnimalsByOrigemAnimal(@PathVariable OrigemAnimal origem) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt principal = (Jwt) authentication.getPrincipal();
-        return facade.findAnimalsByOrigemAnimal(origem, principal.getSubject());
-    }
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'PATOLOGISTA')")
+	@GetMapping("/animal/origem/{origem}")
+	public List<Animal> getAnimalsByOrigemAnimal(@PathVariable OrigemAnimal origem) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+		return facade.findAnimalsByOrigemAnimal(origem, principal.getSubject());
+	}
+
+	@PreAuthorize("hasAnyRole('SECRETARIO', 'MEDICO')")
+	@GetMapping("/animal/origem/{origem}/racas")
+	public List<AnimalERacaPorOrigemResponse> getAnimaisERacasPorOrigem(
+			@PathVariable OrigemAnimal origem) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Jwt principal = (Jwt) authentication.getPrincipal();
+
+		return facade.findAnimaisERacasPorOrigem(
+				origem,
+				principal.getSubject());
+	}
 
 	@PreAuthorize("hasRole('SECRETARIO')")
 	@PostMapping("animal/prontuario/valor-inicial")
 	public ContadorProntuarioResponse definirValorInicialProntuario(
-			@Valid @RequestBody ValorInicialProntuarioRequest request
-	) {
+			@Valid @RequestBody ValorInicialProntuarioRequest request) {
 		return facade.definirValorInicialProntuario(request);
 	}
 }

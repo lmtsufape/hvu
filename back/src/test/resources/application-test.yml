@@ -1,0 +1,17 @@
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+common:
+  seeders: false
+
+logging:
+  level:
+    root: WARN
+    br.edu.ufape.hvu: INFO
+    org.flywaydb: INFO
+    org.testcontainers: INFO

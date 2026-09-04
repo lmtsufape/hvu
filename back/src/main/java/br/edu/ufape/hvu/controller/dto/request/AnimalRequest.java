@@ -31,7 +31,6 @@ public class AnimalRequest {
 	@NotNull
 	private RacaRequest raca;
 	//@NotBlank(message = "Numero ficha não pode estar em branco")
-	private String numeroFicha;
 	private OrigemAnimal origemAnimal;
 	private boolean obito;
 	private TipoAnimal tipo;

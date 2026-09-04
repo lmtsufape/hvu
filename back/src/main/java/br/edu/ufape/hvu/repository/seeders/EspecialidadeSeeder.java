@@ -19,8 +19,8 @@ public class EspecialidadeSeeder {
         }
         especialidadeRepository.saveAll(
             List.of(
-                new Especialidade(1,"Cardiologia", "Estudo do coração"),
-                new Especialidade(2, "Castraçao", "Cirurgia de castração")
+                new Especialidade(0,"Cardiologia", "Estudo do coração"),
+                new Especialidade(0, "Castraçao", "Cirurgia de castração")
 
             )
         );

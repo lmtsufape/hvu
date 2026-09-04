@@ -15,9 +15,7 @@ public class TipoConsultaSeeder {
         }
         TipoConsulta tipoConsulta = new TipoConsulta();
         TipoConsulta tipoConsulta2 = new TipoConsulta();
-        tipoConsulta.setId(1);
         tipoConsulta.setTipo("Primeira Consulta");
-        tipoConsulta2.setId(2);
         tipoConsulta2.setTipo("Retorno");
         tipoConsultaRepository.save(tipoConsulta);
         tipoConsultaRepository.save(tipoConsulta2);

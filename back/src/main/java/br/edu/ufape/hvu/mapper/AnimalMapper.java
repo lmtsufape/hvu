@@ -21,7 +21,6 @@ public class AnimalMapper {
         animal.setImagem(request.getImagem());
         animal.setCastrado(request.isCastrado());
         animal.setPeso(request.getPeso());
-        animal.setNumeroFicha(request.getNumeroFicha());
         animal.setOrigemAnimal(request.getOrigemAnimal());
         animal.setObito(request.isObito());
         animal.setTipo(request.getTipo());
@@ -51,7 +50,6 @@ public class AnimalMapper {
                 .imagem(animal.getImagem())
                 .castrado(animal.isCastrado())
                 .peso(animal.getPeso())
-                .numeroFicha(animal.getNumeroFicha())
                 .raca(racaResponse)
                 .origemAnimal(animal.getOrigemAnimal())
                 .obito(animal.isObito())

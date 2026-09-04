@@ -28,7 +28,6 @@ public class CronogramaSeeder {
         List<Medico> medicos = medicoRepository.findAll();
         List<Vaga> vagas = vagaRepository.findAll();
         Cronograma cronograma = new Cronograma();
-        cronograma.setId(1);
         cronograma.setEspecialidade(especialidades.get(0));
         cronograma.setMedico(medicos.get(0));
         cronograma.setVaga(vagas);

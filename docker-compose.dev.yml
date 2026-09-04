@@ -1,0 +1,32 @@
+# Configuração de desenvolvimento com hot reload (Docker Watch).
+# NÃO usar em produção.
+#
+# Uso:
+#   docker compose -f docker-compose.yaml -f docker-compose.dev.yml up --build --watch
+#
+# O Docker Watch sincroniza as pastas do front para dentro do container
+# e o `next dev` aplica hot reload automaticamente.
+services:
+  frontend:
+    command: ["sh", "-c", "npm run dev -- -H 0.0.0.0"]
+    develop:
+      watch:
+        - action: sync
+          path: ./front/src
+          target: /app/src
+        - action: sync
+          path: ./front/pages
+          target: /app/pages
+        - action: sync
+          path: ./front/common
+          target: /app/common
+        - action: sync
+          path: ./front/services
+          target: /app/services
+        - action: sync
+          path: ./front/public
+          target: /app/public
+        - action: rebuild
+          path: ./front/package.json
+        - action: rebuild
+          path: ./front/package-lock.json

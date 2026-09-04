@@ -47,49 +47,52 @@ public class CodigoProntuarioService {
 
     @Transactional
     public ContadorProntuario definirValorInicial(int valorInicial) {
-
         if (valorInicial < 1) {
             throw new IllegalArgumentException(
                     "Valor inicial deve ser maior ou igual a 1.");
         }
 
         ContadorProntuario contador = buscarContadorComLock();
-        
 
-        int novoUltimoValor = valorInicial - 1;
-        if (contador.getUltimoValor() > 0 &&
-            novoUltimoValor < contador.getUltimoValor()) {
+        if (contador.isValorInicialConfigurado()) {
             throw new IllegalArgumentException(
-                "Valor inicial inválido. Informe um valor maior ou igual ao próximo número disponível.");
+                    "O valor inicial já foi configurado.");
         }
 
-        contador.setUltimoValor(novoUltimoValor);
+        if (contador.getUltimoValor() > 0) {
+            throw new IllegalArgumentException(
+                    "Já existem códigos de prontuário gerados.");
+        }
+
+        contador.setUltimoValor(valorInicial - 1);
         contador.setValorInicialConfigurado(true);
 
         return contadorProntuarioRepository.save(contador);
     }
 
     private String proximoCodigo(TipoAnimal tipo) {
-
         ContadorProntuario contador = buscarContadorComLock();
 
+        if (!contador.isValorInicialConfigurado()) {
+            throw new IllegalStateException(
+                    "A sequência de prontuários ainda não foi configurada pelo secretário.");
+        }
+
         contador.setUltimoValor(contador.getUltimoValor() + 1);
-        contadorProntuarioRepository.save(contador);
+
+        int numero = contador.getUltimoValor();
 
         return switch (tipo) {
-            case COMUM ->
-                    String.format("%03d", contador.getUltimoValor());
-
-            case SILVESTRE ->
-                    String.format("%03dSIL", contador.getUltimoValor());
+            case COMUM -> String.format("%03d", numero);
+            case SILVESTRE -> String.format("%03dSIL", numero);
         };
     }
 
     private ContadorProntuario buscarContadorComLock() {
 
         return entityManager.createQuery(
-                        "SELECT c FROM ContadorProntuario c",
-                        ContadorProntuario.class)
+                "SELECT c FROM ContadorProntuario c",
+                ContadorProntuario.class)
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .getSingleResult();
     }
