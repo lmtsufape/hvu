@@ -210,6 +210,51 @@ cd back && bash mvnw -Dtest=AnimalServiceTest test
 
 ---
 
+## CI/CD (GitHub Actions)
+
+A pipeline está em `.github/workflows/ci-cd.yml` e segue o fluxo:
+
+| Branch | O que acontece |
+|---|---|
+| `develop` | Roda testes do backend + build do frontend e, se passarem, faz **deploy automático na homologação** |
+| `main` | Roda testes do backend + build do frontend e, se passarem, faz **deploy automático na produção** |
+| Pull request | Roda apenas as validações (sem deploy) |
+
+### Endpoints
+
+* Homologação: frontend `https://lmtsteste06.ufape.edu.br/` · backend `https://lmtsteste03.ufape.edu.br/api/v1`
+* Produção: frontend `https://gestaohvu.ufape.edu.br/` · backend `https://gestaohvuback.ufape.edu.br/api/v1`
+
+### Pré-requisitos nos servidores
+
+Cada servidor de deploy deve ter:
+
+* Docker e Docker Compose v2 instalados;
+* um clone do repositório no diretório de deploy (ex.: `/home/deploy/hvu`) — a pipeline executa `git pull --ff-only` nesse diretório;
+* uma chave SSH autorizada para o usuário de deploy;
+* nenhum arquivo rastreado modificado manualmente (a pipeline executa `git checkout -- .` antes do pull).
+
+> O arquivo `.env` do servidor **não** fica versionado: a pipeline o cria durante o deploy a partir do secret `*_ENV_FILE`.
+
+### Secrets e Variables necessárias no GitHub
+
+**Homologação** (`Environment: homologacao`):
+
+| Nome | Tipo | Descrição |
+|---|---|---|
+| `HOMOLOGACAO_SSH_HOST` | Variable | Host SSH do servidor de testes |
+| `HOMOLOGACAO_SSH_PORT` | Variable | Porta SSH (padrão 22) |
+| `HOMOLOGACAO_SSH_USER` | Variable | Usuário SSH de deploy |
+| `HOMOLOGACAO_DEPLOY_PATH` | Variable | Caminho do clone no servidor |
+| `HOMOLOGACAO_SSH_KEY` | Secret | Chave privada SSH autorizada no servidor |
+| `HOMOLOGACAO_ENV_FILE` | Secret | Conteúdo completo do `.env` de homologação |
+
+**Produção** (`Environment: producao`): mesmos nomes com prefixo `PRODUCAO_` (`PRODUCAO_SSH_HOST`, `PRODUCAO_SSH_KEY`, `PRODUCAO_ENV_FILE`, etc.).
+
+O `*_ENV_FILE` deve seguir o modelo do [`.env.example`](.env.example) com os valores reais do ambiente (senhas de banco, Keycloak e `NEXT_PUBLIC_KEYCLOAK_*`).
+
+---
+
 ## Guia de Contribuição
 
 O projeto segue um fluxo de contribuição organizado, utilizando boas práticas de versionamento e colaboração em equipe.
@@ -220,7 +265,7 @@ A equipe utiliza o **GitHub Projects (Quadro Scrum)** para organização e acomp
 
 * Funcionalidades, correções e melhorias são registradas como **Issues** no repositório
 * Cada issue é adicionada ao quadro e atribuída a um integrante da equipe
-* O progresso é acompanhado pelas colunas: *To Do*, *In Progress* e *Done*
+* O progresso é acompanhado pelas abas *Current iteration* e *Sprint splanning*
 * Commits e Pull Requests referenciam ou encerram as issues relacionadas (`Closes #id` ou `Related to #id`)
 
 ### Fluxo de versionamento
@@ -249,13 +294,4 @@ feat(animal): adicionar cadastro de animal por patologista
 - Criado AnimalByPatologistaRequest DTO
 
 Related to #42
-```
-
-```
-fix(tutor): corrigir payload de tutor anônimo no frontend
-
-- Campo anonimo movido para raiz do request
-- Removido useState dentro de handleSubmit
-
-Closes #57
 ```
