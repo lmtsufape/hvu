@@ -5,7 +5,7 @@ import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
-import { createFicha } from '../../../../../services/fichaService';
+import { createFicha, getFichaById } from '../../../../../services/fichaService';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from "react";
 import { getCurrentUsuario } from "../../../../../services/userService";
@@ -42,6 +42,19 @@ function ReabilitacaoIntegrativa({ formData, handleChange, handlePreferenciasCha
     
         fetchMedicoData();
       }, []); 
+
+      useEffect(() => {
+        if (modo !== 'visualizar') return;
+
+        const fichaId = router.query.fichaId;
+        if (!fichaId) return;
+
+        getFichaById(fichaId)
+          .then((ficha) => {
+            if (ficha?.medico) setMedicoLogado(ficha.medico);
+          })
+          .catch(() => {});
+      }, [modo, router.query.fichaId]);
           
     useEffect(() => {
     // Se o modo for 'visualizar', define o estado para somente leitura

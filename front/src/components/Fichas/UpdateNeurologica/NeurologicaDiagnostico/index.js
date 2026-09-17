@@ -8,6 +8,7 @@ import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
 import { getCurrentUsuario } from "../../../../../services/userService";
+import { getFichaById } from "../../../../../services/fichaService";
 import { getMedicoById } from "../../../../../services/medicoService";
 
 function FichaNeurologica({ formData, handleChange, prevStep, handleCheckboxChange, handleSubmit }) {
@@ -94,6 +95,19 @@ function FichaNeurologica({ formData, handleChange, prevStep, handleCheckboxChan
     
         fetchMedicoData();
       }, []);
+
+      useEffect(() => {
+        if (modo !== 'visualizar') return;
+
+        const fichaId = router.query.fichaId;
+        if (!fichaId) return;
+
+        getFichaById(fichaId)
+          .then((ficha) => {
+            if (ficha?.medico) setMedicoLogado(ficha.medico);
+          })
+          .catch(() => {});
+      }, [modo, router.query.fichaId]);
                               
     useEffect(() => {
       // Se o modo for 'visualizar', define o estado para somente leitura

@@ -6,6 +6,7 @@ import { CancelarWhiteButton } from "@/components/WhiteButton";
 import { ContinuarFichasGreenButton } from "@/components/GreenButton";
 import React, { useState, useEffect } from "react";
 import { getCurrentUsuario } from '../../../../../services/userService'; 
+import { getFichaById } from "../../../../../services/fichaService";
 import { getMedicoById } from '../../../../../services/medicoService'; 
 import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
@@ -113,6 +114,19 @@ export default function PosAnestesia({
 
     fetchMedicoData();
   }, []); 
+
+  useEffect(() => {
+    if (modo !== 'visualizar') return;
+
+    const fichaId = router.query.fichaId;
+    if (!fichaId) return;
+
+    getFichaById(fichaId)
+      .then((ficha) => {
+        if (ficha?.medico) setMedicoLogado(ficha.medico);
+      })
+      .catch(() => {});
+  }, [modo, router.query.fichaId]);
 
   useEffect(() => {
     const savedData = localStorage.getItem("posAnestesiaTabela");

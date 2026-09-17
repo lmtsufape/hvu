@@ -79,6 +79,7 @@ function HistoricoFichasAnimal({
                   ...agendamento,
                   fichas: [],
                   medico: ficha.medico || null,
+                  medicoResponsavel: ficha.medicoResponsavel || null,
                 });
               }
               acc.get(agendamento.id).fichas.push(ficha);
@@ -198,8 +199,10 @@ function HistoricoFichasAnimal({
       const term = searchTerm.trim().toLowerCase();
 
       if (term) {
-        const medicoNome = (agendamento.medico?.nome || "").toLowerCase();
-        if (!medicoNome.includes(term)) return false;
+        const temMedicoCriador = (agendamento.fichas || []).some((ficha) =>
+          (ficha.medico?.nome || "").toLowerCase().includes(term)
+        );
+        if (!temMedicoCriador) return false;
       }
 
       if (filtroTipoFicha) {
@@ -321,7 +324,7 @@ function HistoricoFichasAnimal({
 
               <div className={styles.fichas_list}>
                 <p className={styles.medicoPrincipal}>
-                  Médico responsável: {vaga.medico?.nome || "Não informado"}
+                  Médico responsável: {vaga.medicoResponsavel?.nome || "Não informado"}
                 </p>
 
                 {podeAdicionarFicha && (
@@ -365,7 +368,7 @@ function HistoricoFichasAnimal({
                         {ficha.nome || "Ficha sem nome"}
                       </span>
                       <span className={styles.ficha_medico}>
-                        Médico: {vaga.medico?.nome || "Não informado"}
+                        Médico que criou: {ficha.medico?.nome || "Não informado"}
                       </span>
                       <span className={styles.ficha_prontuario}>
                         Prontuário: {ficha?.animal?.codigoProntuario || "Não informado"}

@@ -7,6 +7,7 @@ import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
 import { getCurrentUsuario } from "../../../../../services/userService";
+import { getFichaById } from "../../../../../services/fichaService";
 import { getMedicoById } from "../../../../../services/medicoService";
 
 function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, handleSubmit, prevStep, setFormData,
@@ -41,6 +42,19 @@ function AtendimentoOrtopedico({ formData, handleChange, handleRadioAninhado, ha
   
       fetchMedicoData();
     }, []);
+
+    useEffect(() => {
+      if (modo !== 'visualizar') return;
+
+      const fichaId = router.query.fichaId;
+      if (!fichaId) return;
+
+      getFichaById(fichaId)
+        .then((ficha) => {
+          if (ficha?.medico) setMedicoLogado(ficha.medico);
+        })
+        .catch(() => {});
+    }, [modo, router.query.fichaId]);
   
   useEffect(() => {
   // Se o modo for 'visualizar', define o estado para somente leitura
