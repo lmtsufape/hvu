@@ -1583,6 +1583,8 @@ public class Facade {
             throw new ForbiddenOperationException("Você só pode editar animais de origem HVU");
         }
 
+        TipoAnimal tipoAntigo = animal.getTipo();
+
         // Atualiza raça, se fornecida
         if (request.getRaca() != null) {
             animal.setRaca(racaServiceInterface.findRacaById(request.getRaca().getId()));
@@ -1593,6 +1595,12 @@ public class Facade {
         modelMapper.typeMap(AnimalRequest.class, Animal.class)
                 .addMappings(mapper -> mapper.skip(Animal::setId))
                 .map(request, animal);
+
+        // Quando o tipo do animal muda, o número de prontuário deve acompanhar
+        // o novo tipo (COMUM ou SILVESTRE) para continuar consistente.
+        if (tipoAntigo != null && animal.getTipo() != null && tipoAntigo != animal.getTipo()) {
+            codigoProntuarioService.atualizarCodigoProntuario(animal);
+        }
 
         return animalServiceInterface.updateAnimal(animal);
     }

@@ -34,7 +34,8 @@ public class CodigoProntuarioService {
         }
 
         if (animal.getCodigoProntuario() != null &&
-                !animal.getCodigoProntuario().isBlank()) {
+                !animal.getCodigoProntuario().isBlank() &&
+                codigoCompativelComTipo(animal.getCodigoProntuario(), animal.getTipo())) {
             return animal.getCodigoProntuario();
         }
 
@@ -43,6 +44,30 @@ public class CodigoProntuarioService {
         animal.setCodigoProntuario(codigo);
 
         return codigo;
+    }
+
+    @Transactional
+    public String atualizarCodigoProntuario(Animal animal) {
+        if (animal == null) {
+            throw new IllegalArgumentException("Animal não pode ser nulo.");
+        }
+
+        String codigoAtual = animal.getCodigoProntuario();
+
+        // Sem código anterior, nada a ajustar; ele será gerado quando necessário.
+        if (codigoAtual == null || codigoAtual.isBlank()) {
+            return null;
+        }
+
+        String numero = codigoAtual.replaceAll("[^0-9]", "");
+        if (numero.isBlank()) {
+            return codigoAtual;
+        }
+
+        String novoCodigo = formatarCodigo(Integer.parseInt(numero), animal.getTipo());
+        animal.setCodigoProntuario(novoCodigo);
+
+        return novoCodigo;
     }
 
     @Transactional
@@ -80,11 +105,26 @@ public class CodigoProntuarioService {
 
         contador.setUltimoValor(contador.getUltimoValor() + 1);
 
-        int numero = contador.getUltimoValor();
+        return formatarCodigo(contador.getUltimoValor(), tipo);
+    }
 
+    private String formatarCodigo(int numero, TipoAnimal tipo) {
         return switch (tipo) {
             case COMUM -> String.format("%03d", numero);
             case SILVESTRE -> String.format("%03dSIL", numero);
+        };
+    }
+
+    private boolean codigoCompativelComTipo(String codigo, TipoAnimal tipo) {
+        if (codigo == null || codigo.isBlank()) {
+            return false;
+        }
+
+        boolean terminaComSil = codigo.trim().toUpperCase().endsWith("SIL");
+
+        return switch (tipo) {
+            case COMUM -> !terminaComSil;
+            case SILVESTRE -> terminaComSil;
         };
     }
 
