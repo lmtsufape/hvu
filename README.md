@@ -101,42 +101,44 @@ Verifique:
 docker --version
 docker compose version
 ```
-<!-- 
 ---
 
-## Configuração do `.env`
+## Configuração de variáveis de ambiente
 
-Antes de rodar o projeto, você deve criar seu próprio arquivo `.env` na raiz do projeto.
-
-Existe um arquivo de exemplo chamado `.env.example`. Copie-o:
+As credenciais e configurações sensíveis ficam em **variáveis de ambiente**. Na raiz do projeto existe o arquivo de exemplo `.env.example` (sem valores reais). Crie seu `.env` local:
 
 ```bash
 cp .env.example .env
 ```
 
-Depois edite o `.env` conforme necessário.
+Edite o `.env` conforme necessário. O `.env` é ignorado pelo Git (`.gitignore`) e **nunca** deve ser versionado.
 
-### `.env.example`
+### Variáveis disponíveis
 
-```env
-# Configurações do banco de dados PostgreSQL
-GESTAOHVU_DB_URL=jdbc:postgresql://localhost:5432/gestaohvu
-GESTAOHVU_DB_USERNAME=seu-usuario
-GESTAOHVU_DB_PASSWORD=sua-senha
+| Variável | Descrição | Usada por |
+|---|---|---|
+| `HVU_DB_URL` | JDBC URL do banco do backend | backend (Spring) |
+| `HVU_DB_USERNAME` / `HVU_DB_PASSWORD` | Credenciais do banco do backend | backend + `backend-db` |
+| `HVU_DB_NAME` | Nome do banco do backend | `backend-db` |
+| `KEYCLOAK_DB_NAME` / `KEYCLOAK_DB_USERNAME` / `KEYCLOAK_DB_PASSWORD` | Banco do Keycloak | `keycloak` + `keycloak-db` |
+| `KEYCLOAK_ADMIN_USERNAME` / `KEYCLOAK_ADMIN_PASSWORD` | Admin do Keycloak | `keycloak` + backend |
+| `KEYCLOAK_REALM` | Realm do Keycloak | backend |
+| `KEYCLOAK_CLIENT_ID` / `KEYCLOAK_CLIENT_SECRET` | Cliente `create_user` usado na autenticação/registro | backend + frontend |
+| `NEXT_PUBLIC_KEYCLOAK_CLIENT_ID` / `NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET` | Variáveis públicas do frontend (lidas no build do Next.js) | frontend |
 
-# Segredo para JWT
-JWT_SECRET=sua-chave-secreta-aqui
-JWT_EXPIRATION_MS=86400000
+### Rodando o backend localmente (sem Docker)
 
-# Perfil do Spring
-SPRING_PROFILES_ACTIVE=dev
+Exporte as variáveis antes de subir o Spring:
 
-# Origens permitidas (CORS)
-CORS_ALLOWED_ORIGINS=http://localhost:3000
+```bash
+export SPRING_DATASOURCE_URL='jdbc:postgresql://localhost:5432/banco?stringtype=unspecified'
+export SPRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=sua-senha
+export KEYCLOAK_CLIENT_SECRET=seu-client-secret
+cd back && bash mvnw spring-boot:run
+```
 
-# Versão da aplicação
-APP_VERSION=dev
-``` -->
+> O realm de desenvolvimento (`realm-export-dev.json`) importado pelo Keycloak contém usuários/senhas de exemplo (ex.: `password`) apenas para desenvolvimento local.
 
 ---
 
