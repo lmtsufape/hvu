@@ -350,6 +350,7 @@ function UpdateAnimalBySecretarioAndMedico() {
                 <div className={`col ${styles.col}`}>
                   <label htmlFor="tipo" className="form-label">Tipo de animal</label>
                   <select
+                    className={`form-select ${styles.input}`}
                     name="tipo"
                     value={animalData.tipo || "COMUM"}
                     onChange={handleAnimalChange}

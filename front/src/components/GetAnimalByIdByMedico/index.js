@@ -126,7 +126,7 @@ function GetAnimalByIdByMedico() {
                                 </div>
                             </div>
                             <div className={styles.botao}>
-                                {animal.origemAnimal === "HVU" && (<ConsultasWhiteButton page={"getAllConsultas"} id={animal.id}/>)}
+                                {/*{animal.origemAnimal === "HVU" && (<ConsultasWhiteButton page={"getAllConsultas"} id={animal.id}/>)}*/}
                                 <EditarWhiteButton page={"updateAnimalBySecretarioAndMedico"} id={animal.id}/>
                             </div>
                         </div>
