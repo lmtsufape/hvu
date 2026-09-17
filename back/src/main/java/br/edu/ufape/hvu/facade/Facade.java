@@ -1824,6 +1824,19 @@ public class Facade {
                     newInstance.getAnimal().getId());
         }
 
+        Agendamento agendamento = newInstance.getAgendamento();
+        if (agendamento != null) {
+            if (agendamento.getId() > 0) {
+                if (!agendamentoRepository.existsById(agendamento.getId())) {
+                    throw new ResourceNotFoundException("Agendamento", "id", agendamento.getId());
+                }
+                newInstance.setAgendamento(
+                        agendamentoServiceInterface.findAgendamentoById(agendamento.getId()));
+            } else {
+                newInstance.setAgendamento(null);
+            }
+        }
+
         Medico medico = medicoServiceInterface.findByUserId(sessionId);
         newInstance.setMedico(medico);
 
@@ -1852,6 +1865,20 @@ public class Facade {
 
         Ficha existingFicha = findFichaById(id);
         obj.applyToEntity(existingFicha);
+
+        Agendamento agendamento = existingFicha.getAgendamento();
+        if (agendamento != null) {
+            if (agendamento.getId() > 0) {
+                if (!agendamentoRepository.existsById(agendamento.getId())) {
+                    throw new ResourceNotFoundException("Agendamento", "id", agendamento.getId());
+                }
+                existingFicha.setAgendamento(
+                        agendamentoServiceInterface.findAgendamentoById(agendamento.getId()));
+            } else {
+                existingFicha.setAgendamento(null);
+            }
+        }
+
         return fichaServiceInterface.updateFicha(existingFicha);
     }
 
