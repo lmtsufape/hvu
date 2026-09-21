@@ -38,3 +38,11 @@ build/
 .vscode/
 back/src/main/resources/application.yml
 AGENTS.md
+
+### Variáveis de ambiente locais (nunca versionar) ###
+.env
+.env.*
+!.env.example
+front/.env
+front/.env.local
+front/.env.*.local

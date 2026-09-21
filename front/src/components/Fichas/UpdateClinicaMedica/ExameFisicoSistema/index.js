@@ -6,6 +6,7 @@ import VoltarButton from "../../../VoltarButton";
 import { VoltarWhiteButton } from "../../../WhiteButton";
 import FinalizarFichaModal from "../../FinalizarFichaModal";
 import { getCurrentUsuario } from '../../../../../services/userService'; 
+import { getFichaById } from "../../../../../services/fichaService";
 import { getMedicoById } from '../../../../../services/medicoService'; 
 import React, { useState, useEffect } from "react";
 import { getTutorByAnimal } from "../../../../../services/tutorService";
@@ -81,6 +82,19 @@ export default function Step2ClinicaMedica({
   
       fetchMedicoData();
     }, []); 
+
+    useEffect(() => {
+      if (modo !== 'visualizar') return;
+
+      const fichaId = router.query.fichaId;
+      if (!fichaId) return;
+
+      getFichaById(fichaId)
+        .then((ficha) => {
+          if (ficha?.medico) setMedicoLogado(ficha.medico);
+        })
+        .catch(() => {});
+    }, [modo, router.query.fichaId]);
          
 
   useEffect(() => {

@@ -61,7 +61,7 @@ public class TutorController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt principal = (Jwt) authentication.getPrincipal();
 
-		return new TutorResponse(facade.findTutorByanimalId(id, principal.getSubject()));
+		return new TutorResponse(facade.findTutorByAnimalId(id, principal.getSubject()));
 	}
 
     @PreAuthorize("hasAnyRole('SECRETARIO', 'TUTOR')")

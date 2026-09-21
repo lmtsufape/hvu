@@ -160,6 +160,7 @@ function UpdateFichaSessao() {
             : fichaResponse.conteudo);
         }
         setData(fichaResponse?.dataHora);
+        if (fichaResponse?.medico) setMedicoLogado(fichaResponse.medico);
       } catch (error) {
         console.error('Erro ao buscar dados da ficha:', error);
       } finally {

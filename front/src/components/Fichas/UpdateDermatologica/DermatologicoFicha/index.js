@@ -9,6 +9,7 @@ import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
 import { getCurrentUsuario } from "../../../../../services/userService";
+import { getFichaById } from "../../../../../services/fichaService";
 import { getMedicoById } from "../../../../../services/medicoService";
 
 function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxChange, handleSubmit,
@@ -45,6 +46,19 @@ function FichaDermatologica({ formData, handleChange, prevStep, handleCheckboxCh
     
         fetchMedicoData();
       }, []);
+
+      useEffect(() => {
+        if (modo !== 'visualizar') return;
+
+        const fichaId = router.query.fichaId;
+        if (!fichaId) return;
+
+        getFichaById(fichaId)
+          .then((ficha) => {
+            if (ficha?.medico) setMedicoLogado(ficha.medico);
+          })
+          .catch(() => {});
+      }, [modo, router.query.fichaId]);
     
               
         useEffect(() => {

@@ -4,8 +4,8 @@ import api from "./http-common-key";
 async function loginClient() {
     try {
         const response = await api.post("realms/lmts/protocol/openid-connect/token", {
-            client_id: "create_user",
-            client_secret: "mesAECIaCcLkTmJB0riLGmqA14bSCTuH",
+            client_id: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || "create_user",
+            client_secret: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET || "",
             grant_type: "client_credentials"
         }, {
             headers: {

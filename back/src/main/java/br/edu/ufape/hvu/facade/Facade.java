@@ -1583,6 +1583,8 @@ public class Facade {
             throw new ForbiddenOperationException("Você só pode editar animais de origem HVU");
         }
 
+        TipoAnimal tipoAntigo = animal.getTipo();
+
         // Atualiza raça, se fornecida
         if (request.getRaca() != null) {
             animal.setRaca(racaServiceInterface.findRacaById(request.getRaca().getId()));
@@ -1593,6 +1595,12 @@ public class Facade {
         modelMapper.typeMap(AnimalRequest.class, Animal.class)
                 .addMappings(mapper -> mapper.skip(Animal::setId))
                 .map(request, animal);
+
+        // Quando o tipo do animal muda, o número de prontuário deve acompanhar
+        // o novo tipo (COMUM ou SILVESTRE) para continuar consistente.
+        if (tipoAntigo != null && animal.getTipo() != null && tipoAntigo != animal.getTipo()) {
+            codigoProntuarioService.atualizarCodigoProntuario(animal);
+        }
 
         return animalServiceInterface.updateAnimal(animal);
     }
@@ -1816,6 +1824,19 @@ public class Facade {
                     newInstance.getAnimal().getId());
         }
 
+        Agendamento agendamento = newInstance.getAgendamento();
+        if (agendamento != null) {
+            if (agendamento.getId() > 0) {
+                if (!agendamentoRepository.existsById(agendamento.getId())) {
+                    throw new ResourceNotFoundException("Agendamento", "id", agendamento.getId());
+                }
+                newInstance.setAgendamento(
+                        agendamentoServiceInterface.findAgendamentoById(agendamento.getId()));
+            } else {
+                newInstance.setAgendamento(null);
+            }
+        }
+
         Medico medico = medicoServiceInterface.findByUserId(sessionId);
         newInstance.setMedico(medico);
 
@@ -1844,6 +1865,20 @@ public class Facade {
 
         Ficha existingFicha = findFichaById(id);
         obj.applyToEntity(existingFicha);
+
+        Agendamento agendamento = existingFicha.getAgendamento();
+        if (agendamento != null) {
+            if (agendamento.getId() > 0) {
+                if (!agendamentoRepository.existsById(agendamento.getId())) {
+                    throw new ResourceNotFoundException("Agendamento", "id", agendamento.getId());
+                }
+                existingFicha.setAgendamento(
+                        agendamentoServiceInterface.findAgendamentoById(agendamento.getId()));
+            } else {
+                existingFicha.setAgendamento(null);
+            }
+        }
+
         return fichaServiceInterface.updateFicha(existingFicha);
     }
 

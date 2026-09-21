@@ -8,6 +8,7 @@ import { getTutorByAnimal } from "../../../../../services/tutorService";
 import { getAnimalById } from '../../../../../services/animalService';
 import { useRouter } from 'next/router';
 import { getCurrentUsuario } from "../../../../../services/userService";
+import { getFichaById } from "../../../../../services/fichaService";
 import { getMedicoById } from '../../../../../services/medicoService';
 const DIAGNOSTICO = [
   { key: "diagnostico", label: "Diagnóstico(s)" },
@@ -61,6 +62,19 @@ export default function Step3ClinicaMedica({
   
       fetchMedicoData();
     }, []);
+
+    useEffect(() => {
+      if (modo !== 'visualizar') return;
+
+      const fichaId = router.query.fichaId;
+      if (!fichaId) return;
+
+      getFichaById(fichaId)
+        .then((ficha) => {
+          if (ficha?.medico) setMedicoLogado(ficha.medico);
+        })
+        .catch(() => {});
+    }, [modo, router.query.fichaId]);
   
       
   useEffect(() => {

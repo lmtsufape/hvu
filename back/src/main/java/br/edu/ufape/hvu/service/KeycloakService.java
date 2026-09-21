@@ -25,11 +25,18 @@ import java.util.List;
 @Service @RequiredArgsConstructor
 public class KeycloakService implements KeycloakServiceInterface {
     private Keycloak keycloak;
-    private final String realm = "lmts";
+    @Value("${keycloak.realm:lmts}")
+    private String realm;
     @Value("${common.docker}")
     private String keycloakServerUrl;
-    private final String clientSecret = "mesAECIaCcLkTmJB0riLGmqA14bSCTuH";
-    private final String clientId = "create_user";
+    @Value("${keycloak.client-secret:}")
+    private String clientSecret;
+    @Value("${keycloak.client-id:create_user}")
+    private String clientId;
+    @Value("${keycloak.admin.username:admin}")
+    private String adminUsername;
+    @Value("${keycloak.admin.password:admin}")
+    private String adminPassword;
 
     @PostConstruct
     @Override
@@ -40,8 +47,8 @@ public class KeycloakService implements KeycloakServiceInterface {
                 .serverUrl(keycloakServerUrl) // URL do servidor Keycloak
                 .realm("master") // Realm do admin
                 .clientId("admin-cli")
-                .username("admin") // Credenciais do administrador
-                .password("admin")
+                .username(adminUsername) // Credenciais do administrador
+                .password(adminPassword)
                 .build();
     }
 

@@ -204,6 +204,7 @@ function FichaMedicaRetorno() {
             : formDataResponse.conteudo);
         }
         setData(formDataResponse?.dataHora);
+        if (formDataResponse?.medico) setMedicoLogado(formDataResponse.medico);
       } catch (error) {
         console.error('Erro ao buscar dados da ficha:', error);
       } finally {

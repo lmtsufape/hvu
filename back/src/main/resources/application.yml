@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/banco?stringtype=unspecified
-    username: postgres
-    password: 1234
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banco?stringtype=unspecified}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
     auto-commit: false
   flyway:
     enabled: true
@@ -55,7 +55,15 @@ common:
   seeders: false
   front: http://localhost:3000/,https://lmtsteste06.ufape.edu.br/
   back: http://localhost:8081/,https://lmtsteste03.ufape.edu.br/
-  docker: http://keycloak:8080/  # Mudar para http://keycloak:8080/ se for rodar com docker
+  docker: ${KEYCLOAK_SERVER_URL:http://keycloak:8080/}
+
+keycloak:
+  realm: ${KEYCLOAK_REALM:lmts}
+  client-id: ${KEYCLOAK_CLIENT_ID:create_user}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:}
+  admin:
+    username: ${KEYCLOAK_ADMIN_USERNAME:admin}
+    password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
 
 app:
   files:
@@ -70,7 +78,7 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:postgresql://backend-db:5432/hvu?stringtype=unspecified
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://backend-db:5432/hvu?stringtype=unspecified}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
   security:

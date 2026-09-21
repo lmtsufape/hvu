@@ -101,42 +101,44 @@ Verifique:
 docker --version
 docker compose version
 ```
-<!-- 
 ---
 
-## Configuração do `.env`
+## Configuração de variáveis de ambiente
 
-Antes de rodar o projeto, você deve criar seu próprio arquivo `.env` na raiz do projeto.
-
-Existe um arquivo de exemplo chamado `.env.example`. Copie-o:
+As credenciais e configurações sensíveis ficam em **variáveis de ambiente**. Na raiz do projeto existe o arquivo de exemplo `.env.example` (sem valores reais). Crie seu `.env` local:
 
 ```bash
 cp .env.example .env
 ```
 
-Depois edite o `.env` conforme necessário.
+Edite o `.env` conforme necessário. O `.env` é ignorado pelo Git (`.gitignore`) e **nunca** deve ser versionado.
 
-### `.env.example`
+### Variáveis disponíveis
 
-```env
-# Configurações do banco de dados PostgreSQL
-GESTAOHVU_DB_URL=jdbc:postgresql://localhost:5432/gestaohvu
-GESTAOHVU_DB_USERNAME=seu-usuario
-GESTAOHVU_DB_PASSWORD=sua-senha
+| Variável | Descrição | Usada por |
+|---|---|---|
+| `HVU_DB_URL` | JDBC URL do banco do backend | backend (Spring) |
+| `HVU_DB_USERNAME` / `HVU_DB_PASSWORD` | Credenciais do banco do backend | backend + `backend-db` |
+| `HVU_DB_NAME` | Nome do banco do backend | `backend-db` |
+| `KEYCLOAK_DB_NAME` / `KEYCLOAK_DB_USERNAME` / `KEYCLOAK_DB_PASSWORD` | Banco do Keycloak | `keycloak` + `keycloak-db` |
+| `KEYCLOAK_ADMIN_USERNAME` / `KEYCLOAK_ADMIN_PASSWORD` | Admin do Keycloak | `keycloak` + backend |
+| `KEYCLOAK_REALM` | Realm do Keycloak | backend |
+| `KEYCLOAK_CLIENT_ID` / `KEYCLOAK_CLIENT_SECRET` | Cliente `create_user` usado na autenticação/registro | backend + frontend |
+| `NEXT_PUBLIC_KEYCLOAK_CLIENT_ID` / `NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET` | Variáveis públicas do frontend (lidas no build do Next.js) | frontend |
 
-# Segredo para JWT
-JWT_SECRET=sua-chave-secreta-aqui
-JWT_EXPIRATION_MS=86400000
+### Rodando o backend localmente (sem Docker)
 
-# Perfil do Spring
-SPRING_PROFILES_ACTIVE=dev
+Exporte as variáveis antes de subir o Spring:
 
-# Origens permitidas (CORS)
-CORS_ALLOWED_ORIGINS=http://localhost:3000
+```bash
+export SPRING_DATASOURCE_URL='jdbc:postgresql://localhost:5432/banco?stringtype=unspecified'
+export SPRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=sua-senha
+export KEYCLOAK_CLIENT_SECRET=seu-client-secret
+cd back && bash mvnw spring-boot:run
+```
 
-# Versão da aplicação
-APP_VERSION=dev
-``` -->
+> O realm de desenvolvimento (`realm-export-dev.json`) importado pelo Keycloak contém usuários/senhas de exemplo (ex.: `password`) apenas para desenvolvimento local.
 
 ---
 
@@ -208,6 +210,51 @@ cd back && bash mvnw -Dtest=AnimalServiceTest test
 
 ---
 
+## CI/CD (GitHub Actions)
+
+A pipeline está em `.github/workflows/ci-cd.yml` e segue o fluxo:
+
+| Branch | O que acontece |
+|---|---|
+| `develop` | Roda testes do backend + build do frontend e, se passarem, faz **deploy automático na homologação** |
+| `main` | Roda testes do backend + build do frontend e, se passarem, faz **deploy automático na produção** |
+| Pull request | Roda apenas as validações (sem deploy) |
+
+### Endpoints
+
+* Homologação: frontend `https://lmtsteste06.ufape.edu.br/` · backend `https://lmtsteste03.ufape.edu.br/api/v1`
+* Produção: frontend `https://gestaohvu.ufape.edu.br/` · backend `https://gestaohvuback.ufape.edu.br/api/v1`
+
+### Pré-requisitos nos servidores
+
+Cada servidor de deploy deve ter:
+
+* Docker e Docker Compose v2 instalados;
+* um clone do repositório no diretório de deploy (ex.: `/home/deploy/hvu`) — a pipeline executa `git pull --ff-only` nesse diretório;
+* uma chave SSH autorizada para o usuário de deploy;
+* nenhum arquivo rastreado modificado manualmente (a pipeline executa `git checkout -- .` antes do pull).
+
+> O arquivo `.env` do servidor **não** fica versionado: a pipeline o cria durante o deploy a partir do secret `*_ENV_FILE`.
+
+### Secrets e Variables necessárias no GitHub
+
+**Homologação** (`Environment: homologacao`):
+
+| Nome | Tipo | Descrição |
+|---|---|---|
+| `HOMOLOGACAO_SSH_HOST` | Variable | Host SSH do servidor de testes |
+| `HOMOLOGACAO_SSH_PORT` | Variable | Porta SSH (padrão 22) |
+| `HOMOLOGACAO_SSH_USER` | Variable | Usuário SSH de deploy |
+| `HOMOLOGACAO_DEPLOY_PATH` | Variable | Caminho do clone no servidor |
+| `HOMOLOGACAO_SSH_KEY` | Secret | Chave privada SSH autorizada no servidor |
+| `HOMOLOGACAO_ENV_FILE` | Secret | Conteúdo completo do `.env` de homologação |
+
+**Produção** (`Environment: producao`): mesmos nomes com prefixo `PRODUCAO_` (`PRODUCAO_SSH_HOST`, `PRODUCAO_SSH_KEY`, `PRODUCAO_ENV_FILE`, etc.).
+
+O `*_ENV_FILE` deve seguir o modelo do [`.env.example`](.env.example) com os valores reais do ambiente (senhas de banco, Keycloak e `NEXT_PUBLIC_KEYCLOAK_*`).
+
+---
+
 ## Guia de Contribuição
 
 O projeto segue um fluxo de contribuição organizado, utilizando boas práticas de versionamento e colaboração em equipe.
@@ -218,7 +265,7 @@ A equipe utiliza o **GitHub Projects (Quadro Scrum)** para organização e acomp
 
 * Funcionalidades, correções e melhorias são registradas como **Issues** no repositório
 * Cada issue é adicionada ao quadro e atribuída a um integrante da equipe
-* O progresso é acompanhado pelas colunas: *To Do*, *In Progress* e *Done*
+* O progresso é acompanhado pelas abas *Current iteration* e *Sprint splanning*
 * Commits e Pull Requests referenciam ou encerram as issues relacionadas (`Closes #id` ou `Related to #id`)
 
 ### Fluxo de versionamento
@@ -247,13 +294,4 @@ feat(animal): adicionar cadastro de animal por patologista
 - Criado AnimalByPatologistaRequest DTO
 
 Related to #42
-```
-
-```
-fix(tutor): corrigir payload de tutor anônimo no frontend
-
-- Campo anonimo movido para raiz do request
-- Removido useState dentro de handleSubmit
-
-Closes #57
 ```

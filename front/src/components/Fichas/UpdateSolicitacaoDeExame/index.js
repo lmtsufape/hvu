@@ -207,6 +207,7 @@ function FichaSolicitacaoExame() {
     const fetchFichaData = async () => {
       try {
         const fichaDataFromApi = await getFichaById(fichaId);
+        if (fichaDataFromApi?.medico) setMedicoLogado(fichaDataFromApi.medico);
         const conteudo = fichaDataFromApi.conteudo
           ? (typeof fichaDataFromApi.conteudo === 'string' ? JSON.parse(fichaDataFromApi.conteudo) : fichaDataFromApi.conteudo)
           : {};

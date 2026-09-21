@@ -1,0 +1,114 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-tests:
+    name: Backend (testes e build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Executar testes do backend
+        working-directory: back
+        run: bash mvnw -B clean test
+
+  frontend-build:
+    name: Frontend (build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: front/package-lock.json
+
+      - name: Instalar dependências
+        working-directory: front
+        run: npm ci
+
+      - name: Build do frontend
+        working-directory: front
+        run: npm run build
+
+  deploy-homologacao:
+    name: Deploy homologação (develop)
+    needs: [backend-tests, frontend-build]
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: homologacao
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Deploy no servidor de testes
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          HOMOLOGACAO_DEPLOY_PATH: ${{ vars.HOMOLOGACAO_DEPLOY_PATH }}
+          HOMOLOGACAO_ENV_FILE: ${{ secrets.HOMOLOGACAO_ENV_FILE }}
+        with:
+          host: ${{ vars.HOMOLOGACAO_SSH_HOST }}
+          username: ${{ vars.HOMOLOGACAO_SSH_USER }}
+          key: ${{ secrets.HOMOLOGACAO_SSH_KEY }}
+          port: ${{ vars.HOMOLOGACAO_SSH_PORT || 22 }}
+          envs: HOMOLOGACAO_DEPLOY_PATH,HOMOLOGACAO_ENV_FILE
+          script: |
+            set -e
+            cd "$HOMOLOGACAO_DEPLOY_PATH"
+            git checkout -- .
+            git checkout develop
+            git pull --ff-only origin develop
+            printf '%s\n' "$HOMOLOGACAO_ENV_FILE" > .env
+            docker compose up -d --build
+            docker compose ps
+
+  deploy-producao:
+    name: Deploy produção (main)
+    needs: [backend-tests, frontend-build]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: producao
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Deploy no servidor de produção
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          PRODUCAO_DEPLOY_PATH: ${{ vars.PRODUCAO_DEPLOY_PATH }}
+          PRODUCAO_ENV_FILE: ${{ secrets.PRODUCAO_ENV_FILE }}
+        with:
+          host: ${{ vars.PRODUCAO_SSH_HOST }}
+          username: ${{ vars.PRODUCAO_SSH_USER }}
+          key: ${{ secrets.PRODUCAO_SSH_KEY }}
+          port: ${{ vars.PRODUCAO_SSH_PORT || 22 }}
+          envs: PRODUCAO_DEPLOY_PATH,PRODUCAO_ENV_FILE
+          script: |
+            set -e
+            cd "$PRODUCAO_DEPLOY_PATH"
+            git checkout -- .
+            git checkout main
+            git pull --ff-only origin main
+            printf '%s\n' "$PRODUCAO_ENV_FILE" > .env
+            docker compose up -d --build
+            docker compose ps
