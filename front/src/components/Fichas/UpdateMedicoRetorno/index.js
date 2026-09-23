@@ -386,7 +386,8 @@ function FichaMedicaRetorno() {
         ...formData
       },
       dataHora: dataFormatada,
-      agendamento: { id: Number(currentAgendamentoId) }
+      agendamento: { id: Number(currentAgendamentoId) },
+      animal: { id: Number(animalId) }
     };
 
     try {

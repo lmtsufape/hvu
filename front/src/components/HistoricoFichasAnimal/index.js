@@ -34,12 +34,14 @@ function HistoricoFichasAnimal({
     "Ficha dermatológica de retorno": "/updateFichaDermatologicaRetorno",
     "Ficha de solicitação de citologia": "/updateFichaSolicitacaoCitologia",
     "Ficha clínica dermatológica": "/updateFichaDermatologica",
-    "Ficha de Retorno Clínico de Animais Silvestres e Exóticos": "/updateFichaRetornoClinicoSil",
+    "Ficha de Retorno Clínico de Animais Silvestres e Exóticos":
+      "/updateFichaRetornoClinicoSil",
     "Ficha clínica neurológica": "/updateFichaNeurologica",
     "Ficha de sessão": "/updateFichaSessao",
     "Ficha de Reabilitação Integrativa": "/updateFichaReabilitacao",
     "Ficha Solicitação de Exame": "/updateFichaSolicitacaoExame",
-    "Ficha Clínica Médica (silvestres ou exóticos)": "/updateFichaClinicaMedicaSilvestres",
+    "Ficha Clínica Médica (silvestres ou exóticos)":
+      "/updateFichaClinicaMedicaSilvestres",
     "Ficha Anestesiológica": "/updateFichaAnestesiologia",
     "Ficha de ato cirúrgico": "/updateFichaAtoCirurgico",
   };
@@ -56,14 +58,19 @@ function HistoricoFichasAnimal({
         const todosAgendamentos = await getAgendamento();
         if (Array.isArray(todosAgendamentos)) {
           const agendamentoDoAnimal = todosAgendamentos.find(
-            (ag) => ag.animal?.id === Number(animalId) || ag.animalId === Number(animalId)
+            (ag) =>
+              ag.animal?.id === Number(animalId) ||
+              ag.animalId === Number(animalId),
           );
           if (agendamentoDoAnimal?.id) {
             setAgendamentoFallbackId(agendamentoDoAnimal.id);
           }
         }
       } catch (errAg) {
-        console.warn("Não foi possível carregar a lista de agendamentos:", errAg);
+        console.warn(
+          "Não foi possível carregar a lista de agendamentos:",
+          errAg,
+        );
       }
 
       // 2. Busca o histórico de fichas já existentes do animal
@@ -147,7 +154,9 @@ function HistoricoFichasAnimal({
 
     const pathBase = rotasPorNome[tipoSelecionado];
     if (pathBase) {
-      router.push(`${pathBase}?animalId=${animalId}&agendamentoId=${agendamentoId}&modo=criar`);
+      router.push(
+        `${pathBase}?animalId=${animalId}&agendamentoId=${agendamentoId}&modo=criar`,
+      );
     } else {
       alert(`A rota para "${tipoSelecionado}" não foi localizada.`);
     }
@@ -168,7 +177,9 @@ function HistoricoFichasAnimal({
 
     // Se encontramos um agendamento prévio no banco, enviamos ele para a tela de update não quebrar
     if (agendamentoFallbackId) {
-      router.push(`${pathBase}?animalId=${animalId}&agendamentoId=${agendamentoFallbackId}&modo=criar`);
+      router.push(
+        `${pathBase}?animalId=${animalId}&agendamentoId=${agendamentoFallbackId}&modo=criar`,
+      );
     } else {
       // Caso o animal não tenha NENHUM agendamento no banco:
       // Redireciona com animalId. (Se a tela de update quebrar aqui, é porque no Java a entidade Ficha exige obrigatoriamente um Agendamento existente).
@@ -177,7 +188,9 @@ function HistoricoFichasAnimal({
   };
 
   if (loading) {
-    return <div className={styles.message}>Carregando histórico do paciente...</div>;
+    return (
+      <div className={styles.message}>Carregando histórico do paciente...</div>
+    );
   }
 
   if (
@@ -200,13 +213,15 @@ function HistoricoFichasAnimal({
 
       if (term) {
         const temMedicoCriador = (agendamento.fichas || []).some((ficha) =>
-          (ficha.medico?.nome || "").toLowerCase().includes(term)
+          (ficha.medico?.nome || "").toLowerCase().includes(term),
         );
         if (!temMedicoCriador) return false;
       }
 
       if (filtroTipoFicha) {
-        const temTipo = (agendamento.fichas || []).some((ficha) => ficha.nome === filtroTipoFicha);
+        const temTipo = (agendamento.fichas || []).some(
+          (ficha) => ficha.nome === filtroTipoFicha,
+        );
         if (!temTipo) return false;
       }
 
@@ -217,7 +232,9 @@ function HistoricoFichasAnimal({
 
       return {
         ...agendamento,
-        fichas: (agendamento.fichas || []).filter((ficha) => ficha.nome === filtroTipoFicha),
+        fichas: (agendamento.fichas || []).filter(
+          (ficha) => ficha.nome === filtroTipoFicha,
+        ),
       };
     });
 
@@ -229,7 +246,9 @@ function HistoricoFichasAnimal({
   const temFiltrosAtivos = searchTerm || filtroTipoFicha;
 
   return (
-    <div className={`${styles.pageContainer} ${embedded ? styles.embeddedContainer : ""}`}>
+    <div
+      className={`${styles.pageContainer} ${embedded ? styles.embeddedContainer : ""}`}
+    >
       <div className={styles.headerArea}>
         {!embedded && (
           <div className={styles.titleMeusAgendamentos}>
@@ -239,7 +258,14 @@ function HistoricoFichasAnimal({
 
         {/* Botão Superior para médicos adicionarem ficha livremente */}
         {podeAdicionarFicha && filteredAgendamentos.length === 0 && (
-          <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "18px" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+              marginBottom: "18px",
+            }}
+          >
             <select
               className={styles.filtroSelect}
               value={fichaGeralSelecionada}
@@ -324,13 +350,19 @@ function HistoricoFichasAnimal({
 
               <div className={styles.fichas_list}>
                 <p className={styles.medicoPrincipal}>
-                  Médico responsável: {vaga.medicoResponsavel?.nome || "Não informado"}
+                  Médico responsável:{" "}
+                  {vaga.medicoResponsavel?.nome || "Não informado"}
                 </p>
 
                 {podeAdicionarFicha && (
                   <div
                     className={styles.adicionarFichaContainer}
-                    style={{ display: "flex", gap: "8px", alignItems: "center", margin: "10px 0" }}
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      alignItems: "center",
+                      margin: "10px 0",
+                    }}
                   >
                     <select
                       className={styles.filtroSelect}
@@ -368,30 +400,58 @@ function HistoricoFichasAnimal({
                         {ficha.nome || "Ficha sem nome"}
                       </span>
                       <span className={styles.ficha_medico}>
-                        Médico que criou: {ficha.medico?.nome || "Não informado"}
+                        Médico que criou:{" "}
+                        {ficha.medico?.nome || "Não informado"}
                       </span>
                       <span className={styles.ficha_prontuario}>
-                        Prontuário: {ficha?.animal?.codigoProntuario || "Não informado"}
+                        Prontuário:{" "}
+                        {ficha?.animal?.codigoProntuario || "Não informado"}
                       </span>
                       <span className={styles.ficha_data}>
-                        Criada em: {ficha.dataHora ? formatDate(ficha.dataHora) : "Data não informada"}
+                        Criada em:{" "}
+                        {ficha.dataHora
+                          ? formatDate(ficha.dataHora)
+                          : "Data não informada"}
                       </span>
                     </div>
 
-                    <button
-                      className={styles.acessar_button}
-                      onClick={() => {
-                        const basePath = rotasPorNome[ficha.nome];
-                        if (basePath) {
-                          const url = `${basePath}?fichaId=${ficha.id}&animalId=${animalId}&agendamentoId=${vaga.id}&modo=visualizar`;
-                          router.push(url);
-                        } else {
-                          alert(`A visualização para "${ficha.nome}" ainda não foi implementada.`);
-                        }
-                      }}
-                    >
-                      Visualizar
-                    </button>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button
+                        className={styles.acessar_button}
+                        onClick={() => {
+                          const basePath = rotasPorNome[ficha.nome];
+
+                          if (basePath) {
+                            const url = `${basePath}?fichaId=${ficha.id}&animalId=${animalId}&agendamentoId=${vaga.id}&modo=visualizar`;
+                            router.push(url);
+                          } else {
+                            alert(
+                              `A visualização para "${ficha.nome}" ainda não foi implementada.`,
+                            );
+                          }
+                        }}
+                      >
+                        Visualizar
+                      </button>
+
+                      <button
+                        className={styles.acessar_button}
+                        onClick={() => {
+                          const basePath = rotasPorNome[ficha.nome];
+
+                          if (basePath) {
+                            const url = `${basePath}?fichaId=${ficha.id}&animalId=${animalId}&agendamentoId=${vaga.id}&modo=editar`;
+                            router.push(url);
+                          } else {
+                            alert(
+                              `A edição para "${ficha.nome}" ainda não foi implementada.`,
+                            );
+                          }
+                        }}
+                      >
+                        Editar
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

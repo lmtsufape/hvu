@@ -209,7 +209,8 @@ function UpdateAtoCirurgico() {
       nome: "Ficha de ato cirúrgico",
       conteudo: { ...formData },
       dataHora: dataFormatada,
-      agendamento: { id: Number(agendamentoId) }
+      agendamento: { id: Number(agendamentoId) },
+      animal: { id: Number(animalId) }
     };
 
     try {

@@ -182,7 +182,8 @@ export default function AnestesiologiaSteps() {
       nome: "Ficha Anestesiológica",
       conteudo: { ...formData },
       dataHora: moment(data).isValid() ? moment(data).format("YYYY-MM-DDTHH:mm:ss") : moment().format("YYYY-MM-DDTHH:mm:ss"),
-      agendamento: { id: Number(agendamentoId) }
+      agendamento: { id: Number(agendamentoId) },
+      animal: { id: Number(animalId) }
     };
 
     try {

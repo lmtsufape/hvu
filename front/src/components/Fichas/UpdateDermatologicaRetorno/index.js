@@ -195,7 +195,8 @@ function FichaDermatologicaRetorno() {
       nome: "Ficha dermatológica de retorno",  
       conteudo: { ...formData },
       dataHora: dataFormatada,
-      agendamento: { id: Number(currentAgendamentoId) }
+      agendamento: { id: Number(currentAgendamentoId) },
+      animal: { id: Number(animalId) }
     };
 
     try {

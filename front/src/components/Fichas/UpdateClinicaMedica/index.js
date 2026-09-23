@@ -378,7 +378,8 @@ function UpdateClinicaMedicaSteps() {
       nome: "Ficha Clínica Médica",
       conteudo: { ...formData },
       dataHora: dataFormatada,
-      agendamento: { id: Number(currentAgendamentoId) }
+      agendamento: { id: Number(currentAgendamentoId) },
+      animal: { id: Number(animalId) }
     };
 
     try {

@@ -217,7 +217,8 @@ function UpdateFichaRetornoClinicoSil() {
         outros_texto: formData.outros_texto
       },
       dataHora: dataFormatada,
-      agendamento: { id: Number(currentAgendamentoId) }
+      agendamento: { id: Number(currentAgendamentoId) },
+      animal: { id: Number(animalId) }
     };
 
     try {

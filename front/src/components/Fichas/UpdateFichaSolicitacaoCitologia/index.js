@@ -308,7 +308,8 @@ function FichaSolicitacaoCitologia() {
       dataHora: dataFormatada,
       agendamento: {
         id: Number(currentAgendamentoId)
-      }
+      },
+      animal: { id: Number(animalId) }
     };
 
     try {
