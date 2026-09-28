@@ -199,7 +199,8 @@ function UpdateFichaSessao() {
       dataHora: dataFormatada,
       agendamento: {
         id: Number(currentAgendamentoId)
-      }
+      },
+      animal: { id: Number(animalId) }
     };
 
     try {
