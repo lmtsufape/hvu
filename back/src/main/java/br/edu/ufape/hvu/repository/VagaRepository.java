@@ -42,6 +42,8 @@ public interface VagaRepository extends JpaRepository<Vaga, Long> {
 
 	boolean existsByIdAndAgendamentoIsNotNull(Long id);
 
+	boolean existsByDataHoraAndMedicoId(LocalDateTime dataHora, Long medicoId);
+
 	List<Vaga> findVagasByDataHoraBetweenAndMedicoAndAgendamentoNotNull(LocalDateTime begin, LocalDateTime end, Medico medico);
 
     @Query("""
