@@ -712,7 +712,12 @@ public class Facade {
                     "Já existe uma vaga para este médico neste horário.");
         }
 
-        return vagaServiceInterface.saveVaga(newInstance);
+        try {
+            return vagaServiceInterface.saveVaga(newInstance);
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("vaga.duplicada",
+                    "Já existe uma vaga para este médico neste horário.");
+        }
     }
 
     @Transactional
