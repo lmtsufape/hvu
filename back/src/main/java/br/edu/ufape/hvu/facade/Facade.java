@@ -704,7 +704,20 @@ public class Facade {
     @Transactional
     public Vaga saveVaga(Vaga newInstance) {
         newInstance.setStatus(String.valueOf(StatusAgendamentoEVaga.Disponivel));
-        return vagaServiceInterface.saveVaga(newInstance);
+
+        if (newInstance.getMedico() != null && newInstance.getDataHora() != null
+                && vagaServiceInterface.existsByDataHoraAndMedicoId(newInstance.getDataHora(),
+                        newInstance.getMedico().getId())) {
+            throw new BusinessException("vaga.duplicada",
+                    "Já existe uma vaga para este médico neste horário.");
+        }
+
+        try {
+            return vagaServiceInterface.saveVaga(newInstance);
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException("vaga.duplicada",
+                    "Já existe uma vaga para este médico neste horário.");
+        }
     }
 
     @Transactional

@@ -37,6 +37,10 @@ public class VagaService implements VagaServiceInterface {
 	public boolean existsByIdAndAgendamentoIsNotNull(long id){
 		return repository.existsByIdAndAgendamentoIsNotNull(id);
 	}
+
+	public boolean existsByDataHoraAndMedicoId(LocalDateTime dataHora, Long medicoId) {
+		return repository.existsByDataHoraAndMedicoId(dataHora, medicoId);
+	}
 	
 	public List<Vaga> findVagasByData(LocalDate data) {
         LocalDateTime begin = data.atStartOfDay(); 

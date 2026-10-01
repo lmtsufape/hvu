@@ -1,6 +1,7 @@
 package br.edu.ufape.hvu.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import br.edu.ufape.hvu.model.*;
 
@@ -9,6 +10,7 @@ public interface VagaServiceInterface {
 	Vaga saveVaga(Vaga o);
 	Vaga findVagaByIdWithLock(long id);
 	boolean existsByIdAndAgendamentoIsNotNull(long id);
+	boolean existsByDataHoraAndMedicoId(LocalDateTime dataHora, Long medicoId);
 	Vaga findVagaById(long id);
 	Vaga updateVaga(Vaga u);
 	void deleteVaga(long id);
