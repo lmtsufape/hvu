@@ -225,33 +225,57 @@ A pipeline está em `.github/workflows/ci-cd.yml` e segue o fluxo:
 * Homologação: frontend `https://lmtsteste06.ufape.edu.br/` · backend `https://lmtsteste03.ufape.edu.br/api/v1`
 * Produção: frontend `https://gestaohvu.ufape.edu.br/` · backend `https://gestaohvuback.ufape.edu.br/api/v1`
 
-### Pré-requisitos nos servidores
+### Homologação (servidor `lmtstestes`, sem SSH)
 
-Cada servidor de deploy deve ter:
+O servidor de testes não aceita SSH. O deploy de `develop` funciona assim:
+
+1. Os jobs `Imagem backend` e `Imagem frontend` constroem as imagens no GitHub e publicam no GHCR
+   (`ghcr.io/lmtsufape/hvu-backend:<sha>` e `ghcr.io/lmtsufape/hvu-frontend:homologacao-<sha>`).
+2. O job `Deploy homologação` roda no runner self-hosted da organização (label `lmtstestes`) e executa
+   `docker compose pull && up -d` com [`deploy/lmtstestes/compose.yml`](deploy/lmtstestes/compose.yml).
+
+Os workflows reutilizáveis ficam em [`lmtsufape/.github`](https://github.com/lmtsufape/.github).
+Logs e restart dos containers: Portainer (ver `lmtsufape/infra-lmtstestes`).
+
+**Rollback**: *Actions → CI/CD → Run workflow* na branch `develop`, informando em `image-tag` o SHA
+de um commit que já foi implantado.
+
+Configuração no GitHub:
+
+| Nome | Onde | Descrição |
+|---|---|---|
+| `DEPLOY_ENV_FILE` | Secret do environment `homologacao` | `.env` do deploy (bancos, Keycloak, `KEYCLOAK_PUBLIC_URL`); modelo nas variáveis usadas em `deploy/lmtstestes/compose.yml` |
+| `HOMOLOGACAO_NEXT_PUBLIC_API_URL` | Variable do repositório | URL da API usada no build do frontend |
+| `HOMOLOGACAO_NEXT_PUBLIC_KEYCLOAK_URL` | Variable do repositório | URL pública do Keycloak usada no build do frontend |
+| `HOMOLOGACAO_NEXT_PUBLIC_KEYCLOAK_CLIENT_ID` | Variable do repositório | Client ID do Keycloak usado no build do frontend |
+| `HOMOLOGACAO_NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET` | Secret do repositório | Client secret usado no build do frontend |
+
+> As variáveis `NEXT_PUBLIC_*` são embutidas no JavaScript entregue ao navegador durante o build,
+> por isso a imagem do frontend é específica de cada ambiente.
+
+### Produção (deploy via SSH)
+
+O servidor de produção deve ter:
 
 * Docker e Docker Compose v2 instalados;
 * um clone do repositório no diretório de deploy (ex.: `/home/deploy/hvu`) — a pipeline executa `git pull --ff-only` nesse diretório;
 * uma chave SSH autorizada para o usuário de deploy;
 * nenhum arquivo rastreado modificado manualmente (a pipeline executa `git checkout -- .` antes do pull).
 
-> O arquivo `.env` do servidor **não** fica versionado: a pipeline o cria durante o deploy a partir do secret `*_ENV_FILE`.
+> O arquivo `.env` do servidor **não** fica versionado: a pipeline o cria durante o deploy a partir do secret `PRODUCAO_ENV_FILE`.
 
-### Secrets e Variables necessárias no GitHub
-
-**Homologação** (`Environment: homologacao`):
+**Produção** (`Environment: producao`):
 
 | Nome | Tipo | Descrição |
 |---|---|---|
-| `HOMOLOGACAO_SSH_HOST` | Variable | Host SSH do servidor de testes |
-| `HOMOLOGACAO_SSH_PORT` | Variable | Porta SSH (padrão 22) |
-| `HOMOLOGACAO_SSH_USER` | Variable | Usuário SSH de deploy |
-| `HOMOLOGACAO_DEPLOY_PATH` | Variable | Caminho do clone no servidor |
-| `HOMOLOGACAO_SSH_KEY` | Secret | Chave privada SSH autorizada no servidor |
-| `HOMOLOGACAO_ENV_FILE` | Secret | Conteúdo completo do `.env` de homologação |
+| `PRODUCAO_SSH_HOST` | Variable | Host SSH do servidor de produção |
+| `PRODUCAO_SSH_PORT` | Variable | Porta SSH (padrão 22) |
+| `PRODUCAO_SSH_USER` | Variable | Usuário SSH de deploy |
+| `PRODUCAO_DEPLOY_PATH` | Variable | Caminho do clone no servidor |
+| `PRODUCAO_SSH_KEY` | Secret | Chave privada SSH autorizada no servidor |
+| `PRODUCAO_ENV_FILE` | Secret | Conteúdo completo do `.env` de produção |
 
-**Produção** (`Environment: producao`): mesmos nomes com prefixo `PRODUCAO_` (`PRODUCAO_SSH_HOST`, `PRODUCAO_SSH_KEY`, `PRODUCAO_ENV_FILE`, etc.).
-
-O `*_ENV_FILE` deve seguir o modelo do [`.env.example`](.env.example) com os valores reais do ambiente (senhas de banco, Keycloak e `NEXT_PUBLIC_KEYCLOAK_*`).
+O `PRODUCAO_ENV_FILE` deve seguir o modelo do [`.env.example`](.env.example) com os valores reais do ambiente (senhas de banco, Keycloak e `NEXT_PUBLIC_KEYCLOAK_*`).
 
 ---
 

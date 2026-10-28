@@ -5,14 +5,22 @@ on:
     branches: [develop, main]
   pull_request:
     branches: [develop, main]
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: "Rollback da homologação: SHA de um commit já implantado. Vazio = testes, build e deploy do commit atual."
+        required: false
+        default: ""
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Não cancela deploys em andamento; só PRs são cancelados por um push novo
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   backend-tests:
     name: Backend (testes e build)
+    if: inputs.image-tag == ''
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do repositório
@@ -31,6 +39,7 @@ jobs:
 
   frontend-build:
     name: Frontend (build)
+    if: inputs.image-tag == ''
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do repositório
@@ -51,36 +60,59 @@ jobs:
         working-directory: front
         run: npm run build
 
+  # Homologação (servidor lmtstestes, sem SSH): imagens construídas aqui e publicadas no GHCR,
+  # deploy feito pelo runner self-hosted da organização. Ver lmtsufape/.github e
+  # deploy/lmtstestes/compose.yml.
+  build-backend-homologacao:
+    name: Imagem backend (homologação)
+    needs: [backend-tests, frontend-build]
+    if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request' && inputs.image-tag == ''
+    permissions:
+      contents: read
+      packages: write
+    uses: lmtsufape/.github/.github/workflows/docker-build-push.yml@main
+    with:
+      image: hvu-backend
+      context: back
+      tag: ${{ github.sha }}
+
+  build-frontend-homologacao:
+    name: Imagem frontend (homologação)
+    needs: [backend-tests, frontend-build]
+    if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request' && inputs.image-tag == ''
+    permissions:
+      contents: read
+      packages: write
+    uses: lmtsufape/.github/.github/workflows/docker-build-push.yml@main
+    with:
+      image: hvu-frontend
+      context: front
+      tag: homologacao-${{ github.sha }}
+      build-args: |
+        NEXT_PUBLIC_API_URL=${{ vars.HOMOLOGACAO_NEXT_PUBLIC_API_URL }}
+        NEXT_PUBLIC_KEYCLOAK_URL=${{ vars.HOMOLOGACAO_NEXT_PUBLIC_KEYCLOAK_URL }}
+        NEXT_PUBLIC_KEYCLOAK_CLIENT_ID=${{ vars.HOMOLOGACAO_NEXT_PUBLIC_KEYCLOAK_CLIENT_ID }}
+    secrets:
+      build-secret-args: NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET=${{ secrets.HOMOLOGACAO_NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET }}
+
   deploy-homologacao:
     name: Deploy homologação (develop)
-    needs: [backend-tests, frontend-build]
-    if: github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-latest
-    environment: homologacao
-    steps:
-      - name: Checkout do repositório
-        uses: actions/checkout@v4
-
-      - name: Deploy no servidor de testes
-        uses: appleboy/ssh-action@v1.2.0
-        env:
-          HOMOLOGACAO_DEPLOY_PATH: ${{ vars.HOMOLOGACAO_DEPLOY_PATH }}
-          HOMOLOGACAO_ENV_FILE: ${{ secrets.HOMOLOGACAO_ENV_FILE }}
-        with:
-          host: ${{ vars.HOMOLOGACAO_SSH_HOST }}
-          username: ${{ vars.HOMOLOGACAO_SSH_USER }}
-          key: ${{ secrets.HOMOLOGACAO_SSH_KEY }}
-          port: ${{ vars.HOMOLOGACAO_SSH_PORT || 22 }}
-          envs: HOMOLOGACAO_DEPLOY_PATH,HOMOLOGACAO_ENV_FILE
-          script: |
-            set -e
-            cd "$HOMOLOGACAO_DEPLOY_PATH"
-            git checkout -- .
-            git checkout develop
-            git pull --ff-only origin develop
-            printf '%s\n' "$HOMOLOGACAO_ENV_FILE" > .env
-            docker compose up -d --build
-            docker compose ps
+    needs: [build-backend-homologacao, build-frontend-homologacao]
+    if: >-
+      always() && github.ref == 'refs/heads/develop' && github.event_name != 'pull_request' &&
+      (inputs.image-tag != '' ||
+       (needs.build-backend-homologacao.result == 'success' && needs.build-frontend-homologacao.result == 'success'))
+    permissions:
+      contents: read
+      packages: read
+    uses: lmtsufape/.github/.github/workflows/deploy-lmtstestes.yml@main
+    with:
+      project: hvu
+      image-tag: ${{ inputs.image-tag || github.sha }}
+      health-urls: |
+        http://127.0.0.1:30082/
+        http://127.0.0.1:30086/
+        http://127.0.0.1:30101/
 
   deploy-producao:
     name: Deploy produção (main)

@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export default axios.create({
-    baseURL: "http://localhost:8080/",
+    baseURL: process.env.NEXT_PUBLIC_KEYCLOAK_URL || "http://localhost:8080/",
     
 })
