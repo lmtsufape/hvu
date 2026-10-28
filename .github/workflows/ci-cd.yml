@@ -113,6 +113,8 @@ jobs:
         http://127.0.0.1:30082/
         http://127.0.0.1:30086/
         http://127.0.0.1:30101/
+    # Necessário para o workflow reutilizável enxergar o secret DEPLOY_ENV_FILE do environment
+    secrets: inherit
 
   deploy-producao:
     name: Deploy produção (main)
