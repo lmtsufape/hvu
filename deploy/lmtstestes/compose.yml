@@ -1,0 +1,119 @@
+# Deploy do GestãoHVU no servidor de testes lmtstestes (sem SSH).
+#
+# Usado pelo workflow reutilizável lmtsufape/.github/.github/workflows/deploy-lmtstestes.yml,
+# que gera o .env a partir do secret DEPLOY_ENV_FILE do environment "homologacao" e acrescenta
+# IMAGE_TAG. As imagens são construídas no GitHub Actions e publicadas no GHCR.
+#
+# Os nomes do projeto, volumes e rede são os mesmos do deploy manual antigo, para reaproveitar
+# os dados existentes (hvu_pg-data, hvu_keycloak-pg-data, hvu_hvu-uploads).
+name: hvu
+
+services:
+  backend:
+    image: ghcr.io/lmtsufape/hvu-backend:${IMAGE_TAG:?IMAGE_TAG não definida}
+    restart: always
+    ports:
+      - "30082:8081"
+    networks:
+      - hvu-networks
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://backend-db:5432/${HVU_DB_NAME:-hvu}?stringtype=unspecified
+      SPRING_DATASOURCE_USERNAME: ${HVU_DB_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${HVU_DB_PASSWORD:?Defina HVU_DB_PASSWORD}
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: ${KEYCLOAK_PUBLIC_URL:?Defina KEYCLOAK_PUBLIC_URL}/realms/${KEYCLOAK_REALM:-lmts}
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/${KEYCLOAK_REALM:-lmts}/protocol/openid-connect/certs
+      SERVER_FORWARD_HEADERS_STRATEGY: framework
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM:-lmts}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID:-create_user}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET:?Defina KEYCLOAK_CLIENT_SECRET}
+      KEYCLOAK_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Defina KEYCLOAK_ADMIN_PASSWORD}
+    volumes:
+      - hvu-uploads:/app/uploads
+    depends_on:
+      backend-db:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+
+  backend-db:
+    image: postgres:16.0
+    restart: always
+    environment:
+      POSTGRES_DB: ${HVU_DB_NAME:-hvu}
+      POSTGRES_USER: ${HVU_DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${HVU_DB_PASSWORD:?Defina HVU_DB_PASSWORD}
+      TZ: America/Sao_Paulo
+    networks:
+      - hvu-networks
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.5
+    restart: always
+    command: ["start"]
+    ports:
+      - "30101:8080"
+    networks:
+      - hvu-networks
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USERNAME:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Defina KEYCLOAK_ADMIN_PASSWORD}
+      KC_HOSTNAME: ${KEYCLOAK_PUBLIC_URL:?Defina KEYCLOAK_PUBLIC_URL}
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_PROXY_HEADERS: forwarded
+      KC_DB: postgres
+      KC_DB_URL_HOST: keycloak-db
+      KC_DB_URL_PORT: "5432"
+      KC_DB_URL_DATABASE: ${KEYCLOAK_DB_NAME:-keycloak}
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USERNAME:-postgres}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Defina KEYCLOAK_DB_PASSWORD}
+      KC_DB_SCHEMA: public
+    depends_on:
+      keycloak-db:
+        condition: service_healthy
+
+  keycloak-db:
+    image: postgres:16.0
+    restart: always
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME:-keycloak}
+      POSTGRES_USER: ${KEYCLOAK_DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Defina KEYCLOAK_DB_PASSWORD}
+      TZ: America/Sao_Paulo
+    networks:
+      - hvu-networks
+    volumes:
+      - keycloak-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    image: ghcr.io/lmtsufape/hvu-frontend:homologacao-${IMAGE_TAG:?IMAGE_TAG não definida}
+    restart: always
+    ports:
+      - "30086:3000"
+    networks:
+      - hvu-networks
+    depends_on:
+      - backend
+
+volumes:
+  pg-data:
+  keycloak-pg-data:
+  hvu-uploads:
+
+networks:
+  hvu-networks:
+    driver: bridge
